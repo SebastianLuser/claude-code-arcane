@@ -1,0 +1,77 @@
+# Dependencies
+node_modules/
+vendor/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Build outputs
+dist/
+build/
+target/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+credentials.json
+.credentials*
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Claude Code session data (keep structure, ignore runtime)
+production/session-state/*.log
+production/session-state/active.md
+.claude/cache/
+.claude/sessions/
+
+# Unity
+Library/
+Temp/
+Obj/
+Logs/
+MemoryCaptures/
+*.csproj
+*.sln
+*.suo
+*.user
+
+# Godot
+.godot/
+.import/
+export.cfg
+export_presets.cfg
+
+# Unreal
+Intermediate/
+Saved/
+DerivedDataCache/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.nyc_output/
+.pytest_cache/
+*.coverage
+
+# OS
+.DS_Store
+desktop.ini
