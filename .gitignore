@@ -35,6 +35,8 @@ Thumbs.db
 # Claude Code session data (keep structure, ignore runtime)
 production/session-state/*.log
 production/session-state/active.md
+production/review-mode.txt
+production/division.txt
 .claude/cache/
 .claude/sessions/
 
@@ -75,3 +77,6 @@ coverage/
 # OS
 .DS_Store
 desktop.ini
+
+# skills-selftest test outputs
+skills-selftest/results/

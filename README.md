@@ -1,7 +1,7 @@
-# Claude Code Mega Studios
+# Claude Code Arcane
 
-> **El repositorio de skills más completo para Claude Code.**
-> 119 agentes especializados · 244 skills · 8 divisiones
+> **Skills, agentes y hooks para Claude Code.**
+> 147 skills · 5 stacks: general, software, gamedev, design, agile
 
 Un sistema integral que transforma Claude Code en una organización completa con divisiones especializadas desde game development hasta integraciones con herramientas SaaS.
 

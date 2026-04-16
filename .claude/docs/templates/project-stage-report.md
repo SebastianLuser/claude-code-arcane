@@ -1,8 +1,8 @@
 # Project Stage Analysis Report
 
 **Generated**: [DATE]
-**Stage**: [Concept | Systems Design | Technical Setup | Pre-Production | Production | Polish | Release]
-**Analysis Scope**: [Full project | Specific role: programmer/designer/producer]
+**Stage**: [Discovery | Design | Pre-Production | Production | Pre-Release | Release]
+**Analysis Scope**: [Full project | Specific role: backend/frontend/devops/product/qa]
 
 ---
 
@@ -18,12 +18,12 @@
 
 ## Completeness Overview
 
-### Design Documentation
+### Product & Design Documentation
 - **Status**: [X%] complete
 - **Files Found**: [N] documents in `design/`
-  - GDD sections: [N] files in `design/gdd/`
-  - Narrative docs: [N] files in `design/narrative/`
-  - Level designs: [N] files in `design/levels/`
+  - PRDs: [N] files in `design/product/`
+  - UX specs: [N] files in `design/ux/`
+  - API contracts: [N] files in `design/api/`
 - **Key Gaps**:
   - [ ] [Missing doc 1 + why it matters]
   - [ ] [Missing doc 2 + why it matters]
@@ -68,13 +68,23 @@
 - **Key Gaps**:
   - [ ] [Missing test area + risk]
 
-### Prototypes
-- **Active Prototypes**: [N] in `prototypes/`
-  - ✅ [Prototype 1] — documented with README
-  - ⚠️  [Prototype 2] — no README, unclear status
+### Infrastructure & DevOps
+- **Status**: [X%] complete
+- **Found**:
+  - IaC (Terraform / Pulumi): [Exists | Missing]
+  - CI/CD pipelines: [N] defined in `.github/` or `.gitlab-ci.yml`
+  - Deploy environments: [staging | production | preview] — which exist
+  - Monitoring / alerting: [Configured | Partial | Missing]
+- **Key Gaps**:
+  - [ ] [Missing infra artifact + impact]
+
+### Spikes / Prototypes
+- **Active Spikes**: [N] in `prototypes/` or `spikes/`
+  - ✅ [Spike 1] — documented with README + outcome
+  - ⚠️  [Spike 2] — no outcome recorded, unclear status
 - **Archived**: [N] (experiments completed)
 - **Key Gaps**:
-  - [ ] [Undocumented prototype + why it matters]
+  - [ ] [Undocumented spike + why it matters]
 
 ---
 
@@ -170,25 +180,34 @@ Based on gaps identified, consider running:
 
 ```
 design/
-  gdd/           [N] files
-  narrative/     [N] files
-  levels/        [N] files
+  product/       [N] PRDs
+  ux/            [N] UX specs
+  api/           [N] API contracts
 
 src/
-  core/          [N] files
-  gameplay/      [N] files
-  ai/            [N] files
-  networking/    [N] files
+  api/           [N] files
+  domain/        [N] files
+  data/          [N] files
   ui/            [N] files
 
 docs/
   architecture/  [N] ADRs
+  rfc/           [N] RFCs
+
+infra/
+  terraform/     [N] modules
+  k8s/           [N] manifests
+  ci/            [N] pipelines
 
 production/
   sprints/       [N] plans
   milestones/    [N] definitions
 
 tests/           [N] test files
+  unit/          [N]
+  integration/   [N]
+  e2e/           [N]
+
 prototypes/      [N] directories
 ```
 

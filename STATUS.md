@@ -1,4 +1,4 @@
-# Claude Code Mega Studios — Status
+# Claude Code Arcane — Status
 
 **Última actualización:** 2026-04-13
 
@@ -146,7 +146,7 @@ El repo tiene:
 Aún con contenido pendiente, podés usar el repo:
 
 ```bash
-cd Claude-Code-Mega-Studios
+cd Claude-Code-Arcane
 claude
 
 # Comenzar con /start

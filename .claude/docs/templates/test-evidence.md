@@ -1,7 +1,7 @@
-# Test Evidence: [Story Title]
+# Test Evidence: [Story / Ticket Title]
 
-> **Story**: `[path to story file]`
-> **Story Type**: [Visual/Feel | UI]
+> **Story / Ticket**: `[path to story file or JIRA/ClickUp ID]`
+> **Story Type**: [Unit | Integration | E2E | Manual | Security | Performance]
 > **Date**: [date]
 > **Tester**: [who performed the test]
 > **Build / Commit**: [version or git hash]
@@ -27,34 +27,36 @@ the acceptance criteria numbers from the story that this evidence covers.]
 
 ---
 
-## Screenshots / Video
+## Artifacts
 
 List all captured evidence below. Store files in the same directory as this
 document or in `production/qa/evidence/[story-slug]/`.
 
-| # | Filename | What It Shows | Acceptance Criterion |
-|---|----------|--------------|----------------------|
-| 1 | `[filename.png]` | [brief description of what is visible] | AC-1 |
-| 2 | `[filename.png]` | | AC-2 |
+| # | Filename / Link | What It Shows | Acceptance Criterion |
+|---|-----------------|--------------|----------------------|
+| 1 | `[test-run.log]` | [brief description — test output, HTTP response, screenshot, etc.] | AC-1 |
+| 2 | `[screenshot.png]` | | AC-2 |
 
-*If video: note the timestamp and what it demonstrates.*
+Acceptable artifact types: test runner output (e.g., `go test`, `pytest`, `vitest`),
+HTTP request/response logs (Postman/curl), screenshots, video recording timestamps,
+query results, log excerpts.
 
 ---
 
 ## Test Conditions
 
-- **Game state at start**: [e.g., "fresh save, player at level 1, no items"]
-- **Platform / hardware**: [e.g., "Windows 11, GTX 1080, 1080p"]
-- **Framerate during test**: [e.g., "stable 60fps" or "~45fps — within budget"]
-- **Any special setup required**: [e.g., "dev menu used to trigger specific state"]
+- **Environment**: [e.g., "local dev", "staging", "preview deploy"]
+- **Data state**: [e.g., "fresh DB, seeded with fixture X", "production snapshot from YYYY-MM-DD"]
+- **Platform / browser / runtime**: [e.g., "Chrome 120 on Windows 11", "Node 20 on Linux"]
+- **Any special setup required**: [e.g., "feature flag ENABLED via env var", "test user with role X"]
 
 ---
 
 ## Observations
 
 [Anything noteworthy that didn't cause a FAIL but should be recorded. Examples:
-minor visual jitter, frame dip under load, behaviour that technically passes
-but felt slightly off. These become candidates for polish work.]
+slow response under load, warning log emitted but not breaking, behaviour that
+technically passes but feels off. These become candidates for follow-up work.]
 
 - [Observation 1]
 - [Observation 2]
@@ -65,22 +67,20 @@ If nothing notable: *No significant observations.*
 
 ## Sign-Off
 
-All three sign-offs are required before the story can be marked COMPLETE via
-`/story-done`. Visual/Feel stories require the designer or art-lead sign-off.
-UI stories require the UX lead or designer sign-off.
+All required sign-offs must be completed before the story can be marked COMPLETE.
+Required roles depend on story type (configure per project).
 
 | Role | Name | Date | Signature |
 |------|------|------|-----------|
 | Developer (implemented) | | | [ ] Approved |
-| Designer / Art Lead / UX Lead | | | [ ] Approved |
+| Reviewer (code review) | | | [ ] Approved |
 | QA Lead | | | [ ] Approved |
 
 **Any sign-off can be marked "Deferred — [reason]"** if the person is
-unavailable. Deferred sign-offs must be resolved before the story advances
-past the sprint review.
+unavailable. Deferred sign-offs must be resolved before the sprint review.
 
 ---
 
 *Template: `.claude/docs/templates/test-evidence.md`*
-*Used for: Visual/Feel and UI story type evidence records*
+*Used for: recording evidence that acceptance criteria were met*
 *Location: `production/qa/evidence/[story-slug]-evidence.md`*

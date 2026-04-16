@@ -1,6 +1,6 @@
 ---
 name: start
-description: "Onboarding adaptativo al Mega Studios. Detecta contexto del proyecto y guía al usuario a la división/skill correcta. USAR SIEMPRE en primera sesión de un proyecto nuevo. Usar cuando el usuario mencione: start, empezar, arrancar, primera vez, onboarding, qué hago, por dónde empiezo."
+description: "Onboarding adaptativo al Arcane. Detecta contexto del proyecto y guía al usuario a la división/skill correcta. USAR SIEMPRE en primera sesión de un proyecto nuevo. Usar cuando el usuario mencione: start, empezar, arrancar, primera vez, onboarding, qué hago, por dónde empiezo."
 ---
 
 # Start — Onboarding Adaptativo
@@ -49,7 +49,7 @@ ls production/session-state/active.md 2>/dev/null
 Posibles estados:
 
 **A) Sin proyecto (greenfield)**
-- Directory vacío o solo Mega Studios base
+- Directory vacío o solo Arcane base
 - No hay código ni design docs
 
 **B) Idea/concept stage**
@@ -77,7 +77,7 @@ Con AskUserQuestion (multi-tab):
 **Tab 1 — "Proyecto":** ¿Qué querés hacer?
 - Empezar un proyecto nuevo
 - Trabajar en un proyecto existente
-- Explorar el Mega Studios (qué tiene)
+- Explorar el Arcane (qué tiene)
 - Consultar herramientas (ClickUp, Jira, etc.)
 
 **Tab 2 — "Tipo":** ¿Qué tipo de proyecto?

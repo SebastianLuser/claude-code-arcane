@@ -25,19 +25,19 @@ tiered context loading — a skill scanning 20 ADRs uses this to decide whether
 to read the full decision. Be specific: name the system, the problem, and the
 chosen approach.]
 
-## Engine Compatibility
+## Technology Stack
 
 | Field | Value |
 |-------|-------|
-| **Engine** | [e.g. Godot 4.6 / Unity 6 / Unreal Engine 5.4] |
-| **Domain** | [Physics / Rendering / UI / Audio / Navigation / Animation / Networking / Core / Input / Scripting] |
+| **Language/Runtime** | [e.g. Go 1.23 / Node 20 / Python 3.12] |
+| **Framework** | [e.g. Fastify / NestJS / Gin / FastAPI / Next.js 15] |
+| **Domain** | [API / Data / Auth / UI / Infra / Integrations / Observability] |
 | **Knowledge Risk** | [LOW — in training data / MEDIUM — near cutoff, verify / HIGH — post-cutoff, must verify] |
-| **References Consulted** | [e.g. `docs/engine-reference/godot/modules/physics.md`, `breaking-changes.md`] |
-| **Post-Cutoff APIs Used** | [Specific APIs from post-cutoff engine versions this decision depends on, or "None"] |
-| **Verification Required** | [Concrete behaviours to test against the target engine version before shipping, or "None"] |
+| **References Consulted** | [e.g. framework docs, RFC, internal ADRs] |
+| **Verification Required** | [Concrete behaviours to test against the target versions before shipping, or "None"] |
 
 > **Note**: If Knowledge Risk is MEDIUM or HIGH, this ADR must be re-validated if the
-> project upgrades engine versions. Flag it as "Superseded" and write a new ADR.
+> project upgrades major versions. Flag it as "Superseded" and write a new ADR.
 
 ## ADR Dependencies
 
@@ -133,10 +133,10 @@ creates. These become the contracts that implementers must respect.]
 
 | Metric | Before | Expected After | Budget |
 |--------|--------|---------------|--------|
-| CPU (frame time) | [X]ms | [Y]ms | [Z]ms |
+| Latency (p50/p95/p99) | [X]ms | [Y]ms | [Z]ms |
+| Throughput | [X]req/s | [Y]req/s | [Z]req/s |
 | Memory | [X]MB | [Y]MB | [Z]MB |
-| Load Time | [X]s | [Y]s | [Z]s |
-| Network (if applicable) | [X]KB/s | [Y]KB/s | [Z]KB/s |
+| Cost (monthly) | $[X] | $[Y] | $[Z] |
 
 ## Migration Plan
 
@@ -156,19 +156,20 @@ creates. These become the contracts that implementers must respect.]
 - [ ] [Measurable criterion 2]
 - [ ] [Performance criterion]
 
-## GDD Requirements Addressed
+## Requirements Addressed
 
-<!-- This section is MANDATORY. Every ADR must trace back to at least one GDD
-     requirement, or explicitly state it is a foundational decision with no GDD
-     dependency. Traceability is audited by /architecture-review. -->
+<!-- This section is MANDATORY. Every ADR must trace back to at least one
+     product/technical requirement, or explicitly state it is a foundational
+     decision with no direct dependency. Traceability is audited by
+     /architecture-review. -->
 
-| GDD Document | System | Requirement | How This ADR Satisfies It |
-|-------------|--------|-------------|--------------------------|
-| [e.g. `design/gdd/combat.md`] | [e.g. Combat] | [e.g. "Hitbox detection must resolve within 1 frame"] | [e.g. "Jolt physics collision queries run synchronously in _physics_process"] |
+| Source Doc | Area | Requirement | How This ADR Satisfies It |
+|-----------|------|-------------|--------------------------|
+| [e.g. `design/product/auth.md`] | [e.g. Auth] | [e.g. "Sessions must invalidate within 5 min on logout"] | [e.g. "JWT + Redis deny-list flushed on logout event"] |
 
-> If this is a foundational decision with no direct GDD dependency, write:
-> "Foundational — no GDD requirement. Enables: [list what GDD systems this
-> decision unlocks or constrains]"
+> If this is a foundational decision with no direct product requirement, write:
+> "Foundational — no PRD requirement. Enables: [list what systems this decision
+> unlocks or constrains]"
 
 ## Related
 

@@ -4,23 +4,24 @@
 - **Version**: 1.0
 - **Last Updated**: [Date]
 - **Author**: [Agent/Person]
-- **Reviewer**: lead-programmer
+- **Reviewer**: [backend-architect / frontend-architect / api-architect / database-architect]
 - **Related ADR**: [ADR-XXXX if applicable]
-- **Related Design Doc**: [Link to game design doc this implements]
+- **Related PRD / RFC**: [Link to product requirement or RFC this implements]
 
-## Engine API Surface
+## Stack Surface
 
 | Field | Value |
 |-------|-------|
-| **Engine** | [e.g. Godot 4.6 / Unity 6 / Unreal Engine 5.4] |
-| **APIs Depended On** | [Specific classes/methods/nodes used, version-pinned — e.g. `CharacterBody3D.move_and_slide() (Godot 4.x)`] |
-| **References Consulted** | [engine-reference docs read before writing this — e.g. `docs/engine-reference/godot/modules/physics.md`] |
-| **Post-Cutoff Features Used** | [Features from engine versions beyond LLM training cutoff, or "None"] |
+| **Language / Runtime** | [e.g. Go 1.23 / Node 20 / Python 3.12 / TypeScript 5.4] |
+| **Framework / Libraries** | [Specific packages + versions — e.g. `Fastify 4.x`, `Prisma 5.x`] |
+| **External Dependencies** | [DBs, queues, caches, 3rd party APIs this design depends on] |
+| **References Consulted** | [framework docs, RFCs, internal ADRs read before writing this] |
+| **Post-Cutoff Features Used** | [Features from framework versions beyond LLM training cutoff, or "None"] |
 | **Unverified Assumptions** | [API behaviours assumed but not yet tested against the target version, or "None"] |
-| **Engine Upgrade Risk** | [LOW / MEDIUM / HIGH — how fragile is this design if the engine version changes?] |
+| **Upgrade Risk** | [LOW / MEDIUM / HIGH — how fragile is this design if framework versions change?] |
 
 > **Rule**: If any **Unverified Assumptions** are listed, this document cannot be marked
-> as Accepted until those assumptions are validated in the actual engine environment.
+> as Accepted until those assumptions are validated against the real dependency.
 
 ## Overview
 [2-3 sentence summary of what this system does and why it exists]
@@ -31,10 +32,11 @@
 - [FR-2]: [Description]
 
 ### Non-Functional Requirements
-- **Performance**: [Budget — e.g., "< 1ms per frame"]
-- **Memory**: [Budget — e.g., "< 50MB at peak"]
-- **Scalability**: [Limits — e.g., "Support up to 1000 entities"]
-- **Thread Safety**: [Requirements]
+- **Performance**: [Budget — e.g., "p95 < 200ms", "< 50ms DB query"]
+- **Scalability**: [Limits — e.g., "10k concurrent users", "1M records/day"]
+- **Availability**: [SLO — e.g., "99.9% uptime"]
+- **Security / Compliance**: [Requirements — authn, authz, PII, audit]
+- **Observability**: [Logs, metrics, traces required]
 
 ## Architecture
 
@@ -59,7 +61,7 @@
 ```
 
 ### Data Flow
-[Step by step: how data moves through the system during a typical frame]
+[Step by step: how data moves through the system during a typical request/event]
 
 ## Implementation Plan
 

@@ -1,6 +1,6 @@
-# Claude Code Mega Studios — Master Configuration
+# Claude Code Arcane — Master Configuration
 
-Organización completa de 8 divisiones, 119 agentes y 244 skills para Claude Code.
+Organización de skills, agentes y hooks para Claude Code. 5 stacks: general, software, gamedev, design, agile.
 
 ## Stack del Proyecto
 
