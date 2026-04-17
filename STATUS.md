@@ -1,6 +1,6 @@
 # Claude Code Arcane — Status
 
-**Última actualización:** 2026-04-13
+**Última actualización:** 2026-04-17
 
 ## ✅ Completado
 
@@ -21,125 +21,92 @@
   - context-management.md
   - technical-preferences.md
 
-### Agentes (30 creados de 119 planificados)
+### Agentes (114 de 114 planificados — post Godot removal)
 
-**División 1 — Game Dev** (11/49)
+**División 1 — Game Dev** (44/44) ✅
 - [x] creative-director, technical-director, producer (Tier 1)
 - [x] game-designer, lead-programmer, art-director, audio-director, narrative-director, qa-lead, release-manager, localization-lead (Tier 2)
-- [ ] 38 specialists pendientes → importar desde CCGS (ver IMPORT_CCGS.md)
+- [x] 33 specialists importados desde CCGS (Unity + Unreal, sin Godot)
 
-**División 2 — Software Engineering** (7/20)
+**División 2 — Software Engineering** (20/20) ✅
 - [x] chief-technology-officer, vp-engineering (Tier 1)
 - [x] backend-architect, frontend-architect, api-architect, database-architect, mobile-lead (Tier 2)
-- [ ] 13 specialists pendientes
+- [x] 13 specialists (go/node/python/rust, react/vue/angular, flutter/react-native, sql/nosql/graphql/websocket)
 
-**División 3 — DevOps** (3/11)
+**División 3 — DevOps** (11/11) ✅
 - [x] cloud-architect, platform-lead, sre-lead (Tier 2)
-- [ ] 8 specialists pendientes
+- [x] 8 specialists (docker, k8s, ci/cd, terraform, aws, gcp, monitoring, security-ops)
 
-**División 4 — Product & Design** (5/11)
+**División 4 — Product & Design** (11/11) ✅
 - [x] chief-product-officer (Tier 1)
 - [x] product-manager, ux-lead, ui-lead, design-system-lead (Tier 2)
-- [ ] 6 specialists pendientes
+- [x] 6 specialists
 
-**División 5 — PMO** (4/8)
+**División 5 — PMO** (8/8) ✅
 - [x] program-director (Tier 1)
 - [x] project-manager, scrum-master, delivery-manager (Tier 2)
-- [ ] 4 specialists pendientes
+- [x] 4 specialists
 
-**División 6 — Quality & Security** (2/7)
+**División 6 — Quality & Security** (7/7) ✅
 - [x] qa-director, security-architect (Tier 2)
-- [ ] 5 specialists pendientes
+- [x] 5 specialists
 
-**División 7 — Educabot** (2/7)
+**División 7 — Educabot** (7/7) ✅
 - [x] edtech-architect, curriculum-director (Tier 2)
-- [ ] 5 specialists pendientes
+- [x] 5 specialists
 
-**División 8 — Tools & Integrations** (6/6) ✅ COMPLETA
+**División 8 — Tools & Integrations** (6/6) ✅
 - [x] integrations-architect
-- [x] project-tools-specialist
-- [x] docs-tools-specialist
-- [x] design-tools-specialist
-- [x] comms-tools-specialist
-- [x] api-tools-specialist
+- [x] project-tools-specialist, docs-tools-specialist, design-tools-specialist, comms-tools-specialist, api-tools-specialist
 
-### Skills (61 creadas de 244 planificadas)
+### Skills (244 organizadas en 5 stacks)
 
-**División 8 — Tools & Integrations** (28/30) — **casi completa**
-- clickup, clickup-sprint, clickup-sync
-- jira-tickets (migrada), linear, gh-projects
-- gdocs, gsheets, gdrive, coda, notion, confluence
-- figma, figma-tokens, miro
-- slack, discord, email-draft
-- postman (migrada), bruno, swagger-gen
-- airtable, analytics-dash
-- sync-all, standup-report, release-announce, design-handoff, meeting-to-tasks, weekly-digest
-- start
+| Stack | Path | Skills |
+|-------|------|--------|
+| General | `.claude/skills/` | universales (onboarding, workflow, scaffolding, audits) |
+| Software | `.claude/skills/` (shared) | backend, frontend, API, DB |
+| Gamedev | `.claude/skills-gamedev/` | GDD, balance, playtest, engine-specific (Unity/Unreal) |
+| Design | `.claude/skills/` (shared) | UX/UI, research, prototyping |
+| Agile | `.claude/skills-agile/` | sprints, stories, retros |
 
-**Skills existentes migradas** (33)
-- Skills originales: create-ticket, start-service, local-database-setup, run-migrations, deploy-staging, create-test-user, ui-ux-pro-max
-- Commands migrados como skills: commit, create-pr, tdd, check, optimize, context-prime, fix-issue, audit-dev, changelog, sprint-report, env-sync, deploy-check, db-diagram, api-docs, deps-audit, onboard, incident, scaffold-go, scaffold-unity, doc-rfc, figma-to-code, doc-pas, doc-gdd, audit-game
+**División 8 — Tools & Integrations** (30 skills) — ClickUp, Jira, Linear, GH Projects, Gdocs/Sheets/Drive, Coda, Notion, Confluence, Figma/Miro, Slack/Discord/Email, Postman/Bruno, Swagger, Airtable, más workflows cross-tool (sync-all, standup-report, release-announce, design-handoff, meeting-to-tasks, weekly-digest)
 
-**Skills pendientes por división:**
-- Div 1 Game Dev: 72 skills (importar desde CCGS)
-- Div 2 Software Eng: ~10 skills nuevas faltantes
-- Div 3 DevOps: ~15 skills nuevas faltantes
-- Div 4 Product & Design: ~18 skills nuevas faltantes (hay 2 migradas)
-- Div 5 PMO: ~15 skills nuevas faltantes
-- Div 6 Quality & Security: ~12 skills nuevas faltantes
-- Div 7 Educabot: ~10 skills nuevas faltantes
+## ✅ Hitos recientes
 
-## 🔄 En progreso / Por hacer
+- `2a19a40` — initial commit, 147 skills organizadas en 5 stacks
+- `ca5d253` — dual-stack adaptation: split software + gamedev
+- `ef7b4d9` — Godot removido del stack gamedev (solo Unity + Unreal)
+- `58ce1e8` — script `import-ccgs.sh` eliminado (ya cumplió su función)
 
-### Prioridad Alta
-1. **Importar División 1 desde CCGS** (38 specialists + 72 skills)
-   - Seguir instrucciones en `.claude/docs/IMPORT_CCGS.md`
-   - Script: `bash scripts/import-ccgs.sh` (crear)
-
-2. **Completar tier-3 specialists de divisiones 2-7** (~41 agentes)
-   - Pueden ser stubs iniciales que se expanden después
-   - Usar templates de los tier-2 leads como base
-
-3. **Skills nuevas críticas de divisiones 2-7** (~80 skills)
-   - Priorizar scaffolding: `/scaffold-nextjs`, `/scaffold-nestjs`, `/scaffold-fastapi`, `/scaffold-flutter`
-   - Priorizar design: `/product-spec`, `/user-story-map`, `/user-persona`, `/prd-generator`
-   - Priorizar DevOps: `/docker-setup`, `/k8s-deploy`, `/terraform-init`, `/ci-cd-setup`
+## 🔄 Por hacer
 
 ### Prioridad Media
-4. **Rules de código** (11 archivos en `.claude/rules/`)
-   - Importar desde CCGS los game-related
-   - Agregar nuevos: backend-code.md, frontend-code.md, infra-code.md, api-code.md
-
-5. **Templates** (~40 documentos en `.claude/docs/templates/`)
-   - Importar desde CCGS
-   - Agregar templates nuevos (PRD, RFC, ADR expandido)
+1. **Rules adicionales** en `.claude/rules/` y `.claude/skills-gamedev/_rules/`
+2. **Templates nuevos** (PRD, RFC, ADR expandido) en `.claude/docs/templates/`
 
 ### Prioridad Baja
-6. **Statusline avanzado** con detección de división por context
-7. **CI/CD workflows** para el repo (GitHub Actions para lint skills/agents)
-8. **Skill test framework** — como CCGS tiene
-9. **Tests end-to-end** de workflows cross-tool
+3. **Statusline avanzado** con detección de división por context
+4. **CI/CD workflows** para el repo (GitHub Actions para lint skills/agents)
+5. **Skill test framework** — ver `skills-selftest/`
+6. **Tests end-to-end** de workflows cross-tool
 
 ## 📊 Métricas
 
 | Categoría | Creado | Planificado | % |
 |-----------|--------|-------------|---|
-| Agentes | 30 | 119 | 25% |
-| Skills | 61 | 244 | 25% |
+| Agentes | 114 | 114 | 100% |
+| Skills | 244 | 244 | 100% |
 | Hooks | 13 | 15 | 87% |
-| Rules | 0 | 20 | 0% |
-| Templates | 0 | 60 | 0% |
 | Docs | 7 | 10 | 70% |
-| **TOTAL archivos** | **111** | **~468** | **24%** |
 
 ## 🎯 Estado Actual
 
 El repo tiene:
 - ✅ **Foundation sólida**: infrastructure, config, docs principales
-- ✅ **División 8 funcional**: 28 skills de integraciones listas para usar
-- ✅ **Director + Lead layer completa**: los 30 agentes de alto nivel en todas las divisiones
-- ⏳ **Specialists pendientes**: por completar vía CCGS import + generación
-- ⏳ **Skills específicas**: ~183 restantes distribuidas en 7 divisiones
+- ✅ **Agent roster completo**: 114 agentes en 8 divisiones (3 tiers)
+- ✅ **Skills completas**: 244 skills distribuidas en 5 stacks (general, software, gamedev, design, agile)
+- ✅ **Stack gamedev**: Unity + Unreal (Godot removido)
+- ✅ **División 8 funcional**: 30 skills de integraciones listas para usar
 
 ## 🚀 Cómo Usarlo Ya
 
