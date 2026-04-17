@@ -1,8 +1,10 @@
 ---
 name: rbac-abac
-description: Diseño e implementación de autorización en Educabot EdTech LatAm. Cubre RBAC (roles), ABAC (atributos/políticas), ReBAC (relaciones), multi-tenant scoping, ownership checks, Row-Level Security en Postgres, middleware Go (Gin) y TS (NestJS/Express), JWT claims, cache de permisos y auditoría. Usar cuando se mencione: autorización, permisos, roles, RBAC, ABAC, ReBAC, Casbin, OpenFGA, multi-tenant, RLS, guards, policies, can/cannot, access control.
+description: "Diseño e implementación de autorización en Educabot EdTech LatAm. Cubre RBAC (roles), ABAC (atributos/políticas), ReBAC (relaciones), multi-tenant scoping, ownership checks, Row-Level Security en Postgres, middleware Go (Gin) y TS (NestJS/Express), JWT claims, cache de permisos y auditoría. Usar cuando se mencione: autorización, permisos, roles, RBAC, ABAC, ReBAC, Casbin, OpenFGA, multi-tenant, RLS, guards, policies, can/cannot, access control."
+argument-hint: "[rbac|abac|rebac|design]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
-
 # RBAC / ABAC / ReBAC — Autorización Educabot
 
 ## Cuándo usar esta skill

@@ -1,8 +1,10 @@
 ---
 name: logging-setup
 description: "Logging estructurado para apps Educabot (Go/TS/React/RN): slog, pino, Cloud Logging, Loki, Datadog, JSON structured logs, correlation IDs (trace/span), PII scrubbing, log levels, sampling, retention, cost control. Usar para: logs, logging, slog, pino, winston, loki, datadog, cloud logging, log shipping, observability."
+argument-hint: "[stack: go|ts|react|rn]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
-
 # logging-setup — Structured Logging
 
 Logs estructurados para apps Educabot. Objetivo: **debuggable en prod, barato a escala, sin PII**.

@@ -1,8 +1,10 @@
 ---
 name: i18n-setup
 description: "Internacionalización para apps Educabot (React+Vite/RN/Go/TS): i18next, react-i18next, expo-localization, ICU MessageFormat, pluralización, fechas/números (Intl), RTL, lazy-load de locales, backend i18n, extracción automática. Usar para: i18n, l10n, translations, locales, multi-idioma, ES/PT/EN, Argentina/Brasil."
+argument-hint: "[stack: react|rn|go|ts]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
-
 # i18n-setup — Internationalization
 
 Guía para soportar múltiples idiomas en apps Educabot. Mercados: **ES (AR/MX/CO/CL)**, **PT (BR)**, **EN** (international). Foco: separar contenido del código, pluralización correcta, formatos locales.

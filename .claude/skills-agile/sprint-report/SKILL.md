@@ -1,8 +1,10 @@
 ---
 name: sprint-report
 description: "Reporte unificado de sprint: combina datos de Jira (tickets, estados, asignaciones) con GitHub (PRs mergeados, commits, branches). Usar cuando se mencione: reporte de sprint, avance, cómo vamos, daily, retro, sprint review."
+argument-hint: "[sprint-id or current]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-
 # Sprint Report Generator
 
 Genera un reporte unificado combinando Jira + GitHub para el sprint actual.

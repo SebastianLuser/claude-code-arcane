@@ -1,8 +1,10 @@
 ---
 name: terraform-init
 description: "Genera infra Terraform para stack Educabot (AWS por default): VPC, EKS, RDS Postgres, ElastiCache Redis, S3, IAM/IRSA, ACM, Route53. Módulos reutilizables + remote state en S3 + DynamoDB lock. Usar para: terraform, infra, IaC, AWS, EKS, RDS, VPC."
+argument-hint: "[provider: aws|gcp] [project-name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # terraform-init — Terraform Infrastructure Scaffolder
 
 Genera un repo de **Terraform** production-ready para infra Educabot en AWS (default) o GCP. Multi-env con workspaces o directorios separados.

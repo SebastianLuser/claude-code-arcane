@@ -1,8 +1,10 @@
 ---
 name: go-clean-architecture
 description: Arquitectura Go estilo Alizia-BE (Educabot). Clean Architecture híbrida con principios KISS, DI manual (no wire/fx), separación estricta entities/providers/usecases/entrypoints/repositories. Multi-tenant con OrgID scope. Patrón canónico Request.Validate() + UseCase.Execute(). Usar cuando se mencione arquitectura Go, clean architecture, estructura de backend Go, nuevo servicio Go, o cómo organizar código Go en Educabot.
+argument-hint: "[module-name or feature]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # Go Clean Architecture (estilo Alizia-BE)
 
 Arquitectura canónica para backends Go en Educabot. Basada en el proyecto real **Alizia-BE**. Combina Clean Architecture por capas con una filosofía estricta de **KISS**: separación clara sin sobre-ingeniería.

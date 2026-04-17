@@ -1,8 +1,10 @@
 ---
 name: form-validation
-description: Validación de formularios en React/React Native (Educabot) con React Hook Form + Zod. Principio clave — validar SIEMPRE en backend; cliente solo para UX. Cubre schemas compartidos client↔backend TS, validaciones LatAm (DNI/CUIT/RUT, teléfono, menores), async validation, a11y, server errors, multi-step, i18n y testing. Usar cuando se mencione: formulario, validación, form, validar, Zod, React Hook Form, RHF, errores de formulario, schema, input validation.
+description: "Validación de formularios en React/React Native (Educabot) con React Hook Form + Zod. Principio clave — validar SIEMPRE en backend; cliente solo para UX. Cubre schemas compartidos client↔backend TS, validaciones LatAm (DNI/CUIT/RUT, teléfono, menores), async validation, a11y, server errors, multi-step, i18n y testing. Usar cuando se mencione: formulario, validación, form, validar, Zod, React Hook Form, RHF, errores de formulario, schema, input validation."
+argument-hint: "[stack: react|rn] [form-name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # Form Validation — Educabot
 
 ## Cuándo usar

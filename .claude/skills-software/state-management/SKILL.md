@@ -1,8 +1,10 @@
 ---
 name: state-management
 description: Estrategia de state management para React/React Native en Educabot. Clasifica tipos de estado (server/URL/form/UI) y elige la herramienta correcta. Zustand como default, TanStack Query para server state. Usar cuando se mencione state, store, Redux, Zustand, Context, global state, estado compartido, rerenders, o decisiones de arquitectura de estado frontend.
+argument-hint: "[feature or screen name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
-
 # State Management — Educabot Frontend
 
 Stack: React + Vite + TypeScript (SPA, **NO Next.js**) y React Native. Español para comunicación, inglés para código.

@@ -1,8 +1,10 @@
 ---
 name: figma
 description: "Gestionar Figma: inspeccionar diseños, exportar assets, extraer styles/components via MCP Figma nativo. Usar cuando el usuario mencione: Figma, diseño, inspeccionar frame, exportar iconos, components, styles, handoff."
+argument-hint: "[inspect|export|tokens] [node-id or url]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-
 # Figma Manager
 
 Integra con Figma via MCP nativo o REST API.

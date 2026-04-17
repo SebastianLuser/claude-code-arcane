@@ -1,8 +1,10 @@
 ---
 name: deps-audit
 description: "Auditoría de dependencias: desactualizadas, vulnerabilidades, no usadas, licencias. Usar cuando se mencione: dependencias, dependencies, npm audit, go vuln, vulnerabilidades, actualizar paquetes, outdated."
+argument-hint: "[full|security|outdated|unused|licenses]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash
 ---
-
 # Dependencies Audit
 
 Auditoría completa de dependencias del proyecto.

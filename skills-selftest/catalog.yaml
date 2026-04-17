@@ -1,12 +1,219 @@
-version: 3
-last_updated: "2026-04-16"
-# v3: imported into Arcane (Claude-Code-Arcane), renamed framework to skills-selftest/,
-#     added 98 Arcane-exclusive skills + 29 Arcane-exclusive agents (specs pending).
-#     Legacy 72 CCGS skills + 49 agents retained with existing specs.
+version: 4
+last_updated: "2026-04-17"
+# v4: regenerated from filesystem 2026-04-17 to match actual 147 skills + 73 agents.
+#     Removed 17 phantom entries. Added 92 missing skills + 29 missing agents.
+#     Previous v3 history preserved for entries that still exist.
 skills:
-  # Critical — gate skills that control phase transitions
+  # =====================================================
+  # Stack: general (55 skills — cross-stack + legacy)
+  # =====================================================
+  - name: architecture-decision
+    spec: skills-selftest/skills/authoring/architecture-decision.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: authoring
+
+  - name: architecture-review
+    spec: skills-selftest/skills/review/architecture-review.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: critical
+    category: review
+
+  - name: audit-dev
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: critical
+    category: analysis
+
+  - name: backup-strategy
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: devops
+
+  - name: brainstorm
+    spec: skills-selftest/skills/utility/brainstorm.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: utility
+
+  - name: changelog
+    spec: skills-selftest/skills/sprint/changelog.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: sprint
+
+  - name: check
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: code-review
+    spec: skills-selftest/skills/analysis/code-review.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: analysis
+
+  - name: commit
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: context-prime
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: contract-testing
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: create-pr
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: deps-audit
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: analysis
+
+  - name: env-sync
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: error-tracking
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: devops
+
+  - name: feature-flags
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: fix-issue
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
   - name: gate-check
     spec: skills-selftest/skills/gate/gate-check.md
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -16,297 +223,9 @@ skills:
     priority: critical
     category: gate
 
-  - name: design-review
-    spec: skills-selftest/skills/review/design-review.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: critical
-    category: review
-
-  - name: story-readiness
-    spec: skills-selftest/skills/readiness/story-readiness.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: critical
-    category: readiness
-
-  - name: story-done
-    spec: skills-selftest/skills/readiness/story-done.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: critical
-    category: readiness
-
-  - name: review-all-gdds
-    spec: skills-selftest/skills/review/review-all-gdds.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: critical
-    category: review
-
-  - name: architecture-review
-    spec: skills-selftest/skills/review/architecture-review.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: critical
-    category: review
-
-  # High — pipeline-critical skills
-  - name: create-epics
-    spec: skills-selftest/skills/pipeline/create-epics.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: high
-    category: pipeline
-
-  - name: create-stories
-    spec: skills-selftest/skills/pipeline/create-stories.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: high
-    category: pipeline
-
-  - name: dev-story
-    spec: skills-selftest/skills/pipeline/dev-story.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: high
-    category: pipeline
-
-  - name: create-control-manifest
-    spec: skills-selftest/skills/pipeline/create-control-manifest.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: high
-    category: pipeline
-
-  - name: propagate-design-change
-    spec: skills-selftest/skills/pipeline/propagate-design-change.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: high
-    category: pipeline
-
-  - name: architecture-decision
-    spec: skills-selftest/skills/authoring/architecture-decision.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: high
-    category: authoring
-
-  - name: map-systems
-    spec: skills-selftest/skills/pipeline/map-systems.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: high
-    category: pipeline
-
-  - name: design-system
-    spec: skills-selftest/skills/authoring/design-system.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: high
-    category: authoring
-
-  - name: consistency-check
-    spec: skills-selftest/skills/analysis/consistency-check.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: high
-    category: analysis
-
-  # Medium — team and sprint management skills
-  - name: sprint-plan
-    spec: skills-selftest/skills/sprint/sprint-plan.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: sprint
-
-  - name: sprint-status
-    spec: skills-selftest/skills/sprint/sprint-status.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: sprint
-
-  - name: team-ui
-    spec: skills-selftest/skills/team/team-ui.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: team
-
-  - name: team-combat
-    spec: skills-selftest/skills/team/team-combat.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: team
-
-  - name: team-narrative
-    spec: skills-selftest/skills/team/team-narrative.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: team
-
-  - name: team-audio
-    spec: skills-selftest/skills/team/team-audio.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: team
-
-  - name: team-level
-    spec: skills-selftest/skills/team/team-level.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: team
-
-  - name: team-polish
-    spec: skills-selftest/skills/team/team-polish.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: team
-
-  - name: team-release
-    spec: skills-selftest/skills/team/team-release.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: team
-
-  - name: team-live-ops
-    spec: skills-selftest/skills/team/team-live-ops.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: team
-
-  - name: team-qa
-    spec: skills-selftest/skills/team/team-qa.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: team
-
-  # Low — analysis, reporting, utility skills
-  - name: skill-test
-    spec: skills-selftest/skills/utility/skill-test.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: medium
-    category: utility
-
-  - name: skill-improve
-    spec: skills-selftest/skills/utility/skill-improve.md
+  - name: gdocs
+    spec: null
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -314,10 +233,11 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: low
-    category: utility
+    category: integrations
 
-  - name: start
-    spec: skills-selftest/skills/utility/start.md
+  - name: gdrive
+    spec: null
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -325,241 +245,35 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: low
-    category: utility
+    category: integrations
+
+  - name: gh-projects
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: integrations
+
+  - name: gsheets
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: integrations
 
   - name: help
     spec: skills-selftest/skills/utility/help.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: utility
-
-  - name: brainstorm
-    spec: skills-selftest/skills/utility/brainstorm.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: utility
-
-  - name: project-stage-detect
-    spec: skills-selftest/skills/utility/project-stage-detect.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: utility
-
-  - name: setup-engine
-    spec: skills-selftest/skills/utility/setup-engine.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: utility
-
-  - name: quick-design
-    spec: skills-selftest/skills/authoring/quick-design.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: authoring
-
-  - name: ux-design
-    spec: skills-selftest/skills/authoring/ux-design.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: authoring
-
-  - name: ux-review
-    spec: skills-selftest/skills/authoring/ux-review.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: authoring
-
-  - name: art-bible
-    spec: skills-selftest/skills/authoring/art-bible.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: authoring
-
-  - name: create-architecture
-    spec: skills-selftest/skills/authoring/create-architecture.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: authoring
-
-  - name: code-review
-    spec: skills-selftest/skills/analysis/code-review.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: analysis
-
-  - name: balance-check
-    spec: skills-selftest/skills/analysis/balance-check.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: analysis
-
-  - name: asset-audit
-    spec: skills-selftest/skills/analysis/asset-audit.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: analysis
-
-  - name: content-audit
-    spec: skills-selftest/skills/analysis/content-audit.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: analysis
-
-  - name: tech-debt
-    spec: skills-selftest/skills/analysis/tech-debt.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: analysis
-
-  - name: scope-check
-    spec: skills-selftest/skills/analysis/scope-check.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: analysis
-
-  - name: estimate
-    spec: skills-selftest/skills/analysis/estimate.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: analysis
-
-  - name: perf-profile
-    spec: skills-selftest/skills/analysis/perf-profile.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: analysis
-
-  - name: security-audit
-    spec: skills-selftest/skills/analysis/security-audit.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: analysis
-
-  - name: test-evidence-review
-    spec: skills-selftest/skills/analysis/test-evidence-review.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: analysis
-
-  - name: test-flakiness
-    spec: skills-selftest/skills/analysis/test-flakiness.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: analysis
-
-  - name: reverse-document
-    spec: skills-selftest/skills/utility/reverse-document.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: utility
-
-  - name: bug-report
-    spec: skills-selftest/skills/utility/bug-report.md
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -571,17 +285,19 @@ skills:
 
   - name: hotfix
     spec: skills-selftest/skills/utility/hotfix.md
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
     last_spec_result: ""
     last_category: ""
     last_category_result: ""
-    priority: low
+    priority: medium
     category: utility
 
-  - name: prototype
-    spec: skills-selftest/skills/utility/prototype.md
+  - name: i18n-setup
+    spec: null
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -589,65 +305,35 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: low
-    category: utility
+    category: software
 
-  - name: playtest-report
-    spec: skills-selftest/skills/utility/playtest-report.md
+  - name: logging-setup
+    spec: null
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
     last_spec_result: ""
     last_category: ""
     last_category_result: ""
-    priority: low
-    category: utility
+    priority: medium
+    category: devops
 
-  - name: milestone-review
-    spec: skills-selftest/skills/sprint/milestone-review.md
+  - name: observability-setup
+    spec: null
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
     last_spec_result: ""
     last_category: ""
     last_category_result: ""
-    priority: low
-    category: sprint
-
-  - name: retrospective
-    spec: skills-selftest/skills/sprint/retrospective.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: sprint
-
-  - name: changelog
-    spec: skills-selftest/skills/sprint/changelog.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: sprint
-
-  - name: patch-notes
-    spec: skills-selftest/skills/sprint/patch-notes.md
-    last_static: ""
-    last_static_result: ""
-    last_spec: ""
-    last_spec_result: ""
-    last_category: ""
-    last_category_result: ""
-    priority: low
-    category: sprint
+    priority: high
+    category: devops
 
   - name: onboard
     spec: skills-selftest/skills/utility/onboard.md
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -657,8 +343,21 @@ skills:
     priority: low
     category: utility
 
-  - name: localize
-    spec: skills-selftest/skills/utility/localize.md
+  - name: optimize
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: analysis
+
+  - name: patch-notes
+    spec: skills-selftest/skills/sprint/patch-notes.md
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -666,10 +365,71 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: low
-    category: utility
+    category: sprint
 
-  - name: launch-checklist
-    spec: skills-selftest/skills/utility/launch-checklist.md
+  - name: performance-test
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: devops
+
+  - name: perf-profile
+    spec: skills-selftest/skills/analysis/perf-profile.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: analysis
+
+  - name: postman
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: integrations
+
+  - name: qa-plan
+    spec: skills-selftest/skills/utility/qa-plan.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: analysis
+
+  - name: regression-suite
+    spec: skills-selftest/skills/utility/regression-suite.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: analysis
+
+  - name: release-announce
+    spec: null
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -681,6 +441,19 @@ skills:
 
   - name: release-checklist
     spec: skills-selftest/skills/utility/release-checklist.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: reverse-document
+    spec: skills-selftest/skills/utility/reverse-document.md
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -690,8 +463,69 @@ skills:
     priority: low
     category: utility
 
-  - name: adopt
-    spec: skills-selftest/skills/utility/adopt.md
+  - name: rollback-strategy
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: devops
+
+  - name: runbooks
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: devops
+
+  - name: scope-check
+    spec: skills-selftest/skills/analysis/scope-check.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: analysis
+
+  - name: secret-management
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: devops
+
+  - name: security-audit
+    spec: skills-selftest/skills/analysis/security-audit.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: critical
+    category: analysis
+
+  - name: skill-improve
+    spec: skills-selftest/skills/utility/skill-improve.md
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -700,9 +534,46 @@ skills:
     last_category_result: ""
     priority: low
     category: utility
+
+  - name: skill-test
+    spec: skills-selftest/skills/utility/skill-test.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: slack
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: integrations
 
   - name: smoke-check
     spec: skills-selftest/skills/utility/smoke-check.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: start
+    spec: skills-selftest/skills/utility/start.md
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -712,8 +583,45 @@ skills:
     priority: low
     category: utility
 
-  - name: soak-test
-    spec: skills-selftest/skills/utility/soak-test.md
+  - name: tdd
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: tech-debt
+    spec: skills-selftest/skills/analysis/tech-debt.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: analysis
+
+  - name: test-flakiness
+    spec: skills-selftest/skills/analysis/test-flakiness.md
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: analysis
+
+  - name: test-helpers
+    spec: skills-selftest/skills/utility/test-helpers.md
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -725,17 +633,142 @@ skills:
 
   - name: test-setup
     spec: skills-selftest/skills/utility/test-setup.md
+    stack: general
     last_static: ""
     last_static_result: ""
     last_spec: ""
     last_spec_result: ""
     last_category: ""
     last_category_result: ""
-    priority: low
+    priority: medium
     category: utility
 
-  - name: test-helpers
-    spec: skills-selftest/skills/utility/test-helpers.md
+  - name: user-persona
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: product
+
+  - name: visual-regression
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: devops
+
+  # =====================================================
+  # Stack: software (44 skills — backend/frontend/API/DB/mobile)
+  # =====================================================
+  - name: accessibility
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: product
+
+  - name: api-design
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+
+  - name: api-docs
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: api-versioning
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: audit-log
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: devops
+
+  - name: caching-strategy
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: cdn-setup
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: devops
+
+  - name: ci-cd-setup
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: devops
+
+  - name: create-test-user
+    spec: null
+    stack: software
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -743,21 +776,725 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: low
+    category: software
+
+  - name: csp-headers
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: database-indexing
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: data-migrations
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+
+  - name: data-seeding
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: software
+
+  - name: db-diagram
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: software
+
+  - name: deploy-check
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: critical
+    category: devops
+
+  - name: deploy-staging
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: devops
+
+  - name: distributed-tracing
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: devops
+
+  - name: docker-setup
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: devops
+
+  - name: doc-rfc
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: authoring
+
+  - name: file-uploads
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: form-validation
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: go-clean-architecture
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: job-scheduling
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: software
+
+  - name: jwt-strategy
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+
+  - name: local-database-setup
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: software
+
+  - name: mfa-setup
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+
+  - name: monorepo-setup
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: software
+
+  - name: oauth-setup
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+
+  - name: owasp-top10-check
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: critical
+    category: analysis
+
+  - name: query-optimization
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: rate-limiting
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+
+  - name: rbac-abac
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+
+  - name: read-replicas
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: software
+
+  - name: scaffold-fastify-ts
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: scaffold-go
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+
+  - name: scaffold-react-native
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: scaffold-react-vite
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+
+  - name: search-setup
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: software
+
+  - name: slo-sli
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: devops
+
+  - name: start-service
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: software
+
+  - name: state-management
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: terraform-init
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: devops
+
+  - name: webhooks
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: websocket-realtime-rooms
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  # =====================================================
+  # Stack: gamedev (20 skills — game-specific)
+  # =====================================================
+  - name: art-bible
+    spec: skills-selftest/skills/authoring/art-bible.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: asset-audit
+    spec: skills-selftest/skills/analysis/asset-audit.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: analysis
+
+  - name: asset-spec
+    spec: skills-selftest/skills/utility/asset-spec.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: audit-game
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: critical
+    category: analysis
+
+  - name: balance-check
+    spec: skills-selftest/skills/analysis/balance-check.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: analysis
+
+  - name: consistency-check
+    spec: skills-selftest/skills/analysis/consistency-check.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: analysis
+
+  - name: doc-gdd
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: authoring
+
+  - name: doc-pas
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: map-systems
+    spec: skills-selftest/skills/pipeline/map-systems.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: pipeline
+
+  - name: playtest-report
+    spec: skills-selftest/skills/utility/playtest-report.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
     category: utility
 
-  - name: regression-suite
-    spec: skills-selftest/skills/utility/regression-suite.md
+  - name: scaffold-unity
+    spec: null
+    stack: gamedev
     last_static: ""
     last_static_result: ""
     last_spec: ""
     last_spec_result: ""
     last_category: ""
     last_category_result: ""
-    priority: low
-    category: utility
+    priority: high
+    category: authoring
 
-  - name: qa-plan
-    spec: skills-selftest/skills/utility/qa-plan.md
+  - name: team-audio
+    spec: skills-selftest/skills/team/team-audio.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: team
+
+  - name: team-combat
+    spec: skills-selftest/skills/team/team-combat.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: team
+
+  - name: team-level
+    spec: skills-selftest/skills/team/team-level.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: team
+
+  - name: team-narrative
+    spec: skills-selftest/skills/team/team-narrative.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: team
+
+  - name: team-polish
+    spec: skills-selftest/skills/team/team-polish.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: team
+
+  - name: team-qa
+    spec: skills-selftest/skills/team/team-qa.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: team
+
+  - name: team-release
+    spec: skills-selftest/skills/team/team-release.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: team
+
+  - name: team-ui
+    spec: skills-selftest/skills/team/team-ui.md
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: team
+
+  - name: unity-game-architecture
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  # =====================================================
+  # Stack: design (9 skills — UX/UI/Figma)
+  # =====================================================
+  - name: design-handoff
+    spec: null
+    stack: design
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: integrations
+
+  - name: design-system
+    spec: skills-selftest/skills/authoring/design-system.md
+    stack: design
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: authoring
+
+  - name: figma
+    spec: null
+    stack: design
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: integrations
+
+  - name: figma-to-code
+    spec: null
+    stack: design
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: integrations
+
+  - name: figma-tokens
+    spec: null
+    stack: design
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -765,10 +1502,158 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: low
+    category: integrations
+
+  - name: prototype
+    spec: skills-selftest/skills/utility/prototype.md
+    stack: design
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: product
+
+  - name: quick-design
+    spec: skills-selftest/skills/authoring/quick-design.md
+    stack: design
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ux-design
+    spec: skills-selftest/skills/authoring/ux-design.md
+    stack: design
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ux-review
+    spec: skills-selftest/skills/authoring/ux-review.md
+    stack: design
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: review
+
+  # =====================================================
+  # Stack: agile (19 skills — PM/sprint/ticketing)
+  # =====================================================
+  - name: bug-report
+    spec: skills-selftest/skills/utility/bug-report.md
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
     category: utility
 
   - name: bug-triage
     spec: skills-selftest/skills/utility/bug-triage.md
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: clickup
+    spec: null
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: integrations
+
+  - name: create-epics
+    spec: skills-selftest/skills/pipeline/create-epics.md
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: pipeline
+
+  - name: create-stories
+    spec: skills-selftest/skills/pipeline/create-stories.md
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: pipeline
+
+  - name: estimate
+    spec: skills-selftest/skills/analysis/estimate.md
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: analysis
+
+  - name: incident
+    spec: null
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: utility
+
+  - name: jira-tickets
+    spec: null
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: integrations
+
+  - name: meeting-to-tasks
+    spec: null
+    stack: agile
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -778,8 +1663,45 @@ skills:
     priority: low
     category: utility
 
-  - name: asset-spec
-    spec: skills-selftest/skills/utility/asset-spec.md
+  - name: milestone-review
+    spec: skills-selftest/skills/sprint/milestone-review.md
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: sprint
+
+  - name: product-spec
+    spec: null
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: product
+
+  - name: retrospective
+    spec: skills-selftest/skills/sprint/retrospective.md
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: sprint
+
+  - name: sprint-ceremony
+    spec: null
+    stack: agile
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -787,10 +1709,35 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: low
-    category: utility
+    category: sprint
 
-  - name: day-one-patch
-    spec: skills-selftest/skills/utility/day-one-patch.md
+  - name: sprint-plan
+    spec: skills-selftest/skills/sprint/sprint-plan.md
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: sprint
+
+  - name: sprint-report
+    spec: null
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: sprint
+
+  - name: standup-report
+    spec: null
+    stack: agile
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -798,433 +1745,654 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: low
-    category: utility
+    category: sprint
 
-  # =====================================================
-  # Arcane-exclusive skills (imported — specs pending)
-  # =====================================================
-  # Category: software (backend, frontend, API, DB, mobile)
-  - { name: scaffold-go,           spec: null, category: software, priority: high }
-  - { name: scaffold-fastify-ts,   spec: null, category: software, priority: medium }
-  - { name: scaffold-react-vite,   spec: null, category: software, priority: high }
-  - { name: scaffold-react-native, spec: null, category: software, priority: medium }
-  - { name: go-clean-architecture, spec: null, category: software, priority: medium }
-  - { name: api-design,            spec: null, category: software, priority: high }
-  - { name: api-docs,              spec: null, category: software, priority: medium }
-  - { name: api-versioning,        spec: null, category: software, priority: medium }
-  - { name: contract-testing,      spec: null, category: software, priority: medium }
-  - { name: db-diagram,            spec: null, category: software, priority: low }
-  - { name: database-indexing,     spec: null, category: software, priority: medium }
-  - { name: query-optimization,    spec: null, category: software, priority: medium }
-  - { name: read-replicas,         spec: null, category: software, priority: low }
-  - { name: data-migrations,       spec: null, category: software, priority: high }
-  - { name: data-seeding,          spec: null, category: software, priority: low }
-  - { name: local-database-setup,  spec: null, category: software, priority: low }
-  - { name: form-validation,       spec: null, category: software, priority: medium }
-  - { name: i18n-setup,            spec: null, category: software, priority: low }
-  - { name: jwt-strategy,          spec: null, category: software, priority: high }
-  - { name: oauth-setup,           spec: null, category: software, priority: high }
-  - { name: mfa-setup,             spec: null, category: software, priority: high }
-  - { name: rbac-abac,             spec: null, category: software, priority: high }
-  - { name: rate-limiting,         spec: null, category: software, priority: high }
-  - { name: csp-headers,           spec: null, category: software, priority: medium }
-  - { name: webhooks,              spec: null, category: software, priority: medium }
-  - { name: websocket-realtime-rooms, spec: null, category: software, priority: medium }
-  - { name: file-uploads,          spec: null, category: software, priority: medium }
-  - { name: search-setup,          spec: null, category: software, priority: low }
-  - { name: state-management,      spec: null, category: software, priority: medium }
-  - { name: caching-strategy,      spec: null, category: software, priority: medium }
-  - { name: job-scheduling,        spec: null, category: software, priority: low }
-  - { name: start-service,         spec: null, category: software, priority: low }
-  - { name: create-test-user,      spec: null, category: software, priority: low }
-  - { name: monorepo-setup,        spec: null, category: software, priority: low }
-  - { name: feature-flags,         spec: null, category: software, priority: medium }
-  - { name: error-tracking,        spec: null, category: software, priority: medium }
+  - name: story-done
+    spec: skills-selftest/skills/readiness/story-done.md
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: critical
+    category: readiness
 
-  # Category: devops (IaC, CI/CD, containers, observability)
-  - { name: ci-cd-setup,           spec: null, category: devops, priority: high }
-  - { name: deploy-check,          spec: null, category: devops, priority: high }
-  - { name: deploy-staging,        spec: null, category: devops, priority: high }
-  - { name: docker-setup,          spec: null, category: devops, priority: high }
-  - { name: terraform-init,        spec: null, category: devops, priority: high }
-  - { name: cdn-setup,             spec: null, category: devops, priority: medium }
-  - { name: backup-strategy,       spec: null, category: devops, priority: high }
-  - { name: rollback-strategy,     spec: null, category: devops, priority: high }
-  - { name: observability-setup,   spec: null, category: devops, priority: high }
-  - { name: logging-setup,         spec: null, category: devops, priority: medium }
-  - { name: distributed-tracing,   spec: null, category: devops, priority: medium }
-  - { name: secret-management,     spec: null, category: devops, priority: high }
-  - { name: slo-sli,               spec: null, category: devops, priority: medium }
-  - { name: runbooks,              spec: null, category: devops, priority: medium }
-  - { name: audit-log,             spec: null, category: devops, priority: medium }
-  - { name: performance-test,      spec: null, category: devops, priority: medium }
-  - { name: visual-regression,     spec: null, category: devops, priority: medium }
-  - { name: regression-suite,      spec: null, category: devops, priority: medium }
-  - { name: owasp-top10-check,     spec: null, category: devops, priority: high }
-  - { name: smoke-check,           spec: null, category: devops, priority: medium }
+  - name: story-readiness
+    spec: skills-selftest/skills/readiness/story-readiness.md
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: critical
+    category: readiness
 
-  # Category: integrations (SaaS tools)
-  - { name: clickup,               spec: null, category: integrations, priority: medium }
-  - { name: jira-tickets,          spec: null, category: integrations, priority: medium }
-  - { name: postman,               spec: null, category: integrations, priority: medium }
-  - { name: figma,                 spec: null, category: integrations, priority: medium }
-  - { name: figma-to-code,         spec: null, category: integrations, priority: medium }
-  - { name: figma-tokens,          spec: null, category: integrations, priority: low }
-  - { name: gdocs,                 spec: null, category: integrations, priority: low }
-  - { name: gdrive,                spec: null, category: integrations, priority: low }
-  - { name: gsheets,               spec: null, category: integrations, priority: low }
-  - { name: gh-projects,           spec: null, category: integrations, priority: medium }
-  - { name: slack,                 spec: null, category: integrations, priority: low }
-  - { name: design-handoff,        spec: null, category: integrations, priority: medium }
-
-  # Category: product (PM, UX, research)
-  - { name: product-spec,          spec: null, category: product, priority: medium }
-  - { name: user-persona,          spec: null, category: product, priority: medium }
-  - { name: ux-design,             spec: null, category: product, priority: medium }
-  - { name: ux-review,             spec: null, category: product, priority: medium }
-  - { name: quick-design,          spec: null, category: product, priority: medium }
-  - { name: design-system,         spec: null, category: product, priority: medium }
-  - { name: brainstorm,            spec: null, category: product, priority: low }
-  - { name: prototype,             spec: null, category: product, priority: medium }
-  - { name: accessibility,         spec: null, category: product, priority: high }
-
-  # Category: utility / analysis (cross-stack ops)
-  - { name: audit-dev,             spec: null, category: analysis, priority: high }
-  - { name: incident,              spec: null, category: utility, priority: high }
-  - { name: weekly-digest,         spec: null, category: sprint, priority: low }
-  - { name: release-checklist,     spec: null, category: utility, priority: medium }
-  - { name: release-announce,      spec: null, category: utility, priority: low }
-  - { name: sprint-report,         spec: null, category: sprint, priority: medium }
-  - { name: sprint-ceremony,       spec: null, category: sprint, priority: low }
-  - { name: standup-report,        spec: null, category: sprint, priority: low }
-  - { name: qa-plan,               spec: null, category: analysis, priority: medium }
-  - { name: bug-report,            spec: null, category: utility, priority: medium }
-  - { name: bug-triage,            spec: null, category: utility, priority: medium }
-  - { name: meeting-to-tasks,      spec: null, category: utility, priority: low }
-  - { name: reverse-document,      spec: null, category: utility, priority: low }
-  - { name: context-prime,         spec: null, category: utility, priority: medium }
-  - { name: fix-issue,             spec: null, category: utility, priority: medium }
-  - { name: check,                 spec: null, category: utility, priority: medium }
-  - { name: commit,                spec: null, category: utility, priority: medium }
-  - { name: create-pr,             spec: null, category: utility, priority: medium }
-  - { name: tdd,                   spec: null, category: utility, priority: medium }
-  - { name: optimize,              spec: null, category: analysis, priority: medium }
-  - { name: retrospective,         spec: null, category: sprint, priority: medium }
+  - name: weekly-digest
+    spec: null
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: sprint
 
 agents:
-  # Tier 1 Directors (Opus)
+  # =====================================================
+  # Division: game (43 agents) — game dev studio
+  # =====================================================
+  # Directors
   - name: creative-director
     spec: skills-selftest/agents/directors/creative-director.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: director
+    priority: critical
+    tier: directors
 
   - name: technical-director
     spec: skills-selftest/agents/directors/technical-director.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: director
+    priority: critical
+    tier: directors
 
   - name: producer
     spec: skills-selftest/agents/directors/producer.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: director
+    priority: critical
+    tier: directors
 
+  # Leads
   - name: art-director
     spec: skills-selftest/agents/directors/art-director.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: director
-
-  # Tier 2 Leads (Sonnet)
-  - name: lead-programmer
-    spec: skills-selftest/agents/leads/lead-programmer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: lead
-
-  - name: qa-lead
-    spec: skills-selftest/agents/leads/qa-lead.md
-    last_spec: ""
-    last_spec_result: ""
-    category: lead
-
-  - name: narrative-director
-    spec: skills-selftest/agents/leads/narrative-director.md
-    last_spec: ""
-    last_spec_result: ""
-    category: lead
+    priority: high
+    tier: leads
 
   - name: audio-director
     spec: skills-selftest/agents/leads/audio-director.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: lead
+    priority: high
+    tier: leads
+
+  - name: narrative-director
+    spec: skills-selftest/agents/leads/narrative-director.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
 
   - name: game-designer
     spec: skills-selftest/agents/leads/game-designer.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: lead
+    priority: high
+    tier: leads
 
-  - name: systems-designer
-    spec: skills-selftest/agents/leads/systems-designer.md
+  - name: lead-programmer
+    spec: skills-selftest/agents/leads/lead-programmer.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: lead
+    priority: high
+    tier: leads
 
-  - name: level-designer
-    spec: skills-selftest/agents/leads/level-designer.md
+  - name: qa-lead
+    spec: skills-selftest/agents/leads/qa-lead.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: lead
-
-  # Core Specialists (Sonnet)
-  - name: gameplay-programmer
-    spec: skills-selftest/agents/specialists/gameplay-programmer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: specialist
-
-  - name: ai-programmer
-    spec: skills-selftest/agents/specialists/ai-programmer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: specialist
-
-  - name: technical-artist
-    spec: skills-selftest/agents/specialists/technical-artist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: specialist
-
-  - name: sound-designer
-    spec: skills-selftest/agents/specialists/sound-designer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: specialist
-
-  - name: engine-programmer
-    spec: skills-selftest/agents/specialists/engine-programmer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: specialist
-
-  - name: tools-programmer
-    spec: skills-selftest/agents/specialists/tools-programmer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: specialist
-
-  - name: network-programmer
-    spec: skills-selftest/agents/specialists/network-programmer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: specialist
-
-  - name: security-engineer
-    spec: skills-selftest/agents/qa/security-engineer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: qa
-
-  - name: accessibility-specialist
-    spec: skills-selftest/agents/qa/accessibility-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: qa
-
-  - name: ux-designer
-    spec: skills-selftest/agents/specialists/ux-designer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: specialist
-
-  - name: ui-programmer
-    spec: skills-selftest/agents/specialists/ui-programmer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: specialist
-
-  - name: performance-analyst
-    spec: skills-selftest/agents/specialists/performance-analyst.md
-    last_spec: ""
-    last_spec_result: ""
-    category: specialist
-
-  # Engine Specialists — Unity
-  - name: unity-specialist
-    spec: skills-selftest/agents/engine/unity/unity-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  - name: unity-ui-specialist
-    spec: skills-selftest/agents/engine/unity/unity-ui-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  - name: unity-shader-specialist
-    spec: skills-selftest/agents/engine/unity/unity-shader-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  - name: unity-dots-specialist
-    spec: skills-selftest/agents/engine/unity/unity-dots-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  - name: unity-addressables-specialist
-    spec: skills-selftest/agents/engine/unity/unity-addressables-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  # Engine Specialists — Unreal
-  - name: unreal-specialist
-    spec: skills-selftest/agents/engine/unreal/unreal-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  - name: ue-blueprint-specialist
-    spec: skills-selftest/agents/engine/unreal/ue-blueprint-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  - name: ue-gas-specialist
-    spec: skills-selftest/agents/engine/unreal/ue-gas-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  - name: ue-umg-specialist
-    spec: skills-selftest/agents/engine/unreal/ue-umg-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  - name: ue-replication-specialist
-    spec: skills-selftest/agents/engine/unreal/ue-replication-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  # Operations
-  - name: devops-engineer
-    spec: skills-selftest/agents/operations/devops-engineer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: operations
+    priority: high
+    tier: leads
 
   - name: release-manager
     spec: skills-selftest/agents/operations/release-manager.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: operations
-
-  - name: live-ops-designer
-    spec: skills-selftest/agents/operations/live-ops-designer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: operations
-
-  - name: community-manager
-    spec: skills-selftest/agents/operations/community-manager.md
-    last_spec: ""
-    last_spec_result: ""
-    category: operations
-
-  - name: analytics-engineer
-    spec: skills-selftest/agents/operations/analytics-engineer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: operations
-
-  - name: economy-designer
-    spec: skills-selftest/agents/operations/economy-designer.md
-    last_spec: ""
-    last_spec_result: ""
-    category: operations
+    priority: high
+    tier: leads
 
   - name: localization-lead
     spec: skills-selftest/agents/operations/localization-lead.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: operations
+    priority: medium
+    tier: leads
 
-  # QA & Creative
-  - name: qa-tester
-    spec: skills-selftest/agents/qa/qa-tester.md
+  # Specialists
+  - name: accessibility-specialist
+    spec: skills-selftest/agents/qa/accessibility-specialist.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: qa
+    priority: medium
+    tier: specialists
+
+  - name: ai-programmer
+    spec: skills-selftest/agents/specialists/ai-programmer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: analytics-engineer
+    spec: skills-selftest/agents/operations/analytics-engineer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: community-manager
+    spec: skills-selftest/agents/operations/community-manager.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: low
+    tier: specialists
+
+  - name: devops-engineer
+    spec: skills-selftest/agents/operations/devops-engineer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: economy-designer
+    spec: skills-selftest/agents/operations/economy-designer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: engine-programmer
+    spec: skills-selftest/agents/specialists/engine-programmer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: gameplay-programmer
+    spec: skills-selftest/agents/specialists/gameplay-programmer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: level-designer
+    spec: skills-selftest/agents/leads/level-designer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: live-ops-designer
+    spec: skills-selftest/agents/operations/live-ops-designer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: network-programmer
+    spec: skills-selftest/agents/specialists/network-programmer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: performance-analyst
+    spec: skills-selftest/agents/specialists/performance-analyst.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
 
   - name: prototyper
     spec: skills-selftest/agents/specialists/prototyper.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: specialist
+    priority: low
+    tier: specialists
 
-  - name: writer
-    spec: skills-selftest/agents/specialists/writer.md
+  - name: qa-tester
+    spec: skills-selftest/agents/qa/qa-tester.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: specialist
+    priority: medium
+    tier: specialists
+
+  - name: security-engineer
+    spec: skills-selftest/agents/qa/security-engineer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: specialists
+
+  - name: sound-designer
+    spec: skills-selftest/agents/specialists/sound-designer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: systems-designer
+    spec: skills-selftest/agents/leads/systems-designer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: technical-artist
+    spec: skills-selftest/agents/specialists/technical-artist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: tools-programmer
+    spec: skills-selftest/agents/specialists/tools-programmer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: ui-programmer
+    spec: skills-selftest/agents/specialists/ui-programmer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: ux-designer
+    spec: skills-selftest/agents/specialists/ux-designer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
 
   - name: world-builder
     spec: skills-selftest/agents/specialists/world-builder.md
+    division: game
+    last_static: ""
     last_spec: ""
-    last_spec_result: ""
-    category: specialist
+    priority: medium
+    tier: specialists
+
+  - name: writer
+    spec: skills-selftest/agents/specialists/writer.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  # Engine specialists — Unity
+  - name: unity-specialist
+    spec: skills-selftest/agents/engine/unity/unity-specialist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: specialists
+
+  - name: unity-ui-specialist
+    spec: skills-selftest/agents/engine/unity/unity-ui-specialist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: unity-shader-specialist
+    spec: skills-selftest/agents/engine/unity/unity-shader-specialist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: unity-dots-specialist
+    spec: skills-selftest/agents/engine/unity/unity-dots-specialist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: unity-addressables-specialist
+    spec: skills-selftest/agents/engine/unity/unity-addressables-specialist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  # Engine specialists — Unreal
+  - name: unreal-specialist
+    spec: skills-selftest/agents/engine/unreal/unreal-specialist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: specialists
+
+  - name: ue-blueprint-specialist
+    spec: skills-selftest/agents/engine/unreal/ue-blueprint-specialist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: ue-gas-specialist
+    spec: skills-selftest/agents/engine/unreal/ue-gas-specialist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: ue-umg-specialist
+    spec: skills-selftest/agents/engine/unreal/ue-umg-specialist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: ue-replication-specialist
+    spec: skills-selftest/agents/engine/unreal/ue-replication-specialist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
 
   # =====================================================
-  # Arcane-exclusive agents (imported — specs pending)
+  # Division: engineering (7 agents) — software engineering
   # =====================================================
-  # Tier: software directors & leads
-  - { name: chief-technology-officer, spec: null, category: software_director }
-  - { name: vp-engineering,           spec: null, category: software_director }
-  - { name: backend-architect,        spec: null, category: software_lead }
-  - { name: frontend-architect,       spec: null, category: software_lead }
-  - { name: api-architect,            spec: null, category: software_lead }
-  - { name: database-architect,       spec: null, category: software_lead }
-  - { name: mobile-lead,              spec: null, category: software_lead }
+  - name: chief-technology-officer
+    spec: null
+    division: engineering
+    last_static: ""
+    last_spec: ""
+    priority: critical
+    tier: directors
 
-  # Tier: devops
-  - { name: cloud-architect,          spec: null, category: devops_lead }
-  - { name: platform-lead,            spec: null, category: devops_lead }
-  - { name: sre-lead,                 spec: null, category: devops_lead }
+  - name: vp-engineering
+    spec: null
+    division: engineering
+    last_static: ""
+    last_spec: ""
+    priority: critical
+    tier: directors
 
-  # Tier: product directors & leads
-  - { name: chief-product-officer,    spec: null, category: product_director }
-  - { name: product-manager,          spec: null, category: product_lead }
-  - { name: ux-lead,                  spec: null, category: product_lead }
-  - { name: ui-lead,                  spec: null, category: product_lead }
-  - { name: design-system-lead,       spec: null, category: product_lead }
+  - name: backend-architect
+    spec: null
+    division: engineering
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
 
-  # Tier: management
-  - { name: program-director,         spec: null, category: management_director }
-  - { name: project-manager,          spec: null, category: management_lead }
-  - { name: scrum-master,             spec: null, category: management_lead }
-  - { name: delivery-manager,         spec: null, category: management_lead }
+  - name: frontend-architect
+    spec: null
+    division: engineering
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
 
-  # Tier: quality
-  - { name: qa-director,              spec: null, category: quality_lead }
-  - { name: security-architect,       spec: null, category: quality_lead }
+  - name: api-architect
+    spec: null
+    division: engineering
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
 
-  # Tier: integrations
-  - { name: integrations-architect,   spec: null, category: integrations_lead }
-  - { name: project-tools-specialist, spec: null, category: integrations_specialist }
-  - { name: docs-tools-specialist,    spec: null, category: integrations_specialist }
-  - { name: design-tools-specialist,  spec: null, category: integrations_specialist }
-  - { name: comms-tools-specialist,   spec: null, category: integrations_specialist }
-  - { name: api-tools-specialist,     spec: null, category: integrations_specialist }
+  - name: database-architect
+    spec: null
+    division: engineering
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
 
-  # Tier: educabot
-  - { name: edtech-architect,         spec: null, category: educabot_lead }
-  - { name: curriculum-director,      spec: null, category: educabot_lead }
+  - name: mobile-lead
+    spec: null
+    division: engineering
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  # =====================================================
+  # Division: devops (3 agents) — infrastructure
+  # =====================================================
+  - name: cloud-architect
+    spec: null
+    division: devops
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: platform-lead
+    spec: null
+    division: devops
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: sre-lead
+    spec: null
+    division: devops
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  # =====================================================
+  # Division: product (5 agents) — product & design
+  # =====================================================
+  - name: chief-product-officer
+    spec: null
+    division: product
+    last_static: ""
+    last_spec: ""
+    priority: critical
+    tier: directors
+
+  - name: product-manager
+    spec: null
+    division: product
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: ux-lead
+    spec: null
+    division: product
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: ui-lead
+    spec: null
+    division: product
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: design-system-lead
+    spec: null
+    division: product
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  # =====================================================
+  # Division: management (4 agents) — PMO
+  # =====================================================
+  - name: program-director
+    spec: null
+    division: management
+    last_static: ""
+    last_spec: ""
+    priority: critical
+    tier: directors
+
+  - name: project-manager
+    spec: null
+    division: management
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: scrum-master
+    spec: null
+    division: management
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: delivery-manager
+    spec: null
+    division: management
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  # =====================================================
+  # Division: quality (2 agents) — QA & security
+  # =====================================================
+  - name: qa-director
+    spec: null
+    division: quality
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: security-architect
+    spec: null
+    division: quality
+    last_static: ""
+    last_spec: ""
+    priority: critical
+    tier: leads
+
+  # =====================================================
+  # Division: educabot (2 agents) — EdTech
+  # =====================================================
+  - name: edtech-architect
+    spec: null
+    division: educabot
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: curriculum-director
+    spec: null
+    division: educabot
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  # =====================================================
+  # Division: integrations (6 agents) — SaaS tool orchestration
+  # =====================================================
+  - name: integrations-architect
+    spec: null
+    division: integrations
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: project-tools-specialist
+    spec: null
+    division: integrations
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: docs-tools-specialist
+    spec: null
+    division: integrations
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: design-tools-specialist
+    spec: null
+    division: integrations
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: comms-tools-specialist
+    spec: null
+    division: integrations
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: api-tools-specialist
+    spec: null
+    division: integrations
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists

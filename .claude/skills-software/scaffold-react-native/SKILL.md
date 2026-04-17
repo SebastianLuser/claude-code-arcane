@@ -1,8 +1,10 @@
 ---
 name: scaffold-react-native
 description: "Scaffold de app mobile con React Native + Expo + TypeScript. Stack mobile oficial de Educabot. Usar para nuevas apps mobile, POCs de mobile o migraciones desde web."
+argument-hint: "[project-name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # scaffold-react-native — React Native Mobile Scaffolder
 
 Genera una app mobile **React Native** (con Expo managed workflow) production-ready. Stack mobile oficial en Educabot.

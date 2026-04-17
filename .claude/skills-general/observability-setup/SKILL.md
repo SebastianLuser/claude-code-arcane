@@ -1,8 +1,10 @@
 ---
 name: observability-setup
 description: "Setup de observabilidad (logs + metrics + traces) para stacks Educabot. OpenTelemetry + Prometheus + Grafana + Loki + Sentry. Instrumentación en Go, TS Fastify, React+Vite, React Native. Usar para: observabilidad, monitoring, logs, metrics, traces, otel, prometheus, grafana, sentry."
+argument-hint: "[stack: go|ts|react|rn] [--full|--lite]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # observability-setup — Observability Stack Generator
 
 Setup de **los 3 pilares** (logs, metrics, traces) + **error tracking** para apps Educabot. Stack recomendado: **OpenTelemetry** (instrumentación) → **Prometheus + Loki + Tempo** (storage) → **Grafana** (UI) + **Sentry** (errores).

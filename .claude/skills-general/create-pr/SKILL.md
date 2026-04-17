@@ -1,3 +1,11 @@
+---
+name: create-pr
+description: "Crea un pull request del branch actual usando gh CLI. Genera title + body con summary y test plan."
+argument-hint: ""
+user-invocable: true
+allowed-tools: Read, Bash
+---
+
 Create a pull request for the current branch:
 
 1. Run `git status` and `git log` to understand all changes since branching from main/master
@@ -12,6 +20,6 @@ Create a pull request for the current branch:
      ## Test plan
      - How to verify the changes work
 
-     🤖 Generated with [Claude Code](https://claude.com/claude-code)
+     Generated with [Claude Code](https://claude.com/claude-code)
 
 Return the PR URL when done.

@@ -1,8 +1,10 @@
 ---
 name: doc-gdd
 description: "Genera un Game Design Document (GDD) completo siguiendo el formato de Project_T. Estructura profesional con glosario, core loop, sistemas, balance, economía. Usar cuando se mencione: GDD, game design document, documento de diseño, diseño de juego."
+argument-hint: "[game-name or empty]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 ---
-
 # GDD Generator — Estilo Project_T
 
 Genera un Game Design Document completo y profesional, basado en el formato del Roguelite Dice Dungeon.

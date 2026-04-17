@@ -1,8 +1,10 @@
 ---
 name: error-tracking
 description: "Error tracking y crash reporting para apps Educabot (Go/TS/React/RN) con Bugsnag como default: source maps/symbolication, release tracking, stability score, user context sin PII, breadcrumbs, sampling, alert routing, triage. Usar para: errors, crashes, bugsnag, stack traces, source maps, dSYM, proguard, exception tracking."
+argument-hint: "[setup|triage|release <version>]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # error-tracking — Bugsnag Error Tracking & Crash Reporting
 
 Guía para capturar, triagear y actuar sobre errores en apps Educabot con **Bugsnag** como proveedor default. Objetivo: **detectar antes que el usuario reporte**, con contexto suficiente para fix rápido y stability score consistente (>99.9% sessions sin error).

@@ -1,8 +1,10 @@
 ---
 name: query-optimization
 description: Optimización de queries SQL en PostgreSQL 15+. Leer EXPLAIN ANALYZE, detectar queries lentas con pg_stat_statements, fixear N+1, paginación, índices, CTEs, LATERAL joins. Stack Educabot Go+TS. Usar cuando se mencione query lenta, slow query, EXPLAIN, performance DB, timeout, N+1, optimizar SQL, pg_stat_statements.
+argument-hint: "[path-to-sql-or-migration, or query]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
-
 # Query Optimization (PostgreSQL)
 
 Skill para diagnosticar y optimizar queries SQL lentas en Postgres 15+ dentro del stack Educabot (Go + TypeScript, Cloud SQL GCP).

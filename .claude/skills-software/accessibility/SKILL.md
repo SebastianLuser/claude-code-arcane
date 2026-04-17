@@ -1,8 +1,10 @@
 ---
 name: accessibility
 description: "Accesibilidad web/mobile para apps Educabot (React+Vite/RN): WCAG 2.2 AA, ARIA, keyboard nav, focus management, screen readers (NVDA/VoiceOver/TalkBack), contraste, motion-reduce, forms, testing automatizado (axe/Lighthouse) + manual. Foco educativo: alumnos con discapacidad. Usar para: a11y, accessibility, wcag, aria, screen reader, keyboard, contrast, inclusive design."
+argument-hint: "[audit|fix] [path]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # accessibility — Web & Mobile Accessibility
 
 Guía de accesibilidad para apps Educabot. Mercado: estudiantes con discapacidad visual, motora, auditiva, cognitiva. Target: **WCAG 2.2 nivel AA** mínimo. EdTech tiene obligación moral y legal (Ley 26.378 AR, LBI BR, Section 508 US).

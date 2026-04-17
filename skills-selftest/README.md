@@ -17,7 +17,7 @@ Tests the skills and agents themselves — not any code (software or game) built
 | Skills that promise read-only don't write files | Your game logic or balance |
 | Agents emit required verdict keywords (APPROVE/CONCERNS/REJECT) | Your API endpoints |
 | `team-*` skills spawn the right set of sub-agents | Your test suite passes |
-| Agent frontmatter is valid (model tier, max_turns, tools) | Your deployments work |
+| Agent frontmatter is valid (model tier, maxTurns, tools) | Your deployments work |
 
 For code testing use `/tdd`, Jest, pytest, Go test, etc. This framework tests
 **the framework itself** — the 147 universal skills, 20 gamedev skills, and 73 agents

@@ -1,8 +1,10 @@
 ---
 name: figma-to-code
 description: "Convierte diseños de Figma a código adaptado al stack del proyecto. Detecta componentes existentes, tokens de diseño, y genera código production-ready. Usar cuando se mencione: Figma, diseño a código, implementar diseño, figma to code, maquetear."
+argument-hint: "[figma-url or node-id]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # Figma to Code
 
 Convierte diseños de Figma en código adaptado al stack del proyecto actual.

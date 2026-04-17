@@ -1,8 +1,10 @@
 ---
 name: product-spec
 description: "Genera PRD (Product Requirements Document) completo estilo Educabot: contexto, problema, solución, métricas, rollout, riesgos. Output listo para pegar en Notion/Coda + crea épica y HUs en Jira. Usar para: nueva feature, iniciativa de producto, PRD, spec de producto."
+argument-hint: "[feature-name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task, AskUserQuestion
 ---
-
 # product-spec — Product Requirements Document Generator
 
 Genera un PRD completo y lo distribuye a las herramientas de PM de Educabot: **Notion/Coda** (doc), **Jira** (épica + HUs).

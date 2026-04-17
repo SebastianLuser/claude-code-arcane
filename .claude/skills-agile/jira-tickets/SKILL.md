@@ -2,8 +2,10 @@
 name: jira-tickets
 description: |
   LEER SIEMPRE ANTES de gestionar Jira. Usar cuando el usuario mencione: Jira, ticket, issue, tarea, crear issue, sprint, reporte, avance, board, o cualquier gestión de tareas en Jira. Proyectos: Alizia (ALZ), Tich (TICH), TUNI, Vigía (VIA). Opera via curl + REST API v3 (NO usa MCP). Tiene IDs cacheados de proyectos, estados, transiciones, tipos de issue y usuarios.
+argument-hint: "[create|search|update|transition] <args>"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-
 # Jira Tickets CLI — Educabot
 
 Skill para gestionar issues en Jira (aula-educabot.atlassian.net) via **curl + REST API v3**. Opera directamente desde Bash, sin MCP.

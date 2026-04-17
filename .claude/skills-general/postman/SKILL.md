@@ -1,8 +1,10 @@
 ---
 name: postman
 description: "Gestionar Postman: collections, environments, requests, folders, variables. Usar cuando el usuario mencione: Postman, collection, environment, API request, endpoint, variable, folder, o cualquier gestión de Postman."
+argument-hint: "[collection|environment|request] <action>"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-
 # Postman API Manager — Skill para Claude Code
 
 ## INSTRUCCIONES DE USO

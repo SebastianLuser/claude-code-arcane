@@ -1,8 +1,10 @@
 ---
 name: onboard
 description: "Genera guía de onboarding para un proyecto: stack, cómo correr, estructura, convenciones, links útiles. Usar cuando se mencione: onboarding, nuevo dev, cómo arranco, setup del proyecto, guía de inicio."
+argument-hint: "[project path, default .]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write
 ---
-
 # Onboarding Guide Generator
 
 Genera una guía completa para que un dev nuevo pueda arrancar a trabajar en el proyecto.

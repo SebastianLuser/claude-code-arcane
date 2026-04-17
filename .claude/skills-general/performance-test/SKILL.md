@@ -1,8 +1,10 @@
 ---
 name: performance-test
 description: "Performance y load testing para apps Educabot (Go/TS backends, React/RN frontends): k6 scripts, smoke/load/stress/soak/spike, thresholds por SLO, integración CI, reporte con p95/p99/error rate. Usar para: load test, stress test, benchmark, k6, performance, latencia, throughput."
+argument-hint: "[smoke|load|stress|soak|spike]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # performance-test — Load & Performance Testing
 
 Framework para testear performance de APIs y flujos end-to-end en apps Educabot. Basado en **k6** (Grafana Labs) — scripting en JS, ejecución en Go, buena integración con Prometheus/Grafana.

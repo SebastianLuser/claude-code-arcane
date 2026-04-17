@@ -1,8 +1,10 @@
 ---
 name: webhooks
 description: "Diseño e implementación de webhooks (outbound e inbound) para apps Educabot (Go/TS): firma HMAC, timestamps anti-replay, idempotencia, retries con backoff, DLQ, queue-based delivery, dashboard para subscribers. Usar para: webhooks, http callbacks, eventos, integraciones, stripe webhooks, event delivery."
+argument-hint: "[outbound|inbound] [service-name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # webhooks — Outbound & Inbound Webhooks
 
 Guía para webhooks en apps Educabot. Cubre el rol de **emisor** (notificamos a terceros/clientes) e **inbound** (recibimos de Stripe, proveedores, etc). Énfasis en reliability, seguridad y operabilidad.

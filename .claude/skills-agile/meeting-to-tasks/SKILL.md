@@ -1,8 +1,10 @@
 ---
 name: meeting-to-tasks
 description: "Convertir notas de meeting/transcripción en tasks estructurados con owners y due dates, directo en ClickUp/Jira. Usar cuando el usuario mencione: notas de meeting, minuta, transcripción, action items, to-dos del meeting, convertir notas a tickets."
+argument-hint: "[path to notes file, or paste inline]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task, AskUserQuestion
 ---
-
 # Meeting Notes → Tasks
 
 Transforma notas desordenadas o transcripciones de meetings en action items estructurados, creando tickets directamente en ClickUp o Jira.

@@ -1,3 +1,11 @@
+---
+name: local-database-setup
+description: "Configura la base de datos local del proyecto: levanta Docker/Postgres, corre setup script, ejecuta migrations pendientes."
+argument-hint: ""
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash
+---
+
 # Skill: local-database-setup
 
 ## Trigger

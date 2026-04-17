@@ -1,8 +1,10 @@
 ---
 name: gh-projects
 description: "Gestionar GitHub Projects (v2): boards, items, fields, views, automations via gh CLI + GraphQL. Usar cuando el usuario mencione: GitHub Projects, board de GitHub, gh project, kanban de GitHub, project v2."
+argument-hint: "[list|create|add|update] [project/item]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash
 ---
-
 # GitHub Projects Manager
 
 Interactúa con GitHub Projects v2 (el nuevo sistema de project management de GitHub, no los classic).

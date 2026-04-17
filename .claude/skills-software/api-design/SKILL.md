@@ -1,8 +1,10 @@
 ---
 name: api-design
 description: "Diseño de APIs para apps Educabot: REST con convenciones consistentes, OpenAPI spec, versioning, paginación, errores, GraphQL cuando tiene sentido, contratos tipados end-to-end (Zod/TS, gen desde OpenAPI). Usar para: api design, rest, graphql, openapi, swagger, endpoint, contract."
+argument-hint: "[rest|graphql|contract] [resource-name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # api-design — REST & GraphQL Design
 
 Guía de diseño de APIs para backends Educabot (Go + TS). Favorece **REST + OpenAPI** por default; GraphQL solo con justificación.

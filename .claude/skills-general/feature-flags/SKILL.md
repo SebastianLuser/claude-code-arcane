@@ -1,8 +1,10 @@
 ---
 name: feature-flags
 description: "Sistema de feature flags para apps Educabot (Go/TS/React/RN): rollouts graduales, kill switches, A/B tests, targeting por cohort. Recomienda provider (Unleash/GrowthBook/LaunchDarkly), SDK patterns, lifecycle management, cleanup. Usar para: feature flags, toggles, rollout, kill switch, ab test, canary."
+argument-hint: "[setup|audit|cleanup]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # feature-flags — Feature Flags & Rollouts
 
 Framework para feature flags en apps Educabot. Separa **deploy** de **release**, habilita rollouts graduales, kill switches en incidents, y A/B tests.

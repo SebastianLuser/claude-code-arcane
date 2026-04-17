@@ -1,8 +1,10 @@
 ---
 name: caching-strategy
 description: "Estrategia de caching multi-capa para apps Educabot (Go/TS/React): HTTP (Cache-Control/ETag), CDN, Redis, in-memory, browser. Patterns (cache-aside, write-through, read-through), invalidation, TTLs, stampede protection. Usar para: cache, redis, cdn, http caching, etag, memoization, performance caching."
+argument-hint: "[layer: http|cdn|redis|memory|browser]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
-
 # caching-strategy — Multi-Layer Caching
 
 Guía de caching para backends Educabot (Go + TS) y frontends (React + RN). Objetivo: reducir latencia y carga sin corromper datos.

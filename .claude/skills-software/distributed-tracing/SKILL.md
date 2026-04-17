@@ -1,8 +1,10 @@
 ---
 name: distributed-tracing
 description: Instrumentación de tracing distribuido end-to-end con OpenTelemetry (OTel) y OTLP, propagación W3C Trace Context, exportación a Google Cloud Trace (default Educabot), Grafana Tempo, Datadog o Honeycomb. Cubre setup Go (otelgin/otelhttp), Node/TS (sdk-node auto-instrumentation), React web y React Native, spans custom, sampling head/tail-based, correlación con logs estructurados, tracing de DB/Redis/PubSub, manejo de errores y anti-patterns. Usar cuando se mencione tracing, OpenTelemetry, OTel, trace, span, Cloud Trace, Tempo, Jaeger, Datadog APM, Honeycomb, latencia, bottleneck, observabilidad end-to-end, traceparent, o cuando hay problemas de performance cross-service que requieren ver el flujo completo de un request.
+argument-hint: "[stack: go|ts|react|rn] [provider: gcp|tempo|datadog]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # Distributed Tracing — OpenTelemetry + Cloud Trace
 
 ## Cuándo usar

@@ -1,8 +1,10 @@
 ---
 name: websocket-realtime-rooms
 description: "Realtime multi-tenant via WebSocket/Centrifugo/Socket.IO para apps Educabot (Go/TS + React/RN): rooms, presence, broadcast/unicast, auth en handshake, sticky sessions + Redis/Pub-Sub backplane, heartbeat, reconexión exponencial, rate limit, backpressure, idempotencia con client_msg_id, observabilidad. Usar para: websocket, ws, realtime, chat, presence, rooms, sockets, live, centrifugo, socket.io, gorilla/websocket, nhooyr, broadcast."
+argument-hint: "[stack: go|ts] [provider: centrifugo|socketio|raw]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
-
 # websocket-realtime-rooms — Realtime Rooms
 
 Guía para meter realtime en apps Educabot (aula virtual, chat docente-alumno, live quiz, colaboración en pizarra). Objetivo: **salas multi-tenant que escalen horizontalmente, auth sólida, reconexión transparente**.

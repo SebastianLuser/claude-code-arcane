@@ -1,8 +1,10 @@
 ---
 name: doc-pas
 description: "Genera documentación de game design en formato PAS (Problema-Análisis-Solución). Conciso, sin divagar. Usar cuando se mencione: PAS, documento de diseño, decisión de diseño, problema de game design, analizar mecánica, propuesta de cambio."
+argument-hint: "[problem or decision title]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 ---
-
 # Game Design Document — Formato PAS
 
 Genera documentación de diseño de videojuegos usando el framework PAS: Problema → Análisis → Opciones → Decisión.

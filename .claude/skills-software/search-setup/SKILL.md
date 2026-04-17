@@ -1,8 +1,10 @@
 ---
 name: search-setup
 description: "Búsqueda para apps Educabot (Go/TS/React): Meilisearch, Typesense, Elasticsearch/OpenSearch, Algolia, Postgres FTS + pg_trgm, indexing pipeline, faceting, typo tolerance, multilingual (es/pt), relevancia tuning, autocomplete, permisos multi-tenant, sync DB→index, reindex. Usar para: search, elasticsearch, meilisearch, typesense, algolia, full text search, pg_trgm, faceting, autocomplete."
+argument-hint: "[provider: meilisearch|typesense|elastic|algolia|pg-fts]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # search-setup — Search
 
 Guía pragmática para implementar búsqueda en apps Educabot (Alizia, Tich, TUNI, Vigía). Cubre decisión de engine, indexing pipeline, multi-tenant, multilingüe es/pt, relevancia y operación (reindex, observabilidad).
