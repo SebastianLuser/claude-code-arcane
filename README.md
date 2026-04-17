@@ -169,13 +169,3 @@ Los agentes siguen el principio de **diseño colaborativo**:
 Ver `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md` para más detalles.
 
 ---
-
-## Licencia
-
-MIT — Ver [LICENSE](LICENSE)
-
-## Créditos
-
-- Inspirado en [Claude-Code-Game-Studios](https://github.com/Donchitos/Claude-Code-Game-Studios) por Donchitos
-- División 1 (Game Dev) portada directamente del repo original
-- Resto construido desde cero para este proyecto
