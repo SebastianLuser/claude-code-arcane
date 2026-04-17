@@ -1053,37 +1053,6 @@ agents:
     last_spec_result: ""
     category: specialist
 
-  # Engine Specialists — Godot
-  - name: godot-specialist
-    spec: skills-selftest/agents/engine/godot/godot-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  - name: godot-gdscript-specialist
-    spec: skills-selftest/agents/engine/godot/godot-gdscript-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  - name: godot-csharp-specialist
-    spec: skills-selftest/agents/engine/godot/godot-csharp-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  - name: godot-shader-specialist
-    spec: skills-selftest/agents/engine/godot/godot-shader-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
-  - name: godot-gdextension-specialist
-    spec: skills-selftest/agents/engine/godot/godot-gdextension-specialist.md
-    last_spec: ""
-    last_spec_result: ""
-    category: engine
-
   # Engine Specialists — Unity
   - name: unity-specialist
     spec: skills-selftest/agents/engine/unity/unity-specialist.md

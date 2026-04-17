@@ -53,14 +53,14 @@
 - Does NOT mark the result as inconclusive — after 4 sessions with consistent negative responses, abandonment is the correct verdict
 
 ### Case 5: Context pass — using the project's engine scripting language
-**Input context**: Project uses Godot 4.6 with GDScript (configured in technical-preferences.md).
+**Input context**: Project uses Unity 6 with C# (configured in technical-preferences.md).
 **Input**: "Prototype a basic grid movement system — player clicks a tile and the character moves to it."
 **Expected behavior**:
-- Produces the prototype in GDScript — not Python, C#, or pseudocode
-- Uses Godot 4.6 node types appropriate for a grid: TileMap or a custom grid manager node, CharacterBody2D or Node2D for the player
+- Produces the prototype in C# — not Python, Blueprint script, or pseudocode
+- Uses Unity 6 components appropriate for a grid: Tilemap or a custom grid manager MonoBehaviour, CharacterController or Rigidbody2D for the player
 - Does NOT apply production coding standards (no required test coverage, no doc comments, global state acceptable)
 - Writes the output to `prototypes/grid-movement/` not to `src/`
-- If a Godot 4.6 API is uncertain (given the LLM knowledge cutoff noted in VERSION.md), flags the specific API with a note to verify against the Godot 4.6 docs
+- If a Unity 6 API is uncertain (given the LLM knowledge cutoff noted in VERSION.md), flags the specific API with a note to verify against the Unity 6 docs
 
 ---
 

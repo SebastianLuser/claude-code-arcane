@@ -36,8 +36,8 @@ invoked.
 
 **Fixture:**
 - `docs/tech-debt-register.md` exists with 2 items (LOW and MEDIUM severity)
-- `src/gameplay/combat.gd` has 2 `# TODO` comments and 1 `# FIXME` comment
-- `src/ui/hud.gd` has 0 inline debt comments
+- `src/gameplay/Combat.cs` has 2 `# TODO` comments and 1 `# FIXME` comment
+- `src/ui/Hud.cs` has 0 inline debt comments
 
 **Input:** `/tech-debt`
 
@@ -84,8 +84,8 @@ invoked.
 ### Case 3: Resolved Item Detected — Marked resolved in register
 
 **Fixture:**
-- `docs/tech-debt-register.md` has 3 items; one references `src/gameplay/legacy_input.gd`
-- `src/gameplay/legacy_input.gd` has been deleted (refactored away)
+- `docs/tech-debt-register.md` has 3 items; one references `src/gameplay/LegacyInput.cs`
+- `src/gameplay/LegacyInput.cs` has been deleted (refactored away)
 - The referenced TODO comment no longer exists in source
 
 **Input:** `/tech-debt`
@@ -108,7 +108,7 @@ invoked.
 ### Case 4: Edge Case — CRITICAL debt item surfaces prominently
 
 **Fixture:**
-- `src/core/network_sync.gd` has a comment: `# FIXME(CRITICAL): race condition in sync buffer — can corrupt save data`
+- `src/core/NetworkSync.cs` has a comment: `# FIXME(CRITICAL): race condition in sync buffer — can corrupt save data`
 - `docs/tech-debt-register.md` exists with 5 lower-severity items
 
 **Input:** `/tech-debt`

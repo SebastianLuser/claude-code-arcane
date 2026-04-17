@@ -68,7 +68,7 @@ None. Performance profiling is an advisory analysis skill; no gates are invoked.
 **Expected behavior:**
 1. Skill finds no profiler data
 2. Skill outputs a manual profiling checklist for the user to work through:
-   - Enable Godot profiler or target engine's profiler
+   - Enable the Unity Profiler or target engine's profiler
    - Record a 60-second play session
    - Export frame time data
    - Note any dropped frames or hitches

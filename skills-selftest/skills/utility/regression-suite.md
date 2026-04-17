@@ -110,7 +110,7 @@ None. `/regression-suite` is a QA analysis utility. No director gates apply.
 ### Case 4: Orphan Tests — Test file has no matching AC
 
 **Fixture:**
-- `tests/unit/save_system_test.gd` exists with assertions for scenarios
+- `tests/unit/SaveSystemTest.cs` exists with assertions for scenarios
   not present in any current story's AC list
 - Current sprint stories do not reference save system
 
@@ -118,7 +118,7 @@ None. `/regression-suite` is a QA analysis utility. No director gates apply.
 
 **Expected behavior:**
 1. Skill scans tests and cross-references ACs
-2. `save_system_test.gd` assertions do not match any current AC
+2. `SaveSystemTest.cs` assertions do not match any current AC
 3. Test file is flagged as ORPHAN TEST in the coverage report
 4. Report notes: "Orphan tests may belong to a past or future sprint, or AC was renamed"
 5. Verdict is FULL COVERAGE or GAPS FOUND depending on overall AC coverage

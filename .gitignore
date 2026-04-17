@@ -51,12 +51,6 @@ MemoryCaptures/
 *.suo
 *.user
 
-# Godot
-.godot/
-.import/
-export.cfg
-export_presets.cfg
-
 # Unreal
 Intermediate/
 Saved/

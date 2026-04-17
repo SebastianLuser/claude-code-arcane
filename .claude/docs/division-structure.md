@@ -4,9 +4,9 @@ El repo está organizado en 8 divisiones. Cada división tiene su propia jerarqu
 
 ## División 1 — Game Development Studio 🎮
 **Path:** `.claude/agents/game/`
-**Propósito:** Desarrollo de videojuegos (Unity, Godot, Unreal)
-**Agentes:** 49 | **Skills:** 72
-**Stack:** GDScript, C#, C++, Blueprint
+**Propósito:** Desarrollo de videojuegos (Unity, Unreal)
+**Agentes:** 44 | **Skills:** 72
+**Stack:** C#, C++, Blueprint
 
 **Cuándo usarla:** Cualquier tarea relacionada con juegos — diseño, mecánicas, arte, audio, narrativa, QA de juegos.
 

@@ -119,9 +119,6 @@ technical-artist, sound-designer, writer, world-builder, ux-designer, prototyper
 ### Ops (8)
 performance-analyst, devops-engineer, analytics-engineer, security-engineer, qa-tester, accessibility-specialist, live-ops-designer, community-manager
 
-### Godot (5)
-godot-specialist, godot-gdscript-specialist, godot-csharp-specialist, godot-shader-specialist, godot-gdextension-specialist
-
 ### Unity (5)
 unity-specialist, unity-dots-specialist, unity-shader-specialist, unity-addressables-specialist, unity-ui-specialist
 

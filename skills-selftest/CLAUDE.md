@@ -80,7 +80,7 @@ leads       → lead-programmer, narrative-director, audio-director, ux-designer
 specialists → gameplay-programmer, engine-programmer, ui-programmer,
               tools-programmer, network-programmer, ai-programmer,
               level-designer, sound-designer, technical-artist
-engine      → godot-*, unity-*, unreal-*
+engine      → unity-*, unreal-*
 operations  → devops-engineer, security-engineer, performance-analyst,
               analytics-engineer, community-manager
 qa          → qa-tester, accessibility-specialist, live-ops-designer

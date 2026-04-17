@@ -83,10 +83,10 @@ are invoked.
 
 **Fixture:**
 - No test history logs exist
-- `tests/unit/loot/loot_drop_test.gd` contains:
-  ```gdscript
-  var roll = randf()  # unseeded random — non-deterministic
-  assert_gt(roll, 0.5, "Loot should drop above 50%")
+- `tests/unit/loot/LootDropTest.cs` contains:
+  ```csharp
+  float roll = Random.value; // unseeded random — non-deterministic
+  Assert.Greater(roll, 0.5f, "Loot should drop above 50%");
   ```
 
 **Input:** `/test-flakiness`
@@ -94,7 +94,7 @@ are invoked.
 **Expected behavior:**
 1. Skill finds no test history logs
 2. Skill falls back to source code analysis
-3. Skill detects `randf()` call without a preceding `seed()` call
+3. Skill detects `Random.value` call without a preceding `Random.InitState(seed)` call
 4. Skill flags the test as FLAKINESS RISK (source pattern, not confirmed)
 5. Verdict is SUSPECT TESTS FOUND (pattern detected, not confirmed by history)
 6. Skill recommends seeding random before the call or mocking the random function

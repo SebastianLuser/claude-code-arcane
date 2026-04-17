@@ -10,7 +10,7 @@ Preferencias técnicas globales. Override en proyectos específicos via su propi
 | Backend (AI/ML) | Python | - | Ecosystem madurez |
 | Frontend web | TypeScript + React/Next | Vue | Typing, ecosystem |
 | Mobile | Flutter | React Native | Single codebase, performance |
-| Game dev | C# (Unity) / GDScript (Godot) | C++ (Unreal) | Depende del engine |
+| Game dev | C# (Unity) | C++ (Unreal) | Depende del engine |
 | Scripts/tooling | Python / Bash | Go | Simple, rápido de escribir |
 
 ## Frameworks Preferidos
@@ -40,8 +40,7 @@ Preferencias técnicas globales. Override en proyectos específicos via su propi
 
 ## Game Engines
 
-- **Web/casual games:** Godot 4 (open source, MIT)
-- **2D/indie:** Godot 4 o Unity 6
+- **2D/indie:** Unity 6
 - **AAA/3D complejo:** Unreal Engine 5
 - **VR:** Unity 6 (OpenXR)
 

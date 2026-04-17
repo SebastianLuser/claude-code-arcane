@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmd.exe //c remove-skill-junctions.bat)",
+      "Bash(cmd.exe //c \"remove-skill-junctions.bat\")",
+      "Bash(cmd.exe //c \"call .\\\\\\\\remove-skill-junctions.bat\")",
+      "Bash(cmd.exe //c \"call .\\\\\\\\setup-skill-junctions.bat\")",
+      "Bash(bash .claude/statusline.sh)"
+    ]
+  }
+}

@@ -34,7 +34,7 @@ None. Security audit is a read-only advisory skill; no gates are invoked.
 ### Case 1: Happy Path — Save data encrypted, no hardcoded credentials
 
 **Fixture:**
-- `src/core/save_system.gd` uses `Crypto` class to encrypt save data before writing
+- `src/core/SaveSystem.cs` uses `Crypto` class to encrypt save data before writing
 - No hardcoded API keys, passwords, or credentials in any `src/` file
 - No version numbers or internal build IDs exposed in client-facing output
 
@@ -58,15 +58,15 @@ None. Security audit is a read-only advisory skill; no gates are invoked.
 ### Case 2: Vulnerabilities Found — Unencrypted save data and exposed version
 
 **Fixture:**
-- `src/core/save_system.gd` writes save data as plain JSON (no encryption)
-- `src/ui/debug_overlay.gd` contains: `label.text = "Build: " + ProjectSettings.get("application/config/version")`
+- `src/core/SaveSystem.cs` writes save data as plain JSON (no encryption)
+- `src/ui/DebugOverlay.cs` contains: `label.text = "Build: " + Application.version;`
   (exposes internal build version to player)
 
 **Input:** `/security-audit`
 
 **Expected behavior:**
-1. Skill scans `src/` — finds unencrypted save write in `save_system.gd`
-2. Skill finds exposed version string in `debug_overlay.gd`
+1. Skill scans `src/` — finds unencrypted save write in `SaveSystem.cs`
+2. Skill finds exposed version string in `DebugOverlay.cs`
 3. Both findings are flagged as VULNERABILITIES
 4. Verdict is VULNERABILITIES FOUND
 5. Skill provides remediation recommendations for each vulnerability
@@ -83,8 +83,8 @@ None. Security audit is a read-only advisory skill; no gates are invoked.
 ### Case 3: Online Features Without Authentication — CONCERNS
 
 **Fixture:**
-- `src/networking/lobby.gd` exists with functions: `join_lobby()`, `send_chat()`
-- No authentication check is found before `send_chat()` — players can call it without being verified
+- `src/networking/Lobby.cs` exists with methods: `JoinLobby()`, `SendChat()`
+- No authentication check is found before `SendChat()` — players can call it without being verified
 - Game has online multiplayer features (inferred from file presence)
 
 **Input:** `/security-audit`

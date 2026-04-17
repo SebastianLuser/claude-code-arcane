@@ -35,8 +35,8 @@ is a separate skill invocation and is NOT triggered here.
 ### Case 1: Happy Path — Tests follow all standards
 
 **Fixture:**
-- `tests/unit/combat/health_system_take_damage_test.gd` exists with:
-  - Naming: `test_health_system_take_damage_reduces_health()` (follows `test_[system]_[scenario]_[expected]`)
+- `tests/unit/combat/HealthSystemTakeDamageTest.cs` exists with:
+  - Naming: `HealthSystem_TakeDamage_ReducesHealth()` (follows `[System]_[Scenario]_[Expected]`)
   - Arrange/Act/Assert structure present
   - No `sleep()`, `await` with time values, or random seeds
   - No calls to external APIs or file I/O
@@ -61,18 +61,18 @@ is a separate skill invocation and is NOT triggered here.
 ### Case 2: Fail — Timing dependency detected
 
 **Fixture:**
-- `tests/unit/ui/hud_update_test.gd` contains:
-  ```gdscript
-  await get_tree().create_timer(1.0).timeout
-  assert_eq(label.text, "Ready")
+- `tests/unit/ui/HudUpdateTest.cs` contains:
+  ```csharp
+  yield return new WaitForSeconds(1.0f);
+  Assert.AreEqual("Ready", label.text);
   ```
-- Real-time wait of 1 second used instead of mock or signal-based assertion
+- Real-time wait of 1 second used instead of mock or event-based assertion
 
-**Input:** `/test-evidence-review tests/unit/ui/hud_update_test.gd`
+**Input:** `/test-evidence-review tests/unit/ui/HudUpdateTest.cs`
 
 **Expected behavior:**
 1. Skill reads the test file
-2. Skill detects real-time wait (`create_timer(1.0)`) — non-deterministic timing dependency
+2. Skill detects real-time wait (`WaitForSeconds(1.0f)`) — non-deterministic timing dependency
 3. Skill flags this as a FAIL-level finding
 4. Verdict is FAIL
 5. Skill recommends replacing the timer with a signal-based assertion or mock
@@ -89,17 +89,17 @@ is a separate skill invocation and is NOT triggered here.
 ### Case 3: Fail — Test calls external API directly
 
 **Fixture:**
-- `tests/unit/networking/auth_test.gd` contains:
-  ```gdscript
-  var result = HTTPRequest.new().request("https://api.example.com/auth")
+- `tests/unit/networking/AuthTest.cs` contains:
+  ```csharp
+  var result = await UnityWebRequest.Get("https://api.example.com/auth").SendWebRequest();
   ```
 - Direct HTTP call to external API without a mock
 
-**Input:** `/test-evidence-review tests/unit/networking/auth_test.gd`
+**Input:** `/test-evidence-review tests/unit/networking/AuthTest.cs`
 
 **Expected behavior:**
 1. Skill reads the test file
-2. Skill detects direct external API call (HTTPRequest to live URL)
+2. Skill detects direct external API call (UnityWebRequest to live URL)
 3. Skill flags this as a FAIL-level finding — violates isolation standard
 4. Verdict is FAIL
 5. Skill recommends injecting a mock HTTP client

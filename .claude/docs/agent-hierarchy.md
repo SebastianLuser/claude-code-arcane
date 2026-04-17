@@ -21,9 +21,9 @@ Cada división sigue una jerarquía de estudio real con 3 niveles de autoridad:
 
 ---
 
-## Roster Completo (119 Agentes)
+## Roster Completo (114 Agentes)
 
-### División 1 — Game Development Studio (49)
+### División 1 — Game Development Studio (44)
 
 **Directors (3):**
 - `creative-director`, `technical-director`, `producer`
@@ -31,12 +31,11 @@ Cada división sigue una jerarquía de estudio real con 3 niveles de autoridad:
 **Leads (8):**
 - `game-designer`, `lead-programmer`, `art-director`, `audio-director`, `narrative-director`, `qa-lead`, `release-manager`, `localization-lead`
 
-**Specialists (38):**
+**Specialists (33):**
 - Engineering: `gameplay-programmer`, `engine-programmer`, `ai-programmer`, `network-programmer`, `tools-programmer`, `ui-programmer`
 - Design: `systems-designer`, `level-designer`, `economy-designer`
 - Art: `technical-artist`, `sound-designer`, `writer`, `world-builder`, `ux-designer`, `prototyper`
 - Ops: `performance-analyst`, `devops-engineer`, `analytics-engineer`, `security-engineer`, `qa-tester`, `accessibility-specialist`, `live-ops-designer`, `community-manager`
-- Godot: `godot-specialist`, `godot-gdscript-specialist`, `godot-csharp-specialist`, `godot-shader-specialist`, `godot-gdextension-specialist`
 - Unity: `unity-specialist`, `unity-dots-specialist`, `unity-shader-specialist`, `unity-addressables-specialist`, `unity-ui-specialist`
 - Unreal: `unreal-specialist`, `ue-gas-specialist`, `ue-blueprint-specialist`, `ue-replication-specialist`, `ue-umg-specialist`
 

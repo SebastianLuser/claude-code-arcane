@@ -30,12 +30,12 @@ No gate IDs assigned.
 - Provides a concrete example of what the ScriptableObject class definition looks like (does not produce full code — refers to engine-programmer or gameplay-programmer for implementation)
 
 ### Case 2: Wrong-engine redirect
-**Input:** "Set up a Node scene tree with signals for this enemy system."
+**Input:** "Set up an Actor subclass with BlueprintImplementableEvent methods for this enemy system."
 **Expected behavior:**
-- Does NOT produce Godot Node/signal code
-- Identifies this as a Godot pattern
-- States that in Unity the equivalent is GameObject hierarchy + UnityEvent or C# events
-- Maps the concepts: Godot Node → Unity MonoBehaviour, Godot Signal → C# event / UnityEvent
+- Does NOT produce Unreal Actor/Blueprint code
+- Identifies this as an Unreal pattern
+- States that in Unity the equivalent is MonoBehaviour + C# events or UnityEvent
+- Maps the concepts: Unreal Actor → Unity GameObject+MonoBehaviour, BlueprintImplementableEvent → C# virtual method / UnityEvent
 - Confirms the project is Unity-based before proceeding
 
 ### Case 3: Unity version API flag
@@ -69,7 +69,7 @@ No gate IDs assigned.
 ## Protocol Compliance
 
 - [ ] Stays within declared domain (Unity architecture decisions, pattern selection, subsystem routing)
-- [ ] Redirects Godot patterns to appropriate Godot specialists or flags them as wrong-engine
+- [ ] Flags non-Unity patterns (e.g., Unreal Actor/Blueprint idioms) as wrong-engine and maps them to Unity equivalents
 - [ ] Redirects DOTS implementation to unity-dots-specialist
 - [ ] Redirects UI implementation to unity-ui-specialist
 - [ ] Flags Unity version-gated APIs and requires version confirmation before suggesting them

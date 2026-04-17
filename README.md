@@ -13,7 +13,7 @@ Construido sobre la arquitectura de [Claude Code Game Studios](https://github.co
 
 | # | División | Agentes | Skills | Propósito |
 |---|----------|---------|--------|-----------|
-| 1 | 🎮 Game Development Studio | 49 | 72 | Desarrollo de videojuegos (Unity/Godot/Unreal) |
+| 1 | 🎮 Game Development Studio | 44 | 72 | Desarrollo de videojuegos (Unity/Unreal) |
 | 2 | 💻 Software Engineering | 20 | 60 | Backend, frontend, fullstack, APIs, DBs |
 | 3 | ☁️ DevOps & Infrastructure | 11 | 18 | Cloud, K8s, CI/CD, IaC, monitoring |
 | 4 | 🎨 Product & Design | 11 | 22 | Product management, UX/UI, research |
@@ -21,7 +21,7 @@ Construido sobre la arquitectura de [Claude Code Game Studios](https://github.co
 | 6 | 🛡️ Quality & Security | 7 | 14 | QA, testing, security, compliance |
 | 7 | 🎓 Educabot | 7 | 10 | EdTech, curriculum, learning experience |
 | 8 | 🔌 Tools & Integrations | 6 | 30 | ClickUp, Jira, Gdocs, Notion, Slack, Figma |
-| **Total** | | **119** | **244** | |
+| **Total** | | **114** | **244** | |
 
 ---
 
@@ -63,7 +63,7 @@ Replicado de Claude-Code-Game-Studios. Cubre todo el pipeline de game dev: brain
 
 **Directores:** creative-director, technical-director, producer
 **Leads:** game-designer, lead-programmer, art-director, audio-director, narrative-director, qa-lead, release-manager, localization-lead
-**Especialistas:** 37 incluyendo engine-specialists para Unity, Godot y Unreal
+**Especialistas:** 33 incluyendo engine-specialists para Unity y Unreal
 
 ### 2. Software Engineering
 Desarrollo de software profesional: backend, frontend, mobile, databases, APIs.

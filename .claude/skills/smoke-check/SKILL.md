@@ -77,17 +77,6 @@ Report findings before proceeding: "Environment: [engine]. Test directory:
 Attempt to run the test suite via Bash. Select the command based on the engine
 detected in Phase 1:
 
-**Godot 4:**
-```bash
-godot --headless --script tests/gdunit4_runner.gd 2>&1
-```
-If the GDUnit4 runner script does not exist at that path, try:
-```bash
-godot --headless -s addons/gdunit4/GdUnitRunner.gd 2>&1
-```
-If neither path exists, note: "GDUnit4 runner not found — confirm the runner
-path for your test framework."
-
 **Unity:**
 Unity tests require the editor and cannot be run headlessly via shell in most
 environments. Check for recent test result artifacts:

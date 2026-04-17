@@ -13,7 +13,7 @@ El usuario especifica qué auditar. Argumento opcional: `$ARGUMENTS` (e.g., "GDD
 
 ## Phase 1 — Detectar proyecto y documentos
 
-1. Identificar el tipo de proyecto (Unity, Godot, Unreal, etc.) por la estructura de archivos
+1. Identificar el tipo de proyecto (Unity, Unreal, etc.) por la estructura de archivos
 2. Buscar documentos de diseño:
    - GDD (Game Design Document) — buscar en raíz, `docs/`, `Documents/`, `Assets/Documents/`
    - Spec docs — buscar en `spec-docs/`, `specs/`, `design/`

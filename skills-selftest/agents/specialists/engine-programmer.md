@@ -53,12 +53,12 @@ No gate IDs assigned.
 - Documents the coordination requirement before proceeding
 
 ### Case 5: Context pass — checks engine version reference
-**Input:** Engine version reference (Godot 4.6) provided in context. Request: "Set up the default physics engine for the project."
+**Input:** Engine version reference (Unity 6) provided in context. Request: "Set up the default physics engine for the project."
 **Expected behavior:**
-- Reads the engine version reference and notes Godot 4.6 change: Jolt physics is now the default
-- Produces configuration guidance that accounts for the Jolt-as-default change (4.6 migration note)
-- Flags any API differences between GodotPhysics and Jolt that could affect existing code
-- Does NOT suggest deprecated or pre-4.6 physics setup steps without noting they apply to older versions
+- Reads the engine version reference and notes Unity 6 options: PhysX (default) and Unity Physics (DOTS)
+- Produces configuration guidance that accounts for the two physics backends available in Unity 6
+- Flags any API differences between PhysX and Unity Physics that could affect existing code
+- Does NOT suggest deprecated or pre-Unity 6 physics setup steps without noting they apply to older versions
 
 ---
 

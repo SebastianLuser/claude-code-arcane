@@ -33,14 +33,14 @@ None. Code review is a read-only advisory skill; no gates are invoked.
 ### Case 1: Happy Path — Source file follows all coding standards
 
 **Fixture:**
-- `src/gameplay/health_component.gd` exists with:
-  - All public methods have doc comments (`##` notation)
+- `src/gameplay/HealthComponent.cs` exists with:
+  - All public methods have XML doc comments (`///` notation)
   - No singletons used; dependencies injected via constructor
   - No hardcoded values; all constants reference `assets/data/`
   - ADR reference in file header: `# ADR: docs/architecture/adr-004-health.md`
   - Referenced ADR has `Status: Accepted`
 
-**Input:** `/code-review src/gameplay/health_component.gd`
+**Input:** `/code-review src/gameplay/HealthComponent.cs`
 
 **Expected behavior:**
 1. Skill reads the source file
@@ -61,12 +61,12 @@ None. Code review is a read-only advisory skill; no gates are invoked.
 ### Case 2: Needs Changes — Missing doc comment and singleton usage
 
 **Fixture:**
-- `src/ui/inventory_ui.gd` has:
+- `src/ui/InventoryUI.cs` has:
   - 2 public methods without doc comments
   - Uses `GameManager.instance` (singleton pattern)
   - All other standards met
 
-**Input:** `/code-review src/ui/inventory_ui.gd`
+**Input:** `/code-review src/ui/InventoryUI.cs`
 
 **Expected behavior:**
 1. Skill reads the source file
@@ -87,11 +87,11 @@ None. Code review is a read-only advisory skill; no gates are invoked.
 ### Case 3: Architecture Risk — ADR reference is Proposed, not Accepted
 
 **Fixture:**
-- `src/core/save_system.gd` has a header comment: `# ADR: docs/architecture/adr-010-save.md`
+- `src/core/SaveSystem.cs` has a header comment: `# ADR: docs/architecture/adr-010-save.md`
 - `adr-010-save.md` exists but has `Status: Proposed`
 - Code itself follows all other coding standards
 
-**Input:** `/code-review src/core/save_system.gd`
+**Input:** `/code-review src/core/SaveSystem.cs`
 
 **Expected behavior:**
 1. Skill reads the source file
@@ -137,7 +137,7 @@ None. Code review is a read-only advisory skill; no gates are invoked.
 - Source file follows most standards but has 1 CONCERNS-level finding (a magic number)
 - `review-mode.txt` contains `full`
 
-**Input:** `/code-review src/gameplay/loot_system.gd`
+**Input:** `/code-review src/gameplay/LootSystem.cs`
 
 **Expected behavior:**
 1. Skill reads and reviews the source file

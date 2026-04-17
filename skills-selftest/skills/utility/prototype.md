@@ -174,5 +174,5 @@ None. Prototypes are throwaway validation artifacts. No director gates apply.
   prototypes are throwaway artifacts and quality standards do not apply.
 - The archiving mechanism is mentioned in Case 2 but the archive format is
   not assertion-tested in detail.
-- Engine-specific prototype scaffolding (GDScript scenes vs. C# MonoBehaviour)
+- Engine-specific prototype scaffolding (C# MonoBehaviour vs. Unreal Blueprint)
   follows the same flow with engine-appropriate file types.

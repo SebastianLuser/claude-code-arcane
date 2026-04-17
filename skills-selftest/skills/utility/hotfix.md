@@ -40,7 +40,7 @@ post-hoc step. No gate is invoked within this skill.
 
 **Fixture:**
 - `main` branch is clean
-- Bug is identified in `src/gameplay/arena.gd` (crash on boss arena entry)
+- Bug is identified in `src/gameplay/Arena.cs` (crash on boss arena entry)
 - Repro steps are provided by user
 
 **Input:** `/hotfix` (user describes the crash and affected file)
@@ -48,8 +48,8 @@ post-hoc step. No gate is invoked within this skill.
 **Expected behavior:**
 1. Skill proposes creating a hotfix branch: `hotfix/boss-arena-crash`
 2. User confirms; Bash command for branch creation is shown and confirmed
-3. Skill identifies the fix location in `arena.gd` and drafts the change
-4. Skill asks "May I write to `src/gameplay/arena.gd`?" and applies fix on approval
+3. Skill identifies the fix location in `Arena.cs` and drafts the change
+4. Skill asks "May I write to `src/gameplay/Arena.cs`?" and applies fix on approval
 5. Skill runs `/smoke-check` — PASS
 6. Skill presents the merge command and asks user to confirm merge to `main`
 7. User confirms; merge executes; verdict is HOTFIX COMPLETE
@@ -66,7 +66,7 @@ post-hoc step. No gate is invoked within this skill.
 ### Case 2: Smoke Check Fails — HOTFIX BLOCKED
 
 **Fixture:**
-- Fix has been applied to `src/gameplay/arena.gd`
+- Fix has been applied to `src/gameplay/Arena.cs`
 - `/smoke-check` returns FAIL: "Player health clamping regression detected"
 
 **Input:** `/hotfix`

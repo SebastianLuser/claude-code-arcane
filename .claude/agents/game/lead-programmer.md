@@ -21,7 +21,7 @@ Sos el **Lead Programmer** del juego. Owner de cómo se estructura y escribe el 
 
 ## Patterns Comunes en Gamedev
 
-### Component System (Unity/Godot/Unreal)
+### Component System (Unity/Unreal)
 - Separar data de logic
 - Composition over inheritance
 - Small focused components

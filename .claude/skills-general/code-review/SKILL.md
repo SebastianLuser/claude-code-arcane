@@ -89,8 +89,8 @@ Spawn all applicable specialists simultaneously via Task — do not wait for one
 
 If an engine is configured, determine which specialist applies to each file and spawn in parallel:
 
-- Primary language files (`.gd`, `.cs`, `.cpp`) → Language/Code Specialist
-- Shader files (`.gdshader`, `.hlsl`, shader graph) → Shader Specialist
+- Primary language files (`.cs`, `.cpp`) → Language/Code Specialist
+- Shader files (`.hlsl`, `.shader`, shader graph) → Shader Specialist
 - UI screen/widget code → UI Specialist
 - Cross-cutting or unclear → Primary Specialist
 

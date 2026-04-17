@@ -22,7 +22,7 @@ No gate IDs assigned.
 ### Case 1: In-domain request — appropriate output
 **Input:** "Implement a melee combo system where three consecutive light attacks chain into a finisher."
 **Expected behavior:**
-- Produces code or a code scaffold following the project's language (GDScript/C#) and coding standards
+- Produces code or a code scaffold following the project's language (C#/C++) and coding standards
 - Defines combo state tracking, input window timing, and finisher trigger logic as separate, testable methods
 - References the relevant GDD section if one is provided in context
 - Does NOT implement UI feedback (delegates to ui-programmer) or AI reaction (delegates to ai-programmer)

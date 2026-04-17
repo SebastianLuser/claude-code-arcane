@@ -49,7 +49,7 @@ point this skill runs.
 **Expected behavior:**
 1. Skill detects no existing configuration and begins fresh onboarding
 2. Skill asks for project name
-3. Skill presents 3 engine options: Godot 4, Unity, Unreal Engine 5
+3. Skill presents 2 engine options: Unity, Unreal Engine 5
 4. User selects an engine
 5. Skill asks "May I write the initial directory structure?"
 6. Skill creates all directories defined in `directory-structure.md`
@@ -58,7 +58,7 @@ point this skill runs.
 
 **Assertions:**
 - [ ] Project name is captured before any file is written
-- [ ] Exactly 3 engine options are presented
+- [ ] Exactly 2 engine options are presented
 - [ ] "May I write" is asked for each config file individually
 - [ ] No file is written without explicit user approval
 - [ ] Handoff to `/setup-engine` occurs at the end with the chosen engine argument
@@ -89,7 +89,7 @@ point this skill runs.
 
 ---
 
-### Case 3: Engine Choice — User picks Godot 4, routes to /setup-engine godot
+### Case 3: Engine Choice — User picks Unity, routes to /setup-engine unity
 
 **Fixture:**
 - Fresh repo — no existing configuration
@@ -97,13 +97,13 @@ point this skill runs.
 **Input:** `/start`
 
 **Expected behavior:**
-1. Skill presents engine options and user selects Godot 4
+1. Skill presents engine options and user selects Unity
 2. Skill writes initial stubs (directory structure, CLAUDE.md) after approval
-3. Skill explicitly routes to `/setup-engine godot` as the next step
+3. Skill explicitly routes to `/setup-engine unity` as the next step
 4. Handoff message clearly names the engine and the next skill invocation
 
 **Assertions:**
-- [ ] Handoff command is `/setup-engine godot` (not generic `/setup-engine`)
+- [ ] Handoff command is `/setup-engine unity` (not generic `/setup-engine`)
 - [ ] Handoff is issued after all initial stubs are written, not before
 - [ ] Engine choice is echoed back to user before writing begins
 

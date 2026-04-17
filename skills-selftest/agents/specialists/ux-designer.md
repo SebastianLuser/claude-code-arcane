@@ -29,7 +29,7 @@ No gate IDs assigned.
 - Does NOT produce visual design (colors, icons) or implementation code
 
 ### Case 2: Out-of-domain request — redirects correctly
-**Input:** "Implement the inventory screen in GDScript with drag-and-drop support."
+**Input:** "Implement the inventory screen in C# with drag-and-drop support."
 **Expected behavior:**
 - Does NOT produce implementation code
 - Explicitly states that UI code implementation belongs to `ui-programmer`

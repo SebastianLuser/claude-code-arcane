@@ -29,9 +29,9 @@
 - Output is a schema table or structured list, not a narrative description
 
 ### Case 2: Out-of-domain request — implement the event tracking in code
-**Input**: "Now that the event schema is designed, write the GDScript code to fire these events in our Godot tutorial scene."
+**Input**: "Now that the event schema is designed, write the C# code to fire these events in our Unity tutorial scene."
 **Expected behavior**:
-- Does not produce GDScript or any implementation code
+- Does not produce C# or any implementation code
 - States clearly: "Telemetry implementation in game code is handled by the appropriate programmer (gameplay-programmer or systems-programmer); I provide the event schema and integration requirements"
 - Optionally produces an integration spec: what the programmer needs to know to implement correctly (event name, properties, when to fire, what analytics SDK or endpoint to use)
 

@@ -6,8 +6,6 @@ DIVISION="general"
 # Detect by project files
 if [[ -f "ProjectSettings/ProjectVersion.txt" ]]; then
   DIVISION="game (Unity)"
-elif [[ -f "project.godot" ]]; then
-  DIVISION="game (Godot)"
 elif ls *.uproject 2>/dev/null | grep -q .; then
   DIVISION="game (Unreal)"
 elif [[ -f "package.json" ]] && grep -q "next" package.json 2>/dev/null; then

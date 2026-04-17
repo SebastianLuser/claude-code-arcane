@@ -22,7 +22,7 @@ El skill funciona para ambos stacks pero las phases difieren. Detectar en orden:
 1. Si `--stack software|gamedev` se pasó → usar
 2. Sino leer `production/stack.txt` si existe → usar su valor
 3. Sino inferir del project structure:
-   - Existe `design/gdd/` o `.godot/` o `ProjectSettings/asset` → gamedev
+   - Existe `design/gdd/` o `ProjectSettings/asset` → gamedev
    - Existe `package.json` / `go.mod` / `requirements.txt` y no `design/gdd/` → software
 4. Sino preguntar al user via `AskUserQuestion`:
    - "¿Este proyecto es software o gamedev?" → options: `software` / `gamedev`

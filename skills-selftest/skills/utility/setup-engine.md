@@ -5,7 +5,7 @@
 `/setup-engine` configures the project's engine, language, rendering backend,
 physics engine, specialist agent assignments, and naming conventions by
 populating `technical-preferences.md`. It accepts an optional engine argument
-(e.g., `/setup-engine godot`) to skip the engine-selection step. For each
+(e.g., `/setup-engine unity`) to skip the engine-selection step. For each
 section of `technical-preferences.md`, the skill presents a draft and asks
 "May I write to `technical-preferences.md`?" before updating.
 
@@ -36,38 +36,7 @@ None. `/setup-engine` is a technical configuration skill. No director gates appl
 
 ## Test Cases
 
-### Case 1: Godot 4 + GDScript — Full engine configuration
-
-**Fixture:**
-- `technical-preferences.md` contains only placeholders
-- Engine argument provided: `godot`
-
-**Input:** `/setup-engine godot`
-
-**Expected behavior:**
-1. Skill skips engine-selection step (argument provided)
-2. Skill presents language options for Godot: GDScript or C#
-3. User selects GDScript
-4. Skill drafts all engine sections: engine/language/rendering/physics fields,
-   naming conventions (snake_case for GDScript), specialist assignments
-   (godot-specialist, gdscript-specialist, godot-shader-specialist, etc.)
-5. Skill populates the routing table: `.gd` → gdscript-specialist, `.gdshader` →
-   godot-shader-specialist, `.tscn` → godot-specialist
-6. Skill asks "May I write to `technical-preferences.md`?"
-7. File is written after approval; verdict is COMPLETE
-
-**Assertions:**
-- [ ] Engine field is set to Godot 4 (not a placeholder)
-- [ ] Language field is set to GDScript
-- [ ] Naming conventions are GDScript-appropriate (snake_case)
-- [ ] Routing table includes `.gd`, `.gdshader`, and `.tscn` entries
-- [ ] Specialists are assigned (not placeholders)
-- [ ] "May I write" is asked before writing
-- [ ] Verdict is COMPLETE
-
----
-
-### Case 2: Unity + C# — Unity-specific configuration
+### Case 1: Unity + C# — Unity-specific configuration
 
 **Fixture:**
 - `technical-preferences.md` contains only placeholders
@@ -78,21 +47,23 @@ None. `/setup-engine` is a technical configuration skill. No director gates appl
 **Expected behavior:**
 1. Skill sets engine to Unity, language to C#
 2. Naming conventions are C#-appropriate (PascalCase for classes, camelCase for fields)
-3. Specialist assignments reference unity-specialist, csharp-specialist
-4. Routing table: `.cs` → csharp-specialist, `.asmdef` → unity-specialist,
-   `.unity` (scene) → unity-specialist
+3. Specialist assignments reference unity-specialist, unity-shader-specialist
+4. Routing table: `.cs` → unity-specialist, `.asmdef` → unity-specialist,
+   `.unity` (scene) → unity-specialist, `.shader` → unity-shader-specialist
 5. Skill asks "May I write to `technical-preferences.md`?" and writes on approval
 
 **Assertions:**
-- [ ] Engine field is set to Unity (not Godot or Unreal)
+- [ ] Engine field is set to Unity (not a placeholder)
 - [ ] Language field is set to C#
-- [ ] Naming conventions reflect C# conventions
-- [ ] Routing table includes `.cs` and `.unity` entries
+- [ ] Naming conventions reflect C# conventions (PascalCase)
+- [ ] Routing table includes `.cs`, `.unity`, and `.shader` entries
+- [ ] Specialists are assigned (not placeholders)
+- [ ] "May I write" is asked before writing
 - [ ] Verdict is COMPLETE
 
 ---
 
-### Case 3: Unreal + Blueprint — Unreal-specific configuration
+### Case 2: Unreal + Blueprint — Unreal-specific configuration
 
 **Fixture:**
 - `technical-preferences.md` contains only placeholders
@@ -102,8 +73,8 @@ None. `/setup-engine` is a technical configuration skill. No director gates appl
 
 **Expected behavior:**
 1. Skill sets engine to Unreal Engine 5, primary language to Blueprint (Visual Scripting)
-2. Specialist assignments reference unreal-specialist, blueprint-specialist
-3. Routing table: `.uasset` → blueprint-specialist or unreal-specialist,
+2. Specialist assignments reference unreal-specialist, ue-blueprint-specialist
+3. Routing table: `.uasset` → ue-blueprint-specialist or unreal-specialist,
    `.umap` → unreal-specialist
 4. Performance budgets are pre-set with Unreal defaults (e.g., higher draw call budget)
 5. Skill asks "May I write" and writes on approval; verdict is COMPLETE
@@ -116,17 +87,17 @@ None. `/setup-engine` is a technical configuration skill. No director gates appl
 
 ---
 
-### Case 4: Engine Already Configured — Offers to reconfigure specific sections
+### Case 3: Engine Already Configured — Offers to reconfigure specific sections
 
 **Fixture:**
-- `technical-preferences.md` has engine set to Godot 4 with all fields populated
+- `technical-preferences.md` has engine set to Unity with all fields populated
 - No engine argument provided
 
 **Input:** `/setup-engine`
 
 **Expected behavior:**
-1. Skill reads `technical-preferences.md` and detects fully configured engine (Godot 4)
-2. Skill reports: "Engine already configured as Godot 4 + GDScript"
+1. Skill reads `technical-preferences.md` and detects fully configured engine (Unity)
+2. Skill reports: "Engine already configured as Unity + C#"
 3. Skill presents options: reconfigure all, reconfigure specific section only
    (Engine/Language, Naming Conventions, Specialists, Performance Budgets)
 4. User selects "Reconfigure Performance Budgets only"
@@ -141,12 +112,12 @@ None. `/setup-engine` is a technical configuration skill. No director gates appl
 
 ---
 
-### Case 5: Director Gate Check — No gate; setup-engine is a utility skill
+### Case 4: Director Gate Check — No gate; setup-engine is a utility skill
 
 **Fixture:**
 - Fresh project with no engine configured
 
-**Input:** `/setup-engine godot`
+**Input:** `/setup-engine unity`
 
 **Expected behavior:**
 1. Skill completes full engine configuration
@@ -173,10 +144,7 @@ None. `/setup-engine` is a technical configuration skill. No director gates appl
 
 ## Coverage Notes
 
-- Godot 4 + C# (instead of GDScript) follows the same flow as Case 1 with
-  different naming conventions and the godot-csharp-specialist assignment.
-  This variant is not separately tested.
-- The engine-version-specific guidance (e.g., Godot 4.6 knowledge gap warning
+- The engine-version-specific guidance (e.g., Unity 6 knowledge gap warning
   from VERSION.md) is surfaced by the skill but not assertion-tested here.
 - Performance budget defaults per engine are noted as engine-specific but
   exact default values are not assertion-tested.

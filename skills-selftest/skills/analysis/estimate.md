@@ -38,7 +38,7 @@ None. Estimation is an advisory informational skill; no gates are invoked.
   - ADR reference (Accepted status)
   - No "unknown" or "TBD" language in story body
 - `production/sprints/sprint-003.md` through `sprint-005.md` exist with velocity data
-- Tech stack is GDScript (well-understood by team per sprint history)
+- Tech stack is C# (well-understood by team per sprint history)
 
 **Input:** `/estimate production/epics/combat/story-hitbox-detection.md`
 

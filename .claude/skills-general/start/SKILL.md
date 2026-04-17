@@ -16,9 +16,6 @@ Escanear en paralelo:
 # Proyecto Unity?
 ls ProjectSettings/ProjectVersion.txt 2>/dev/null
 
-# Godot?
-ls project.godot 2>/dev/null
-
 # Unreal?
 ls *.uproject 2>/dev/null
 
@@ -81,7 +78,7 @@ Con AskUserQuestion (multi-tab):
 - Consultar herramientas (ClickUp, Jira, etc.)
 
 **Tab 2 — "Tipo":** ¿Qué tipo de proyecto?
-- Juego (Unity/Godot/Unreal/web)
+- Juego (Unity/Unreal/web)
 - Aplicación web (frontend+backend)
 - API / backend service
 - App móvil (iOS/Android)

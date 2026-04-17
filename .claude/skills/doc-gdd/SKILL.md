@@ -34,7 +34,7 @@ Preguntar al usuario:
 |-------|---------|
 | Género | [género] |
 | Plataforma | [plataforma] |
-| Engine | [Unity/Godot/Unreal] |
+| Engine | [Unity/Unreal] |
 | Perspectiva | [isométrica/top-down/side-scroll] |
 | Jugadores | [1/multijugador] |
 | Sesión promedio | [X minutos] |

@@ -32,8 +32,8 @@ A test framework installed at sprint four costs 3 sprints.
    - Glob `tests/` — does the directory exist?
    - Glob `tests/unit/` and `tests/integration/` — do subdirectories exist?
    - Glob `.github/workflows/` — does a CI workflow file exist?
-   - Glob `tests/gdunit4_runner.gd` (Godot) or `tests/EditMode/` (Unity) or
-     `Source/Tests/` (Unreal) for engine-specific artifacts.
+   - Glob `tests/EditMode/` (Unity) or `Source/Tests/` (Unreal) for
+     engine-specific artifacts.
 
 3. **Report findings**:
    - "Engine: [engine]. Test directory: [found / not found]. CI workflow: [found / not found]."
@@ -87,7 +87,7 @@ After approval, create the following files:
 # Test Infrastructure
 
 **Engine**: [engine name + version]
-**Test Framework**: [GdUnit4 | Unity Test Framework | UE Automation]
+**Test Framework**: [Unity Test Framework | UE Automation]
 **CI**: `.github/workflows/tests.yml`
 **Setup date**: [date]
 
@@ -109,7 +109,7 @@ tests/
 
 - **Files**: `[system]_[feature]_test.[ext]`
 - **Functions**: `test_[scenario]_[expected]`
-- **Example**: `combat_damage_test.gd` → `test_base_attack_returns_expected_damage()`
+- **Example**: `CombatDamageTest.cs` → `BaseAttack_ReturnsExpectedDamage()`
 
 ## Story Type → Test Evidence
 
@@ -129,40 +129,6 @@ A failed test suite blocks merging.
 ```
 
 ### Engine-specific files
-
-#### Godot 4 (`Engine: Godot`)
-
-Create `tests/gdunit4_runner.gd`:
-
-```gdscript
-# GdUnit4 test runner — invoked by CI and /smoke-check
-# Usage: godot --headless --script tests/gdunit4_runner.gd
-extends SceneTree
-
-func _init() -> void:
-    var runner := load("res://addons/gdunit4/GdUnitRunner.gd")
-    if runner == null:
-        push_error("GdUnit4 not found. Install via AssetLib or addons/.")
-        quit(1)
-        return
-    var instance = runner.new()
-    instance.run_tests()
-    quit(0)
-```
-
-Create `tests/unit/.gdignore_placeholder` with content:
-`# Unit tests go here — one subdirectory per system (e.g., tests/unit/combat/)`
-
-Create `tests/integration/.gdignore_placeholder` with content:
-`# Integration tests go here — one subdirectory per system`
-
-Note in the README: **Installing GdUnit4**
-```
-1. Open Godot → AssetLib → search "GdUnit4" → Download & Install
-2. Enable the plugin: Project → Project Settings → Plugins → GdUnit4 ✓
-3. Restart the editor
-4. Verify: res://addons/gdunit4/ exists
-```
 
 #### Unity (`Engine: Unity`)
 
@@ -204,47 +170,6 @@ Test category naming: "MyGame.[System].[Feature]"
 ---
 
 ## Phase 4: Create CI/CD Workflow
-
-### Godot 4
-
-Create `.github/workflows/tests.yml`:
-
-```yaml
-name: Automated Tests
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  test:
-    name: Run GdUnit4 Tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          lfs: true
-
-      - name: Run GdUnit4 Tests
-        uses: MikeSchulze/gdUnit4-action@v1
-        with:
-          godot-version: '[VERSION FROM docs/engine-reference/godot/VERSION.md]'
-          paths: |
-            tests/unit
-            tests/integration
-          report-name: test-results
-
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: reports/
-```
 
 ### Unity
 
@@ -395,7 +320,7 @@ Files created:
 - .github/workflows/tests.yml
 
 Next steps:
-1. [Engine-specific install step, e.g., "Install GdUnit4 via AssetLib"]
+1. [Engine-specific install step, e.g., "Enable Unity Test Framework in Window → Test Runner"]
 2. Write your first test: create tests/unit/[first-system]/[system]_test.[ext]
 3. Run `/qa-plan sprint` before your first sprint to classify stories and set
    test evidence requirements

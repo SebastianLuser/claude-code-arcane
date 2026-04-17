@@ -14,7 +14,7 @@ IS_SOFTWARE=false
 STACK="unknown"
 
 # Gamedev markers
-if [ -f "ProjectSettings/ProjectVersion.txt" ] || [ -f "project.godot" ]; then
+if [ -f "ProjectSettings/ProjectVersion.txt" ]; then
   IS_GAMEDEV=true
 fi
 if ls *.uproject 2>/dev/null | grep -q .; then
@@ -41,7 +41,7 @@ fi
 FRESH_PROJECT=true
 
 if [ -d "src" ]; then
-  SRC_CHECK=$(find src -type f \( -name "*.gd" -o -name "*.cs" -o -name "*.cpp" -o -name "*.c" -o -name "*.h" -o -name "*.hpp" -o -name "*.rs" -o -name "*.py" -o -name "*.js" -o -name "*.ts" -o -name "*.tsx" -o -name "*.jsx" -o -name "*.go" -o -name "*.java" -o -name "*.kt" -o -name "*.dart" \) 2>/dev/null | head -1)
+  SRC_CHECK=$(find src -type f \( -name "*.cs" -o -name "*.cpp" -o -name "*.c" -o -name "*.h" -o -name "*.hpp" -o -name "*.rs" -o -name "*.py" -o -name "*.js" -o -name "*.ts" -o -name "*.tsx" -o -name "*.jsx" -o -name "*.go" -o -name "*.java" -o -name "*.kt" -o -name "*.dart" \) 2>/dev/null | head -1)
   if [ -n "$SRC_CHECK" ]; then
     FRESH_PROJECT=false
   fi
@@ -67,7 +67,7 @@ echo ""
 # ============================================================
 if [ "$IS_GAMEDEV" = true ]; then
   if [ -d "src" ]; then
-    GAMEDEV_SRC=$(find src -type f \( -name "*.gd" -o -name "*.cs" -o -name "*.cpp" -o -name "*.c" -o -name "*.h" -o -name "*.hpp" \) 2>/dev/null | wc -l)
+    GAMEDEV_SRC=$(find src -type f \( -name "*.cs" -o -name "*.cpp" -o -name "*.c" -o -name "*.h" -o -name "*.hpp" \) 2>/dev/null | wc -l)
   else
     GAMEDEV_SRC=0
   fi

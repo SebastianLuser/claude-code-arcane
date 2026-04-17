@@ -32,7 +32,7 @@ Verified by reading the agent's `.claude/agents/narrative-director.md` frontmatt
 
 ### Case 2: Out-of-domain request — redirects or escalates
 **Scenario:** A developer asks narrative-director to review and optimize the shader code used for the "ancient glow" visual effect on Archive artifacts.
-**Expected:** Agent declines to evaluate shader code and redirects to the appropriate engine specialist (godot-gdscript-specialist or equivalent shader specialist).
+**Expected:** Agent declines to evaluate shader code and redirects to the appropriate engine specialist (unity-shader-specialist or equivalent shader specialist).
 **Assertions:**
 - [ ] Does not make any binding decision about shader code or visual implementation
 - [ ] Explicitly names the appropriate engine or shader specialist as the correct handler

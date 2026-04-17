@@ -133,9 +133,9 @@ with verdict COMPLETE / NEEDS WORK / BLOCKED and handoffs to `/code-review`,
 ### Case 5: Architecture Phase Engine Routing — Engine specialist receives correct context
 
 **Fixture:**
-- `.claude/docs/technical-preferences.md` has Engine Specialists section populated (e.g., Primary: godot-specialist)
+- `.claude/docs/technical-preferences.md` has Engine Specialists section populated (e.g., Primary: unity-specialist)
 - Architecture sketch produced by gameplay-programmer is available
-- Engine version pinned in `docs/engine-reference/godot/VERSION.md`
+- Engine version pinned in `docs/engine-reference/unity/VERSION.md`
 
 **Input:** `/team-combat parry and riposte system`
 

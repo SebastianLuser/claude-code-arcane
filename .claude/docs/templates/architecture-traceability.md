@@ -6,7 +6,7 @@
 ## Document Status
 
 - **Last Updated**: [YYYY-MM-DD]
-- **Engine**: [e.g. Godot 4.6]
+- **Engine**: [e.g. Unity 6]
 - **GDDs Indexed**: [N]
 - **ADRs Indexed**: [M]
 - **Last Review**: [link to docs/architecture/architecture-review-[date].md]

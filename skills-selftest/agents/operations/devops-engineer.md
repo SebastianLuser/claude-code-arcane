@@ -19,11 +19,11 @@
 
 ## Test Cases
 
-### Case 1: In-domain request — CI setup for a Godot project
-**Input**: "Set up a CI pipeline for our Godot 4 project. It should run tests on every push to main and every pull request, and fail the build if tests fail."
+### Case 1: In-domain request — CI setup for a Unity project
+**Input**: "Set up a CI pipeline for our Unity 6 project. It should run tests on every push to main and every pull request, and fail the build if tests fail."
 **Expected behavior**:
 - Produces a GitHub Actions workflow YAML (`.github/workflows/ci.yml` or equivalent)
-- Uses the Godot headless test runner command from `coding-standards.md`: `godot --headless --script tests/gdunit4_runner.gd`
+- Uses the Unity Test Framework CI action from `coding-standards.md` (e.g., `game-ci/unity-test-runner@v4`)
 - Configures trigger on `push` to main and `pull_request`
 - Sets the job to fail (`exit 1` or non-zero exit) when tests fail — does NOT configure the pipeline to continue on test failure
 - References the project's coding standards CI rules in the output or comments
@@ -39,9 +39,9 @@
 **Input**: "Our CI pipeline is failing on the merge step. The error is: 'Asset import failed: texture compression format unsupported in headless mode.'"
 **Expected behavior**:
 - Diagnoses the root cause: headless CI environment does not support GPU-dependent texture compression
-- Proposes a concrete fix: either pre-import assets locally before CI runs (commit .import files to VCS), configure Godot's import settings to use a CPU-compatible compression format in CI, or use a Docker image with GPU simulation if available
+- Proposes a concrete fix: either pre-import assets locally before CI runs (commit `.meta` and Library/ artifacts where applicable), configure Unity's import settings to use a CPU-compatible compression format in CI, or use a Docker image with GPU simulation if available
 - Does NOT declare the pipeline unfixable — provides at least one actionable path
-- Notes any tradeoffs (committing .import files increases repo size; CPU compression may differ from GPU output)
+- Notes any tradeoffs (committing Library/ artifacts increases repo size; CPU compression may differ from GPU output)
 
 ### Case 4: Branching strategy conflict
 **Input**: "Half the team wants to use GitFlow with long-lived feature branches. The other half wants trunk-based development. How should we set this up?"
@@ -57,7 +57,7 @@
 **Input**: "Set up our CI build matrix so we get a build artifact for each target platform on every release branch push."
 **Expected behavior**:
 - Produces a build matrix configuration with three platform entries: Windows, Linux, Switch, PS5
-- Applies platform-appropriate build steps: PC uses standard Godot export templates; Switch and PS5 require platform-specific export templates (notes that console templates require licensed SDK access and are not publicly distributed)
+- Applies platform-appropriate build steps: PC uses standard Unity build targets; Switch and PS5 require platform-specific build support modules (notes that console modules require licensed SDK access and are not publicly distributed)
 - Does NOT assume all platforms can use the same build runner — flags that console builds may require self-hosted runners with licensed SDKs
 - Organizes artifacts by platform name in the pipeline output
 
@@ -74,7 +74,7 @@
 ---
 
 ## Coverage Notes
-- Case 1 (Godot CI) references `coding-standards.md` CI rules — verify this file is present and current before running this test
+- Case 1 (Unity CI) references `coding-standards.md` CI rules — verify this file is present and current before running this test
 - Case 4 (branching strategy) is a convention-enforcement test — agent must know the project convention, not just give neutral advice
 - Case 5 requires that project's target platforms are documented (in `technical-preferences.md` or equivalent)
 - No automated runner; review manually or via `/skill-test`

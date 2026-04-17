@@ -31,7 +31,7 @@ Claude-Code-Arcane/
 │   │   │   ├── ai-code.md             # NPC behavior trees, perception
 │   │   │   ├── gameplay-code.md       # Delta-time, frame budgets
 │   │   │   ├── engine-code.md         # Zero-alloc, hot paths
-│   │   │   ├── shader-code.md         # Godot/Unity/Unreal shaders
+│   │   │   ├── shader-code.md         # Unity/Unreal shaders
 │   │   │   ├── network-code.md        # Server-authoritative, rollback
 │   │   │   ├── ui-code.md             # Game UI, gamepad support
 │   │   │   ├── design-docs.md         # 8-section GDD structure

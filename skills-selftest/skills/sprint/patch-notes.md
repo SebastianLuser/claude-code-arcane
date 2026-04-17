@@ -39,7 +39,7 @@ None. Patch notes generation is a fast compilation task; no gates are invoked.
   - "Fix crash on level transition" (Fixes — player-facing)
   - "Add enemy patrol AI" (Features — player-facing)
   - "Refactor input handler to use event bus" (Fixes — internal only)
-  - "Update dependency: Godot 4.6" (internal only)
+  - "Update dependency: Unity 6.1" (internal only)
 - Version is `v0.4.0`
 
 **Input:** `/patch-notes v0.4.0`

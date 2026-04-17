@@ -38,13 +38,13 @@ None. `/reverse-document` is a documentation utility. No director gates apply.
 ### Case 1: Well-Structured Source — Accurate design doc skeleton produced
 
 **Fixture:**
-- `src/gameplay/health_system.gd` exists with:
-  - `@export var max_health: int = 100`
-  - `func take_damage(amount: int)` with clamping logic
-  - `signal health_changed(new_value: int)`
-  - Docstrings on all public methods
+- `src/gameplay/HealthSystem.cs` exists with:
+  - `[SerializeField] private int maxHealth = 100;`
+  - `public void TakeDamage(int amount)` with clamping logic
+  - `public event Action<int> HealthChanged;`
+  - XML doc comments on all public methods
 
-**Input:** `/reverse-document src/gameplay/health_system.gd`
+**Input:** `/reverse-document src/gameplay/HealthSystem.cs`
 
 **Expected behavior:**
 1. Skill reads the source file and identifies the health system
@@ -69,12 +69,12 @@ None. `/reverse-document` is a documentation utility. No director gates apply.
 ### Case 2: Ambiguous Source — Magic Numbers, PARTIAL Verdict
 
 **Fixture:**
-- `src/gameplay/enemy_ai.gd` exists with:
+- `src/gameplay/EnemyAI.cs` exists with:
   - Inline magic numbers: `if distance < 150:`, `speed = 3.5`
   - No comments or docstrings
   - Complex state machine logic that is not self-explanatory
 
-**Input:** `/reverse-document src/gameplay/enemy_ai.gd`
+**Input:** `/reverse-document src/gameplay/EnemyAI.cs`
 
 **Expected behavior:**
 1. Skill reads the file and detects magic numbers with no context
@@ -95,10 +95,10 @@ None. `/reverse-document` is a documentation utility. No director gates apply.
 ### Case 3: Multiple Interdependent Files — Cross-System Overview Produced
 
 **Fixture:**
-- User provides 2 source files: `combat_system.gd` and `damage_resolver.gd`
+- User provides 2 source files: `CombatSystem.cs` and `DamageResolver.cs`
 - The files reference each other (combat calls damage_resolver)
 
-**Input:** `/reverse-document src/gameplay/combat_system.gd src/gameplay/damage_resolver.gd`
+**Input:** `/reverse-document src/gameplay/CombatSystem.cs src/gameplay/DamageResolver.cs`
 
 **Expected behavior:**
 1. Skill reads both files and detects the dependency relationship
@@ -119,13 +119,13 @@ None. `/reverse-document` is a documentation utility. No director gates apply.
 ### Case 4: Source File Not Found — Error
 
 **Fixture:**
-- `src/gameplay/inventory_system.gd` does not exist
+- `src/gameplay/InventorySystem.cs` does not exist
 
-**Input:** `/reverse-document src/gameplay/inventory_system.gd`
+**Input:** `/reverse-document src/gameplay/InventorySystem.cs`
 
 **Expected behavior:**
 1. Skill attempts to read the specified file — not found
-2. Skill outputs: "Source file not found: src/gameplay/inventory_system.gd"
+2. Skill outputs: "Source file not found: src/gameplay/InventorySystem.cs"
 3. Skill suggests checking the path or running `/map-systems` to identify
    the correct source file
 4. No document is created
@@ -143,7 +143,7 @@ None. `/reverse-document` is a documentation utility. No director gates apply.
 **Fixture:**
 - Well-structured source file exists
 
-**Input:** `/reverse-document src/gameplay/health_system.gd`
+**Input:** `/reverse-document src/gameplay/HealthSystem.cs`
 
 **Expected behavior:**
 1. Skill generates and writes the design doc
@@ -176,5 +176,5 @@ None. `/reverse-document` is a documentation utility. No director gates apply.
 - The case where a source file is readable but contains only auto-generated
   boilerplate with no meaningful logic is not tested; skill would likely produce
   a near-empty skeleton with a PARTIAL verdict.
-- C# and Blueprint source files follow the same inference pattern as GDScript;
+- Blueprint source files follow the same inference pattern as C#;
   language-specific differences are handled in the skill body.

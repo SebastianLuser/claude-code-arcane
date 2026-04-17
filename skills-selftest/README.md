@@ -55,7 +55,7 @@ skills-selftest/
 │   ├── directors/         ← creative-director, technical-director, producer, CTO, CPO
 │   ├── leads/             ← dept leads (game-designer, backend-architect, qa-lead)
 │   ├── specialists/       ← general specialists
-│   ├── engine/            ← engine-specific (godot/unity/unreal)
+│   ├── engine/            ← engine-specific (unity/unreal)
 │   ├── qa/                ← test automation, perf, pen testing
 │   ├── operations/        ← devops, security, monitoring
 │   │

@@ -46,9 +46,6 @@ ls -t .github/ 2>/dev/null
 ls -t test-results/ 2>/dev/null
 ```
 
-For Godot projects: GdUnit4 outputs XML results compatible with JUnit format.
-Check `test-results/` for `.xml` files.
-
 For Unity projects: game-ci test runner outputs NUnit XML to `test-results/`
 by default.
 
@@ -77,16 +74,15 @@ Stop and ask the user which option to pursue.
 
 For each CI log or result file found, parse:
 
-**JUnit XML format** (GdUnit4 / Unity):
+**JUnit XML format** (Unity):
 - Grep for `<testcase name=` to get test names
 - Grep for `<failure` or `<error` to identify failures
 - Parse `classname` and `name` attributes for full test identifiers
 
 **Plain text logs**:
 - Grep for pass/fail patterns:
-  - Godot: `PASSED` / `FAILED` adjacent to test names
-  - Unreal: `Result: Success` / `Result: Fail`
   - Unity: `Test passed` / `Test failed`
+  - Unreal: `Result: Success` / `Result: Fail`
 
 Build a table: `test_id → [run1_result, run2_result, run3_result, ...]`
 
@@ -112,10 +108,10 @@ For each flaky test, classify the likely cause:
 | **Timing / async** | Fails after awaiting signals or timers; pass rate correlates with system load | Add explicit await/synchronisation; avoid time-based delays |
 | **Order dependency** | Fails when run after specific other tests; passes in isolation | Add proper setup/teardown; ensure test isolation |
 | **Random seed** | Fails intermittently with no pattern; involves RNG | Pass explicit seed; don't use `randf()` in tests |
-| **Resource leak** | Fails more often later in a test run | Fix cleanup in teardown; check orphan nodes (Godot) or object disposal (Unity) |
+| **Resource leak** | Fails more often later in a test run | Fix cleanup in teardown; check object disposal (Unity) or GC pressure |
 | **External state** | Fails when a file, scene, or global exists from a prior test | Isolate test from file system; use in-memory mocks |
-| **Floating point** | Fails on comparisons like `== 0.5` | Use epsilon comparison (`is_equal_approx`, `Assert.AreApproximately`) |
-| **Scene/prefab load race** | Fails when scenes are not yet ready | Await one frame after instantiation; use `await get_tree().process_frame` |
+| **Floating point** | Fails on comparisons like `== 0.5` | Use epsilon comparison (`Assert.AreApproximately`, `Mathf.Approximately`) |
+| **Scene/prefab load race** | Fails when scenes are not yet ready | Await one frame after instantiation; use `yield return null` |
 
 Use Grep to check the test file for timing calls, randf, global state access,
 or equality comparisons on floats to narrow down the cause.
@@ -128,7 +124,7 @@ For each flaky test:
 
 **Quarantine (High flakiness):**
 > "Quarantine this test immediately. Disable it in CI by adding
-> `@pytest.mark.skip` / `[Ignore]` / `GdUnitSkip` annotation. Log it in
+> `@pytest.mark.skip` / `[Ignore]` annotation. Log it in
 > `tests/regression-suite.md` quarantine section. The test is now opt-in only.
 > Fix the root cause before removing quarantine."
 

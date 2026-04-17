@@ -28,13 +28,6 @@ Para testabilidad, inyectar dependencies (via constructor, factory, o service lo
 
 ## Engine-Specific
 
-### Godot
-- **Nodes organizados por concern:** un script por node con responsabilidad única
-- **Signals over polling:** usar signals de Godot, no `_process` que checkea state
-- **Autoloads solo para singletons genuinos** (GameState, AudioManager) — no para todo
-- **GDScript style:** snake_case, `@export` para valores editables en inspector
-- **Scenes como units of reusability:** PackedScene para prefabs, instanciar via `preload()`
-
 ### Unity
 - **ScriptableObjects para data** (stats, configs, events)
 - **Addressables para asset loading** en proyectos medianos/grandes
@@ -147,7 +140,6 @@ Para testabilidad, inyectar dependencies (via constructor, factory, o service lo
 
 ### CI/CD por engine
 
-- **Godot:** `godot --headless --script tests/gdunit4_runner.gd`
 - **Unity:** `game-ci/unity-test-runner@v4` (GitHub Actions)
 - **Unreal:** headless runner con `-nullrhi` flag
 
@@ -189,4 +181,4 @@ Todos los design docs en `design/gdd/` siguen estas 8 secciones obligatorias:
 
 ### Version control
 - LFS para binarios grandes (>1MB)
-- `.gitignore` para caches del engine (Library/, .godot/, Saved/)
+- `.gitignore` para caches del engine (Library/, Intermediate/, Saved/)

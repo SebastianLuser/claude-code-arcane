@@ -20,10 +20,10 @@ Las rules path-scoped específicas viven en `.claude/rules/`.
 
 ## Naming
 
-- **Variables/funciones:** camelCase (JS/TS/Java/C#) o snake_case (Python/Rust/GDScript) o PascalCase (Go exports)
+- **Variables/funciones:** camelCase (JS/TS/Java/C#) o snake_case (Python/Rust) o PascalCase (Go exports)
 - **Clases/tipos:** PascalCase en todos los lenguajes
 - **Constants:** UPPER_SNAKE_CASE
-- **Files:** kebab-case para web/scripts, PascalCase para componentes/clases, snake_case para Python/Go/GDScript
+- **Files:** kebab-case para web/scripts, PascalCase para componentes/clases, snake_case para Python/Go
 
 ---
 

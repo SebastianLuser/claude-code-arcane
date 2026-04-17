@@ -69,21 +69,23 @@ You (propose architecture):
 "Got it. Here's the proposed structure:
 
 ```
-# src/gameplay/combat/damage_calculator.gd
-class_name DamageCalculator
-extends RefCounted
+// src/gameplay/combat/DamageCalculator.cs
+public static class DamageCalculator
+{
+    public static event Action<Transform, int, bool> DamageCalculated;
 
-signal damage_calculated(target: Node, final_damage: int, is_crit: bool)
+    public static int CalculateDamage(CharacterStats attacker, CharacterStats target, Equipment weapon)
+    {
+        float baseDamage = attacker.GetAttackPower();
+        float weaponMult = weapon.DamageMultiplier;
+        float critMult = RollCrit(attacker.CritChance) ? 2.0f : 1.0f;
+        float resistance = target.GetResistance(weapon.DamageType);
 
-static func calculate_damage(attacker: CharacterStats, target: CharacterStats, weapon: Equipment) -> int:
-    var base_damage: float = attacker.get_attack_power()
-    var weapon_mult: float = weapon.damage_multiplier
-    var crit_mult: float = 2.0 if _roll_crit(attacker.crit_chance) else 1.0
-    var resistance: float = target.get_resistance(weapon.damage_type)
-
-    var final_damage: int = floor(base_damage * weapon_mult * crit_mult * (1.0 - resistance))
-    damage_calculated.emit(target, final_damage, crit_mult > 1.0)
-    return final_damage
+        int finalDamage = Mathf.FloorToInt(baseDamage * weaponMult * critMult * (1.0f - resistance));
+        DamageCalculated?.Invoke(target.transform, finalDamage, critMult > 1.0f);
+        return finalDamage;
+    }
+}
 ```
 
 Constants like crit_mult (2.0) will move to assets/data/combat_config.json per the data-driven rule.
@@ -96,7 +98,7 @@ You (implement):
 [Writes code]
 [gameplay-code rule flags hardcoded crit multiplier]
 
-"Implemented src/gameplay/combat/damage_calculator.gd.
+"Implemented src/gameplay/combat/DamageCalculator.cs.
 
 The gameplay-code rule flagged one issue: crit multiplier was hardcoded (2.0).
 I moved it to assets/data/combat_config.json as 'critical_damage_multiplier': 2.0.
@@ -108,7 +110,7 @@ File is ready. Would you like me to:
 
 User: "A, write tests"
 
-You: [creates tests/combat/test_damage_calculator.gd]
+You: [creates tests/combat/DamageCalculatorTest.cs]
      "Created test file with 6 test cases covering the acceptance criteria from the design doc.
       All tests passing.
 

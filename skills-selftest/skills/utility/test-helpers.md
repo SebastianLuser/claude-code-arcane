@@ -34,10 +34,10 @@ None. `/test-helpers` is a scaffolding utility. No director gates apply.
 
 ## Test Cases
 
-### Case 1: Happy Path — Player factory helper generated for Godot/GDScript
+### Case 1: Happy Path — Player factory helper generated for Unity/C#
 
 **Fixture:**
-- `technical-preferences.md` has engine Godot 4, language GDScript
+- `technical-preferences.md` has engine Unity 6, language C#
 - `tests/` directory exists (test-setup has been run)
 - `design/gdd/player.md` exists with defined player properties
 - No existing helpers in `tests/helpers/`
@@ -45,19 +45,18 @@ None. `/test-helpers` is a scaffolding utility. No director gates apply.
 **Input:** `/test-helpers player-factory`
 
 **Expected behavior:**
-1. Skill reads engine (Godot 4 / GDScript) and player GDD for property context
-2. Skill generates a deterministic `PlayerFactory` helper in GDScript:
-   - `create_player(health: int = 100, speed: float = 200.0)` function
-   - Returns a player node pre-configured to a known state
+1. Skill reads engine (Unity 6 / C#) and player GDD for property context
+2. Skill generates a deterministic `PlayerFactory` helper in C#:
+   - `CreatePlayer(int health = 100, float speed = 200.0f)` method
+   - Returns a player GameObject pre-configured to a known state
    - Uses dependency injection (no singletons)
-3. Skill asks "May I write to `tests/helpers/player_factory.gd`?"
+3. Skill asks "May I write to `tests/helpers/PlayerFactory.cs`?"
 4. File is written on approval; verdict is COMPLETE
 
 **Assertions:**
-- [ ] Generated helper is in GDScript (not C# or Blueprint)
-- [ ] Factory function parameters use defaults matching GDD values
-- [ ] Helper uses dependency injection (no Autoload/singleton references)
-- [ ] Filename follows snake_case convention for GDScript
+- [ ] Factory method parameters use defaults matching GDD values
+- [ ] Helper uses dependency injection (no singleton references)
+- [ ] Filename follows PascalCase convention for C#
 - [ ] Verdict is COMPLETE
 
 ---
@@ -86,25 +85,25 @@ None. `/test-helpers` is a scaffolding utility. No director gates apply.
 ### Case 3: Helper Already Exists — Offers to extend rather than replace
 
 **Fixture:**
-- `tests/helpers/player_factory.gd` already exists with a `create_player()` function
-- User requests a new `create_enemy()` function be added to the factory
+- `tests/helpers/PlayerFactory.cs` already exists with a `CreatePlayer()` method
+- User requests a new `CreateEnemy()` method be added to the factory
 
 **Input:** `/test-helpers enemy-factory`
 
 **Expected behavior:**
-1. Skill finds an existing `player_factory.gd` and checks if it's the right file
-   to extend (or if a separate `enemy_factory.gd` should be created)
-2. Skill presents options: add `create_enemy()` to existing factory or create
-   `tests/helpers/enemy_factory.gd`
-3. User selects extend; skill drafts the `create_enemy()` function
-4. Skill asks "May I extend `tests/helpers/player_factory.gd`?"
-5. Function is added on approval; verdict is COMPLETE
+1. Skill finds an existing `PlayerFactory.cs` and checks if it's the right file
+   to extend (or if a separate `EnemyFactory.cs` should be created)
+2. Skill presents options: add `CreateEnemy()` to existing factory or create
+   `tests/helpers/EnemyFactory.cs`
+3. User selects extend; skill drafts the `CreateEnemy()` method
+4. Skill asks "May I extend `tests/helpers/PlayerFactory.cs`?"
+5. Method is added on approval; verdict is COMPLETE
 
 **Assertions:**
 - [ ] Existing helper is detected and surfaced
 - [ ] User is given extend vs. new file choice
 - [ ] "May I extend" language is used (not "May I write" for replacement)
-- [ ] Existing `create_player()` is preserved in the extended file
+- [ ] Existing `CreatePlayer()` is preserved in the extended file
 - [ ] Verdict is COMPLETE
 
 ---
@@ -112,7 +111,7 @@ None. `/test-helpers` is a scaffolding utility. No director gates apply.
 ### Case 4: System Has No GDD — Notes missing design context in helper
 
 **Fixture:**
-- `technical-preferences.md` has Godot 4 / GDScript
+- `technical-preferences.md` has Unity 6 / C#
 - `tests/` exists
 - User requests a helper for the "inventory system" but no `design/gdd/inventory.md` exists
 
@@ -121,10 +120,10 @@ None. `/test-helpers` is a scaffolding utility. No director gates apply.
 **Expected behavior:**
 1. Skill looks for `design/gdd/inventory.md` — not found
 2. Skill notes: "No GDD found for inventory — generating helper with placeholder defaults"
-3. Skill generates an `inventory_factory.gd` with generic placeholder values
-   (item_count = 0, max_capacity = 20) and a comment: "# TODO: align defaults
+3. Skill generates an `InventoryFactory.cs` with generic placeholder values
+   (itemCount = 0, maxCapacity = 20) and a comment: "// TODO: align defaults
    with inventory GDD when written"
-4. Skill asks "May I write to `tests/helpers/inventory_factory.gd`?"
+4. Skill asks "May I write to `tests/helpers/InventoryFactory.cs`?"
 5. File is written; verdict is COMPLETE with advisory note
 
 **Assertions:**
@@ -169,7 +168,7 @@ None. `/test-helpers` is a scaffolding utility. No director gates apply.
 
 - Mock/stub helper generation (for dependencies like save systems or audio buses)
   follows the same pattern as factory helpers and is not separately tested.
-- Unity C# helper generation (using NSubstitute or custom mocks) follows the
+- Unreal C++ helper generation (using custom test fixtures) follows the
   same logic as Case 1 with language-appropriate output.
 - The case where the requested helper type is not recognized is not tested;
   the skill would ask the user to clarify the helper type.
