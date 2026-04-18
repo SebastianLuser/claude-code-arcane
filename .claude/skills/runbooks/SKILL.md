@@ -3,8 +3,10 @@ name: runbooks
 description: Crear y mantener runbooks operativos ejecutables para on-call. Documentos paso-a-paso con comandos exactos que permiten resolver incidentes sin depender del creador. Usar cuando se mencione runbook, on-call, alerta, incident response, playbook operativo, escalation, postmortem prep.
 stack: Go + TypeScript, GCP (Cloud Run, Cloud SQL, Memorystore, Pub/Sub), Alertmanager, Prometheus
 locale: es-LatAm
+argument-hint: "[create <name> | list | update <name>]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # Skill: Runbooks Operativos (Educabot)
 
 Runbook = documento **ejecutable paso-a-paso** para un escenario operativo específico. Su objetivo es permitir que **cualquier on-call** (incluso uno que se acaba de sumar) **resuelva sin depender del creador**. No es documentación narrativa, es un manual de vuelo a las 3am.

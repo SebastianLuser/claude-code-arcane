@@ -1,8 +1,10 @@
 ---
 name: unity-game-architecture
-description: Arquitectura y optimización para proyectos Unity 6 modernos, inspirada en el roguelite turn-based Scholar-Duel (Tesis-UADE-2026). Cubre estructura de carpetas canónica, singletons con moderación, ScriptableObjects data-driven, composition over inheritance, state machines, event bus desacoplado, Input System nuevo, Addressables, presupuestos de performance (60 FPS), object pooling, memoria, save system versionado, testing y build pipeline. Usar cuando se mencione: arquitectura Unity, estructura Unity, optimización Unity, performance Unity, ScriptableObject, singleton Unity, object pool, Addressables, state machine Unity, build Unity, Scholar-Duel, Tesis-UADE, roguelite Unity, o cualquier decisión técnica/estructural en un proyecto Unity 6.
+description: "Arquitectura y optimización para proyectos Unity 6 modernos, inspirada en el roguelite turn-based Scholar-Duel (Tesis-UADE-2026). Cubre estructura de carpetas canónica, singletons con moderación, ScriptableObjects data-driven, composition over inheritance, state machines, event bus desacoplado, Input System nuevo, Addressables, presupuestos de performance (60 FPS), object pooling, memoria, save system versionado, testing y build pipeline. Usar cuando se mencione: arquitectura Unity, estructura Unity, optimización Unity, performance Unity, ScriptableObject, singleton Unity, object pool, Addressables, state machine Unity, build Unity, Scholar-Duel, Tesis-UADE, roguelite Unity, o cualquier decisión técnica/estructural en un proyecto Unity 6."
+argument-hint: "[system or module name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # Unity Game Architecture
 
 Skill de arquitectura y optimización para proyectos Unity 6 (C#), con foco en equipos chicos (tipo tesis universitaria, 6 personas) que necesitan patrones probados sin caer en over-engineering. Inspirado en el proyecto real **Scholar-Duel / Tesis-UADE-2026**: roguelite turn-based con dados, 3D low poly + pixel shader, isométrico fijo, target PC.

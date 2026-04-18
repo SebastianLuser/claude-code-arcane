@@ -1,8 +1,10 @@
 ---
 name: scaffold-unity
 description: "Scaffolding de proyectos Unity siguiendo la arquitectura de Project_T: Singleton managers, ScriptableObject data, Entity/State separation, flat structure sin namespaces. Usar cuando se mencione: nuevo proyecto Unity, scaffold Unity, crear juego Unity, boilerplate Unity."
+argument-hint: "[project-name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-
 # Unity Project Scaffold — Estilo Project_T
 
 Genera la estructura de scripts y datos para un nuevo proyecto Unity siguiendo los patrones del Roguelite Dice Dungeon (Tesis-UADE-2026).

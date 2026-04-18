@@ -1,8 +1,10 @@
 ---
 name: scaffold-go
 description: "Scaffolding de proyectos Go siguiendo la arquitectura de Alizia-BE: Clean Architecture, GORM, Gin (via team-ai-toolkit), PostgreSQL, DI manual, migrations. Usar cuando se mencione: nuevo proyecto Go, scaffold Go, crear proyecto Go, boilerplate Go."
+argument-hint: "[project-name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-
 # Go Project Scaffold — Estilo Alizia-BE
 
 Genera la estructura completa de un nuevo proyecto Go siguiendo la arquitectura de Alizia-BE (Clean Architecture con team-ai-toolkit).

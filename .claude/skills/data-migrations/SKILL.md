@@ -1,8 +1,10 @@
 ---
 name: data-migrations
 description: Estrategia y ejecución de migraciones de base de datos en Educabot (Postgres default). Cubre schema migrations (DDL), data migrations (DML), patrones zero-downtime (expand-contract), rollbacks, locks, índices CONCURRENTLY, batching y multi-tenant. Usar cuando se mencione migration, migración, schema change, alter table, drop column, backfill, zero-downtime, rollback de DB.
+argument-hint: "[create <name>|run|rollback]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # Data Migrations — Educabot
 
 Guía operativa para crear, revisar y ejecutar migraciones de base de datos sin romper producción. Stack default Educabot: **Postgres** con **golang-migrate** (Go) o **Prisma Migrate** (Node/TS).

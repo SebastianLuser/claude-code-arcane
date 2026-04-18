@@ -1,3 +1,11 @@
+---
+name: tdd
+description: "Guía Test-Driven Development con ciclo Red-Green-Refactor. Tests primero, mínimo código para pasar, luego refactor."
+argument-hint: "[feature description]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash
+---
+
 Guide me through Test-Driven Development using the Red-Green-Refactor cycle:
 
 1. **RED** — Write a failing test first that describes the desired behavior

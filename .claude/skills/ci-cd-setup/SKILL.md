@@ -1,8 +1,10 @@
 ---
 name: ci-cd-setup
 description: "Genera workflows de GitHub Actions para stacks Educabot (Go, TS Fastify, React+Vite, React Native/Expo). CI (lint + test + build) + CD (Docker push a GHCR, deploy, EAS builds). Usar para: ci, cd, github actions, pipeline, workflow, automatizar deploy, release."
+argument-hint: "[stack: go|ts|react|rn]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # ci-cd-setup — GitHub Actions Pipeline Generator
 
 Genera **workflows de GitHub Actions** listos para copiar a `.github/workflows/` en proyectos Educabot. Builds, tests, linters, push a registry, deploy y OTA updates (Expo).

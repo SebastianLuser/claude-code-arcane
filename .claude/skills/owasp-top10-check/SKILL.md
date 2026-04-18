@@ -7,8 +7,10 @@ lastUpdated: 2026-04-15
 references:
   - https://owasp.org/Top10/ (2021, vigente)
   - https://owasp.org/www-project-top-ten/ (draft 2025 — revisar actualizaciones)
+argument-hint: "[category 1-10 | all]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Task
 ---
-
 # OWASP Top 10 Check — Educabot
 
 Guía operativa para auditar aplicaciones Educabot contra OWASP Top 10 2021. Enfocada en Go (backend) y TypeScript/React+Vite (frontend/BFF). Pensada para productos que manejan **datos de menores de edad** — compliance LGPD (Brasil) y COPPA (USA) es obligatorio, no opcional.

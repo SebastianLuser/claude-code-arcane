@@ -1,8 +1,10 @@
 ---
 name: file-uploads
 description: Implementación segura de uploads de archivos en stack Educabot (Go+TS backends, React+Vite+TS, React Native). Cubre signed URLs directas a GCS/S3, multipart/resumable, validación MIME real, virus scanning async con ClamAV, thumbnails, y schema de tracking. Usar cuando se mencione upload, subir archivo, attachment, file storage, avatar, imagen, documento, adjunto, GCS, S3, presigned.
+argument-hint: "[stack: go|ts|react|rn]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # File Uploads — Skill Educabot
 
 Guía práctica para implementar uploads de archivos en proyectos Educabot. Default: **GCS** (stack corporativo). Si el proyecto usa AWS, adaptá a S3 (la lógica es idéntica).

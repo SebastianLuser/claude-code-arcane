@@ -1,8 +1,10 @@
 ---
 name: secret-management
 description: "Gestión de secrets para apps Educabot (Go/TS/React/RN): GCP Secret Manager, AWS Secrets Manager, Vault, SOPS, sealed-secrets, rotation, env vars safe loading, no-secret-in-repo, CI/CD secrets, KMS envelope encryption, dev/stage/prod separation, audit logs. Usar para: secrets, api keys, vault, secret manager, kms, sops, rotation, .env."
+argument-hint: "[setup|rotate|audit]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # secret-management — Secrets & Credentials
 
 Guía para manejar secrets en Educabot sin filtrarlos. Regla de oro: **si está en git, está comprometido**.

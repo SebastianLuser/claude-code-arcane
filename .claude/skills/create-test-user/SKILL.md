@@ -1,3 +1,11 @@
+---
+name: create-test-user
+description: "Crea un usuario de prueba en el proyecto: anónimo, autenticado o admin. Usa seed scripts, endpoints de admin, o inserts directos."
+argument-hint: "[user-type: anonymous | student | admin]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash
+---
+
 # Skill: create-test-user
 
 ## Trigger

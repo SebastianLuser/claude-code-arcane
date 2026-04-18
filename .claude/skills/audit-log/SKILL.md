@@ -1,8 +1,10 @@
 ---
 name: audit-log
 description: Diseño e implementación de audit log inmutable con valor legal/forense para apps Educabot (Go + TS). Registro append-only de acciones sensibles (quién, qué, cuándo, desde dónde, resultado) con retención multi-año, redacción PII, consulta admin y opcional tamper-evidence. Usar cuando se mencione audit log, auditoría de acciones, trazabilidad, compliance, forensic log, registro de accesos, quién cambió qué, DSAR, LGPD/LOPDGDD menores.
+argument-hint: "[design|implement] [service-name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
-
 # Audit Log — Skill
 
 Registro inmutable de acciones con valor legal y forense. No confundir con `logging-setup` (observabilidad operacional).

@@ -1,8 +1,10 @@
 ---
 name: clickup
 description: "Gestionar ClickUp: crear/actualizar/buscar tasks, documents, time entries, spaces. Usar cuando el usuario mencione: ClickUp, task, tarea, doc, documento ClickUp, time tracking, space, lista. Spaces conocidos: Project_T (90138713959), VR Game (901313710103), Scholar Duel (901313710122)."
+argument-hint: "[task|doc|time] <action> <args>"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-
 # ClickUp Manager
 
 Skill que usa el MCP nativo de ClickUp para gestión completa de tasks, docs y tiempo.

@@ -1,8 +1,10 @@
 ---
 name: docker-setup
 description: "Genera Dockerfiles + docker-compose para stacks de Educabot (Go, TypeScript backend, React+Vite, React Native). Multi-stage builds optimizados, dev + prod, con Postgres/Redis/etc. Usar para: dockerizar, docker, containerizar, docker-compose, contenedor."
+argument-hint: "[stack: go|ts|react|rn] [--dev|--prod]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # docker-setup — Docker & Docker Compose Generator
 
 Genera **Dockerfiles production-ready** y **docker-compose** para los stacks oficiales de Educabot: **Go**, **TypeScript backend (Fastify)**, **React+Vite frontend**.

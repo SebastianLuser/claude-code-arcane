@@ -1,8 +1,10 @@
 ---
 name: scaffold-react-vite
 description: "Scaffold de proyecto frontend estilo Alizia/Tuni: React + Vite + TypeScript, TanStack Query, React Router, shadcn/ui, Vitest, Playwright. Usar para nuevos frontends en Educabot."
+argument-hint: "[project-name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # scaffold-react-vite — React+Vite Frontend Scaffolder
 
 Genera un proyecto frontend estilo **Alizia/Tuni**: React 18+ con Vite, TypeScript strict, routing client-side, data fetching con TanStack Query, UI con shadcn/ui + Tailwind.

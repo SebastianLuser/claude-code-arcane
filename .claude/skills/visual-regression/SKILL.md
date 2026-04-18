@@ -1,8 +1,10 @@
 ---
 name: visual-regression
-description: Visual regression testing para detectar cambios visuales no intencionales comparando screenshots antes/después por componente o página. Stack Educabot: React+Vite+TS (NO Next.js), React Native. Usar cuando se mencione: visual regression, VR testing, screenshot testing, Chromatic, Percy, Playwright screenshots, Storybook snapshots, regresión visual, diff visual, baseline de UI.
+description: "Visual regression testing para detectar cambios visuales no intencionales comparando screenshots antes/después por componente o página. Stack Educabot: React+Vite+TS (NO Next.js), React Native. Usar cuando se mencione: visual regression, VR testing, screenshot testing, Chromatic, Percy, Playwright screenshots, Storybook snapshots, regresión visual, diff visual, baseline de UI."
+argument-hint: "[setup|run|update-baseline]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # Visual Regression Testing
 
 ## Cuándo usar

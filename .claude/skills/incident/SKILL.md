@@ -1,8 +1,10 @@
 ---
 name: incident
 description: "Genera post-mortem estructurado de incidentes: timeline, root cause, impacto, action items. Crea ticket en Jira automáticamente. Usar cuando se mencione: incidente, post-mortem, se cayó, producción rota, outage, downtime."
+argument-hint: "[incident-title or ticket-id]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # Incident Post-Mortem Generator
 
 Genera un reporte de post-mortem estructurado y crea tickets de seguimiento.

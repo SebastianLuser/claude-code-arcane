@@ -1,8 +1,10 @@
 ---
 name: api-versioning
-description: Estrategias de versionado de APIs (REST/GraphQL) para backends Educabot. Define cuándo crear v2, cómo deprecar v1, breaking vs non-breaking changes, deprecation headers, ventanas de soporte y patrones por stack (Go/Gin, NestJS, Fastify, GraphQL). Usar cuando se mencione: versionar API, v2, breaking change, deprecar endpoint, sunset, backwards compatibility, API version, mobile force update.
+description: "Estrategias de versionado de APIs (REST/GraphQL) para backends Educabot. Define cuándo crear v2, cómo deprecar v1, breaking vs non-breaking changes, deprecation headers, ventanas de soporte y patrones por stack (Go/Gin, NestJS, Fastify, GraphQL). Usar cuando se mencione: versionar API, v2, breaking change, deprecar endpoint, sunset, backwards compatibility, API version, mobile force update."
+argument-hint: "[deprecate v1|introduce v2|audit]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
-
 # API Versioning
 
 Guía para versionar APIs en backends Educabot (Go + TypeScript) consumidas por web (React+Vite+TS) y mobile (React Native).

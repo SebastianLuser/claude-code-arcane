@@ -2,8 +2,10 @@
 name: read-replicas
 description: Escalar lecturas de Postgres con read replicas en Cloud SQL. Routing primary/replica, consistency, lag, DR y patrones Go/TS. Usar cuando se mencione read replica, escalar DB, lecturas lentas, HA/DR de Postgres, Cloud SQL replica, replication lag.
 stack: Postgres 15+, GCP Cloud SQL, Go (pgx/pgxpool), TS (Prisma/drizzle-orm)
+argument-hint: "[setup|route|audit]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # Read Replicas — Postgres en Cloud SQL
 
 Copia **asíncrona** del primary que solo acepta reads. Sirve para escalar lecturas, separar workload analítico del OLTP y como target de DR cross-region.

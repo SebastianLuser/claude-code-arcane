@@ -1,8 +1,10 @@
 ---
 name: cdn-setup
 description: "CDN para apps Educabot: Cloudflare, Fastly, Cloud CDN (GCP), CloudFront, cache headers, immutable assets, stale-while-revalidate, signed URLs, image optimization, LatAm PoPs, purge, cache keys, bypass cookies, WAF+CDN. Usar para: cdn, cloudflare, fastly, cache-control, edge, cloudfront, image optimization, signed urls, purge."
+argument-hint: "[provider: cloudflare|fastly|gcp|aws]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # cdn-setup — CDN & Edge Caching
 
 Usar CDN para reducir latencia en LatAm + servir estáticos baratos. Target: **cache hit > 90% en assets, TTFB < 100ms en AR/BR/MX**.

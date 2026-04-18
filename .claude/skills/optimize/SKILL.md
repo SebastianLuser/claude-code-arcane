@@ -1,3 +1,11 @@
+---
+name: optimize
+description: "Analiza performance del proyecto: hot paths, N+1 queries, re-renders, missing indexes, memory leaks. Propone fixes con impacto medible."
+argument-hint: "[file-path | empty for whole project]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Edit, Bash
+---
+
 Analyze the current project or specified file for performance bottlenecks:
 
 1. **Identify hot paths** — Find the most performance-critical code paths

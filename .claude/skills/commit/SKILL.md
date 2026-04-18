@@ -1,3 +1,11 @@
+---
+name: commit
+description: "Crea un git commit siguiendo conventional commit format. Revisa diffs, sugiere type/scope, escribe mensaje conciso. No hace push."
+argument-hint: ""
+user-invocable: true
+allowed-tools: Read, Bash
+---
+
 Review all staged and unstaged changes using `git diff` and `git status`.
 
 Create a git commit following conventional commit format:

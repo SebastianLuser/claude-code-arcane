@@ -1,8 +1,10 @@
 ---
 name: user-persona
 description: "Genera user personas + Jobs-To-Be-Done + pain points + empathy maps. Output en Notion/Coda para alinear equipos de producto. Usar para: persona, user research, JTBD, empathy map, target user, segmento de usuarios."
+argument-hint: "[product or feature name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
 ---
-
 # user-persona — User Persona & JTBD Generator
 
 Genera **personas documentadas**, **Jobs-To-Be-Done**, **empathy maps** y **pain/gain analysis** para guiar decisiones de producto en Educabot (Alizia, Tuni, Vigía, Tich).

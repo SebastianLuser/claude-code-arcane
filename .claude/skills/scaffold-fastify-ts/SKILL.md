@@ -1,8 +1,10 @@
 ---
 name: scaffold-fastify-ts
 description: "Scaffold de backend TypeScript con Fastify, Prisma, Zod, testing. Stack alternativo al Go de Educabot cuando el proyecto requiere TS. Usar para nuevos servicios Node/TS."
+argument-hint: "[project-name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # scaffold-fastify-ts — TypeScript Backend Scaffolder
 
 Genera un backend TypeScript production-ready con **Fastify** como framework HTTP. Alineado con el stack permitido en Educabot (Go + TypeScript only).

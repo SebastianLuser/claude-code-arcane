@@ -1,8 +1,10 @@
 ---
 name: slack
 description: "Gestionar Slack: enviar mensajes, crear canales, subir archivos, buscar history via Slack Web API. Usar cuando el usuario mencione: Slack, enviar mensaje, canal de Slack, DM, webhook Slack, notificar equipo en Slack."
+argument-hint: "[send|channel|file|search] <args>"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash
 ---
-
 # Slack Manager
 
 Web API: `https://slack.com/api/`

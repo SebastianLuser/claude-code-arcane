@@ -5,7 +5,26 @@
       "Bash(cmd.exe //c \"remove-skill-junctions.bat\")",
       "Bash(cmd.exe //c \"call .\\\\\\\\remove-skill-junctions.bat\")",
       "Bash(cmd.exe //c \"call .\\\\\\\\setup-skill-junctions.bat\")",
-      "Bash(bash .claude/statusline.sh)"
+      "Bash(bash .claude/statusline.sh)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(awk -F/ '{print $\\(NF-1\\)}')",
+      "Bash(awk 'NR>=7 && NR<=913' \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/skills-selftest/catalog.yaml\")",
+      "Bash(find \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/agents\" -name \"*.md\" -exec head -10 {} \\\\;)",
+      "Bash(python3 -c ' *)",
+      "Bash(awk '/^skills:/{s=1;a=0;next} /^agents:/{s=0;a=1;next} s && /^  - name:/{sc++} a && /^  - name:/{ac++} END{print \"Skills: \" sc; print \"Agents: \" ac}' skills-selftest/catalog.yaml)",
+      "Bash(awk '/^agents:/{a=1;next} a && /division: game/{c++} END{print \"game agents in catalog: \" c}' skills-selftest/catalog.yaml)",
+      "Bash(python3 tools/patch_skill_frontmatter.py)",
+      "Bash(python3 tools/fix_unquoted_descriptions.py)",
+      "Bash(awk '{print $3}')",
+      "Bash(find \"/c/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-\"* -maxdepth 1 -type d)",
+      "Bash(grep -v \"^agents$\")",
+      "Bash(python *)",
+      "Bash(find .claude/skills-* -maxdepth 1 -type d -name \"*\")",
+      "Bash(xargs -I {} basename {} .md)",
+      "Bash(xargs -I {} wc -l {})",
+      "Bash(git commit *)"
     ]
   }
 }

@@ -1,8 +1,10 @@
 ---
 name: job-scheduling
 description: "Sistema de background jobs y scheduling para apps Educabot (Go/TS): BullMQ, asynq, cron, priority queues, retries, rate limiting de workers, concurrency control, dead letter, graceful shutdown, observabilidad. Usar para: jobs, queue, workers, background tasks, cron, scheduled tasks, bullmq, asynq, sidekiq."
+argument-hint: "[stack: go|ts] [provider: bullmq|asynq|cron]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
-
 # job-scheduling — Background Jobs & Scheduling
 
 Guía para ejecutar trabajo asíncrono y scheduled en apps Educabot. Stack: **BullMQ** (TS/Node) y **asynq** (Go) — ambos sobre Redis. Objetivo: reliable, observable, graceful.

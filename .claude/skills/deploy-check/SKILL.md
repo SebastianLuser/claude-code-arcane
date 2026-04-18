@@ -1,8 +1,10 @@
 ---
 name: deploy-check
 description: "Pre-deploy checklist automatizada: tests, secrets, migrations, env vars, build, lint. Usar cuando se mencione: deploy, pre-deploy, deploy check, antes de subir, checklist de deploy, vamos a producción."
+argument-hint: "[env: staging|prod]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash
 ---
-
 # Pre-Deploy Checklist
 
 Verificación automatizada antes de hacer deploy.

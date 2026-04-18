@@ -1,3 +1,11 @@
+---
+name: context-prime
+description: "Carga contexto completo del proyecto al inicio de la sesión: stack, estructura, git state, archivos clave. Mejora respuestas posteriores."
+argument-hint: ""
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash
+---
+
 Prime yourself with comprehensive project understanding before starting work:
 
 1. **Read project config** — package.json, tsconfig.json, pyproject.toml, go.mod, Cargo.toml, etc.

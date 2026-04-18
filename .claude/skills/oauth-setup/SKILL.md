@@ -1,8 +1,10 @@
 ---
 name: oauth-setup
-description: Configurar autenticación OAuth 2.0 + OIDC en proyectos Educabot (Go, Node/TS, React+Vite, React Native). Authorization Code + PKCE como flow default, validación de id_token, manejo de sesión propia, multi-provider (Google, Microsoft, Apple, Facebook, GitHub). Usar cuando se mencione: OAuth, OIDC, login social, Google login, Microsoft login, Apple Sign-In, SSO, autenticación federada, PKCE, id_token, authorization code.
+description: "Configurar autenticación OAuth 2.0 + OIDC en proyectos Educabot (Go, Node/TS, React+Vite, React Native). Authorization Code + PKCE como flow default, validación de id_token, manejo de sesión propia, multi-provider (Google, Microsoft, Apple, Facebook, GitHub). Usar cuando se mencione: OAuth, OIDC, login social, Google login, Microsoft login, Apple Sign-In, SSO, autenticación federada, PKCE, id_token, authorization code."
+argument-hint: "[provider: google|github|generic] [stack]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
-
 # OAuth Setup — Educabot
 
 Guía para implementar autenticación OAuth 2.0 + OpenID Connect (OIDC) en productos Educabot (LatAm EdTech: padres, docentes, estudiantes, escuelas).

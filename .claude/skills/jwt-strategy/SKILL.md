@@ -1,8 +1,10 @@
 ---
 name: jwt-strategy
 description: Estrategia de autenticación con JWT y refresh tokens para stack Educabot (Go + TS + React/Vite + React Native). Cubre elección JWT vs session cookie, algoritmos (RS256/EdDSA), JWKS, rotation, storage seguro, revocación y multi-tenant. Usar cuando se mencione JWT, token, auth, refresh token, JWKS, login, sesión, autenticación stateless.
+argument-hint: "[setup|rotate|audit]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # JWT Strategy — Educabot
 
 Guía canónica para diseñar autenticación basada en tokens en proyectos Educabot. Aplica a backends Go/TS y frontends React+Vite / React Native.

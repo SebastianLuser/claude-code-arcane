@@ -1,3 +1,11 @@
+---
+name: fix-issue
+description: "Fetch un GitHub issue por número, entiende el problema, localiza el código, implementa fix mínimo y commitea referenciando el issue."
+argument-hint: "<issue-number>"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash
+---
+
 Fix a GitHub issue. Usage: /fix-issue <issue-number>
 
 1. **Fetch the issue** — Use `gh issue view $ARGUMENTS` to get the full issue details

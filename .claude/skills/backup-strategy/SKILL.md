@@ -1,8 +1,10 @@
 ---
 name: backup-strategy
 description: "Estrategia de backups para apps Educabot: Postgres (pg_dump, WAL archiving, PITR), Redis (RDB/AOF), object storage (versioning/replication), retention, testing de restore, 3-2-1 rule, RTO/RPO, disaster recovery runbook. Usar para: backup, restore, disaster recovery, dr, pitr, pg_dump, snapshot, data protection."
+argument-hint: "[postgres|redis|object-storage|dr]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # backup-strategy — Backups & Disaster Recovery
 
 Estrategia de backups para apps Educabot. Foco: **restore funciona** (no "backup corre"). Ningún backup existe hasta que probaste el restore.

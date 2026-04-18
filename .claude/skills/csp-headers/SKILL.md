@@ -1,8 +1,10 @@
 ---
 name: csp-headers
 description: Configurar security headers (CSP, HSTS, Permissions-Policy, COOP/COEP) en backends Go/TS y Cloudflare. Prevenir XSS, clickjacking, MIME sniffing. Usar cuando se mencione CSP, Content-Security-Policy, security headers, HSTS, XSS, headers de seguridad, securityheaders.com.
+argument-hint: "[stack: go|ts|cloudflare]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # CSP & Security Headers
 
 Configuración de headers de seguridad para stack Educabot (Go + TS backends, React + Vite frontends, Cloudflare CDN). Default deny, nonces en CSP, report-only antes de enforce.

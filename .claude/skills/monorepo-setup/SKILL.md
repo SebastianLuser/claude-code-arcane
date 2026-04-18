@@ -1,8 +1,10 @@
 ---
 name: monorepo-setup
 description: "Monorepo para apps Educabot (TS/Go): pnpm workspaces, Turborepo, Nx, Go workspaces, package boundaries, shared libs, versioning, CI cache, code owners, release strategy. Usar para: monorepo, workspaces, turbo, nx, pnpm, shared packages, libs, packages."
+argument-hint: "[tool: pnpm|turbo|nx|go-workspaces]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # monorepo-setup — Monorepo Structure
 
 Guía para monorepos en Educabot. Cuándo vale la pena, cómo estructurarlo, cómo escalar sin que CI tarde 40min.

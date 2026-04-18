@@ -1,8 +1,10 @@
 ---
 name: contract-testing
-description: Contract testing con Pact para validar acuerdos de API entre consumers (React, React Native) y providers (Go, TS). Genera contratos, publica a broker, corre verify, integra can-i-deploy en CI. Alternativa liviana a E2E tests caros. Usar cuando se mencione: contract testing, Pact, consumer-driven, breaking change API, Pact Broker, PactFlow, can-i-deploy.
+description: "Contract testing con Pact para validar acuerdos de API entre consumers (React, React Native) y providers (Go, TS). Genera contratos, publica a broker, corre verify, integra can-i-deploy en CI. Alternativa liviana a E2E tests caros. Usar cuando se mencione: contract testing, Pact, consumer-driven, breaking change API, Pact Broker, PactFlow, can-i-deploy."
+argument-hint: "[consumer|provider|setup]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # Contract Testing (Pact)
 
 ## Cuándo usar

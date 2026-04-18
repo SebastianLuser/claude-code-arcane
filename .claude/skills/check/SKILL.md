@@ -1,3 +1,11 @@
+---
+name: check
+description: "Auditoría rápida de calidad y seguridad: lint, type-check, tests, secrets, deps vulnerables. Reporta findings con severidad."
+argument-hint: ""
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash
+---
+
 Run a comprehensive code quality and security check on the current project:
 
 1. **Identify the stack** — Look at package.json, requirements.txt, go.mod, Cargo.toml, etc.

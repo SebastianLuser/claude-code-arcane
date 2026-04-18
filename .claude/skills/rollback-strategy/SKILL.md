@@ -1,8 +1,10 @@
 ---
 name: rollback-strategy
-description: Estrategia de rollback para deploys en Educabot. Principio rector — todo deploy debe ser reversible en menos de 5 minutos. Cubre code/config/data/infra rollback, versioning de artefactos, compatibility windows, canary, auto-rollback, runbooks para Cloud Run y GKE, feature flags, CDN/cache, mobile (RN) y comunicación de incidentes. Usar cuando se mencione: rollback, revertir deploy, deshacer release, volver atrás, kill switch, incident response, hotfix, redeploy versión anterior, undo deployment.
+description: "Estrategia de rollback para deploys en Educabot. Principio rector — todo deploy debe ser reversible en menos de 5 minutos. Cubre code/config/data/infra rollback, versioning de artefactos, compatibility windows, canary, auto-rollback, runbooks para Cloud Run y GKE, feature flags, CDN/cache, mobile (RN) y comunicación de incidentes. Usar cuando se mencione: rollback, revertir deploy, deshacer release, volver atrás, kill switch, incident response, hotfix, redeploy versión anterior, undo deployment."
+argument-hint: "[code|config|data|infra]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # Rollback Strategy
 
 ## Cuándo usar

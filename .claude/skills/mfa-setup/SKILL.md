@@ -1,8 +1,10 @@
 ---
 name: mfa-setup
 description: Implementación de Multi-Factor Authentication (MFA/2FA) en productos Educabot. TOTP, WebAuthn/Passkeys, SMS OTP, backup codes, recovery y step-up auth. Stack Go + TS (React/RN). Usar cuando se mencione MFA, 2FA, autenticación de dos factores, TOTP, passkeys, WebAuthn, OTP, Authenticator, segundo factor, verificación en dos pasos.
+argument-hint: "[totp|webauthn|sms|backup-codes]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
-
 # MFA Setup — Educabot
 
 Guía para implementar MFA de forma segura en productos Educabot (docentes, admins, alumnos). Prioriza WebAuthn/Passkeys como método moderno, TOTP como universal, SMS solo recovery.

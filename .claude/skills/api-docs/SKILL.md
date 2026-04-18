@@ -1,8 +1,10 @@
 ---
 name: api-docs
 description: "Genera o actualiza documentación de API desde el código fuente. Escanea endpoints, extrae métodos/rutas/params/responses. Usar cuando se mencione: documentar API, API docs, endpoints, swagger, OpenAPI, rutas."
+argument-hint: "[path to scan, default .]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit
 ---
-
 # API Documentation Generator
 
 Escanea el código fuente para generar documentación de API.

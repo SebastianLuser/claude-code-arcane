@@ -1,8 +1,10 @@
 ---
 name: rate-limiting
 description: "Rate limiting y throttling para APIs Educabot (Go/TS): algoritmos (token bucket, sliding window, fixed window), implementación con Redis, per-user/per-IP/per-endpoint, headers estándar, response 429, proteger logins/APIs caras. Usar para: rate limit, throttle, 429, ddos protection, api quotas, abuse prevention."
+argument-hint: "[global|per-user|per-endpoint]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # rate-limiting — API Rate Limiting
 
 Rate limiting para proteger APIs Educabot de abuso, DoS, scraping y costos descontrolados (ej. LLMs). Backend-side (autoritativo), con Redis para coordinación entre pods.

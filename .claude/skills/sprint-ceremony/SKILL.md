@@ -1,8 +1,10 @@
 ---
 name: sprint-ceremony
 description: "Prepara agendas y outputs de ceremonias agile: daily, sprint planning, sprint review, retro, 1-on-1. Genera templates Notion/Coda + crea action items en Jira. Usar para: daily, review, retro, planning, one-on-one, ceremonia, reunión de sprint."
+argument-hint: "[daily|planning|review|retro|1on1]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
-
 # sprint-ceremony — Agile Ceremony Assistant
 
 Prepara **agendas, templates y outputs** de las ceremonias de sprint en Educabot. Integra con Notion/Coda (docs) y Jira (action items).

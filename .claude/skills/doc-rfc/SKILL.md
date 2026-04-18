@@ -1,8 +1,10 @@
 ---
 name: doc-rfc
 description: "Genera documentación técnica RFC: épicas, historias de usuario (HU) y tareas (T) siguiendo el formato de Alizia-BE. Estructura jerárquica con decisiones, specs y acceptance criteria. Usar cuando se mencione: RFC, documentación técnica, épica, historia de usuario, spec, desglose técnico."
+argument-hint: "[rfc-title or feature-name]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 ---
-
 # RFC Documentation Generator — Estilo Alizia-BE
 
 Genera documentación técnica estructurada siguiendo el formato RFC de Alizia-BE: Épicas → Historias de Usuario → Tareas.

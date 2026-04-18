@@ -2,8 +2,10 @@
 name: database-indexing
 description: Diseño y mantenimiento de índices en PostgreSQL 15+. Tipos de índices, composite, partial, covering, CONCURRENTLY, detección de faltantes/no usados, bloat. Usar cuando se mencione índices, index, performance de queries por índices, seq scan, slow query por falta de índice, EXPLAIN.
 stack: PostgreSQL 15+
+argument-hint: "[analyze|create|drop] [table]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-
 # Database Indexing (PostgreSQL)
 
 Skill para diseñar, crear y mantener índices en Postgres 15+ en el contexto multi-tenant de Educabot.

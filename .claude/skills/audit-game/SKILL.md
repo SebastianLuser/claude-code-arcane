@@ -1,8 +1,10 @@
 ---
 name: audit-game
 description: "Auditoría integral para proyectos de juegos. Compara GDD, spec docs y código. Detecta contradicciones, gaps de diseño, problemas de balance y coherencia. Usar cuando se mencione: auditar juego, revisar GDD, audit game, balance check, o cualquier revisión de documentación de game design."
+argument-hint: "[full|gdd|spec-docs|gdd-vs-code|balance|path]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Task
 ---
-
 # Game Document Audit
 
 Auditoría integral de documentación y código para proyectos de desarrollo de videojuegos.
