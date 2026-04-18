@@ -1,171 +1,151 @@
 # Claude Code Arcane
 
-> **Skills, agentes y hooks para Claude Code.**
-> 147 skills · 5 stacks: general, software, gamedev, design, agile
+> **Skills, agents, hooks y rules para Claude Code — deploy selectivo por perfil.**
 
-Un sistema integral que transforma Claude Code en una organización completa con divisiones especializadas desde game development hasta integraciones con herramientas SaaS.
-
-Construido sobre la arquitectura de [Claude Code Game Studios](https://github.com/Donchitos/Claude-Code-Game-Studios) pero expandido a todo el ciclo de desarrollo de software, producto y operaciones.
-
----
-
-## Tabla de Divisiones
-
-| # | División | Agentes | Skills | Propósito |
-|---|----------|---------|--------|-----------|
-| 1 | 🎮 Game Development Studio | 44 | 72 | Desarrollo de videojuegos (Unity/Unreal) |
-| 2 | 💻 Software Engineering | 20 | 60 | Backend, frontend, fullstack, APIs, DBs |
-| 3 | ☁️ DevOps & Infrastructure | 11 | 18 | Cloud, K8s, CI/CD, IaC, monitoring |
-| 4 | 🎨 Product & Design | 11 | 22 | Product management, UX/UI, research |
-| 5 | 📋 Project Management Office | 8 | 18 | Sprints, stakeholders, delivery |
-| 6 | 🛡️ Quality & Security | 7 | 14 | QA, testing, security, compliance |
-| 7 | 🎓 Educabot | 7 | 10 | EdTech, curriculum, learning experience |
-| 8 | 🔌 Tools & Integrations | 6 | 30 | ClickUp, Jira, Gdocs, Notion, Slack, Figma |
-| **Total** | | **114** | **244** | |
-
----
-
-## Arquitectura de 3 Tiers
-
-Cada división sigue una jerarquía tipo estudio real:
-
-**Tier 1 — Directors (Opus)** → Decisiones estratégicas, resolución de conflictos cross-disciplina
-**Tier 2 — Leads (Sonnet)** → Owners de dominio, estándares, coordinación de specialists
-**Tier 3 — Specialists (Sonnet/Haiku)** → Ejecución técnica especializada
+Un harness de configuración que proyectos importan copiando `.claude/`. En vez de cargar 150+ skills en cada proyecto (tokens desperdiciados), elegís un **perfil** que matchee tu stack y solo se instalan las herramientas relevantes.
 
 ---
 
 ## Quick Start
 
 ```bash
-# 1. Clonar el repo
-git clone <url> mi-proyecto
-cd mi-proyecto
+# 1. Clonar e instalar el CLI
+git clone https://github.com/SebastianLuser/claude-code-arcane.git
+cd claude-code-arcane
+pip install -e .
 
-# 2. Abrir Claude Code
+# 2. Ir a tu proyecto
+cd ~/projects/my-game
+
+# 3. Instalar un perfil
+arcane install unity-dev
+
+# 4. Abrir Claude Code
 claude
-
-# 3. Comenzar con el comando raíz
-/start
 ```
 
-El comando `/start` te guía por un onboarding adaptativo según:
-- Qué tipo de proyecto estás haciendo (juego, app web, app móvil, herramienta interna)
-- En qué etapa estás (idea, diseño, desarrollo, producción)
-- Qué división te va a servir más
+Si `arcane` no está en PATH, usá `python -m arcane` en su lugar.
+
+## Menú Interactivo
+
+Sin argumentos, `arcane install` abre un selector de perfiles:
+
+```bash
+cd ~/projects/my-game
+arcane install
+```
+
+Usá flechas para navegar, espacio para seleccionar, enter para confirmar.
 
 ---
 
-## Divisiones en Detalle
+## Perfiles Disponibles
 
-### 1. Game Development Studio
-Replicado de Claude-Code-Game-Studios. Cubre todo el pipeline de game dev: brainstorm → GDD → prototipo → producción → release.
+### Base (elegí uno o combiná varios)
 
-**Directores:** creative-director, technical-director, producer
-**Leads:** game-designer, lead-programmer, art-director, audio-director, narrative-director, qa-lead, release-manager, localization-lead
-**Especialistas:** 33 incluyendo engine-specialists para Unity y Unreal
+| Perfil | Stack |
+|--------|-------|
+| `unity-dev` | Programador Unity — C#, arquitectura, performance |
+| `unity-design` | Game Designer — GDDs, balance, art bible, playtesting |
+| `backend-go` | Backend Go — Clean Arch, DB, auth, API |
+| `backend-ts` | Backend TypeScript — Fastify, Prisma, Zod |
+| `frontend` | React + Vite + TypeScript |
+| `mobile` | React Native + Expo |
 
-### 2. Software Engineering
-Desarrollo de software profesional: backend, frontend, mobile, databases, APIs.
+### Add-ons (combiná con `+`)
 
-**Directores:** chief-technology-officer, vp-engineering
-**Leads:** backend-architect, frontend-architect, api-architect, database-architect, mobile-lead
-**Especialistas:** go-engineer, node-engineer, python-engineer, react-engineer, vue-engineer, angular-engineer, flutter-engineer, react-native-engineer, sql-specialist, nosql-specialist, graphql-specialist, websocket-specialist, rust-engineer
+| Add-on | Agrega |
+|--------|--------|
+| `+agile` | Sprints, standups, retros, estimates |
+| `+clickup` | ClickUp via MCP |
+| `+jira` | Jira via REST API |
+| `+design` | Figma, UX review, handoff |
+| `+infra` | Terraform, tracing, SLOs, K8s |
+| `+testing` | Contract, performance, regression testing |
+| `+teams` | Game team orchestration + 40 agents |
+| `+ops` | Runbooks, rollback, backup, secrets |
 
-### 3. DevOps & Infrastructure
-Cloud, containers, CI/CD, observability, IaC.
+### Core (siempre incluido)
 
-**Leads:** cloud-architect, platform-lead, sre-lead
-**Especialistas:** docker-specialist, kubernetes-specialist, ci-cd-specialist, terraform-specialist, aws-specialist, gcp-specialist, monitoring-specialist, security-ops-specialist
-
-### 4. Product & Design
-Product management, UX research, UI design, design systems.
-
-**Directores:** chief-product-officer
-**Leads:** product-manager, ux-lead, ui-lead, design-system-lead
-**Especialistas:** ux-researcher, ui-designer, ux-writer, interaction-designer, accessibility-expert, data-analyst, market-researcher
-
-### 5. Project Management Office
-Multi-project coordination, agile, delivery, stakeholder management.
-
-**Directores:** program-director
-**Leads:** project-manager, scrum-master, delivery-manager
-**Especialistas:** agile-coach, business-analyst, technical-writer, stakeholder-manager
-
-### 6. Quality & Security
-Testing strategy, automation, security, compliance.
-
-**Leads:** qa-director, security-architect
-**Especialistas:** test-automation-engineer, performance-tester, manual-qa-tester, penetration-tester, compliance-specialist
-
-### 7. Educabot
-Especializada en la vertical educativa de Educabot.
-
-**Leads:** edtech-architect, curriculum-director
-**Especialistas:** learning-experience-designer, content-developer, robotics-specialist, ai-tutor-designer, assessment-designer
-
-### 8. Tools & Integrations
-Orquestación de herramientas SaaS del día a día.
-
-**Arquitecto:** integrations-architect
-**Especialistas:** project-tools-specialist (ClickUp/Jira/Linear), docs-tools-specialist (Gdocs/Sheets/Coda/Notion), design-tools-specialist (Figma/Miro), comms-tools-specialist (Slack/Discord), api-tools-specialist (Postman/Bruno)
+15 skills universales (commit, create-pr, changelog, check, code-review, etc.), 14 hooks, 3 rules base, y permissions de seguridad.
 
 ---
 
-## Skills Destacadas
+## Comandos
 
-### Onboarding & Workflow
-- `/start` — Onboarding adaptativo
-- `/help` — Guía contextual
-- `/next` — ¿Qué hago ahora?
-- `/status` — Estado global del proyecto
+```bash
+arcane install                          # Menú interactivo
+arcane install unity-dev                # Perfil directo
+arcane install unity-dev+agile+clickup  # Combo
+arcane install --dry-run unity-dev      # Preview sin instalar
 
-### Cross-Tool Workflows (Division 8 ⭐)
-- `/sync-all` — Sincronizar ClickUp + Jira + GitHub
-- `/standup-report` — Daily automático desde múltiples fuentes
-- `/release-announce` — Changelog → Slack + Discord + Email
-- `/design-handoff` — Figma → Spec + Component code
-- `/meeting-to-tasks` — Notas → Tasks en ClickUp/Jira
-- `/weekly-digest` — Reporte semanal unificado
+arcane list                             # Ver perfiles disponibles
+arcane status                           # Ver instalación actual
+arcane clean                            # Remover Arcane del proyecto
+```
 
-### Creación & Scaffolding
-- `/scaffold-go` — Proyecto Go estilo Clean Arch
-- `/scaffold-unity` — Proyecto Unity estilo Project_T
-- `/scaffold-nextjs` — Next.js 15 con App Router
-- `/scaffold-nestjs` — NestJS con Clean Architecture
-- `/scaffold-fastapi` — FastAPI con SQLAlchemy
-- `/scaffold-flutter` — Flutter con Riverpod
+## Ejemplos por Proyecto
 
-### Reviews & Audits
-- `/audit-dev` — Auditoría de software
-- `/audit-game` — Auditoría de game design
-- `/code-review-backend` — Review especializada backend
-- `/code-review-frontend` — Review especializada frontend
-- `/security-review` — Threat modeling + OWASP
-- `/a11y-audit` — Accessibility audit
+```bash
+# Unity solo dev
+arcane install unity-dev
+
+# Unity con equipo completo
+arcane install unity-dev+unity-design+teams+agile+clickup
+
+# Go microservice con infra
+arcane install backend-go+infra+agile+jira
+
+# Full-stack monorepo
+arcane install backend-ts+frontend+testing
+
+# Mobile app
+arcane install mobile+agile+clickup
+```
+
+---
+
+## Qué se Instala
+
+```
+my-project/.claude/
+├── settings.json          # Permissions + hooks
+├── arcane-manifest.json   # Metadata de la instalación
+├── statusline.sh
+├── hooks/                 # 14 hooks de lifecycle
+├── skills/                # Solo los skills de tu perfil
+├── rules/                 # Rules de tu stack
+├── agents/                # Agents (si el perfil los incluye)
+└── docs/                  # Documentación de referencia
+```
+
+## Filosofía
+
+- **Selectivo:** solo instalás lo que necesitás — menos tokens, mejor performance
+- **Reemplazable:** cambiar de perfil reemplaza la config anterior (con backup)
+- **Colaborativo:** Question → Options → Decision → Draft → Approval
+- **Deduplicado:** perfiles combinados no duplican skills
+
+---
+
+## Docs
+
+- **[User Guide](docs/USER-GUIDE.md)** — guía completa con todos los perfiles detallados
+- **[Skills Catalog](docs/SKILLS-CATALOG.md)** — catálogo completo de skills
+
+## Legacy
+
+El script `setup.sh` sigue disponible como alternativa al CLI:
+
+```bash
+./setup.sh --profile unity-dev --target ~/projects/my-game
+```
 
 ---
 
 ## Compatibilidad
 
-- **OS:** Windows 10/11 (Git Bash), macOS, Linux
-- **Shell:** Bash (POSIX-compatible)
+- **OS:** Windows 10/11, macOS, Linux
+- **Python:** 3.9+
 - **Claude Code:** v1.0+
-- **Lenguaje:** Español (comunicación) + English (código/commits)
-
----
-
-## Filosofía
-
-Los agentes siguen el principio de **diseño colaborativo**:
-
-> **Question → Options → Decision → Draft → Approval**
-
-- El usuario toma las decisiones finales
-- Los agentes presentan opciones con trade-offs
-- No se escribe código sin aprobación
-- No se hacen commits sin instrucción del usuario
-
-Ver `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md` para más detalles.
-
----
+- **Idioma:** Español (comunicación) + English (código/commits)
