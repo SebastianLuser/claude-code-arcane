@@ -4,7 +4,13 @@
 
 INPUT=$(cat)
 
-BRANCH=$(git branch --show-current 2>/dev/null || echo "no-git")
+PROJECT=$(basename "$(pwd)")
+
+if command -v git &>/dev/null && git rev-parse --is-inside-work-tree &>/dev/null; then
+  BRANCH=$(git branch --show-current 2>/dev/null)
+else
+  BRANCH=""
+fi
 
 # Follow symlinks — .claude/skills/ is an aggregator of junctions to per-stack dirs
 SKILLS=$(find -L .claude/skills -name "SKILL.md" 2>/dev/null | wc -l | tr -d ' ')
@@ -61,11 +67,12 @@ print("EXTRA=" + " | ".join(parts))
   EXTRA=$(echo "$OUT" | grep '^EXTRA=' | head -1 | sed 's/^EXTRA=//')
 fi
 
-PREFIX="🔮 Arcane"
+PREFIX="🔮 ${PROJECT}"
 [ -n "$MODEL" ] && PREFIX="🤖 ${MODEL} | ${PREFIX}"
 
-if [ -n "$EXTRA" ]; then
-  echo "${PREFIX} | 🌿 ${BRANCH} | 🛠️ ${SKILLS} skills | ${EXTRA}"
-else
-  echo "${PREFIX} | 🌿 ${BRANCH} | 🛠️ ${SKILLS} skills"
-fi
+PARTS="${PREFIX}"
+[ -n "$BRANCH" ] && PARTS="${PARTS} | 🌿 ${BRANCH}"
+PARTS="${PARTS} | 🛠️ ${SKILLS} skills"
+[ -n "$EXTRA" ] && PARTS="${PARTS} | ${EXTRA}"
+
+echo "$PARTS"

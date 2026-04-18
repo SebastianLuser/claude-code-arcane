@@ -6,7 +6,6 @@
 DESCRIPTION="Programador Unity — C#, arquitectura, performance, builds"
 
 SKILLS_GENERAL=(
-  tdd
   test-setup
   perf-profile
   optimize
@@ -23,11 +22,10 @@ SKILLS_GAMEDEV=(
   unity-game-architecture
   map-systems
   asset-audit
-  consistency-check
   audit-game
 )
 
-SKILLS_SOFTWARE=(ci-cd-setup)
+SKILLS_SOFTWARE=()
 SKILLS_AGILE=()
 SKILLS_DESIGN=()
 
