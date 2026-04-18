@@ -24,7 +24,17 @@
       "Bash(find .claude/skills-* -maxdepth 1 -type d -name \"*\")",
       "Bash(xargs -I {} basename {} .md)",
       "Bash(xargs -I {} wc -l {})",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(bash tools/migrate-to-arcane-global.sh)",
+      "Bash(cmd *)",
+      "Bash(rmdir ~/.claude-backup-20260417-215357/agents)",
+      "Bash(rmdir ~/.claude-backup-20260417-215357)",
+      "Bash(bash *)",
+      "Bash(mkdir -p /tmp/test-arcane)",
+      "Read(//tmp/**)",
+      "Bash(find /c/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills* -type f -name \"*.md\")",
+      "Bash(xargs -I {} basename {})",
+      "Bash(chmod +x *)"
     ]
   }
 }

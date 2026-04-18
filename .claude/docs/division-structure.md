@@ -3,7 +3,7 @@
 El repo está organizado en 8 divisiones. Cada división tiene su propia jerarquía de 3 tiers (directors, leads, specialists) y sus skills asociadas.
 
 ## División 1 — Game Development Studio 🎮
-**Path:** `.claude/agents/game/`
+**Path:** `agents/game/`
 **Propósito:** Desarrollo de videojuegos (Unity, Unreal)
 **Agentes:** 44 | **Skills:** 72
 **Stack:** C#, C++, Blueprint
@@ -11,7 +11,7 @@ El repo está organizado en 8 divisiones. Cada división tiene su propia jerarqu
 **Cuándo usarla:** Cualquier tarea relacionada con juegos — diseño, mecánicas, arte, audio, narrativa, QA de juegos.
 
 ## División 2 — Software Engineering 💻
-**Path:** `.claude/agents/engineering/`
+**Path:** `agents/engineering/`
 **Propósito:** Desarrollo de software profesional
 **Agentes:** 20 | **Skills:** 60
 **Stack:** Go, Node.js, Python, TypeScript, Rust, React, Vue, Angular, Flutter, React Native
@@ -19,7 +19,7 @@ El repo está organizado en 8 divisiones. Cada división tiene su propia jerarqu
 **Cuándo usarla:** Aplicaciones web, APIs, mobile, bases de datos, arquitectura de software.
 
 ## División 3 — DevOps & Infrastructure ☁️
-**Path:** `.claude/agents/devops/`
+**Path:** `agents/devops/`
 **Propósito:** Infraestructura, cloud, deployment, observability
 **Agentes:** 11 | **Skills:** 18
 **Stack:** AWS, GCP, Azure, K8s, Docker, Terraform, GitHub Actions
@@ -27,7 +27,7 @@ El repo está organizado en 8 divisiones. Cada división tiene su propia jerarqu
 **Cuándo usarla:** CI/CD, deploys, infraestructura, monitoreo, security ops.
 
 ## División 4 — Product & Design 🎨
-**Path:** `.claude/agents/product/`
+**Path:** `agents/product/`
 **Propósito:** Product management, UX research, UI design
 **Agentes:** 11 | **Skills:** 22
 **Stack:** Figma, Miro, research tools, analytics
@@ -35,7 +35,7 @@ El repo está organizado en 8 divisiones. Cada división tiene su propia jerarqu
 **Cuándo usarla:** Discovery de producto, diseño de UX/UI, research, priorización.
 
 ## División 5 — Project Management Office 📋
-**Path:** `.claude/agents/management/`
+**Path:** `agents/management/`
 **Propósito:** Gestión de proyectos, agile, delivery
 **Agentes:** 8 | **Skills:** 18
 **Stack:** Jira, ClickUp, Linear, GitHub Projects
@@ -43,7 +43,7 @@ El repo está organizado en 8 divisiones. Cada división tiene su propia jerarqu
 **Cuándo usarla:** Planificación, sprints, stakeholders, risk management.
 
 ## División 6 — Quality & Security 🛡️
-**Path:** `.claude/agents/quality/`
+**Path:** `agents/quality/`
 **Propósito:** Testing, QA, seguridad, compliance
 **Agentes:** 7 | **Skills:** 14
 **Stack:** Jest, Playwright, Cypress, OWASP ZAP, Burp Suite
@@ -51,7 +51,7 @@ El repo está organizado en 8 divisiones. Cada división tiene su propia jerarqu
 **Cuándo usarla:** Test strategy, automation, security reviews, compliance audits.
 
 ## División 7 — Educabot 🎓
-**Path:** `.claude/agents/educabot/`
+**Path:** `agents/educabot/`
 **Propósito:** Desarrollo de productos educativos (EdTech)
 **Agentes:** 7 | **Skills:** 10
 **Stack:** LMS, adaptive learning, robotics, curriculum design
@@ -59,7 +59,7 @@ El repo está organizado en 8 divisiones. Cada división tiene su propia jerarqu
 **Cuándo usarla:** Diseño curricular, actividades educativas, robots, evaluaciones.
 
 ## División 8 — Tools & Integrations 🔌
-**Path:** `.claude/agents/integrations/`
+**Path:** `agents/integrations/`
 **Propósito:** Orquestación de herramientas SaaS del día a día
 **Agentes:** 6 | **Skills:** 30
 **Stack:** ClickUp, Jira, Linear, Google Workspace, Notion, Coda, Slack, Discord, Figma, Miro, Postman

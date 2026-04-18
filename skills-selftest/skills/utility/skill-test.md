@@ -12,7 +12,7 @@ compliance, and category-rubric scoring. It operates in three modes:
 - **spec**: Reads a test spec file from `tests/skills/` and evaluates the skill
   against each test case assertion, producing a case-by-case verdict.
 - **audit**: Produces a coverage table of all skills in `.claude/skills/` and
-  all agents in `.claude/agents/`, showing which have spec files and which do not.
+  all agents in `agents/`, showing which have spec files and which do not.
 
 An additional **category** mode reads the quality rubric for a skill category
 (e.g., gate skills) and scores the skill against rubric criteria. The verdict
@@ -120,13 +120,13 @@ None. `/skill-test` is a meta-utility skill. No director gates apply.
 
 **Fixture:**
 - `.claude/skills/` contains 72+ skill directories
-- `.claude/agents/` contains 49+ agent files
+- `agents/` contains 49+ agent files
 - `tests/skills/` contains spec files for a subset of skills
 
 **Input:** `/skill-test audit`
 
 **Expected behavior:**
-1. Skill enumerates all skills in `.claude/skills/` and all agents in `.claude/agents/`
+1. Skill enumerates all skills in `.claude/skills/` and all agents in `agents/`
 2. Skill checks `tests/skills/` for a corresponding spec file for each
 3. Skill produces a coverage table:
    - Each skill/agent listed
