@@ -2,6 +2,8 @@
 
 **Última actualización:** 2026-04-17
 
+> ⚠️ **Métricas a revisar:** un audit del catálogo (`skills-selftest/catalog.yaml` v4) confirma **147 skills + 73 agentes** en el filesystem (sin drift). Las cifras "244 skills" y "114 agentes" más abajo son del plan original — el filesystem real es menor. Decidir si actualizar el plan o expandir el contenido.
+
 ## ✅ Completado
 
 ### Infraestructura base
@@ -28,10 +30,11 @@
 - [x] game-designer, lead-programmer, art-director, audio-director, narrative-director, qa-lead, release-manager, localization-lead (Tier 2)
 - [x] 33 specialists importados desde CCGS (Unity + Unreal, sin Godot)
 
-**División 2 — Software Engineering** (20/20) ✅
+**División 2 — Software Engineering** (13/21 implementados)
 - [x] chief-technology-officer, vp-engineering (Tier 1)
 - [x] backend-architect, frontend-architect, api-architect, database-architect, mobile-lead (Tier 2)
-- [x] 13 specialists (go/node/python/rust, react/vue/angular, flutter/react-native, sql/nosql/graphql/websocket)
+- [x] **6 specialists implementados:** go-engineer, node-engineer, react-engineer, react-native-engineer, sql-specialist, postgres-specialist
+- [ ] 8 specialists pendientes (python, rust, vue, angular, flutter, nosql, graphql, websocket) — solo agregar si se necesitan
 
 **División 3 — DevOps** (11/11) ✅
 - [x] cloud-architect, platform-lead, sre-lead (Tier 2)
@@ -77,6 +80,8 @@
 - `ca5d253` — dual-stack adaptation: split software + gamedev
 - `ef7b4d9` — Godot removido del stack gamedev (solo Unity + Unreal)
 - `58ce1e8` — script `import-ccgs.sh` eliminado (ya cumplió su función)
+- `b510287` — STATUS.md actualizado al estado real
+- `c842a61` — skills-selftest cleanup: `maxTurns` adoptado como canon, `catalog.yaml` rebuildeado (147 skills + 73 agents, 17 fantasmas eliminados), 95 frontmatters patcheados, 8 errores YAML pre-existentes corregidos
 
 ## 🔄 Por hacer
 

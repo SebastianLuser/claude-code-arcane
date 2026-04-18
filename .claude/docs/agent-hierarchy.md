@@ -45,11 +45,11 @@ Cada división sigue una jerarquía de estudio real con 3 niveles de autoridad:
 
 **Leads (5):** `backend-architect`, `frontend-architect`, `api-architect`, `database-architect`, `mobile-lead`
 
-**Specialists (13):**
-- Backend: `go-engineer`, `node-engineer`, `python-engineer`, `rust-engineer`
-- Frontend: `react-engineer`, `vue-engineer`, `angular-engineer`
-- Mobile: `flutter-engineer`, `react-native-engineer`
-- Data: `sql-specialist`, `nosql-specialist`, `graphql-specialist`, `websocket-specialist`
+**Specialists (14 planificados, 6 implementados):**
+- Backend: `go-engineer` ✓, `node-engineer` ✓, `python-engineer`, `rust-engineer`
+- Frontend: `react-engineer` ✓, `vue-engineer`, `angular-engineer`
+- Mobile: `flutter-engineer`, `react-native-engineer` ✓
+- Data: `sql-specialist` ✓, `postgres-specialist` ✓, `nosql-specialist`, `graphql-specialist`, `websocket-specialist`
 
 ### División 3 — DevOps & Infrastructure (11)
 

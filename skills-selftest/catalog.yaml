@@ -2145,7 +2145,7 @@ agents:
     tier: specialists
 
   # =====================================================
-  # Division: engineering (7 agents) — software engineering
+  # Division: engineering (13 agents) — software engineering
   # =====================================================
   - name: chief-technology-officer
     spec: null
@@ -2202,6 +2202,54 @@ agents:
     last_spec: ""
     priority: high
     tier: leads
+
+  - name: go-engineer
+    spec: null
+    division: engineering
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: specialists
+
+  - name: node-engineer
+    spec: null
+    division: engineering
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: specialists
+
+  - name: react-engineer
+    spec: null
+    division: engineering
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: specialists
+
+  - name: react-native-engineer
+    spec: null
+    division: engineering
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: sql-specialist
+    spec: null
+    division: engineering
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: specialists
+
+  - name: postgres-specialist
+    spec: null
+    division: engineering
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: specialists
 
   # =====================================================
   # Division: devops (3 agents) — infrastructure
