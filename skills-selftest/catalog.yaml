@@ -814,6 +814,18 @@ skills:
     priority: high
     category: software
 
+  - name: run-migrations
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
   - name: data-seeding
     spec: null
     stack: software
@@ -1640,6 +1652,18 @@ skills:
     category: utility
 
   - name: jira-tickets
+    spec: null
+    stack: agile
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: integrations
+
+  - name: create-ticket
     spec: null
     stack: agile
     last_static: ""
