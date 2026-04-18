@@ -27,86 +27,105 @@ Arcane is a configuration harness for [Claude Code](https://docs.anthropic.com/e
 
 ## Requirements
 
-- **Git Bash**, **WSL**, or any Unix-like shell (macOS/Linux terminal works natively)
+- **Python 3.9+** (for the CLI)
 - **Claude Code** CLI installed ([installation guide](https://docs.anthropic.com/en/docs/claude-code))
 - The target project directory must already exist
 
 ## Installation
 
-Clone the Arcane repository:
+Clone the Arcane repository and install the CLI:
 
 ```bash
 git clone https://github.com/SebastianLuser/claude-code-arcane.git
 cd claude-code-arcane
+pip install -e .
 ```
 
-That's it. Arcane lives in its own directory — it doesn't modify your projects until you explicitly run `setup.sh`.
+This installs the `arcane` command globally. You can now run it from any project directory.
+
+> **Note:** If `arcane` is not found after install, you can always use `python -m arcane` instead.
+
+### Legacy: setup.sh
+
+The Bash script `setup.sh` is still available as an alternative:
+
+```bash
+./setup.sh --profile unity-dev --target ~/projects/my-game
+```
 
 ## Quick Start
 
 ```bash
-# 1. See what profiles are available
-./setup.sh --list
-
-# 2. Preview what would be installed (no changes made)
-./setup.sh --dry-run --profile unity-dev
-
-# 3. Install to your project
-./setup.sh --profile unity-dev --target ~/projects/my-game
-
-# 4. Open Claude Code in your project
+# 1. Navigate to your project
 cd ~/projects/my-game
+
+# 2. Interactive mode — pick profiles from a menu
+arcane install
+
+# 3. Or specify profiles directly
+arcane install unity-dev
+
+# 4. Open Claude Code
 claude
 ```
 
-On Windows CMD/PowerShell, prefix with `bash`:
-
-```powershell
-bash setup.sh --profile unity-dev --target C:\Users\me\projects\my-game
-```
+That's it. No need to know where Arcane lives, no `--target` flags — it installs into the current directory.
 
 ---
 
 ## Commands Reference
 
-### `--list` — List available profiles
+### `arcane install` — Install profiles
 
 ```bash
-./setup.sh --list
+# Interactive mode — shows a menu to pick profiles
+arcane install
+
+# Direct mode — specify profiles with +
+arcane install unity-dev
+arcane install unity-dev+agile+clickup
+
+# Install to a specific directory (default: current dir)
+arcane install unity-dev -t ~/projects/my-game
+
+# Preview without installing
+arcane install unity-dev --dry-run
+```
+
+This is a **destructive replace** — if `.claude/` already exists, it gets backed up to `.claude.bak/` and replaced entirely.
+
+**Why destructive?** More skills = more tokens consumed per session = worse Claude performance. Replacing ensures you only have what you need.
+
+### `arcane list` — List available profiles
+
+```bash
+arcane list
 ```
 
 Shows all base profiles and add-ons with their descriptions.
 
-### `--dry-run` — Preview without installing
+### `arcane status` — Check current installation
 
 ```bash
-./setup.sh --dry-run --profile <profiles>
+arcane status
 ```
 
-Shows exactly what skills, rules, agents, and permissions would be copied. No files are created or modified. Use this to verify before installing.
+Shows what profile is installed in the current directory, when it was installed, and how many skills/rules.
 
-### `--profile + --target` — Install
-
-```bash
-./setup.sh --profile <profiles> --target <path>
-```
-
-Installs the selected profile(s) into the target project. This is a **destructive replace** — if `.claude/` already exists, it gets backed up to `.claude.bak/` and replaced entirely.
-
-**Why destructive?** More skills = more tokens consumed per session = worse Claude performance. Replacing ensures you only have what you need.
-
-### `--clean` — Remove Arcane from a project
+### `arcane clean` — Remove Arcane from a project
 
 ```bash
-./setup.sh --clean --target <path>
+arcane clean
+arcane clean -t ~/projects/my-game
 ```
 
 Removes `.claude/` and `.claude.bak/` from the target directory. Shows what profile was installed before cleaning.
 
-### `--help` — Show help
+### `arcane --help` — Show help
 
 ```bash
-./setup.sh --help
+arcane --help
+arcane install --help
 ```
 
 ---
@@ -310,7 +329,7 @@ The `core` profile is automatically included in every installation. You never ne
 Profiles are combined using the `+` separator. The system deduplicates skills automatically — if both `backend-go` and `+infra` include `observability-setup`, it's only installed once.
 
 ```
-./setup.sh --profile <base>[+<base>][+<addon>][+<addon>] --target <path>
+arcane install <base>[+<base>][+<addon>][+<addon>]
 ```
 
 ### Rules
@@ -329,62 +348,71 @@ Profiles are combined using the `+` separator. The system deduplicates skills au
 ### Unity Game (solo developer)
 
 ```bash
-./setup.sh --profile unity-dev --target ~/projects/my-game
+cd ~/projects/my-game
+arcane install unity-dev
 ```
 
 ### Unity Game (with team management)
 
 ```bash
-./setup.sh --profile unity-dev+agile+clickup --target ~/projects/my-game
+cd ~/projects/my-game
+arcane install unity-dev+agile+clickup
 ```
 
 ### Unity Game (dev + designer roles, full team)
 
 ```bash
-./setup.sh --profile unity-dev+unity-design+teams+agile+clickup --target ~/projects/my-game
+cd ~/projects/my-game
+arcane install unity-dev+unity-design+teams+agile+clickup
 ```
 
 ### Go Microservice
 
 ```bash
-./setup.sh --profile backend-go --target ~/projects/my-api
+cd ~/projects/my-api
+arcane install backend-go
 ```
 
 ### Go Microservice (with infra and Jira)
 
 ```bash
-./setup.sh --profile backend-go+infra+agile+jira --target ~/projects/my-api
+cd ~/projects/my-api
+arcane install backend-go+infra+agile+jira
 ```
 
 ### TypeScript API + Frontend Monorepo
 
 ```bash
-./setup.sh --profile backend-ts+frontend --target ~/projects/my-app
+cd ~/projects/my-app
+arcane install backend-ts+frontend
 ```
 
 ### React Web App (with design and testing)
 
 ```bash
-./setup.sh --profile frontend+design+testing --target ~/projects/my-webapp
+cd ~/projects/my-webapp
+arcane install frontend+design+testing
 ```
 
 ### Mobile App (with agile and ClickUp)
 
 ```bash
-./setup.sh --profile mobile+agile+clickup --target ~/projects/my-mobile-app
+cd ~/projects/my-mobile-app
+arcane install mobile+agile+clickup
 ```
 
 ### Full-stack (Go + React + Infra + Ops)
 
 ```bash
-./setup.sh --profile backend-go+frontend+infra+ops --target ~/projects/my-platform
+cd ~/projects/my-platform
+arcane install backend-go+frontend+infra+ops
 ```
 
 ---
 
 ## Changing Profiles
 
-When you re-run `setup.sh` on a project that already has Arcane installed, the system:
+When you re-run `arcane install` on a project that already has Arcane installed, the system:
 
 1. **Detects the current profile** from `arcane-manifest.json`
 2. **Shows you** what's currently installed vs. what's new
@@ -393,15 +421,14 @@ When you re-run `setup.sh` on a project that already has Arcane installed, the s
 
 ```bash
 # Currently has unity-design installed, switching to unity-dev
-./setup.sh --profile unity-dev --target ~/projects/my-game
+cd ~/projects/my-game
+arcane install unity-dev
 ```
 
-Output:
-```
-  Current profile: unity-design
-  Installed:       2026-04-15T20:30:00Z
-  New profile:     unity-dev
-  → Will replace current installation
+You can check the current installation at any time:
+
+```bash
+arcane status
 ```
 
 ### Why replace instead of merge?
@@ -415,7 +442,8 @@ Every skill loaded by Claude Code consumes system prompt tokens. More skills = m
 Remove all Arcane configuration from a project:
 
 ```bash
-./setup.sh --clean --target ~/projects/my-game
+cd ~/projects/my-game
+arcane clean
 ```
 
 This removes:
@@ -428,7 +456,7 @@ The command shows what profile was installed before cleaning.
 
 ## What Gets Installed
 
-When you run `setup.sh --profile X --target Y`, the following structure is created inside your project:
+When you run `arcane install X`, the following structure is created inside your project:
 
 ```
 my-project/
@@ -496,15 +524,25 @@ This file is used to:
 Error: Profile 'unity' not found
 ```
 
-Check available profiles with `./setup.sh --list`. Profile names are exact: `unity-dev`, not `unity`.
+Check available profiles with `arcane list`. Profile names are exact: `unity-dev`, not `unity`.
 
 ### "Target directory does not exist"
 
 ```
-Error: Target directory '/path/to/project' does not exist
+Error: Target directory does not exist
 ```
 
-Create the directory first, or verify the path is correct.
+Make sure you're running `arcane install` from inside the project directory, or use `-t` to specify the path.
+
+### `arcane` command not found
+
+If `pip install -e .` warns about Scripts not being on PATH, use:
+
+```bash
+python -m arcane install unity-dev
+```
+
+Or add the Python Scripts directory to your PATH.
 
 ### Skills show as "WARN: not found"
 
@@ -513,18 +551,6 @@ WARN: Skill 'some-skill' not found in skills-general/
 ```
 
 The skill is referenced in the profile but doesn't exist in the Arcane pool. This may happen if a skill was removed or renamed. The installation continues — only that skill is skipped.
-
-### Windows path issues
-
-On Windows, use forward slashes or quote paths:
-
-```bash
-# Git Bash
-./setup.sh --profile unity-dev --target /c/Users/me/projects/my-game
-
-# Or with Windows paths (quoted)
-./setup.sh --profile unity-dev --target "C:/Users/me/projects/my-game"
-```
 
 ### Hooks not running
 
@@ -567,7 +593,11 @@ Not through `setup.sh`. The philosophy is that profiles are atomic — you insta
 ```bash
 cd claude-code-arcane
 git pull
-./setup.sh --profile <same-profile> --target <same-target>
+pip install -e .  # if there were CLI changes
+
+# Then from your project directory:
+cd ~/projects/my-game
+arcane install <same-profile>
 ```
 
 Re-running the same profile picks up any updated skill content.
