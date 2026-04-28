@@ -10,14 +10,34 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 
 New mobile app (iOS+Android), rapid mobile POC, or mobile companion to an existing web app.
 
-## Pre-Scaffold Questions
+## MANDATORY WORKFLOW
+
+**Antes de generar cualquier código, completar estos pasos en orden.**
+
+### Step 0: Gather Requirements
+
+Clarificar (o inferir del contexto si ya fue especificado):
 
 1. **App name** (kebab-case + display name)
-2. **Bundle IDs**: `com.educabot.<app>` (iOS + Android)
-3. **Backend**: URL + auth scheme
-4. **Native features**: camera / push / biometrics / deep links / maps / offline-first
-5. **Styling**: NativeWind (default) / Tamagui / plain StyleSheet
-6. **Platforms**: iOS + Android / single / + web
+2. **Bundle IDs:** `com.educabot.<app>` (iOS + Android)
+3. **Backend:** URL + auth scheme
+4. **Native features:** camera / push / biometrics / deep links / maps / offline-first
+5. **Styling:** NativeWind (default) / Tamagui / plain StyleSheet
+6. **Platforms:** iOS + Android / single / + web
+
+Si el usuario ya especificó estos valores, saltar directamente al Step 1.
+
+### Step 1: Implementar
+
+Seguir: Workflow Decision → Navigation Decision → Dependency Baseline → Project Structure → Conventions.
+
+### Step 2: Verificar
+
+```bash
+npx expo start          # dev server arriba sin errores
+npx expo run:android    # compila (si hay emulador)
+npm run test            # Vitest/RNTL pasa
+```
 
 ## Workflow Decision
 

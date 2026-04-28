@@ -4,6 +4,13 @@ description: Estrategia de autenticación con JWT y refresh tokens para stack Ed
 argument-hint: "[setup|rotate|audit]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
+metadata:
+  category: security
+  sources:
+    - JWT RFC 7519 (JSON Web Token)
+    - JWK RFC 7517 (JSON Web Key)
+    - JWT Best Practices RFC 8725
+    - jose library documentation (github.com/panva/jose)
 ---
 # JWT Strategy — Educabot
 
@@ -67,13 +74,20 @@ Cookie auth → necesitás CSRF token (double-submit cookie o X-CSRF-Token heade
 
 ## Anti-patterns
 
-- HS256 multi-service, `alg: none`, localStorage para tokens
-- Access exp >1h, refresh sin rotation
-- Public key hardcodeada (usar JWKS), no validar aud/iss
-- PII (email/nombre/DNI) en JWT, especialmente menores
-- jwt-decode en cliente para lógica de negocio sin validación server
-- Sin plan de revocación, `jsonwebtoken` legacy en TS
-- AsyncStorage en RN, tenant_id por query, rotar keys sin overlap
+| # | ❌ No hacer | ✅ Hacer en cambio |
+|---|------------|-------------------|
+| 1 | `alg: none` o HS256 en multi-service | RS256 / EdDSA con JWKS público |
+| 2 | Access token con exp >1h | Access ≤15 min, refresh 7-30 días rotado |
+| 3 | Refresh sin rotación ni detección de reuse | Rotar en cada uso + revocar family si se detecta reuse |
+| 4 | Public key hardcodeada | JWKS endpoint `/.well-known/jwks.json` con 2 kids activos |
+| 5 | No validar `aud` / `iss` | Validar siempre — impide aceptar tokens de otro servicio |
+| 6 | PII (email, nombre, DNI) en claims | Solo `sub` (UUID) + `tenant_id` + roles; nunca PII de menores |
+| 7 | `jwt-decode` en cliente para lógica | Solo para UI (display); validación siempre server-side |
+| 8 | Sin plan de revocación | Blacklist jti en Redis o user_version en claims |
+| 9 | `jsonwebtoken` en TS | Usar `jose` (soporte JWKS, async, modern) |
+| 10 | Tokens en localStorage / AsyncStorage | In-memory (SPA) / HttpOnly cookie / SecureStore (RN) |
+| 11 | `tenant_id` por query param o body | Siempre en claims del JWT; backend valida |
+| 12 | Rotar JWKS sin overlap | Mantener 2 kids activos 90 días; emitir con nueva, validar con ambas |
 
 ## Checklist
 

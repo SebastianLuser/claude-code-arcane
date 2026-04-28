@@ -9,7 +9,13 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 
 Genera estructura completa de proyecto Go con Clean Architecture + team-ai-toolkit.
 
-## Input
+## MANDATORY WORKFLOW
+
+**Antes de generar cualquier código, completar estos pasos en orden.**
+
+### Step 0: Gather Requirements
+
+Clarificar (o inferir del contexto si ya fue especificado):
 
 1. **Nombre del proyecto** (e.g., "vigia-be", "tich-be")
 2. **Módulo Go** (e.g., "github.com/educabot/vigia-be")
@@ -17,6 +23,20 @@ Genera estructura completa de proyecto Go con Clean Architecture + team-ai-toolk
 4. **Primer dominio/feature** (e.g., "alerts", "students")
 5. **Puerto default** (default: 8080)
 6. **Puerto PostgreSQL local** (default: 5432)
+
+Si el usuario ya especificó estos valores, saltar directamente al Step 1.
+
+### Step 1: Implementar
+
+Seguir: Arquitectura → Estructura a generar → Patrones → Dependencias → Rules.
+
+### Step 2: Verificar
+
+```bash
+GOPRIVATE=github.com/educabot/* go mod download
+go build ./...
+go test ./...          # todos los tests deben pasar
+```
 
 ## Arquitectura
 

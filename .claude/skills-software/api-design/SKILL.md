@@ -1,11 +1,38 @@
 ---
 name: api-design
-description: "API design decisions: REST conventions, OpenAPI, versioning, pagination, error format, GraphQL criteria, webhooks."
+description: "API design decisions: REST conventions, OpenAPI, versioning, pagination, error format, GraphQL criteria, webhooks. DO NOT TRIGGER when: consumir APIs externas (no diseñarlas), documentar API existente sin cambios, troubleshooting de un endpoint puntual."
 argument-hint: "[rest|graphql|versioning|docs] [resource-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # api-design — REST, GraphQL, Versioning & Docs
+
+## MANDATORY WORKFLOW
+
+**Antes de recomendar o generar cualquier diseño, completar estos pasos en orden.**
+
+### Step 0: Gather Requirements
+
+Clarificar (o inferir del contexto si ya fue especificado):
+
+1. **¿API nueva o extensión?** (si es extensión, leer la existente primero)
+2. **Tipos de clientes:** SPA / mobile / third-party / server-to-server
+3. **¿Over-fetch o deeply nested relations?** → influye en REST vs GraphQL
+4. **Auth:** JWT / API Key / OAuth / ninguna
+5. **¿Versioning desde día 1?** ¿Hay clientes externos que no podemos romper?
+
+Si el usuario ya especificó estos valores, saltar directamente al Step 1.
+
+### Step 1: Recomendar approach
+
+Usar la tabla API Style Decision más abajo para elegir REST / GraphQL / gRPC.
+Explicar la elección en 1 oración.
+
+### Step 2: Diseñar + Verificar
+
+Implementar el diseño. Al terminar, validar contra el Checklist al final de este documento.
+
+---
 
 ## API Style Decision
 
@@ -58,15 +85,19 @@ Never invent a custom format. Never expose stack traces in production.
 - Minimal payload + URL for detail fetch; dashboard for failed deliveries
 
 ## Anti-patterns
-- Verbs in URLs, status 200 with error body
-- Custom error format instead of RFC 9457
-- OFFSET pagination on large tables
-- Breaking change without version bump
-- Stack traces in production responses
-- 3+ major versions alive, no Deprecation/Sunset headers
-- GraphQL without depth/complexity limits
-- Webhooks without HMAC signature
-- Hand-maintained OpenAPI that drifts from code
+
+| # | ❌ No hacer | ✅ Hacer en cambio |
+|---|------------|-------------------|
+| 1 | Verbos en URLs (`/getUser`, `/createOrder`) | Sustantivos plurales: `GET /users`, `POST /orders` |
+| 2 | Status 200 con cuerpo de error | Código HTTP correcto (400/401/404/500) + RFC 9457 body |
+| 3 | Formato de error custom inventado | RFC 9457 Problem Details con `type`, `title`, `status`, `traceId` |
+| 4 | OFFSET pagination en tablas grandes | Cursor keyset con `{ data, pagination: { cursor, hasMore } }` |
+| 5 | Breaking change sin version bump | Bump a `/v2/`; mantener `/v1/` con Deprecation + Sunset headers |
+| 6 | 3+ versiones vivas en paralelo | Máx 2 versiones; sunset activo sobre la más vieja |
+| 7 | Stack traces en responses de producción | Log interno con traceId; response solo incluye `traceId` |
+| 8 | GraphQL sin límites de profundidad/complejidad | depth limit + query complexity scoring obligatorio |
+| 9 | Webhooks sin firma HMAC | `X-Signature: sha256=<hmac>` + reject si delta timestamp >5min |
+| 10 | OpenAPI mantenido a mano (drift con código) | Code-first (Zod+swagger) o spec-first con Spectral lint en CI |
 
 ## Checklist
 - [ ] URLs plural, no verbs, nesting max 2

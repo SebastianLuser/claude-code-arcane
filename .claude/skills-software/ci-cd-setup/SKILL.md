@@ -1,11 +1,28 @@
 ---
 name: ci-cd-setup
-description: "CI/CD decision guide: GitHub Actions pipeline stages, caching, environments, branch protection, deploy strategies, secrets. Use for: ci, cd, github actions, pipeline, workflow, deploy, release."
+description: "CI/CD decision guide: GitHub Actions pipeline stages, caching, environments, branch protection, deploy strategies, secrets. Use for: ci, cd, github actions, pipeline, workflow, deploy, release. DO NOT TRIGGER when: troubleshooting de pipeline existente que falla, fix de un step puntual en workflow ya configurado."
 argument-hint: "[stack: go|ts|react|rn]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # ci-cd-setup — Decision Guide
+
+## Quick Start Checklist — Pipeline completo desde cero
+
+- [ ] Workflow `.github/workflows/ci.yml` creado con stages en orden: lint → type-check → test → build → deploy
+- [ ] Lint + type-check + test corren en paralelo (jobs separados); build espera que los 3 pasen
+- [ ] Caching activo (`setup-node`/`setup-go` built-in o `actions/cache` para paths custom)
+- [ ] `npm ci` (no `npm install`) en todos los jobs Node
+- [ ] Todas las actions pinneadas por SHA o major version (`@v3`, nunca `@master`)
+- [ ] Concurrency group con `cancel-in-progress: true` en PRs
+- [ ] GitHub Environment `staging` con auto-deploy en push a main
+- [ ] GitHub Environment `production` con required reviewers + deploy solo en tags `v*`
+- [ ] Secrets de prod en Environment `production`, nunca en repo-level ni hardcodeados
+- [ ] OIDC para cloud auth (no long-lived keys)
+- [ ] Branch protection: PR requerido + CI must pass + force-push bloqueado en main
+- [ ] Rollback procedure documentado en README o runbook
+
+---
 
 GitHub Actions. Principle: **fail fast, cache aggressively, gate production**.
 

@@ -7,6 +7,17 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # data-operations — Query Optimization & Seeding
 
+## Route
+
+| Intención del usuario | Modo | Sección |
+|----------------------|------|---------|
+| "query lenta", "EXPLAIN", "N+1", "optimizar SQL", "OFFSET", "índice" | OPTIMIZE | → Sección 1: Query Optimization |
+| "seed", "fixtures", "datos demo", "faker", "factory", "test data", "anonimizar" | SEED | → Sección 2: Data Seeding |
+
+**Regla:** si la intención es ambigua, preguntar antes de ejecutar.
+
+---
+
 ## Cuándo usar
 
 Diagnosticar/optimizar queries lentas, crear seeders dev/test/staging, anonimizar dumps prod.

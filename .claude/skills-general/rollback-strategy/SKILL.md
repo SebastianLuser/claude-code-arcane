@@ -59,30 +59,17 @@ Código N-1 debe funcionar con schema N, y código N con schema N-1, por al meno
 
 ## Runbook rollback manual
 
-- **Cloud Run:** listar revisions → update-traffic a revision previa
-- **GKE:** rollout history → rollout undo → rollout status
-- **Feature flag:** POST toggle-off a Unleash/LaunchDarkly
-- **Verificación:** health check + logs últimos 5min buscando errores
+Comandos exactos para Cloud Run, GKE, feature flags, GitHub Actions rollback workflow, post-rollback steps, PITR de Cloud SQL, e invalidación de cache/CDN:
 
-## GitHub Actions rollback
-
-Workflow `rollback.yml` con input `revision_sha` + `service`. Redeploya imagen existente sin build. Environment production con approval gate. Notify Slack post-rollback.
+> Leer `references/runbook-commands.md` antes de ejecutar cualquier rollback en producción.
 
 ## Post-rollback
 
 1. Crear incident con `/incident`
-2. Capturar logs del período malo antes de rotación
+2. Capturar logs del período malo antes de rotación (ver runbook)
 3. Capturar métricas (Grafana/Cloud Monitoring)
 4. RCA (5 whys, fishbone)
 5. Fix forward: arreglar, testear, redeployar — no quedar en versión vieja indefinidamente
-
-## DB data (corruption)
-
-PITR (Point-in-Time Recovery) de Cloud SQL. Probar restore periódicamente en staging (DR drill trimestral). Documentar tiempo estimado (~30min-2h). Runbook reconciliación para writes entre punto restore y ahora.
-
-## Cache y CDN
-
-Invalidar caches (Redis/Memorystore) tras rollback. Purgar CDN (Cloud CDN, Cloudflare) si frontend afectado. Versionar assets por hash (`app.a1b2c3.js`).
 
 ## Mobile (React Native)
 

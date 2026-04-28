@@ -1,6 +1,6 @@
 ---
 name: performance
-description: "Rate limiting and caching strategy for backend services"
+description: "Rate limiting and caching strategy for backend services. DO NOT TRIGGER when: profiling puntual de función lenta (usar perf-profile), optimización de query SQL específica (usar data-operations)."
 argument-hint: "[rate-limit|cache|full]"
 user-invocable: true
 allowed-tools: ["Read", "Edit", "Write", "Bash", "Glob", "Grep"]

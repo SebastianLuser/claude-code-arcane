@@ -1,11 +1,46 @@
 ---
 name: auth-strategy
-description: "Auth decision guide: OAuth2/OIDC+PKCE, JWT rotation, RBAC/ABAC/ReBAC, token storage, revocation, MFA, sessions. Trigger: oauth, jwt, token, refresh, rbac, abac, permissions, roles, auth, multi-tenant, RLS, access control, login, session."
+description: "Auth decision guide: OAuth2/OIDC+PKCE, JWT rotation, RBAC/ABAC/ReBAC, token storage, revocation, MFA, sessions. Trigger: oauth, jwt, token, refresh, rbac, abac, permissions, roles, auth, multi-tenant, RLS, access control, login, session. DO NOT TRIGGER when: debugging de auth existente sin cambios de estrategia, preguntas conceptuales sobre OAuth sin implementar."
 argument-hint: "[oauth|jwt|rbac|abac|session|mfa]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
+metadata:
+  category: security
+  sources:
+    - OAuth 2.0 RFC 6749
+    - PKCE RFC 7636
+    - OpenID Connect Core 1.0
+    - JWT Best Practices RFC 8725
+    - NIST SP 800-63B (Digital Identity Guidelines)
 ---
 # auth-strategy — Authentication + Authorization Decision Guide
+
+## MANDATORY WORKFLOW
+
+**Antes de recomendar o implementar cualquier estrategia de auth, completar estos pasos en orden.**
+
+### Step 0: Gather Requirements
+
+Clarificar (o inferir del contexto si ya fue especificado):
+
+1. **Stack:** Go + TS / pure TS / otro
+2. **¿Auth nueva o migración de existente?** (si es migración, revisar implementación actual)
+3. **¿Multi-tenant?** → define si necesita tenant scope en tokens y middleware
+4. **¿OAuth provider externo** (Google, GitHub, etc.) **o auth propio?**
+5. **¿MFA requerido?** ¿Para todos o solo roles admin/privilegiados?
+
+Si el usuario ya especificó estos valores, saltar directamente al Step 1.
+
+### Step 1: Recomendar estrategia
+
+Usar las tablas de OAuth / JWT / Authorization más abajo.
+Elegir el modelo correcto para el contexto. Explicar en 1-2 oraciones por qué.
+
+### Step 2: Implementar + Verificar
+
+Implementar. Al terminar, validar contra el Checklist al final de este documento.
+
+---
 
 Pipeline: **Authentication** (who) -> **Token** (proof) -> **Authorization** (what they can do).
 
@@ -68,11 +103,25 @@ Start RBAC. Migrate to ABAC only when static roles can't express rules. Permissi
 
 ## 5. Anti-patterns
 
-**OAuth:** Implicit/Password grant; no PKCE; unvalidated state/nonce/id_token; client_secret in frontend; wildcard redirect_uri; id_token as session.
-
-**JWT:** HS256 multi-service; `alg: none`; access >1h; no refresh rotation; localStorage tokens; no revocation plan; no JWKS rotation; PII in claims.
-
-**Authorization:** Frontend-only checks; missing tenant scoping; roles as permissions; ownership in middleware not service; cache without invalidation; super admin without audit log.
+| # | ❌ No hacer | ✅ Hacer en cambio |
+|---|------------|-------------------|
+| 1 | Implicit grant o Password grant | Auth Code + PKCE (S256) siempre |
+| 2 | PKCE omitido "porque hay client_secret" | PKCE + client_secret son independientes — usar ambos |
+| 3 | No validar `state`, `nonce` o `id_token` signature | Validar todo: state (CSRF), nonce, JWKS signature, iss, aud, exp |
+| 4 | `client_secret` en frontend | Solo en backend; frontend nunca tiene secrets |
+| 5 | `redirect_uri` con wildcard | HTTPS exacto, sin wildcards, sin trailing slash |
+| 6 | Usar `id_token` como session token | Post-login: crear sesión propia; id_token es identidad, no sesión |
+| 7 | HS256 en multi-service | RS256 / EdDSA con JWKS — cada servicio verifica con public key |
+| 8 | `alg: none` | Librería debe rechazarlo; whitelist explícita de algoritmos |
+| 9 | Access token con exp >1h | Access ≤15 min; refresh 7-30 días rotado en cada uso |
+| 10 | Tokens en localStorage / AsyncStorage | In-memory (SPA) / HttpOnly cookie / SecureStore (mobile) |
+| 11 | Sin plan de revocación | Blacklist jti (Redis) o user_version en claims |
+| 12 | PII en JWT claims | Solo `sub` (UUID) + `tenant_id` + roles; nunca email/nombre de menores |
+| 13 | Auth solo en frontend | Backend valida siempre — frontend es UX solamente |
+| 14 | Roles como permisos | Naming `resource:action`; roles agrupan permisos |
+| 15 | Ownership check en middleware | En capa de servicio donde hay contexto de negocio |
+| 16 | Cache de permisos sin invalidación | Invalidar en cambio de rol o password |
+| 17 | Super admin sin audit log | Logging intenso + alerta en cada acción privilegiada |
 
 ## 6. Checklist
 

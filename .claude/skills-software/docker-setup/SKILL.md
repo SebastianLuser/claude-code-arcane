@@ -1,11 +1,28 @@
 ---
 name: docker-setup
-description: "Docker setup guide: Dockerfile best practices, image selection, compose, security, size optimization"
+description: "Docker setup guide: Dockerfile best practices, image selection, compose, security, size optimization. DO NOT TRIGGER when: Dockerfiles ya existentes que solo necesitan un fix puntual, troubleshooting de docker-compose existente."
 argument-hint: "[stack: go|ts|react] [--dev|--prod]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # docker-setup — Docker & Compose Setup
+
+## Quick Start Checklist — Setup completo desde cero
+
+- [ ] `.dockerignore` creado antes de cualquier `COPY` (excluye `.git`, `node_modules`, `.env`, `coverage`, `*.md`)
+- [ ] Dockerfile multi-stage: stage `builder` separado del stage `runtime`
+- [ ] Base image con tag fijo, nunca `:latest` (ej: `golang:1.22-alpine`, `node:20-alpine`)
+- [ ] Dependencias copiadas e instaladas ANTES del código fuente (cache de layers)
+- [ ] Stage runtime usa imagen mínima: `distroless` (Go) o `node:20-alpine` (TS) o `nginx:alpine` (React)
+- [ ] `USER nonroot` o usuario no-root en stage runtime
+- [ ] `HEALTHCHECK` presente en cada servicio
+- [ ] Signal handler: `tini`/`dumb-init` en Node (Go nativo); `CMD` con exec form
+- [ ] `docker-compose.yml` con `depends_on: condition: service_healthy`
+- [ ] `docker-compose.override.yml` para dev-only (volúmenes, puertos) — no commiteado a prod
+- [ ] Secrets nunca en `ENV` ni en build args — solo via env vars en runtime o mounts
+- [ ] `trivy image` o `docker scout` en CI antes de push al registry
+
+---
 
 Generate production-ready Dockerfiles and docker-compose for Go, TypeScript, and React stacks.
 

@@ -1,6 +1,6 @@
 ---
 name: observability-setup
-description: "Setup observabilidad (logs+metrics+traces) para stacks Educabot. OpenTelemetry + Prometheus + Grafana + Loki + Sentry. Go, TS Fastify, React, RN."
+description: "Setup observabilidad (logs+metrics+traces) para stacks Educabot. OpenTelemetry + Prometheus + Grafana + Loki + Sentry. Go, TS Fastify, React, RN. DO NOT TRIGGER when: queries de métricas o dashboards en infra ya configurada (usar observability-ops), troubleshooting de alerts existentes."
 argument-hint: "[stack: go|ts|react|rn] [--full|--lite]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task

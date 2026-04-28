@@ -6,7 +6,15 @@ user-invocable: true
 allowed-tools: ["Read", "Bash", "Glob", "Grep", "Write"]
 ---
 
-> **Explicit invocation only**: Parse argument for scope: `checklist`, `patch-notes`, or `both` (default).
+## Route
+
+| Argumento / Intención | Modo | Qué hace |
+|----------------------|------|----------|
+| `checklist` / "¿estamos listos para release?", "go/no-go" | CHECKLIST | Ejecuta Pre-Release Checklist completo |
+| `patch-notes` / "generar notas", "release notes", "changelog" | PATCH-NOTES | Genera patch notes desde git log / changelog.md |
+| `both` / (sin argumento) | BOTH | Checklist primero → patch notes al final |
+
+**Regla:** si hay blockers en CHECKLIST, reportarlos antes de proceder a PATCH-NOTES.
 
 ## Pre-Release Checklist
 

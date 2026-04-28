@@ -1,6 +1,6 @@
 ---
 name: testing
-description: "Test strategy, framework setup, and helper patterns for web projects"
+description: "Test strategy, framework setup, and helper patterns for web projects. DO NOT TRIGGER when: correr tests existentes, debugging de un test roto, fix de un test flaky (usar test-flakiness)."
 argument-hint: "[unit|integration|e2e|helpers|all]"
 user-invocable: true
 allowed-tools: ["Read", "Edit", "Write", "Bash", "Glob", "Grep"]

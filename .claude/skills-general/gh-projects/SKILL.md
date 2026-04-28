@@ -49,40 +49,9 @@ gh project item-edit --id <item_id> --project-id <project_id> \
 
 ## GraphQL para Operaciones Complejas
 
-### Obtener project ID y fields
-```graphql
-query {
-  organization(login: "myorg") {
-    projectV2(number: 1) {
-      id
-      title
-      fields(first: 20) {
-        nodes {
-          ... on ProjectV2Field { id name dataType }
-          ... on ProjectV2SingleSelectField {
-            id name
-            options { id name color }
-          }
-        }
-      }
-    }
-  }
-}
-```
+Para operaciones que `gh project` CLI no soporta (filtros complejos, bulk updates, iteraciones, draft items), usar GraphQL via `gh api graphql`.
 
-### Update field value
-```graphql
-mutation {
-  updateProjectV2ItemFieldValue(input: {
-    projectId: "...",
-    itemId: "...",
-    fieldId: "...",
-    value: { singleSelectOptionId: "..." }
-  }) {
-    projectV2Item { id }
-  }
-}
-```
+> Queries completas con variables (GetProject, GetProjectItems, UpdateStatus, AddItem, CreateDraft, DeleteItem) y cómo obtener IDs: leer `references/graphql-queries.md`.
 
 ## Casos de Uso
 

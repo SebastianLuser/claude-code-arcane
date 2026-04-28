@@ -9,13 +9,33 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 
 React 18+ with Vite, TypeScript strict, client-side SPA consuming Go/TS backend.
 
-## Pre-scaffold Questions
+## MANDATORY WORKFLOW
 
-1. Project name (kebab-case)
-2. Backend (Go? TS? Base URL?)
-3. Auth: JWT / session cookies / OAuth
-4. i18n: react-i18next / none
-5. Design system: shadcn/ui (default) / existing custom
+**Antes de generar cualquier código, completar estos pasos en orden.**
+
+### Step 0: Gather Requirements
+
+Clarificar (o inferir del contexto si ya fue especificado):
+
+1. **Project name** (kebab-case)
+2. **Backend:** Go / TS — Base URL del API
+3. **Auth:** JWT / Session cookies / OAuth
+4. **i18n:** react-i18next / ninguna
+5. **Design system:** shadcn/ui (default) / custom existente
+
+Si el usuario ya especificó estos valores, saltar directamente al Step 1.
+
+### Step 1: Implementar
+
+Seguir: Project Structure → Dependency Baseline → Vite Config Decisions → Tooling Checklist.
+
+### Step 2: Verificar
+
+```bash
+npm run build    # tsc + vite build sin errores
+npm run test     # vitest pasa
+npm run lint     # ESLint sin warnings
+```
 
 ## Project Structure
 

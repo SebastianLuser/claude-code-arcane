@@ -6,6 +6,13 @@ context: Educabot EdTech LatAm — servicios con peak en horario escolar AM
 argument-hint: "[service-name] [--availability|--latency|--error]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
+metadata:
+  category: reliability
+  sources:
+    - Google SRE Handbook (sre.google/sre-book)
+    - Google SRE Workbook — Implementing SLOs
+    - OpenSLO Specification (openslo.com)
+    - DORA Metrics (dora.dev)
 ---
 # SLO / SLI — Reliability Objectives
 

@@ -7,6 +7,39 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # scaffold-fastify-ts — Backend Scaffolder
 
+## MANDATORY WORKFLOW
+
+**Antes de generar cualquier código, completar estos pasos en orden.**
+
+### Step 0: Gather Requirements
+
+Clarificar (o inferir del contexto si ya fue especificado):
+
+1. **Nombre del servicio** (kebab-case)
+2. **Base de datos:** PostgreSQL / MySQL / SQLite
+3. **ORM:** Prisma (default) / Drizzle
+4. **Auth:** JWT / Session cookies / OAuth / ninguna
+5. **Deploy target:** Docker / AWS ECS / Railway / Vercel
+
+Si el usuario ya especificó estos valores, saltar directamente al Step 1.
+
+### Step 1: Implementar
+
+Seguir las secciones de este documento en orden: Framework Decision → Stack Baseline → Project Structure → Key Decisions.
+
+### Step 2: Verificar
+
+Antes de declarar el scaffold completo:
+
+```bash
+npm run build        # tsc sin errores
+docker compose up -d # Postgres arriba
+npm run test         # vitest pasa
+curl http://localhost:3000/health  # responde 200
+```
+
+---
+
 ## Framework Decision
 
 | Option | Use when |
@@ -65,14 +98,6 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 - Centralized `setErrorHandler` on app — ZodError maps to 400, everything else 500
 - Custom error classes extending Fastify's httpErrors (@fastify/sensible)
 - Never expose stack traces in production
-
-## Pre-scaffold Questions
-
-1. Service name (kebab-case)
-2. Database: PostgreSQL / MySQL / SQLite
-3. ORM: Prisma (default) / Drizzle
-4. Auth: JWT / Session cookies / OAuth
-5. Deploy target: Docker / AWS ECS / Railway / Vercel
 
 ## Anti-patterns
 

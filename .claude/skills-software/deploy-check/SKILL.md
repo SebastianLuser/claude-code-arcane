@@ -7,6 +7,20 @@ allowed-tools: Read, Glob, Grep, Bash
 ---
 # deploy-check — Pre-Deploy Verification Guide
 
+## Quick Start Checklist — Pre-deploy mínimo
+
+- [ ] Tests pasan (`go test ./...` / `npm test`) — sin red, sin skip
+- [ ] Build limpio sin errores ni warnings relevantes
+- [ ] Sin secrets en archivos trackeados (`gitleaks detect` o `trufflehog`)
+- [ ] Migrations: todas commiteadas, `up → down → up` probado en staging
+- [ ] Env vars: todas las de `.env.example` seteadas en el target
+- [ ] Rollback plan documentado y probado — ¿quién lo ejecuta y cuándo?
+- [ ] Staging deployed y smoke tests pasando antes de prod
+- [ ] Health checks respondiendo (`/health`, `/ready`)
+- [ ] On-call notificado / disponible durante las primeras 2h post-deploy
+
+---
+
 Run all independent checks in parallel. Any FAIL -> BLOCKERS FOUND, do not proceed.
 
 ## 1. Pre-Deploy Checklist

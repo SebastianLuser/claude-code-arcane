@@ -56,40 +56,11 @@ Siempre `.down.sql` aunque sea vacío documentado. CI: `up → down → up`.
 
 ## 2. Indexing
 
-### Tipos
+Tipos: B-tree (95% — equality/range/sort), GIN (arrays/jsonb/tsvector), GiST (geo/ranges), BRIN (huge ordered tables).
 
-| Tipo | Cuándo | Cuándo NO |
-|------|--------|-----------|
-| **B-tree** | Equality, range, ORDER BY (95%) | Full-text, arrays, geo |
-| **GIN** | Arrays, jsonb, tsvector, trigram | Tablas muchos writes |
-| **GiST** | Geo, ranges, nearest-neighbor | Queries igualdad simples |
-| **BRIN** | Tablas enormes ordenadas (timestamps) | Datos no correlacionados |
+**Reglas clave:** Composite order = igualdad → rango → ORDER BY. FK child siempre indexado (PG no lo hace automático). `CREATE INDEX CONCURRENTLY` obligatorio en prod. Si el índice queda INVALID → DROP y recrear.
 
-### Composite: orden columnas
-
-Igualdad primero (`tenant_id =`) → rango (`created_at >`) → ORDER BY. Índice `(a,b,c)` sirve para `a`, `a,b`, `a,b,c` — no para solo `b` o `c`.
-
-### Variantes
-
-- **Partial:** `WHERE deleted_at IS NULL` — reduce tamaño cuando mayoría no matchea
-- **Covering (INCLUDE):** evita heap access si todo el SELECT está en el índice
-- **Expression:** `lower(email)` — necesario cuando WHERE usa funciones
-
-### CONCURRENTLY
-
-Obligatorio en tablas con tráfico. No bloquea writes. No puede correr en transacción — usar `-- +migrate NoTransaction`. Si falla → INVALID → detectar con `pg_index WHERE NOT indisvalid` → DROP y recrear.
-
-### FK child columns
-
-Postgres NO indexa automático. Siempre crear índice en child FK.
-
-### JSONB
-
-`@>` (containment): GIN con `jsonb_path_ops` (4x más chico). Un solo key: expression index `(preferences->>'role')`.
-
-### Detectar faltantes/no usados
-
-Faltantes: `pg_stat_user_tables WHERE seq_scan > idx_scan AND n_live_tup > 10000`. No usados: `pg_stat_user_indexes WHERE idx_scan = 0` tras ≥1 mes. Bloat: `REINDEX INDEX CONCURRENTLY`.
+> Para guía completa (tipos, variantes partial/covering/expression, CONCURRENTLY, JSONB, queries de detección), leer `references/indexing-guide.md`.
 
 ## 3. Multi-tenant
 

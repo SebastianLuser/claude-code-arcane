@@ -4,6 +4,13 @@ description: "Web/mobile accessibility decision guide: WCAG 2.2 AA, ARIA, keyboa
 argument-hint: "[audit|fix] [path]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
+metadata:
+  category: quality
+  sources:
+    - WCAG 2.1 AA (W3C Web Content Accessibility Guidelines)
+    - ARIA Authoring Practices Guide (w3.org/WAI/ARIA/apg)
+    - WebAIM (webaim.org)
+    - Deque axe-core documentation
 ---
 # accessibility — Decision Guide
 

@@ -7,6 +7,19 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # Data Migrations — Educabot
 
+## Route
+
+| Intención del usuario | Modo | Qué hace |
+|----------------------|------|----------|
+| "nueva migration", "agregar columna", "crear tabla", "rename" | CREATE | Genera archivos `.up.sql` + `.down.sql` con naming correcto |
+| "correr migrations", "aplicar", "migrate up", "deploy migration" | RUN | Valida staging → ejecuta → confirma estado |
+| "revertir", "rollback", "deshacer migration", "migrate down" | ROLLBACK | Verifica `.down.sql`, evalúa riesgo, ejecuta con backup previo |
+| "qué migrations hay", "estado", "pendientes", "aplicadas" | STATUS | `migrate version` + lista pendientes vs aplicadas |
+
+**Regla:** si la intención combina CREATE + RUN, hacer en ese orden. Si es ROLLBACK destructivo, pedir confirmación explícita.
+
+---
+
 Migraciones de DB sin romper producción. Stack: **Postgres** con **golang-migrate** (Go) o **Prisma Migrate** (TS).
 
 ## Cuándo usar / NO usar

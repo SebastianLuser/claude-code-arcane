@@ -4,6 +4,13 @@ description: Implementación de Multi-Factor Authentication (MFA/2FA) en product
 argument-hint: "[totp|webauthn|sms|backup-codes]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task
+metadata:
+  category: security
+  sources:
+    - NIST SP 800-63B (Digital Identity Guidelines, Level 2)
+    - WebAuthn Level 2 Specification (W3C)
+    - RFC 6238 — TOTP: Time-Based One-Time Password
+    - OWASP MFA Cheat Sheet
 ---
 # MFA Setup — Educabot
 

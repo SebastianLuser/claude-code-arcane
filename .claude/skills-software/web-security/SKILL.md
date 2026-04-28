@@ -1,9 +1,16 @@
 ---
 name: web-security
-description: "OWASP Top 10 audit and security headers for web applications"
+description: "OWASP Top 10 audit and security headers for web applications. DO NOT TRIGGER when: auditoría OWASP categoría por categoría (usar owasp-top10-check), fixing de un bug de seguridad puntual ya identificado."
 argument-hint: "[audit|csp|headers|owasp|full]"
 user-invocable: true
 allowed-tools: ["Read", "Grep", "Glob", "Bash"]
+metadata:
+  category: security
+  sources:
+    - OWASP Top 10 2021 (owasp.org/Top10)
+    - OWASP Web Security Testing Guide v4.2
+    - Mozilla Security Guidelines (infosec.mozilla.org/guidelines)
+    - Content Security Policy Level 3 (W3C)
 ---
 # Web Security -- OWASP Top 10 & Security Headers
 
@@ -72,11 +79,20 @@ Strict baseline: `default-src 'self'; script-src 'self' 'nonce-{N}' 'strict-dyna
 
 ## Anti-Patterns
 
-- `unsafe-inline`/`unsafe-eval` in `script-src`; `*` in any CSP directive; CSP only in `<meta>` tag
-- CORS `*` with credentials; JWT in `localStorage` without XSS mitigation
-- Nonces reused across requests or from weak PRNG; `report-uri` with no persisting endpoint
-- Secrets client-side (localStorage, bundle, non-HttpOnly cookies); `eval()`/`Function()` on user input
-- Headers on some routes only; frontend role checks as sole authorization; logging tokens/passwords/PII
+| # | ❌ No hacer | ✅ Hacer en cambio |
+|---|------------|-------------------|
+| 1 | `unsafe-inline` o `unsafe-eval` en `script-src` | Nonces CSPRNG por request o hashes SHA256 en build-time |
+| 2 | `*` en cualquier directiva de CSP | Orígenes explícitos + `strict-dynamic` |
+| 3 | CSP solo en `<meta>` tag | Header HTTP para que aplique a todos los recursos |
+| 4 | CORS `*` con credentials | Whitelist explícita de orígenes; nunca `*` con credenciales |
+| 5 | JWT en `localStorage` | In-memory (SPA) o HttpOnly cookie con SameSite=Lax |
+| 6 | Nonces reutilizados entre requests | Nuevo nonce CSPRNG (128-bit) por cada request |
+| 7 | Headers de seguridad solo en algunas rutas | Middleware global — nunca per-route |
+| 8 | Secrets en el bundle del cliente | Solo `VITE_`-prefix para vars no sensibles; secrets en backend |
+| 9 | `eval()` / `Function()` sobre input externo | Eliminar por diseño; si inevitable, sandbox estricto |
+| 10 | Auth solo en frontend | Backend valida siempre; frontend es UX solamente |
+| 11 | Loggear tokens, passwords o PII | Structured logging sin datos sensibles; usar trace_id |
+| 12 | Enforced CSP directo en producción sin prueba | report-only 2-4 semanas → analizar → enforced |
 
 ---
 

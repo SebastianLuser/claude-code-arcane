@@ -1,6 +1,6 @@
 ---
 name: caching-strategy
-description: "Estrategia de caching multi-capa para apps Educabot (Go/TS/React): HTTP, CDN, Redis, in-memory, browser. Patterns, invalidation, TTLs, stampede protection."
+description: "Estrategia de caching multi-capa para apps Educabot (Go/TS/React): HTTP, CDN, Redis, in-memory, browser. Patterns, invalidation, TTLs, stampede protection. DO NOT TRIGGER when: invalidar cache manualmente en Redis ya configurado, operaciones redis-cli puntuales."
 argument-hint: "[layer: http|cdn|redis|memory|browser]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task

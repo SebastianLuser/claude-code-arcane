@@ -48,7 +48,12 @@
       "Bash(rm \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-general/tdd/SKILL.md\")",
       "Bash(rmdir \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-general/tdd\")",
       "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-software/performance\")",
-      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-software/async-ops\")"
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-software/async-ops\")",
+      "Bash(xargs wc *)",
+      "Bash(mkdir -p \"/c/Users/Sebastarbucks/Desktop/claude-code-arcane/.claude/skills-software/database-setup/references\")",
+      "Bash(mkdir -p \"/c/Users/Sebastarbucks/Desktop/claude-code-arcane/.claude/skills-general/gh-projects/references\")",
+      "Bash(mkdir -p \"/c/Users/Sebastarbucks/Desktop/claude-code-arcane/.claude/skills-general/rollback-strategy/references\")",
+      "Skill(skill-test)"
     ]
   }
 }

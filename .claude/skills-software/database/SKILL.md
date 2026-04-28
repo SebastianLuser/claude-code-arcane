@@ -1,11 +1,26 @@
 ---
 name: database
-description: "Database setup, schema design, migrations, and data operations for backend TS projects"
+description: "Database setup, schema design, migrations, and data operations for backend TS projects. DO NOT TRIGGER when: query puntual sin contexto de schema completo (usar data-operations), troubleshooting de conexión a DB existente."
 argument-hint: "[setup|schema|migrations|operations|full]"
 user-invocable: true
 allowed-tools: ["Read", "Edit", "Write", "Bash", "Glob", "Grep"]
 ---
 # database — Schema, Migrations & Data Operations
+
+## Route
+
+| Intención del usuario | Modo | Secciones relevantes |
+|----------------------|------|---------------------|
+| "diseñar schema", "nueva tabla", "relación", "índice" | SCHEMA | → 2. Schema Design, 3. Migrations |
+| "query lenta", "EXPLAIN", "N+1", "optimizar" | QUERY | → 5. Query Patterns |
+| "migration", "ALTER TABLE", "expand-contract", "rollback" | MIGRATION | → 3. Migrations |
+| "sin datos", "seed", "fixtures", "datos demo" | SEED | → 7. Seed Data |
+| "conexiones", "pool", "timeout", "PgBouncer" | CONNECTIONS | → 4. Connection Management |
+| "backup", "restore", "recovery", "PITR" | OPS | → 8. Backup & Recovery |
+
+**Regla:** si el argumento es `full`, ejecutar Checklist completo. Si la intención es ambigua, preguntar.
+
+---
 
 Stack: Fastify + Prisma + PostgreSQL + Zod + TypeScript
 
@@ -70,14 +85,24 @@ PITR via WAL archiving (managed DBs handle it). `pg_dump` for portability, physi
 
 ## 9. Anti-patterns
 
-| Category | Anti-pattern |
-|----------|-------------|
-| Schema | No indexes on FK children; circular relations; god tables (50+ cols); low-cardinality solo indexes |
-| Migrations | DDL + data same file; editing merged migrations; DROP without grace period; non-concurrent index in prod |
-| Queries | N+1 undetected; SELECT * hot paths; OFFSET large tables; no EXPLAIN; raw SQL without params |
-| Connections | No pool limits; no timeouts; no health checks |
-| Seeding | Runnable in prod; non-idempotent; real PII; hardcoded IDs |
-| Operations | No REINDEX (bloat); untested backup restores |
+| # | ❌ No hacer | ✅ Hacer en cambio |
+|---|------------|-------------------|
+| 1 | FKs sin índice en la tabla hija | Indexar siempre la columna FK del lado hijo |
+| 2 | Relaciones circulares en schema | Romper ciclos con tabla de join intermedia |
+| 3 | God tables (50+ columnas) | Separar en entidades con relación explícita |
+| 4 | DDL y backfill de datos en la misma migration | Una migration = un cambio; backfill en archivo separado |
+| 5 | Editar migrations ya mergeadas | Siempre nueva migration hacia adelante |
+| 6 | DROP sin grace period | expand-contract: deprecar → migrar → DROP en release N+3 |
+| 7 | `CREATE INDEX` sin CONCURRENTLY en prod | `CREATE INDEX CONCURRENTLY` fuera de transacción |
+| 8 | N+1 sin detectar | Prisma `include` / JOIN / DataLoader |
+| 9 | `SELECT *` en hot paths | `select` con columnas específicas |
+| 10 | OFFSET pagination en tablas grandes | Cursor keyset (`WHERE id > $last LIMIT N`) |
+| 11 | Queries sin `EXPLAIN ANALYZE` | Validar plan antes y después de cada cambio |
+| 12 | Raw SQL con interpolación de strings | Siempre prepared statements / parámetros |
+| 13 | Sin pool limits ni timeouts | `max(2, cores*2)` pool; timeout 5s connect / 30s statement |
+| 14 | Seeds ejecutables en prod | Guard explícito `if APP_ENV == production: exit` |
+| 15 | Seeds no idempotentes | Upsert con ON CONFLICT, nunca INSERT ciego |
+| 16 | Backups sin restauración probada | Test de restore trimestral documentado |
 
 ## 10. Checklist
 - [ ] Docker Compose + `.env.example` with `DATABASE_URL`
