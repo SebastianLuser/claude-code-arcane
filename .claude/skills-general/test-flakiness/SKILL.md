@@ -8,199 +8,74 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 
 # Test Flakiness Detection
 
-A flaky test is one that sometimes passes and sometimes fails without any code
-change. Flaky tests are worse than no tests in some ways — they train the team
-to ignore red CI runs, masking genuine failures. This skill identifies them,
-explains likely causes, and recommends whether to quarantine or fix each one.
+Identifies flaky tests (pass and fail without code changes), classifies causes, recommends quarantine or fix.
 
-**Output:** Updated `tests/regression-suite.md` quarantine section + optional
-`production/qa/flakiness-report-[date].md`
+Output: updated `tests/regression-suite.md` quarantine section + optional `production/qa/flakiness-report-[date].md`
 
-**When to run:**
-- Polish phase (tests have had many runs; statistical signal is reliable)
-- When developers start dismissing CI failures as "probably flaky"
-- After `/regression-suite` identifies quarantined tests that need diagnosis
+**When to run:** Polish phase, when devs start dismissing CI failures as "probably flaky", after `/regression-suite` identifies quarantined tests.
 
----
+## Phase 1: Parse Arguments
 
-## 1. Parse Arguments
+| Mode | What |
+|------|------|
+| `[ci-log-path]` | Analyse specific CI log file |
+| `scan` | Scan all available CI logs in `.github/` or `test-results/` |
+| `registry` | Review existing regression-suite.md quarantine, provide remediation |
+| No arg | `scan` if CI logs accessible, else `registry` |
 
-**Modes:**
-- `/test-flakiness [ci-log-path]` — analyse a specific CI run log file
-- `/test-flakiness scan` — scan all available CI logs in `.github/` or
-  standard log output directories
-- `/test-flakiness registry` — read existing regression-suite.md quarantine
-  section and provide remediation guidance for already-known flaky tests
-- No argument — auto-detect: run `scan` if CI logs are accessible, else
-  `registry`
+## Phase 2: Locate CI Log Data
 
----
+Check: `.github/`, `test-results/` (Unity NUnit XML), `Saved/Logs/` (Unreal). If path argument → read directly. No logs found → explain options (run tests 3x, save CI output, or run `registry` mode) and ask user.
 
-## 2. Locate CI Log Data
+## Phase 3: Parse Test Results
 
-### Option A — GitHub Actions (preferred)
+**JUnit XML:** grep `<testcase name=`, `<failure`, `<error` — extract classname + name. **Plain text:** grep pass/fail patterns per engine. Build table: `test_id → [result_per_run]`.
 
-Check for test result artifacts:
-```bash
-ls -t .github/ 2>/dev/null
-ls -t test-results/ 2>/dev/null
-```
+## Phase 4: Identify Flaky Tests
 
-For Unity projects: game-ci test runner outputs NUnit XML to `test-results/`
-by default.
+Flaky = both PASS and FAIL across runs with no code changes.
 
-For Unreal projects: automation logs go to `Saved/Logs/`. Grep for
-`Result: Success` and `Result: Fail` patterns.
-
-### Option B — Local log files
-
-If a path argument is provided, read that file directly.
-
-### Option C — No log data available
-
-If no logs found:
-> "No CI log data found. To detect flaky tests, this skill needs test result
-> history from multiple runs. Options:
-> 1. Run the test suite at least 3 times and collect the output logs
-> 2. Check CI pipeline output and save a log to `test-results/`
-> 3. Run `/test-flakiness registry` to review tests already flagged as flaky
->    in `tests/regression-suite.md`"
-
-Stop and ask the user which option to pursue.
-
----
-
-## 3. Parse Test Results
-
-For each CI log or result file found, parse:
-
-**JUnit XML format** (Unity):
-- Grep for `<testcase name=` to get test names
-- Grep for `<failure` or `<error` to identify failures
-- Parse `classname` and `name` attributes for full test identifiers
-
-**Plain text logs**:
-- Grep for pass/fail patterns:
-  - Unity: `Test passed` / `Test failed`
-  - Unreal: `Result: Success` / `Result: Fail`
-
-Build a table: `test_id → [run1_result, run2_result, run3_result, ...]`
-
----
-
-## 4. Identify Flaky Tests
-
-A test is **flaky** if it appears in the result history with both PASS and
-FAIL outcomes across runs with no code changes between them.
-
-Flakiness thresholds:
-- **High flakiness**: Fails in >25% of runs — quarantine immediately
-- **Moderate flakiness**: Fails in 5–25% of runs — investigate and fix soon
-- **Low/suspected flakiness**: Fails in 1–5% of runs — monitor; may be
-  genuinely rare failure
-
-For each flaky test, classify the likely cause:
+| Threshold | Fail Rate | Action |
+|-----------|-----------|--------|
+| **High** | >25% | Quarantine immediately |
+| **Moderate** | 5-25% | Investigate and fix soon |
+| **Low/suspected** | 1-5% | Monitor, collect more data |
 
 ### Cause classification
 
-| Cause | Symptoms | Fix direction |
-|-------|----------|---------------|
-| **Timing / async** | Fails after awaiting signals or timers; pass rate correlates with system load | Add explicit await/synchronisation; avoid time-based delays |
-| **Order dependency** | Fails when run after specific other tests; passes in isolation | Add proper setup/teardown; ensure test isolation |
-| **Random seed** | Fails intermittently with no pattern; involves RNG | Pass explicit seed; don't use `randf()` in tests |
-| **Resource leak** | Fails more often later in a test run | Fix cleanup in teardown; check object disposal (Unity) or GC pressure |
-| **External state** | Fails when a file, scene, or global exists from a prior test | Isolate test from file system; use in-memory mocks |
-| **Floating point** | Fails on comparisons like `== 0.5` | Use epsilon comparison (`Assert.AreApproximately`, `Mathf.Approximately`) |
-| **Scene/prefab load race** | Fails when scenes are not yet ready | Await one frame after instantiation; use `yield return null` |
+| Cause | Symptoms | Fix |
+|-------|----------|-----|
+| **Timing/async** | Fails after awaiting signals/timers, correlates with load | Explicit await/synchronisation |
+| **Order dependency** | Fails after specific tests, passes in isolation | Proper setup/teardown, test isolation |
+| **Random seed** | Intermittent no pattern, involves RNG | Pass explicit seed |
+| **Resource leak** | Fails more often later in run | Fix cleanup in teardown |
+| **External state** | Fails when file/scene/global from prior test | Isolate from file system, in-memory mocks |
+| **Floating point** | Fails on `== 0.5` comparisons | Epsilon comparison (is_equal_approx) |
+| **Scene/prefab race** | Fails when scenes not ready | Await one frame after instantiation |
 
-Use Grep to check the test file for timing calls, randf, global state access,
-or equality comparisons on floats to narrow down the cause.
+Grep test file for timing calls, randf, global state, float equality to narrow cause.
 
----
+## Phase 5: Recommend Action
 
-## 5. Recommend Action
+- **Quarantine (high):** disable in CI with skip annotation, log in regression-suite quarantine. Fix root cause before removing.
+- **Fix soon (moderate):** specific fix based on cause. Don't quarantine — fix directly.
+- **Monitor (low):** collect more data. Note as "suspected" in suite.
 
-For each flaky test:
+## Phase 6: Generate Report
 
-**Quarantine (High flakiness):**
-> "Quarantine this test immediately. Disable it in CI by adding
-> `@pytest.mark.skip` / `[Ignore]` annotation. Log it in
-> `tests/regression-suite.md` quarantine section. The test is now opt-in only.
-> Fix the root cause before removing quarantine."
+Conversation summary: runs analysed, tests tracked, flaky tests table (test/system/fail rate/cause/recommendation), clean test count, data limitations (<5 runs = less confidence).
 
-**Investigate and fix soon (Moderate):**
-> "This test is intermittently unreliable. Root cause appears to be [cause].
-> Suggested fix: [specific fix based on cause classification]. Do not quarantine
-> yet — fix the test directly."
+## Phase 7: Write Output
 
-**Monitor (Low/suspected):**
-> "This test shows suspected flakiness. Collect more run data before
-> quarantining. Note it as 'suspected' in the regression suite."
+1. "May I update quarantine section of `tests/regression-suite.md`?" → Edit to append (never remove existing)
+2. "May I write full report to `production/qa/flakiness-report-[date].md`?"
 
----
+After writing: add skip annotations for quarantined tests, surface straightforward fixes, schedule fix work before release gate.
 
-## 6. Generate Reports
+## Protocol
 
-### In-conversation summary
-
-```
-## Flakiness Detection Results
-
-**Runs analysed**: [N]
-**Tests tracked**: [N]
-
-### Flaky Tests Found
-
-| Test | System | Fail Rate | Likely Cause | Recommendation |
-|------|--------|-----------|--------------|----------------|
-| [test_name] | [system] | [N]% | Timing | Quarantine + fix async |
-| [test_name] | [system] | [N]% | Float comparison | Fix: use epsilon compare |
-| [test_name] | [system] | [N]% | Order dependency | Investigate teardown |
-
-### Clean Tests (no flakiness detected)
-
-[N] tests ran across [N] runs with consistent results — no flakiness detected.
-
-### Data Limitations
-
-[Note if fewer than 5 runs were available — fewer runs = less statistical confidence]
-```
-
----
-
-## 7. Update Regression Suite + Optional Report File
-
-Ask: "May I update the quarantine section of `tests/regression-suite.md`
-with the flaky tests found?"
-
-If yes: use `Edit` to append entries to the Quarantined Tests table.
-Never remove existing quarantine entries — only add new ones.
-
-Ask (separately): "May I write a full flakiness report to
-`production/qa/flakiness-report-[date].md`?"
-
-The full report includes per-test analysis with cause details and
-engine-specific fix snippets.
-
-After writing:
-
-- For each quarantined test: "Add the engine-specific skip annotation to
-  disable this test in CI. Re-enable after the root cause is fixed."
-- For fix-eligible tests: "The fix for [test] is straightforward —
-  change the equality comparison on line [N] to use `is_equal_approx`."
-- Summary: "Once all quarantine annotations are applied, CI should run green.
-  Schedule fix work for the [N] quarantined tests before the release gate."
-
----
-
-## Collaborative Protocol
-
-- **Never delete test files** — quarantine means annotate + list, not remove
-- **Statistical confidence matters** — with < 3 runs, flag findings as
-  "suspected" not "confirmed"; ask if more run data is available
-- **Fix is always the goal** — quarantine is temporary; surface the fix
-  direction even when recommending quarantine
-- **Ask before writing** — both the regression-suite update and the report
-  file require explicit approval. On write: Verdict: **COMPLETE** — flakiness report written. On decline: Verdict: **BLOCKED** — user declined write.
-- **Flakiness in CI is a team problem** — surface the list and recommended
-  actions clearly; do not just silently quarantine without the team knowing
+- Never delete test files — quarantine = annotate + list, not remove
+- <3 runs → flag as "suspected" not "confirmed"
+- Fix is always the goal — quarantine is temporary
+- Ask before both writes. On write: Verdict **COMPLETE**. On decline: Verdict **BLOCKED**.
+- Flakiness is a team problem — surface clearly, don't silently quarantine

@@ -8,15 +8,12 @@ DESCRIPTION="Game Designer — GDDs, balance, art bible, playtesting, UX de jueg
 SKILLS_GENERAL=(user-persona)
 
 SKILLS_GAMEDEV=(
-  doc-gdd
-  doc-pas
+  game-docs
   art-bible
-  balance-check
+  game-analysis
   map-systems
-  playtest-report
   asset-spec
-  consistency-check
-  audit-game
+  game-audit
 )
 
 SKILLS_SOFTWARE=()

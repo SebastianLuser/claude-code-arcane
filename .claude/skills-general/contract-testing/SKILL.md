@@ -7,287 +7,86 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # Contract Testing (Pact)
 
-## Cuándo usar
-- Microservicios donde consumer (web/mobile) y provider (API) evolucionan por separado
-- Detectar breaking changes de API antes de deploy
-- Reemplazar parcialmente E2E tests costosos y flakey
-- Validar integraciones internas: `alizia-web ↔ alizia-api`, `alizia-mobile ↔ alizia-api`, `alizia-api ↔ alizia-auth-service`
+## Cuándo usar / NO usar
 
-## Cuándo NO usar
-- APIs de terceros (Stripe, Google, etc.) — usar recorded mocks, no Pact
-- Validar lógica de negocio end-to-end — contract testing valida shape+happy path HTTP, no reemplaza integration tests
-- Contratos asíncronos triviales sin evolución — overhead no justificado
-- Un único equipo controla ambos lados sin CI separado — más fricción que valor
+| Usar | NO usar |
+|------|---------|
+| Microservicios con consumer y provider evolucionando separado | APIs terceros (Stripe, Google) — usar recorded mocks |
+| Detectar breaking changes API antes de deploy | Validar lógica e2e — Pact valida shape, no business logic |
+| Reemplazar parcialmente E2E tests costosos/flakey | Contratos asíncronos triviales sin evolución |
+| Integraciones internas: `alizia-web ↔ alizia-api`, mobile ↔ api | Un equipo controla ambos lados sin CI separado |
 
----
+## Concepto
 
-## 1. Concepto
+Consumer-driven contract testing: consumer describe lo que espera → provider lo verifica. Cada lado testea contra el contrato, no contra el otro servicio real. Complementario a OpenAPI (docs) — Pact valida expectativas ejecutables.
 
-**Contract testing** = verificar que consumer y provider acuerdan la **shape** de sus interacciones HTTP (request/response, headers, status codes). Cada lado testea contra el contrato, no contra el otro servicio real.
+## Flujo
 
-- **Consumer-driven (Pact)**: el consumer describe lo que espera → provider lo verifica. Default recomendado.
-- Alternativas: Spring Cloud Contract (Java), schema-based (OpenAPI diff), Postman Contract Tests.
+1. Consumer escribe tests usando mock Pact server → genera `pacts/<consumer>-<provider>.json`
+2. Publicar a **Pact Broker** (Docker self-host gratis, o PactFlow SaaS) con `--consumer-app-version=$GIT_SHA --branch=$GIT_BRANCH`
+3. Webhook broker → dispara provider verify en CI
+4. Provider corre verification con StateHandlers para cada `given()` del consumer
+5. Resultado publicado al broker
+6. `can-i-deploy` gate bloquea deploys incompatibles
 
-**Pact vs OpenAPI**:
-- OpenAPI = schema declarativo del provider (docs).
-- Pact = expectativas reales del consumer (validación ejecutable).
-- Son complementarios: OpenAPI para documentación pública, Pact para validación real entre servicios.
+## Consumer (React/RN + Jest)
 
----
+Usar `@pact-foundation/pact` PactV3. Definir interacciones: `given()` (precondición), `uponReceiving()`, `withRequest()`, `willRespondWith()`. Ejecutar test contra mock server.
 
-## 2. Flujo Pact
+**Matchers clave:** `like(example)` (mismo tipo), `eachLike(example)` (array con shape), `term({ generate, matcher })` (regex). No hardcodear valores.
 
-```
-Consumer test (React)
-  └── Pact mock server genera pacts/alizia-web-alizia-api.json
-        └── pact publish → Pact Broker (self-host o PactFlow)
-              └── webhook → trigger provider verify en CI
-                    └── Go provider corre verify contra pact del broker
-                          └── Resultado publicado al broker
-                                └── can-i-deploy gate en CI decide deploy
-```
+RN: mismo `@pact-foundation/pact`, correr en Node tests (Jest), nunca en device/emulator.
 
-1. Consumer escribe tests usando mock Pact server.
-2. Tests generan `pacts/<consumer>-<provider>.json`.
-3. Publicar a **Pact Broker** (Docker image gratis, o PactFlow SaaS).
-4. Provider corre verification contra el pact del broker.
-5. Broker webhook → si consumer cambia el pact, dispara verify del provider en CI.
-6. `can-i-deploy` gate bloquea deploys incompatibles.
+## Provider (Go verify)
 
----
+Usar `pact-go/v2`. `VerifyProvider` con BrokerURL, ProviderVersion (`$GIT_SHA`), PublishVerificationResults true. Implementar `StateHandlers` para cada precondición del consumer (seed DB, mock repos).
 
-## 3. Consumer: React + Jest
+Múltiples consumers: provider verifica contra todos los pacts — usar `ConsumerVersionSelectors` con `MainBranch: true` + `DeployedOrReleased: true`.
 
-```bash
-npm i -D @pact-foundation/pact
-```
+## Pact Broker
 
-```ts
-import { PactV3, MatchersV3 } from '@pact-foundation/pact';
-import path from 'path';
-import { getUser } from '../src/api/users';
+- **Self-hosted:** Docker image `pactfoundation/pact-broker` + Postgres
+- **PactFlow:** SaaS enterprise (SSO, analytics)
+- Tagging: cada pact con git SHA + branch. Matrix muestra compatibilidad entre versiones.
 
-const { like, eachLike, term } = MatchersV3;
+## CI: can-i-deploy gate
 
-const provider = new PactV3({
-  consumer: 'alizia-web',
-  provider: 'alizia-api',
-  dir: path.resolve(process.cwd(), 'pacts'),
-});
+En workflows de deploy (consumer Y provider): `pact-broker can-i-deploy --pacticipant <name> --version $GIT_SHA --to-environment production`. Bloquea si versión no tiene pacts verificados contra versión en prod.
 
-describe('users API contract', () => {
-  it('GET /users/123 returns user', async () => {
-    provider
-      .given('user 123 exists')
-      .uponReceiving('get user 123')
-      .withRequest({ method: 'GET', path: '/users/123' })
-      .willRespondWith({
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-        body: like({
-          id: 123,
-          name: 'Ana',
-          email: term({ generate: 'ana@educabot.com', matcher: '.+@.+\\..+' }),
-          roles: eachLike('student'),
-        }),
-      });
+## Breaking change detection
 
-    await provider.executeTest(async (mockServer) => {
-      const user = await getUser(123, { baseURL: mockServer.url });
-      expect(user.id).toBe(123);
-    });
-  });
-});
-```
-
-**Matchers clave** (flexibilidad, no hardcodear):
-- `like(example)` → cualquier valor del mismo tipo.
-- `eachLike(example)` → array de N elementos con shape del example.
-- `term({ generate, matcher })` → regex match.
-
----
-
-## 4. Provider: Go verify
-
-```bash
-go get github.com/pact-foundation/pact-go/v2
-```
-
-```go
-package contract_test
-
-import (
-    "testing"
-    "github.com/pact-foundation/pact-go/v2/provider"
-)
-
-func TestPactProvider(t *testing.T) {
-    verifier := provider.NewVerifier()
-
-    err := verifier.VerifyProvider(t, provider.VerifyRequest{
-        ProviderBaseURL: "http://localhost:8080",
-        Provider:        "alizia-api",
-        ProviderVersion: os.Getenv("GIT_SHA"),
-        BrokerURL:       os.Getenv("PACT_BROKER_URL"),
-        BrokerToken:     os.Getenv("PACT_BROKER_TOKEN"),
-        PublishVerificationResults: true,
-        StateHandlers: provider.StateHandlers{
-            "user 123 exists": func(setup bool, s provider.ProviderState) (provider.ProviderStateResponse, error) {
-                if setup {
-                    seedUser(123, "Ana")
-                }
-                return nil, nil
-            },
-        },
-    })
-    if err != nil {
-        t.Fatal(err)
-    }
-}
-```
-
-**Provider states**: consumer declara precondición (`given('user 123 exists')`), provider implementa el setup (seed DB, mock repos, etc.).
-
----
-
-## 5. React Native
-
-Mismo `@pact-foundation/pact`, correr en **Node tests** (Jest), nunca en device/emulator. El mock server es HTTP Node, no corre en RN runtime.
-
-```ts
-// __tests__/contracts/users.pact.test.ts
-// idéntico al ejemplo de React, solo importás el cliente API de RN
-```
-
----
-
-## 6. Pact Broker
-
-**Self-hosted** (Docker, gratis):
-```yaml
-# docker-compose.yml
-services:
-  broker:
-    image: pactfoundation/pact-broker:latest
-    ports: ["9292:9292"]
-    environment:
-      PACT_BROKER_DATABASE_URL: postgres://...
-```
-
-**PactFlow** (SaaS): features enterprise (SSO, analytics, secrets management).
-
-**Publicar contrato desde consumer**:
-```bash
-npx pact-broker publish ./pacts \
-  --consumer-app-version=$GIT_SHA \
-  --branch=$GIT_BRANCH \
-  --broker-base-url=$PACT_BROKER_URL \
-  --broker-token=$PACT_BROKER_TOKEN
-```
-
-**Tagging**: cada pact taggeado con git SHA + branch. Broker matrix muestra compatibilidad entre versiones.
-
----
-
-## 7. CI: can-i-deploy gate
-
-```yaml
-# .github/workflows/deploy.yml
-jobs:
-  can-i-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Can I deploy?
-        run: |
-          npx pact-broker can-i-deploy \
-            --pacticipant alizia-web \
-            --version $GIT_SHA \
-            --to-environment production \
-            --broker-base-url $PACT_BROKER_URL \
-            --broker-token $PACT_BROKER_TOKEN
-  deploy:
-    needs: can-i-deploy
-    # ...
-```
-
-`can-i-deploy` consulta al broker: ¿esta versión del consumer tiene pacts verificados contra la versión del provider en `production`? Si no, **falla y bloquea deploy**.
-
----
-
-## 8. Breaking change detection
-
-1. Consumer cambia expectation → publica pact nuevo.
-2. Webhook del broker dispara provider verify.
-3. Provider verify falla → broker marca incompatibilidad.
-4. `can-i-deploy` del provider bloquea su deploy hasta resolver.
-
-Funciona en ambos sentidos: provider que rompe contrato también falla verify.
-
----
-
-## 9. Múltiples consumers
-
-Provider con varios consumers verifica contra **todos los pacts** consumidos:
-
-```go
-// BrokerURL sin PactURLs específicos → verify todos los consumers activos
-verifier.VerifyProvider(t, provider.VerifyRequest{
-    BrokerURL: os.Getenv("PACT_BROKER_URL"),
-    ConsumerVersionSelectors: []provider.Selector{
-        {MainBranch: true},
-        {DeployedOrReleased: true},
-    },
-})
-```
-
----
+Consumer cambia expectation → publica pact nuevo → webhook dispara verify → falla → broker marca incompatibilidad → `can-i-deploy` bloquea. Funciona en ambos sentidos.
 
 ## Anti-patterns
 
-- Hardcodear valores concretos sin matchers → contratos frágiles, rompen por cambios cosméticos
-- Tratar al pact como mock completo del backend → solo es shape + happy path, no business logic
-- Provider verify opcional en CI → rompe toda la value prop del contract testing
-- Sin can-i-deploy gate → deployás breaking changes sin saberlo
-- Broker sin tagging de branch/version → imposible saber qué es compatible con qué
-- Consumer test con TODOS los endpoints del provider → solo testear los que el consumer realmente usa
-- Contract testing sin integration tests de flujos críticos → Pact no valida lógica end-to-end
-- Usar OpenAPI como reemplazo de Pact → no valida expectativas reales del consumer
-- Pact contra APIs de terceros (Stripe, etc.) → usar recorded mocks
-- Provider states implementados con estado compartido entre tests → flaky
-
----
+- Hardcodear valores sin matchers — contratos frágiles
+- Pact como mock completo del backend — solo shape + happy path
+- Provider verify opcional en CI
+- Sin can-i-deploy gate
+- Broker sin tagging branch/version
+- Consumer testea TODOS los endpoints — solo los que realmente usa
+- Sin integration tests de flujos críticos (Pact no valida e2e)
+- OpenAPI como reemplazo de Pact
+- Pact contra APIs terceros
+- Provider states con estado compartido entre tests — flaky
 
 ## Checklist
 
-- [ ] Consumer y provider acordaron nombres (`alizia-web`, `alizia-api`)
-- [ ] Broker corriendo (self-host Docker o PactFlow)
-- [ ] Consumer: tests con `PactV3` usando matchers (`like`, `eachLike`, `term`)
-- [ ] Consumer CI publica pacts con `--consumer-app-version=$GIT_SHA --branch=$GIT_BRANCH`
-- [ ] Webhook broker → provider CI dispara verify al cambiar pact
-- [ ] Provider: `StateHandlers` implementados para cada `given()` del consumer
-- [ ] Provider CI publica verification results (`PublishVerificationResults: true`)
-- [ ] `can-i-deploy` gate en ambos workflows de deploy (consumer y provider)
-- [ ] Branch/version tagging configurado en broker
-- [ ] Integration tests cubren flujos críticos que Pact no valida
-- [ ] Terceros (Stripe, Google) usan recorded mocks, NO Pact
-
----
-
-## Output esperado
-
-- `pacts/<consumer>-<provider>.json` generado por tests del consumer
-- Broker mostrando matrix de compatibilidad por branch/version
-- CI con jobs: `consumer-test + publish` / `provider-verify` / `can-i-deploy`
-- Bloqueo automático de deploys incompatibles
-- Provider states documentados y reproducibles
-
----
+- [ ] Consumer y provider nombres acordados
+- [ ] Broker corriendo (Docker o PactFlow)
+- [ ] Consumer: tests PactV3 con matchers (like, eachLike, term)
+- [ ] Consumer CI publica pacts con version+branch
+- [ ] Webhook broker → provider CI verify al cambiar pact
+- [ ] Provider: StateHandlers para cada given()
+- [ ] Provider CI publica verification results
+- [ ] can-i-deploy gate en ambos workflows
+- [ ] Branch/version tagging configurado
+- [ ] Integration tests cubren flujos que Pact no valida
+- [ ] Terceros usan recorded mocks, NO Pact
 
 ## Delegación
 
-- **`/scaffold-go`** — scaffolding del provider Go donde vivirá el verify
-- **`/api-docs`** — generar OpenAPI complementario para docs públicas
-- **`/deploy-check`** — integrar `can-i-deploy` al pre-deploy checklist
-- **`/postman`** — mantener colecciones manuales de prueba (no reemplaza Pact)
-- **`/audit-dev`** — auditar cobertura de contracts y gaps vs integration tests
-- **`/doc-rfc`** — documentar decisión de adoptar Pact y scope de contratos
+- `/scaffold-go` — provider Go scaffold
+- `/api-docs` — OpenAPI complementario
+- `/deploy-check` — integrar can-i-deploy
+- `/doc-rfc` — documentar decisión de adoptar Pact

@@ -6,16 +6,12 @@
 DESCRIPTION="Mobile React Native + Expo + TypeScript"
 
 SKILLS_GENERAL=(
-  tdd
-  test-setup
-  test-helpers
+  testing
   i18n-setup
   deps-audit
-  security-audit
   env-sync
-  error-tracking
-  release-checklist
-  patch-notes
+  observability
+  release
   onboard
   perf-profile
 )
@@ -27,8 +23,7 @@ SKILLS_SOFTWARE=(
   state-management
   form-validation
   accessibility
-  oauth-setup
-  jwt-strategy
+  auth-strategy
   file-uploads
   ci-cd-setup
   deploy-check

@@ -6,16 +6,12 @@
 DESCRIPTION="Frontend React + Vite + TypeScript"
 
 SKILLS_GENERAL=(
-  tdd
-  test-setup
-  test-helpers
+  testing
   i18n-setup
   deps-audit
-  security-audit
   env-sync
-  error-tracking
-  release-checklist
-  patch-notes
+  observability
+  release
   onboard
 )
 
@@ -26,8 +22,7 @@ SKILLS_SOFTWARE=(
   state-management
   form-validation
   accessibility
-  csp-headers
-  owasp-top10-check
+  web-security
   ci-cd-setup
   cdn-setup
   file-uploads

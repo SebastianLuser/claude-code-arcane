@@ -61,11 +61,22 @@ class MergedProfile:
 
 def _parse_bash_array(text: str, var_name: str) -> list[str]:
     """Extract values from a bash array definition like VAR=(a b c)."""
-    pattern = rf'{var_name}=\((.*?)\)'
-    match = re.search(pattern, text, re.DOTALL)
-    if not match:
+    opening = re.search(rf'{var_name}=\(', text)
+    if not opening:
         return []
-    content = match.group(1)
+    # Walk forward to find the closing ) that is not inside double quotes.
+    pos = opening.end()
+    in_quote = False
+    while pos < len(text):
+        ch = text[pos]
+        if ch == '"':
+            in_quote = not in_quote
+        elif ch == ')' and not in_quote:
+            break
+        pos += 1
+    else:
+        return []
+    content = text[opening.end():pos]
     items = []
     for line in content.split('\n'):
         line = line.strip()

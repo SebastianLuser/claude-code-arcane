@@ -7,169 +7,57 @@ allowed-tools: Read, Glob, Grep, Bash, Write
 ---
 # Release Announcement Broadcaster
 
-Genera y distribuye un release announcement en múltiples plataformas simultáneamente.
+Genera y distribuye release announcement en múltiples plataformas simultáneamente.
 
 ## Flujo
 
 ### 1. Gather release data
 
-```
-/release-announce v2.1.0
-```
-
-Auto-gather:
-- **Git log** desde tag anterior: `git log v2.0.0..v2.1.0 --pretty=format:"%h|%s|%an"`
-- **Merged PRs** desde ese tag: `gh pr list --search "merged:>=$PREVIOUS_TAG" --state merged`
-- **Closed tickets**: buscar en Jira/ClickUp tickets que mencionen el release label
-- **Breaking changes**: grep commits por `BREAKING CHANGE`
+Auto-gather: git log entre tags, merged PRs (`gh pr list`), closed tickets (Jira/ClickUp con release label), breaking changes (grep `BREAKING CHANGE`).
 
 ### 2. Clasificar commits
 
 | Prefix | Sección |
 |--------|---------|
-| `feat:`, `feature:` | ✨ Features |
-| `fix:`, `bugfix:` | 🐛 Bug Fixes |
-| `perf:` | ⚡ Performance |
-| `refactor:` | 🔧 Refactoring |
-| `docs:` | 📝 Documentation |
-| `test:` | 🧪 Tests |
-| `chore:`, `ci:`, `build:` | 🔨 Maintenance |
-| `BREAKING CHANGE` | 💥 Breaking Changes |
+| `feat:` | Features |
+| `fix:` | Bug Fixes |
+| `perf:` | Performance |
+| `refactor:` | Refactoring |
+| `docs:` | Documentation |
+| `test:` | Tests |
+| `chore:`, `ci:`, `build:` | Maintenance |
+| `BREAKING CHANGE` | Breaking Changes |
 
-### 3. Generar content per-platform
+### 3. Generar per-platform
 
-Core message consistente, adaptado a cada plataforma:
-
-#### Slack (Block Kit)
-```json
-{
-  "blocks": [
-    {"type": "header", "text": {"type": "plain_text", "text": "🚀 Release v2.1.0"}},
-    {"type": "section", "text": {"type": "mrkdwn", "text": "Deployed to production at 2026-04-12 14:30 ART"}},
-    {"type": "divider"},
-    {"type": "section", "text": {"type": "mrkdwn", "text": "*✨ Features*\n• Feature X\n• Feature Y"}},
-    {"type": "section", "text": {"type": "mrkdwn", "text": "*🐛 Fixes*\n• Bug Z"}},
-    {"type": "context", "elements": [{"type": "mrkdwn", "text": "Deployed by <@U123>"}]},
-    {"type": "actions", "elements": [
-      {"type": "button", "text": {"type": "plain_text", "text": "View changelog"}, "url": "..."},
-      {"type": "button", "text": {"type": "plain_text", "text": "Release notes"}, "url": "..."}
-    ]}
-  ]
-}
-```
-
-#### Discord (Embed)
-```json
-{
-  "embeds": [{
-    "title": "🚀 Release v2.1.0",
-    "description": "Deployed to production at 2026-04-12 14:30 ART",
-    "color": 5763719,
-    "fields": [
-      {"name": "✨ Features", "value": "• Feature X\n• Feature Y"},
-      {"name": "🐛 Fixes", "value": "• Bug Z"},
-      {"name": "📋 Full changelog", "value": "[Link](https://...)"}
-    ],
-    "footer": {"text": "Deployed by alice"}
-  }]
-}
-```
-
-#### Email (HTML)
-```html
-<h1>🚀 Release v2.1.0</h1>
-<p>Deployed to production at 2026-04-12 14:30 ART</p>
-
-<h2>✨ Features</h2>
-<ul>
-  <li>Feature X</li>
-  <li>Feature Y</li>
-</ul>
-
-<h2>🐛 Fixes</h2>
-<ul>
-  <li>Bug Z</li>
-</ul>
-
-<p><a href="...">Full changelog</a></p>
-```
-
-#### ClickUp/Jira doc/comment
-Markdown simple, mismo contenido que los otros, sin formatting específico de plataforma.
-
-#### Public changelog (docs site)
-Generar entry en `CHANGELOG.md`:
-```markdown
-## v2.1.0 — 2026-04-12
-
-### ✨ Features
-- Feature X ([#123](link))
-- Feature Y ([#124](link))
-
-### 🐛 Fixes
-- Bug Z ([#125](link))
-```
+Core message consistente, adaptado:
+- **Slack:** Block Kit (header, sections mrkdwn, divider, context, action buttons)
+- **Discord:** Embed JSON (title, description, fields, color, footer)
+- **Email:** HTML (h1/h2/ul structure)
+- **ClickUp/Jira:** Markdown simple
+- **CHANGELOG.md:** Keep-a-changelog format con PR links
 
 ### 4. Preview + Confirmation
 
-Mostrá al user preview de cada canal, pedí confirmación por plataforma:
-```
-¿Publicar en los siguientes canales?
-[x] Slack #releases
-[x] Discord release-notifications
-[x] Email stakeholders@company.com
-[x] ClickUp space doc
-[ ] Jira project comment (no especificado)
-[x] CHANGELOG.md commit
-
-Confirmar? [y/n]
-```
+Mostrar preview por canal, pedir confirmación por plataforma (checkboxes).
 
 ### 5. Distribute
 
-Ejecutar en paralelo con error handling:
-- Si uno falla, continuar con el resto
-- Al final: report success/failures
+Ejecutar en paralelo con error handling. Si uno falla → continuar con resto → report success/failures.
 
-## Config File
+## Config
 
-`.claude/config/release.yml`:
-```yaml
-version: auto  # auto-detect from latest tag
-channels:
-  slack:
-    - channel: "#releases"
-      template: "team"
-    - channel: "#general"
-      template: "public"
-  discord:
-    - webhook_url: "${DISCORD_WEBHOOK}"
-  email:
-    - to: "stakeholders@company.com"
-      subject: "[Product] Release v{{version}}"
-      template: "formal"
-  clickup:
-    - space_id: 90138713959
-      create_doc: true
-  changelog:
-    path: "CHANGELOG.md"
-    format: "keep-a-changelog"
-```
+`.claude/config/release.yml`: channels (slack targets+templates, discord webhook, email recipients+subject, clickup space_id, changelog path+format).
 
 ## Comando
 
-```
-/release-announce [version] [--channels list]
-```
-
-Version: si no se pasa, detectar del tag más reciente.
-Channels: override del config file.
+`/release-announce [version] [--channels list]`. Sin version → detectar del tag más reciente. Channels overridea config.
 
 ## Reglas
 
-- **NO publicar sin confirmación final** del user
-- **Versionado semántico** obligatorio: vMAJOR.MINOR.PATCH
-- **Breaking changes** siempre destacados al top
-- **Links funcionando**: validar URLs antes de publicar
-- **Idempotencia**: si se re-corre con misma version, detectar y preguntar si overwrite
-- **Rollback plan**: anunciar cómo hacer rollback si aplica
+- NO publicar sin confirmación final
+- Semver obligatorio: vMAJOR.MINOR.PATCH
+- Breaking changes siempre al top
+- Validar URLs antes de publicar
+- Idempotencia: re-run misma version → preguntar overwrite
+- Rollback plan: mencionar si aplica

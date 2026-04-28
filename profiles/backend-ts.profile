@@ -6,37 +6,21 @@
 DESCRIPTION="Backend TypeScript — Fastify, Prisma, Zod, API design, CI"
 
 SKILLS_GENERAL=(
-  tdd
-  test-setup
+  testing
   deps-audit
-  security-audit
   env-sync
-  error-tracking
-  logging-setup
-  observability-setup
+  observability
 )
 
 SKILLS_GAMEDEV=()
 
 SKILLS_SOFTWARE=(
   scaffold-fastify-ts
-  database-indexing
-  db-diagram
-  data-migrations
-  run-migrations
-  local-database-setup
-  query-optimization
-  data-seeding
+  database
   api-design
-  api-docs
-  api-versioning
-  oauth-setup
-  jwt-strategy
-  rate-limiting
-  rbac-abac
-  caching-strategy
-  webhooks
-  job-scheduling
+  auth-strategy
+  performance
+  async-ops
   audit-log
   monorepo-setup
   ci-cd-setup

@@ -19,7 +19,7 @@ Tests the skills and agents themselves — not any code (software or game) built
 | `team-*` skills spawn the right set of sub-agents | Your test suite passes |
 | Agent frontmatter is valid (model tier, maxTurns, tools) | Your deployments work |
 
-For code testing use `/tdd`, Jest, pytest, Go test, etc. This framework tests
+For code testing use Jest, pytest, Go test, etc. This framework tests
 **the framework itself** — the 147 universal skills, 20 gamedev skills, and 73 agents
 that ship with Arcane.
 

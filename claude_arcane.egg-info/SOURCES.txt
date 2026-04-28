@@ -1,0 +1,13 @@
+LICENSE
+README.md
+pyproject.toml
+arcane/__init__.py
+arcane/__main__.py
+arcane/cli.py
+arcane/installer.py
+arcane/profiles.py
+claude_arcane.egg-info/PKG-INFO
+claude_arcane.egg-info/SOURCES.txt
+claude_arcane.egg-info/dependency_links.txt
+claude_arcane.egg-info/entry_points.txt
+claude_arcane.egg-info/top_level.txt

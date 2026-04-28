@@ -134,7 +134,6 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/slack` | Gestiona Slack: mensajes, canales, archivos | `[send\|channel\|file\|search] <args>` |
 | `/smoke-check` | Smoke test de paths criticos | `[sprint \| quick \| --platform]` |
 | `/start` | Onboarding adaptivo a Arcane | `[project hint]` |
-| `/tdd` | Guia TDD con Red-Green-Refactor | `[feature description]` |
 | `/tech-debt` | Trackea y prioriza deuda tecnica | `[scan\|add\|prioritize\|report]` |
 | `/test-flakiness` | Detecta tests flaky en CI | `[ci-log-path \| scan \| registry]` |
 | `/test-helpers` | Genera helpers de test por engine | `[system-name \| all \| scaffold]` |

@@ -7,141 +7,44 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 # Daily Standup Report Generator
 
-Genera un reporte de standup completo pulling data de múltiples fuentes.
-
 ## Data Sources
 
-Por cada persona del equipo:
-
-### 1. Tickets completados/avanzados
-- ClickUp: tasks con status change en últimas 24h
-- Jira: issues con transition en últimas 24h
-- Linear: issues con status change
-
-### 2. Commits y PRs
-```bash
-# Commits del día por autor
-git log --since="1 day ago" --author="$USER" --pretty=format:"%h %s"
-
-# PRs abiertos/mergeados hoy
-gh pr list --author "$USER" --state all --search "created:>$(date -d '1 day ago' +%Y-%m-%d)"
-```
-
-### 3. Slack activity (opcional)
-Buscar mensajes del user en canales relevantes — contexto de bloqueos mencionados.
+| Source | Data |
+|--------|------|
+| ClickUp/Jira/Linear | Tasks con status change en últimas 24h |
+| Git | Commits por autor (`git log --since="1 day ago" --author`), PRs abiertos/mergeados (`gh pr list`) |
+| Slack (opcional) | Mensajes en canales relevantes, bloqueos mencionados |
 
 ## Formato Output
 
-### Per-person standup
-```markdown
-## 👤 Alice
-
-**Ayer hice:**
-- ✅ Finalizó TUNI-123 "Add OAuth support" (PR #456 merged)
-- 🔄 Avanzó en TUNI-124 "Refactor auth middleware" (ahora In Review)
-- 💬 2 code reviews
-
-**Hoy voy a:**
-- [Sugerido basándose en tickets In Progress]
-- Finalizar TUNI-124 después de review feedback
-- Empezar TUNI-125 "Add rate limiting"
-
-**Bloqueos:**
-- Esperando review de Bob en PR #456
-```
+### Per-person
+Secciones: **Ayer hice** (tickets finalizados, avanzados, code reviews), **Hoy voy a** (sugerido desde tickets In Progress + priorities), **Bloqueos** (esperando reviews, specs, etc.)
 
 ### Team standup
-```markdown
-# Daily Standup — 2026-04-12
-
-## 📊 Ayer
-- 4 tickets completados
-- 12 commits
-- 3 PRs abiertos, 2 mergeados
-
-## 👥 Individual
-
-[Per-person sections]
-
-## 🚨 Bloqueos activos
-- Alice ← esperando review de Bob
-- Carol ← esperando specs de PM
-
-## 🎯 Foco del día
-- Finalizar features de sprint (3 en review)
-- Empezar X
-
-## 📅 Milestones próximos
-- Release v2.1: viernes 2026-04-14
-```
+Header con stats (tickets completados, commits, PRs). Individual sections. Bloqueos activos. Foco del día. Milestones próximos.
 
 ## Comando
 
-```
-/standup-report [--team X] [--post-to slack]
-```
+`/standup-report [--team X] [--post-to slack]`
 
-Flujo:
-1. Detectar team/proyecto activo
-2. Pull data en paralelo:
-   - Git log
-   - ClickUp tasks
-   - Jira issues
-   - GitHub PRs
-3. Agrupar por persona
-4. Formatear
-5. Opcionalmente postear a Slack/Discord
+Flujo: detectar team/proyecto → pull data en paralelo (git, ClickUp, Jira, GitHub PRs) → agrupar por persona → formatear → opcionalmente postear.
 
 ## Integraciones
 
-### Post a Slack
-```
-/standup-report --post-to slack:#daily-standup
-```
-
-Usa Block Kit con secciones colapsables per-person.
-
-### Guardar en Notion/Coda
-```
-/standup-report --save-to notion:<page_id>
-```
-
-### Export a Sheet
-```
-/standup-report --save-to gsheet:<sheet_id>
-```
-
-Tracking histórico para velocity.
+| Destino | Comando |
+|---------|---------|
+| Slack | `--post-to slack:#daily-standup` (Block Kit, secciones colapsables) |
+| Notion/Coda | `--save-to notion:<page_id>` |
+| Google Sheets | `--save-to gsheet:<sheet_id>` (tracking histórico velocity) |
 
 ## Configuración
 
-`.claude/config/standup.yml`:
-```yaml
-team: "Backend Educabot"
-members:
-  - name: Alice
-    github: alice-gh
-    jira_email: alice@educabot.com
-    clickup_id: "..."
-  - name: Bob
-    github: bob-gh
-    jira_email: bob@educabot.com
-
-sources:
-  clickup_space: 90138713959
-  jira_project: TUNI
-  github_repo: educabot/alizia-be
-
-post_to:
-  slack: "#daily-standup"
-
-schedule: "0 9 * * 1-5"  # 9am weekdays
-```
+`.claude/config/standup.yml`: team name, members (name, github, jira_email, clickup_id), sources (clickup_space, jira_project, github_repo), post_to (slack channel), schedule (cron).
 
 ## Reglas
 
-- **Respetar timezones** — si team distribuido, mostrar timezone del ayer relativo
-- **NO incluir contenido sensible** (PII, passwords, secrets) aunque esté en commits
-- **Grouping lógico**: mergear múltiples commits del mismo ticket
-- **Sugerencias de "hoy"**: basado en tickets In Progress + priorities
-- **Brevity**: max 5 bullets per section, collapsar el resto
+- Respetar timezones en teams distribuidos
+- NO incluir contenido sensible (PII, passwords, secrets)
+- Grouping lógico: mergear commits del mismo ticket
+- Sugerencias "hoy" basadas en tickets In Progress + priorities
+- Max 5 bullets per section, collapsar el resto

@@ -21,8 +21,7 @@ SKILLS_GAMEDEV=(
   scaffold-unity
   unity-game-architecture
   map-systems
-  asset-audit
-  audit-game
+  game-audit
 )
 
 SKILLS_SOFTWARE=()

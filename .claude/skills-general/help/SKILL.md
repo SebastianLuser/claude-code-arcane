@@ -11,218 +11,64 @@ model: haiku
 
 # Studio Help — What Do I Do Next?
 
-This skill is read-only — it reports findings but writes no files.
+Read-only skill — reports findings, writes no files. Lightweight orientation; for full gap analysis use `/project-stage-detect`.
 
-This skill figures out exactly where you are in the game development pipeline and
-tells you what comes next. It is **lightweight** — not a full audit. For a full
-gap analysis, use `/project-stage-detect`.
+## Step 1: Read Catalog + Find Uncataloged Skills
 
----
-
-## Step 1: Read the Catalog
-
-Read `.claude/docs/workflow-catalog.yaml`. This is the authoritative list of all
-phases, their steps (in order), whether each step is required or optional, and
-the artifact globs that indicate completion.
-
----
-
-## Step 1b: Find Skills Not in the Catalog
-
-After reading the catalog, Glob `.claude/skills/*/SKILL.md` to get the full list
-of installed skills. For each file, extract the `name:` field from its frontmatter.
-
-Compare against the `command:` values in the catalog. Any skill whose name does
-not appear as a catalog command is an **uncataloged skill** — still usable but not
-part of the phase-gated workflow.
-
-Collect these for the output in Step 7 — show them as a footer block:
-
-```
-### Also installed (not in workflow)
-- `/skill-name` — [description from SKILL.md frontmatter]
-- `/skill-name` — [description]
-```
-
-Only show this block if at least one uncataloged skill exists. Limit to the 10
-most relevant based on the user's current phase (QA skills in production, team
-skills in production/polish, etc.).
-
----
+Read `.claude/docs/workflow-catalog.yaml` (authoritative phases/steps). Glob `.claude/skills/*/SKILL.md`, extract `name:` fields. Skills not appearing as catalog commands → **uncataloged** (usable but not phase-gated). Show up to 10 most relevant as footer block.
 
 ## Step 2: Determine Current Phase
 
-Check in this order:
-
-1. **Read `production/stage.txt`** — if it exists and has content, this is the
-   authoritative phase name. Map it to a catalog phase key:
-   - "Concept" → `concept`
-   - "Systems Design" → `systems-design`
-   - "Technical Setup" → `technical-setup`
-   - "Pre-Production" → `pre-production`
-   - "Production" → `production`
-   - "Polish" → `polish`
-   - "Release" → `release`
-
-2. **If stage.txt is missing**, infer phase from artifacts (most-advanced match wins):
-   - `src/` has 10+ source files → `production`
-   - `production/stories/*.md` exists → `pre-production`
-   - `docs/architecture/adr-*.md` exists → `technical-setup`
-   - `design/gdd/systems-index.md` exists → `systems-design`
-   - `design/gdd/game-concept.md` exists → `concept`
-   - Nothing → `concept` (fresh project)
-
----
+1. **`production/stage.txt`** (authoritative): map to catalog phase key (Concept→concept, Systems Design→systems-design, Technical Setup→technical-setup, Pre-Production→pre-production, Production→production, Polish→polish, Release→release)
+2. **If missing**, infer from artifacts (most-advanced wins): `src/` 10+ files → production, `production/stories/*.md` → pre-production, `docs/architecture/adr-*.md` → technical-setup, `design/gdd/systems-index.md` → systems-design, `design/gdd/game-concept.md` → concept, nothing → concept
 
 ## Step 3: Read Session Context
 
-Read `production/session-state/active.md` if it exists. Extract:
-- What was most recently worked on
-- Any in-progress tasks or open questions
-- Current epic/feature/task from STATUS block (if present)
+Read `production/session-state/active.md` — what was most recently worked on, in-progress tasks, open questions.
 
-This tells you what the user just finished or is stuck on — use it to personalize
-the output.
+## Step 4: Check Step Completion
 
----
+Per step in current phase from catalog:
+- **Artifact-based:** Glob for `artifact.glob`, check `min_count`, Grep for `artifact.pattern`. Complete if met.
+- **`artifact.note` (no glob):** mark MANUAL — ask user
+- **No artifact field:** mark UNKNOWN
 
-## Step 4: Check Step Completion for the Current Phase
+**Production phase special:** read `sprint-status.yaml` for per-story status (in-progress/ready-for-dev/done/blocked). YAML is authoritative over glob checks for implement/story-done steps.
 
-For each step in the current phase (from the catalog):
+**Repeatable steps outside production:** artifact check shows if *any* work done, not if finished.
 
-### Artifact-based checks
+## Step 5: Find Position
 
-If the step has `artifact.glob`:
-- Use Glob to check if files matching the pattern exist
-- If `min_count` is specified, verify at least that many files match
-- If `artifact.pattern` is specified, use Grep to verify the pattern exists in the matched file
-- **Complete** = artifact condition is met
-- **Incomplete** = artifact is missing or pattern not found
+1. Last confirmed complete required step
+2. Current blocker (first incomplete required step = what to do next)
+3. Optional opportunities alongside blocker
+4. Upcoming required steps ("coming up")
 
-If the step has `artifact.note` (no glob):
-- Mark as **MANUAL** — cannot auto-detect, will ask user
+If user gave argument (e.g. "just finished design-review"), advance past that step.
 
-If the step has no `artifact` field:
-- Mark as **UNKNOWN** — completion not trackable (e.g. repeatable implementation work)
+## Step 6: Check In-Progress Work
 
-### Special case: production phase — read `sprint-status.yaml`
-
-When the current phase is `production`, check for `production/sprint-status.yaml`
-before doing any glob-based story checks. If it exists, read it directly:
-
-- Stories with `status: in-progress` → surface as "currently active"
-- Stories with `status: ready-for-dev` → surface as "next up"
-- Stories with `status: done` → count as complete
-- Stories with `status: blocked` → surface as blocker with the `blocker` field
-
-This gives precise per-story status without markdown scanning. Skip the glob
-artifact check for the `implement` and `story-done` steps — the YAML is authoritative.
-
-### Special case: `repeatable: true` (non-production)
-
-For repeatable steps outside production (e.g. "System GDDs"), the artifact
-check tells you whether *any* work has been done, not whether it's finished.
-Label these differently — show what's been detected, then note it may be ongoing.
-
----
-
-## Step 5: Find Position and Identify Next Steps
-
-From the completion data, determine:
-
-1. **Last confirmed complete step** — the furthest completed required step
-2. **Current blocker** — the first incomplete *required* step (this is what the
-   user must do next)
-3. **Optional opportunities** — incomplete *optional* steps that can be done
-   before or alongside the blocker
-4. **Upcoming required steps** — required steps after the current blocker
-   (show as "coming up" so user can plan ahead)
-
-If the user provided an argument (e.g. "just finished design-review"), use that
-to advance past the step they named even if the artifact check is ambiguous.
-
----
-
-## Step 6: Check for In-Progress Work
-
-If `active.md` shows an active task or epic:
-- Surface it prominently at the top: "It looks like you were working on [X]"
-- Suggest continuing it or confirm if it's done
-
----
+If `active.md` shows active task → surface prominently, suggest continuing or confirming done.
 
 ## Step 7: Present Output
 
-Keep it **short and direct**. This is a quick orientation, not a report.
+Short and direct. Format: phase label, in-progress work, done steps (✓), next required step (→, only one), optional steps (~), coming up after. Commands as backtick code. MANUAL steps → ask user. Gate approach → mention `/gate-check`.
 
-```
-## Where You Are: [Phase Label]
+## Step 8: Gate Warning
 
-**In progress:** [from active.md, if any]
+All required steps complete → "Close to [Current]→[Next] gate. Run `/gate-check`." Multiple remaining → skip warning.
 
-### ✓ Done
-- [completed step name]
-- [completed step name]
+## Step 9: Escalation (only if user seems stuck)
 
-### → Next up (REQUIRED)
-**[Step name]** — [description]
-Command: `[/command]`
+- `/project-stage-detect` — full gap analysis
+- `/gate-check` — formal readiness check
+- `/start` — re-orient from scratch
 
-### ~ Also available (OPTIONAL)
-- **[Step name]** — [description] → `/command`
-- **[Step name]** — [description] → `/command`
+## Protocol
 
-### Coming up after that
-- [Next required step name] (`/command`)
-- [Next required step name] (`/command`)
-
----
-Approaching **[next phase]** gate → run `/gate-check` when ready.
-```
-
-**Formatting rules:**
-- `✓` for confirmed complete
-- `→` for the current required next step (only one — the first blocker)
-- `~` for optional steps available now
-- Show commands inline as backtick code
-- If a step has no command (e.g. "Implement Stories"), explain what to do instead of showing a slash command
-- For MANUAL steps, ask the user: "I can't tell if [step] is done — has it been completed?"
+- Never auto-run next skill — recommend, let user invoke
+- Ask about MANUAL steps
+- Match user's tone — stressed → one reassuring action, not a list
+- One primary recommendation — optional steps are secondary context
 
 Verdict: **COMPLETE** — next steps identified.
-
----
-
-## Step 8: Gate Warning (if close)
-
-After the current phase's steps, check if the user is likely approaching a gate:
-- If all required steps in the current phase are complete (or nearly complete),
-  add: "You're close to the **[Current] → [Next]** gate. Run `/gate-check` when ready."
-- If multiple required steps remain, skip the gate warning — it's not relevant yet.
-
----
-
-## Step 9: Escalation Paths
-
-After the recommendations, if the user seems stuck or confused, add:
-
-```
----
-Need more detail?
-- `/project-stage-detect` — full gap analysis with all missing artifacts listed
-- `/gate-check` — formal readiness check for your next phase
-- `/start` — re-orient from scratch
-```
-
-Only show this if the user's input suggested confusion (e.g. "I don't know", "stuck",
-"lost", "not sure"). Don't show it for simple "what's next?" queries.
-
----
-
-## Collaborative Protocol
-
-- **Never auto-run the next skill.** Recommend it, let the user invoke it.
-- **Ask about MANUAL steps** rather than assuming complete or incomplete.
-- **Match the user's tone** — if they sound stressed ("I'm totally lost"), be
-  reassuring and give one action, not a list of six.
-- **One primary recommendation** — the user should leave knowing exactly one thing
-  to do next. Optional steps and "coming up" are secondary context.

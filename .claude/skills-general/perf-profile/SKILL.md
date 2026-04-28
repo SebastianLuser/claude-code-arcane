@@ -1,125 +1,72 @@
 ---
 name: perf-profile
-description: "Structured performance profiling workflow. Identifies bottlenecks, measures against budgets, and generates optimization recommendations with priority rankings."
+description: "Performance profiling workflow: identify bottlenecks, measure against budgets, prioritize optimizations."
 argument-hint: "[system-name or 'full']"
 user-invocable: true
 agent: performance-analyst
 allowed-tools: Read, Glob, Grep, Bash
 ---
 
-## Phase 1: Determine Scope
+## Scope
 
-Read the argument:
+System name argument → profile that system. `full` → all systems.
 
-- System name → focus profiling on that specific system
-- `full` → run a comprehensive profile across all systems
+## Performance Budgets
 
----
+Load from design docs or CLAUDE.md. Typical targets:
 
-## Phase 2: Load Performance Budgets
+| Metric | Mobile (RN) | Web | Notes |
+|--------|-------------|-----|-------|
+| JS thread | <16.67ms/frame | — | 60fps budget |
+| TTI | <3s | <2s | Time to interactive |
+| Memory | <200MB | — | Per-app on device |
+| Bundle size | <10MB OTA | <200KB initial | Compressed |
+| Core Web Vitals | — | LCP<2.5s, FID<100ms, CLS<0.1 | Web only |
 
-Check for existing performance targets in design docs or CLAUDE.md:
+## Tool Selection
 
-- Target FPS (e.g., 60fps = 16.67ms frame budget)
-- Memory budget (total and per-system)
-- Load time targets
-- Draw call budgets
-- Network bandwidth limits (if multiplayer)
+| Scenario | Tool | When to use |
+|----------|------|-------------|
+| React re-renders | React DevTools Profiler | Unnecessary renders, slow components |
+| JS thread bottlenecks | Flipper / Hermes profiler | Frame drops, slow interactions |
+| Native iOS perf | Xcode Instruments | Memory leaks, CPU spikes, energy |
+| Native Android perf | Android Studio Profiler | Memory, CPU, network on-device |
+| Web performance | Lighthouse + Chrome DevTools | CWV, bundle analysis, network |
+| Bundle bloat | `npx expo-doctor`, source-map-explorer | Large dependencies, tree-shaking |
 
----
+## What to Profile
 
-## Phase 3: Analyze Codebase
+**CPU:** nested loops over large collections, string ops in hot paths, per-frame allocations, expensive bridge calls
+**Memory:** data structure growth, leaked refs, image/asset footprint, caches without eviction
+**Rendering:** overlapping views (overdraw), non-virtualized lists, animations not on UI thread, unoptimized images
+**I/O:** sync storage on main thread, network waterfalls, large payload serialization
 
-**CPU Profiling Targets:**
-- `_process()` / `Update()` / `Tick()` functions — list all and estimate cost
-- Nested loops over large collections
-- String operations in hot paths
-- Allocation patterns in per-frame code
-- Unoptimized search/sort over game entities
-- Expensive physics queries (raycasts, overlaps) every frame
+## Common Bottlenecks — Decision Table
 
-**Memory Profiling Targets:**
-- Large data structures and their growth patterns
-- Texture/asset memory footprint estimates
-- Object pool vs instantiate/destroy patterns
-- Leaked references (objects that should be freed but aren't)
-- Cache sizes and eviction policies
+| Symptom | Likely cause | Fix approach |
+|---------|-------------|--------------|
+| Choppy scrolling | Non-virtualized list or heavy row render | FlatList/FlashList + memo rows |
+| Slow navigation | Heavy screen mount + data fetch | Prefetch + lazy load |
+| Memory climbs over time | Listener/subscription leaks | Cleanup in useEffect returns |
+| Large bundle | Unused deps or unshaken imports | Bundle analysis + code splitting |
+| Slow startup | Too much sync init work | Defer non-critical init, lazy imports |
+| Bridge spam | Frequent native↔JS calls | Batch operations, use JSI where possible |
 
-**Rendering Targets (if applicable):**
-- Draw call estimates
-- Overdraw from overlapping transparent objects
-- Shader complexity
-- Unoptimized particle systems
-- Missing LODs or occlusion culling
+## Report Sections
 
-**I/O Targets:**
-- Save/load performance
-- Asset loading patterns (sync vs async)
-- Network message frequency and size
+1. **Budget vs Actual** — table with OK / WARNING / OVER status
+2. **Hotspots** — location, issue, estimated impact, fix effort (S/M/L)
+3. **Recommendations** — priority-ordered with expected gain and risk
+4. **Quick Wins** — fixable in <1 hour
+5. **Needs Runtime Profiling** — static analysis cannot confirm
 
----
+For M/L effort hotspots, ask user: **Implement now** | **Reduce scope** (`/scope-check`) | **Defer** | **Escalate** (`/architecture-decision`)
 
-## Phase 4: Generate Profiling Report
+## Anti-Patterns
 
-```markdown
-## Performance Profile: [System or Full]
-Generated: [Date]
-
-### Performance Budgets
-| Metric | Budget | Estimated Current | Status |
-|--------|--------|-------------------|--------|
-| Frame time | [16.67ms] | [estimate] | [OK/WARNING/OVER] |
-| Memory | [target] | [estimate] | [OK/WARNING/OVER] |
-| Load time | [target] | [estimate] | [OK/WARNING/OVER] |
-| Draw calls | [target] | [estimate] | [OK/WARNING/OVER] |
-
-### Hotspots Identified
-| # | Location | Issue | Estimated Impact | Fix Effort |
-|---|----------|-------|------------------|------------|
-
-### Optimization Recommendations (Priority Order)
-1. **[Title]** — [Description]
-   - Location: [file:line]
-   - Expected gain: [estimate]
-   - Risk: [Low/Med/High]
-   - Approach: [How to implement]
-
-### Quick Wins (< 1 hour each)
-- [Simple optimization 1]
-
-### Requires Investigation
-- [Area that needs actual runtime profiling to confirm impact]
-```
-
-Output the report with a summary: top 3 hotspots, estimated headroom vs budget, and recommended next action.
-
----
-
-## Phase 5: Scope and Timeline Decision
-
-Activate this phase only if any hotspot has Fix Effort rated M or L.
-
-Present significant-effort items and ask the user to choose for each:
-
-- **A) Implement the optimization** (proceed with fix now or schedule it)
-- **B) Reduce feature scope** (run `/scope-check [feature]` to analyze trade-offs)
-- **C) Accept the performance hit and defer to Polish phase** (log as known issue)
-- **D) Escalate to technical-director for an architectural decision** (run `/architecture-decision`)
-
-If multiple items are deferred to Polish (choice C), record them under `### Deferred to Polish`.
-
-This skill is read-only — no files are written. Verdict: **COMPLETE** — performance profile generated.
-
----
-
-## Phase 6: Next Steps
-
-- If bottlenecks require architectural change: run `/architecture-decision`.
-- If scope reduction is needed: run `/scope-check [feature]`.
-- To schedule optimizations: run `/sprint-plan update`.
-
-### Rules
-- Never optimize without measuring first — gut feelings about performance are unreliable
-- Recommendations must include estimated impact — "make it faster" is not actionable
-- Profile on target hardware, not just development machines
-- Static analysis (this skill) identifies candidates; runtime profiling confirms
+- Optimizing without measuring — gut feelings are unreliable
+- Profiling in dev mode — always use production/release builds
+- Ignoring memory leaks — they compound and cause OOM crashes
+- Recommendations without estimated impact — "make it faster" is not actionable
+- Profiling only on simulator — always validate on real target hardware
+- Premature optimization — profile first, optimize the proven bottleneck

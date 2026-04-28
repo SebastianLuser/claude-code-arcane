@@ -1,108 +1,72 @@
 ---
 name: deploy-check
-description: "Pre-deploy checklist automatizada: tests, secrets, migrations, env vars, build, lint. Usar cuando se mencione: deploy, pre-deploy, deploy check, antes de subir, checklist de deploy, vamos a producción."
+description: "Pre-deploy verification: tests, build, secrets, migrations, env vars, rollback, health checks, post-deploy monitoring. Trigger: deploy, pre-deploy, deploy check, production, release checklist, rollback."
 argument-hint: "[env: staging|prod]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash
 ---
-# Pre-Deploy Checklist
+# deploy-check — Pre-Deploy Verification Guide
 
-Verificación automatizada antes de hacer deploy.
+Run all independent checks in parallel. Any FAIL -> BLOCKERS FOUND, do not proceed.
 
-## Process
+## 1. Pre-Deploy Checklist
 
-Ejecutar todos los checks en paralelo donde sea posible:
+| Check | Criteria | Blocker? |
+|-------|----------|----------|
+| Git clean | No uncommitted changes, up-to-date with remote | Yes |
+| Tests pass | All green (detect runner: go test, npm test, pytest) | Yes |
+| Build succeeds | Clean build, no errors | Yes |
+| Lint clean | No errors (warnings OK with justification) | Yes |
+| Secrets scan | No passwords/keys/tokens in tracked files or staged diffs | Yes |
+| Migrations | All committed, up+down tested, none pending | Yes |
+| Dependencies | No critical/high vulnerabilities | Warn |
+| Env vars | All required present in target (compare .env.example vs deploy config) | Yes |
+| Secrets rotation | Expiring secrets rotated | Warn |
 
-### 1. Git Status
-```bash
-git status --short
-git log --oneline -5
-```
-- Branch actual
-- Hay cambios sin commitear?
-- Está actualizado con remote?
+## 2. Rollback Readiness
 
-### 2. Tests
-Detectar test runner y ejecutar:
+- [ ] Rollback plan documented (who, how, trigger criteria)
+- [ ] Previous version accessible and re-deployable
+- [ ] DB migrations backward-compatible (new code + old schema AND old code + new schema)
+- [ ] Feature flags to disable new functionality without full rollback
+- [ ] Rollback tested in staging
 
-| Stack | Comando |
-|-------|---------|
-| Go | `go test ./...` |
-| Node | `npm test` / `yarn test` / `pnpm test` |
-| Python | `pytest` / `python -m pytest` |
-| Unity | (skip — no CLI tests) |
+**Migration strategy:** Add columns/tables -> deploy new code -> backfill -> remove old columns in LATER deploy.
 
-### 3. Build
-| Stack | Comando |
-|-------|---------|
-| Go | `go build ./...` |
-| Node/TS | `npm run build` / `tsc --noEmit` |
-| Python | (skip) |
-| Docker | `docker build .` (dry run) |
+## 3. Health Checks
 
-### 4. Lint
-| Stack | Comando |
-|-------|---------|
-| Go | `golangci-lint run` (si existe .golangci.yml) |
-| Node | `npm run lint` (si existe script) |
-| Python | `ruff check .` / `flake8` |
+| Probe | Purpose | Key config |
+|-------|---------|------------|
+| Startup | App initialized (heavy init, migrations) | initialDelay: 30s, failureThreshold: 10 |
+| Readiness | Ready for traffic (DB connected, caches warm) | period: 5s, failureThreshold: 3 |
+| Liveness | Process alive (not deadlocked) | period: 10s, failureThreshold: 5 |
 
-### 5. Secrets Check
-```bash
-# Buscar patterns de secrets en código trackeado
-git diff --cached --name-only | xargs grep -l -i "password\|secret\|api_key\|token" 2>/dev/null
-```
-- Archivos .env trackeados?
-- API keys hardcoded?
-- Credentials en código?
+Readiness checks downstream deps. Liveness does NOT — avoids cascading restarts.
 
-### 6. Migrations
-- Hay migrations pendientes de aplicar?
-- Hay migrations nuevas sin commitear?
-- Las migrations tienen down/rollback?
+## 4. Post-Deploy Verification
 
-### 7. Dependencies
-```bash
-# Go
-go mod tidy && git diff go.mod go.sum
+| Step | Timing | Action |
+|------|--------|--------|
+| Smoke tests | Immediately | Hit critical paths (auth, main endpoints, health) |
+| Error rate | First 5-15 min | Compare to baseline, alert if >2x |
+| Gradual rollout | Progressive | Canary 5% -> 25% -> 50% -> 100%, monitor each stage |
+| Log review | First 15 min | New error patterns, stack traces, panics |
+| Rollback trigger | Any stage | Error spike, failed smoke, P0 reports |
 
-# Node
-npm audit --production
+## 5. Anti-patterns
 
-# Python
-pip-audit 2>/dev/null || safety check 2>/dev/null
-```
+- Deploying without rollback plan or untested rollback
+- Friday/pre-holiday deploys (no responders available)
+- Skipping staging, going straight to production
+- Destructive migrations in same deploy as code changes
+- Big-bang deploy instead of gradual rollout
+- No post-deploy monitoring (green build != working production)
+- Undocumented manual steps (bus factor = 1)
 
-### 8. ENV Vars
-- Todas las env vars requeridas están en el entorno de deploy?
-- Comparar .env.example vs configuración de deploy
+## 6. Report Format
 
-### Reporte
+| Check | Status | Detail |
+|-------|--------|--------|
+| Git / Tests / Build / Lint / Secrets / Migrations / Deps / Env / Rollback | PASS/FAIL/WARN/SKIP | specific detail |
 
-```markdown
-# Pre-Deploy Check — [proyecto] — [fecha]
-**Branch:** [branch]
-**Target:** [production/staging]
-
-| Check | Estado | Detalle |
-|-------|--------|---------|
-| Git limpio | PASS/FAIL | cambios sin commitear |
-| Tests | PASS/FAIL | X passed, Y failed |
-| Build | PASS/FAIL | compila correctamente |
-| Lint | PASS/FAIL | N warnings, M errors |
-| Secrets | PASS/FAIL | no secrets en código |
-| Migrations | PASS/FAIL | N pendientes |
-| Dependencies | PASS/WARN | N vulnerabilidades |
-| Env vars | PASS/WARN | M faltantes |
-
-## Resultado: [READY TO DEPLOY / BLOCKERS FOUND]
-
-### Blockers (si hay)
-1. [Descripción del blocker + cómo solucionarlo]
-```
-
-## Rules
-- Si algún check FALLA → el resultado es BLOCKERS FOUND
-- No ejecutar tests si no hay test suite (marcar como SKIP)
-- En español
-- Ser específico en los errores: qué archivo, qué línea, qué fix
+**Result:** READY TO DEPLOY or BLOCKERS FOUND (list each blocker with fix action).

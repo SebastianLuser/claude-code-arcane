@@ -40,7 +40,7 @@ run_cmd() {
 
 # --- Pack Definitions ---
 # Each pack: space-separated skill names
-PACK_core="commit create-pr fix-issue check optimize tdd context-prime changelog help start onboard code-review reverse-document skill-improve"
+PACK_core="commit create-pr fix-issue check optimize context-prime changelog help start onboard code-review reverse-document skill-improve"
 PACK_backend_go="scaffold-go go-clean-architecture doc-rfc deploy-check env-sync db-diagram api-docs deps-audit start-service docker-setup ci-cd-setup query-optimization test-setup logging-setup error-tracking secret-management api-design api-versioning database-indexing rate-limiting jwt-strategy oauth-setup rbac-abac data-migrations audit-dev"
 PACK_frontend="scaffold-react-vite state-management form-validation i18n-setup design-system figma-to-code ux-review visual-regression accessibility design-handoff figma-tokens csp-headers audit-dev"
 PACK_unity="scaffold-unity unity-game-architecture doc-gdd doc-pas art-bible balance-check map-systems asset-audit asset-spec consistency-check playtest-report audit-game perf-profile prototype"

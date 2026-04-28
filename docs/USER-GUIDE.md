@@ -143,7 +143,7 @@ For C# developers working on Unity projects.
 | Category | Skills |
 |----------|--------|
 | **Gamedev** | scaffold-unity, unity-game-architecture, map-systems, asset-audit, consistency-check, audit-game |
-| **General** | tdd, test-setup, perf-profile, optimize, deps-audit, env-sync, security-audit, release-checklist, patch-notes, onboard |
+| **General** | test-setup, perf-profile, optimize, deps-audit, env-sync, security-audit, release-checklist, patch-notes, onboard |
 | **Software** | ci-cd-setup |
 | **Rules** | gameplay-code, engine-code, shader-code, network-code, ui-code, ai-code |
 
@@ -169,7 +169,7 @@ For Go services with clean architecture, databases, auth, and API design.
 | Category | Skills |
 |----------|--------|
 | **Software** | scaffold-go, go-clean-architecture, database-indexing, db-diagram, data-migrations, run-migrations, local-database-setup, query-optimization, data-seeding, api-design, api-docs, api-versioning, oauth-setup, jwt-strategy, rate-limiting, rbac-abac, caching-strategy, webhooks, job-scheduling, audit-log, ci-cd-setup |
-| **General** | tdd, test-setup, deps-audit, security-audit, env-sync, error-tracking, logging-setup, observability-setup |
+| **General** | test-setup, deps-audit, security-audit, env-sync, error-tracking, logging-setup, observability-setup |
 | **Rules** | backend-code, api-code, migration-code |
 | **Permissions** | `go *`, `docker ps*`, `docker images*` |
 
@@ -182,7 +182,7 @@ For TypeScript services with Fastify, Prisma, and Zod.
 | Category | Skills |
 |----------|--------|
 | **Software** | scaffold-fastify-ts, database-indexing, db-diagram, data-migrations, run-migrations, local-database-setup, query-optimization, data-seeding, api-design, api-docs, api-versioning, oauth-setup, jwt-strategy, rate-limiting, rbac-abac, caching-strategy, webhooks, job-scheduling, audit-log, monorepo-setup, ci-cd-setup |
-| **General** | tdd, test-setup, deps-audit, security-audit, env-sync, error-tracking, logging-setup, observability-setup |
+| **General** | test-setup, deps-audit, security-audit, env-sync, error-tracking, logging-setup, observability-setup |
 | **Rules** | backend-code, api-code, migration-code |
 | **Permissions** | `npm *`, `yarn *`, `pnpm *`, `docker ps*`, `docker images*` |
 
@@ -195,7 +195,7 @@ For frontend web apps with React, Vite, and TypeScript.
 | Category | Skills |
 |----------|--------|
 | **Software** | scaffold-react-vite, state-management, form-validation, accessibility, csp-headers, owasp-top10-check, ci-cd-setup, cdn-setup, file-uploads |
-| **General** | tdd, test-setup, test-helpers, i18n-setup, deps-audit, security-audit, env-sync, error-tracking, release-checklist, patch-notes, onboard |
+| **General** | test-setup, test-helpers, i18n-setup, deps-audit, security-audit, env-sync, error-tracking, release-checklist, patch-notes, onboard |
 | **Rules** | frontend-code |
 | **Permissions** | `npm *`, `yarn *`, `pnpm *` |
 
@@ -208,7 +208,7 @@ For mobile apps with React Native and Expo.
 | Category | Skills |
 |----------|--------|
 | **Software** | scaffold-react-native, state-management, form-validation, accessibility, oauth-setup, jwt-strategy, file-uploads, ci-cd-setup, deploy-check |
-| **General** | tdd, test-setup, test-helpers, i18n-setup, deps-audit, security-audit, env-sync, error-tracking, release-checklist, patch-notes, onboard, perf-profile |
+| **General** | test-setup, test-helpers, i18n-setup, deps-audit, security-audit, env-sync, error-tracking, release-checklist, patch-notes, onboard, perf-profile |
 | **Rules** | frontend-code |
 | **Permissions** | `npm *`, `yarn *`, `pnpm *` |
 

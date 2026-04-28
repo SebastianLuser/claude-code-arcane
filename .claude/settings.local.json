@@ -34,7 +34,21 @@
       "Read(//tmp/**)",
       "Bash(find /c/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills* -type f -name \"*.md\")",
       "Bash(xargs -I {} basename {})",
-      "Bash(chmod +x *)"
+      "Bash(chmod +x *)",
+      "Bash(pip install *)",
+      "Bash(git rm *)",
+      "Bash(find *)",
+      "Bash(awk '{print $5, $9}')",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-gamedev/_archive\")",
+      "Bash(mv C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-gamedev/__TRACKED_VAR__ C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-gamedev/_archive/__TRACKED_VAR__)",
+      "Bash(awk '{print $2, $1}')",
+      "Bash(sort -k2 -rn)",
+      "Bash(awk '{print $1, $2}')",
+      "Bash(rm \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-general/tdd/SKILL.md\")",
+      "Bash(rmdir \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-general/tdd\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-software/performance\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-software/async-ops\")"
     ]
   }
 }

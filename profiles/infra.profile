@@ -6,7 +6,7 @@
 DESCRIPTION="DevOps/Platform — Terraform, tracing, SLOs, deploy, K8s"
 
 SKILLS_GENERAL=(
-  observability-setup
+  observability
   feature-flags
   gate-check
 )
@@ -15,8 +15,7 @@ SKILLS_GAMEDEV=()
 
 SKILLS_SOFTWARE=(
   terraform-init
-  distributed-tracing
-  slo-sli
+  observability-ops
   read-replicas
   start-service
   deploy-staging

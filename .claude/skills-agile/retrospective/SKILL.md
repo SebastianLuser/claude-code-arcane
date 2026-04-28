@@ -7,204 +7,65 @@ allowed-tools: Read, Glob, Grep, Write
 context: |
   !git log --oneline --since="2 weeks ago" 2>/dev/null
 ---
+## Phase 1: Parse & Check Existing
 
-## Phase 1: Parse Arguments
+Determine scope: sprint (`sprint-N`) or milestone. Check for existing retro (`production/retrospectives/retro-[slug]-*.md` or `production/sprints/sprint-[N]-retrospective.md`). If found → offer update existing or start fresh.
 
-Determine whether this is a sprint retrospective (`sprint-N`) or a milestone retrospective (`milestone-name`).
+## Phase 2: Load Data
 
----
+Read sprint/milestone plan from `production/sprints/` or `production/milestones/`. No data → offer manual input or stop. Extract planned tasks, estimates, owners, goals. Read git log for the period.
 
-## Phase 1b: Check for Existing Retrospective
+## Phase 3: Analyze
 
-Before loading any data, glob for an existing retrospective file:
+Compare plan vs actual:
+- Tasks completed as planned / completed modified / carried over / added mid-sprint / descoped
+- TODO/FIXME/HACK counts (compare to previous retro if available)
+- Previous retro action items: addressed?
+- Recurring problems? Velocity trend?
 
-- For sprint retrospectives: `production/retrospectives/retro-[sprint-slug]-*.md`
-  (also check `production/sprints/sprint-[N]-retrospective.md` as an alternate location)
-- For milestone retrospectives: `production/retrospectives/retro-[milestone-name]-*.md`
+## Phase 4: Generate Retrospective
 
-If a matching file is found, present the user with:
-
-```
-An existing retrospective was found: [filename]
-
-[A] Update existing retrospective — load it and add/revise sections
-[B] Start fresh — generate a new retrospective, archiving the old one
-```
-
-Wait for user selection before continuing. If updating, read the existing file and
-carry its content forward into the generation phase, revising sections with new data.
-
----
-
-## Phase 2: Load Sprint or Milestone Data
-
-Read the sprint or milestone plan from the appropriate location:
-
-- Sprint plans: `production/sprints/`
-- Milestone definitions: `production/milestones/`
-
-**If the file does not exist or is empty**, output:
-
-> "No sprint data found for [sprint/milestone]. Run `/sprint-status` to generate
-> sprint data first, or provide the sprint details manually."
-
-Then use `AskUserQuestion` to present two options:
-
-- **[A] Provide data manually** — ask the user to paste or describe the sprint
-  tasks, dates, and outcomes; use that as the source of truth for the retrospective.
-- **[B] Stop** — abort the skill. Verdict: **BLOCKED** — no sprint data available.
-
-If the user chooses [A], collect the data and continue to Phase 3 using what they provide.
-If the user chooses [B], stop here.
-
-Extract: planned tasks, estimated effort, owners, and goals.
-
-Read the git log for the period covered by the sprint or milestone to understand what was actually committed and when.
-
----
-
-## Phase 3: Analyze Completion and Trends
-
-Scan for completed and incomplete tasks by comparing the plan against actual deliverables. Check for:
-
-- Tasks completed as planned
-- Tasks completed but modified from the plan
-- Tasks carried over (not completed)
-- Tasks added mid-sprint (unplanned work)
-- Tasks removed or descoped
-
-Scan the codebase for TODO/FIXME trends:
-
-- Count current TODO/FIXME/HACK comments
-- Compare to previous sprint counts if available (check previous retrospectives)
-- Note whether technical debt is growing or shrinking
-
-Read previous retrospectives (if any) from `production/sprints/` or `production/milestones/` to check:
-
-- Were previous action items addressed?
-- Are the same problems recurring?
-- How has velocity trended?
-
----
-
-## Phase 4: Generate the Retrospective
-
-```markdown
-## Retrospective: [Sprint N / Milestone Name]
-Period: [Start Date] -- [End Date]
-Generated: [Date]
-
-### Metrics
-
-| Metric | Planned | Actual | Delta |
-|--------|---------|--------|-------|
-| Tasks | [X] | [Y] | [+/- Z] |
-| Completion Rate | -- | [Z%] | -- |
-| Story Points / Effort Days | [X] | [Y] | [+/- Z] |
-| Bugs Found | -- | [N] | -- |
-| Bugs Fixed | -- | [N] | -- |
-| Unplanned Tasks Added | -- | [N] | -- |
-| Commits | -- | [N] | -- |
+### Metrics table
+Planned vs actual: tasks, completion rate, story points, bugs found/fixed, unplanned tasks, commits.
 
 ### Velocity Trend
+Last 3 sprints: planned/completed/rate. Trend: increasing/stable/decreasing + 1 sentence why.
 
-| Sprint | Planned | Completed | Rate |
-|--------|---------|-----------|------|
-| [N-2] | [X] | [Y] | [Z%] |
-| [N-1] | [X] | [Y] | [Z%] |
-| [N] (current) | [X] | [Y] | [Z%] |
+### What Went Well / Poorly
+Specific observations backed by data. No blame — focus on systemic causes.
 
-**Trend**: [Increasing / Stable / Decreasing]
-[One sentence explaining the trend]
-
-### What Went Well
-- [Observation backed by specific data or examples]
-- [Another positive observation]
-- [Recognize specific contributions or decisions that paid off]
-
-### What Went Poorly
-- [Specific issue with measurable impact -- e.g., "Feature X took 5 days
-  instead of estimated 2, blocking tasks Y and Z"]
-- [Another issue with impact]
-- [Do not assign blame -- focus on systemic causes]
-
-### Blockers Encountered
-
-| Blocker | Duration | Resolution | Prevention |
-|---------|----------|------------|------------|
-| [What blocked progress] | [How long] | [How it was resolved] | [How to prevent recurrence] |
+### Blockers table
+Blocker / duration / resolution / prevention.
 
 ### Estimation Accuracy
-
-| Task | Estimated | Actual | Variance | Likely Cause |
-|------|-----------|--------|----------|--------------|
-| [Most overestimated task] | [X] | [Y] | [+Z] | [Why] |
-| [Most underestimated task] | [X] | [Y] | [-Z] | [Why] |
-
-**Overall estimation accuracy**: [X%] of tasks within +/- 20% of estimate
-
-[Analysis: Are we consistently over- or under-estimating? For which types of
-tasks? What adjustment should we apply?]
+Most over/underestimated tasks with variance and likely cause. Overall accuracy (% within ±20%). Analysis: consistent bias? Which task types?
 
 ### Carryover Analysis
-
-| Task | Original Sprint | Times Carried | Reason | Action |
-|------|----------------|---------------|--------|--------|
-| [Task that was not completed] | [Sprint N-X] | [N] | [Why] | [Complete / Descope / Redesign] |
+Tasks carried over: original sprint, times carried, reason, action (complete/descope/redesign).
 
 ### Technical Debt Status
-- Current TODO count: [N] (previous: [N])
-- Current FIXME count: [N] (previous: [N])
-- Current HACK count: [N] (previous: [N])
-- Trend: [Growing / Stable / Shrinking]
-- [Note any areas of concern]
+TODO/FIXME/HACK counts vs previous. Trend + areas of concern.
 
 ### Previous Action Items Follow-Up
+Status of each (Done/In Progress/Not Started).
 
-| Action Item (from Sprint N-1) | Status | Notes |
-|-------------------------------|--------|-------|
-| [Previous action] | [Done / In Progress / Not Started] | [Context] |
-
-### Action Items for Next Iteration
-
-| # | Action | Owner | Priority | Deadline |
-|---|--------|-------|----------|----------|
-| 1 | [Specific, measurable action] | [Who] | [High/Med/Low] | [When] |
-| 2 | [Another action] | [Who] | [Priority] | [When] |
+### Action Items (MAX 3-5)
+Each with owner, priority, deadline. Specific and measurable.
 
 ### Process Improvements
-- [Specific change to how we work, with expected benefit]
-- [Another improvement -- keep it to 2-3 actionable items, not a wish list]
+2-3 actionable items with expected benefit.
 
 ### Summary
-[2-3 sentence overall assessment: Was this a good sprint/milestone? What is
-the single most important thing to change going forward?]
-```
+2-3 sentences: overall assessment + single most important change.
 
----
+## Phase 5: Save
 
-## Phase 5: Save Retrospective
+Present retro + top findings. Ask write approval → `production/sprints/sprint-[N]-retrospective.md`.
 
-Present the retrospective and top findings to the user (completion rate, velocity trend, top blocker, most important action item).
+## Guidelines
 
-Ask: "May I write this to `production/sprints/sprint-[N]-retrospective.md`?" (or the milestone path if applicable)
-
-If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** — retrospective saved.
-
-If no, stop here. Verdict: **BLOCKED** — user declined write.
-
----
-
-## Phase 6: Next Steps
-
-- Run `/sprint-plan` to incorporate the action items and velocity data into the next sprint.
-- If this was a milestone retrospective, run `/gate-check` to formally assess readiness for the next phase.
-
-### Guidelines
-
-- Be honest and specific. Vague retrospectives ("communication could be better") produce vague improvements. Use data and examples.
-- Focus on systemic issues, not individual blame.
-- Limit action items to 3-5. More than that dilutes focus.
-- Every action item must have an owner and a deadline.
-- Check whether previous action items were completed. Recurring unaddressed items are a process smell.
-- If this is a milestone retrospective, also evaluate whether the milestone goals were achieved and what that means for the overall project timeline.
+- Honest and specific — use data, not vague statements
+- Systemic issues, not individual blame
+- 3-5 action items max, each with owner + deadline
+- Check previous action items — recurring unaddressed items = process smell
+- Milestone retros: also evaluate goal achievement + project timeline impact

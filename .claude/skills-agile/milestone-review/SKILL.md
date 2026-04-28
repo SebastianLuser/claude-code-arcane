@@ -8,132 +8,38 @@ allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 
 ## Phase 0: Parse Arguments
 
-Extract the milestone name (`current` or a specific name) and resolve the review mode (once, store for all gate spawns this run):
-1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `production/review-mode.txt` → use that value
-3. Else → default to `lean`
-
-See `.claude/docs/director-gates.md` for the full check pattern.
-
----
+Extract milestone name (`current` = most recent). Resolve review mode: `--review` arg > `production/review-mode.txt` > default `lean`. See `.claude/docs/director-gates.md`.
 
 ## Phase 1: Load Milestone Data
 
-Read the milestone definition from `production/milestones/`. If the argument is `current`, use the most recently modified milestone file.
-
-Read all sprint reports for sprints within this milestone from `production/sprints/`.
-
----
+Read milestone definition from `production/milestones/`. Read all sprint reports within this milestone from `production/sprints/`.
 
 ## Phase 2: Scan Codebase Health
 
-- Scan for `TODO`, `FIXME`, `HACK` markers that indicate incomplete work
-- Check the risk register at `production/risk-register/`
+Scan for TODO/FIXME/HACK markers. Check risk register at `production/risk-register/`.
 
----
+## Phase 3: Generate Review
 
-## Phase 3: Generate the Milestone Review
-
-```markdown
-# Milestone Review: [Milestone Name]
-
-## Overview
-- **Target Date**: [Date]
-- **Current Date**: [Today]
-- **Days Remaining**: [N]
-- **Sprints Completed**: [X/Y]
-
-## Feature Completeness
-
-### Fully Complete
-| Feature | Acceptance Criteria | Test Status |
-|---------|-------------------|-------------|
-
-### Partially Complete
-| Feature | % Done | Remaining Work | Risk to Milestone |
-|---------|--------|---------------|------------------|
-
-### Not Started
-| Feature | Priority | Can Cut? | Impact of Cutting |
-|---------|----------|----------|------------------|
-
-## Quality Metrics
-- **Open S1 Bugs**: [N] -- [List]
-- **Open S2 Bugs**: [N]
-- **Open S3 Bugs**: [N]
-- **Test Coverage**: [X%]
-- **Performance**: [Within budget? Details]
-
-## Code Health
-- **TODO count**: [N across codebase]
-- **FIXME count**: [N]
-- **HACK count**: [N]
-- **Technical debt items**: [List critical ones]
-
-## Risk Assessment
-| Risk | Status | Impact if Realized | Mitigation Status |
-|------|--------|-------------------|------------------|
-
-## Velocity Analysis
-- **Planned vs Completed** (across all sprints): [X/Y tasks = Z%]
-- **Trend**: [Improving / Stable / Declining]
-- **Adjusted estimate for remaining work**: [Days needed at current velocity]
-
-## Scope Recommendations
-### Protect (Must ship with milestone)
-- [Feature and why]
-
-### At Risk (May need to cut or simplify)
-- [Feature and risk]
-
-### Cut Candidates (Can defer without compromising milestone)
-- [Feature and impact of cutting]
-
-## Go/No-Go Assessment
-
-**Recommendation**: [GO / CONDITIONAL GO / NO-GO]
-
-**Conditions** (if conditional):
-- [Condition 1 that must be met]
-- [Condition 2 that must be met]
-
-**Rationale**: [Explanation of the recommendation]
-
-## Action Items
-| # | Action | Owner | Deadline |
-|---|--------|-------|----------|
-```
-
----
+Report sections:
+- **Overview**: target date, current date, days remaining, sprints completed
+- **Feature Completeness**: tables for Fully Complete (acceptance criteria, test status), Partially Complete (% done, remaining, risk), Not Started (priority, can cut, impact)
+- **Quality Metrics**: open bugs by severity, test coverage, performance vs budget
+- **Code Health**: TODO/FIXME/HACK counts, critical tech debt
+- **Risk Assessment**: table (risk, status, impact, mitigation)
+- **Velocity Analysis**: planned vs completed, trend, adjusted estimate
+- **Scope Recommendations**: Protect (must ship), At Risk (may cut), Cut Candidates (can defer)
+- **Go/No-Go**: GO / CONDITIONAL GO / NO-GO with conditions and rationale
+- **Action Items**: table (action, owner, deadline)
 
 ## Phase 3b: Producer Risk Assessment
 
-**Review mode check** — apply before spawning PR-MILESTONE:
-- `solo` → skip. Note: "PR-MILESTONE skipped — Solo mode." Present the Go/No-Go section without a producer verdict.
-- `lean` → skip (not a PHASE-GATE). Note: "PR-MILESTONE skipped — Lean mode." Present the Go/No-Go section without a producer verdict.
-- `full` → spawn as normal.
-
-Before generating the Go/No-Go recommendation, spawn `producer` via Task using gate **PR-MILESTONE** (`.claude/docs/director-gates.md`).
-
-Pass: milestone name and target date, current completion percentage, blocked story count, velocity data from sprint reports (if available), list of cut candidates.
-
-Present the producer's assessment inline within the Go/No-Go section. The producer's verdict (ON TRACK / AT RISK / OFF TRACK) informs the overall recommendation — do not issue a GO against an OFF TRACK producer verdict without explicit user acknowledgement.
-
----
+Review mode: `solo`/`lean` → skip PR-MILESTONE. `full` → spawn `producer` via Task with gate PR-MILESTONE. Pass: milestone name/date, completion %, blocked stories, velocity, cut candidates. Producer verdict (ON TRACK / AT RISK / OFF TRACK) informs recommendation — do not GO against OFF TRACK without user acknowledgement.
 
 ## Phase 4: Save Review
 
-Present the review to the user.
-
-Ask: "May I write this to `production/milestones/[milestone-name]-review.md`?"
-
-If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** — milestone review saved.
-
-If no, stop here. Verdict: **BLOCKED** — user declined write.
-
----
+Ask to write to `production/milestones/[milestone-name]-review.md`.
 
 ## Phase 5: Next Steps
 
-- Run `/gate-check` for a formal phase gate verdict if this milestone marks a development phase boundary.
-- Run `/sprint-plan` to adjust the next sprint based on the scope recommendations above.
+- `/gate-check` for formal phase gate if milestone marks a phase boundary
+- `/sprint-plan` to adjust next sprint based on scope recommendations

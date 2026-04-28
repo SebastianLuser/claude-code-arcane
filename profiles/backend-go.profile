@@ -6,14 +6,11 @@
 DESCRIPTION="Backend Go — scaffold, DB, auth, API design, CI"
 
 SKILLS_GENERAL=(
-  tdd
   test-setup
   deps-audit
   security-audit
   env-sync
-  error-tracking
-  logging-setup
-  observability-setup
+  observability
 )
 
 SKILLS_GAMEDEV=()
@@ -21,20 +18,11 @@ SKILLS_GAMEDEV=()
 SKILLS_SOFTWARE=(
   scaffold-go
   go-clean-architecture
-  database-indexing
-  db-diagram
-  data-migrations
-  run-migrations
-  local-database-setup
-  query-optimization
-  data-seeding
+  database-setup
+  data-operations
   api-design
-  api-docs
-  api-versioning
-  oauth-setup
-  jwt-strategy
+  auth-strategy
   rate-limiting
-  rbac-abac
   caching-strategy
   webhooks
   job-scheduling
