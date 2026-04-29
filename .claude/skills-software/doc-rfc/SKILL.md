@@ -1,6 +1,7 @@
 ---
 name: doc-rfc
-description: "Genera documentación técnica RFC: épicas, historias de usuario (HU) y tareas (T) siguiendo el formato de Alizia-BE. Estructura jerárquica con decisiones, specs y acceptance criteria. Usar cuando se mencione: RFC, documentación técnica, épica, historia de usuario, spec, desglose técnico."
+description: "Generate RFC docs: epics, user stories, tasks in Alizia-BE format. Trigger: RFC, technical docs, epic, user story, spec, technical breakdown."
+category: "documentation"
 argument-hint: "[rfc-title or feature-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
@@ -31,17 +32,10 @@ docs/rfc-{proyecto}/
 
 ## Templates
 
-### Épica
-Secciones: título + one-liner, estado (Pendiente/En progreso/Completada), fase, proyecto. Problema (contexto + pain point), objetivos (medibles), alcance MVP (incluye/no incluye), stack tecnológico (tabla componente/tech/justificación), arquitectura (diagrama), tabla HUs (ID/título/descripción/fase/tareas), decisiones técnicas (opción+razón), principios diseño, épicas relacionadas, test cases.
-
-### Historia de Usuario
-"Como {rol}, necesito {feature}, para {beneficio}". Link a épica, fase, prioridad, estimación. Criterios aceptación (verificables, checkboxes). Diseño técnico: endpoints (tabla método/ruta/desc), modelos datos, flujo. Tabla tareas (ID/título/archivos/estado). Dependencias. Test cases. Notas implementador.
-
-### Tarea
-One-liner, link a HU, criterio aceptación (1 oración), archivos afectados. Pasos accionables. Código referencia. Tests (unitarios + integración checkboxes). Notas/edge cases.
-
-### Decisión técnica
-Fecha, estado, contexto. Tabla por opción: pros/contras/costo/ejemplo. Decisión elegida + razón. Consecuencias.
+> → Read templates/epica.md for the epic document skeleton
+> → Read templates/hu.md for the user story document skeleton
+> → Read templates/tarea.md for the task document skeleton
+> → Read templates/decision.md for the technical decision document skeleton
 
 ## Numeración
 

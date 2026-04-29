@@ -1,6 +1,7 @@
 ---
 name: feature-flags
 description: "Feature flag strategy: types, provider selection, lifecycle, naming, rollout, cleanup"
+category: "operations"
 argument-hint: "[setup|audit|cleanup]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -78,7 +79,7 @@ Every flag at creation MUST have:
 3. Delete dead code from losing branch
 4. Archive flag in provider (preserve audit trail)
 
-## Security checklist
+## Checklist
 
 - [ ] SDK client keys (read-only) in client, admin API keys server-only
 - [ ] Sensitive flags (billing, permissions) evaluated server-side only

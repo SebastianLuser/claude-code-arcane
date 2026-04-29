@@ -1,6 +1,7 @@
 ---
 name: gate-check
 description: "Quality gate validation for phase transitions: artifact checks, quality criteria, verdict with blockers"
+category: "workflow"
 argument-hint: "[target-phase] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Task, AskUserQuestion

@@ -1,6 +1,7 @@
 ---
 name: figma-to-code
-description: "Convierte diseños de Figma a código adaptado al stack del proyecto. Detecta componentes existentes, tokens de diseño, y genera código production-ready. Usar cuando se mencione: Figma, diseño a código, implementar diseño, figma to code, maquetear."
+description: "Convert Figma designs to production-ready code adapted to the project stack. Detects existing components and design tokens."
+category: "design"
 argument-hint: "[figma-url or node-id]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -31,25 +32,9 @@ Llamar a `get_design_context` con fileKey y nodeId para obtener:
 
 ### 2. Detectar stack del proyecto
 
-Buscar en el directorio actual:
-| Archivo | Stack |
-|---------|-------|
-| `package.json` con `next` | Next.js |
-| `package.json` con `react` | React |
-| `package.json` con `vue` | Vue |
-| `package.json` con `svelte` | Svelte |
-| `pubspec.yaml` | Flutter |
-| `*.swift` + `Package.swift` | SwiftUI |
-| `package.json` con `react-native` | React Native |
+Detectar framework (Next.js, React, Vue, Svelte, Flutter, SwiftUI, RN) y UI library (shadcn, MUI, Chakra, Tailwind, Styled Components) del proyecto.
 
-Detectar UI library:
-| Indicador | Library |
-|-----------|---------|
-| `@shadcn/ui` o `components/ui/` | shadcn/ui |
-| `@mui/material` | Material UI |
-| `@chakra-ui` | Chakra UI |
-| `tailwindcss` | Tailwind CSS |
-| `styled-components` | Styled Components |
+> → Read references/stack-detection.md for detection tables and adaptation rules
 
 ### 3. Buscar componentes existentes
 
@@ -65,16 +50,9 @@ find src/components -name "*.tsx" -o -name "*.vue" -o -name "*.svelte" 2>/dev/nu
 
 ### 4. Adaptar código al stack
 
-El output de `get_design_context` es React+Tailwind de referencia. Adaptar:
+El output de `get_design_context` es React+Tailwind de referencia. Adaptar al stack detectado (shadcn, CSS Modules, Styled Components, Vue, Svelte, Flutter).
 
-| Si el proyecto usa | Adaptar a |
-|--------------------|-----------|
-| shadcn/ui | Usar `<Button>`, `<Card>`, `<Input>` etc. del proyecto |
-| CSS Modules | Convertir Tailwind a CSS Modules |
-| Styled Components | Convertir a styled() |
-| Vue | Convertir JSX a `<template>` + `<script setup>` |
-| Svelte | Convertir a `.svelte` components |
-| Flutter | Convertir a Widgets |
+> → Read references/stack-detection.md for stack adaptation mapping table
 
 ### 5. Generar código
 
@@ -87,36 +65,9 @@ Para cada componente/pantalla:
 5. **Accesibilidad** — aria labels, semantic HTML, keyboard nav
 6. **Estados** — hover, active, disabled, loading, empty, error
 
-### 6. Checklist post-generación
+### 6. Checklist post-generación & Output
 
-- [ ] Usa componentes existentes del proyecto (no reinventa)
-- [ ] Tokens de color mapeados a variables del proyecto
-- [ ] Typography consistente con el design system
-- [ ] Responsive en los breakpoints del proyecto
-- [ ] Sin valores hardcodeados (usa tokens/variables)
-- [ ] Accesible (semantic HTML, aria labels)
-- [ ] Estados de interacción implementados
-
-## Output
-
-```markdown
-## Componentes generados
-
-| Archivo | Qué es | Componentes reutilizados |
-|---------|--------|------------------------|
-| `src/components/FeatureName.tsx` | Componente principal | Button, Card |
-
-## Tokens mapeados
-| Figma | Proyecto |
-|-------|---------|
-| #3B82F6 | `--color-primary` / `text-blue-500` |
-
-## Decisiones tomadas
-- [Decisión 1: por qué se usó X en vez de Y]
-
-## TODOs
-- [ ] [Algo que necesita input del diseñador/usuario]
-```
+> → Read references/checklist-and-output.md for 7-item quality checklist and output template format
 
 ## Rules
 - SIEMPRE leer el diseño de Figma antes de generar código

@@ -1,6 +1,7 @@
 ---
 name: architecture-review
 description: "Validates architecture against all GDDs: traceability matrix, coverage gaps, cross-ADR conflicts, engine compatibility, PASS/CONCERNS/FAIL verdict."
+category: "workflow"
 argument-hint: "[focus: full | coverage | consistency | engine | single-gdd path | rtm]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
@@ -78,3 +79,12 @@ Top 3 ADRs to create → `/gate-check pre-production` when blockers resolved →
 - Read silently, show matrix before asking anything
 - Ask before writing. Verdict is advisory — user decides
 - If agent BLOCKED → surface, assess deps, offer skip/retry/stop, always produce partial report
+
+## Checklist
+
+- [ ] All in-scope GDDs and ADRs are loaded before analysis begins
+- [ ] Traceability matrix is complete with coverage status (Covered/Partial/Gap) for every TR-ID
+- [ ] Cross-ADR conflicts are identified with both claims, impact, and resolution options
+- [ ] Engine compatibility is verified with no deprecated API references in active ADRs
+- [ ] Verdict is documented as PASS, CONCERNS, or FAIL with supporting evidence
+- [ ] `tr-registry.yaml` is updated with any newly assigned TR-IDs

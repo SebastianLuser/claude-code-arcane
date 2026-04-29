@@ -1,6 +1,7 @@
 ---
 name: csp-headers
-description: Configurar security headers (CSP, HSTS, Permissions-Policy, COOP/COEP) en backends Go/TS y Cloudflare. Prevenir XSS, clickjacking, MIME sniffing. Usar cuando se mencione CSP, Content-Security-Policy, security headers, HSTS, XSS, headers de seguridad, securityheaders.com.
+description: "Configure security headers (CSP, HSTS, Permissions-Policy, COOP/COEP) for Go/TS backends and Cloudflare. Prevents XSS and clickjacking."
+category: "security"
 argument-hint: "[stack: go|ts|cloudflare]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -47,43 +48,6 @@ Default deny, nonces en CSP, report-only antes de enforce. Stack: Go + TS backen
 
 Default: `camera=(), microphone=(), geolocation=(), interest-cohort=()`. Apps educativas con webcam: `camera=(self), microphone=(self)`.
 
-## Implementación
+> → Read references/implementation.md for Go, TS, Cloudflare implementation details, iframe/embedding config, testing tools
 
-**Go:** middleware genera nonce (`crypto/rand`), inyecta en context + CSP header (nonce interpolado), setea todos los headers. Template accede nonce via context.
-
-**TS (Express):** `helmet` con CSP override (useDefaults: false), nonce via `res.locals.cspNonce` (`crypto.randomBytes`), Permissions-Policy manual. `reportOnly` configurable via env.
-
-**Cloudflare:** preferir headers desde origin (más testeable). Si necesario: Transform Rules (estáticos, no nonces) o Workers (nonces per-request + HTMLRewriter para inyectar).
-
-## Iframes / Embedding
-
-Educabot embebe contenido educativo: `frame-src 'self' youtube-nocookie.com view.genially.com classroom.google.com`. `frame-ancestors 'none'` salvo LMS externo (whitelist explícito).
-
-## Testing
-
-securityheaders.com (A+), csp-evaluator.withgoogle.com, hstspreload.org, `curl -I | grep`, DevTools Network headers, Console violations en report-only.
-
-## Anti-patterns
-
-- `unsafe-inline`/`unsafe-eval` en script-src, `*` en directivas
-- CSP solo en `<meta>` (bypasseable), HSTS sin includeSubDomains
-- Headers solo en algunas rutas (debe ser middleware global)
-- No monitorear reports, enforce sin report-only phase
-- `X-XSS-Protection: 1; mode=block` (deprecado)
-- Whitelist dominios en vez de strict-dynamic, nonces con Math.random
-- Mismo nonce entre requests, report-uri sin endpoint real
-
-## Checklist
-
-- [ ] CSP report-only 2-4 semanas antes de enforce
-- [ ] Endpoint /csp-report existe con dashboard/alertas
-- [ ] Nonces CSPRNG, sin unsafe-inline/unsafe-eval
-- [ ] strict-dynamic en vez de whitelist dominios
-- [ ] HSTS includeSubDomains + preload (si aplica)
-- [ ] X-Content-Type-Options: nosniff
-- [ ] Referrer-Policy, Permissions-Policy, frame-ancestors
-- [ ] Headers como middleware global
-- [ ] Score A+ en securityheaders.com
-- [ ] X-XSS-Protection removido
-- [ ] Cloudflare no duplica/pisa headers origin
-- [ ] Dev/staging mismos headers que prod (solo report-only cambia)
+> → Read references/anti-patterns-checklist.md for anti-patterns and pre-deployment checklist

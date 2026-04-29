@@ -1,6 +1,7 @@
 ---
 name: check
 description: "Auditoría rápida de calidad y seguridad: lint, type-check, tests, secrets, deps vulnerables. Reporta findings con severidad."
+category: "workflow"
 argument-hint: ""
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

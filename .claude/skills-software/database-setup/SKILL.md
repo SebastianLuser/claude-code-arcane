@@ -1,6 +1,7 @@
 ---
 name: database-setup
-description: "Migrations, indexing y schema PostgreSQL: zero-downtime expand-contract, golang-migrate/Prisma/drizzle-kit, CREATE INDEX CONCURRENTLY, tipos de índices, composite order, locks, rollback, multi-tenant, ER diagrams. Usar para: database, migration, schema, alter table, index, seq scan, EXPLAIN, db setup, db diagram, ER."
+description: "PostgreSQL setup: migrations, indexing, schema design, expand-contract, ER diagrams. golang-migrate/Prisma/drizzle."
+category: "database"
 argument-hint: "[setup|migrate|index|diagram] [table]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task

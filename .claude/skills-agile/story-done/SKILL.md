@@ -1,6 +1,7 @@
 ---
 name: story-done
-description: "End-of-story completion review. Reads the story file, verifies each acceptance criterion against the implementation, checks for GDD/ADR deviations, prompts code review, updates story status to Complete, and surfaces the next ready story from the sprint."
+description: "End-of-story review: verify acceptance criteria, check GDD/ADR deviations, update status to Complete, surface next story."
+category: "agile"
 argument-hint: "[story-file-path] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Edit, AskUserQuestion, Task
@@ -25,21 +26,7 @@ Extract: name/ID, TR-IDs, manifest version, ADR refs, acceptance criteria, imple
 
 **Unverifiable:** mark `DEFERRED — requires playtest session`.
 
-### Test-Criterion Traceability
-
-Map each AC to covering test (unit/integration/manual). Table: Criterion | Test | Status (COVERED/UNTESTED). Escalation: >50% UNTESTED → BLOCKING; ≤50% → ADVISORY (add to Completion Notes).
-
-### Test Evidence by Story Type
-
-| Type | Required Evidence | Gate |
-|------|-------------------|------|
-| Logic | Unit test in `tests/unit/[system]/` — must exist and pass | BLOCKING |
-| Integration | Integration test or playtest doc | BLOCKING |
-| Visual/Feel | Screenshot + sign-off in `production/qa/evidence/` | ADVISORY |
-| UI | Walkthrough doc or interaction test | ADVISORY |
-| Config/Data | Smoke check pass in `production/qa/smoke-*.md` | ADVISORY |
-
-Check exact path from story's Test Evidence section first, then broad search. No type set → ADVISORY warning.
+> → Read references/test-evidence-traceability.md for test-criterion mapping rules and evidence requirements by story type
 
 ## Phase 4: Check Deviations
 
@@ -51,13 +38,7 @@ Check exact path from story's Test Evidence section first, then broad search. No
 
 Categories: BLOCKING (contradicts GDD/ADR), ADVISORY (slight drift), OUT OF SCOPE (extra files).
 
-### Phase 4b: QA Coverage Gate
-
-Solo/lean → skip. Full → spawn `qa-lead` gate QL-TEST-COVERAGE with story file, test paths, QA test cases, ACs. Verdict: ADEQUATE → proceed; GAPS → ADVISORY; INADEQUATE → BLOCKING. Skip for Config/Data.
-
-## Phase 5: Code Review Gate
-
-Solo/lean → skip. Full → spawn `lead-programmer` gate LP-CODE-REVIEW. Pass implementation files, story, GDD section, ADR. CONCERNS → AskUserQuestion (Revise/Accept/Discuss). REJECT → must resolve. No implementation files → skip.
+> → Read references/review-gates.md for QA Coverage Gate (Phase 4b) and Code Review Gate (Phase 5) details
 
 ## Phase 6: Completion Report
 

@@ -1,6 +1,7 @@
 ---
 name: logging-setup
-description: "Logging estructurado para apps Educabot (Go/TS/React/RN): slog, pino, Cloud Logging, Loki, Datadog, JSON structured logs, correlation IDs (trace/span), PII scrubbing, log levels, sampling, retention, cost control. Usar para: logs, logging, slog, pino, winston, loki, datadog, cloud logging, log shipping, observability."
+description: "Structured logging: slog/pino, Cloud Logging, Loki, correlation IDs, PII scrubbing, sampling, cost control."
+category: "observability"
 argument-hint: "[stack: go|ts|react|rn]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task
@@ -62,49 +63,17 @@ Si nadie va a hacer algo con la línea → bájala de level o sacala.
 
 Cloud Logging ~$0.50/GiB. Estrategia: siempre errores 100%, samplear éxitos (5-10%). Con OTel tracing, bajar INFO a 1-5%.
 
-## PII Scrubbing
+> → Read references/pii-audit-access.md for PII scrubbing fields, audit log schema, access log fields, and retention/cost tables
 
-Campos prohibidos: password, tokens, API keys, DNI/CPF/CUIT, email (hash si correlación), dirección, teléfono, contenido mensajes usuarios, tarjetas. Go: `ReplaceAttr` en slog handler. Pino: `redact.paths`. Nunca loguear `req.body` crudo.
+> → Read references/anti-patterns.md for common logging anti-patterns
 
-## Retention & Cost
-
-| Tipo | Retention |
-|------|-----------|
-| Application | 30d hot, 90d cold |
-| Access (LB) | 30d |
-| Audit (auth, admin) | 1 año min |
-| Security (SIEM) | 1+ año |
-| Debug prod | 7-14d |
-
-Reducir costo: sampling, level ≥ INFO, excluir healthchecks, Loki para alto volumen, GCS para cold storage.
-
-## Access Logs
-
-Fields: method, path, status, latency, user_id, tenant_id, trace_id, ip, user_agent. Excluir /health, /ready, /metrics.
-
-## Audit Logs
-
-Separados de app logs — append-only, retention larga. Eventos: login/logout/signup, password/MFA change, role/permisos change, acceso PII menores, tenant CRUD, GDPR exports, admin actions. Schema: `(id, actor_id, actor_type, action, target_type, target_id, tenant_id, ip, user_agent, metadata jsonb, created_at)`. Write-only, no update/delete. Backup off-cluster.
-
-## Anti-patterns
-
-- `console.log` en prod (sin estructura/level), printf-style interpolation, multi-line logs
-- Todo a INFO (señal ahogada), sin correlation_id, PII en logs
-- Logs como sustituto de métricas, retention infinita, healthcheck spam
-- `JSON.stringify(bigObject)` en hot path, `logger.error(err)` sin contexto
-- Logger global instanciado en cada call, shipping sync (bloquea handler)
+> → Read references/checklist.md for the 12-item implementation checklist
 
 ## Checklist
 
-- [ ] slog/pino JSON en prod, level configurable via env
-- [ ] Base fields: service, env, version
-- [ ] Request-scoped: trace_id, request_id, user_id, tenant_id
-- [ ] PII scrubber activo
-- [ ] Severity mapeada al provider
-- [ ] Sampling en hot paths, healthchecks excluidos
-- [ ] Audit logs separados con retention ≥1 año
-- [ ] Access logs con latency
-- [ ] Retention policy por tipo
-- [ ] Log-based alerts configurados
-- [ ] Tests validan estructura (keys, level)
-- [ ] Cost review mensual
+- [ ] Log destination chosen and configured (Cloud Logging, Loki, Datadog, or ELK)
+- [ ] Correlation IDs (trace_id, request_id) injected in every log line via middleware
+- [ ] PII scrubbing in place (password, token, authorization, cookie, dni, cuit redacted)
+- [ ] Sampling strategy defined (errors 100%, success paths 5-10%)
+- [ ] Log levels set correctly per environment (DEBUG off in prod, INFO as default)
+- [ ] JSON structured format enforced — no free-form strings in production

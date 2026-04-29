@@ -1,6 +1,7 @@
 ---
 name: fix-issue
 description: "Fetch un GitHub issue por número, entiende el problema, localiza el código, implementa fix mínimo y commitea referenciando el issue."
+category: "workflow"
 argument-hint: "<issue-number>"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash

@@ -1,11 +1,14 @@
 ---
 name: architecture-decision
 description: "Creates an Architecture Decision Record (ADR) documenting a significant technical decision, context, alternatives, and consequences."
+category: "documentation"
 argument-hint: "[title] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 ---
 # architecture-decision — ADR Authoring
+
+> → Read templates/adr.md for the full ADR document skeleton with all sections
 
 ## Parse Arguments
 
@@ -36,7 +39,7 @@ Derive assumptions from context, then confirm/adjust via AskUserQuestion:
 
 ## Phase 3: Generate ADR
 
-Template sections: Status, Date, Engine Compatibility (table), ADR Dependencies (table), Context (Problem + Constraints + Requirements), Decision (+ diagram + interfaces), Alternatives Considered, Consequences (+/-/risks), GDD Requirements Addressed (table), Performance Implications, Migration Plan, Validation Criteria, Related Decisions.
+Use template from `templates/adr.md`. Fill all sections from gathered context.
 
 ### Reviews (before saving)
 

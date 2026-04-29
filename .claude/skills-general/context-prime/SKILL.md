@@ -1,6 +1,7 @@
 ---
 name: context-prime
 description: "Carga contexto completo del proyecto al inicio de la sesión: stack, estructura, git state, archivos clave. Mejora respuestas posteriores."
+category: "workflow"
 argument-hint: ""
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

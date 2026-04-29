@@ -1,6 +1,7 @@
 ---
 name: file-uploads
 description: "File upload decision guide: signed URLs, validation, storage, virus scanning, image processing, UX. Use for: upload, file storage, attachment, avatar, image, document, GCS, S3, presigned."
+category: "backend"
 argument-hint: "[stack: go|ts|react|rn]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -34,7 +35,7 @@ Key decisions:
 - Signed URL expiry: **<=15min**; include content-length constraint in signature
 - Multi-tenant: `t/{tenant}/u/{user}/{uuid}` key path
 
-## Validation Checklist
+## Checklist
 
 | Check | Where | Detail |
 |---|---|---|
@@ -73,7 +74,7 @@ DB columns: id, owner_id, tenant_id, bucket, key, mime, size, checksum_sha256, s
 - >100MB: switch to resumable with per-chunk retry + exponential backoff
 - Show placeholder until `status=clean`; poll or WebSocket for completion
 
-## Anti-Patterns
+## Anti-patterns
 
 - Proxying bytes through backend — wastes RAM, crashes pods
 - Trusting extension or client Content-Type without server sniff
@@ -82,7 +83,7 @@ DB columns: id, owner_id, tenant_id, bucket, key, mime, size, checksum_sha256, s
 - Signed URLs >15min; no size limit; any-MIME allowed
 - Public buckets; missing CORS; no rate limit on /uploads/sign
 
-## Review Checklist
+## Checklist
 
 - [ ] Signed URL <=15min; content-length in signature
 - [ ] MIME whitelist at sign AND worker (real sniff)

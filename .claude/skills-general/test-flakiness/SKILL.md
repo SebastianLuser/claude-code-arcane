@@ -1,6 +1,7 @@
 ---
 name: test-flakiness
-description: "Detect non-deterministic (flaky) tests by reading CI run logs or test result history. Aggregates pass rates per test, identifies intermittent failures, recommends quarantine or fix, and maintains a flaky test registry. Best run during Polish phase or after multiple CI runs."
+description: "Detect flaky tests from CI logs or test history. Aggregates pass rates, flags intermittent failures, maintains flaky registry."
+category: "testing"
 argument-hint: "[ci-log-path | scan | registry]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash
@@ -79,3 +80,11 @@ After writing: add skip annotations for quarantined tests, surface straightforwa
 - Fix is always the goal — quarantine is temporary
 - Ask before both writes. On write: Verdict **COMPLETE**. On decline: Verdict **BLOCKED**.
 - Flakiness is a team problem — surface clearly, don't silently quarantine
+
+## Checklist
+
+- [ ] CI logs parsed and test results extracted (JUnit XML or plain text)
+- [ ] Flaky pattern identified (both PASS and FAIL across runs without code changes)
+- [ ] Root cause classified per test (timing, order dependency, random seed, resource leak, etc.)
+- [ ] Fix vs quarantine decision made based on fail rate threshold (>25% quarantine, 5-25% fix)
+- [ ] Flaky registry updated in `tests/regression-suite.md` quarantine section

@@ -1,6 +1,7 @@
 ---
 name: standup-report
-description: "Generar reporte de daily standup automático combinando datos de ClickUp/Jira + Git + Slack. Usar cuando el usuario mencione: standup, daily, reporte diario, qué hice ayer, avance del día, what did I do."
+description: "Auto-generate daily standup report combining ClickUp/Jira activity, Git commits and Slack updates."
+category: "agile"
 argument-hint: "[date: today|yesterday|YYYY-MM-DD]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

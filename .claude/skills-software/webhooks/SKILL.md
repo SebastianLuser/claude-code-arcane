@@ -1,6 +1,7 @@
 ---
 name: webhooks
 description: "Webhooks outbound e inbound para apps Educabot (Go/TS): firma HMAC, anti-replay, idempotencia, retries, DLQ, outbox pattern, subscriber management."
+category: "api"
 argument-hint: "[outbound|inbound] [service-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task

@@ -1,6 +1,7 @@
 ---
 name: create-epics
-description: "Translate approved GDDs + architecture into epics — one epic per architectural module. Defines scope, governing ADRs, engine risk, and untraced requirements. Does NOT break into stories — run /create-stories [epic-slug] after each epic is created."
+description: "Translate GDDs + architecture into epics (one per module) with scope, ADRs and risk. Run /create-stories after."
+category: "agile"
 argument-hint: "[system-name | layer: foundation|core|feature|presentation | all] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
@@ -53,3 +54,12 @@ Foundation + Core complete → run `/gate-check production`. Reminder: epics def
 - Ask before writing (per-epic approval)
 - All content from GDDs, ADRs, architecture docs — no invention
 - Never create stories — stops at epic level
+
+## Checklist
+
+- [ ] Every epic traces to at least one approved/designed GDD requirement
+- [ ] Each epic includes acceptance criteria (DoD) with testable conditions
+- [ ] Architecture modules are correctly mapped to their corresponding systems
+- [ ] No duplicate epics exist for the same system or module
+- [ ] Untraced requirements (TR-IDs without ADR coverage) are flagged with warnings
+- [ ] `production/epics/index.md` is updated with all created epics

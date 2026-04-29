@@ -1,6 +1,7 @@
 ---
 name: tech-debt
 description: "Track, categorize, and prioritize technical debt across the codebase. Scans for debt indicators, maintains a debt register, and recommends repayment scheduling."
+category: "operations"
 argument-hint: "[scan|add|prioritize|report]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write
@@ -21,24 +22,9 @@ If no subcommand is provided, output usage and stop. Verdict: **FAIL** — missi
 
 ## Phase 2A: Scan Mode
 
-Search the codebase for debt indicators:
+Search the codebase for debt indicators and categorize each finding.
 
-- `TODO` comments (count and categorize)
-- `FIXME` comments (these are bugs disguised as debt)
-- `HACK` comments (workarounds that need proper solutions)
-- `@deprecated` markers
-- Duplicated code blocks (similar patterns in multiple files)
-- Files over 500 lines (potential god objects)
-- Functions over 50 lines (potential complexity)
-
-Categorize each finding:
-
-- **Architecture Debt**: Wrong abstractions, missing patterns, coupling issues
-- **Code Quality Debt**: Duplication, complexity, naming, missing types
-- **Test Debt**: Missing tests, flaky tests, untested edge cases
-- **Documentation Debt**: Missing docs, outdated docs, undocumented APIs
-- **Dependency Debt**: Outdated packages, deprecated APIs, version conflicts
-- **Performance Debt**: Known slow paths, unoptimized queries, memory issues
+> → Read references/scan-indicators.md for full list of debt indicators and category definitions
 
 Present the findings to the user.
 
@@ -68,7 +54,7 @@ If no, stop here. Verdict: **BLOCKED** — user declined write.
 
 Read the debt register at `docs/tech-debt-register.md`.
 
-Score each item by: `(impact_if_unfixed × frequency_of_encounter) / fix_effort`
+Score each item by: `(impact_if_unfixed * frequency_of_encounter) / fix_effort`
 
 Re-sort the register by priority score and recommend which items to include in the next sprint.
 
@@ -102,20 +88,4 @@ Output the report to the user. This mode is read-only — no files are written. 
 - Run `/sprint-plan` to schedule high-priority debt items into the next sprint.
 - Run `/tech-debt report` at the start of each sprint to track debt trends over time.
 
-### Debt Register Format
-
-```markdown
-## Technical Debt Register
-Last updated: [Date]
-Total items: [N] | Estimated total effort: [T-shirt sizes summed]
-
-| ID | Category | Description | Files | Effort | Impact | Priority | Added | Sprint |
-|----|----------|-------------|-------|--------|--------|----------|-------|--------|
-| TD-001 | [Cat] | [Description] | [files] | [S/M/L/XL] | [Low/Med/High/Critical] | [Score] | [Date] | [Sprint to fix or "Backlog"] |
-```
-
-### Rules
-- Tech debt is not inherently bad — it is a tool. The register tracks conscious decisions.
-- Every debt entry must explain WHY it was accepted (deadline, prototype, missing info)
-- "Scan" should run at least once per sprint to catch new debt
-- Items older than 3 sprints without action should either be fixed or consciously accepted with a documented reason
+> → Read references/register-format.md for debt register template and management rules

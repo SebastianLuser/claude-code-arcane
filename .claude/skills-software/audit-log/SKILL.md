@@ -1,6 +1,7 @@
 ---
 name: audit-log
 description: "Immutable audit log design: event schema, storage, retention, PII redaction, compliance, query patterns."
+category: "operations"
 argument-hint: "[design|implement] [service-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task

@@ -1,6 +1,7 @@
 ---
 name: reverse-document
 description: "Generate design or architecture documents from existing implementation. Works backwards from code/prototypes to create missing planning docs."
+category: "documentation"
 argument-hint: "<type> <path> (e.g., 'design src/gameplay/combat' or 'architecture src/core')"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash

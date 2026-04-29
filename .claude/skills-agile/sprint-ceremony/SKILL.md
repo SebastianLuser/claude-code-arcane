@@ -1,6 +1,7 @@
 ---
 name: sprint-ceremony
-description: "Prepara agendas y outputs de ceremonias agile: daily, sprint planning, sprint review, retro, 1-on-1. Genera templates Notion/Coda + crea action items en Jira. Usar para: daily, review, retro, planning, one-on-one, ceremonia, reunión de sprint."
+description: "Prepare agendas and outputs for agile ceremonies (daily, planning, review, retro, 1-on-1) with Jira action items."
+category: "agile"
 argument-hint: "[daily|planning|review|retro|1on1]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task

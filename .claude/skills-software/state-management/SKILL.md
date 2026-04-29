@@ -1,6 +1,7 @@
 ---
 name: state-management
 description: "State management decision guide: classify state types, Zustand for client, TanStack Query for server, anti-patterns."
+category: "frontend"
 argument-hint: "[feature or screen name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task

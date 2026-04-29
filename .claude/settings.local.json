@@ -53,7 +53,29 @@
       "Bash(mkdir -p \"/c/Users/Sebastarbucks/Desktop/claude-code-arcane/.claude/skills-software/database-setup/references\")",
       "Bash(mkdir -p \"/c/Users/Sebastarbucks/Desktop/claude-code-arcane/.claude/skills-general/gh-projects/references\")",
       "Bash(mkdir -p \"/c/Users/Sebastarbucks/Desktop/claude-code-arcane/.claude/skills-general/rollback-strategy/references\")",
-      "Skill(skill-test)"
+      "Skill(skill-test)",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-general/brainstorm/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-general/logging-setup/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-general/secret-management/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-agile/jira-tickets/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-agile/story-done/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-software/scaffold-go/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-software/caching-strategy/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-software/ci-cd-setup/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-software/go-clean-architecture/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-software/observability-ops/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-gamedev/audit-game/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-gamedev/art-bible/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-gamedev/game-docs/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-gamedev/unity-game-architecture/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-design/design-system/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-general/skill-test/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-agile/story-readiness/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-general/runbooks/references\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-general/runbooks/templates\")",
+      "Bash(mkdir -p \"C:/Users/Educabot/Desktop/Personal/Claude-Code-Arcane/.claude/skills-general/architecture-decision/templates\")",
+      "Bash(xargs grep *)",
+      "Bash(awk -F'\\\\t' '{print $1 \"\\\\t\" $2}')"
     ]
   }
 }

@@ -1,6 +1,7 @@
 ---
 name: deploy-check
-description: "Pre-deploy verification: tests, build, secrets, migrations, env vars, rollback, health checks, post-deploy monitoring. Trigger: deploy, pre-deploy, deploy check, production, release checklist, rollback."
+description: "Pre-deploy verification: tests, build, secrets, migrations, env vars, rollback, health checks. Trigger: deploy, release checklist, rollback."
+category: "operations"
 argument-hint: "[env: staging|prod]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash
@@ -67,7 +68,7 @@ Readiness checks downstream deps. Liveness does NOT — avoids cascading restart
 | Log review | First 15 min | New error patterns, stack traces, panics |
 | Rollback trigger | Any stage | Error spike, failed smoke, P0 reports |
 
-## 5. Anti-patterns
+## Anti-patterns
 
 - Deploying without rollback plan or untested rollback
 - Friday/pre-holiday deploys (no responders available)

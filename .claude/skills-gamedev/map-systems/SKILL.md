@@ -1,6 +1,7 @@
 ---
 name: map-systems
-description: "Descomponer concepto de juego en sistemas, mapear dependencias, priorizar orden de diseño, crear systems index. Usar para: systems decomposition, map systems, dependencias, priorización, systems index, game systems."
+description: "Decompose game concept into systems, map dependencies, prioritize design order, generate systems index."
+category: "gamedev"
 argument-hint: "[next | system-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task
@@ -35,17 +36,7 @@ Extraer de: Core Mechanics, Core Loop, Technical Considerations, MVP Definition.
 
 ### Implícitos — inference patterns
 
-Cada sistema mencionado implica sistemas ocultos. Heurísticas:
-
-| Mencionado | Implica |
-|-----------|---------|
-| Inventory | Item DB, equipment slots, capacity, inventory UI, serialización save/load |
-| Combat | Damage calc, health, hit detection, status effects, enemy AI, combat UI, death/respawn |
-| Open world | Streaming/chunking, LOD, fast travel, minimap, world state persistence |
-| Multiplayer | Networking, lobby/matchmaking, state sync, anti-cheat, network UI |
-| Crafting | Recipe DB, gathering, crafting UI, success/failure, recipe discovery |
-| Dialogue | Dialogue trees, dialogue UI, choice tracking, NPC state, localization hooks |
-| Progression | XP, level-up, skill tree, unlock tracking, progression UI, save data |
+> → Read references/implicit-systems.md for [tabla de heurísticas: sistema mencionado → sistemas implícitos]
 
 Presentar cada sistema con: nombre, categoría, 1-line description, explícito vs implícito.
 
@@ -53,50 +44,11 @@ Presentar cada sistema con: nombre, categoría, 1-line description, explícito v
 
 ---
 
-## Phase 3: Dependencias
+## Phase 3: Dependencias → Phase 4: Priorizar
 
-### Heurísticas
+> → Read references/dependency-layers-priorities.md for [heurísticas de dependencia, layers, risk detection, priority tiers y design order]
 
-- **Input/output**: A produce datos que B necesita
-- **Structural**: A provee framework donde B se conecta
-- **UI**: cada sistema gameplay tiene UI que depende de él
-
-### Layers (dependency order)
-
-1. **Foundation** — cero dependencias (diseñar primero)
-2. **Core** — depende solo de Foundation
-3. **Feature** — depende de Core
-4. **Presentation** — UI y feedback
-5. **Polish** — meta-sistemas, tutoriales, analytics, accesibilidad
-
-### Detectar riesgos
-
-- **Circulares** → proponer resolución (interfaz, contrato, diseño simultáneo)
-- **Bottlenecks** → muchos dependen de ellos = alto riesgo
-- **Leaf nodes** → sin dependientes = bajo riesgo, diseñar tarde
-
-**Validar con usuario antes de continuar.**
-
----
-
-## Phase 4: Priorizar
-
-### Asignación por tier
-
-| Tier | Criterio |
-|------|----------|
-| **MVP** | Requerido para core loop + dependencias Foundation |
-| **Vertical Slice** | Necesario para experiencia completa en un área |
-| **Alpha** | Gameplay systems restantes |
-| **Full Vision** | Polish, meta, nice-to-have |
-
-### Design order
-
-Combinar dependency layer + priority tier: MVP Foundation → MVP Core → MVP Feature → VS Foundation → ...
-
-Columna "Why": mezclar necesidad técnica con experiencia de jugador. No solo "X depende de Y" — conectar con pilares y player experience.
-
-**Validar con usuario antes de escribir.**
+**Validar con usuario antes de continuar** (tanto dependencias como prioridades).
 
 ---
 

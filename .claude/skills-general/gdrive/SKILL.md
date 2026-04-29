@@ -1,6 +1,7 @@
 ---
 name: gdrive
-description: "Gestionar Google Drive: buscar, crear, mover, compartir archivos y carpetas via Drive API v3. Usar cuando el usuario mencione: Google Drive, Gdrive, archivo en Drive, carpeta, folder, compartir archivo, upload, download."
+description: "Manage Google Drive via Drive API v3: search, create, move, share files and folders."
+category: "integrations"
 argument-hint: "[search|upload|move|share] [query or path]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

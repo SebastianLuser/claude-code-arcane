@@ -1,6 +1,7 @@
 ---
 name: data-seeding
-description: Poblar bases de datos con datos de referencia, fixtures dev, datos de test e información demo para staging. Stack Educabot (Go + TS, Postgres). Usar cuando se mencione seed, seeder, fixtures, datos demo, poblar DB, faker, factory, anonimización, dump de staging, test data.
+description: "Seed databases with fixtures, test data, and demo data for dev/staging. Go + TS, Postgres. Trigger: seed, fixtures, faker, factory, test data."
+category: "database"
 argument-hint: "[env: dev|staging|demo|test]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task

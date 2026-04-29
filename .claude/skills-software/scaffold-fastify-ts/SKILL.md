@@ -1,6 +1,7 @@
 ---
 name: scaffold-fastify-ts
 description: "Scaffold production-ready Fastify + TypeScript backend with Prisma, Zod, and Vitest."
+category: "backend"
 argument-hint: "[project-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -25,7 +26,7 @@ Si el usuario ya especificó estos valores, saltar directamente al Step 1.
 
 ### Step 1: Implementar
 
-Seguir las secciones de este documento en orden: Framework Decision → Stack Baseline → Project Structure → Key Decisions.
+Seguir las secciones de este documento en orden: Framework Decision → Stack Baseline → Project Structure.
 
 ### Step 2: Verificar
 
@@ -71,41 +72,6 @@ curl http://localhost:3000/health  # responde 200
 - `tests/` — setup.ts + integration/
 - Root: Dockerfile, docker-compose.yml, tsconfig.json, vitest.config.ts, .env.example
 
-## Key Decisions
+> → Read references/key-decisions.md for organization patterns, plugin pattern, config management, TypeScript and error handling details
 
-### Organization
-- **Modular by feature** (`modules/users/`, `modules/orders/`) — never by type (`controllers/`, `services/`)
-- **Repository pattern** for DB access — enables mocking in tests
-- **Thin routes, thick services** — routes handle HTTP, services handle logic
-
-### Fastify Plugin Pattern
-- Use `withTypeProvider<ZodTypeProvider>()` for schema-first validation
-- Set `validatorCompiler` + `serializerCompiler` from fastify-type-provider-zod
-- Register plugins via `app.register()` with encapsulation (scoped decorators)
-- Autoload modules or explicitly register each module plugin
-
-### Config Management
-- Validate all env vars at startup with Zod schema — fail fast on missing config
-- Use @fastify/env or direct `z.parse(process.env)` in `config/env.ts`
-- Required vars: NODE_ENV, PORT, DATABASE_URL, JWT_SECRET (min 32 chars)
-
-### TypeScript
-- `strict: true`, `noUncheckedIndexedAccess: true`
-- Module: `NodeNext` — imports require `.js` extension (ESM requirement)
-- Path alias `@/*` mapping to `./src/*`
-
-### Error Handling
-- Centralized `setErrorHandler` on app — ZodError maps to 400, everything else 500
-- Custom error classes extending Fastify's httpErrors (@fastify/sensible)
-- Never expose stack traces in production
-
-## Anti-patterns
-
-- No schema validation on routes (lose type safety and runtime checks)
-- God routes with business logic inline (untestable)
-- Missing centralized error handler (inconsistent error responses)
-- No graceful shutdown handling (SIGTERM/SIGINT)
-- `console.log` instead of pino structured logging
-- Skipping env validation (runtime crashes on missing vars)
-- Prisma client instantiated per-request instead of singleton
-- Missing `.js` extensions in ESM imports
+> → Read references/anti-patterns.md for common anti-patterns to avoid

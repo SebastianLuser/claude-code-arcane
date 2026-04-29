@@ -1,6 +1,7 @@
 ---
 name: data-operations
-description: "Query optimization y data seeding PostgreSQL. EXPLAIN ANALYZE, pg_stat_statements, N+1, cursor pagination, CTEs, LATERAL, materialized views, factories, fixtures, anonimización, seeding masivo. Usar para: query lenta, EXPLAIN, performance DB, N+1, optimizar SQL, seed, fixtures, datos demo, faker, factory, test data."
+description: "Query optimization y data seeding Postgres: EXPLAIN ANALYZE, N+1, cursor pagination, CTEs, factories, fixtures."
+category: "database"
 argument-hint: "[optimize <query>|seed <env>]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -26,86 +27,19 @@ Diagnosticar/optimizar queries lentas, crear seeders dev/test/staging, anonimiza
 
 ### EXPLAIN primero
 
-Siempre: `EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT) <query>;`. Visualizar planes complejos: explain.dalibo.com.
+Siempre: `EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT) <query>;`. Visualizar planes complejos: explain.dalibo.com. Top queries: `pg_stat_statements ORDER BY total_exec_time DESC LIMIT 20`.
 
-| Señal en plan | Significa | Acción |
-|---------------|-----------|--------|
-| Seq Scan tabla grande | Falta índice | Crear índice → `/database-setup` |
-| rows estimado vs actual >10x | Stats desactualizadas | `ANALYZE tabla;` |
-| Buffers shared read alto | Working set > shared_buffers | Tune config o reducir resultado |
-| Rows Removed by Filter grande | Índice no filtra suficiente | Partial o covering index |
-| Sort external merge | Sort no cabe en work_mem | Aumentar work_mem o índice ORDER BY |
-
-Top queries lentas: `pg_stat_statements ORDER BY total_exec_time DESC LIMIT 20`. Cloud managed: Query Insights / Performance Insights.
-
-### Problemas comunes
-
-| Problema | Fix | Excepción |
-|----------|-----|-----------|
-| **N+1** | JOIN, subquery, DataLoader/Preload | Relación rara vez accedida |
-| **SELECT \*** | Solo columnas necesarias | Tablas chicas pocas columnas |
-| **OFFSET pagination** | Cursor keyset: `WHERE id > $last ORDER BY id LIMIT N` | Tablas <1k o admin panels |
-| **COUNT(\*)** en listados | Cachear, aproximar (`reltuples`), eliminar | Count exacto requisito negocio |
-| **OR columnas distintas** | UNION ALL de queries indexadas | Pocas rows |
-| **Función en WHERE** | Expression index | Función ya indexada |
-| **Subquery correlacionada** | Reescribir como JOIN o LATERAL | Scalar subquery OK |
-
-### CTEs
-
-`WITH x AS MATERIALIZED (...)` fuerza ejecución separada — útil cuando PG inline CTE pierde filtro. Desde PG 12 optimizer decide auto; forzar solo si EXPLAIN muestra plan peor.
-
-### LATERAL joins (top-N por grupo)
-
-`CROSS JOIN LATERAL (SELECT ... WHERE fk = parent.id ORDER BY col DESC LIMIT N)`. Requiere índice en `(fk, col DESC)`.
-
-### Materialized views
-
-`CREATE MATERIALIZED VIEW` + unique index → `REFRESH CONCURRENTLY` (no bloquea reads). Refresh via cron o trigger según tolerancia staleness. No usar si datos necesitan ser real-time.
+> → Read references/query-optimization.md for EXPLAIN signal table, common problems (N+1, SELECT *, OFFSET, etc.), CTEs, LATERAL joins, and materialized views
 
 ## 2. Data Seeding
 
-### Tipos
+4 tipos: Reference (all envs), Dev fixtures (local), Test fixtures (CI), Demo (staging). Structure: `db/seeds/` with reference/, fixtures/, demo/, anonymize/. Key rules: upserts for idempotency, factory pattern, guardrail anti-prod (`APP_ENV != "production"`).
 
-| Tipo | Entornos | En prod? | Ejemplo |
-|------|----------|----------|---------|
-| **Reference** | Todos | Sí | roles, países, categorías |
-| **Dev fixtures** | local | No | usuarios fake |
-| **Test fixtures** | CI | No | escenarios controlados |
-| **Demo** | staging | No | tenant demo comerciales |
-
-### Estructura
-
-`db/seeds/`: reference/ (siempre), fixtures/ (opt-in), demo/ (opt-in), anonymize/ (sanitización).
-
-### Idempotencia
-
-Upserts: `ON CONFLICT DO UPDATE/NOTHING`. Seeds corren N veces sin error ni duplicados.
-
-### Factory pattern
-
-Go: `FakeUser(overrides ...func(*User))` con `gofakeit`. TS: `buildUser(overrides: Partial<User>)` con `faker/locale/es`. Tests determinísticos: `faker.seed(42)`.
-
-### Relaciones
-
-Top-down: tenants → users → hijas. Cachear IDs parents para FK.
-
-### Performance (10k+ rows)
-
-Desactivar triggers/índices → COPY FROM CSV o batch INSERT ~10k → recrear índices CONCURRENTLY → ANALYZE.
-
-### Anonimización staging
-
-Sanitizar: email→`user_ID@anon.test`, name→`User ID`, phone→NULL. Nunca dumps prod sin anonimizar. Campos: email, nombre, documento, teléfono, dirección, password hash.
-
-### Guardrail anti-prod
-
-Check `APP_ENV != "production"` → fatal/throw. Obligatorio en todo seeder.
+> → Read references/seeding.md for seeding types, structure, factory patterns, performance tips, and anonymization guide
 
 ## Anti-patterns
 
-**Queries:** optimizar sin EXPLAIN, SELECT * en queries calientes, OFFSET tablas grandes, N+1 no detectado, COUNT(*) sin cache.
-
-**Seeding:** seeds en producción (falta guardrail), no idempotentes, PII real en fixtures, dump prod sin anonimizar, IDs hardcodeados.
+> → Read references/anti-patterns.md for query (5 items) and seeding (5 items) anti-patterns
 
 ## Checklist
 

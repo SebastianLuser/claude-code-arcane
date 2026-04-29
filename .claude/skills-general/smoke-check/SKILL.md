@@ -1,6 +1,7 @@
 ---
 name: smoke-check
 description: "Critical path smoke test gate before QA hand-off. Runs automated tests, verifies core functionality, PASS/FAIL report."
+category: "testing"
 argument-hint: "[sprint | quick | --platform pc|console|mobile|all]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, AskUserQuestion

@@ -1,6 +1,7 @@
 ---
 name: jwt-strategy
-description: Estrategia de autenticación con JWT y refresh tokens para stack Educabot (Go + TS + React/Vite + React Native). Cubre elección JWT vs session cookie, algoritmos (RS256/EdDSA), JWKS, rotation, storage seguro, revocación y multi-tenant. Usar cuando se mencione JWT, token, auth, refresh token, JWKS, login, sesión, autenticación stateless.
+description: "JWT strategy: RS256/EdDSA, JWKS rotation, refresh tokens, secure storage, revocation, multi-tenant."
+category: "security"
 argument-hint: "[setup|rotate|audit]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -46,17 +47,9 @@ Cada `POST /auth/refresh`: validar → marcar como `rotated_at` → emitir nuevo
 
 ## Implementación
 
-**Go:** `golang-jwt/jwt/v5` + `keyfunc/v3` para JWKS. Verifier con issuer/audience validation + `WithValidMethods(["RS256", "EdDSA"])`. Middleware Gin: extract Bearer → parse → check blacklist → set user_id/tenant_id en context.
+Go (`golang-jwt`), TS (`jose`), React (in-memory + cookie), React Native (`expo-secure-store`).
 
-**TS:** `jose` (NO `jsonwebtoken` legacy). `createRemoteJWKSet` con cache. `jwtVerify` con issuer/audience/algorithms. Emisión: `new SignJWT({claims}).setProtectedHeader({alg, kid})`.
-
-**React (Vite):** Access token in-memory (variable). Refresh en cookie httpOnly+SameSite=Lax+Secure (seteada por backend). **Nunca localStorage/sessionStorage** (XSS = cuenta comprometida). Interceptor axios: 401 → refresh → retry once.
-
-**React Native (Expo):** `expo-secure-store` → Keychain (iOS) / Keystore (Android). **Nunca AsyncStorage** (plano, accesible con root). Mismo interceptor + refresh, pero refresh va en body (no cookie).
-
-## CSRF
-
-Cookie auth → necesitás CSRF token (double-submit cookie o X-CSRF-Token header). Bearer header → no hay CSRF (pero XSS expone token in-memory).
+> → Read references/implementation.md for detalles por stack: Go, TS, React, React Native y CSRF
 
 ## Logout
 
@@ -74,31 +67,8 @@ Cookie auth → necesitás CSRF token (double-submit cookie o X-CSRF-Token heade
 
 ## Anti-patterns
 
-| # | ❌ No hacer | ✅ Hacer en cambio |
-|---|------------|-------------------|
-| 1 | `alg: none` o HS256 en multi-service | RS256 / EdDSA con JWKS público |
-| 2 | Access token con exp >1h | Access ≤15 min, refresh 7-30 días rotado |
-| 3 | Refresh sin rotación ni detección de reuse | Rotar en cada uso + revocar family si se detecta reuse |
-| 4 | Public key hardcodeada | JWKS endpoint `/.well-known/jwks.json` con 2 kids activos |
-| 5 | No validar `aud` / `iss` | Validar siempre — impide aceptar tokens de otro servicio |
-| 6 | PII (email, nombre, DNI) en claims | Solo `sub` (UUID) + `tenant_id` + roles; nunca PII de menores |
-| 7 | `jwt-decode` en cliente para lógica | Solo para UI (display); validación siempre server-side |
-| 8 | Sin plan de revocación | Blacklist jti en Redis o user_version en claims |
-| 9 | `jsonwebtoken` en TS | Usar `jose` (soporte JWKS, async, modern) |
-| 10 | Tokens en localStorage / AsyncStorage | In-memory (SPA) / HttpOnly cookie / SecureStore (RN) |
-| 11 | `tenant_id` por query param o body | Siempre en claims del JWT; backend valida |
-| 12 | Rotar JWKS sin overlap | Mantener 2 kids activos 90 días; emitir con nueva, validar con ambas |
+> → Read references/anti-patterns.md for tabla completa (12 items) con remediación
 
 ## Checklist
 
-- [ ] RS256 o EdDSA, librería rechaza `none` y mismatch
-- [ ] Claims iss/sub/aud/exp/iat/jti presentes y validados
-- [ ] Access exp ≤15 min, refresh rotado + detección reuse
-- [ ] JWKS endpoint público con Cache-Control y kid
-- [ ] Rotation plan documentado (90d, overlap)
-- [ ] Revocación implementada (blacklist jti o user_version)
-- [ ] Storage: httpOnly cookie / in-memory / SecureStore (nunca localStorage)
-- [ ] CSRF cubierto si cookies, tenant_id en claims y validado
-- [ ] Sin PII menores en claims
-- [ ] Logout invalida refresh en DB
-- [ ] Tests: token expirado, firma inválida, aud/iss incorrecto, refresh reuse, revocado
+> → Read references/checklist.md for checklist completo (11 items)

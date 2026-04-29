@@ -1,6 +1,7 @@
 ---
 name: clickup
-description: "Gestionar ClickUp: crear/actualizar/buscar tasks, documents, time entries, spaces. Usar cuando el usuario mencione: ClickUp, task, tarea, doc, documento ClickUp, time tracking, space, lista. Spaces conocidos: Project_T (90138713959), VR Game (901313710103), Scholar Duel (901313710122)."
+description: "ClickUp integration: create/update/search tasks, docs, time entries and spaces via MCP tools."
+category: "integrations"
 argument-hint: "[task|doc|time] <action> <args>"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

@@ -1,6 +1,7 @@
 ---
 name: backup-strategy
 description: "Estrategia backups Educabot: Postgres (pg_dump, PITR), Redis, object storage, retention, restore testing, 3-2-1, RTO/RPO, disaster recovery."
+category: "operations"
 argument-hint: "[postgres|redis|object-storage|dr]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task

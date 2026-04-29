@@ -1,6 +1,7 @@
 ---
 name: job-scheduling
 description: "Background jobs y scheduling para apps Educabot (Go/TS): BullMQ, asynq, cron, priority queues, retries, DLQ, graceful shutdown, observabilidad."
+category: "backend"
 argument-hint: "[stack: go|ts] [provider: bullmq|asynq|cron]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task

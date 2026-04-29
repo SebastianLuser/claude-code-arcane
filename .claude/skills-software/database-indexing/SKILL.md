@@ -1,6 +1,7 @@
 ---
 name: database-indexing
-description: Diseño y mantenimiento de índices en PostgreSQL 15+. Tipos de índices, composite, partial, covering, CONCURRENTLY, detección de faltantes/no usados, bloat. Usar cuando se mencione índices, index, performance de queries por índices, seq scan, slow query por falta de índice, EXPLAIN.
+description: "PostgreSQL indexing: B-tree, GIN, GiST, composite, partial, covering, CONCURRENTLY, bloat detection."
+category: "database"
 stack: PostgreSQL 15+
 argument-hint: "[analyze|create|drop] [table]"
 user-invocable: true
@@ -22,16 +23,9 @@ Diseñar, crear y mantener índices en Postgres 15+ en contexto multi-tenant Edu
 
 ## Tipos de índices
 
-| Tipo | Uso | Notas |
-|------|-----|-------|
-| **B-tree** (default) | Equality, range, ORDER BY, UNIQUE | 95% de los casos |
-| **Hash** | Skip — B-tree es igual o mejor | No recomendado |
-| **GIN** | Arrays, jsonb, tsvector | Usar `jsonb_path_ops` si solo `@>` (4x más chico) |
-| **GiST** | Geo (PostGIS), ranges, exclusion | Para datos espaciales/temporales |
-| **BRIN** | Tablas enormes ordenadas físicamente | Timestamps, IDs secuenciales; tamaño mínimo |
-| **Partial** | `WHERE` en definición | Soft-deletes, flags; reduce tamaño |
-| **Covering** (`INCLUDE`) | Columnas extra en leaf | Habilita Index-Only Scan sin ir a heap |
-| **Expression** | Funciones sobre columna | `lower(email)` — query debe matchear la expresión |
+B-tree (default, 95% de casos), GIN (arrays/jsonb/tsvector), GiST (geo/ranges), BRIN (tablas enormes ordenadas), Partial (filtro en definición), Covering/INCLUDE, Expression.
+
+> → Read references/index-types.md for detailed type comparison table and JSONB indexing guide
 
 ## Cuándo crear
 
@@ -71,52 +65,17 @@ Verificar con `EXPLAIN (ANALYZE, BUFFERS)`. Planes esperables: Index Scan, Index
 
 B-tree se bloatea con updates/deletes. Monitorear con `pgstattuple`. Reparar: `REINDEX INDEX CONCURRENTLY` o `pg_repack`. Agendar trimestral para índices calientes.
 
-## JSONB indexing
-
-- `@>` (contains): GIN con `jsonb_path_ops` (4x más chico que default)
-- Solo si necesitás `?`, `?&`, `?|`: GIN default
-- Un solo key: expression index `((preferences->>'role'))` mejor que indexar todo jsonb
-
 ## Multi-tenant Educabot
 
 Todo índice compuesto debe empezar por `tenant_id` para que RLS y queries filtradas lo aprovechen. Patrón: `(tenant_id, student_id, period_id)`.
 
 ## Anti-patterns
 
-- Indexar "por las dudas" — cada índice cuesta writes y espacio
-- `CREATE INDEX` sin `CONCURRENTLY` en prod (bloquea writes)
-- Orden incorrecto en composite (`created_at, tenant_id` cuando siempre filtrás por tenant primero)
-- Expression mismatch: `WHERE lower(email)` sin expression index
-- Índice redundante: `(a, b)` + `(a)` — segundo ya cubierto
-- No indexar child FK
-- No correr `EXPLAIN ANALYZE` post-creación
-- Hash index (usar B-tree)
-- GIN sin `jsonb_path_ops` cuando solo usás `@>`
-- Nunca REINDEX — bloat acumula degradación
-- Indexar booleans sin partial
-- Drop sin período observación (≥1 mes)
+> → Read references/anti-patterns.md for 12 common indexing anti-patterns
 
-## Checklist pre-creación
+## Checklist
 
-- [ ] Tabla >10k rows
-- [ ] Queries concretas identificadas
-- [ ] EXPLAIN actual muestra Seq Scan costoso
-- [ ] Orden composite: igualdad → rango → ORDER BY
-- [ ] `tenant_id` primera columna
-- [ ] Partial si filtro recurrente (`deleted_at IS NULL`, `status = 'active'`)
-- [ ] `INCLUDE` si query solo toca columnas indexables
-- [ ] FK tiene su propio índice
-- [ ] `CONCURRENTLY` y migration fuera de transacción
-- [ ] Post-creación: EXPLAIN ANALYZE confirma plan
-- [ ] No redundante con índice existente
-
-## Checklist periódica
-
-- [ ] `idx_scan = 0` tras 1 mes → candidato a drop
-- [ ] Tablas con `seq_scan >> idx_scan` → índice faltante
-- [ ] Índices INVALID detectados y dropeados
-- [ ] Bloat medido en índices calientes
-- [ ] REINDEX CONCURRENTLY de bloated
+> → Read references/checklists.md for pre-creation checklist (11 items) and periodic maintenance checklist (5 items)
 
 ## Delegación
 

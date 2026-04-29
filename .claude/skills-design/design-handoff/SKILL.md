@@ -1,6 +1,7 @@
 ---
 name: design-handoff
-description: "Convertir un diseño de Figma en spec técnica + ticket en ClickUp/Jira + component code stub. Workflow cross-tool de design handoff. Usar cuando el usuario mencione: design handoff, pasar de Figma a dev, implementar diseño, spec de componente, handoff a desarrollo."
+description: "Design handoff: Figma design to tech spec + ClickUp/Jira ticket + component code stub. Full cross-tool handoff workflow."
+category: "design"
 argument-hint: "[figma-node-id or url]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task

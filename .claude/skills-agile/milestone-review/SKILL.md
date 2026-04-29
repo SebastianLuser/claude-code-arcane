@@ -1,6 +1,7 @@
 ---
 name: milestone-review
-description: "Generates a comprehensive milestone progress review including feature completeness, quality metrics, risk assessment, and go/no-go recommendation. Use at milestone checkpoints or when evaluating readiness for a milestone deadline."
+description: "Milestone progress review: feature completeness, quality metrics, risk assessment and go/no-go recommendation."
+category: "agile"
 argument-hint: "[milestone-name|current] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion

@@ -1,6 +1,7 @@
 ---
 name: help
 description: "Analyzes what is done and the users query and offers advice on what to do next. Use if user says what should I do next or what do I do now or I'm stuck or I don't know what to do"
+category: "workflow"
 argument-hint: "[optional: what you just finished, e.g. 'finished design-review' or 'stuck on ADRs']"
 user-invocable: true
 allowed-tools: Read, Glob, Grep

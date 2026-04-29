@@ -1,6 +1,7 @@
 ---
 name: qa-plan
-description: "Generate a QA test plan for a sprint or feature. Reads GDDs and story files, classifies stories by test type (Logic/Integration/Visual/UI), and produces a structured test plan covering automated tests required, manual test cases, smoke test scope, and playtest sign-off requirements. Run before sprint begins or when starting a major feature."
+description: "Generate QA test plan for a sprint or feature. Classifies stories by test type, outputs automated/manual/smoke/playtest coverage."
+category: "testing"
 argument-hint: "[sprint | feature: system-name | story: path]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
@@ -65,3 +66,12 @@ After writing: share with team before sprint, run `/smoke-check sprint` after im
 - Don't invent test cases beyond ACs and GDD formulas — flag gaps instead
 - Playtest requirements are advisory — user decides borderline cases
 - AskUserQuestion only for scope selection; rest is present-then-approve
+
+## Checklist
+
+- [ ] Scope parsed correctly (sprint/feature/story files found and loaded)
+- [ ] Stories classified by test type with primary/secondary assignments
+- [ ] Coverage mapped: every AC has at least one automated or manual verification
+- [ ] Test plan written to `production/qa/qa-plan-[sprint-slug]-[date].md`
+- [ ] Edge cases identified from GDD formulas and flagged where missing
+- [ ] Playtest requirements include target player type and minimum sessions

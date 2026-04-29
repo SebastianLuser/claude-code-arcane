@@ -1,6 +1,7 @@
 ---
 name: scaffold-react-vite
 description: "React+Vite project scaffold decision guide: structure, tooling, config decisions, dependency baseline, anti-patterns."
+category: "frontend"
 argument-hint: "[project-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -27,7 +28,7 @@ Si el usuario ya especificó estos valores, saltar directamente al Step 1.
 
 ### Step 1: Implementar
 
-Seguir: Project Structure → Dependency Baseline → Vite Config Decisions → Tooling Checklist.
+Seguir: Project Structure → Dependency Baseline → Vite Config Decisions.
 
 ### Step 2: Verificar
 
@@ -57,14 +58,6 @@ tests/unit/, tests/e2e/
 
 **Conventions:** Components PascalCase (one per file), hooks `use-*` kebab-case, query hooks return `useQuery`/`useMutation`, types co-located or in `types/` if shared, barrel exports only when helpful, path alias `@/` → `src/`.
 
-## Dependency Baseline
-
-**Runtime:** react, react-dom, react-router-dom, @tanstack/react-query, @tanstack/react-query-devtools, zustand, axios (or ky), react-hook-form, @hookform/resolvers, zod, lucide-react, class-variance-authority, clsx, tailwind-merge
-
-**Dev:** tailwindcss, postcss, autoprefixer, vitest, @vitest/ui, @vitejs/plugin-react, jsdom, @testing-library/{react,jest-dom,user-event}, @playwright/test, eslint, eslint-config-prettier, prettier, prettier-plugin-tailwindcss, husky, lint-staged, @types/node
-
-**UI:** shadcn/ui init + base: button, card, input, form, label, dialog, dropdown-menu, toast, table
-
 ## Vite Config Decisions
 
 | Decision | Guidance |
@@ -78,21 +71,6 @@ tests/unit/, tests/e2e/
 Env baseline: `VITE_API_URL`, `VITE_APP_ENV`
 Scripts: `dev`, `build` (tsc + vite build), `preview`, `lint`, `test`, `test:e2e`, `format`
 
-## Tooling Checklist
+> → Read references/dependency-baseline.md for full dependency list (runtime, dev, UI) and tooling checklist
 
-- [ ] TS `strict: true` + `noUncheckedIndexedAccess: true`, path aliases in tsconfig + vite
-- [ ] ESLint (react-hooks, react-refresh) + Prettier (tailwindcss plugin)
-- [ ] Husky + lint-staged pre-commit
-- [ ] Vitest (jsdom + setup file) + Playwright (dev server baseURL)
-
-**Optional (per-project):** i18n, charts (Recharts/nivo), TanStack Table, analytics (Posthog/Plausible), Sentry, Storybook
-
-## Anti-patterns
-
-- TS without strict mode — defeats purpose
-- Missing path aliases — `../../../` unmanageable
-- No env validation — cryptic runtime failures
-- No Husky/lint-staged — broken code in PRs
-- Barrel exports everywhere — circular deps, hurts tree-shaking
-- Server state in Zustand — use TanStack Query
-- No `.env.example` — new devs blocked
+> → Read references/anti-patterns.md for common anti-patterns to avoid

@@ -1,6 +1,7 @@
 ---
 name: game-audit
-description: "Auditoría de assets, documentos y consistencia cross-document. Naming violations, orphaned assets, contradicciones doc-vs-doc y doc-vs-code, gaps de diseño, balance red flags, entity registry validation. Usar para: audit game, revisar GDD, asset audit, naming, orphaned, contradictions, balance, consistency check, entity registry."
+description: "Audit assets, docs and cross-document consistency: naming, orphaned assets, doc-vs-code contradictions, balance red flags, entity registry."
+category: "gamedev"
 argument-hint: "[assets|docs|consistency|full] [path]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

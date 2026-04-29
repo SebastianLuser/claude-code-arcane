@@ -1,6 +1,7 @@
 ---
 name: deploy-staging
 description: "Despliega el proyecto a staging: verifica branch, identifica método de deploy (CI/CD o script), ejecuta y reporta status. No deploya prod sin confirmación."
+category: "operations"
 argument-hint: ""
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: owasp-top10-check
 description: "Auditoría OWASP Top 10 (2021) para stack Educabot (Go + TS, React + Vite, PostgreSQL). Datos de menores → LGPD/COPPA obligatorio."
+category: "security"
 argument-hint: "[category 1-10 | all]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Task
@@ -81,40 +82,29 @@ Auditoría contra OWASP Top 10 2021. Go backend + TS/React frontend. Datos de me
 
 ## Herramientas
 
-| Tipo | Go | TS/JS | Genérico |
-|------|-----|-------|----------|
-| SAST | gosec, staticcheck | semgrep, eslint-plugin-security | semgrep |
-| Deps | govulncheck | npm audit, snyk | trivy, grype |
-| Container | — | — | trivy image, docker scout |
-| DAST | — | — | OWASP ZAP, Burp Suite |
-| Secrets | — | — | gitleaks, trufflehog |
+> → Read references/tools.md for tabla completa de herramientas SAST/Deps/Container/DAST/Secrets por stack
 
 ## Reporte Output
 
 Formato: Resumen ejecutivo (hallazgos por severidad) → Hallazgos por categoría (archivo:línea, descripción, PoC, remediación, ticket Jira) → Plan priorizado → Herramientas ejecutadas.
 
 ## Educabot Specifics
-- Datos de menores: A01+A02 son críticos (penal + reputacional)
-- PII alumnos cifrada en reposo + audit log. Logs sin PII de menores en claro
-- LGPD: consentimiento parental <12. COPPA: consentimiento verificable <13
-- IA/chatbots: prohibir aprendizaje de datos de menores sin opt-in parental
 
-## Anti-patterns frecuentes
+Datos de menores: A01+A02 son críticos. LGPD/COPPA compliance obligatorio.
 
-| # | ❌ No hacer | ✅ Hacer en cambio | OWASP |
-|---|------------|-------------------|----|
-| 1 | Auth solo en frontend | Backend valida siempre | A01 |
-| 2 | CORS `*` con credentials | Whitelist explícita de orígenes | A01 |
-| 3 | MD5/SHA1/SHA256 plano para passwords | Argon2id o bcrypt cost≥10 | A02 |
-| 4 | JWT HS256 compartido entre servicios | RS256 / EdDSA con JWKS | A02 |
-| 5 | `fmt.Sprintf` / concatenación para queries SQL | Prepared statements siempre | A03 |
-| 6 | `dangerouslySetInnerHTML` sin sanitizar | DOMPurify o no renderizar HTML externo | A03 |
-| 7 | Sin rate limit en login/register/reset | 5 intentos/min por IP + lockout | A04, A07 |
-| 8 | `NODE_ENV` / `GIN_MODE` no configurados en prod | prod mode explícito; debug endpoints deshabilitados | A05 |
-| 9 | Dependencias sin auditar | `govulncheck` + `pnpm audit` en CI, Renovate habilitado | A06 |
-| 10 | Tokens de reset multi-uso o con TTL largo | One-time, TTL ≤30min, invalidar en uso | A07 |
-| 11 | `npm install` en CI | `npm ci` — lockfile enforcement | A08 |
-| 12 | Loggear passwords, tokens o PII | Structured logs con trace_id, sin datos sensibles | A09 |
-| 13 | URL de usuario sin whitelist de dominio | Whitelist explícita + bloquear IPs privadas | A10 |
+> → Read references/educabot-specifics.md for reglas PII menores, LGPD, COPPA, IA
+
+## Anti-patterns
+
+> → Read references/anti-patterns.md for tabla completa (13 items) con remediación por categoría OWASP
 
 OWASP Top 10 es piso, no techo. Servicios críticos: complementar con ASVS Level 2+, threat modeling, pentest externo anual.
+
+## Checklist
+
+- [ ] All A01-A10 categories checked against the codebase with findings documented
+- [ ] Findings classified by severity (Critical, High, Medium, Low, Info)
+- [ ] Stack-specific mitigations verified (Go: gosec clean, TS: eslint-security clean, Docker: trivy clean)
+- [ ] Remediation tickets created in Jira/ClickUp for High+ findings with clear repro steps
+- [ ] Accepted risks documented with justification, owner, and review date
+- [ ] PII/minor-data controls verified for LGPD/COPPA compliance (A01+A02 critical path)

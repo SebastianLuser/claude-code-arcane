@@ -1,6 +1,7 @@
 ---
 name: i18n-setup
 description: "i18n decision guide: library choice, namespaces, key conventions, LatAm locales, lazy loading, anti-patterns."
+category: "frontend"
 argument-hint: "[stack: react|rn|go|ts]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task

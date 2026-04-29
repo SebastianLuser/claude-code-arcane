@@ -1,6 +1,7 @@
 ---
 name: create-stories
-description: "Break a single epic into implementable story files. Reads the epic, its GDD, governing ADRs, and control manifest. Each story embeds its GDD requirement TR-ID, ADR guidance, acceptance criteria, story type, and test evidence path. Run after /create-epics for each epic."
+description: "Break an epic into implementable story files with acceptance criteria, GDD traceability and ADR guidance. Run after /create-epics."
+category: "agile"
 argument-hint: "[epic-slug | epic-path] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
@@ -73,3 +74,12 @@ AskUserQuestion with context-aware next steps: start implementing (`/story-readi
 - Ask before writing (per-epic approval)
 - All content from GDDs, ADRs, manifest — no invention
 - Never start implementation — stops at story file level
+
+## Checklist
+
+- [ ] Every story traces back to its parent epic via epic-slug reference
+- [ ] Each story has a classified type (Logic, Integration, Visual/Feel, UI, Config/Data)
+- [ ] Acceptance criteria are defined with Given/When/Then format for every story
+- [ ] No single story exceeds one sprint of estimated effort (~2-4h target)
+- [ ] Stories with Proposed ADRs are marked as Blocked
+- [ ] EPIC.md stories table is updated with all created stories

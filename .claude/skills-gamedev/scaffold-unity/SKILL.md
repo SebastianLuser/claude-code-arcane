@@ -1,6 +1,7 @@
 ---
 name: scaffold-unity
 description: "Scaffolding de proyectos Unity: estructura canónica, managers core, ScriptableObjects, Entity/State, naming conventions. Usar para: nuevo proyecto Unity, scaffold, crear juego, boilerplate Unity."
+category: "gamedev"
 argument-hint: "[project-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
@@ -34,63 +35,9 @@ Preguntar al usuario:
 
 Para decisiones de arquitectura en detalle: `/unity-game-architecture`.
 
-### Estructura de carpetas
+> → Read references/folder-structure-and-files.md for [estructura de carpetas y archivos a generar por categoría]
 
-```
-Assets/
-  _Project/
-    Scripts/
-      Core/             # GameManager, AudioManager, enums, shared types
-      [Feature1]/       # Scripts agrupados por feature
-      [Feature2]/
-      Data/             # SO class definitions
-      UI/
-      Editor/           # Editor tools, inspectors
-    Prefabs/
-    ScriptableObjects/  # SO instances (.asset)
-    Scenes/
-    Art/
-    Audio/
-    Documents/
-      Game Design Document.md
-```
-
----
-
-## Archivos a generar
-
-### Core
-- **Enums.cs** — Enum principal (GameState, etc.) con spacing para extensibilidad (0, 10, 20...)
-- **SharedTypes.cs** — Structs compartidos (GameConfig, etc.)
-
-### Managers
-- **GameManager.cs** — Singleton, `DontDestroyOnLoad`, state con `OnStateChanged` event
-- **AudioManager.cs** — Singleton, SFX pool (round-robin `AudioSource[]`), music source separada
-
-### Data (por cada tipo de dato del juego)
-- **{Nombre}Data.cs** — `ScriptableObject` con `[CreateAssetMenu]`, campos del tipo
-
-### Entities (por cada entidad principal)
-- **{Entity}Entity.cs** — MonoBehaviour (avatar), recibe Data, inicializa State
-- **{Entity}State.cs** — Clase pura (datos mutables), factory method `Create(Data)`
-
-### Documents
-- **Game Design Document.md** — Esqueleto de GDD (o delegar a `/doc-gdd`)
-- **CLAUDE.md** — Reglas del proyecto: stack, arquitectura, naming, pilares de diseño
-
----
-
-## Naming Conventions
-
-| Elemento | Convención | Ejemplo |
-|----------|-----------|---------|
-| Classes/Structs | PascalCase | `DiceBag`, `PlayerState` |
-| ScriptableObjects | PascalCase + Data | `EnemyData`, `WeaponData` |
-| Public methods | PascalCase | `TakeDamage()` |
-| Private methods | camelCase | `calculateDamage()` |
-| Private fields | _camelCase | `_currentHP` |
-| Enums | PascalCase | `GameState.Combat` |
-| Assets | lowercase_underscores | `enemy_goblin_idle.png` |
+> → Read references/naming-conventions.md for [tabla de naming conventions por tipo de elemento]
 
 ---
 

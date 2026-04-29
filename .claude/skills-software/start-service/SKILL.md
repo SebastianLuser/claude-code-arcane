@@ -1,6 +1,7 @@
 ---
 name: start-service
 description: "Detecta el tipo de proyecto y arranca el servicio: make run, npm dev, go run, docker-compose up. Verifica deps y env files antes."
+category: "workflow"
 argument-hint: ""
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

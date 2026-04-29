@@ -1,6 +1,7 @@
 ---
 name: weekly-digest
-description: "Generar digest semanal combinando ClickUp/Jira + Git/GitHub + deploys + Slack. Reporte unificado para stakeholders. Usar cuando el usuario mencione: digest semanal, weekly report, resumen de la semana, stakeholder update, semana pasada."
+description: "Generate a weekly stakeholder digest combining ClickUp/Jira, Git/GitHub, deploys and Slack activity."
+category: "agile"
 argument-hint: "[week: current|last|YYYY-WW]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

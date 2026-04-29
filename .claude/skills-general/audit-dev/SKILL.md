@@ -1,6 +1,7 @@
 ---
 name: audit-dev
-description: "Auditoría integral para proyectos de desarrollo de software. Revisa arquitectura, código, tests, seguridad, documentación y deuda técnica. Usar cuando se mencione: auditar proyecto, revisar código, audit, code review, tech debt, security audit, o cualquier revisión integral de un proyecto de software."
+description: "Auditoría integral de software: arquitectura, código, tests, seguridad, docs y deuda técnica."
+category: "workflow"
 argument-hint: "[full|architecture|security|quality|api|deps]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Task

@@ -1,6 +1,7 @@
 ---
 name: art-bible
-description: "Art Bible: identidad visual, mood, shape language, color system, character/environment direction, UI visual, asset standards, referencias. Define la identidad visual que gate toda la producción de assets. Usar para: art bible, dirección de arte, visual identity, paleta, style guide, asset standards."
+description: "Art Bible authoring: mood, shape language, color system, character/environment direction, asset standards."
+category: "gamedev"
 argument-hint: "[full|core|standards]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
@@ -80,31 +81,8 @@ Si UI direction conflicta con readability/accessibility, surfacear y dejar que e
 
 ## Anti-patterns
 
-- Art bible sin connection a pilares del juego — restricciones arbitrarias
-- Color system sin semántica — hex codes sin explicar qué significa cada color
-- Asset standards vagos ("high quality textures") en lugar de números (512px tier 2)
-- Referencias sin especificar qué tomar de cada una — "like Hades" no dice nada
-- Ignorar colorblind safety
-- Secciones core no completadas antes de empezar production sections
-
----
+> → Read references/anti-patterns.md for common mistakes to avoid
 
 ## Checklist
 
-```markdown
-### Core
-- [ ] Visual Identity Statement (1-line rule + principles)
-- [ ] Mood targets por game state (emoción, lighting, contraste)
-- [ ] Shape language (siluetas, geometry, UI shapes)
-- [ ] Color system (paleta + semántica + colorblind backup)
-
-### Production
-- [ ] Character design direction
-- [ ] Environment design language
-- [ ] UI/HUD visual direction
-- [ ] Asset standards con números concretos
-
-### Reference
-- [ ] 3-5 referencias con qué tomar y qué evitar
-- [ ] Style prohibitions explícitas
-```
+> → Read references/checklist.md for full Core/Production/Reference checklist

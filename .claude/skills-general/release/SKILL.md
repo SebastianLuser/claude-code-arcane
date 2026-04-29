@@ -1,6 +1,7 @@
 ---
 name: release
 description: "Pre-release checklist and patch notes generation for web projects"
+category: "operations"
 argument-hint: "[checklist|patch-notes|both]"
 user-invocable: true
 allowed-tools: ["Read", "Bash", "Glob", "Grep", "Write"]
@@ -16,7 +17,7 @@ allowed-tools: ["Read", "Bash", "Glob", "Grep", "Write"]
 
 **Regla:** si hay blockers en CHECKLIST, reportarlos antes de proceder a PATCH-NOTES.
 
-## Pre-Release Checklist
+## Checklist
 
 **Codebase Health** — Scan for `TODO`/`FIXME`/`HACK`. Report counts and locations. FIXMEs are potential blockers.
 

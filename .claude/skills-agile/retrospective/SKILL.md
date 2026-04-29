@@ -1,6 +1,7 @@
 ---
 name: retrospective
 description: "Generates a sprint or milestone retrospective by analyzing completed work, velocity, blockers, and patterns. Produces actionable insights for the next iteration."
+category: "agile"
 argument-hint: "[sprint-N|milestone-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write

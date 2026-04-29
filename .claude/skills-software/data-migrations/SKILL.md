@@ -1,6 +1,7 @@
 ---
 name: data-migrations
-description: Estrategia y ejecución de migraciones de base de datos en Educabot (Postgres default). Cubre schema migrations (DDL), data migrations (DML), patrones zero-downtime (expand-contract), rollbacks, locks, índices CONCURRENTLY, batching y multi-tenant. Usar cuando se mencione migration, migración, schema change, alter table, drop column, backfill, zero-downtime, rollback de DB.
+description: "DB migrations Postgres: DDL/DML, expand-contract zero-downtime, rollbacks, locks, CONCURRENTLY, batching, multi-tenant."
+category: "database"
 argument-hint: "[create <name>|run|rollback]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -48,22 +49,9 @@ Formato: `YYYYMMDDHHMMSS_description.up.sql` + `.down.sql`. Timestamp UTC (no se
 
 ## Zero-downtime: expand-contract
 
-Todo breaking change se divide en múltiples releases:
+Todo breaking change se divide en múltiples releases (expand → backfill → dual-write → migrate reads → contract).
 
-| Fase | Qué | Compatibilidad |
-|------|-----|----------------|
-| **1. Expand** | Agregar nuevo (columna NULLABLE/DEFAULT, tabla, índice CONCURRENTLY) | Código viejo funciona |
-| **2. Backfill** | Rellenar datos — job background, idempotente, batcheado | Separado del DDL |
-| **3. Dual-write** | App escribe viejo Y nuevo | Rollback sin perder datos |
-| **4. Migrate reads** | App lee del nuevo, viejo solo-escritura | Validar tráfico |
-| **5. Contract** | Drop viejo — mínimo 1 release después | Solo tras validar nadie lee viejo |
-
-### Breaking changes SIEMPRE multi-step
-- `DROP COLUMN` — stop-writing → stop-reading → drop
-- `ALTER COLUMN TYPE` lossy — nueva columna + backfill + swap
-- `RENAME COLUMN/TABLE` — alias/vista temporal o expand-contract
-- `NOT NULL` existente — check constraint NOT VALID → validar → NOT NULL
-- Cambio PK/FK
+> → Read references/expand-contract.md for fases detalladas y breaking changes multi-step
 
 ## Índices
 
@@ -77,13 +65,9 @@ Todo breaking change se divide en múltiples releases:
 
 ## Batching (data migrations grandes)
 
-- Batch size: 10k rows default (ajustar según carga)
-- Keyset pagination (`id > last_id`), nunca OFFSET
-- Checkpoint persistente: guardar last_id en tabla control
-- Idempotente: N ejecuciones = mismo resultado
-- Job separado de migration schema
-- Pausas entre batches (100-500ms)
-- Observabilidad: log progreso + métricas throughput
+Keyset pagination (`id > last_id`), batch 10k, checkpoints, idempotente, job separado.
+
+> → Read references/batching.md for reglas completas de batching
 
 ## Rollback
 
@@ -108,33 +92,7 @@ Todo breaking change se divide en múltiples releases:
 
 ## Anti-patterns
 
-- DDL y data migration en mismo archivo
-- DROP COLUMN sin período de gracia (≥1 release)
-- CREATE INDEX sin CONCURRENTLY en tablas grandes
-- Sin `.down.sql`
-- Backfill síncrono un solo UPDATE sobre millones
-- Editar migration ya mergeada
-- ADD COLUMN NOT NULL DEFAULT volátil en tabla grande
-- Correr en prod sin staging previo
-- Seeds mezclados con migrations productivas
-- Asumir ALTER TYPE es gratis (reescribe tabla)
-- Orden alfabético en vez de timestamp UTC
-- Rollback en prod sin validar `.down.sql`
-
-## Checklist
-
-- [ ] Naming: `YYYYMMDDHHMMSS_description.up.sql` + `.down.sql`
-- [ ] Un cambio lógico por migration
-- [ ] DDL y data migration en archivos separados
-- [ ] Índices con CONCURRENTLY
-- [ ] `lock_timeout` en ALTER sobre tablas grandes
-- [ ] `.down.sql` existe o documenta one-way
-- [ ] CI verifica up → down → up
-- [ ] Staging OK con métricas de tiempo
-- [ ] Breaking: plan expand-contract + tickets por fase
-- [ ] Backfills idempotentes, con checkpoints, batcheados
-- [ ] Multi-tenant: runner itera o migration tenant-agnóstica
-- [ ] PR describe impacto, riesgo, plan rollback
+> → Read references/anti-patterns.md for lista completa (12 items)
 
 ## Delegación
 
@@ -142,3 +100,14 @@ Todo breaking change se divide en múltiples releases:
 - `/deploy-check` — checklist deploy con migration
 - `/audit-dev` — revisión integral migrations acumuladas
 - `/scaffold-go` — setup golang-migrate en proyecto nuevo
+
+## Checklist
+
+> → Read references/checklist.md for checklist completo (12 items)
+
+- [ ] Expand-contract pattern used for all breaking schema changes
+- [ ] Both `.up.sql` and `.down.sql` files exist for every migration
+- [ ] `lock_timeout` and `statement_timeout` configured before ALTER statements
+- [ ] Migration tested and timed in staging with production-like data
+- [ ] Rollback verified by running `.down.sql` then `.up.sql` again
+- [ ] Indexes created with `CONCURRENTLY` outside transactions on populated tables

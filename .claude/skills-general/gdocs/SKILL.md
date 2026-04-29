@@ -1,6 +1,7 @@
 ---
 name: gdocs
 description: "Gestionar Google Docs: crear, leer, editar documentos via Google Docs API v1. Usar cuando el usuario mencione: Google Docs, Gdocs, documento de Google, doc, crear doc, editar doc, template en Docs."
+category: "integrations"
 argument-hint: "[create|read|edit] [doc-id or title]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

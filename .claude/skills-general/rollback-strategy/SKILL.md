@@ -1,6 +1,7 @@
 ---
 name: rollback-strategy
-description: "Estrategia de rollback para deploys en Educabot. Principio rector — todo deploy debe ser reversible en menos de 5 minutos. Cubre code/config/data/infra rollback, versioning de artefactos, compatibility windows, canary, auto-rollback, runbooks para Cloud Run y GKE, feature flags, CDN/cache, mobile (RN) y comunicación de incidentes. Usar cuando se mencione: rollback, revertir deploy, deshacer release, volver atrás, kill switch, incident response, hotfix, redeploy versión anterior, undo deployment."
+description: "Rollback strategy: todo deploy reversible en <5min. Code/config/data/infra, canary, auto-rollback, Cloud Run, GKE, mobile."
+category: "operations"
 argument-hint: "[code|config|data|infra]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -51,17 +52,17 @@ Toggle off instantáneo sin redeploy. Regla: toda feature user-facing va detrás
 
 Código N-1 debe funcionar con schema N, y código N con schema N-1, por al menos una release. Nunca mergear breaking schema + código en mismo PR. Separar: PR1=expand, PR2=código, PR3=contract.
 
-## Canary + auto-rollback
-
-- Canary: 5% → 25% → 50% → 100% con pausas y checks
-- Auto-rollback si: SLO burn rate >2x en 10min, error rate 5xx >baseline+3σ 3min, p95 latency >umbral, health check failures >20% réplicas
-- Herramientas: Argo Rollouts, Flagger (GKE), Cloud Deploy (Cloud Run)
-
 ## Runbook rollback manual
 
-Comandos exactos para Cloud Run, GKE, feature flags, GitHub Actions rollback workflow, post-rollback steps, PITR de Cloud SQL, e invalidación de cache/CDN:
+> → Read references/runbook-commands.md for exact rollback commands (Cloud Run, GKE, feature flags, GitHub Actions, post-rollback, PITR, cache/CDN)
 
-> Leer `references/runbook-commands.md` antes de ejecutar cualquier rollback en producción.
+## References
+
+> → Read references/canary-auto-rollback.md for canary progression and auto-rollback triggers
+> → Read references/anti-patterns.md for common rollback anti-patterns
+> → Read references/pre-deploy-checklist.md for the pre-deploy validation checklist
+> → Read references/mobile-rollback.md for React Native rollback mitigations
+> → Read references/communication-protocol.md for incident communication protocol
 
 ## Post-rollback
 
@@ -70,45 +71,6 @@ Comandos exactos para Cloud Run, GKE, feature flags, GitHub Actions rollback wor
 3. Capturar métricas (Grafana/Cloud Monitoring)
 4. RCA (5 whys, fishbone)
 5. Fix forward: arreglar, testear, redeployar — no quedar en versión vieja indefinidamente
-
-## Mobile (React Native)
-
-No hay rollback instantáneo por App Store review. Mitigaciones: feature flags server-driven, OTA updates (Expo Updates/CodePush) para JS bundle, versión mínima forzada (force update), compatibilidad API con N-2 versiones.
-
-## Comunicación
-
-Status page update (Statuspage/Instatus). Slack #incidents (qué, cuándo, impacto, ETA, responsable). Email stakeholders si user-facing. Horario escolar LatAm: escalada inmediata.
-
-## Anti-patterns
-
-- `:latest` en prod — rollback imposible
-- Schema breaking + código breaking en misma release
-- Nunca probar rollback — descubrís que no funciona cuando lo necesitás
-- DB restore sin drill previo
-- Rollback sin post-mortem
-- "Deshacer merge en git" sin plan real de redeploy
-- Flag sin kill switch server-side
-- Sin runbook — nadie sabe comandos a las 3am
-- Sin invalidar cache/CDN
-- No retener imágenes viejas (10 mínimo)
-- Rollback workflow sin approval gate
-- Ignorar mobile en la estrategia
-
-## Checklist pre-deploy
-
-- [ ] Artefacto taggeado por `$GIT_SHA`
-- [ ] 10+ imágenes retenidas en Artifact Registry
-- [ ] Schema expand/contract separados de código
-- [ ] Compatibility window N-1 validada
-- [ ] Comando rollback escrito en ticket/PR
-- [ ] Feature flag con kill switch si user-facing
-- [ ] Canary configurado para cambios riesgosos
-- [ ] Auto-rollback triggers definidos
-- [ ] Workflow rollback.yml disponible y probado
-- [ ] Runbook actualizado con comandos del servicio
-- [ ] DR drill DB restore ejecutado último trimestre
-- [ ] Responsable on-call identificado
-- [ ] Plan comunicación listo
 
 ## Delegación
 

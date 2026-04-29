@@ -1,6 +1,7 @@
 ---
 name: mfa-setup
-description: Implementación de Multi-Factor Authentication (MFA/2FA) en productos Educabot. TOTP, WebAuthn/Passkeys, SMS OTP, backup codes, recovery y step-up auth. Stack Go + TS (React/RN). Usar cuando se mencione MFA, 2FA, autenticación de dos factores, TOTP, passkeys, WebAuthn, OTP, Authenticator, segundo factor, verificación en dos pasos.
+description: "MFA/2FA implementation: TOTP, WebAuthn/Passkeys, SMS OTP, backup codes, recovery, step-up auth."
+category: "security"
 argument-hint: "[totp|webauthn|sms|backup-codes]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task
@@ -71,64 +72,25 @@ Requerir MFA aunque sesión activa para: cambio email/password/phone, export dat
 
 ## Rate limiting
 
-| Endpoint | Límite | Lockout |
-|----------|--------|---------|
-| `/mfa/verify` (TOTP/SMS) | 5/5min por user+IP | 15 min |
-| `/mfa/webauthn/authenticate` | 10/5min | 15 min |
-| `/mfa/sms/send` | 3/hora por número | 24h si abuso |
-| `/mfa/recovery/start` | 3/día por email | alerta manual |
+Rate limit en todos los endpoints MFA con Redis sliding window.
 
-Redis sliding window o token bucket. Loguear cada lockout.
+> → Read references/rate-limiting.md for límites y lockout por endpoint
 
 ## Schema DB
 
-- **`user_mfa`**: id, user_id, type (totp/webauthn/sms), secret_encrypted (TOTP), credential_id+public_key+counter+transports+device_name (WebAuthn), phone_encrypted (SMS), created_at, last_used_at, verified_at
-- **`mfa_backup_codes`**: id, user_id, code_hash (Argon2id), used_at, created_at. Índice parcial: `user_id WHERE used_at IS NULL`
-- **`mfa_events`**: id, user_id, event_type (enrolled/verified/failed/recovery/disabled), mfa_type, ip, user_agent, created_at
+Tablas: `user_mfa`, `mfa_backup_codes`, `mfa_events`.
+
+> → Read references/schema-db.md for esquema detallado de cada tabla
 
 ## Reglas por rol
 
-| Rol | MFA | Métodos | Step-up maxAge |
-|-----|-----|---------|----------------|
-| Super-admin | Obligatorio | Passkey + TOTP (2 factores) | 2 min |
-| Admin institución | Obligatorio | Passkey o TOTP | 5 min |
-| Docente | Obligatorio | Passkey/TOTP; SMS solo recovery | 10 min |
-| Alumno adulto (16+) | Opcional | TOTP o Passkey | 15 min |
-| Alumno menor | No obligatorio | TOTP (vía tutor); NUNCA SMS | N/A |
+Admins+docentes obligatorio, alumnos adultos opcional, menores nunca SMS.
+
+> → Read references/role-rules.md for tabla detallada por rol con métodos y step-up maxAge
 
 ## Anti-patterns
 
-- TOTP secret en claro en DB — siempre AES-256-GCM + KMS
-- SMS como única opción MFA
-- Sin backup codes al enrolar
-- Backup codes en claro — hashear Argon2id
-- Sin rate limit en `/verify` — brute force trivial
-- Window TOTP >±1 step
-- No actualizar counter WebAuthn
-- Preguntas secretas como recovery
-- Mismo OTP válido más de una vez
-- No invalidar sesiones al desactivar MFA
-- Reutilizar challenge WebAuthn entre requests
-- SMS a menores
-- Sin logging de eventos MFA
-
-## Checklist
-
-- [ ] Roles con MFA obligatorio vs opcional definidos
-- [ ] Factores soportados (mínimo TOTP + backup codes)
-- [ ] Schema `user_mfa` + `mfa_backup_codes` + `mfa_events` migrado
-- [ ] KMS configurado para encriptar secrets
-- [ ] Endpoints: enroll, verify, disable, backup/regenerate
-- [ ] Recovery flow con email + backup code
-- [ ] Rate limiting en verify con Redis
-- [ ] Step-up middleware en endpoints sensibles
-- [ ] UI enrolamiento con QR + backup codes
-- [ ] UI login con fallback entre métodos
-- [ ] Logging en mfa_events
-- [ ] Alertas: 3+ fallos, recovery iniciado, MFA desactivado
-- [ ] Tests: enroll, verify ±30s drift, backup single-use, rate limit
-- [ ] Documentación soporte (pérdida de acceso)
-- [ ] Retención mfa_events ≥1 año
+> → Read references/anti-patterns.md for lista completa (13 items)
 
 ## Delegación
 
@@ -136,3 +98,14 @@ Redis sliding window o token bucket. Loguear cada lockout.
 - `/doc-rfc` — documentar decisión técnica
 - `/deploy-check` — checklist pre-deploy
 - `/audit-dev` — auditar seguridad del flujo
+
+## Checklist
+
+> → Read references/checklist.md for checklist completo (15 items)
+
+- [ ] Factor selection justified per user role (WebAuthn preferred, TOTP universal, SMS recovery-only)
+- [ ] Recovery flow designed with backup codes and email verification
+- [ ] Rate limits configured on all MFA verification endpoints (Redis sliding window)
+- [ ] Backup codes generated, shown once, and stored as Argon2id hashes
+- [ ] Step-up auth configured for sensitive operations (change email, export data, delete account)
+- [ ] TOTP secrets encrypted at rest (AES-256-GCM + KMS, never stored in plaintext)

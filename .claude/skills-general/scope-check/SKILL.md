@@ -1,6 +1,7 @@
 ---
 name: scope-check
-description: "Analyze a feature or sprint for scope creep by comparing current scope against the original plan. Flags additions, quantifies bloat, and recommends cuts. Use when user says 'any scope creep', 'scope review', 'are we staying in scope'."
+description: "Analyze feature or sprint for scope creep: compare current vs original plan, flag additions, quantify bloat, recommend cuts."
+category: "workflow"
 argument-hint: "[feature-name or sprint-N]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash
@@ -22,9 +23,9 @@ scope creep.
 
 Locate the baseline scope document for the given argument:
 
-- **Feature name** → read `design/gdd/[feature].md` or matching file in `design/`
-- **Sprint number** (e.g., `sprint-3`) → read `production/sprints/sprint-03.md` or similar
-- **Milestone** → read `production/milestones/[name].md`
+- **Feature name** -> read `design/gdd/[feature].md` or matching file in `design/`
+- **Sprint number** (e.g., `sprint-3`) -> read `production/sprints/sprint-03.md` or similar
+- **Milestone** -> read `production/milestones/[name].md`
 
 If the document is not found, report the missing file and stop. Do not proceed without
 a baseline to compare against.
@@ -44,66 +45,13 @@ Check what has actually been implemented or is in progress:
 
 ## Phase 3: Compare Original vs Current Scope
 
-Produce the comparison report:
-
-```markdown
-## Scope Check: [Feature/Sprint Name]
-Generated: [Date]
-
-### Original Scope
-[List of items from the original plan]
-
-### Current Scope
-[List of items currently implemented or in progress]
-
-### Scope Additions (not in original plan)
-| Addition | Source | When | Justified? | Effort |
-|----------|--------|------|------------|--------|
-| [item] | [commit/person] | [date] | [Yes/No/Unclear] | [S/M/L] |
-
-### Scope Removals (in original but dropped)
-| Removed Item | Reason | Impact |
-|-------------|--------|--------|
-| [item] | [why removed] | [what's affected] |
-
-### Bloat Score
-- Original items: [N]
-- Current items: [N]
-- Items added: [N] (+[X]%)
-- Items removed: [N]
-- Net scope change: [+/-N] ([X]%)
-
-### Risk Assessment
-- **Schedule Risk**: [Low/Medium/High] — [explanation]
-- **Quality Risk**: [Low/Medium/High] — [explanation]
-- **Integration Risk**: [Low/Medium/High] — [explanation]
-
-### Recommendations
-1. **Cut**: [Items that should be removed to stay on schedule]
-2. **Defer**: [Items that can move to a future sprint/version]
-3. **Keep**: [Additions that are genuinely necessary]
-4. **Flag**: [Items that need a decision from producer/creative-director]
-```
+> → Read references/report-template.md for full comparison report template, verdict table, and scoring rules
 
 ---
 
 ## Phase 4: Verdict
 
-Assign a canonical verdict based on net scope change:
-
-| Net Change | Verdict | Meaning |
-|-----------|---------|---------|
-| ≤10% | **PASS** | On Track — within acceptable variance |
-| 10–25% | **CONCERNS** | Minor Creep — manageable with targeted cuts |
-| 25–50% | **FAIL** | Significant Creep — must cut or formally extend timeline |
-| >50% | **FAIL** | Out of Control — stop, re-plan, escalate to producer |
-
-Output the verdict prominently:
-
-```
-**Scope Verdict: [PASS / CONCERNS / FAIL]**
-Net change: [+X%] — [On Track / Minor Creep / Significant Creep / Out of Control]
-```
+Assign a canonical verdict based on net scope change (<=10% PASS, 10-25% CONCERNS, >25% FAIL). Output the verdict prominently.
 
 ---
 
@@ -111,18 +59,9 @@ Net change: [+X%] — [On Track / Minor Creep / Significant Creep / Out of Contr
 
 After presenting the report, offer concrete follow-up:
 
-- **PASS** → no action required. Suggest re-running before next milestone.
-- **CONCERNS** → offer to identify the 2–3 additions with best cut ratio. Reference `/sprint-plan update` to formally re-scope.
-- **FAIL** → recommend escalating to producer. Reference `/sprint-plan update` for re-planning or `/estimate` to re-baseline timeline.
+- **PASS** -> no action required. Suggest re-running before next milestone.
+- **CONCERNS** -> offer to identify the 2-3 additions with best cut ratio. Reference `/sprint-plan update` to formally re-scope.
+- **FAIL** -> recommend escalating to producer. Reference `/sprint-plan update` for re-planning or `/estimate` to re-baseline timeline.
 
 Always end with:
 > "Run `/scope-check [name]` again after cuts are made to verify the verdict improves."
-
----
-
-### Rules
-
-- Scope creep is additions without corresponding cuts or timeline extensions
-- Not all additions are bad — some are discovered requirements. But they must be acknowledged and accounted for
-- When recommending cuts, prioritize preserving the core player experience over nice-to-haves
-- Always quantify scope changes — "it feels bigger" is not actionable, "+35% items" is

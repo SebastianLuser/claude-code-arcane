@@ -1,6 +1,7 @@
 ---
 name: figma-tokens
-description: "Extraer design tokens de Figma y generarlos en formatos consumibles (CSS variables, Tailwind config, JSON, Style Dictionary). Usar cuando el usuario mencione: design tokens, variables de diseño, Figma tokens, CSS variables, Tailwind config, style dictionary."
+description: "Extract Figma design tokens and generate consumable formats: CSS variables, Tailwind config, JSON, Style Dictionary, Swift, Flutter."
+category: "design"
 argument-hint: "[output-format: css|tailwind|json|style-dict]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

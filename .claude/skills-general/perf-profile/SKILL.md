@@ -1,6 +1,7 @@
 ---
 name: perf-profile
 description: "Performance profiling workflow: identify bottlenecks, measure against budgets, prioritize optimizations."
+category: "testing"
 argument-hint: "[system-name or 'full']"
 user-invocable: true
 agent: performance-analyst
@@ -62,7 +63,7 @@ Load from design docs or CLAUDE.md. Typical targets:
 
 For M/L effort hotspots, ask user: **Implement now** | **Reduce scope** (`/scope-check`) | **Defer** | **Escalate** (`/architecture-decision`)
 
-## Anti-Patterns
+## Anti-patterns
 
 - Optimizing without measuring — gut feelings are unreliable
 - Profiling in dev mode — always use production/release builds
@@ -70,3 +71,12 @@ For M/L effort hotspots, ask user: **Implement now** | **Reduce scope** (`/scope
 - Recommendations without estimated impact — "make it faster" is not actionable
 - Profiling only on simulator — always validate on real target hardware
 - Premature optimization — profile first, optimize the proven bottleneck
+
+## Checklist
+
+- [ ] Performance budgets loaded from design docs or CLAUDE.md
+- [ ] Profiling tools selected matching the target platform and scenario
+- [ ] Bottlenecks measured with actual numbers compared against budget thresholds
+- [ ] Hotspot fixes prioritized by impact (estimated gain) and effort (S/M/L)
+- [ ] Report generated with Budget vs Actual table and OK/WARNING/OVER status
+- [ ] Items needing runtime profiling explicitly flagged as unconfirmed by static analysis

@@ -1,6 +1,7 @@
 ---
 name: db-diagram
-description: "Genera diagrama ER de la base de datos desde migrations, schemas o modelos ORM. Output en Mermaid. Usar cuando se mencione: diagrama de base de datos, ER diagram, schema, modelo de datos, tablas, relaciones."
+description: "Generate ER diagrams from migrations, schemas, or ORM models. Output in Mermaid. Trigger: DB diagram, ER diagram, schema, data model."
+category: "database"
 argument-hint: "[output-path, default docs/db-diagram.md]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit

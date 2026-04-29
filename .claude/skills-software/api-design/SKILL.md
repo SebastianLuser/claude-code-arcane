@@ -1,6 +1,7 @@
 ---
 name: api-design
-description: "API design decisions: REST conventions, OpenAPI, versioning, pagination, error format, GraphQL criteria, webhooks. DO NOT TRIGGER when: consumir APIs externas (no diseñarlas), documentar API existente sin cambios, troubleshooting de un endpoint puntual."
+description: "API design: REST conventions, OpenAPI, versioning, pagination, error format, GraphQL, webhooks."
+category: "api"
 argument-hint: "[rest|graphql|versioning|docs] [resource-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -67,37 +68,14 @@ Never invent a custom format. Never expose stack traces in production.
 ## Versioning
 
 - **Default:** URL path (`/v1/`) — simple, cacheable, grep-friendly
-- **Non-breaking** (no bump): add optional field, new endpoint, new enum value, relax validation
-- **Breaking** (requires bump): remove/rename field, change type, change status codes, tighten validation, change date/ID/pagination format
+- **Non-breaking** (no bump): add optional field, new endpoint, new enum value
+- **Breaking** (requires bump): remove/rename field, change type, change status codes
 
-### Deprecation Flow
-1. Announce via changelog + docs
-2. Response headers: `Deprecation: true`, `Sunset: <date>`, `Link: <migration-guide>`
-3. Monitor usage by client_id. Reminders at 1 month and 1 week before sunset
-4. Return `410 Gone` after sunset
-
-**Support windows:** Web 6 months min, Mobile 12 months + min-version forcing, max 2 major versions alive.
-
-## Webhooks Outbound
-- HMAC signature: `X-Signature: sha256=<hmac(payload, secret)>`
-- Timestamp anti-replay: reject if delta > 5 min
-- Retry exponential backoff: 1m, 5m, 30m, 2h, 12h
-- Minimal payload + URL for detail fetch; dashboard for failed deliveries
+> → Read references/versioning-deprecation.md for deprecation flow, support windows, and webhook outbound details
 
 ## Anti-patterns
 
-| # | ❌ No hacer | ✅ Hacer en cambio |
-|---|------------|-------------------|
-| 1 | Verbos en URLs (`/getUser`, `/createOrder`) | Sustantivos plurales: `GET /users`, `POST /orders` |
-| 2 | Status 200 con cuerpo de error | Código HTTP correcto (400/401/404/500) + RFC 9457 body |
-| 3 | Formato de error custom inventado | RFC 9457 Problem Details con `type`, `title`, `status`, `traceId` |
-| 4 | OFFSET pagination en tablas grandes | Cursor keyset con `{ data, pagination: { cursor, hasMore } }` |
-| 5 | Breaking change sin version bump | Bump a `/v2/`; mantener `/v1/` con Deprecation + Sunset headers |
-| 6 | 3+ versiones vivas en paralelo | Máx 2 versiones; sunset activo sobre la más vieja |
-| 7 | Stack traces en responses de producción | Log interno con traceId; response solo incluye `traceId` |
-| 8 | GraphQL sin límites de profundidad/complejidad | depth limit + query complexity scoring obligatorio |
-| 9 | Webhooks sin firma HMAC | `X-Signature: sha256=<hmac>` + reject si delta timestamp >5min |
-| 10 | OpenAPI mantenido a mano (drift con código) | Code-first (Zod+swagger) o spec-first con Spectral lint en CI |
+> → Read references/anti-patterns.md for 10 common API design anti-patterns with corrections
 
 ## Checklist
 - [ ] URLs plural, no verbs, nesting max 2

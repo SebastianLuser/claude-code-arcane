@@ -1,6 +1,7 @@
 ---
 name: form-validation
 description: "Form validation decision guide: RHF + Zod, client vs server strategy, schema design, error UX, LatAm fields, anti-patterns."
+category: "frontend"
 argument-hint: "[stack: react|rn] [form-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task

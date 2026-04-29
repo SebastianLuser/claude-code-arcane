@@ -1,6 +1,7 @@
 ---
 name: performance-test
 description: "Performance y load testing para apps Educabot (Go/TS/React/RN): k6 scripts, smoke/load/stress/soak/spike, thresholds por SLO, CI integration, reporte."
+category: "testing"
 argument-hint: "[smoke|load|stress|soak|spike]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -65,7 +66,7 @@ k6 run -o experimental-prometheus-rw k6/scenarios/load-api.js
 | p99 >> p95 | Long-tail → GC, cold cache, head-of-line blocking |
 | Throughput plateau | Bottleneck identificado (DB/CPU/red) |
 
-## Pre-stress/soak Checklist
+## Checklist
 
 - [ ] Avisar al team (Slack)
 - [ ] Confirmar env staging/perf (NO prod sin autorización)

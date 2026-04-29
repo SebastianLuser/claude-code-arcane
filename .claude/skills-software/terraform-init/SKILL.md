@@ -1,6 +1,7 @@
 ---
 name: terraform-init
 description: "Terraform infrastructure scaffolding: project structure, remote state, modules, CI/CD, naming, anti-patterns"
+category: "infrastructure"
 argument-hint: "[provider: aws|gcp] [project-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -74,25 +75,6 @@ infra/
 
 Plan artifacts uploaded per env. Apply requires manual approval for production.
 
-## Security checklist
+> → Read references/security-checklist.md for security hardening checklist
 
-- [ ] State bucket: versioning, encryption, no public access
-- [ ] Providers pinned (`~> major.minor`)
-- [ ] No secrets in `variables.tf` defaults
-- [ ] Sensitive outputs marked `sensitive = true`
-- [ ] Deletion protection ON for prod databases
-- [ ] Multi-AZ enabled for prod
-- [ ] Security groups: no `allow_all` / `0.0.0.0/0` ingress
-- [ ] IAM: least privilege, prefer IRSA/Workload Identity
-
-## Anti-patterns
-
-- Local state committed to repo
-- Single monolithic state across all environments
-- `terraform apply` from laptop to production
-- Providers without version pin — silent breaking changes
-- Secrets in variable defaults or unmasked outputs
-- `count` where `for_each` should be used
-- Hardcoded resource IDs instead of data source lookups
-- No locking on state — concurrent applies corrupt state
-- Monolithic config files — split by resource type as they grow
+> → Read references/anti-patterns.md for common anti-patterns to avoid

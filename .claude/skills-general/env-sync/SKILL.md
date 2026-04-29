@@ -1,6 +1,7 @@
 ---
 name: env-sync
 description: "Compara .env.example vs .env real, detecta variables faltantes, extra o con valores default. Usar cuando se mencione: env, variables de entorno, .env, environment variables, config check, setup."
+category: "operations"
 argument-hint: "[path to .env root, default .]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

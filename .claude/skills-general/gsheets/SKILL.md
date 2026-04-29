@@ -1,6 +1,7 @@
 ---
 name: gsheets
-description: "Gestionar Google Sheets: leer/escribir celdas, rangos, fórmulas, formatos via Sheets API v4. Usar cuando el usuario mencione: Google Sheets, Gsheets, spreadsheet de Google, planilla, hoja de cálculo, export a Sheets, import de Sheets."
+description: "Manage Google Sheets via Sheets API v4: read/write cells, ranges, formulas, formatting."
+category: "integrations"
 argument-hint: "[read|write|create] [sheet-id or range]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

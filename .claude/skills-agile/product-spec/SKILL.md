@@ -1,6 +1,7 @@
 ---
 name: product-spec
-description: "Genera PRD (Product Requirements Document) completo estilo Educabot: contexto, problema, solución, métricas, rollout, riesgos. Output listo para pegar en Notion/Coda + crea épica y HUs en Jira. Usar para: nueva feature, iniciativa de producto, PRD, spec de producto."
+description: "Generate a full PRD (context, problem, solution, metrics, risks) and create the matching Jira epic + stories."
+category: "agile"
 argument-hint: "[feature-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task, AskUserQuestion
@@ -53,3 +54,12 @@ Feature name, producto (Alizia/Tuni/Vigía/Tich), PM owner, stakeholders (eng/de
 **Tips:** TL;DR leíble en 30s, métricas > opiniones, non-goals explícitos, un problema por PRD, links no copias, cambios grandes → nuevo doc.
 
 **Señales malas:** sin baseline metric, scope creep MVP/fast-follows no claro, open questions vacío, sin edge cases/error states, sin rollout plan.
+
+## Checklist
+
+- [ ] All 12 PRD sections are present (use N/A + reason if not applicable, never omit)
+- [ ] Discovery answers are incorporated and `[TBD]` items are tracked in Open Questions
+- [ ] Jira epic created with `[PRD]` prefix, correct labels (prd, producto, quarter)
+- [ ] User stories are linked as children of the Jira epic with ACs as checklists
+- [ ] Success metrics table includes baseline, target, and guardrail for each metric
+- [ ] Review meeting proposed within 48h with all listed stakeholders

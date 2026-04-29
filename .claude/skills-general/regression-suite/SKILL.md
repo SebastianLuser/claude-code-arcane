@@ -1,6 +1,7 @@
 ---
 name: regression-suite
-description: "Map test coverage to GDD critical paths, identify fixed bugs without regression tests, flag coverage drift from new features, and maintain tests/regression-suite.md. Run after implementing a bug fix or before a release gate."
+description: "Map test coverage to critical paths, find bugs lacking regression tests, flag coverage drift. Maintains regression-suite.md."
+category: "testing"
 argument-hint: "[update | audit | report]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
@@ -78,3 +79,11 @@ Verdict: **COMPLETE** (or **BLOCKED** if declined).
 - Gaps are advisory, not blocking (except at release gate)
 - Quarantine ≠ deletion — flaky tests go to `/test-flakiness`
 - Always ask before writing
+
+## Checklist
+
+- [ ] Existing `tests/regression-suite.md` loaded (or creation acknowledged if absent)
+- [ ] Critical paths from GDD acceptance criteria mapped to test coverage status
+- [ ] Every closed bug fix has a corresponding regression test (or gap flagged)
+- [ ] Flaky/quarantined tests identified and routed to `/test-flakiness`
+- [ ] Manifest updated with new entries, coverage %, and last-updated date

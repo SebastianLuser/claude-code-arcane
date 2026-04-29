@@ -1,6 +1,7 @@
 ---
 name: release-announce
-description: "Anunciar un release en múltiples canales: Slack + Discord + Email + ClickUp doc + Jira comment. Genera changelog consistente cross-plataforma. Usar cuando el usuario mencione: release, anunciar versión, changelog, deploy announcement, comunicar release, nueva versión."
+description: "Broadcast release announcement across Slack, Discord, Email, ClickUp, Jira with consistent changelog."
+category: "operations"
 argument-hint: "[version] [--channels slack,discord,email]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write

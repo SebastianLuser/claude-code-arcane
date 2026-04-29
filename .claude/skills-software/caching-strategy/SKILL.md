@@ -1,6 +1,7 @@
 ---
 name: caching-strategy
-description: "Estrategia de caching multi-capa para apps Educabot (Go/TS/React): HTTP, CDN, Redis, in-memory, browser. Patterns, invalidation, TTLs, stampede protection. DO NOT TRIGGER when: invalidar cache manualmente en Redis ya configurado, operaciones redis-cli puntuales."
+description: "Multi-layer caching: HTTP, CDN, Redis, in-memory, browser. Invalidation, TTLs, stampede protection."
+category: "backend"
 argument-hint: "[layer: http|cdn|redis|memory|browser]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task
@@ -39,61 +40,19 @@ Cada capa: TTL distinto, invalidation distinta. Más cerca del usuario = más ca
 
 ## HTTP Caching Headers
 
-| Header | Uso |
-|--------|-----|
-| `public, max-age=31536000, immutable` | Assets versionados (hash en URL) |
-| `public, s-maxage=300, stale-while-revalidate=3600` | API listado semi-estático |
-| `private, no-store` | Response con PII |
+> → Read references/http-headers.md for header values and ETag usage
 
-- ETag + `If-None-Match` → 304 Not Modified. `Vary: Accept-Encoding, Authorization`
+## Patterns, Invalidation & Stampede Protection
 
-## Patterns
-
-| Pattern | Cómo | Pros | Cons |
-|---------|------|------|------|
-| **Cache-aside** (lazy) | App: check cache → miss → DB → write cache | Simple, resiliente | Miss penalty, stampede |
-| **Write-through** | App escribe a cache + DB | Cache siempre fresco | Escrituras lentas |
-| **Read-through** | Cache busca en DB si miss | Limpio para el cliente | Menos común en apps |
-| **Write-behind** | App → cache; worker → DB | Rápido | Riesgo pérdida datos (solo analytics) |
-
-## Invalidation
-
-| Estrategia | Cuándo |
-|------------|--------|
-| **TTL corto** (1-5 min) | **Default** si se puede aceptar stale |
-| **Invalidate on write** | TTL no alcanza, delete keys en write |
-| **Event-driven** (pub/sub) | Cache local multi-pod |
-| **Versioning** (key con vN) | Bump versión = keys viejas expiran solas |
-
-## Stampede Protection
-
-- **Go:** `golang.org/x/sync/singleflight` — solo 1 goroutine carga, las otras esperan
-- **Redis lock:** `SET NX` con TTL, quien no obtiene lock espera y relee
-- **stale-while-revalidate:** servir stale, refrescar en background
+> → Read references/patterns-and-invalidation.md for cache-aside/write-through/read-through patterns, invalidation strategies, and stampede protection
 
 ## TTL Defaults
 
-| Tipo | TTL |
-|------|-----|
-| Assets versionados | 1 año (immutable) |
-| Lista cursos público | 5 min |
-| Detalle curso | 1 min |
-| Perfil usuario | 5 min (invalidate on write) |
-| Config/feature flags | 30 seg |
-| Rate limit counters | ventana exacta |
-| Respuesta LLM/IA | horas a días (según costo) |
+> → Read references/ttl-defaults.md for recommended TTLs by data type
 
-## Redis
+## Redis & Client-Side
 
-- Cluster managed (Memorystore/ElastiCache), separar por propósito: cache (allkeys-lru) / session (noeviction) / queue
-- Key naming: `<domain>:<entity>:<id>:<variant>` — pattern-based purge
-- Serialización: JSON default, MessagePack si latencia importa
-
-## Cliente (React/RN)
-
-- TanStack Query: `staleTime`, `gcTime`, `invalidateQueries` on mutation
-- RN: AsyncStorage persister para offline-first
-- PWA: Service Worker — assets CacheFirst, API NetworkFirst
+> → Read references/redis-and-client.md for Redis cluster config, key naming, and React/RN client caching
 
 ## Anti-patterns
 

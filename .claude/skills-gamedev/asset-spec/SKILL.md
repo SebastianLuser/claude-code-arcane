@@ -1,6 +1,7 @@
 ---
 name: asset-spec
-description: "Specs visuales por asset: descripción, AI generation prompts, dimensiones, formato, naming, art bible anchors. Produce archivos de spec y actualiza asset manifest. Usar para: asset spec, visual spec, AI prompt, asset manifest, spec de arte, producción de assets."
+description: "Generate per-asset visual specs: description, AI prompts, dimensions, format, naming, art bible anchors. Produces spec files and updates manifest."
+category: "gamedev"
 argument-hint: "[system:<name>|level:<name>|character:<name>]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
@@ -50,44 +51,13 @@ Presentar lista agrupada al usuario. **No avanzar sin confirmación** de la list
 
 ### Assets compartidos
 
-Antes de specear, verificar si ya existe spec para un asset equivalente en otro contexto (ej: hit spark genérico ya speceado para Combat). Si existe → referenciar el ASSET-ID existente en lugar de duplicar.
+Antes de specear, verificar si ya existe spec para un asset equivalente en otro contexto. Si existe → referenciar el ASSET-ID existente en lugar de duplicar.
 
 ---
 
 ## Phase 3: Generar specs
 
-Para cada asset, producir:
-
-```markdown
-## ASSET-[NNN] — [Nombre]
-
-| Campo | Valor |
-|-------|-------|
-| Category | [Sprite / VFX / Environment / UI / Audio / 3D] |
-| Dimensions | [ej: 256x256px, 4-frame sprite sheet] |
-| Format | [PNG / SVG / WAV / etc.] |
-| Naming | [ej: vfx_frost_hit_01.png] |
-| Polycount | [si 3D — ej: <800 tris] |
-| Texture Res | [ej: 512px — Art Bible §8 Tier 2] |
-
-**Visual Description:**
-[2-3 oraciones. Suficientemente específico para que dos artistas produzcan resultados consistentes.]
-
-**Art Bible Anchors:**
-- §3 Shape Language: [regla aplicada]
-- §4 Color System: [rol del color — ej: "Threat Blue per semantic rules"]
-
-**Generation Prompt:**
-[Prompt ready-to-use para AI (Midjourney/SD style). Incluir: style keywords, composición, paleta, lighting, negative prompts.]
-
-**Status:** Needed
-```
-
-Para audio: descripción del carácter sónico en lugar de generation prompt.
-
-### Asset IDs
-
-Secuenciales a nivel proyecto (no por contexto). Leer manifest para encontrar el último ID asignado. Si no hay manifest → empezar en ASSET-001.
+> → Read references/spec-output-format.md for [formato de spec por asset, campos requeridos y asset IDs]
 
 ---
 
@@ -99,24 +69,4 @@ Después de aprobación:
 
 ---
 
-## Anti-patterns
-
-- Specs sin anclar al art bible — inconsistencia visual garantizada
-- Duplicar assets que ya tienen spec en otro contexto
-- Generation prompts genéricos ("a sword") sin style keywords ni color anchors
-- Visual descriptions vagas ("looks cool") en lugar de específicas ("angular silhouette, Threat Blue glow, 3-frame pulse animation")
-- Dimensiones inventadas que no matchean los tiers del Art Bible §8
-
----
-
-## Checklist
-
-```markdown
-- [ ] Art bible leído, §8 Asset Standards identificados
-- [ ] Source doc leído, assets explícitos e implícitos extraídos
-- [ ] Lista de assets confirmada por usuario
-- [ ] Assets compartidos detectados (no duplicar)
-- [ ] Cada spec con: dimensions, format, naming, visual description, art bible anchors
-- [ ] Generation prompts con style keywords y negative prompts
-- [ ] Asset IDs secuenciales, manifest actualizado
-```
+> → Read references/anti-patterns-checklist.md for [anti-patterns y checklist de validación]

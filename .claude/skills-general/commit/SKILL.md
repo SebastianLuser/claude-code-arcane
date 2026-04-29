@@ -1,6 +1,7 @@
 ---
 name: commit
 description: "Crea un git commit siguiendo conventional commit format. Revisa diffs, sugiere type/scope, escribe mensaje conciso. No hace push."
+category: "workflow"
 argument-hint: ""
 user-invocable: true
 allowed-tools: Read, Bash

@@ -1,6 +1,7 @@
 ---
 name: balance-check
-description: "Analyzes game balance data files, formulas, and configuration to identify outliers, broken progressions, degenerate strategies, and economy imbalances. Use after modifying any balance-related data or design. Use when user says 'balance report', 'check game balance', 'run a balance check'."
+description: "Game balance audit: outliers, broken progressions, degenerate strategies, economy imbalances from data files."
+category: "gamedev"
 argument-hint: "[system-name|path-to-data-file]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep

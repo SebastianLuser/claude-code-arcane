@@ -1,6 +1,7 @@
 ---
 name: unity-game-architecture
-description: "Arquitectura Unity 6: estructura canónica _Project/, singletons, ScriptableObjects data-driven, composition, state machines, SO event bus, Input System, Addressables, performance budgets 60 FPS, object pooling, save system versionado, testing, build pipeline. Usar para: arquitectura Unity, estructura, performance, ScriptableObject, singleton, object pool, Addressables, state machine, build, save system."
+description: "Arquitectura Unity 6: _Project/ structure, ScriptableObjects, state machines, Addressables, pooling, 60 FPS budgets, save system."
+category: "gamedev"
 argument-hint: "[system or module name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -29,51 +30,16 @@ No ECS/DOTS salvo necesidad demostrada con Profiler. Escalar complejidad con el 
 | **Input System** | Siempre nuevo (`com.unity.inputsystem`). Action maps por contexto | Nunca `Input.GetKey` legacy |
 | **Addressables** | Escenas y assets pesados (carga async, memory mgmt, DLC) | Settings/UI prefabs livianos (directo OK) |
 
-## Performance (60 FPS target)
+## Performance, Save, Testing & Build
 
-| Métrica | Budget |
-|---------|--------|
-| CPU main thread/frame | <16ms (60fps), <6.94ms (144fps) |
-| GC allocs en hot loop | **0** por frame |
-| Draw calls | <200 (batch + atlas + GPU instancing) |
+60 FPS target: <16ms/frame, 0 GC allocs in hot loops, <200 draw calls. JSON saves with versioning. Lógica pura testeable sin Play Mode. IL2CPP+stripping for release.
 
-Optimizaciones: Object Pooling (`ObjectPool<T>`) para spawns frecuentes, cache GetComponent en Awake (nunca en Update), Burst+Jobs solo para hot loops demostrados, LOD Groups, Occlusion Culling, Texture Atlases, GPU Instancing, Static Batching.
-
-Memory: `UnloadSceneAsync` en additive loading, `UnloadUnusedAssets` tras cambio escena, max texture size por plataforma, mesh compression.
-
-Coroutines: cachear `WaitForSeconds` como `static readonly`. Async I/O: preferir UniTask (zero-alloc).
-
-## Save System
-
-JSON (JsonUtility/Newtonsoft) en `Application.persistentDataPath`. PlayerPrefs solo para settings. `version: int` en cada save + migrators v1→v2→v3. Atomic writes (.tmp → validate → rename). **Prohibido:** `BinaryFormatter`.
-
-## Testing
-
-Separar lógica gameplay (clases puras → NUnit sin Play Mode) del wrapper MonoBehaviour (PlayMode tests solo para MB reales).
-
-## Build & Git
-
-Build: Mono (dev rápido), IL2CPP (release performance). Stripping disabled/dev, medium-high/release. Addressables build como step previo.
-
-Git: .gitignore (Library/, Temp/, Builds/, Logs/, *.csproj, *.sln), LFS para binarios (.png/.fbx/.wav/.psd), Force Text serialization + Visible Meta Files, Smart Merge para .unity/.prefab.
+> → Read references/performance-and-systems.md for budgets, optimization list, save system, testing, and build/git config
 
 ## Anti-patterns
 
-Scripts/ flat en Assets/, singleton para todo, GameObject.Find/FindObjectOfType en Update, GetComponent en Update sin cache, Instantiate/Destroy en hot path sin pool, LINQ .ToList()/.Where() en Update, string concat en logs Update, public fields everywhere (usar [SerializeField] private), escenas monolíticas, ignorar Profiler, ECS/DOTS sin necesidad, save binario sin versión, Resources/ para todo.
+> → Read references/anti-patterns.md for 13 common Unity anti-patterns to avoid
 
 ## Checklist
 
-- [ ] `_Project/Scripts/` agrupada por feature
-- [ ] Singletons solo state persistente cross-scene (≤4)
-- [ ] Data en ScriptableObjects, no hardcoded
-- [ ] Lógica gameplay testeable sin Play Mode (clases puras)
-- [ ] Object Pooling en spawns frecuentes
-- [ ] GetComponent cacheado en Awake
-- [ ] GC allocs en hot loops = 0 (Profiler)
-- [ ] Input System nuevo, no legacy
-- [ ] Save system versionado, JSON, atomic writes
-- [ ] Addressables para assets pesados
-- [ ] WaitForSeconds cacheados
-- [ ] Git LFS + Smart Merge configurado
-- [ ] IL2CPP + stripping para release
-- [ ] Profiler ejecutado antes de cerrar milestone
+> → Read references/checklist.md for 14-item architecture validation checklist

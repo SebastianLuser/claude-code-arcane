@@ -1,6 +1,7 @@
 ---
 name: changelog
 description: "Genera changelog desde git log entre dos tags/commits, agrupado por tipo (feat/fix/refactor/docs/test/chore). Usar cuando se mencione: changelog, release notes, qué cambió, historial de cambios."
+category: "documentation"
 argument-hint: "[range: vX..vY | vX | last-week | N | empty]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write

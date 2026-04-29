@@ -1,9 +1,13 @@
 ---
 name: database
-description: "Database setup, schema design, migrations, and data operations for backend TS projects. DO NOT TRIGGER when: query puntual sin contexto de schema completo (usar data-operations), troubleshooting de conexión a DB existente."
+description: "Schema design, migrations y data operations para Postgres + Prisma/GORM. Setup, indexing, queries, seeds, backups."
+category: "database"
 argument-hint: "[setup|schema|migrations|operations|full]"
 user-invocable: true
 allowed-tools: ["Read", "Edit", "Write", "Bash", "Glob", "Grep"]
+metadata:
+  version: "2.0"
+  category: backend
 ---
 # database — Schema, Migrations & Data Operations
 
@@ -53,58 +57,13 @@ Forward-only default. `.down.sql` for reversible DDL; document one-way explicitl
 ## 4. Connection Management
 Pool size: `max(2, cores*2)` per instance, never exceed total `max_connections`. Connection timeout 5s, statement timeout 30s. Health check via `SELECT 1` in health endpoint. PgBouncer transaction-mode for serverless/high-connection loads.
 
-## 5. Query Patterns
-Always start with `EXPLAIN (ANALYZE, BUFFERS)`. Check `pg_stat_statements` for slow queries.
+## 5. Query Patterns, Seed Data & Backup
+→ Read `references/query-patterns.md` for: N+1 fixes, pagination, bulk ops, seed strategies, backup/recovery.
 
-| Problem | Fix | Skip when |
-|---------|-----|-----------|
-| N+1 | Prisma `include` / JOIN / DataLoader | Relation rarely accessed |
-| SELECT * | Prisma `select` with needed columns | Few-column small tables |
-| OFFSET pagination | Cursor keyset (`WHERE id > $last LIMIT N`) | <1k rows or admin panels |
-| COUNT(*) on lists | Cache, approximate `reltuples`, or remove | Exact count required by business |
-| Correlated subquery | JOIN or LATERAL | Scalar returning 1 row |
+## Anti-patterns
+→ Read `references/anti-patterns.md` for the full 16-item checklist.
 
-Materialized views for stale-tolerant dashboards (CONCURRENTLY refresh, needs unique index). Multi-tenant: `tenant_id` first in every composite index; RLS as defense in depth.
-
-## 6. Bulk Operations
-Batch inserts via `createMany` or `COPY FROM` (10k+). Upserts always idempotent (`ON CONFLICT DO UPDATE`). Transactions via `$transaction([])`, keep short. Large backfills: batched with checkpoint/resume, disable triggers/indexes then rebuild.
-
-## 7. Seed Data
-
-| Type | Envs | In migrations? |
-|------|------|----------------|
-| Reference (roles, countries) | All incl. prod | Yes |
-| Dev fixtures | Local | No |
-| Test fixtures | CI | No |
-| Demo | Staging | No |
-
-Idempotent upserts. Factory + faker (`faker.seed(42)` for determinism). Top-down creation order. Block on `APP_ENV=production`. No real PII. Anonymize prod dumps for staging.
-
-## 8. Backup & Recovery
-PITR via WAL archiving (managed DBs handle it). `pg_dump` for portability, physical for speed. Test restores quarterly. Document RTO/RPO per service.
-
-## 9. Anti-patterns
-
-| # | ❌ No hacer | ✅ Hacer en cambio |
-|---|------------|-------------------|
-| 1 | FKs sin índice en la tabla hija | Indexar siempre la columna FK del lado hijo |
-| 2 | Relaciones circulares en schema | Romper ciclos con tabla de join intermedia |
-| 3 | God tables (50+ columnas) | Separar en entidades con relación explícita |
-| 4 | DDL y backfill de datos en la misma migration | Una migration = un cambio; backfill en archivo separado |
-| 5 | Editar migrations ya mergeadas | Siempre nueva migration hacia adelante |
-| 6 | DROP sin grace period | expand-contract: deprecar → migrar → DROP en release N+3 |
-| 7 | `CREATE INDEX` sin CONCURRENTLY en prod | `CREATE INDEX CONCURRENTLY` fuera de transacción |
-| 8 | N+1 sin detectar | Prisma `include` / JOIN / DataLoader |
-| 9 | `SELECT *` en hot paths | `select` con columnas específicas |
-| 10 | OFFSET pagination en tablas grandes | Cursor keyset (`WHERE id > $last LIMIT N`) |
-| 11 | Queries sin `EXPLAIN ANALYZE` | Validar plan antes y después de cada cambio |
-| 12 | Raw SQL con interpolación de strings | Siempre prepared statements / parámetros |
-| 13 | Sin pool limits ni timeouts | `max(2, cores*2)` pool; timeout 5s connect / 30s statement |
-| 14 | Seeds ejecutables en prod | Guard explícito `if APP_ENV == production: exit` |
-| 15 | Seeds no idempotentes | Upsert con ON CONFLICT, nunca INSERT ciego |
-| 16 | Backups sin restauración probada | Test de restore trimestral documentado |
-
-## 10. Checklist
+## Checklist
 - [ ] Docker Compose + `.env.example` with `DATABASE_URL`
 - [ ] One change per migration, DDL/data separated, expand-contract for breaking changes
 - [ ] `lock_timeout` + `statement_timeout` on ALTER; `CONCURRENTLY` for prod indexes

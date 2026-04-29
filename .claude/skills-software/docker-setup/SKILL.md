@@ -1,6 +1,7 @@
 ---
 name: docker-setup
-description: "Docker setup guide: Dockerfile best practices, image selection, compose, security, size optimization. DO NOT TRIGGER when: Dockerfiles ya existentes que solo necesitan un fix puntual, troubleshooting de docker-compose existente."
+description: "Docker setup: Dockerfile best practices, multi-stage, compose, security, size optimization."
+category: "infrastructure"
 argument-hint: "[stack: go|ts|react] [--dev|--prod]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -54,16 +55,7 @@ Generate production-ready Dockerfiles and docker-compose for Go, TypeScript, and
 
 ## Dockerfile best practices checklist
 
-- [ ] Multi-stage: separate builder from runtime
-- [ ] Copy lockfiles first, install deps, then copy source (cache optimization)
-- [ ] Pin base image tags (never bare `:latest`)
-- [ ] Non-root USER in runtime stage
-- [ ] HEALTHCHECK instruction present
-- [ ] Signal handler: tini/dumb-init for Node (Go handles signals natively)
-- [ ] `CGO_ENABLED=0` for Go static binaries
-- [ ] `npm ci --ignore-scripts` then `npm prune --omit=dev` for Node
-- [ ] Build args for env-specific values (e.g., VITE_API_URL)
-- [ ] OCI labels for image metadata
+> → Read references/checklists.md for Dockerfile best practices (10 items), security checklist (8 items), and health check patterns
 
 ## Compose decisions
 
@@ -77,41 +69,10 @@ Generate production-ready Dockerfiles and docker-compose for Go, TypeScript, and
 
 Use `docker-compose.override.yml` for dev-only settings (auto-applied, not committed to prod).
 
-## Health check patterns
-
-| Service | Check |
-|---------|-------|
-| HTTP backend | `wget --spider http://localhost:<port>/health` |
-| PostgreSQL | `pg_isready -U <user>` |
-| Redis | `redis-cli ping` |
-| Nginx/static | `wget --spider http://localhost:<port>` |
-
 ## Size optimization
 
-- Multi-stage: only copy built artifacts to runtime
-- Alpine or distroless bases (5-25MB vs 200MB+)
-- BuildKit cache mounts: `RUN --mount=type=cache,target=<path>`
-- `.dockerignore` excludes: `.git`, `node_modules`, `coverage`, `tests/`, `*.md`
-- For Go: `-ldflags="-w -s"` strips debug info
-
-## Security checklist
-
-- [ ] No `USER root` in runtime
-- [ ] `.dockerignore` excludes `.env`, `.git`, secrets
-- [ ] Base image pinned by tag (consider digest for prod)
-- [ ] No `COPY . .` before dependency prune in Node
-- [ ] Image scanned pre-push (trivy / docker scout)
-- [ ] Secrets never in ENV instruction or build args (they persist in layers)
-- [ ] Lockfiles committed for reproducible builds
-- [ ] No `apt install` without `--no-install-recommends` + layer cleanup
+> → Read references/size-optimization.md for image size reduction techniques
 
 ## Anti-patterns
 
-- `FROM node` / `FROM golang` without tag — non-reproducible build
-- Single stage build — 2GB+ images with build tools in prod
-- Copying `.env` into container — secrets leak in image layers
-- `CMD ["npm", "start"]` without signal handler (tini/dumb-init) — signal issues
-- Running as root in production
-- Build args containing secrets — persisted in layer history
-- `:latest` tag in production registry — no rollback traceability
-- No `.dockerignore` — huge build context, slow builds, accidental secret inclusion
+> → Read references/anti-patterns.md for 8 common Docker anti-patterns

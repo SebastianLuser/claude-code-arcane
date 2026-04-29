@@ -1,6 +1,7 @@
 ---
 name: observability
 description: "Observability decision guide: structured logs, metrics, traces (OTel), error tracking, alerts, SLOs. Use for: observability, logs, metrics, traces, errors, sentry, otel, prometheus, grafana, alerts."
+category: "observability"
 argument-hint: "[errors|logs|metrics|traces|alerts]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -62,7 +63,7 @@ Rules: JSON format, one line per event. `trace_id` in every line. Access logs in
 
 Never log: passwords, tokens, API keys, identity docs, payment data, minor emails, message content. Redact at logger level: password, token, authorization, secret, cookie fields.
 
-## Anti-Patterns
+## Anti-patterns
 
 - `console.log`/`fmt.Println` in prod — unstructured, not indexable
 - PII in logs/errors — legal risk
@@ -74,7 +75,7 @@ Never log: passwords, tokens, API keys, identity docs, payment data, minor email
 - Healthcheck log spam; infinite retention — cost
 - Missing trace_id correlation across boundaries
 
-## Setup Checklist
+## Checklist
 
 - [ ] JSON logger with trace_id injection + PII scrubber
 - [ ] OTel SDK with configurable sampling

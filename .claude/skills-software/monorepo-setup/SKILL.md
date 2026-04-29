@@ -1,6 +1,7 @@
 ---
 name: monorepo-setup
 description: "Monorepo decisions: tool choice, package structure, dependency management, build pipeline, CI caching, versioning."
+category: "infrastructure"
 argument-hint: "[tool: pnpm|turbo|nx]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -62,28 +63,4 @@ Only build/test what changed. Use `--filter=...[origin/main]` + remote cache + j
 | **Public libs** | Changesets, strict semver |
 | **Private libs** | `workspace:*`, no versioning |
 
-## Anti-patterns
-
-- Monorepo without workspaces (symlinks, copy-paste) — guaranteed desync
-- Circular dependencies between packages
-- No cache in CI — 30-min builds
-- Not filtering affected packages (same tests in 5 jobs)
-- Different React versions across apps — subtle bugs
-- God "utils" package with no cohesion
-- Publishing private libs to public npm
-- No CODEOWNERS — PRs without clear reviewers
-- Apps importing directly from other apps (move to package)
-- Monorepo to force stack on unwilling independent teams
-
-## Checklist
-
-- [ ] pnpm-workspace.yaml with apps/ and packages/
-- [ ] turbo.json with pipeline + cache outputs
-- [ ] Base tsconfig extended by all apps
-- [ ] Boundary lint rule enforced
-- [ ] Remote cache configured
-- [ ] CI with `--filter=...[main]` + cache
-- [ ] CODEOWNERS configured
-- [ ] Single version policy for critical deps
-- [ ] Renovate/Dependabot with grouping
-- [ ] Root scripts: dev, build, lint, test
+> → Read references/anti-patterns-and-checklist.md for anti-patterns list and setup checklist

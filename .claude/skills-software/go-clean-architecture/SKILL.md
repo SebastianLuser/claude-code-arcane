@@ -1,6 +1,7 @@
 ---
 name: go-clean-architecture
 description: "Arquitectura Go estilo Alizia-BE (Educabot). Clean Architecture híbrida KISS, DI manual, entities/providers/usecases/entrypoints/repositories. Multi-tenant OrgID scope."
+category: "backend"
 argument-hint: "[module-name or feature]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -87,22 +88,8 @@ db/migrations/               ← SQL up/down (golang-migrate)
 
 ## Anti-patterns
 
-- Usecase importando gorm/net/http, business logic en handler/repo
-- Entity con tags GORM, Execute sin Validate(), OrgID sin validar
-- wire/fx cuando DI manual alcanza, god usecase con múltiples responsabilidades
-- Return struct GORM al handler, panic en usecase, interfaces en lado implementador
-- Un único `usecases.go` con 15 funciones, hardcodear secrets
+> → Read references/anti-patterns.md for common architecture violations
 
 ## Checklist
 
-- [ ] Estructura `cmd/`, `src/core/{entities,providers,usecases}`, `src/entrypoints`, `src/repositories`
-- [ ] Entities sin tags de infraestructura
-- [ ] Providers en `core/providers/`, no en repositories
-- [ ] Cada usecase: Request con Validate() + Execute()
-- [ ] OrgID validado siempre (multi-tenant)
-- [ ] Handler sin lógica de negocio
-- [ ] DI manual en cmd/ legible y completa
-- [ ] Mocks por cada provider
-- [ ] Migration SQL up/down por cambio de schema
-- [ ] Errores mapeados a HTTP codes en handler
-- [ ] Un archivo = un usecase
+> → Read references/checklist.md for 11-item architecture compliance checklist

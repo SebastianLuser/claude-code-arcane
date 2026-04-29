@@ -1,6 +1,7 @@
 ---
 name: local-database-setup
 description: "Configura la base de datos local del proyecto: levanta Docker/Postgres, corre setup script, ejecuta migrations pendientes."
+category: "database"
 argument-hint: ""
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

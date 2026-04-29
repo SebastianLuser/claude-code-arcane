@@ -1,6 +1,7 @@
 ---
 name: start
-description: "Onboarding adaptativo al Arcane. Detecta contexto del proyecto y guía al usuario a la división/skill correcta. USAR SIEMPRE en primera sesión de un proyecto nuevo. Usar cuando el usuario mencione: start, empezar, arrancar, primera vez, onboarding, qué hago, por dónde empiezo."
+description: "Adaptive onboarding entry point. Detects project context and routes user to the right division/skill. Use on first session."
+category: "workflow"
 argument-hint: "[optional project hint]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Task, AskUserQuestion

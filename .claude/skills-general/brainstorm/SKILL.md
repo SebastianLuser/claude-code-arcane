@@ -1,6 +1,7 @@
 ---
 name: brainstorm
 description: "Guided game concept ideation — from zero idea to a structured game concept document. Uses professional studio ideation techniques, player psychology frameworks, and structured creative exploration."
+category: "workflow"
 argument-hint: "[genre or theme hint, or 'open'] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, WebSearch, Task, AskUserQuestion
@@ -64,11 +65,7 @@ Define **3-5 pillars**: name + one-sentence definition + design test ("If debati
 
 Pillar confirmation via `AskUserQuestion` → iterate until user selects "Lock these in."
 
-**Review mode gates:**
-- `solo` / `lean` → skip CD-PILLARS and AD-CONCEPT-VISUAL, note skipped
-- `full` → spawn both `creative-director` (CD-PILLARS gate) and `art-director` (AD-CONCEPT-VISUAL gate) in parallel via Task. Present verdicts together in two-tab AskUserQuestion (Pillars + Visual anchor). User's visual anchor selection → stored as Visual Identity Anchor.
-
-If CD returns CONCERNS/REJECT on pillars → resolve before visual anchor selection.
+> → Read references/review-mode-gates.md for review mode gate details (Phase 4 + Phase 6)
 
 ### Phase 5: Player Type Validation
 
@@ -80,29 +77,15 @@ Using Bartle taxonomy + Quantic Foundry: primary player type, secondary appeal, 
 - **Engine**: AskUserQuestion (Unity / Unreal / No preference → suggest `/setup-engine` later). Don't second-guess if they pick one.
 - **Art pipeline, content scope, MVP definition, biggest risks, scope tiers**
 
-**Review mode gates:**
-- `solo` / `lean` → skip TD-FEASIBILITY and PR-SCOPE
-- `full` → spawn `technical-director` (TD-FEASIBILITY) after tech risks identified, then `producer` (PR-SCOPE) after scope tiers defined. Present assessments, offer adjustments if HIGH RISK/UNREALISTIC.
-
 ## Document Generation
 
 Generate game concept using template at `.claude/docs/templates/game-concept.md`. Include Visual Identity Anchor section. Scope consistency rule: Estimated Scope must match full-vision timeline.
 
 AskUserQuestion for write approval → if "revise" → iterate until approved → write to `design/gdd/game-concept.md`.
 
-## Next Steps (full pipeline)
+## Next Steps
 
-1. `/setup-engine` — configure engine + reference docs
-2. `/art-bible` — visual identity (BEFORE GDDs)
-3. `/design-review design/gdd/game-concept.md` — validate completeness
-4. `/map-systems` — decompose into systems with dependencies
-5. `/design-system` — per-system GDDs
-6. `/create-architecture` — master architecture blueprint + ADR list
-7. `/architecture-decision` (×N) — one ADR per decision
-8. `/gate-check` — phase gate before production
-9. `/prototype [core-mechanic]` — validate core loop
-10. `/playtest-report` — validate hypothesis
-11. `/sprint-plan new` — first sprint
+> → Read references/next-steps-pipeline.md for the full 11-step pipeline after concept creation
 
 ## Context Window
 

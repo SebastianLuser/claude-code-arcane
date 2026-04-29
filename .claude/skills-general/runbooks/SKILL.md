@@ -1,6 +1,7 @@
 ---
 name: runbooks
 description: "Crear y mantener runbooks operativos ejecutables para on-call. Paso-a-paso con comandos exactos para resolver incidentes sin depender del creador."
+category: "operations"
 argument-hint: "[create <name> | list | update <name>]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
@@ -24,6 +25,8 @@ Runbook = documento ejecutable paso-a-paso para on-call. Objetivo: cualquier on-
 | 9 | Escalation path | Quién, en qué orden, con tiempos (15min/30min/45min) |
 | 10 | Post-incident | Link template postmortem, Jira action items, actualizar runbook |
 
+> → Read templates/runbook.md for the fill-in-the-blank runbook skeleton
+
 ## Ubicación
 
 - `docs/runbooks/<service>/<alert-name>.md` — nombrado 1:1 con alert
@@ -37,16 +40,6 @@ Todo servicio debe tener al menos:
 - `cloud-run-deploy-failed.md`, `stripe-webhook-backlog.md`, `disk-space-critical.md`
 - `certificate-expiring.md`, `pubsub-consumer-lag.md`, `login-failures-spike.md`
 
-## Principios de Escritura
-
-- **Comandos exactos**, no prosa ("gcloud run services describe alizia-api" no "chequear servicio")
-- **Criterios numéricos** ("Si X>Y → Z", no "si te parece raro")
-- **Escaneable a las 3am** — headers, code blocks, tablas, no párrafos
-- **Sin tribal knowledge** — no "preguntale a Juan", sí "Juan P. en PagerDuty"
-- **Links directos** a dashboards, no "el dashboard principal"
-- **Español LatAm** — on-call regional
-- **Horario escolar importa** — 10am con clases ≠ 3am
-
 ## Frontmatter
 
 ```yaml
@@ -56,37 +49,9 @@ last_reviewed: 2026-04-10
 last_used_in_incident: 2026-03-28
 ```
 
-## Ciclo de Vida
+## References
 
-- Review obligatorio tras cada incident que usó el runbook
-- Audit trimestral: stale (>6 meses sin commit), URLs rotas, comandos que no corren
-- Drills trimestrales: simular escenario, medir si sirve
-
-## Automatización Progresiva
-
-```
-runbook manual → script en repo → cronjob → auto-remediation (alerta → webhook → acción)
-```
-
-Aunque se automatice, el runbook describe el "por qué" para cuando el script falle.
-
-## Anti-patterns
-
-- Sin comandos exactos, tribal knowledge, sin criterios escalación
-- Stale (1 año sin update, URLs rotas), solo en wiki sin link desde alerta
-- 30 páginas ilegibles, sin rollback path, asumir contexto
-- Severidad ambigua sin criterios numéricos, sin `runbook_url` en alerta
-
-## Checklist
-
-- [ ] Alert name en H1 matchea Alertmanager
-- [ ] 10 secciones presentes en orden
-- [ ] Comandos copypasteables (proyecto, región, servicio hardcodeados)
-- [ ] Criterios de decisión numéricos
-- [ ] Escalation path con nombres + canales + tiempos
-- [ ] Links a dashboards funcionan
-- [ ] Rollback plan distinto del fix
-- [ ] Frontmatter: owner, service, last_reviewed
-- [ ] Alertmanager tiene `runbook_url`
-- [ ] Español LatAm, sin jerga sin explicar
-- [ ] Validado en drill o por alguien que no lo escribió
+> → Read references/writing-principles.md for runbook writing principles
+> → Read references/anti-patterns.md for common anti-patterns to avoid
+> → Read references/lifecycle.md for review cycle and automation progression
+> → Read references/checklist.md for the validation checklist

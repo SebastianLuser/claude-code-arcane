@@ -1,6 +1,7 @@
 ---
 name: create-ticket
-description: "Workflow conversacional para crear ticket en Jira: gather title/description/AC/priority/type via dialogo, formatea en Jira markdown, crea via API y devuelve URL. Para gestion masiva o queries complejas usar /jira-tickets."
+description: "Conversational Jira ticket creation: gather title, description, AC, priority via dialog, create via API and return URL."
+category: "agile"
 argument-hint: "[project-key] [title]"
 user-invocable: true
 allowed-tools: Read, Bash

@@ -1,6 +1,7 @@
 ---
 name: test-helpers
-description: "Generate engine-specific test helper libraries for the project's test suite. Reads existing test patterns and produces tests/helpers/ with assertion utilities, factory functions, and mock objects tailored to the project's systems. Reduces boilerplate in new test files."
+description: "Generate test helper libraries: assertion utilities, factories, mocks tailored to project patterns. Outputs tests/helpers/."
+category: "testing"
 argument-hint: "[system-name | all | scaffold]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write

@@ -1,6 +1,7 @@
 ---
 name: query-optimization
 description: "Optimización queries SQL en PostgreSQL 15+. EXPLAIN ANALYZE, pg_stat_statements, N+1, paginación, índices, CTEs, LATERAL joins. Stack Educabot Go+TS."
+category: "database"
 argument-hint: "[path-to-sql-or-migration, or query]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task

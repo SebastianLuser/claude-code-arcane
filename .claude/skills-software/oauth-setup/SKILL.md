@@ -1,6 +1,7 @@
 ---
 name: oauth-setup
 description: "OAuth 2.0 + OIDC para Educabot (Go/TS/React/RN). Authorization Code + PKCE, id_token validation, multi-provider (Google, Microsoft, Apple, GitHub)."
+category: "security"
 argument-hint: "[provider: google|github|generic] [stack]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task

@@ -1,6 +1,7 @@
 ---
 name: run-migrations
 description: "Quick-reference para golang-migrate: crea migration up/down, corre pending, rollback last. Para schema design, zero-downtime, multi-tenant ver /data-migrations."
+category: "database"
 argument-hint: "[create <name> | up | down [N]]"
 user-invocable: true
 allowed-tools: Read, Bash

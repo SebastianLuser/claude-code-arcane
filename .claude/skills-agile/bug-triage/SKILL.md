@@ -1,6 +1,7 @@
 ---
 name: bug-triage
-description: "Read all open bugs in production/qa/bugs/, re-evaluate priority vs. severity, assign to sprints, surface systemic trends, and produce a triage report. Run at sprint start or when the bug count grows enough to need re-prioritization."
+description: "Triage open bugs: re-evaluate priority/severity, assign to sprints, surface trends, produce triage report."
+category: "agile"
 argument-hint: "[sprint | full | trend]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit

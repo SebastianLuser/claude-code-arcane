@@ -1,6 +1,7 @@
 ---
 name: rate-limiting
 description: "Rate limiting y throttling APIs Educabot (Go/TS): token bucket, sliding window, Redis, per-user/IP/endpoint, headers 429, proteger logins/APIs caras."
+category: "backend"
 argument-hint: "[global|per-user|per-endpoint]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task

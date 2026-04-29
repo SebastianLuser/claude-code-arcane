@@ -1,6 +1,7 @@
 ---
 name: security-audit
-description: "Audit the game for security vulnerabilities: save tampering, cheat vectors, network exploits, data exposure, and input validation gaps. Produces a prioritised security report with remediation guidance. Run before any public release or multiplayer launch."
+description: "Security audit: save tampering, cheat vectors, network exploits, data exposure, input validation. Prioritized report + fixes."
+category: "security"
 argument-hint: "[full | network | save | input | quick]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Task
@@ -74,3 +75,12 @@ Required for **Polish → Release gate**. After remediation: `/security-audit qu
 - Accepted risk is valid for LOW findings — document the decision
 - Multiplayer context: treat HIGH as CRITICAL
 - This is not a pentest — covers common patterns; recommend human security professional for competitive/monetised multiplayer
+
+## Checklist
+
+- [ ] Audit scope and mode are defined before scanning begins
+- [ ] All applicable categories are audited (Save, Network, Input, Data Exposure, Cheat, Dependencies)
+- [ ] Every finding is classified by severity (CRITICAL/HIGH/MEDIUM/LOW) with status
+- [ ] Remediation steps are recommended for each CRITICAL and HIGH finding
+- [ ] Report is generated with executive summary and release recommendation
+- [ ] No CRITICAL findings remain open before gate clearance for release
