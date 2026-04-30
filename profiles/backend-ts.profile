@@ -5,16 +5,11 @@
 
 DESCRIPTION="Backend TypeScript — Fastify, Prisma, Zod, API design, CI"
 
-SKILLS_GENERAL=(
+SKILLS=(
   testing
   deps-audit
   env-sync
   observability
-)
-
-SKILLS_GAMEDEV=()
-
-SKILLS_SOFTWARE=(
   scaffold-fastify-ts
   database
   api-design
@@ -25,9 +20,6 @@ SKILLS_SOFTWARE=(
   monorepo-setup
   ci-cd-setup
 )
-
-SKILLS_AGILE=()
-SKILLS_DESIGN=()
 
 RULES_UNIVERSAL=(backend-code api-code migration-code)
 RULES_GAMEDEV=()

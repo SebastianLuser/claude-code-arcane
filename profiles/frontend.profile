@@ -5,7 +5,7 @@
 
 DESCRIPTION="Frontend React + Vite + TypeScript"
 
-SKILLS_GENERAL=(
+SKILLS=(
   testing
   i18n-setup
   deps-audit
@@ -13,11 +13,6 @@ SKILLS_GENERAL=(
   observability
   release
   onboard
-)
-
-SKILLS_GAMEDEV=()
-
-SKILLS_SOFTWARE=(
   scaffold-react-vite
   state-management
   form-validation
@@ -27,9 +22,6 @@ SKILLS_SOFTWARE=(
   cdn-setup
   file-uploads
 )
-
-SKILLS_AGILE=()
-SKILLS_DESIGN=()
 
 RULES_UNIVERSAL=(frontend-code)
 RULES_GAMEDEV=()

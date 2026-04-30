@@ -5,12 +5,8 @@
 
 DESCRIPTION="Figma workflow, UX review, handoff a dev"
 
-SKILLS_GENERAL=(user-persona)
-SKILLS_GAMEDEV=()
-SKILLS_SOFTWARE=()
-SKILLS_AGILE=()
-
-SKILLS_DESIGN=(
+SKILLS=(
+  user-persona
   figma
   figma-to-code
   figma-tokens

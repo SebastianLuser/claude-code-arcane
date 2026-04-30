@@ -12,11 +12,7 @@ class Profile:
     name: str
     description: str
     profile_type: str  # "base" or "addon"
-    skills_general: list[str] = field(default_factory=list)
-    skills_gamedev: list[str] = field(default_factory=list)
-    skills_software: list[str] = field(default_factory=list)
-    skills_agile: list[str] = field(default_factory=list)
-    skills_design: list[str] = field(default_factory=list)
+    skills: list[str] = field(default_factory=list)
     rules_universal: list[str] = field(default_factory=list)
     rules_gamedev: list[str] = field(default_factory=list)
     agents: list[str] = field(default_factory=list)
@@ -29,11 +25,7 @@ class MergedProfile:
     """Result of merging core + selected profiles, fully deduplicated."""
 
     loaded: list[str] = field(default_factory=list)
-    skills_general: list[str] = field(default_factory=list)
-    skills_gamedev: list[str] = field(default_factory=list)
-    skills_software: list[str] = field(default_factory=list)
-    skills_agile: list[str] = field(default_factory=list)
-    skills_design: list[str] = field(default_factory=list)
+    skills: list[str] = field(default_factory=list)
     rules_universal: list[str] = field(default_factory=list)
     rules_gamedev: list[str] = field(default_factory=list)
     agents: list[str] = field(default_factory=list)
@@ -42,13 +34,7 @@ class MergedProfile:
 
     @property
     def total_skills(self) -> int:
-        return (
-            len(self.skills_general)
-            + len(self.skills_gamedev)
-            + len(self.skills_software)
-            + len(self.skills_agile)
-            + len(self.skills_design)
-        )
+        return len(self.skills)
 
     @property
     def total_rules(self) -> int:
@@ -56,7 +42,10 @@ class MergedProfile:
 
     @property
     def has_gamedev(self) -> bool:
-        return len(self.skills_gamedev) > 0
+        return any(
+            skill in self.skills
+            for skill in ("unity-dev", "shader-dev", "playtesting", "level-design")
+        )
 
 
 def _parse_bash_array(text: str, var_name: str) -> list[str]:
@@ -64,7 +53,6 @@ def _parse_bash_array(text: str, var_name: str) -> list[str]:
     opening = re.search(rf'{var_name}=\(', text)
     if not opening:
         return []
-    # Walk forward to find the closing ) that is not inside double quotes.
     pos = opening.end()
     in_quote = False
     while pos < len(text):
@@ -96,19 +84,29 @@ def _parse_header(text: str, key: str) -> str:
     return match.group(1).strip() if match else ""
 
 
+_LEGACY_SKILL_ARRAYS = (
+    "SKILLS_GENERAL", "SKILLS_GAMEDEV", "SKILLS_SOFTWARE",
+    "SKILLS_AGILE", "SKILLS_DESIGN",
+)
+
+
 def parse_profile(path: Path) -> Profile:
     text = path.read_text(encoding="utf-8")
     name = path.stem
     desc_match = re.search(r'DESCRIPTION="([^"]*)"', text)
+
+    # New format: single SKILLS=() array
+    skills = _parse_bash_array(text, "SKILLS")
+
+    # Backward compat: merge legacy SKILLS_GENERAL, SKILLS_SOFTWARE, etc.
+    for legacy_var in _LEGACY_SKILL_ARRAYS:
+        skills.extend(_parse_bash_array(text, legacy_var))
+
     return Profile(
         name=name,
         description=desc_match.group(1) if desc_match else _parse_header(text, "Description"),
         profile_type=_parse_header(text, "Type") or "base",
-        skills_general=_parse_bash_array(text, "SKILLS_GENERAL"),
-        skills_gamedev=_parse_bash_array(text, "SKILLS_GAMEDEV"),
-        skills_software=_parse_bash_array(text, "SKILLS_SOFTWARE"),
-        skills_agile=_parse_bash_array(text, "SKILLS_AGILE"),
-        skills_design=_parse_bash_array(text, "SKILLS_DESIGN"),
+        skills=skills,
         rules_universal=_parse_bash_array(text, "RULES_UNIVERSAL"),
         rules_gamedev=_parse_bash_array(text, "RULES_GAMEDEV"),
         agents=_parse_bash_array(text, "AGENTS"),
@@ -148,11 +146,7 @@ def merge_profiles(profiles_dir: Path, profile_names: list[str]) -> MergedProfil
             raise FileNotFoundError(f"Profile '{name}' not found at {path}")
         p = parse_profile(path)
         merged.loaded.append(name)
-        _add(merged.skills_general, p.skills_general, seen_skills)
-        _add(merged.skills_gamedev, p.skills_gamedev, seen_skills)
-        _add(merged.skills_software, p.skills_software, seen_skills)
-        _add(merged.skills_agile, p.skills_agile, seen_skills)
-        _add(merged.skills_design, p.skills_design, seen_skills)
+        _add(merged.skills, p.skills, seen_skills)
         _add(merged.rules_universal, p.rules_universal, seen_rules_u)
         _add(merged.rules_gamedev, p.rules_gamedev, seen_rules_g)
         _add(merged.agents, p.agents, seen_agents)

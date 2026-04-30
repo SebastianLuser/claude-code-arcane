@@ -97,14 +97,6 @@ SETTINGS_TEMPLATE = {
     },
 }
 
-SKILL_POOLS = {
-    "skills_general": "skills-general",
-    "skills_gamedev": "skills-gamedev",
-    "skills_software": "skills-software",
-    "skills_agile": "skills-agile",
-    "skills_design": "skills-design",
-}
-
 
 class Installer:
     def __init__(self, arcane_dir: Path, target: Path, merged: MergedProfile, *, dry_run: bool = False):
@@ -167,23 +159,28 @@ class Installer:
             shutil.copy2(str(statusline_src), str(self.claude_dir / "statusline.sh"))
             self._log("  [ok] statusline.sh")
 
-    def _copy_skill(self, pool_dir: str, skill: str) -> None:
-        src = self.arcane / ".claude" / pool_dir / skill
-        dst = self.claude_dir / "skills" / skill
-        if not src.is_dir():
-            self._log(f"  WARN: Skill '{skill}' not found in {pool_dir}/")
-            return
-        if self.dry_run:
-            self._log(f"  [dry-run] {pool_dir}/{skill} -> skills/{skill}")
-            return
-        shutil.copytree(str(src), str(dst), dirs_exist_ok=True)
-        self._log(f"  [ok] {skill}")
+    def _find_skill_source(self, skill: str) -> Path | None:
+        """Auto-discover skill across all skills-* pool directories."""
+        for pool_dir in sorted((self.arcane / ".claude").iterdir()):
+            if pool_dir.is_dir() and pool_dir.name.startswith("skills-"):
+                candidate = pool_dir / skill
+                if candidate.is_dir():
+                    return candidate
+        return None
 
     def _copy_skills(self) -> None:
         self._log("\nSkills:")
-        for attr, pool in SKILL_POOLS.items():
-            for skill in getattr(self.merged, attr):
-                self._copy_skill(pool, skill)
+        for skill in self.merged.skills:
+            src = self._find_skill_source(skill)
+            if src is None:
+                self._log(f"  WARN: Skill '{skill}' not found in any skills-* pool")
+                continue
+            dst = self.claude_dir / "skills" / skill
+            if self.dry_run:
+                self._log(f"  [dry-run] {src.parent.name}/{skill} -> skills/{skill}")
+            else:
+                shutil.copytree(str(src), str(dst), dirs_exist_ok=True)
+                self._log(f"  [ok] {skill}")
 
         if self.merged.has_gamedev:
             templates_src = self.arcane / ".claude" / "skills-gamedev" / "_templates"
@@ -228,7 +225,6 @@ class Installer:
         for agent_dir in self.merged.agents:
             src = self.arcane / ".claude" / "agents" / agent_dir
             if not src.is_dir():
-                # Try from repo root agents/ as well
                 src = self.arcane / "agents" / agent_dir
             if not src.is_dir():
                 self._log(f"  WARN: Agents dir '{agent_dir}' not found")

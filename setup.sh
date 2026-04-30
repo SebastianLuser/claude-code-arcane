@@ -37,6 +37,9 @@ Base profiles (pick 1 or combine):
   backend-ts        Backend TypeScript — Fastify, Prisma, Zod
   frontend          React + Vite + TypeScript
   mobile            React Native + Expo
+  flutter           Flutter + Dart cross-platform
+  android-native    Android native — Kotlin + Jetpack Compose
+  ios-native        iOS native — Swift + UIKit/SwiftUI
 
 Add-ons (combine with +):
   +agile            Sprints, standups, retros, estimates
@@ -47,6 +50,7 @@ Add-ons (combine with +):
   +testing          Contract, performance, regression testing
   +teams            Game team orchestration + agents
   +ops              Runbooks, rollback, backup, secrets
+  +docs             Document generation — PDF, PPTX, XLSX, DOCX
 
 Examples:
   ./setup.sh --profile unity-dev --target ~/projects/my-game
@@ -94,11 +98,7 @@ declare -A SEEN_AGENTS=()
 declare -A SEEN_PERM_ALLOW=()
 declare -A SEEN_PERM_DENY=()
 
-ALL_SKILLS_GENERAL=()
-ALL_SKILLS_GAMEDEV=()
-ALL_SKILLS_SOFTWARE=()
-ALL_SKILLS_AGILE=()
-ALL_SKILLS_DESIGN=()
+ALL_SKILLS=()
 ALL_RULES_UNIVERSAL=()
 ALL_RULES_GAMEDEV=()
 ALL_AGENTS=()
@@ -116,6 +116,8 @@ load_profile() {
   fi
 
   # Reset per-profile arrays before sourcing
+  SKILLS=()
+  # Legacy arrays — kept for backward compat with old-format profiles
   SKILLS_GENERAL=()
   SKILLS_GAMEDEV=()
   SKILLS_SOFTWARE=()
@@ -132,21 +134,9 @@ load_profile() {
   source "$profile_file"
   LOADED_PROFILES+=("$profile_name")
 
-  # Merge with dedup
-  for s in "${SKILLS_GENERAL[@]}"; do
-    [[ -z "${SEEN_SKILLS[$s]:-}" ]] && ALL_SKILLS_GENERAL+=("$s") && SEEN_SKILLS[$s]=1
-  done
-  for s in "${SKILLS_GAMEDEV[@]}"; do
-    [[ -z "${SEEN_SKILLS[$s]:-}" ]] && ALL_SKILLS_GAMEDEV+=("$s") && SEEN_SKILLS[$s]=1
-  done
-  for s in "${SKILLS_SOFTWARE[@]}"; do
-    [[ -z "${SEEN_SKILLS[$s]:-}" ]] && ALL_SKILLS_SOFTWARE+=("$s") && SEEN_SKILLS[$s]=1
-  done
-  for s in "${SKILLS_AGILE[@]}"; do
-    [[ -z "${SEEN_SKILLS[$s]:-}" ]] && ALL_SKILLS_AGILE+=("$s") && SEEN_SKILLS[$s]=1
-  done
-  for s in "${SKILLS_DESIGN[@]}"; do
-    [[ -z "${SEEN_SKILLS[$s]:-}" ]] && ALL_SKILLS_DESIGN+=("$s") && SEEN_SKILLS[$s]=1
+  # Merge skills with dedup — unified SKILLS array + legacy arrays
+  for s in "${SKILLS[@]}" "${SKILLS_GENERAL[@]}" "${SKILLS_GAMEDEV[@]}" "${SKILLS_SOFTWARE[@]}" "${SKILLS_AGILE[@]}" "${SKILLS_DESIGN[@]}"; do
+    [[ -z "${SEEN_SKILLS[$s]:-}" ]] && ALL_SKILLS+=("$s") && SEEN_SKILLS[$s]=1
   done
   for r in "${RULES_UNIVERSAL[@]}"; do
     [[ -z "${SEEN_RULES_U[$r]:-}" ]] && ALL_RULES_UNIVERSAL+=("$r") && SEEN_RULES_U[$r]=1
@@ -166,18 +156,26 @@ load_profile() {
 }
 
 copy_skill() {
-  local pool="$1"
-  local skill="$2"
-  local src="$ARCANE_DIR/.claude/$pool/$skill"
-  local dst="$TARGET/.claude/skills/$skill"
+  local skill="$1"
+  local src=""
 
-  if [[ ! -d "$src" ]]; then
-    echo -e "  ${YELLOW}WARN: Skill '$skill' not found in $pool/${NC}" >&2
+  for pool_dir in "$ARCANE_DIR"/.claude/skills-*/; do
+    if [[ -d "$pool_dir$skill" ]]; then
+      src="$pool_dir$skill"
+      break
+    fi
+  done
+
+  if [[ -z "$src" ]]; then
+    echo -e "  ${YELLOW}WARN: Skill '$skill' not found in any skills-* folder${NC}" >&2
     return 0
   fi
 
+  local dst="$TARGET/.claude/skills/$skill"
+
   if [[ "$DRY_RUN" == true ]]; then
-    echo -e "  ${BLUE}[dry-run]${NC} $pool/$skill → skills/$skill"
+    local pool_name=$(basename "$(dirname "$src")")
+    echo -e "  ${BLUE}[dry-run]${NC} $pool_name/$skill → skills/$skill"
     return 0
   fi
 
@@ -375,7 +373,7 @@ generate_manifest() {
   local profiles_str=$(printf '"%s",' "${LOADED_PROFILES[@]}")
   profiles_str="[${profiles_str%,}]"
 
-  local total_skills=$(( ${#ALL_SKILLS_GENERAL[@]} + ${#ALL_SKILLS_GAMEDEV[@]} + ${#ALL_SKILLS_SOFTWARE[@]} + ${#ALL_SKILLS_AGILE[@]} + ${#ALL_SKILLS_DESIGN[@]} ))
+  local total_skills=${#ALL_SKILLS[@]}
 
   if [[ "$DRY_RUN" == true ]]; then
     echo -e "  ${BLUE}[dry-run]${NC} arcane-manifest.json"
@@ -495,17 +493,12 @@ for profile in "${PROFILES[@]}"; do
 done
 
 # Summary
-total_skills=$(( ${#ALL_SKILLS_GENERAL[@]} + ${#ALL_SKILLS_GAMEDEV[@]} + ${#ALL_SKILLS_SOFTWARE[@]} + ${#ALL_SKILLS_AGILE[@]} + ${#ALL_SKILLS_DESIGN[@]} ))
+total_skills=${#ALL_SKILLS[@]}
 total_rules=$(( ${#ALL_RULES_UNIVERSAL[@]} + ${#ALL_RULES_GAMEDEV[@]} ))
 
 echo ""
 echo -e "${BOLD}Summary:${NC}"
 echo -e "  Skills:      ${GREEN}$total_skills${NC}"
-[[ ${#ALL_SKILLS_GENERAL[@]} -gt 0 ]]  && echo -e "    general:   ${#ALL_SKILLS_GENERAL[@]}"
-[[ ${#ALL_SKILLS_GAMEDEV[@]} -gt 0 ]]  && echo -e "    gamedev:   ${#ALL_SKILLS_GAMEDEV[@]}"
-[[ ${#ALL_SKILLS_SOFTWARE[@]} -gt 0 ]] && echo -e "    software:  ${#ALL_SKILLS_SOFTWARE[@]}"
-[[ ${#ALL_SKILLS_AGILE[@]} -gt 0 ]]    && echo -e "    agile:     ${#ALL_SKILLS_AGILE[@]}"
-[[ ${#ALL_SKILLS_DESIGN[@]} -gt 0 ]]   && echo -e "    design:    ${#ALL_SKILLS_DESIGN[@]}"
 echo -e "  Rules:       ${GREEN}$total_rules${NC}"
 echo -e "  Agents:      ${GREEN}${#ALL_AGENTS[@]} dirs${NC}"
 echo -e "  Permissions: ${GREEN}${#ALL_PERM_ALLOW[@]} allow / ${#ALL_PERM_DENY[@]} deny${NC}"
@@ -540,14 +533,17 @@ copy_hooks
 
 # Copy skills
 echo -e "\n${BOLD}Skills:${NC}"
-for s in "${ALL_SKILLS_GENERAL[@]}"; do  copy_skill "skills-general" "$s"; done
-for s in "${ALL_SKILLS_GAMEDEV[@]}"; do  copy_skill "skills-gamedev" "$s"; done
-for s in "${ALL_SKILLS_SOFTWARE[@]}"; do copy_skill "skills-software" "$s"; done
-for s in "${ALL_SKILLS_AGILE[@]}"; do    copy_skill "skills-agile" "$s"; done
-for s in "${ALL_SKILLS_DESIGN[@]}"; do   copy_skill "skills-design" "$s"; done
+for s in "${ALL_SKILLS[@]}"; do copy_skill "$s"; done
 
-# Copy gamedev templates and rules subdirs if any gamedev skills included
-if [[ ${#ALL_SKILLS_GAMEDEV[@]} -gt 0 ]]; then
+# Copy gamedev templates if any gamedev skills were discovered
+HAVE_GAMEDEV=false
+for s in "${ALL_SKILLS[@]}"; do
+  if [[ -d "$ARCANE_DIR/.claude/skills-gamedev/$s" ]]; then
+    HAVE_GAMEDEV=true
+    break
+  fi
+done
+if [[ "$HAVE_GAMEDEV" == true ]]; then
   if [[ -d "$ARCANE_DIR/.claude/skills-gamedev/_templates" ]]; then
     cp -r "$ARCANE_DIR/.claude/skills-gamedev/_templates" "$TARGET/.claude/skills/_templates"
     echo -e "  ${GREEN}✓${NC} _templates/"

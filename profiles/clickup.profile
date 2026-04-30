@@ -5,12 +5,9 @@
 
 DESCRIPTION="ClickUp via MCP — tasks, docs, time tracking"
 
-SKILLS_GENERAL=()
-SKILLS_GAMEDEV=()
-SKILLS_SOFTWARE=()
-SKILLS_DESIGN=()
-
-SKILLS_AGILE=(clickup)
+SKILLS=(
+  clickup
+)
 
 RULES_UNIVERSAL=()
 RULES_GAMEDEV=()

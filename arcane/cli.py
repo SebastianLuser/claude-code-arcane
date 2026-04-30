@@ -325,16 +325,6 @@ def cmd_install(args: argparse.Namespace) -> None:
 
     print(f"\n{C_BOLD}Summary:{C_RESET}")
     print(f"  Skills:      {C_GREEN}{merged.total_skills}{C_RESET}")
-    if merged.skills_general:
-        print(f"    general:   {len(merged.skills_general)}")
-    if merged.skills_gamedev:
-        print(f"    gamedev:   {len(merged.skills_gamedev)}")
-    if merged.skills_software:
-        print(f"    software:  {len(merged.skills_software)}")
-    if merged.skills_agile:
-        print(f"    agile:     {len(merged.skills_agile)}")
-    if merged.skills_design:
-        print(f"    design:    {len(merged.skills_design)}")
     print(f"  Rules:       {C_GREEN}{merged.total_rules}{C_RESET}")
     print(f"  Agents:      {C_GREEN}{len(merged.agents)} dirs{C_RESET}")
     print(f"  Permissions: {C_GREEN}{len(merged.permissions_allow)} allow / {len(merged.permissions_deny)} deny{C_RESET}")

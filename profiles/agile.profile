@@ -5,19 +5,13 @@
 
 DESCRIPTION="Gestión de proyecto — sprints, standups, retros, estimates"
 
-SKILLS_GENERAL=(
+SKILLS=(
   gh-projects
   slack
   gdocs
   gdrive
   gsheets
   postman
-)
-
-SKILLS_GAMEDEV=()
-SKILLS_SOFTWARE=()
-
-SKILLS_AGILE=(
   bug-report
   bug-triage
   create-epics
@@ -37,8 +31,6 @@ SKILLS_AGILE=(
   weekly-digest
   incident
 )
-
-SKILLS_DESIGN=()
 
 RULES_UNIVERSAL=()
 RULES_GAMEDEV=()

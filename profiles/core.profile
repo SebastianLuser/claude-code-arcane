@@ -5,7 +5,7 @@
 
 DESCRIPTION="Skills universales, hooks y rules base"
 
-SKILLS_GENERAL=(
+SKILLS=(
   commit
   create-pr
   changelog
@@ -22,11 +22,6 @@ SKILLS_GENERAL=(
   skill-improve
   skill-test
 )
-
-SKILLS_GAMEDEV=()
-SKILLS_SOFTWARE=()
-SKILLS_AGILE=()
-SKILLS_DESIGN=()
 
 RULES_UNIVERSAL=(data-files prototype-code test-standards)
 RULES_GAMEDEV=()

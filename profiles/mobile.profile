@@ -5,7 +5,7 @@
 
 DESCRIPTION="Mobile React Native + Expo + TypeScript"
 
-SKILLS_GENERAL=(
+SKILLS=(
   testing
   i18n-setup
   deps-audit
@@ -14,11 +14,6 @@ SKILLS_GENERAL=(
   release
   onboard
   perf-profile
-)
-
-SKILLS_GAMEDEV=()
-
-SKILLS_SOFTWARE=(
   scaffold-react-native
   state-management
   form-validation
@@ -28,9 +23,6 @@ SKILLS_SOFTWARE=(
   ci-cd-setup
   deploy-check
 )
-
-SKILLS_AGILE=()
-SKILLS_DESIGN=()
 
 RULES_UNIVERSAL=(frontend-code)
 RULES_GAMEDEV=()

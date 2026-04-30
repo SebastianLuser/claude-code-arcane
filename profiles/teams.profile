@@ -5,9 +5,7 @@
 
 DESCRIPTION="Orquestación de equipos de juego + agentes game"
 
-SKILLS_GENERAL=()
-
-SKILLS_GAMEDEV=(
+SKILLS=(
   team-combat
   team-level
   team-narrative
@@ -17,10 +15,6 @@ SKILLS_GAMEDEV=(
   team-polish
   team-release
 )
-
-SKILLS_SOFTWARE=()
-SKILLS_AGILE=()
-SKILLS_DESIGN=()
 
 RULES_UNIVERSAL=()
 RULES_GAMEDEV=()

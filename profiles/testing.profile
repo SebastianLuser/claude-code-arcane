@@ -5,7 +5,7 @@
 
 DESCRIPTION="Testing avanzado — contract, performance, regression, flakiness"
 
-SKILLS_GENERAL=(
+SKILLS=(
   contract-testing
   performance-test
   smoke-check
@@ -13,11 +13,6 @@ SKILLS_GENERAL=(
   test-flakiness
   visual-regression
 )
-
-SKILLS_GAMEDEV=()
-SKILLS_SOFTWARE=()
-SKILLS_AGILE=()
-SKILLS_DESIGN=()
 
 RULES_UNIVERSAL=()
 RULES_GAMEDEV=()

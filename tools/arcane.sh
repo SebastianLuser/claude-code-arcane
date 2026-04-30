@@ -60,10 +60,9 @@ get_pack_skills() {
 
 find_skill_source() {
   local name="$1"
-  for dir in skills skills-software skills-gamedev skills-agile; do
-    local path="$ARCANE_ROOT/.claude/$dir/$name"
-    if [ -d "$path" ]; then
-      echo "$path"
+  for pool_dir in "$ARCANE_ROOT"/.claude/skills-*/; do
+    if [ -d "$pool_dir$name" ]; then
+      echo "$pool_dir$name"
       return 0
     fi
   done
@@ -270,7 +269,7 @@ cmd_cleanup_global() {
   local GLOBAL_WIN="$USERPROFILE_WIN\\.claude"
   local GLOBAL_BASH
   GLOBAL_BASH=$(cygpath "$USERPROFILE_WIN/.claude" 2>/dev/null || echo "$HOME/.claude")
-  local targets=(agents skills skills-software skills-gamedev skills-agile rules)
+  local targets=(agents skills skills-git skills-testing skills-docs skills-ops skills-frontend skills-mobile skills-backend skills-devops skills-agile skills-design skills-gamedev rules)
   local count=0
 
   for d in "${targets[@]}"; do
