@@ -1,3 +1,11 @@
+---
+name: arcane-remove
+description: "Remove individual skills from the current Arcane installation."
+category: "arcane"
+argument-hint: "<skill-name> [skill2] ..."
+user-invocable: true
+allowed-tools: Read, Write, Edit, Bash
+---
 # /arcane-remove — Remove skills from current project
 
 Remove individual skills from the current Arcane installation.

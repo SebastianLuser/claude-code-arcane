@@ -1,3 +1,10 @@
+---
+name: arcane-status
+description: "Show installed Arcane profiles, skills, rules and agents from arcane-manifest.json."
+category: "arcane"
+user-invocable: true
+allowed-tools: Read, Bash, Glob
+---
 # /arcane-status — Show Arcane installation status
 
 Show what profiles, skills, rules, and agents are installed in the current project.

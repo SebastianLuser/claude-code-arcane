@@ -1,3 +1,10 @@
+---
+name: arcane-list
+description: "List all available Arcane profiles and skills from the source repo, marking installed ones."
+category: "arcane"
+user-invocable: true
+allowed-tools: Read, Bash, Glob, Grep
+---
 # /arcane-list — List available profiles and skills
 
 List all profiles and skills available in the Arcane source repo, so you can see what's available to add.

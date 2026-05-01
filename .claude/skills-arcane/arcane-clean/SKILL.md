@@ -1,3 +1,10 @@
+---
+name: arcane-clean
+description: "Remove the entire Arcane installation from the current project."
+category: "arcane"
+user-invocable: true
+allowed-tools: Read, Bash
+---
 # /arcane-clean — Remove Arcane installation from project
 
 Remove the entire Arcane installation from the current project. This deletes all skills, rules, agents, hooks, and config installed by Arcane.

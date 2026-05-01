@@ -1,3 +1,11 @@
+---
+name: arcane-add
+description: "Add individual skills or entire profiles to the current Arcane installation without reinstalling."
+category: "arcane"
+argument-hint: "<skill-name|+profile>"
+user-invocable: true
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep
+---
 # /arcane-add — Add skills or profiles to current project
 
 Add individual skills or entire profiles to the current Arcane installation without reinstalling everything.
