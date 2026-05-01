@@ -14,6 +14,7 @@ fi
 
 # Follow symlinks — .claude/skills/ is an aggregator of junctions to per-stack dirs
 SKILLS=$(find -L .claude/skills -name "SKILL.md" 2>/dev/null | wc -l | tr -d ' ')
+AGENTS=$(find -L .claude/agents -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
 
 PYCMD=$(command -v python 2>/dev/null || command -v python3 2>/dev/null || command -v py 2>/dev/null)
 
@@ -68,11 +69,12 @@ print("EXTRA=" + " | ".join(parts))
 fi
 
 PREFIX="🔮 ${PROJECT}"
-[ -n "$MODEL" ] && PREFIX="🤖 ${MODEL} | ${PREFIX}"
+[ -n "$MODEL" ] && PREFIX="⚡ ${MODEL} | ${PREFIX}"
 
 PARTS="${PREFIX}"
 [ -n "$BRANCH" ] && PARTS="${PARTS} | 🌿 ${BRANCH}"
 PARTS="${PARTS} | 🛠️ ${SKILLS} skills"
+[ "$AGENTS" -gt 0 ] 2>/dev/null && PARTS="${PARTS} | 🤖 ${AGENTS} agents"
 [ -n "$EXTRA" ] && PARTS="${PARTS} | ${EXTRA}"
 
 echo "$PARTS"
