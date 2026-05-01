@@ -21,12 +21,14 @@ SKILLS=(
   ci-cd-setup
   cdn-setup
   file-uploads
+  frontend-dev
+  csp-headers
 )
 
 RULES_UNIVERSAL=(frontend-code)
 RULES_GAMEDEV=()
 
-AGENTS=()
+AGENTS=(engineering)
 
 PERMISSIONS_ALLOW=(
   "Bash(npm *)"

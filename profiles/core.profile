@@ -21,12 +21,18 @@ SKILLS=(
   reverse-document
   skill-improve
   skill-test
+  tech-debt
+  arcane-status
+  arcane-list
+  arcane-add
+  arcane-remove
+  arcane-clean
 )
 
 RULES_UNIVERSAL=(data-files prototype-code test-standards)
 RULES_GAMEDEV=()
 
-AGENTS=()
+AGENTS=(quality)
 
 HOOKS=(
   session-start.sh

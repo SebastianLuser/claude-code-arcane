@@ -19,12 +19,18 @@ SKILLS=(
   unity-game-architecture
   map-systems
   game-audit
+  audit-game
+  shader-dev
+  balance-check
+  consistency-check
+  doc-gdd
+  playtest-report
 )
 
 RULES_UNIVERSAL=()
 RULES_GAMEDEV=(gameplay-code engine-code shader-code network-code ui-code ai-code)
 
-AGENTS=()
+AGENTS=(game)
 
 PERMISSIONS_ALLOW=()
 PERMISSIONS_DENY=()

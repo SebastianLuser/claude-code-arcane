@@ -25,7 +25,7 @@ SKILLS=(
 RULES_UNIVERSAL=()
 RULES_GAMEDEV=()
 
-AGENTS=()
+AGENTS=(engineering)
 
 PERMISSIONS_ALLOW=(
   "Bash(xcodebuild *)"

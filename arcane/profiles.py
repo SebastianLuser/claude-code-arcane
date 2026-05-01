@@ -42,10 +42,7 @@ class MergedProfile:
 
     @property
     def has_gamedev(self) -> bool:
-        return any(
-            skill in self.skills
-            for skill in ("unity-dev", "shader-dev", "playtesting", "level-design")
-        )
+        return len(self.rules_gamedev) > 0
 
 
 def _parse_bash_array(text: str, var_name: str) -> list[str]:

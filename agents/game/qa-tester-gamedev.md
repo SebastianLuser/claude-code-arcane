@@ -1,6 +1,6 @@
 ---
-name: qa-tester
-description: "The QA Tester writes detailed test cases, bug reports, and test checklists. Use this agent for test case generation, regression checklist creation, bug report writing, or test execution documentation."
+name: qa-tester-gamedev
+description: "QA Tester especializado en videojuegos. Test cases de gameplay, balance, exploits, smoke checks, regression de mecánicas, cert de plataformas. Usar para testing de juegos, no de software."
 tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 maxTurns: 10

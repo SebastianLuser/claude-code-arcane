@@ -12,12 +12,15 @@ SKILLS=(
   regression-suite
   test-flakiness
   visual-regression
+  qa-plan
+  test-helpers
+  test-setup
 )
 
 RULES_UNIVERSAL=()
 RULES_GAMEDEV=()
 
-AGENTS=()
+AGENTS=(quality)
 
 PERMISSIONS_ALLOW=(
   "Bash(python -m pytest*)"

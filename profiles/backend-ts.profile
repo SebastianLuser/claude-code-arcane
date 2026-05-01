@@ -13,18 +13,30 @@ SKILLS=(
   scaffold-fastify-ts
   database
   api-design
+  api-docs
+  api-versioning
   auth-strategy
+  jwt-strategy
+  mfa-setup
+  oauth-setup
+  rbac-abac
   performance
   async-ops
   audit-log
   monorepo-setup
+  data-migrations
+  caching-strategy
+  webhooks
+  rate-limiting
+  websocket-realtime-rooms
+  search-setup
   ci-cd-setup
 )
 
 RULES_UNIVERSAL=(backend-code api-code migration-code)
 RULES_GAMEDEV=()
 
-AGENTS=()
+AGENTS=(engineering)
 
 PERMISSIONS_ALLOW=(
   "Bash(npm *)"

@@ -15,6 +15,7 @@ SKILLS=(
   onboard
   perf-profile
   scaffold-react-native
+  react-native-dev
   state-management
   form-validation
   accessibility
@@ -27,7 +28,7 @@ SKILLS=(
 RULES_UNIVERSAL=(frontend-code)
 RULES_GAMEDEV=()
 
-AGENTS=()
+AGENTS=(engineering)
 
 PERMISSIONS_ALLOW=(
   "Bash(npm *)"

@@ -15,20 +15,27 @@ SKILLS=(
   go-clean-architecture
   database-setup
   data-operations
+  data-migrations
   api-design
+  api-docs
   auth-strategy
+  jwt-strategy
+  mfa-setup
+  oauth-setup
+  rbac-abac
   rate-limiting
   caching-strategy
   webhooks
   job-scheduling
   audit-log
+  slo-sli
   ci-cd-setup
 )
 
 RULES_UNIVERSAL=(backend-code api-code migration-code)
 RULES_GAMEDEV=()
 
-AGENTS=()
+AGENTS=(engineering)
 
 PERMISSIONS_ALLOW=(
   "Bash(go *)"

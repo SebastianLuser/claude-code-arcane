@@ -13,12 +13,15 @@ SKILLS=(
   design-handoff
   prototype
   ux-review
+  design-system
+  quick-design
+  ux-design
 )
 
 RULES_UNIVERSAL=()
 RULES_GAMEDEV=()
 
-AGENTS=()
+AGENTS=(product)
 
 PERMISSIONS_ALLOW=()
 PERMISSIONS_DENY=()

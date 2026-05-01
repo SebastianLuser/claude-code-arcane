@@ -16,12 +16,18 @@ SKILLS=(
   quick-design
   ux-design
   design-system
+  doc-gdd
+  doc-pas
+  balance-check
+  playtest-report
+  consistency-check
+  asset-audit
 )
 
 RULES_UNIVERSAL=()
 RULES_GAMEDEV=(design-docs narrative)
 
-AGENTS=()
+AGENTS=(game)
 
 PERMISSIONS_ALLOW=()
 PERMISSIONS_DENY=()

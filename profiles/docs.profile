@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 # Profile: +docs
-# Description: Document generation — PDF, PPTX, XLSX, DOCX
+# Description: Document generation — PDF, PPTX, XLSX, DOCX, architecture
 # Type: addon
 
-DESCRIPTION="Document generation — PDF, PPTX, XLSX, DOCX"
+DESCRIPTION="Document generation — PDF, PPTX, XLSX, DOCX, architecture"
 
 SKILLS=(
   pdf-generator
   pptx-generator
   xlsx-generator
   docx-generator
+  architecture-decision
+  architecture-review
 )
 
 RULES_UNIVERSAL=()
