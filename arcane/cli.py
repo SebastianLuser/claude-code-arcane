@@ -3,12 +3,20 @@
 from __future__ import annotations
 
 import argparse
+import io
+import os
 import sys
 from pathlib import Path
 
 from . import __version__
 from .profiles import Profile, list_profiles, merge_profiles, parse_profile
 from .installer import Installer, clean
+
+if sys.platform == "win32":
+    os.system("")  # enable ANSI escapes on Windows
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 ARCANE_DIR = Path(__file__).resolve().parent.parent
 
