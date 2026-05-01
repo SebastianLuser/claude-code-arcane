@@ -40,7 +40,7 @@ GLOBAL_WIN="$USERPROFILE_WIN\\.claude"
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 BACKUP_WIN="$USERPROFILE_WIN\\.claude-backup-$TIMESTAMP"
 
-TARGETS=(agents skills skills-git skills-testing skills-docs skills-ops skills-frontend skills-mobile skills-backend skills-devops skills-agile skills-design skills-gamedev rules)
+TARGETS=(agents skills skills-git skills-testing skills-docs skills-frontend skills-mobile skills-backend skills-devops skills-agile skills-design skills-gamedev skills-integrations skills-release skills-security rules)
 EXTRA_BACKUP=(commands)
 
 echo "=== Arcane -> Global symlink (A-lite) ==="
