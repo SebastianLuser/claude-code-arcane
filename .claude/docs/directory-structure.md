@@ -11,7 +11,7 @@ Claude-Code-Arcane/
 │   ├── settings.json                  # Hooks, permissions, safety
 │   ├── statusline.sh                  # Status line bash script
 │   │
-│   ├── agents/                        # 119 agent definitions
+│   ├── agents/                        # 140 agent definitions
 │   │   ├── game/                      # División 1 (49 agents)
 │   │   ├── engineering/               # División 2 (20 agents)
 │   │   ├── devops/                    # División 3 (11 agents)
@@ -19,7 +19,12 @@ Claude-Code-Arcane/
 │   │   ├── management/                # División 5 (8 agents)
 │   │   ├── quality/                   # División 6 (7 agents)
 │   │   ├── educabot/                  # División 7 (7 agents)
-│   │   └── integrations/              # División 8 (6 agents)
+│   │   ├── integrations/              # División 8 (6 agents)
+│   │   ├── ai/                        # División 9 (4 agents)
+│   │   ├── clevel/                    # División 10 (6 agents)
+│   │   ├── business/                  # División 11 (3 agents)
+│   │   ├── marketing/                 # División 12 (5 agents)
+│   │   └── regulatory/                # División 13 (3 agents)
 │   │
 │   ├── skills/                        # Skills universales/software (subdir per skill)
 │   │   ├── [skill-name]/

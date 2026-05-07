@@ -1,6 +1,6 @@
 # Estructura de Divisiones
 
-El repo está organizado en 8 divisiones. Cada división tiene su propia jerarquía de 3 tiers (directors, leads, specialists) y sus skills asociadas.
+El repo está organizado en 13 divisiones. Cada división tiene su propia jerarquía de 3 tiers (directors, leads, specialists) y sus skills asociadas.
 
 ## División 1 — Game Development Studio 🎮
 **Path:** `agents/game/`
@@ -66,6 +66,46 @@ El repo está organizado en 8 divisiones. Cada división tiene su propia jerarqu
 
 **Cuándo usarla:** Cualquier integración con herramientas externas, sincronización cross-tool, workflows automatizados.
 
+## División 9 — AI & Data Science 🤖
+**Path:** `agents/ai/`
+**Propósito:** Arquitectura AI/ML, data pipelines, MLOps, estadística
+**Agentes:** 4 | **Skills:** 7
+**Stack:** PyTorch, HuggingFace, MLflow, Airflow, dbt, Spark, vLLM
+
+**Cuándo usarla:** Diseño de RAG, model selection, cost optimization LLM, pipelines de datos, A/B testing, feature engineering.
+
+## División 10 — C-Suite Advisory 👔
+**Path:** `agents/clevel/`
+**Propósito:** Asesoría ejecutiva para founders y liderazgo
+**Agentes:** 6 | **Skills:** 28
+**Stack:** Frameworks estratégicos, financial modeling, OKRs
+
+**Cuándo usarla:** Decisiones estratégicas, fundraising, board meetings, org design, operational cadence, marketing strategy de alto nivel.
+
+## División 11 — Business & Finance 💼
+**Path:** `agents/business/`
+**Propósito:** Revenue operations, análisis financiero, pre-sales
+**Agentes:** 3 | **Skills:** 7
+**Stack:** CRM, financial modeling, SaaS metrics
+
+**Cuándo usarla:** Pipeline analysis, customer health scoring, DCF/valuaciones, RFP/RFI, propuestas comerciales.
+
+## División 12 — Marketing 📣
+**Path:** `agents/marketing/`
+**Propósito:** Ejecución de marketing — contenido, growth, SEO, analytics
+**Agentes:** 5 | **Skills:** 44
+**Stack:** GA4, GTM, Google Ads, Meta, LinkedIn, SEO tools
+
+**Cuándo usarla:** Content production, paid ads, email sequences, SEO audits, CRO, campaign analytics, A/B testing de marketing.
+
+## División 13 — Regulatory & Compliance 📜
+**Path:** `agents/regulatory/`
+**Propósito:** Regulatory affairs, QMS, compliance de datos y seguridad
+**Agentes:** 3 | **Skills:** 13
+**Stack:** ISO 13485, ISO 27001, FDA, EU MDR, GDPR, SOC 2
+
+**Cuándo usarla:** Submissions FDA/CE, QMS implementation, CAPA, auditorías ISO, GDPR compliance, SOC 2 readiness.
+
 ---
 
 ## Cómo Elegir la División
@@ -88,3 +128,8 @@ Algunas tareas necesitan coordinación entre divisiones. Los directores de cada 
 - Game + Engineering: Prototipo web de un juego → `technical-director` + `chief-technology-officer`
 - Product + Engineering: Feature cross-stack → `chief-product-officer` + `vp-engineering`
 - PM + Tools: Reporting automatizado → `program-director` + `integrations-architect`
+- C-Suite + Business: Revenue strategy → `cfo-advisor` + `business-ops-lead`
+- Marketing + Engineering: Landing pages, tracking → `marketing-director` + `frontend-architect`
+- AI + Engineering: ML features en producto → `ai-architect` + `backend-architect`
+- Regulatory + Quality: Compliance de producto → `regulatory-director` + `security-architect`
+- C-Suite + Marketing: GTM strategy → `cmo-advisor` + `marketing-director`
