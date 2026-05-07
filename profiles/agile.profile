@@ -30,6 +30,21 @@ SKILLS=(
   story-readiness
   weekly-digest
   incident
+  atlassian-admin
+  atlassian-templates
+  competitive-teardown
+  confluence-expert
+  experiment-designer
+  meeting-analyzer
+  product-analytics
+  product-discovery
+  product-manager-toolkit
+  product-strategist
+  research-summarizer
+  roadmap-communicator
+  scrum-master
+  senior-pm
+  team-communications
 )
 
 RULES_UNIVERSAL=()

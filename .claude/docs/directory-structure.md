@@ -26,6 +26,51 @@ Claude-Code-Arcane/
 │   │   │   └── SKILL.md
 │   │   └── ...
 │   │
+│   ├── skills-agile/                  # 35 skills (20 existing + 15 new)
+│   │   ├── [agile-skill]/             # bug-report, sprint-plan, scrum-master, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-ai/                     # 7 AI/ML skills
+│   │   ├── [ai-skill]/               # llm-cost-optimizer, rag-architect, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-arcane/                 # Arcane self-management (add, list, remove, auditor, etc.)
+│   │   ├── [arcane-skill]/            # arcane-add, arcane-list, skill-auditor, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-backend/                # 45+ backend skills
+│   │   ├── [backend-skill]/           # agent-designer, mcp-server-builder, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-business/               # 4 business skills
+│   │   ├── [business-skill]/          # contract-and-proposal-writer, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-clevel-advisors/        # 10 C-suite advisor skills
+│   │   ├── [advisor-skill]/           # ceo-advisor, cfo-advisor, cto-advisor, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-clevel-operations/      # 18 C-suite operations skills
+│   │   ├── [ops-skill]/              # board-meeting, chief-of-staff, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-devops/                 # 17+ DevOps/infra skills
+│   │   ├── [devops-skill]/            # aws-solution-architect, helm-chart-builder, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-finance/                # 3 finance skills
+│   │   ├── [finance-skill]/           # financial-analyst, saas-metrics-coach, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
 │   ├── skills-gamedev/                # Skills específicas de gamedev
 │   │   ├── _rules/                    # Path-scoped rules gamedev
 │   │   │   ├── ai-code.md             # NPC behavior trees, perception
@@ -38,6 +83,46 @@ Claude-Code-Arcane/
 │   │   │   └── narrative.md           # Lore canon, dialogue
 │   │   ├── _templates/                # Game-specific templates
 │   │   ├── [gamedev-skill]/           # art-bible, balance-check, doc-gdd, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-git/                    # Git workflow skills
+│   │   ├── [git-skill]/              # changelog, commit, create-pr, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-marketing-content/      # 8 content marketing skills
+│   │   ├── [content-skill]/           # copywriting, content-production, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-marketing-growth/       # 10 growth marketing skills
+│   │   ├── [growth-skill]/            # launch-strategy, paid-ads, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-marketing-seo/          # 11 SEO/CRO skills
+│   │   ├── [seo-skill]/              # seo-audit, page-cro, ai-seo, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-marketing-strategy/     # 15 marketing strategy skills
+│   │   ├── [strategy-skill]/          # pricing-strategy, brand-guidelines, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-regulatory/             # 13 regulatory/compliance skills
+│   │   ├── [regulatory-skill]/        # gdpr-dsgvo-expert, soc2-compliance, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-security/               # 9+ security skills
+│   │   ├── [security-skill]/          # ai-security, red-team, cloud-security, etc.
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   │
+│   ├── skills-testing/                # 13+ testing skills
+│   │   ├── [testing-skill]/           # playwright-pro, tdd-guide, qa-plan, etc.
 │   │   │   └── SKILL.md
 │   │   └── ...
 │   │

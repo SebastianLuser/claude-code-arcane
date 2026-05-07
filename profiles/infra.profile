@@ -23,6 +23,13 @@ SKILLS=(
   rollback-strategy
   release-announce
   doc-rfc
+  aws-solution-architect
+  azure-cloud-architect
+  gcp-cloud-architect
+  helm-chart-builder
+  incident-commander
+  incident-response
+  git-worktree-manager
 )
 
 RULES_UNIVERSAL=(infra-code)
