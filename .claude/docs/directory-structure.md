@@ -4,138 +4,80 @@
 Claude-Code-Arcane/
 ├── CLAUDE.md                          # Configuración maestra
 ├── README.md                          # Documentación del repo
+├── pyproject.toml                     # Python package config
 ├── LICENSE
 ├── .gitignore
 │
-├── .claude/                           # Configuración de Claude Code
+├── arcane/                            # Python CLI (installer, profiles parser)
+│   ├── cli.py                         # Entry point: arcane install/list/clean
+│   ├── installer.py                   # Profile installer logic
+│   └── profiles.py                    # Profile parser & merger
+│
+├── profiles/                          # 27 profile definitions (.profile)
+│   ├── core.profile                   # Always included (21 skills, hooks, rules)
+│   ├── backend-go.profile             # Base: Go backend
+│   ├── backend-ts.profile             # Base: TypeScript backend
+│   ├── frontend.profile               # Base: React frontend
+│   ├── unity-dev.profile              # Base: Unity programmer
+│   ├── ai.profile                     # Add-on: AI/ML
+│   ├── clevel.profile                 # Add-on: C-suite advisory
+│   ├── business.profile               # Add-on: Business ops
+│   ├── marketing.profile              # Add-on: Marketing
+│   ├── finance.profile                # Add-on: Finance
+│   ├── regulatory.profile             # Add-on: Regulatory & compliance
+│   └── ...                            # agile, testing, infra, security, etc.
+│
+├── agents/                            # 80 agent definitions (root level)
+│   ├── game/                          # División 1 — Game Dev (27 agents)
+│   ├── engineering/                   # División 2 — Software Eng (14 agents)
+│   ├── devops/                        # División 3 — DevOps (3 agents)
+│   ├── product/                       # División 4 — Product & Design (5 agents)
+│   ├── management/                    # División 5 — PMO (4 agents)
+│   ├── quality/                       # División 6 — Quality & Security (3 agents)
+│   ├── integrations/                  # División 8 — Tools & Integrations (6 agents)
+│   ├── ai/                            # División 9 — AI & Data Science (4 agents)
+│   ├── clevel/                        # División 10 — C-Suite Advisory (6 agents)
+│   ├── business/                      # División 11 — Business & Finance (3 agents)
+│   ├── marketing/                     # División 12 — Marketing (5 agents)
+│   └── regulatory/                    # División 13 — Regulatory (3 agents)
+│
+├── .claude/                           # Claude Code configuration
 │   ├── settings.json                  # Hooks, permissions, safety
+│   ├── settings.local.json            # User-specific overrides (gitignored)
 │   ├── statusline.sh                  # Status line bash script
+│   ├── setup-skill-junctions.bat      # Windows: create skill junctions
+│   ├── remove-skill-junctions.bat     # Windows: remove skill junctions
 │   │
-│   ├── agents/                        # 140 agent definitions
-│   │   ├── game/                      # División 1 (49 agents)
-│   │   ├── engineering/               # División 2 (20 agents)
-│   │   ├── devops/                    # División 3 (11 agents)
-│   │   ├── product/                   # División 4 (11 agents)
-│   │   ├── management/                # División 5 (8 agents)
-│   │   ├── quality/                   # División 6 (7 agents)
-│   │   ├── educabot/                  # División 7 (7 agents)
-│   │   ├── integrations/              # División 8 (6 agents)
-│   │   ├── ai/                        # División 9 (4 agents)
-│   │   ├── clevel/                    # División 10 (6 agents)
-│   │   ├── business/                  # División 11 (3 agents)
-│   │   ├── marketing/                 # División 12 (5 agents)
-│   │   └── regulatory/                # División 13 (3 agents)
-│   │
-│   ├── skills/                        # Skills universales/software (subdir per skill)
-│   │   ├── [skill-name]/
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
-│   ├── skills-agile/                  # 35 skills (20 existing + 15 new)
-│   │   ├── [agile-skill]/             # bug-report, sprint-plan, scrum-master, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
+│   ├── skills-agile/                  # 35 agile/PM skills
 │   ├── skills-ai/                     # 7 AI/ML skills
-│   │   ├── [ai-skill]/               # llm-cost-optimizer, rag-architect, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
-│   ├── skills-arcane/                 # Arcane self-management (add, list, remove, auditor, etc.)
-│   │   ├── [arcane-skill]/            # arcane-add, arcane-list, skill-auditor, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
-│   ├── skills-backend/                # 45+ backend skills
-│   │   ├── [backend-skill]/           # agent-designer, mcp-server-builder, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
+│   ├── skills-arcane/                 # 7 Arcane self-management skills
+│   ├── skills-backend/                # 45 backend skills
 │   ├── skills-business/               # 4 business skills
-│   │   ├── [business-skill]/          # contract-and-proposal-writer, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
 │   ├── skills-clevel-advisors/        # 10 C-suite advisor skills
-│   │   ├── [advisor-skill]/           # ceo-advisor, cfo-advisor, cto-advisor, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
 │   ├── skills-clevel-operations/      # 18 C-suite operations skills
-│   │   ├── [ops-skill]/              # board-meeting, chief-of-staff, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
-│   ├── skills-devops/                 # 17+ DevOps/infra skills
-│   │   ├── [devops-skill]/            # aws-solution-architect, helm-chart-builder, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
+│   ├── skills-design/                 # 9 design skills
+│   ├── skills-devops/                 # 17 DevOps/infra skills
+│   ├── skills-docs/                   # 13 documentation skills
 │   ├── skills-finance/                # 3 finance skills
-│   │   ├── [finance-skill]/           # financial-analyst, saas-metrics-coach, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
-│   ├── skills-gamedev/                # Skills específicas de gamedev
-│   │   ├── _rules/                    # Path-scoped rules gamedev
-│   │   │   ├── ai-code.md             # NPC behavior trees, perception
-│   │   │   ├── gameplay-code.md       # Delta-time, frame budgets
-│   │   │   ├── engine-code.md         # Zero-alloc, hot paths
-│   │   │   ├── shader-code.md         # Unity/Unreal shaders
-│   │   │   ├── network-code.md        # Server-authoritative, rollback
-│   │   │   ├── ui-code.md             # Game UI, gamepad support
-│   │   │   ├── design-docs.md         # 8-section GDD structure
-│   │   │   └── narrative.md           # Lore canon, dialogue
-│   │   ├── _templates/                # Game-specific templates
-│   │   ├── [gamedev-skill]/           # art-bible, balance-check, doc-gdd, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
-│   ├── skills-git/                    # Git workflow skills
-│   │   ├── [git-skill]/              # changelog, commit, create-pr, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
+│   ├── skills-frontend/               # 9 frontend skills
+│   ├── skills-gamedev/                # 19 gamedev skills + _rules/ + _templates/
+│   ├── skills-git/                    # 21 git workflow skills
+│   ├── skills-integrations/           # 3 integration skills
 │   ├── skills-marketing-content/      # 8 content marketing skills
-│   │   ├── [content-skill]/           # copywriting, content-production, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
 │   ├── skills-marketing-growth/       # 10 growth marketing skills
-│   │   ├── [growth-skill]/            # launch-strategy, paid-ads, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
 │   ├── skills-marketing-seo/          # 11 SEO/CRO skills
-│   │   ├── [seo-skill]/              # seo-audit, page-cro, ai-seo, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
 │   ├── skills-marketing-strategy/     # 15 marketing strategy skills
-│   │   ├── [strategy-skill]/          # pricing-strategy, brand-guidelines, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
+│   ├── skills-mobile/                 # 5 mobile skills
 │   ├── skills-regulatory/             # 13 regulatory/compliance skills
-│   │   ├── [regulatory-skill]/        # gdpr-dsgvo-expert, soc2-compliance, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
+│   ├── skills-release/                # 5 release skills
+│   ├── skills-security/               # 9 security skills
+│   ├── skills-testing/                # 13 testing skills
 │   │
-│   ├── skills-security/               # 9+ security skills
-│   │   ├── [security-skill]/          # ai-security, red-team, cloud-security, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
-│   ├── skills-testing/                # 13+ testing skills
-│   │   ├── [testing-skill]/           # playwright-pro, tdd-guide, qa-plan, etc.
-│   │   │   └── SKILL.md
-│   │   └── ...
-│   │
-│   ├── hooks/                         # Shell scripts para eventos
-│   │   ├── session-start.sh           # Context load (branch, sprint, active.md)
+│   ├── hooks/                         # 14 lifecycle hooks
+│   │   ├── session-start.sh
 │   │   ├── session-stop.sh
-│   │   ├── detect-division.sh         # Multi-stack detection
-│   │   ├── detect-gaps.sh             # Stack-aware doc gap analysis
+│   │   ├── detect-division.sh
+│   │   ├── detect-gaps.sh
 │   │   ├── validate-commit.sh
 │   │   ├── validate-push.sh
 │   │   ├── validate-secrets.sh
@@ -147,66 +89,49 @@ Claude-Code-Arcane/
 │   │   ├── log-agent.sh
 │   │   └── log-agent-stop.sh
 │   │
-│   ├── rules/                         # Path-scoped rules universales (software)
-│   │   ├── backend-code.md            # Clean arch, DI, context, typed errors
-│   │   ├── frontend-code.md           # React/Vue, server state, a11y, i18n
-│   │   ├── api-code.md                # Contract-first, REST/GraphQL, RFC 7807
-│   │   ├── migration-code.md          # Immutable, rollback, online schema
-│   │   ├── infra-code.md              # IaC, K8s, CI/CD, least privilege
-│   │   ├── ai-code.md                 # LLM/ML: prompts, eval, cost, injection
-│   │   ├── data-files.md              # JSON/YAML/TOML schemas
-│   │   ├── test-standards.md          # AAA, isolation, determinism
-│   │   └── prototype-code.md          # Throwaway code boundaries
+│   ├── rules/                         # 9 path-scoped rules
+│   │   ├── backend-code.md
+│   │   ├── frontend-code.md
+│   │   ├── api-code.md
+│   │   ├── migration-code.md
+│   │   ├── infra-code.md
+│   │   ├── ai-code.md
+│   │   ├── data-files.md
+│   │   ├── test-standards.md
+│   │   └── prototype-code.md
 │   │
-│   └── docs/                          # Documentación interna
+│   └── docs/                          # Internal documentation
 │       ├── division-structure.md
 │       ├── agent-hierarchy.md
-│       ├── directory-structure.md
+│       ├── directory-structure.md      # This file
 │       ├── coding-standards.md
 │       ├── technical-preferences.md
 │       ├── coordination-rules.md
 │       ├── context-management.md
 │       ├── workflow-catalog.yaml
 │       ├── stack-registry.md
-│       └── templates/                 # Document templates
+│       └── templates/
 │
-├── src/                               # Código fuente del proyecto
-├── assets/                            # Assets (art, audio, data)
-├── design/                            # Design docs (GDDs, UX, API specs)
-│   ├── gdd/                           # Game design documents
-│   ├── ux/                            # UX specs per screen
-│   ├── api/                           # OpenAPI / GraphQL / .proto contracts
-│   └── registry/                      # Entity/formula registry
+├── docs/                              # Public documentation
+│   ├── SKILLS-CATALOG.md              # Complete skill catalog
+│   └── USER-GUIDE.md                  # User guide
 │
-├── docs/                              # Documentación técnica
-│   ├── architecture/                  # ADRs
-│   ├── engine-reference/              # Engine-specific reference (gamedev)
-│   └── api/                           # API documentation generada
+├── tools/                             # Migration & wrapper scripts
+│   ├── arcane.sh                      # Legacy bash installer
+│   ├── arcane.bat                     # Windows wrapper
+│   └── migrate-*.sh                   # Migration tools
 │
-├── tests/                             # Test suites
-│   ├── unit/
-│   ├── integration/
-│   ├── e2e/
-│   ├── performance/
-│   └── playtest/                      # Gamedev only
-│
-├── tools/                             # Build tools, scripts
-├── prototypes/                        # Throwaway prototypes
-├── skills-selftest/                   # QA framework for Arcane skills/agents themselves
-│   ├── README.md                      # (self-contained, optional — safe to delete)
+├── skills-selftest/                   # QA framework for skills/agents
 │   ├── CLAUDE.md
-│   ├── catalog.yaml                   # Registry: 170 skills + 78 agents
-│   ├── quality-rubric.md              # Category pass/fail metrics
+│   ├── catalog.yaml                   # Registry: 305 skills + 94 agents
+│   ├── quality-rubric.md
 │   ├── skills/[category]/             # Behavioral specs per skill
 │   ├── agents/[tier]/                 # Behavioral specs per agent
-│   ├── templates/                     # Spec templates
-│   └── results/                       # Test run outputs (gitignored)
+│   ├── templates/
+│   └── results/                       # Test outputs (gitignored)
 │
-└── production/                        # Production state
-    ├── session-state/                 # Current session tracking (active.md)
-    ├── sprints/                       # Sprint plans
-    ├── milestones/                    # Milestone tracking
-    └── incidents/                     # Post-mortems
+└── production/                        # Runtime state
+    └── session-state/
 ```
 
 ## Rules Split Policy
