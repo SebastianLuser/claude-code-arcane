@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **169 skills, 59 agents, 14 hooks and 9 rules for Claude Code — selective deploy by profile.**
+> **305 skills, 80 agents, 14 hooks and 9 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness that projects import via CLI. Instead of loading everything into every project, you pick a **profile** that matches your stack and only the relevant tools get installed.
 
@@ -66,6 +66,13 @@ arcane install
 | `+integrations` | GitHub Projects, Slack, Postman | 3 | integrations |
 | `+clickup` | ClickUp via MCP — tasks, docs, time tracking | 3 | — |
 | `+jira` | Jira via REST API — issues, sprints, boards | 3 | — |
+| `+ai` | LLM cost optimization, RAG, ML, data engineering | 7 | ai |
+| `+business` | Contracts, customer success, revenue ops, sales | 4 | business |
+| `+clevel` | C-suite advisors, board prep, strategic ops | 28 | clevel |
+| `+finance` | Investment analysis, financial modeling, SaaS metrics | 3 | business |
+| `+marketing` | Content, growth, SEO/CRO, strategy, analytics | 44 | marketing |
+| `+regulatory` | ISO 13485, GDPR, FDA, SOC 2, ISMS, QMS, MDR | 13 | regulatory |
+| `+self-improving` | Agent self-improvement and skill extraction | 2 | — |
 
 ### Core (always included)
 
@@ -118,6 +125,18 @@ arcane install mobile+agile+clickup+testing
 
 # Secure backend with docs
 arcane install backend-ts+security+docs+database
+
+# AI/ML project with data pipelines
+arcane install backend-go+ai+infra
+
+# SaaS with full marketing stack
+arcane install backend-ts+marketing+business+finance
+
+# Regulated medical device
+arcane install backend-ts+regulatory+security+testing
+
+# Founder advisory setup
+arcane install clevel+business+finance+marketing
 ```
 
 ---
@@ -142,15 +161,20 @@ my-project/.claude/
 ```
 claude-code-arcane/
 ├── arcane/                # Python CLI (installer, profiles, cli)
-├── profiles/              # 20 profiles (.profile)
-├── agents/                # 7 dirs, 59 agents (.md)
+├── profiles/              # 27 profiles (.profile)
+├── agents/                # 12 dirs, 80 agents (.md)
 │   ├── quality/           # Code review, testing, standards
 │   ├── engineering/       # Architecture, API design, performance
 │   ├── game/              # Unity, game design, playtesting
 │   ├── devops/            # CI/CD, infra, monitoring
 │   ├── management/        # Sprint planning, estimation
 │   ├── product/           # UX, design systems, requirements
-│   └── integrations/      # External service agents
+│   ├── integrations/      # External service agents
+│   ├── ai/                # AI/ML architecture, data science
+│   ├── clevel/            # C-suite advisory
+│   ├── business/          # Revenue ops, finance, sales
+│   ├── marketing/         # Content, growth, SEO, analytics
+│   └── regulatory/        # Regulatory affairs, QMS, compliance
 ├── .claude/
 │   ├── skills-git/        # Git, workflow, code review skills
 │   ├── skills-testing/    # Testing skills
@@ -166,6 +190,16 @@ claude-code-arcane/
 │   ├── skills-release/    # Release, versioning skills
 │   ├── skills-security/   # Security audit skills
 │   ├── skills-arcane/     # In-session self-management
+│   ├── skills-ai/         # AI/ML, RAG, data engineering
+│   ├── skills-business/   # Contracts, revenue ops, sales
+│   ├── skills-clevel-advisors/   # C-suite advisors
+│   ├── skills-clevel-operations/ # Board meetings, org health
+│   ├── skills-finance/    # Financial analysis, SaaS metrics
+│   ├── skills-marketing-content/  # Copywriting, social, video
+│   ├── skills-marketing-growth/   # Ads, email, launches
+│   ├── skills-marketing-seo/     # SEO, CRO, site architecture
+│   ├── skills-marketing-strategy/ # Pricing, analytics, PMM
+│   ├── skills-regulatory/ # FDA, GDPR, ISO, SOC 2
 │   ├── hooks/             # 14 lifecycle hooks
 │   └── rules/             # 9 rules
 └── tools/                 # Migration scripts

@@ -1,6 +1,7 @@
 version: 4
 last_updated: "2026-04-17"
 # v4: regenerated from filesystem 2026-04-17 to match actual 147 skills + 73 agents.
+# v4.1: added 21 agents for 5 new divisions (ai, clevel, business, marketing, regulatory).
 #     Removed 17 phantom entries. Added 92 missing skills + 29 missing agents.
 #     Previous v3 history preserved for entries that still exist.
 skills:
@@ -2457,6 +2458,189 @@ agents:
   - name: api-tools-specialist
     spec: null
     division: integrations
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  # =====================================================
+  # Division: ai (4 agents) — AI & data science
+  # =====================================================
+  - name: ai-architect
+    spec: null
+    division: ai
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: directors
+
+  - name: ml-engineer
+    spec: null
+    division: ai
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: data-scientist
+    spec: null
+    division: ai
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: data-engineer
+    spec: null
+    division: ai
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  # =====================================================
+  # Division: clevel (6 agents) — C-suite advisory
+  # =====================================================
+  - name: chief-of-staff
+    spec: null
+    division: clevel
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: directors
+
+  - name: ceo-advisor
+    spec: null
+    division: clevel
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: cfo-advisor
+    spec: null
+    division: clevel
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: cto-advisor
+    spec: null
+    division: clevel
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: cmo-advisor
+    spec: null
+    division: clevel
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  - name: coo-advisor
+    spec: null
+    division: clevel
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: leads
+
+  # =====================================================
+  # Division: business (3 agents) — business & finance
+  # =====================================================
+  - name: business-ops-lead
+    spec: null
+    division: business
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: leads
+
+  - name: financial-analyst
+    spec: null
+    division: business
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: sales-engineer
+    spec: null
+    division: business
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  # =====================================================
+  # Division: marketing (5 agents) — marketing execution
+  # =====================================================
+  - name: marketing-director
+    spec: null
+    division: marketing
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: directors
+
+  - name: content-lead
+    spec: null
+    division: marketing
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: leads
+
+  - name: growth-lead
+    spec: null
+    division: marketing
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: leads
+
+  - name: seo-lead
+    spec: null
+    division: marketing
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: leads
+
+  - name: marketing-analyst
+    spec: null
+    division: marketing
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: leads
+
+  # =====================================================
+  # Division: regulatory (3 agents) — regulatory & compliance
+  # =====================================================
+  - name: regulatory-director
+    spec: null
+    division: regulatory
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: directors
+
+  - name: quality-manager
+    spec: null
+    division: regulatory
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: compliance-officer
+    spec: null
+    division: regulatory
     last_static: ""
     last_spec: ""
     priority: medium

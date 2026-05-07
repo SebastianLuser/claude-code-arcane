@@ -11,6 +11,11 @@ SKILLS=(
   owasp-top10-check
   secret-management
   backup-strategy
+  ai-security
+  cloud-security
+  red-team
+  security-pen-testing
+  threat-detection
 )
 
 RULES_UNIVERSAL=()
