@@ -1,6 +1,7 @@
 ---
 name: copy-editing
 description: "Systematic copy editing via seven focused sweeps — clarity, voice, so-what, proof, specificity, emotion, zero-risk. For new copy use copywriting."
+argument-hint: ""
 category: "marketing-content"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

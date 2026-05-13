@@ -1,6 +1,7 @@
 ---
 name: senior-ml-engineer
 description: "ML engineering for productionizing models, building MLOps pipelines, and integrating LLMs. Covers deployment, feature stores, drift monitoring, RAG systems, and cost optimization."
+argument-hint: ""
 category: "ai"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

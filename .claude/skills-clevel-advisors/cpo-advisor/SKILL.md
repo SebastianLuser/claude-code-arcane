@@ -1,6 +1,7 @@
 ---
 name: cpo-advisor
 description: "Product leadership for scaling companies. Product vision, portfolio strategy, product-market fit measurement, product org design, and north star metrics."
+argument-hint: ""
 category: "clevel-advisors"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

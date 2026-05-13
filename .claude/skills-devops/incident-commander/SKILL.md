@@ -1,6 +1,7 @@
 ---
 name: incident-commander
 description: "Manage technology incidents end-to-end: severity classification, timeline reconstruction, stakeholder communication, and post-incident review with RCA frameworks."
+argument-hint: ""
 category: "devops"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

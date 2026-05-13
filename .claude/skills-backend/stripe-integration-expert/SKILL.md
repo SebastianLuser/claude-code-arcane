@@ -1,6 +1,7 @@
 ---
 name: stripe-integration-expert
 description: "Implement production-grade Stripe integrations: subscriptions with trials and proration, one-time payments, usage-based billing, checkout sessions, idempotent webhook handlers, customer portal, and invoicing."
+argument-hint: ""
 category: "backend"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

@@ -1,6 +1,7 @@
 ---
 name: llm-cost-optimizer
 description: "Reduce LLM API spend by 40-80% through model routing, prompt caching, compression, and cost observability without degrading user-facing quality."
+argument-hint: ""
 category: "ai"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: cloud-security
 description: "Assess cloud infrastructure for IAM privilege escalation, public storage exposure, open security groups, and IaC security gaps across AWS, Azure, and GCP with MITRE ATT&CK mapping."
+argument-hint: ""
 category: "security"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

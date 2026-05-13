@@ -1,6 +1,7 @@
 ---
 name: quality-manager-qmr
 description: "QMR governance — management review, quality KPIs, quality objectives, regulatory compliance oversight, and quality culture per ISO 13485 Clause 5.5.2."
+argument-hint: ""
 category: "regulatory"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

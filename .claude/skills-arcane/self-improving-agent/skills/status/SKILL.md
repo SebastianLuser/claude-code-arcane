@@ -1,6 +1,7 @@
 ---
 name: status
 description: "Memory health dashboard showing line counts, topic files, capacity, stale entries, and recommendations."
+argument-hint: ""
 category: "arcane"
 user-invocable: false
 allowed-tools: Read, Glob, Grep, Bash

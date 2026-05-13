@@ -1,6 +1,7 @@
 ---
 name: popup-cro
 description: "Create and optimize popups, modals, exit-intent overlays, slide-ins, and banners for lead capture and conversion."
+argument-hint: ""
 category: "marketing-seo"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

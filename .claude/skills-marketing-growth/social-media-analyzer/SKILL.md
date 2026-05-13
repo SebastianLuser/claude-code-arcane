@@ -1,6 +1,7 @@
 ---
 name: social-media-analyzer
 description: "Analyze social media campaign performance — engagement rates, ROI, platform benchmarks, top/bottom performers, and recommendations."
+argument-hint: ""
 category: "marketing-growth"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

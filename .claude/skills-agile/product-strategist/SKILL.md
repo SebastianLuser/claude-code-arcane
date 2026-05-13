@@ -1,6 +1,7 @@
 ---
 name: product-strategist
 description: "Strategic product leadership toolkit for OKR cascade generation, quarterly planning, competitive landscape analysis, product vision documents, and team scaling proposals."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

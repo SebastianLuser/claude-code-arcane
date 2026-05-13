@@ -1,6 +1,7 @@
 ---
 name: strategic-alignment
 description: "Cascades strategy from boardroom to individual contributor. Detects and fixes misalignment between company goals and team execution through orphan goal detection, silo identification, and realignment protocols."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

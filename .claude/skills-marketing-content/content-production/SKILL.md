@@ -1,6 +1,7 @@
 ---
 name: content-production
 description: "Full content production pipeline — research, brief, draft, optimize, and publish blog posts, articles, and guides end-to-end."
+argument-hint: ""
 category: "marketing-content"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

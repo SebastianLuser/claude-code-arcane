@@ -1,6 +1,7 @@
 ---
 name: x-twitter-growth
 description: "X/Twitter growth engine — algorithm mechanics, thread engineering, reply strategy, profile optimization, and competitive intelligence."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

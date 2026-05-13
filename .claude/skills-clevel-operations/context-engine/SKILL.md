@@ -1,6 +1,7 @@
 ---
 name: context-engine
 description: "Loads and manages company context for all C-suite advisor skills. Reads company-context.md, detects stale context, enriches context during conversations, and enforces privacy/anonymization rules."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: org-health-diagnostic
 description: "Cross-functional organizational health check combining signals from all C-suite roles. Scores 8 dimensions on a traffic-light scale with drill-down recommendations."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

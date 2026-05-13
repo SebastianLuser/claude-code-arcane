@@ -1,6 +1,7 @@
 ---
 name: atlassian-templates
 description: "Creates, modifies, and manages Jira and Confluence templates, blueprints, custom layouts, and standardized content structures for org-wide consistency."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

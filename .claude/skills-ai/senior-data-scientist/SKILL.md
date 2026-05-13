@@ -1,6 +1,7 @@
 ---
 name: senior-data-scientist
 description: "Statistical modeling, experiment design, causal inference, and predictive analytics. Covers A/B testing, feature engineering, model evaluation with SHAP, and MLflow tracking."
+argument-hint: ""
 category: "ai"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

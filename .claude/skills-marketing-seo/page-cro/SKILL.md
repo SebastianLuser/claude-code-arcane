@@ -1,6 +1,7 @@
 ---
 name: page-cro
 description: "Optimize conversion rates on marketing pages — homepage, landing, pricing, feature, and blog. For signup flows see signup-flow-cro."
+argument-hint: ""
 category: "marketing-seo"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

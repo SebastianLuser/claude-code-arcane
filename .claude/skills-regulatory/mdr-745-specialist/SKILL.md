@@ -1,6 +1,7 @@
 ---
 name: mdr-745-specialist
 description: "EU MDR 2017/745 compliance — device classification, technical documentation, clinical evidence, post-market surveillance, and EUDAMED."
+argument-hint: ""
 category: "regulatory"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

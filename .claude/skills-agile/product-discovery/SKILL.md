@@ -1,6 +1,7 @@
 ---
 name: product-discovery
 description: "Run structured discovery to validate product opportunities, map assumptions, plan discovery sprints, and test problem-solution fit before committing delivery resources."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

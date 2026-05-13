@@ -1,6 +1,7 @@
 ---
 name: customer-success-manager
 description: "Monitor customer health, predict churn risk, and identify expansion opportunities using weighted scoring models for SaaS customer success. Three Python CLI tools produce health scores, churn risk tiers, and expansion recommendations."
+argument-hint: ""
 category: "business"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

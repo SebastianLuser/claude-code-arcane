@@ -1,6 +1,7 @@
 ---
 name: snowflake-development
 description: "Snowflake SQL, data pipelines (Dynamic Tables, Streams+Tasks), Cortex AI functions, Snowpark Python, and dbt integration. Covers the colon-prefix rule, semi-structured data, MERGE upserts, performance tuning, and security hardening."
+argument-hint: ""
 category: "backend"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

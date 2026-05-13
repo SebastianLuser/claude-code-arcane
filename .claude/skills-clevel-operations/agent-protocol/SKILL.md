@@ -1,6 +1,7 @@
 ---
 name: agent-protocol
 description: "Inter-agent communication protocol for C-suite agent teams. Defines invocation syntax, loop prevention, isolation rules, response formats, and quality loops."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

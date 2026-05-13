@@ -1,6 +1,7 @@
 ---
 name: form-cro
 description: "Optimize lead capture, contact, demo request, and checkout forms — field audit, layout, copy, and mobile optimization."
+argument-hint: ""
 category: "marketing-seo"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

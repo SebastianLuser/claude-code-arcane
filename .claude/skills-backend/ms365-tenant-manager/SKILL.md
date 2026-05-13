@@ -1,6 +1,7 @@
 ---
 name: ms365-tenant-manager
 description: "Automate Microsoft 365 tenant setup, Azure AD user management, Exchange Online configuration, security policies, and compliance reporting with PowerShell scripts for Global Administrators."
+argument-hint: ""
 category: "backend"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

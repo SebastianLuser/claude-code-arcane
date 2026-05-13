@@ -1,6 +1,7 @@
 ---
 name: cmo-advisor
 description: "Marketing leadership for scaling companies. Brand positioning, growth model design, marketing budget allocation, channel mix optimization, and marketing org design."
+argument-hint: ""
 category: "clevel-advisors"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

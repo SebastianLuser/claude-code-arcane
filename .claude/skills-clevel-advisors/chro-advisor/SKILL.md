@@ -1,6 +1,7 @@
 ---
 name: chro-advisor
 description: "People leadership for scaling companies. Hiring strategy, compensation design, org structure, culture, retention, and performance management."
+argument-hint: ""
 category: "clevel-advisors"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

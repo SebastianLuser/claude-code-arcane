@@ -1,6 +1,7 @@
 ---
 name: information-security-manager-iso27001
 description: "ISO 27001 ISMS implementation — security risk assessment, control implementation, certification, incident response, and compliance verification."
+argument-hint: ""
 category: "regulatory"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

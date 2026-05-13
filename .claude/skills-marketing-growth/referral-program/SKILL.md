@@ -1,6 +1,7 @@
 ---
 name: referral-program
 description: "Design, launch, and optimize referral and affiliate programs — loop mechanics, incentive design, share flows, and measurement."
+argument-hint: ""
 category: "marketing-growth"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

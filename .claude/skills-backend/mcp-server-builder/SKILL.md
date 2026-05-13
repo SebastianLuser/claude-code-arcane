@@ -1,6 +1,7 @@
 ---
 name: mcp-server-builder
 description: "Design and ship production-ready MCP servers from OpenAPI contracts. Scaffolds Python/TypeScript servers, enforces schema quality, validates tool manifests, and manages versioning for safe evolution."
+argument-hint: ""
 category: "backend"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

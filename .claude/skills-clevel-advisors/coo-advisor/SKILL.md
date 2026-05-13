@@ -1,6 +1,7 @@
 ---
 name: coo-advisor
 description: "Operations leadership for scaling companies. Process design, OKR execution, operational cadence, scaling playbooks, and cross-functional coordination."
+argument-hint: ""
 category: "clevel-advisors"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

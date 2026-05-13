@@ -1,6 +1,7 @@
 ---
 name: rag-architect
 description: "Design, implement, and optimize production-grade RAG pipelines covering document chunking, embedding model selection, vector databases, retrieval strategies, and evaluation frameworks."
+argument-hint: ""
 category: "ai"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

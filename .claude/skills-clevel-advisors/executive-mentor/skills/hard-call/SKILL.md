@@ -1,6 +1,7 @@
 ---
 name: hard-call
 description: "Framework for decisions with no good options sub-skill. Covers reversibility testing, stakeholder impact mapping, and communication planning for layoffs, pivots, and firings."
+argument-hint: ""
 category: "clevel-advisors"
 user-invocable: false
 allowed-tools: Read, Glob, Grep, Bash

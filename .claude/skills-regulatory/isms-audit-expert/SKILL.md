@@ -1,6 +1,7 @@
 ---
 name: isms-audit-expert
 description: "ISMS audit management for ISO 27001 — audit planning, control assessment, finding classification, and certification support."
+argument-hint: ""
 category: "regulatory"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

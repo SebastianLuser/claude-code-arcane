@@ -1,6 +1,7 @@
 ---
 name: team-communications
 description: "Write internal company communications: 3P updates, newsletters, FAQ roundups, incident reports, leadership updates, status reports, and general internal comms."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

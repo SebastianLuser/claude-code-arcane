@@ -1,6 +1,7 @@
 ---
 name: pricing-strategy
 description: "Design, optimize, and communicate SaaS pricing — tier structure, value metrics, pricing pages, and price increase strategy."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

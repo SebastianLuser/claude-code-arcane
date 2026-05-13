@@ -1,6 +1,7 @@
 ---
 name: paid-ads
 description: "Create, optimize, and scale paid ad campaigns on Google Ads, Meta, LinkedIn, Twitter/X, TikTok — strategy, copy, targeting, and optimization."
+argument-hint: ""
 category: "marketing-growth"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

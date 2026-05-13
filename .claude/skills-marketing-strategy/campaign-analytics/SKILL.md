@@ -1,6 +1,7 @@
 ---
 name: campaign-analytics
 description: "Analyze campaign performance with multi-touch attribution, funnel conversion analysis, and ROI calculation across channels."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

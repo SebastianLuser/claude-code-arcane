@@ -1,6 +1,7 @@
 ---
 name: risk-management-specialist
 description: "ISO 14971 risk management for medical devices — risk analysis, FMEA, risk evaluation, risk control, and post-production monitoring."
+argument-hint: ""
 category: "regulatory"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

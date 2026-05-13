@@ -1,6 +1,7 @@
 ---
 name: company-os
 description: "Meta-framework for how a company runs. Operating system selection (EOS, Scaling Up, OKR-native, hybrid), accountability charts, scorecards, meeting pulse, issue resolution, and 90-day rocks."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

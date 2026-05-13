@@ -1,6 +1,7 @@
 ---
 name: postmortem
 description: "Honest post-mortem analysis sub-skill. Rigorous investigation of system failures using 5 Whys, root cause vs contributing factors, and owned change registers."
+argument-hint: ""
 category: "clevel-advisors"
 user-invocable: false
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: incident-response
 description: "Classify and triage security incidents through the full NIST SP 800-61 lifecycle: SEV1-4 severity scoring, false positive filtering, forensic evidence collection, and escalation routing."
+argument-hint: ""
 category: "devops"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

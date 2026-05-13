@@ -1,6 +1,7 @@
 ---
 name: onboarding-cro
 description: "Optimize post-signup onboarding, user activation, and time-to-value — checklists, empty states, guided tours, and email coordination."
+argument-hint: ""
 category: "marketing-seo"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

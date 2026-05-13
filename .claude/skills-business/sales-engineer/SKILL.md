@@ -1,6 +1,7 @@
 ---
 name: sales-engineer
 description: "Analyze RFP/RFI responses for coverage gaps, build competitive feature comparison matrices, and plan proof-of-concept engagements for pre-sales engineering. Covers bid/no-bid decisions, demo preparation, and technical proposals."
+argument-hint: ""
 category: "business"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

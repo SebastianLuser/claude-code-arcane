@@ -1,6 +1,7 @@
 ---
 name: gdpr-dsgvo-expert
 description: "GDPR and German DSGVO compliance — codebase privacy scanning, DPIA generation, data subject rights tracking, and compliance workflows."
+argument-hint: ""
 category: "regulatory"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

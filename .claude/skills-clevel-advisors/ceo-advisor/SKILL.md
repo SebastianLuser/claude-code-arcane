@@ -1,6 +1,7 @@
 ---
 name: ceo-advisor
 description: "Executive leadership guidance for strategic decision-making, organizational development, and stakeholder management. Covers vision, fundraising, board management, culture, and capital allocation."
+argument-hint: ""
 category: "clevel-advisors"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

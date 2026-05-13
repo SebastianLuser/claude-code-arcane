@@ -1,6 +1,7 @@
 ---
 name: content-humanizer
 description: "Transform AI-generated content into authentic human writing — detect AI patterns, fix rhythm, inject brand voice. NOT for initial creation."
+argument-hint: ""
 category: "marketing-content"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

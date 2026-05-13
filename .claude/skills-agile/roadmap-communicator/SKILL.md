@@ -1,6 +1,7 @@
 ---
 name: roadmap-communicator
 description: "Create clear roadmap communication artifacts -- presentations, stakeholder updates, release notes, changelogs, and feature announcements tailored for executives, engineering, and customers."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

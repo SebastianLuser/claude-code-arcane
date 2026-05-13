@@ -1,6 +1,7 @@
 ---
 name: atlassian-admin
 description: "Atlassian Administrator for managing Jira, Confluence, Bitbucket users, permissions, security, integrations, SSO, and org-wide governance."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

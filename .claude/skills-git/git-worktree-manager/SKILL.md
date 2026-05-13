@@ -1,6 +1,7 @@
 ---
 name: git-worktree-manager
 description: "Run parallel feature work safely with Git worktrees. Standardizes branch isolation, port allocation, environment sync, and cleanup so each worktree behaves like an independent local app."
+argument-hint: ""
 category: "git"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

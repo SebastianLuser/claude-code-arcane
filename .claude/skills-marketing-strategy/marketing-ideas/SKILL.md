@@ -1,6 +1,7 @@
 ---
 name: marketing-ideas
 description: "139 proven marketing ideas organized by category, stage, and budget for SaaS and software products."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: research-summarizer
 description: "Structured research summarization: turns dense papers, articles, and reports into actionable briefs with key findings, comparative analyses, and properly formatted citations."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

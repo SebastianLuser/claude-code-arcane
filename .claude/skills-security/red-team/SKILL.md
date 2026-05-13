@@ -1,6 +1,7 @@
 ---
 name: red-team
 description: "Plan and execute authorized red team engagements: MITRE ATT&CK kill-chain planning, technique scoring, choke point identification, OPSEC risk assessment, and crown jewel targeting."
+argument-hint: ""
 category: "security"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: email-sequence
 description: "Create and optimize email sequences — welcome, nurture, re-engagement, post-purchase, and lifecycle drip campaigns. For cold outreach see cold-email."
+argument-hint: ""
 category: "marketing-growth"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

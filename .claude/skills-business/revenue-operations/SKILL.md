@@ -1,6 +1,7 @@
 ---
 name: revenue-operations
 description: "Analyze sales pipeline health, revenue forecasting accuracy, and go-to-market efficiency metrics for SaaS revenue optimization. Calculates pipeline coverage, MAPE, Magic Number, LTV:CAC, and Rule of 40."
+argument-hint: ""
 category: "business"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

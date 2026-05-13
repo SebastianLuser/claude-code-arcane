@@ -1,6 +1,7 @@
 ---
 name: cs-onboard
 description: "Founder onboarding interview that captures company context across 7 dimensions. Generates company-context.md used by all C-suite advisor skills."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

@@ -1,6 +1,7 @@
 ---
 name: ai-security
 description: "Assess AI/ML systems for prompt injection, jailbreak vulnerabilities, model inversion, data poisoning, and agent tool abuse with MITRE ATLAS technique mapping."
+argument-hint: ""
 category: "security"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

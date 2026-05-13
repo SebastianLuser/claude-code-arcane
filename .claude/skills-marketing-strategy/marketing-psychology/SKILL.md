@@ -1,6 +1,7 @@
 ---
 name: marketing-psychology
 description: "Apply psychological principles, mental models, and behavioral science to marketing — 70+ models for conversion, pricing, copy, and growth."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

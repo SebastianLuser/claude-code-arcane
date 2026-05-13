@@ -1,6 +1,7 @@
 ---
 name: free-tool-strategy
 description: "Evaluate, design, and launch free tools for marketing — calculators, generators, checkers, graders for lead gen, SEO, and brand awareness."
+argument-hint: ""
 category: "marketing-growth"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

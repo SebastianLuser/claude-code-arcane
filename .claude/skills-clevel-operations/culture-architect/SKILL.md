@@ -1,6 +1,7 @@
 ---
 name: culture-architect
 description: "Build, measure, and evolve company culture as operational behavior. Mission/vision/values workshops, values-to-behaviors translation, culture code creation, culture health assessment, and cultural rituals by stage."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

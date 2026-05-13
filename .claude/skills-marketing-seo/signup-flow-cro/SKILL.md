@@ -1,6 +1,7 @@
 ---
 name: signup-flow-cro
 description: "Optimize signup, registration, and trial activation flows — reduce friction, increase completion, set up successful activation."
+argument-hint: ""
 category: "marketing-seo"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

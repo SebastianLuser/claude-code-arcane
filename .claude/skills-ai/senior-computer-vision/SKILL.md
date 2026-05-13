@@ -1,6 +1,7 @@
 ---
 name: senior-computer-vision
 description: "Computer vision engineering for object detection, image segmentation, and visual AI systems. Covers YOLO, Faster R-CNN, DETR, Mask R-CNN, SAM, and production deployment with ONNX/TensorRT."
+argument-hint: ""
 category: "ai"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

@@ -1,6 +1,7 @@
 ---
 name: scrum-master
 description: "Data-driven Scrum Master for sprint analytics, Monte Carlo forecasting, multi-dimension health scoring, and retrospective action-item tracking using Python analysis scripts."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: board-meeting
 description: "Multi-agent board meeting protocol for strategic decisions. Runs a structured 6-phase deliberation: context loading, independent C-suite contributions, critic analysis, synthesis, founder review, and decision extraction."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

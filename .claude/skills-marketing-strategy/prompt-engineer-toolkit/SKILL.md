@@ -1,6 +1,7 @@
 ---
 name: prompt-engineer-toolkit
 description: "A/B test prompts, version them, and build reusable templates for marketing AI workflows. Covers evaluation, regression, and rollout."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

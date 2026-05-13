@@ -1,6 +1,7 @@
 ---
 name: meeting-analyzer
 description: "Analyzes meeting transcripts to surface behavioral patterns, communication anti-patterns, and actionable coaching feedback on speaking dynamics, conflict, and facilitation."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

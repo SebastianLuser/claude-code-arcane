@@ -1,6 +1,7 @@
 ---
 name: product-analytics
 description: "Define, track, and interpret product metrics across discovery, growth, and mature stages. Covers KPI frameworks, dashboard design, cohort analysis, and retention interpretation."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

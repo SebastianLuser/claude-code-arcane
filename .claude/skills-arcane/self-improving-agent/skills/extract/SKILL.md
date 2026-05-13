@@ -1,6 +1,7 @@
 ---
 name: extract
 description: "Turn a proven pattern or debugging solution into a standalone reusable skill with SKILL.md, reference docs, and examples."
+argument-hint: ""
 category: "arcane"
 user-invocable: false
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
@@ -79,6 +80,7 @@ The generated SKILL.md must follow this format:
 ---
 name: "skill-name"
 description: "<one-line description>. Use when: <trigger conditions>."
+argument-hint: ""
 ---
 
 # <Skill Title>

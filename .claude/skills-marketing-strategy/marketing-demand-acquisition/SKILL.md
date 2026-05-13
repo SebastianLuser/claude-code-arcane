@@ -1,6 +1,7 @@
 ---
 name: marketing-demand-acquisition
 description: "Demand generation and acquisition playbook for Series A+ startups — paid media, SEO, partnerships, attribution, and MQL/SQL workflows."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -4,6 +4,7 @@ description: >-
   Migrate from Cypress or Selenium to Playwright. Use when user mentions
   "cypress", "selenium", "migrate tests", "convert tests", "switch to
   playwright", "move from cypress", or "replace selenium".
+argument-hint: ""
 ---
 
 # Migrate to Playwright

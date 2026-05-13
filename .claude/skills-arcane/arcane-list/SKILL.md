@@ -1,6 +1,7 @@
 ---
 name: arcane-list
 description: "List all available Arcane profiles and skills from the source repo, marking installed ones."
+argument-hint: ""
 category: "arcane"
 user-invocable: true
 allowed-tools: Read, Bash, Glob, Grep

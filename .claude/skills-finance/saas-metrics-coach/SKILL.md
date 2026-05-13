@@ -1,6 +1,7 @@
 ---
 name: saas-metrics-coach
 description: "SaaS financial health advisor: calculates ARR, MRR, churn, LTV, CAC, NRR from raw numbers and benchmarks against industry standards by stage and segment."
+argument-hint: ""
 category: "finance"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

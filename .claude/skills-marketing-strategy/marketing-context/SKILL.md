@@ -1,6 +1,7 @@
 ---
 name: marketing-context
 description: "Create and maintain the marketing context document — positioning, messaging, ICP, brand voice — that all marketing skills read before starting."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

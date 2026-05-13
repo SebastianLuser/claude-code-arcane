@@ -1,6 +1,7 @@
 ---
 name: arcane-clean
 description: "Remove the entire Arcane installation from the current project."
+argument-hint: ""
 category: "arcane"
 user-invocable: true
 allowed-tools: Read, Bash

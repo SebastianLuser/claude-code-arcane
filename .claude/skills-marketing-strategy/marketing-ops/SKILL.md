@@ -1,6 +1,7 @@
 ---
 name: marketing-ops
 description: "Central router for the marketing skill ecosystem. Routes questions to the right skill, orchestrates multi-skill campaigns, and runs cross-functional audits."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

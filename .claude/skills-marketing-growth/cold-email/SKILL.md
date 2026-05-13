@@ -1,6 +1,7 @@
 ---
 name: cold-email
 description: "Write and optimize B2B cold outreach emails and follow-up sequences. For lifecycle/nurture emails to opted-in subscribers use email-sequence."
+argument-hint: ""
 category: "marketing-growth"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

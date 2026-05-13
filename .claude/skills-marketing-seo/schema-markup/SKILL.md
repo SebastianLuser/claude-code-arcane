@@ -1,6 +1,7 @@
 ---
 name: schema-markup
 description: "Implement, audit, and validate JSON-LD schema markup — rich results, AI search visibility, and structured data for all page types."
+argument-hint: ""
 category: "marketing-seo"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

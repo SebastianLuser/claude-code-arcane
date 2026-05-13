@@ -1,6 +1,7 @@
 ---
 name: launch-strategy
 description: "Plan product launches, feature announcements, and release strategies — phased launches, channel strategy, Product Hunt, and momentum."
+argument-hint: ""
 category: "marketing-growth"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

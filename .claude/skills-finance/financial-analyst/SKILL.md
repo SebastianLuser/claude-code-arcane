@@ -1,6 +1,7 @@
 ---
 name: financial-analyst
 description: "Financial ratio analysis, DCF valuation, budget variance analysis, and rolling forecast construction for strategic decision-making."
+argument-hint: ""
 category: "finance"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: ai-seo
 description: "Optimize content to get cited by AI search engines — ChatGPT, Perplexity, Google AI Overviews, Claude, Gemini, Copilot. GEO / AI SEO."
+argument-hint: ""
 category: "marketing-seo"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

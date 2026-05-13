@@ -1,6 +1,7 @@
 ---
 name: ab-test-setup
 description: "Plan, design, and implement A/B tests and experiments with statistical rigor. Covers hypothesis frameworks, sample sizing, metrics, and result analysis."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: founder-coach
 description: "Personal leadership development for founders and first-time CEOs. Founder archetype identification, delegation frameworks, energy management, CEO calendar audits, and leadership style evolution."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

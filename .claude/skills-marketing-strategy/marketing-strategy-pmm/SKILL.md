@@ -1,6 +1,7 @@
 ---
 name: marketing-strategy-pmm
 description: "Product marketing — positioning (April Dunford), GTM strategy, competitive intelligence, launch playbooks, and international market entry."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

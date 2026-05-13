@@ -1,6 +1,7 @@
 ---
 name: competitive-teardown
 description: "Analyzes competitor products by synthesizing pricing, reviews, job postings, SEO, and social data into structured competitive intelligence with scoring, SWOT, and action roadmaps."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

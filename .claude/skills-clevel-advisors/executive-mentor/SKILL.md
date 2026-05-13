@@ -1,6 +1,7 @@
 ---
 name: executive-mentor
 description: "Adversarial thinking partner for founders and executives. Stress-tests plans, prepares for board meetings, dissects decisions with no good options, and forces honest post-mortems."
+argument-hint: ""
 category: "clevel-advisors"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

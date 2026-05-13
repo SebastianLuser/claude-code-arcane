@@ -1,6 +1,7 @@
 ---
 name: experiment-designer
 description: "Plan product experiments, write testable hypotheses, estimate sample size, prioritize tests with ICE scoring, and interpret A/B outcomes with practical statistical rigor."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

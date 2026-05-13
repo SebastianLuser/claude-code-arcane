@@ -1,6 +1,7 @@
 ---
 name: self-improving-agent
 description: "Curate Claude Code's auto-memory into durable project knowledge. Analyze MEMORY.md for patterns, promote proven learnings to CLAUDE.md and .claude/rules/, extract recurring solutions into reusable skills."
+argument-hint: ""
 category: "arcane"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

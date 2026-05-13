@@ -1,6 +1,7 @@
 ---
 name: programmatic-seo
 description: "Build SEO-optimized pages at scale using templates and data — directory, location, comparison, integration, and persona pages."
+argument-hint: ""
 category: "marketing-seo"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

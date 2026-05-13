@@ -1,6 +1,7 @@
 ---
 name: intl-expansion
 description: "International market expansion strategy. Market selection scoring, entry modes, localization checklists, regulatory compliance, and go-to-market by region."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: gcp-cloud-architect
 description: "Design GCP architectures with Terraform IaC, Cloud Run, GKE, BigQuery pipelines, cost optimization, and Cloud Build CI/CD for startups and enterprises."
+argument-hint: ""
 category: "devops"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

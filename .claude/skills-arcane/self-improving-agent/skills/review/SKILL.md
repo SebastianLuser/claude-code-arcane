@@ -1,6 +1,7 @@
 ---
 name: review
 description: "Analyze auto-memory for promotion candidates, stale entries, consolidation opportunities, and health metrics."
+argument-hint: ""
 category: "arcane"
 user-invocable: false
 allowed-tools: Read, Glob, Grep, Bash

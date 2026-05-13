@@ -4,7 +4,7 @@ Repo de configuración: skills, agentes, hooks y rules para Claude Code. No es s
 
 ## Stack
 
-Markdown (skills, agents, rules, docs) + Bash (hooks, migration tools). QA: `skills-selftest/`. Estructura: `.claude/docs/directory-structure.md`
+Markdown (skills, agents, rules, docs) + Bash (hooks, migration tools) + Python (skill scripts/helpers). QA: `skills-selftest/`. Estructura: `.claude/docs/directory-structure.md`
 
 ## Reglas
 

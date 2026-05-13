@@ -1,6 +1,7 @@
 ---
 name: content-creator
 description: "Deprecated redirect skill — routes legacy 'content creator' requests to content-production (writing/SEO/brand-voice) or content-strategy (planning/calendar)."
+argument-hint: ""
 category: "marketing-content"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

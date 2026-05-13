@@ -1,6 +1,7 @@
 ---
 name: tech-stack-evaluator
 description: "Evaluate and compare technology stacks, frameworks, and cloud providers with weighted scoring, TCO analysis, security assessment, ecosystem health scoring, and migration planning."
+argument-hint: ""
 category: "backend"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

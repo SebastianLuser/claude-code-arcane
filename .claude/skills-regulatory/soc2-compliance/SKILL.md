@@ -1,6 +1,7 @@
 ---
 name: soc2-compliance
 description: "SOC 2 Type I and Type II compliance — Trust Service Criteria mapping, control matrices, gap analysis, evidence collection, and audit readiness."
+argument-hint: ""
 category: "regulatory"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

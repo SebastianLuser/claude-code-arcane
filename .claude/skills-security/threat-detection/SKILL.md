@@ -1,6 +1,7 @@
 ---
 name: threat-detection
 description: "Proactive threat hunting with hypothesis scoring, IOC sweep generation, z-score anomaly detection, and MITRE ATT&CK signal prioritization across SIEM/EDR telemetry."
+argument-hint: ""
 category: "security"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

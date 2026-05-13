@@ -1,6 +1,7 @@
 ---
 name: ciso-advisor
 description: "Security leadership for growth-stage companies. Risk quantification in dollars, compliance roadmap, security architecture strategy, incident response leadership, and board-level security reporting."
+argument-hint: ""
 category: "clevel-advisors"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

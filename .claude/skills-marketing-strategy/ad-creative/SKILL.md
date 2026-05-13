@@ -1,6 +1,7 @@
 ---
 name: ad-creative
 description: "Generate, iterate, and scale ad creative for paid advertising across Google, Meta, LinkedIn, and X. Covers platform specs, creative frameworks, and quality validation."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

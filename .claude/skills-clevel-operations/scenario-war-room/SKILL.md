@@ -1,6 +1,7 @@
 ---
 name: scenario-war-room
 description: "Cross-functional what-if modeling for cascading multi-variable scenarios. Models compound adversity across all business functions simultaneously."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

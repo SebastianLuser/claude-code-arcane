@@ -1,6 +1,7 @@
 ---
 name: aws-solution-architect
 description: "Design AWS architectures with CloudFormation/CDK IaC, serverless patterns, cost optimization, and CI/CD for Lambda, API Gateway, DynamoDB, ECS, and Aurora."
+argument-hint: ""
 category: "devops"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

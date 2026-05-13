@@ -1,6 +1,7 @@
 ---
 name: ma-playbook
 description: "M&A strategy for acquiring companies or being acquired. Due diligence, valuation, integration, and deal structure frameworks."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

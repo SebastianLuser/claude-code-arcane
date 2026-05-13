@@ -1,6 +1,7 @@
 ---
 name: senior-data-engineer
 description: "Build scalable data pipelines, ETL/ELT systems, and data infrastructure with Python, SQL, Spark, Airflow, dbt, and Kafka. Covers data modeling, orchestration, quality, and DataOps."
+argument-hint: ""
 category: "ai"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

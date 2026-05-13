@@ -1,6 +1,7 @@
 ---
 name: decision-logger
 description: "Two-layer memory architecture for board meeting decisions. Manages raw transcripts (Layer 1) and approved decisions (Layer 2). Invoked automatically after board-meeting Phase 5 founder approval."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

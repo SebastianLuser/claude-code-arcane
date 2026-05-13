@@ -1,6 +1,7 @@
 ---
 name: video-content-strategist
 description: "Plan video content strategy, write scripts, optimize YouTube channels, build short-form video pipelines, and repurpose content into video."
+argument-hint: ""
 category: "marketing-content"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

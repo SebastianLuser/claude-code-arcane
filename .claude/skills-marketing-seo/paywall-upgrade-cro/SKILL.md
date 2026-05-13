@@ -1,6 +1,7 @@
 ---
 name: paywall-upgrade-cro
 description: "Optimize in-app paywalls, upgrade screens, upsell modals, and feature gates — convert free to paid at the right moment."
+argument-hint: ""
 category: "marketing-seo"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

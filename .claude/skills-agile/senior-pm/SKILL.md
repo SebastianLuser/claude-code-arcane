@@ -1,6 +1,7 @@
 ---
 name: senior-pm
 description: "Senior Project Manager for enterprise software and SaaS. Specializes in portfolio management, quantitative risk analysis, resource optimization, stakeholder alignment, and executive reporting."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

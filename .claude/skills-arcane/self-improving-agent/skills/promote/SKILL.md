@@ -1,6 +1,7 @@
 ---
 name: promote
 description: "Graduate a proven pattern from auto-memory (MEMORY.md) to CLAUDE.md or .claude/rules/ for permanent enforcement."
+argument-hint: ""
 category: "arcane"
 user-invocable: false
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

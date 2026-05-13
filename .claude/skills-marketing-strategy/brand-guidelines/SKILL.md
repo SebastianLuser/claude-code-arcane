@@ -1,6 +1,7 @@
 ---
 name: brand-guidelines
 description: "Apply, document, and enforce brand guidelines — color systems, typography, logo rules, imagery, and tone matrix for any brand."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

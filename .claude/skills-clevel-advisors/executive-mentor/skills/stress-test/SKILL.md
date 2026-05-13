@@ -1,6 +1,7 @@
 ---
 name: stress-test
 description: "Business assumption stress testing sub-skill. Takes any assumption and breaks it before the market does — revenue projections, market size, competitive moat, hiring velocity."
+argument-hint: ""
 category: "clevel-advisors"
 user-invocable: false
 allowed-tools: Read, Glob, Grep, Bash

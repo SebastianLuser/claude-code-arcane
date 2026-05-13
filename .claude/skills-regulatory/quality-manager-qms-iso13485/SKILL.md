@@ -1,6 +1,7 @@
 ---
 name: quality-manager-qms-iso13485
 description: "ISO 13485 QMS implementation and maintenance — document control, internal auditing, process validation, supplier qualification, and certification."
+argument-hint: ""
 category: "regulatory"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: board-deck-builder
 description: "Assembles comprehensive board and investor update decks by pulling perspectives from all C-suite roles. Covers structure, narrative framework, bad news delivery, and common mistakes."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

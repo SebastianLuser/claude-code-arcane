@@ -1,6 +1,7 @@
 ---
 name: churn-prevention
 description: "Reduce voluntary and involuntary churn — cancel flow design, save offers, exit surveys, dunning sequences, and payment recovery."
+argument-hint: ""
 category: "marketing-growth"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

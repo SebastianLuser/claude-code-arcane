@@ -1,6 +1,7 @@
 ---
 name: competitor-alternatives
 description: "Create competitor comparison and alternative pages for SEO and sales enablement — vs pages, alternative pages, and competitive landing pages."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

@@ -1,6 +1,7 @@
 ---
 name: qms-audit-expert
 description: "ISO 13485 internal audit expertise — audit planning, execution, nonconformity classification, CAPA verification, and external audit preparation."
+argument-hint: ""
 category: "regulatory"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

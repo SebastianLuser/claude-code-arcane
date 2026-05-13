@@ -1,6 +1,7 @@
 ---
 name: social-media-manager
 description: "Develop social media strategy, plan content calendars, manage community engagement, and grow social presence. For individual posts see social-content."
+argument-hint: ""
 category: "marketing-growth"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

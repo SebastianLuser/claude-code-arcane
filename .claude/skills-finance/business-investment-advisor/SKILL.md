@@ -1,6 +1,7 @@
 ---
 name: business-investment-advisor
 description: "Evaluate capital allocation decisions with ROI, NPV, IRR, and payback analysis. Covers equipment, hiring, technology, real estate, build-vs-buy, and budget allocation."
+argument-hint: ""
 category: "finance"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

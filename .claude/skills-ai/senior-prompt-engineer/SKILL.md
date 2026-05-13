@@ -1,6 +1,7 @@
 ---
 name: senior-prompt-engineer
 description: "Prompt engineering patterns, LLM evaluation frameworks, agentic system design, and structured output design. Optimize prompts, design few-shot examples, evaluate RAG quality, and build agent workflows."
+argument-hint: ""
 category: "ai"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

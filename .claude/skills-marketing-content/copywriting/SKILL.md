@@ -1,6 +1,7 @@
 ---
 name: copywriting
 description: "Write and improve marketing copy for homepages, landing pages, pricing, feature, and about pages. For email copy see email-sequence."
+argument-hint: ""
 category: "marketing-content"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

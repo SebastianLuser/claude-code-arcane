@@ -1,6 +1,7 @@
 ---
 name: email-template-builder
 description: "Build complete transactional email systems with React Email templates, multi-provider integration, i18n, dark mode, spam optimization, and analytics tracking for Resend, Postmark, SendGrid, or AWS SES."
+argument-hint: ""
 category: "backend"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

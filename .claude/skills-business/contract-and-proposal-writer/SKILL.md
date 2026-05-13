@@ -1,6 +1,7 @@
 ---
 name: contract-and-proposal-writer
 description: "Generate professional, jurisdiction-aware business documents: freelance contracts, project proposals, SOWs, NDAs, and MSAs. Covers US (Delaware), EU (GDPR), UK, and DACH jurisdictions with Markdown output and docx conversion."
+argument-hint: ""
 category: "business"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

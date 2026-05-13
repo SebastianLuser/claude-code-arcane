@@ -1,6 +1,7 @@
 ---
 name: helm-chart-builder
 description: "Build production-grade Helm charts: scaffolding, values design, template patterns, dependency management, security hardening, and chart testing with lint/test workflows."
+argument-hint: ""
 category: "devops"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

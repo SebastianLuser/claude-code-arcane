@@ -1,6 +1,7 @@
 ---
 name: fda-consultant-specialist
 description: "FDA regulatory consulting — 510(k)/PMA/De Novo pathway guidance, QSR (21 CFR 820) compliance, HIPAA assessments, and device cybersecurity."
+argument-hint: ""
 category: "regulatory"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

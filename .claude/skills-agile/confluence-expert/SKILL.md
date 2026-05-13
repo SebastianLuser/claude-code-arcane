@@ -1,6 +1,7 @@
 ---
 name: confluence-expert
 description: "Atlassian Confluence expert for creating and managing spaces, knowledge bases, documentation, page hierarchies, templates, macros, and content governance."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

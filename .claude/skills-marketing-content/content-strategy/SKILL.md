@@ -1,6 +1,7 @@
 ---
 name: content-strategy
 description: "Plan content strategy, topic clusters, content calendars, and decide what to write. Triggers: 'content strategy', 'what should I write about', 'content ideas', 'blog strategy', 'topic clusters', 'content planning'."
+argument-hint: ""
 category: "marketing-content"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

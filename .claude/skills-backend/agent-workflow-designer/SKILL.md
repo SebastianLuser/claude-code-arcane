@@ -1,6 +1,7 @@
 ---
 name: agent-workflow-designer
 description: "Design production-grade multi-agent workflows with pattern selection, handoff contracts, failure handling, and cost/context controls for sequential, parallel, router, orchestrator, and evaluator topologies."
+argument-hint: ""
 category: "backend"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

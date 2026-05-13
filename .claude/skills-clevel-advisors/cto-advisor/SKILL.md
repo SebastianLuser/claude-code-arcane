@@ -1,6 +1,7 @@
 ---
 name: cto-advisor
 description: "Technical leadership for engineering teams, architecture decisions, and technology strategy. Tech debt assessment, DORA metrics, build-vs-buy analysis, and engineering org scaling."
+argument-hint: ""
 category: "clevel-advisors"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

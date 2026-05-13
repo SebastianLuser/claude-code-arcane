@@ -1,6 +1,7 @@
 ---
 name: social-content
 description: "Create, schedule, and optimize social media content for LinkedIn, Twitter/X, Instagram, TikTok, and Facebook — hooks, repurposing, calendars."
+argument-hint: ""
 category: "marketing-content"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

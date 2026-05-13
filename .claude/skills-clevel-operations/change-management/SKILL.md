@@ -1,6 +1,7 @@
 ---
 name: change-management
 description: "Framework for rolling out organizational changes without chaos. Covers ADKAR model adapted for startups, communication templates, resistance patterns, and change fatigue management."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: app-store-optimization
 description: "ASO toolkit — keyword research, metadata optimization, competitor analysis, A/B testing, and launch planning for Apple App Store and Google Play."
+argument-hint: ""
 category: "marketing-growth"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

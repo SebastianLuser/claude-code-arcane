@@ -1,6 +1,7 @@
 ---
 name: analytics-tracking
 description: "Set up, audit, and debug analytics tracking — GA4, GTM, event taxonomy, conversion tracking, and data quality for SaaS funnels."
+argument-hint: ""
 category: "marketing-strategy"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

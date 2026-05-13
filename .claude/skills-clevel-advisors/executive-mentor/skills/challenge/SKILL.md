@@ -1,6 +1,7 @@
 ---
 name: challenge
 description: "Pre-mortem plan analysis sub-skill. Systematically finds weaknesses in any plan before reality does — extracts assumptions, rates confidence, maps dependencies."
+argument-hint: ""
 category: "clevel-advisors"
 user-invocable: false
 allowed-tools: Read, Glob, Grep, Bash

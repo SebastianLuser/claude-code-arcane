@@ -1,6 +1,7 @@
 ---
 name: board-prep
 description: "Board meeting preparation sub-skill. Prepares for the adversarial version of your board — every hard question, every number you need cold, the narrative that acknowledges weakness without losing the room."
+argument-hint: ""
 category: "clevel-advisors"
 user-invocable: false
 allowed-tools: Read, Glob, Grep, Bash

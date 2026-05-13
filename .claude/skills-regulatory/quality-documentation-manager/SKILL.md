@@ -1,6 +1,7 @@
 ---
 name: quality-documentation-manager
 description: "Document control for medical device QMS — numbering, version control, change management, and 21 CFR Part 11 compliance."
+argument-hint: ""
 category: "regulatory"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

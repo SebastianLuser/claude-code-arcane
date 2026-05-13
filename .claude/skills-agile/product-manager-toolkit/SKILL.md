@@ -1,6 +1,7 @@
 ---
 name: product-manager-toolkit
 description: "Comprehensive PM toolkit with RICE prioritization, customer interview analysis, PRD templates, discovery frameworks, and go-to-market strategies."
+argument-hint: ""
 category: "agile"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

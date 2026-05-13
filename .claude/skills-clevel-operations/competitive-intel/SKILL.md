@@ -1,6 +1,7 @@
 ---
 name: competitive-intel
 description: "Systematic competitor tracking that feeds CMO positioning, CRO battlecards, and CPO roadmap decisions. Covers 5-layer intelligence system, win/loss analysis, and tracking cadence."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

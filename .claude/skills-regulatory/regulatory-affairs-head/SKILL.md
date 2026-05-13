@@ -1,6 +1,7 @@
 ---
 name: regulatory-affairs-head
 description: "Regulatory strategy, FDA submissions, EU MDR CE marking, and global market access for medical devices across FDA, EU, Health Canada, PMDA, and NMPA."
+argument-hint: ""
 category: "regulatory"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

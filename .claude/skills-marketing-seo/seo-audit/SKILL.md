@@ -1,6 +1,7 @@
 ---
 name: seo-audit
 description: "Audit and diagnose SEO issues — technical SEO, on-page optimization, content gaps, and prioritized action plans."
+argument-hint: ""
 category: "marketing-seo"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

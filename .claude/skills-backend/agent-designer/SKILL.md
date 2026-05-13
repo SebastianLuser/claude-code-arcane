@@ -1,6 +1,7 @@
 ---
 name: agent-designer
 description: "Design multi-agent systems, create agent architectures, define communication patterns, and build autonomous agent workflows with structured evaluation frameworks."
+argument-hint: ""
 category: "backend"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: security-pen-testing
 description: "Offensive security testing: OWASP Top 10 audits, static analysis, dependency scanning, secret detection, API security testing, and pen test report generation."
+argument-hint: ""
 category: "security"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

@@ -1,6 +1,7 @@
 ---
 name: azure-cloud-architect
 description: "Design Azure architectures with Bicep IaC templates, cost optimization, and CI/CD pipelines for App Service, AKS, Functions, Cosmos DB, and Azure SQL."
+argument-hint: ""
 category: "devops"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash

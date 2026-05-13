@@ -1,6 +1,7 @@
 ---
 name: site-architecture
 description: "Audit, redesign, or plan website structure — URL hierarchy, navigation, internal linking, topic clusters, and silo strategy."
+argument-hint: ""
 category: "marketing-seo"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit

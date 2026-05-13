@@ -1,6 +1,7 @@
 ---
 name: internal-narrative
 description: "Build and maintain one coherent company story across all audiences. Detects narrative contradictions and ensures the same truth is framed for each audience's needs."
+argument-hint: ""
 category: "clevel-operations"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash
