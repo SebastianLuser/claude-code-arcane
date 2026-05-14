@@ -21,7 +21,7 @@ Cada división sigue una jerarquía de estudio real con 3 niveles de autoridad:
 
 ---
 
-## Roster Completo (114 Agentes)
+## Roster Completo (135 Agentes)
 
 ### División 1 — Game Development Studio (44)
 
@@ -90,6 +90,36 @@ Cada división sigue una jerarquía de estudio real con 3 niveles de autoridad:
 **Lead (1):** `integrations-architect`
 
 **Specialists (5):** `project-tools-specialist`, `docs-tools-specialist`, `design-tools-specialist`, `comms-tools-specialist`, `api-tools-specialist`
+
+### División 9 — AI & Data Science (4)
+
+**Directors (1):** `ai-architect`
+
+**Specialists (3):** `ml-engineer`, `data-scientist`, `data-engineer`
+
+### División 10 — C-Suite Advisory (6)
+
+**Directors (1):** `chief-of-staff`
+
+**Leads (5):** `ceo-advisor`, `cfo-advisor`, `cto-advisor`, `cmo-advisor`, `coo-advisor`
+
+### División 11 — Business & Finance (3)
+
+**Leads (1):** `business-ops-lead`
+
+**Specialists (2):** `financial-analyst`, `sales-engineer`
+
+### División 12 — Marketing (5)
+
+**Directors (1):** `marketing-director`
+
+**Leads (4):** `content-lead`, `growth-lead`, `seo-lead`, `marketing-analyst`
+
+### División 13 — Regulatory & Compliance (3)
+
+**Directors (1):** `regulatory-director`
+
+**Specialists (2):** `quality-manager`, `compliance-officer`
 
 ---
 

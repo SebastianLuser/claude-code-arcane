@@ -15,6 +15,8 @@ SKILLS=(
   qa-plan
   test-helpers
   test-setup
+  playwright-pro
+  tdd-guide
 )
 
 RULES_UNIVERSAL=()

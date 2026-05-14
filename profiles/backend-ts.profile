@@ -31,6 +31,14 @@ SKILLS=(
   websocket-realtime-rooms
   search-setup
   ci-cd-setup
+  agent-designer
+  agent-workflow-designer
+  email-template-builder
+  mcp-server-builder
+  ms365-tenant-manager
+  snowflake-development
+  stripe-integration-expert
+  tech-stack-evaluator
 )
 
 RULES_UNIVERSAL=(backend-code api-code migration-code)

@@ -8,7 +8,7 @@ set TARGET=%BASE%skills
 
 if not exist "%TARGET%" mkdir "%TARGET%"
 
-for %%S in (skills-git skills-testing skills-docs skills-frontend skills-mobile skills-backend skills-devops skills-agile skills-design skills-gamedev skills-integrations skills-release skills-security skills-arcane) do (
+for %%S in (skills-git skills-testing skills-docs skills-frontend skills-mobile skills-backend skills-devops skills-agile skills-design skills-gamedev skills-integrations skills-release skills-security skills-arcane skills-ai skills-business skills-clevel-advisors skills-clevel-operations skills-finance skills-marketing-content skills-marketing-growth skills-marketing-seo skills-marketing-strategy skills-regulatory) do (
   if exist "%BASE%%%S" (
     echo [%%S]
     for /D %%K in ("%BASE%%%S\*") do (
