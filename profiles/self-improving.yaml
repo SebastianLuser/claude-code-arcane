@@ -1,0 +1,22 @@
+name: self-improving
+description: "Self-improving — auto-memory curation, skill auditing and optimization"
+type: addon
+
+skills:
+  - self-improving-agent
+  - skill-auditor
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  []
+
+permissions:
+  allow:
+    []
+  deny:
+    []

@@ -1,0 +1,32 @@
+name: testing
+description: "Testing avanzado — contract, performance, regression, flakiness"
+type: addon
+
+skills:
+  - contract-testing
+  - performance-test
+  - smoke-check
+  - regression-suite
+  - test-flakiness
+  - visual-regression
+  - qa-plan
+  - test-helpers
+  - test-setup
+  - playwright-pro
+  - tdd-guide
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  - quality
+
+permissions:
+  allow:
+    - "Bash(python -m pytest*)"
+    - "Bash(py -m pytest*)"
+  deny:
+    []

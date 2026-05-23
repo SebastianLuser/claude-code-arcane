@@ -1,10 +1,10 @@
 # Claude Code Arcane
 
-Repo de configuración: skills, agentes, hooks y rules para Claude Code. No es software — es el harness que proyectos Educabot importan copiando `.claude/`.
+Repo de configuración: skills, agentes, hooks y rules para Claude Code. Instalable via `npx arcane install <profile>`.
 
 ## Stack
 
-Markdown (skills, agents, rules, docs) + Bash (hooks, migration tools) + Python (skill scripts/helpers). QA: `skills-selftest/`. Estructura: `.claude/docs/directory-structure.md`
+TypeScript (CLI installer) + Markdown (skills, agents, rules, docs) + Bash (hooks) + Python (skill scripts/helpers). QA: `skills-selftest/`. Skills: `skills/`. Profiles: `profiles/*.yaml`.
 
 ## Reglas
 

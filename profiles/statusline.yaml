@@ -1,0 +1,21 @@
+name: statusline
+description: "Status bar showing branch, division, and session info in Claude Code"
+type: addon
+
+skills:
+  []
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  []
+
+permissions:
+  allow:
+    []
+  deny:
+    []

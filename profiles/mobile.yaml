@@ -1,0 +1,39 @@
+name: mobile
+description: "Mobile React Native + Expo + TypeScript"
+type: base
+
+skills:
+  - testing
+  - i18n-setup
+  - deps-audit
+  - env-sync
+  - observability
+  - release
+  - onboard
+  - perf-profile
+  - scaffold-react-native
+  - react-native-dev
+  - state-management
+  - form-validation
+  - accessibility
+  - auth-strategy
+  - file-uploads
+  - ci-cd-setup
+  - deploy-check
+
+rules:
+  universal:
+    - frontend-code
+  gamedev:
+    []
+
+agents:
+  - engineering
+
+permissions:
+  allow:
+    - "Bash(npm *)"
+    - "Bash(yarn *)"
+    - "Bash(pnpm *)"
+  deny:
+    []

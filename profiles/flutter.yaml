@@ -1,0 +1,37 @@
+name: flutter
+description: "Flutter + Dart cross-platform development"
+type: base
+
+skills:
+  - testing
+  - i18n-setup
+  - deps-audit
+  - env-sync
+  - observability
+  - release
+  - onboard
+  - perf-profile
+  - flutter-dev
+  - state-management
+  - form-validation
+  - accessibility
+  - auth-strategy
+  - ci-cd-setup
+  - deploy-check
+
+rules:
+  universal:
+    - frontend-code
+  gamedev:
+    []
+
+agents:
+  - engineering
+
+permissions:
+  allow:
+    - "Bash(flutter *)"
+    - "Bash(dart *)"
+    - "Bash(pub *)"
+  deny:
+    []

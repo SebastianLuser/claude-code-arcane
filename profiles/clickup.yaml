@@ -1,0 +1,21 @@
+name: clickup
+description: "ClickUp via MCP — tasks, docs, time tracking"
+type: addon
+
+skills:
+  - clickup
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  []
+
+permissions:
+  allow:
+    []
+  deny:
+    []

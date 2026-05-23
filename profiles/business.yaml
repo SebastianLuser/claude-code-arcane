@@ -1,0 +1,24 @@
+name: business
+description: "Business — contracts, customer success, revenue ops, sales engineering"
+type: addon
+
+skills:
+  - contract-and-proposal-writer
+  - customer-success-manager
+  - revenue-operations
+  - sales-engineer
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  - business
+
+permissions:
+  allow:
+    []
+  deny:
+    []

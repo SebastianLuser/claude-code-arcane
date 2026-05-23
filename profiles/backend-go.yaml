@@ -1,0 +1,56 @@
+name: backend-go
+description: "Backend Go — scaffold, DB, auth, API design, CI"
+type: base
+
+skills:
+  - test-setup
+  - deps-audit
+  - security-audit
+  - env-sync
+  - observability
+  - scaffold-go
+  - go-clean-architecture
+  - database-setup
+  - data-operations
+  - data-migrations
+  - api-design
+  - api-docs
+  - auth-strategy
+  - jwt-strategy
+  - mfa-setup
+  - oauth-setup
+  - rbac-abac
+  - rate-limiting
+  - caching-strategy
+  - webhooks
+  - job-scheduling
+  - audit-log
+  - slo-sli
+  - ci-cd-setup
+  - agent-designer
+  - agent-workflow-designer
+  - email-template-builder
+  - mcp-server-builder
+  - ms365-tenant-manager
+  - snowflake-development
+  - stripe-integration-expert
+  - tech-stack-evaluator
+
+rules:
+  universal:
+    - backend-code
+    - api-code
+    - migration-code
+  gamedev:
+    []
+
+agents:
+  - engineering
+
+permissions:
+  allow:
+    - "Bash(go *)"
+    - "Bash(docker ps*)"
+    - "Bash(docker images*)"
+  deny:
+    []

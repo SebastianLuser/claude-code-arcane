@@ -77,7 +77,7 @@ skills-selftest/
 
 ## Commands
 
-All driven by skills already shipped in `.claude/skills/`:
+All driven by skills already shipped in `skills/`:
 
 | Command | What it does |
 |---------|--------------|

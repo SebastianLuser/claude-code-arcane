@@ -1,0 +1,30 @@
+name: design
+description: "Figma workflow, UX review, handoff a dev"
+type: addon
+
+skills:
+  - user-persona
+  - figma
+  - figma-to-code
+  - figma-tokens
+  - design-handoff
+  - prototype
+  - ux-review
+  - design-system
+  - quick-design
+  - ux-design
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  - product
+
+permissions:
+  allow:
+    []
+  deny:
+    []

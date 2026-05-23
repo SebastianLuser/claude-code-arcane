@@ -1,0 +1,46 @@
+{
+  "name": "claude-code-arcane",
+  "version": "1.0.0",
+  "description": "Skills, agents, hooks and rules for Claude Code — installable via npx arcane",
+  "type": "module",
+  "bin": {
+    "arcane": "./dist/cli.js"
+  },
+  "files": [
+    "dist/",
+    "skills/",
+    "profiles/",
+    "agents/",
+    "hooks/",
+    "rules/",
+    "templates/",
+    "docs/"
+  ],
+  "scripts": {
+    "build": "tsup src/cli.ts --format esm --target node18 --clean",
+    "dev": "tsup src/cli.ts --format esm --target node18 --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "claude-code",
+    "ai-skills",
+    "coding-agent",
+    "arcane"
+  ],
+  "author": "Educabot",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,37 +1,36 @@
 # Claude Code Arcane
 
-> **305 skills, 80 agents, 14 hooks and 9 rules for Claude Code — selective deploy by profile.**
+> **321 skills, 86 agents, 15 hooks and 17 rules for Claude Code — selective deploy by profile.**
 
-A configuration harness that projects import via CLI. Instead of loading everything into every project, you pick a **profile** that matches your stack and only the relevant tools get installed.
+A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed.
 
 ---
 
 ## Quick Start
 
 ```bash
-# 1. Clone and install the CLI
-git clone https://github.com/SebastianLuser/claude-code-arcane.git
-cd claude-code-arcane
-pip install -e .
-
-# 2. Navigate to your project
+# Navigate to your project
 cd ~/projects/my-app
 
-# 3. Install a profile
-arcane install backend-ts+agile
+# Install a profile (no clone needed)
+npx arcane install backend-ts+agile
 
-# 4. Open Claude Code
+# Open Claude Code
 claude
 ```
 
-If `arcane` is not on PATH, use `python -m arcane` instead.
-
-## Interactive Selector
-
-Without arguments, `arcane install` opens an arrow-key selector:
+## Commands
 
 ```bash
-arcane install
+npx arcane install backend-ts+agile    # Full profile: skills + agents + hooks + rules
+npx arcane install                      # Show available profiles
+npx arcane add api-design               # Add a single skill
+npx arcane add +security                # Add an entire profile as addon
+npx arcane remove api-design            # Remove a skill
+npx arcane list                         # List all available profiles and skills
+npx arcane status                       # Show current installation
+npx arcane update                       # Check for updates
+npx arcane clean --force                # Remove Arcane from project
 ```
 
 ---
