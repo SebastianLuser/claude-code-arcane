@@ -37,3 +37,19 @@ export function readJsonSync<T>(p: string): T {
 export function writeJsonSync(p: string, data: unknown): void {
   fs.writeFileSync(p, JSON.stringify(data, null, 2) + "\n", "utf-8");
 }
+
+export function isSymlinkOrJunction(p: string): boolean {
+  try {
+    return fs.lstatSync(p).isSymbolicLink();
+  } catch {
+    return false;
+  }
+}
+
+export function safeRemove(p: string): void {
+  if (isSymlinkOrJunction(p)) {
+    fs.unlinkSync(p);
+  } else if (fs.existsSync(p)) {
+    fs.rmSync(p, { recursive: true, force: true });
+  }
+}

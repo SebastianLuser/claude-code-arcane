@@ -22,6 +22,18 @@ export async function statusCommand(): Promise<void> {
   console.log(`  CLI:       ${manifest.cli}`);
   console.log(`  Source:    ${chalk.dim(manifest.source)}`);
 
+  if (manifest.worktree) {
+    const wt = manifest.worktree;
+    console.log(
+      `  Worktree:  ${wt.is_worktree ? chalk.blue("yes") : "no"} (main: ${chalk.dim(wt.main_worktree)})`,
+    );
+    if (wt.shared_dirs.length > 0) {
+      console.log(
+        `  Shared:    ${chalk.blue(wt.shared_dirs.join(", "))} (symlinked)`,
+      );
+    }
+  }
+
   console.log(chalk.bold(`\n  Skills (${manifest.total_skills}):`));
   const skills = manifest.installed_skills ?? [];
   for (let i = 0; i < skills.length; i += 5) {

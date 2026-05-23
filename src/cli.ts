@@ -8,6 +8,7 @@ import { listCommand } from "./commands/list.js";
 import { statusCommand } from "./commands/status.js";
 import { updateCommand } from "./commands/update.js";
 import { cleanCommand } from "./commands/clean.js";
+import { worktreeCommand } from "./commands/worktree.js";
 
 const program = new Command();
 
@@ -26,6 +27,10 @@ program
   .option("-t, --target <dir>", "Target project directory", process.cwd())
   .option("-n, --dry-run", "Show what would be installed without changing files")
   .option("-f, --force", "Overwrite without backup prompt")
+  .option(
+    "-s, --share-from <dir>",
+    "Share hooks/docs from an existing Arcane installation (e.g., main worktree)",
+  )
   .action(async (profile: string | undefined, opts) => {
     await installCommand(profile, opts);
   });
@@ -76,6 +81,31 @@ program
   .option("-f, --force", "Skip confirmation")
   .action(async (opts) => {
     await cleanCommand(opts);
+  });
+
+program
+  .command("worktree <branch>")
+  .description(
+    "Create a git worktree with Arcane pre-installed.",
+  )
+  .option(
+    "-p, --profile <profile>",
+    "Profile to install (inherits from current installation if omitted)",
+  )
+  .option("--path <dir>", "Custom worktree directory path")
+  .option(
+    "-b, --base <branch>",
+    "Base branch for new branch (default: current HEAD)",
+  )
+  .option("--install-deps", "Install dependencies after creation")
+  .option(
+    "--isolate",
+    "Apply worktree-isolation for Docker port deconfliction",
+  )
+  .option("-n, --dry-run", "Show what would be done without making changes")
+  .option("--no-share", "Don't share hooks/docs from current installation")
+  .action(async (branch: string, opts) => {
+    await worktreeCommand(branch, opts);
   });
 
 program.parse();

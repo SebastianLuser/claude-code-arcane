@@ -19,6 +19,11 @@ export function writeManifest(
   merged: MergedProfile,
   profileCommand: string,
   packageRoot: string,
+  worktree?: {
+    is_worktree: boolean;
+    main_worktree: string;
+    shared_dirs: string[];
+  },
 ): void {
   const manifest: ArcaneManifest = {
     arcane_version: "1.0.0",
@@ -37,5 +42,8 @@ export function writeManifest(
     installed_agents: merged.agents,
     source: packageRoot,
   };
+  if (worktree) {
+    manifest.worktree = worktree;
+  }
   writeJsonSync(manifestPath(target), manifest);
 }

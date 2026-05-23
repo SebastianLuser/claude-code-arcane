@@ -1,8 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { MergedProfile, InstallerOptions } from "./types.js";
-import { copyDirSync, ensureDir, getPackageRoot } from "./utils.js";
+import {
+  copyDirSync,
+  ensureDir,
+  getPackageRoot,
+  isSymlinkOrJunction,
+  safeRemove,
+} from "./utils.js";
 import { writeManifest } from "./manifest.js";
+import { linkOrCopyDir } from "./worktree.js";
 
 const SETTINGS_TEMPLATE = {
   $schema: "https://json.schemastore.org/claude-code-settings.json",
@@ -152,12 +159,16 @@ export class Installer {
   private dryRun: boolean;
   private logs: string[] = [];
 
+  private shareFrom?: string;
+  private sharedDirs: string[] = [];
+
   constructor(merged: MergedProfile, opts: InstallerOptions) {
     this.root = getPackageRoot();
     this.target = opts.target;
     this.claudeDir = path.join(opts.target, ".claude");
     this.merged = merged;
     this.dryRun = opts.dryRun;
+    this.shareFrom = opts.shareFrom;
   }
 
   private log(msg: string): void {
@@ -165,7 +176,13 @@ export class Installer {
     console.log(msg);
   }
 
-  run(profileCommand: string): string[] {
+  run(
+    profileCommand: string,
+    worktreeMeta?: {
+      is_worktree: boolean;
+      main_worktree: string;
+    },
+  ): string[] {
     this.backup();
     this.createDirs();
     this.copyHooks();
@@ -176,7 +193,13 @@ export class Installer {
     this.generateSettings();
 
     if (!this.dryRun) {
-      writeManifest(this.target, this.merged, profileCommand, this.root);
+      const wt =
+        worktreeMeta && this.sharedDirs.length > 0
+          ? { ...worktreeMeta, shared_dirs: this.sharedDirs }
+          : worktreeMeta
+            ? { ...worktreeMeta, shared_dirs: [] }
+            : undefined;
+      writeManifest(this.target, this.merged, profileCommand, this.root, wt);
       this.log("  [ok] arcane-manifest.json");
     } else {
       this.log("  [dry-run] arcane-manifest.json");
@@ -212,14 +235,35 @@ export class Installer {
 
   private copyHooks(): void {
     this.log("\nHooks:");
-    const hooksSrc = path.join(this.root, "hooks");
+    const hooksDir = path.join(this.claudeDir, "hooks");
+
     if (this.dryRun) {
-      this.log("  [dry-run] hooks/ -> .claude/hooks/");
+      if (this.shareFrom) {
+        this.log("  [dry-run] hooks/ -> symlink from main worktree");
+      } else {
+        this.log("  [dry-run] hooks/ -> .claude/hooks/");
+      }
       if (this.hasStatusline) this.log("  [dry-run] statusline.sh");
       return;
     }
+
+    if (this.shareFrom) {
+      const sharedHooks = path.join(this.shareFrom, ".claude", "hooks");
+      if (fs.existsSync(sharedHooks)) {
+        const result = linkOrCopyDir(sharedHooks, hooksDir, "symlink");
+        if (result === "linked") {
+          this.sharedDirs.push("hooks");
+          this.log("  [ok] hooks/ (shared via symlink)");
+        } else {
+          this.log("  [ok] hooks/ (copied — symlink failed)");
+        }
+        this.copyStatusline();
+        return;
+      }
+    }
+
+    const hooksSrc = path.join(this.root, "hooks");
     if (fs.existsSync(hooksSrc)) {
-      const hooksDir = path.join(this.claudeDir, "hooks");
       ensureDir(hooksDir);
       for (const entry of fs.readdirSync(hooksSrc, { withFileTypes: true })) {
         if (entry.name === "statusline.sh") continue;
@@ -233,15 +277,18 @@ export class Installer {
       }
       this.log("  [ok] hooks/");
     }
-    if (this.hasStatusline) {
-      const statusline = path.join(this.root, "hooks", "statusline.sh");
-      if (fs.existsSync(statusline)) {
-        fs.copyFileSync(
-          statusline,
-          path.join(this.claudeDir, "statusline.sh"),
-        );
-        this.log("  [ok] statusline.sh (+statusline addon)");
-      }
+    this.copyStatusline();
+  }
+
+  private copyStatusline(): void {
+    if (!this.hasStatusline) return;
+    const statusline = path.join(this.root, "hooks", "statusline.sh");
+    if (fs.existsSync(statusline)) {
+      fs.copyFileSync(
+        statusline,
+        path.join(this.claudeDir, "statusline.sh"),
+      );
+      this.log("  [ok] statusline.sh (+statusline addon)");
     }
   }
 
@@ -336,14 +383,34 @@ export class Installer {
   }
 
   private copyDocs(): void {
+    const docsDir = path.join(this.claudeDir, "docs");
     const docsSrc = path.join(this.root, "docs");
     if (!fs.existsSync(docsSrc)) return;
     this.log("\nDocs:");
     if (this.dryRun) {
-      this.log("  [dry-run] docs/");
+      if (this.shareFrom) {
+        this.log("  [dry-run] docs/ -> symlink from main worktree");
+      } else {
+        this.log("  [dry-run] docs/");
+      }
       return;
     }
-    copyDirSync(docsSrc, path.join(this.claudeDir, "docs"));
+
+    if (this.shareFrom) {
+      const sharedDocs = path.join(this.shareFrom, ".claude", "docs");
+      if (fs.existsSync(sharedDocs)) {
+        const result = linkOrCopyDir(sharedDocs, docsDir, "symlink");
+        if (result === "linked") {
+          this.sharedDirs.push("docs");
+          this.log("  [ok] docs/ (shared via symlink)");
+        } else {
+          this.log("  [ok] docs/ (copied — symlink failed)");
+        }
+        return;
+      }
+    }
+
+    copyDirSync(docsSrc, docsDir);
     this.log("  [ok] docs/");
   }
 
@@ -391,9 +458,31 @@ export function clean(target: string): void {
     );
     console.log(`  Current profile: ${profiles.join(" + ")}`);
     console.log(`  Installed: ${data.installed_at ?? "unknown"}`);
+
+    const shared = data.worktree?.shared_dirs ?? [];
+    for (const dir of shared) {
+      const p = path.join(claudeDir, dir);
+      if (isSymlinkOrJunction(p)) {
+        fs.unlinkSync(p);
+        console.log(`  [ok] Unlinked shared ${dir}/`);
+      }
+    }
   }
 
-  fs.rmSync(claudeDir, { recursive: true, force: true });
+  for (const sub of ["hooks", "docs", "skills", "agents", "rules"]) {
+    const p = path.join(claudeDir, sub);
+    safeRemove(p);
+  }
+
+  const remaining = fs.readdirSync(claudeDir);
+  for (const f of remaining) {
+    const p = path.join(claudeDir, f);
+    safeRemove(p);
+  }
+
+  if (fs.existsSync(claudeDir)) {
+    fs.rmSync(claudeDir, { recursive: true, force: true });
+  }
   if (fs.existsSync(backup)) {
     fs.rmSync(backup, { recursive: true, force: true });
   }

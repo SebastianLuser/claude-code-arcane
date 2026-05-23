@@ -3,11 +3,16 @@ import chalk from "chalk";
 import { listProfiles, mergeProfiles } from "../profiles.js";
 import { Installer } from "../installer.js";
 import { getPackageRoot } from "../utils.js";
+import {
+  getWorktreeInfo,
+  findMainArcaneInstall,
+} from "../worktree.js";
 
 interface InstallOpts {
   target?: string;
   dryRun?: boolean;
   force?: boolean;
+  shareFrom?: string;
 }
 
 export async function installCommand(
@@ -45,6 +50,30 @@ export async function installCommand(
     chalk.bold(`\nInstalling profile: ${chalk.cyan(profileExpr)}`),
   );
   console.log(`  Target: ${target}`);
+
+  const wtInfo = getWorktreeInfo(target);
+  let shareFrom = opts.shareFrom;
+  let worktreeMeta:
+    | { is_worktree: boolean; main_worktree: string }
+    | undefined;
+
+  if (wtInfo?.isWorktree) {
+    console.log(chalk.blue(`  Worktree: yes (main: ${wtInfo.mainWorktreePath})`));
+    worktreeMeta = {
+      is_worktree: true,
+      main_worktree: wtInfo.mainWorktreePath,
+    };
+
+    if (!shareFrom && findMainArcaneInstall(wtInfo.mainWorktreePath)) {
+      shareFrom = wtInfo.mainWorktreePath;
+      console.log(
+        chalk.blue("  Sharing: hooks + docs from main worktree"),
+      );
+    }
+  } else if (wtInfo) {
+    worktreeMeta = { is_worktree: false, main_worktree: target };
+  }
+
   if (opts.dryRun) console.log(chalk.yellow("  Mode: dry-run\n"));
 
   const merged = mergeProfiles(profilesDir, profileNames);
@@ -60,8 +89,9 @@ export async function installCommand(
     target,
     dryRun: opts.dryRun ?? false,
     force: opts.force ?? false,
+    shareFrom,
   });
-  installer.run(profileExpr);
+  installer.run(profileExpr, worktreeMeta);
 
   if (!opts.dryRun) {
     console.log(chalk.green("\n  Installation complete."));
