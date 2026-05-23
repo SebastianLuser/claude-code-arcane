@@ -40,10 +40,12 @@ program
   });
 
 program
-  .command("remove <skills...>")
-  .description("Remove installed skills.")
-  .action(async (skills: string[]) => {
-    await removeCommand(skills);
+  .command("remove <items...>")
+  .description(
+    "Remove skills or profiles. Use +profileName for profiles, skillName for individual skills.",
+  )
+  .action(async (items: string[]) => {
+    await removeCommand(items);
   });
 
 program
