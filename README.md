@@ -257,16 +257,81 @@ npx arcane install backend-ts+agile
 
 ---
 
+## Worktree Support
+
+Work on multiple features in parallel using git worktrees, each with its own Arcane installation.
+
+### Create a worktree with Arcane pre-installed
+
+```bash
+# Create worktree + install Arcane in one step
+npx arcane worktree feat/new-api --profile backend-ts+agile
+
+# Inherits profile from current installation
+npx arcane worktree feat/new-api
+
+# With dependency install and Docker port isolation
+npx arcane worktree feat/new-api --install-deps --isolate
+
+# Custom path and base branch
+npx arcane worktree feat/new-api --path ../my-api-worktree --base develop
+
+# Preview without creating
+npx arcane worktree feat/new-api --dry-run
+```
+
+### Worktree-aware installation
+
+When you run `npx arcane install` inside a git worktree, Arcane automatically:
+- Detects it's in a worktree
+- Finds the main worktree's Arcane installation
+- **Shares** hooks/ and docs/ via symlink (read-only, identical across worktrees)
+- **Copies** skills/, agents/, and rules/ independently (can diverge per worktree)
+
+```bash
+# Manual: share from a specific installation
+npx arcane install backend-ts --share-from /path/to/main/worktree
+
+# Disable sharing
+npx arcane worktree feat/api --no-share
+```
+
+### What gets shared vs independent
+
+| Asset | Behavior | Why |
+|-------|----------|-----|
+| `hooks/` | Shared (symlink) | Same hooks for all worktrees |
+| `docs/` | Shared (symlink) | Documentation doesn't change per branch |
+| `skills/` | Independent (copy) | Different worktrees may add/remove skills |
+| `agents/` | Independent (copy) | Agent definitions could vary |
+| `rules/` | Independent (copy) | Rules may differ per profile |
+| `settings.json` | Independent (generated) | Permissions/hooks config per profile |
+| `arcane-manifest.json` | Independent | Tracks this worktree's installation |
+
+### Status shows worktree info
+
+```bash
+npx arcane status
+# === Arcane Status ===
+#   Profiles:  backend-ts + agile
+#   Worktree:  yes (main: /path/to/main/checkout)
+#   Shared:    hooks, docs (symlinked)
+#   ...
+```
+
+---
+
 ## Architecture
 
 ```
 claude-code-arcane/
 ├── package.json               # npm package (bin: arcane)
-├── src/                       # TypeScript CLI (13 files)
+├── src/                       # TypeScript CLI (15 files)
 │   ├── cli.ts                 # Entry point (Commander.js)
-│   ├── commands/              # 7 commands (install, add, remove, list, status, update, clean)
+│   ├── commands/              # 8 commands (install, add, remove, list, status, update, clean, worktree)
 │   ├── profiles.ts            # YAML profile parser + merge
 │   ├── installer.ts           # Copy logic (skills, hooks, rules, agents, docs)
+│   ├── worktree.ts            # Git worktree detection, creation, sharing
 │   ├── manifest.ts            # Read/write arcane-manifest.json
 │   ├── types.ts               # TypeScript interfaces
 │   └── utils.ts               # Cross-platform helpers
