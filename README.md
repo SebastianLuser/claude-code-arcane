@@ -109,6 +109,16 @@ When removing a profile, Arcane only deletes assets **exclusive** to that profil
 
 Core skills (21) and the core profile cannot be removed.
 
+### Global hooks (worktree-isolation auto-apply)
+
+```bash
+npx arcane global                        # Install global SessionStart hook
+npx arcane global --status               # Show global hooks status
+npx arcane global --remove               # Remove global hooks
+```
+
+Installs worktree-isolation scripts into `~/.claude/scripts/` and adds a `SessionStart` hook to `~/.claude/settings.json` that auto-applies isolation on every new Claude Code session.
+
 ### Other commands
 
 ```bash
@@ -328,7 +338,7 @@ claude-code-arcane/
 ├── package.json               # npm package (bin: arcane)
 ├── src/                       # TypeScript CLI (15 files)
 │   ├── cli.ts                 # Entry point (Commander.js)
-│   ├── commands/              # 8 commands (install, add, remove, list, status, update, clean, worktree)
+│   ├── commands/              # 9 commands (install, add, remove, list, status, update, clean, worktree, global)
 │   ├── profiles.ts            # YAML profile parser + merge
 │   ├── installer.ts           # Copy logic (skills, hooks, rules, agents, docs)
 │   ├── worktree.ts            # Git worktree detection, creation, sharing
@@ -358,5 +368,5 @@ claude-code-arcane/
 ## Compatibility
 
 - **OS:** Windows 10/11, macOS, Linux
-- **Node:** 18+
+- **Node:** 20+
 - **Claude Code:** v1.0+
