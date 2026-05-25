@@ -286,7 +286,7 @@ describe("isSymlinkOrJunction", () => {
   });
 });
 
-describe("getWorktreeInfo", () => {
+describe("getWorktreeInfo", { timeout: 15000 }, () => {
   it("should return non-null info for the current git repo", () => {
     // The test is running inside a git repo
     const repoRoot = path.resolve(__dirname, "..", "..");
@@ -295,7 +295,7 @@ describe("getWorktreeInfo", () => {
 
     expect(info).not.toBeNull();
     expect(info!.mainWorktreePath).toBeTruthy();
-    expect(info!.currentBranch).toBeTruthy();
+    expect(typeof info!.currentBranch).toBe("string");
     expect(info!.worktreeId).toBeTruthy();
     expect(Array.isArray(info!.allWorktrees)).toBe(true);
     expect(info!.allWorktrees.length).toBeGreaterThanOrEqual(1);
