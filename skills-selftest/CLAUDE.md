@@ -116,7 +116,7 @@ educabot    → edtech-architect, curriculum-director, learning-experience-desig
 ## Workflow for testing a skill
 
 1. Read `catalog.yaml` → get `spec:` path and `category:` for the skill
-2. Read the skill at `.claude/skills/[name]/SKILL.md` (or `.claude/skills-gamedev/[name]/SKILL.md`)
+2. Read the skill at `skills/[name]/SKILL.md`
 3. Read the spec at the `spec:` path
 4. Evaluate assertions case by case
 5. Offer to write results to `results/` and update `catalog.yaml`

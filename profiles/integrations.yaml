@@ -1,0 +1,23 @@
+name: integrations
+description: "Integraciones externas — GitHub Projects, Slack, Postman"
+type: addon
+
+skills:
+  - gh-projects
+  - slack
+  - postman
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  - integrations
+
+permissions:
+  allow:
+    []
+  deny:
+    []

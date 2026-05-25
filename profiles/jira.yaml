@@ -1,0 +1,21 @@
+name: jira
+description: "Jira via curl/REST API — issues, sprints, boards"
+type: addon
+
+skills:
+  - jira-tickets
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  []
+
+permissions:
+  allow:
+    []
+  deny:
+    []

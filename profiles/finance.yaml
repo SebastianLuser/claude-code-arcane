@@ -1,0 +1,23 @@
+name: finance
+description: "Finance — investment analysis, financial modeling, SaaS metrics"
+type: addon
+
+skills:
+  - business-investment-advisor
+  - financial-analyst
+  - saas-metrics-coach
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  - business
+
+permissions:
+  allow:
+    []
+  deny:
+    []

@@ -1,0 +1,36 @@
+name: android-native
+description: "Android native — Kotlin + Jetpack Compose + Material Design 3"
+type: base
+
+skills:
+  - testing
+  - deps-audit
+  - env-sync
+  - observability
+  - release
+  - onboard
+  - perf-profile
+  - android-native-dev
+  - state-management
+  - form-validation
+  - accessibility
+  - auth-strategy
+  - ci-cd-setup
+  - deploy-check
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  - engineering
+
+permissions:
+  allow:
+    - "Bash(./gradlew *)"
+    - "Bash(gradle *)"
+    - "Bash(adb *)"
+  deny:
+    []

@@ -1,0 +1,44 @@
+name: unity-dev
+description: "Programador Unity — C#, arquitectura, performance, builds"
+type: base
+
+skills:
+  - test-setup
+  - perf-profile
+  - optimize
+  - deps-audit
+  - env-sync
+  - security-audit
+  - release-checklist
+  - patch-notes
+  - onboard
+  - scaffold-unity
+  - unity-game-architecture
+  - map-systems
+  - game-audit
+  - audit-game
+  - shader-dev
+  - balance-check
+  - consistency-check
+  - doc-gdd
+  - playtest-report
+
+rules:
+  universal:
+    []
+  gamedev:
+    - gameplay-code
+    - engine-code
+    - shader-code
+    - network-code
+    - ui-code
+    - ai-code
+
+agents:
+  - game
+
+permissions:
+  allow:
+    []
+  deny:
+    []

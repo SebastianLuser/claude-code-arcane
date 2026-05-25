@@ -1,0 +1,54 @@
+name: visual-novel
+description: "Visual Novel Developer — Ren"
+type: base
+
+skills:
+  - vn-renpy-setup
+  - vn-script
+  - vn-narrative-design
+  - vn-dialogue-tree
+  - vn-character-design
+  - vn-comfyui-gen
+  - vn-ui-design
+  - vn-scene-compose
+  - vn-asset-pipeline
+  - vn-gdd
+  - vn-testing
+  - team-vn
+  - brainstorm
+  - art-bible
+  - asset-spec
+  - playtest-report
+  - balance-check
+
+rules:
+  universal:
+    []
+  gamedev:
+    - vn-code
+    - narrative
+
+agents:
+  - visualnovel
+  - game
+
+permissions:
+  allow:
+    - "Bash(python *)"
+    - "Bash(pip install *)"
+    - "Bash(renpy *)"
+    - "Bash(curl http://127.0.0.1:8188*)"
+    - "Bash(git status*)"
+    - "Bash(git add*)"
+    - "Bash(git commit*)"
+    - "Bash(git diff*)"
+    - "Bash(git log*)"
+    - "Bash(ls *)"
+    - "Bash(find *)"
+    - "Bash(cat *)"
+    - "Read(*)"
+    - "Glob(*)"
+    - "Grep(*)"
+  deny:
+    - "Bash(rm -rf *)"
+    - "Bash(git push --force*)"

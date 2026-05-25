@@ -1,0 +1,39 @@
+name: frontend
+description: "Frontend React + Vite + TypeScript"
+type: base
+
+skills:
+  - testing
+  - i18n-setup
+  - deps-audit
+  - env-sync
+  - observability
+  - release
+  - onboard
+  - scaffold-react-vite
+  - state-management
+  - form-validation
+  - accessibility
+  - web-security
+  - ci-cd-setup
+  - cdn-setup
+  - file-uploads
+  - frontend-dev
+  - csp-headers
+
+rules:
+  universal:
+    - frontend-code
+  gamedev:
+    []
+
+agents:
+  - engineering
+
+permissions:
+  allow:
+    - "Bash(npm *)"
+    - "Bash(yarn *)"
+    - "Bash(pnpm *)"
+  deny:
+    []

@@ -1,0 +1,37 @@
+name: unity-design
+description: "Game Designer — GDDs, balance, art bible, playtesting, UX de juego"
+type: base
+
+skills:
+  - user-persona
+  - game-docs
+  - art-bible
+  - game-analysis
+  - map-systems
+  - asset-spec
+  - game-audit
+  - quick-design
+  - ux-design
+  - design-system
+  - doc-gdd
+  - doc-pas
+  - balance-check
+  - playtest-report
+  - consistency-check
+  - asset-audit
+
+rules:
+  universal:
+    []
+  gamedev:
+    - design-docs
+    - narrative
+
+agents:
+  - game
+
+permissions:
+  allow:
+    []
+  deny:
+    []

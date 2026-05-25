@@ -1,0 +1,31 @@
+name: docs
+description: "Document generation — PDF, PPTX, XLSX, DOCX, architecture"
+type: addon
+
+skills:
+  - pdf-generator
+  - pptx-generator
+  - xlsx-generator
+  - docx-generator
+  - architecture-decision
+  - architecture-review
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  []
+
+permissions:
+  allow:
+    - "Bash(python3 *)"
+    - "Bash(python *)"
+    - "Bash(node *)"
+    - "Bash(dotnet *)"
+    - "Bash(pip *)"
+    - "Bash(npm *)"
+  deny:
+    []

@@ -1,37 +1,156 @@
 # Claude Code Arcane
 
-> **305 skills, 80 agents, 14 hooks and 9 rules for Claude Code — selective deploy by profile.**
+> **321 skills, 86 agents, 15 hooks and 19 rules for Claude Code — selective deploy by profile.**
 
-A configuration harness that projects import via CLI. Instead of loading everything into every project, you pick a **profile** that matches your stack and only the relevant tools get installed.
+A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
 ---
 
 ## Quick Start
 
 ```bash
-# 1. Clone and install the CLI
-git clone https://github.com/SebastianLuser/claude-code-arcane.git
-cd claude-code-arcane
-pip install -e .
-
-# 2. Navigate to your project
+# Navigate to your project
 cd ~/projects/my-app
 
-# 3. Install a profile
-arcane install backend-ts+agile
+# Install a profile (no clone needed)
+npx arcane install backend-ts+agile
 
-# 4. Open Claude Code
+# Open Claude Code
 claude
 ```
 
-If `arcane` is not on PATH, use `python -m arcane` instead.
+That's it. Your project now has skills, agents, hooks, rules, and permissions tailored for your stack.
 
-## Interactive Selector
+---
 
-Without arguments, `arcane install` opens an arrow-key selector:
+## How It Works
+
+### 1. Profiles define what gets installed
+
+Each profile is a YAML file that bundles skills, agents, rules, and permissions:
+
+```yaml
+# profiles/backend-ts.yaml
+name: backend-ts
+type: base
+skills: [api-design, auth-strategy, jwt-strategy, ...]
+rules:
+  universal: [backend-code, api-code, migration-code]
+agents: [engineering]
+permissions:
+  allow: ["Bash(npm *)", "Bash(docker ps*)"]
+```
+
+### 2. Combine profiles with `+`
 
 ```bash
-arcane install
+npx arcane install backend-ts+agile+testing
+#                  ^^^^^^^^^^  ^^^^^  ^^^^^^^
+#                  base        addon  addon
+```
+
+The installer merges all profiles, deduplicates skills, and installs only what's needed.
+
+### 3. Core is always included
+
+Every installation automatically loads `core.yaml` first:
+- 21 essential skills (commit, create-pr, code-review, help, etc.)
+- 15 lifecycle hooks (session start/stop, commit validation, secret scanning, etc.)
+- 3 base rules (data-files, prototype-code, test-standards)
+- 1 agent dir (quality)
+- Security permissions (9 allow + 14 deny)
+
+### 4. What gets generated
+
+```
+my-project/.claude/
+├── settings.json          # Permissions + hooks + optional statusline
+├── arcane-manifest.json   # Installation metadata (tracks what's installed)
+├── statusline.sh          # Only if you used +statusline
+├── hooks/                 # 14 lifecycle hooks
+├── skills/                # Only your profile's skills
+│   └── */SKILL.md         # Each skill = one directory
+├── rules/                 # Stack-specific rules
+├── agents/                # Agent dirs per profile
+└── docs/                  # General documentation
+```
+
+---
+
+## CLI Commands
+
+### Install a profile
+
+```bash
+npx arcane install backend-ts+agile     # Install profile combination
+npx arcane install                       # Show available profiles (interactive)
+npx arcane install unity-dev --dry-run   # Preview without installing
+```
+
+### Add skills or profiles to an existing installation
+
+```bash
+npx arcane add api-design                # Add a single skill
+npx arcane add security-audit owasp      # Add multiple skills
+npx arcane add +security                 # Add an entire profile as addon
+npx arcane add +database +testing        # Add multiple profiles
+```
+
+### Remove skills, profiles, or agents
+
+```bash
+npx arcane remove api-design             # Remove a single skill
+npx arcane remove slack postman          # Remove multiple skills
+npx arcane remove +agile                 # Remove entire profile (skills + agents + rules)
+npx arcane remove +testing api-design    # Mix: remove a profile and a skill
+```
+
+When removing a profile, Arcane only deletes assets **exclusive** to that profile. Skills, agents, and rules shared with other active profiles are preserved.
+
+Core skills (21) and the core profile cannot be removed.
+
+### Global hooks (worktree-isolation auto-apply)
+
+```bash
+npx arcane global                        # Install global SessionStart hook
+npx arcane global --status               # Show global hooks status
+npx arcane global --remove               # Remove global hooks
+```
+
+Installs worktree-isolation scripts into `~/.claude/scripts/` and adds a `SessionStart` hook to `~/.claude/settings.json` that auto-applies isolation on every new Claude Code session.
+
+### Other commands
+
+```bash
+npx arcane list                          # List all profiles and skills
+npx arcane status                        # Show current installation
+npx arcane update                        # Check for updates
+npx arcane clean --force                 # Remove Arcane entirely from project
+```
+
+---
+
+## In-Session Skills (inside Claude Code)
+
+Once installed, manage the installation from within a Claude Code session:
+
+| Skill | Description |
+|-------|-------------|
+| `/arcane-status` | Show installed profiles, skills, rules, and agents |
+| `/arcane-list` | List everything available in Arcane (profiles + skills) |
+| `/arcane-add <skill\|+profile>` | Add skills or profiles without reinstalling |
+| `/arcane-remove <skill\|+profile>` | Remove skills, profiles and their agents/rules |
+| `/arcane-clean` | Uninstall Arcane from the project (asks confirmation) |
+
+### Examples from inside Claude Code
+
+```
+/arcane-add docker-setup              Add one skill
+/arcane-add +security                 Add entire security profile
+/arcane-remove +agile                 Remove agile profile + its exclusive skills/agents
+/arcane-remove api-design slack       Remove specific skills
+/arcane-status                        See what's installed
+/arcane-list                          Browse what's available
 ```
 
 ---
@@ -44,7 +163,7 @@ arcane install
 |---------|-------|--------|--------|
 | `unity-dev` | Unity programmer — C#, architecture, performance, builds | 25 | game |
 | `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 17 | game |
-| `backend-ts` | Backend TypeScript — Fastify, Prisma, Zod, API design | 25 | engineering |
+| `backend-ts` | Backend TypeScript — Fastify, Prisma, Zod, API design | 33 | engineering |
 | `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 19 | engineering |
 | `frontend` | React + Vite + TypeScript | 14 | engineering |
 | `mobile` | React Native + Expo + TypeScript | 12 | engineering |
@@ -73,136 +192,167 @@ arcane install
 | `+marketing` | Content, growth, SEO/CRO, strategy, analytics | 44 | marketing |
 | `+regulatory` | ISO 13485, GDPR, FDA, SOC 2, ISMS, QMS, MDR | 13 | regulatory |
 | `+self-improving` | Agent self-improvement and skill extraction | 2 | — |
+| `+statusline` | Claude Code status bar (branch, division, session info) | 0 | — |
 
 ### Core (always included)
 
-21 universal skills (commit, create-pr, changelog, check, code-review, context-prime, help, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, + 5 arcane self-management), 14 hooks, 3 base rules, 1 agent dir (quality), and security permissions.
+21 universal skills (commit, create-pr, changelog, check, code-review, context-prime, help, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, + 5 arcane self-management), 15 hooks, 3 base rules, 1 agent dir (quality), and security permissions.
 
 ---
-
-## CLI Commands
-
-```bash
-arcane install                            # Interactive selector
-arcane install unity-dev                  # Direct profile
-arcane install backend-ts+agile+database  # Combo with +
-arcane install unity-dev --dry-run        # Preview without installing
-
-arcane list                               # List available profiles
-arcane status                             # Show current installation
-arcane clean                              # Remove Arcane from project
-```
-
-## In-Session Skills (arcane self-management)
-
-Once installed, manage the installation from within Claude Code:
-
-| Skill | Description |
-|-------|-------------|
-| `/arcane-status` | Show installed profiles, skills and agents |
-| `/arcane-list` | List everything available in Arcane |
-| `/arcane-add <skill>` | Add skills or profiles without reinstalling |
-| `/arcane-remove <skill>` | Remove individual skills |
-| `/arcane-clean` | Uninstall Arcane from the project |
 
 ## Examples by Project
 
 ```bash
 # Unity dev only
-arcane install unity-dev
+npx arcane install unity-dev
 
 # Unity with team and management
-arcane install unity-dev+unity-design+agile+clickup
+npx arcane install unity-dev+unity-design+agile+clickup
 
 # Go microservice with infra
-arcane install backend-go+infra+agile+jira
+npx arcane install backend-go+infra+agile+jira
 
 # Full-stack monorepo
-arcane install backend-ts+frontend+testing+database
+npx arcane install backend-ts+frontend+testing+database
 
 # Mobile app with CI/CD
-arcane install mobile+agile+clickup+testing
+npx arcane install mobile+agile+clickup+testing
 
 # Secure backend with docs
-arcane install backend-ts+security+docs+database
+npx arcane install backend-ts+security+docs+database
 
 # AI/ML project with data pipelines
-arcane install backend-go+ai+infra
+npx arcane install backend-go+ai+infra
 
 # SaaS with full marketing stack
-arcane install backend-ts+marketing+business+finance
+npx arcane install backend-ts+marketing+business+finance
 
 # Regulated medical device
-arcane install backend-ts+regulatory+security+testing
+npx arcane install backend-ts+regulatory+security+testing
 
 # Founder advisory setup
-arcane install clevel+business+finance+marketing
+npx arcane install clevel+business+finance+marketing
+
+# With status bar
+npx arcane install backend-ts+agile+statusline
 ```
 
 ---
 
-## What Gets Installed
+## Add/Remove Workflow
 
+```bash
+# Start with a base profile
+npx arcane install backend-ts
+
+# Later, add testing and security
+npx arcane add +testing +security
+
+# Add a specific skill you need
+npx arcane add docker-setup
+
+# Realize you don't need testing anymore
+npx arcane remove +testing
+
+# Remove a specific skill
+npx arcane remove docker-setup
+
+# Check what you have now
+npx arcane status
+
+# Start over
+npx arcane clean --force
+npx arcane install backend-ts+agile
 ```
-my-project/.claude/
-├── settings.json          # Permissions (allow/deny) + hooks
-├── arcane-manifest.json   # Installation metadata
-├── statusline.sh          # Claude Code status line
-├── hooks/                 # 14 lifecycle hooks
-├── skills/                # Only your profile's skills
-│   └── */references/      # Per-skill reference docs
-├── rules/                 # Stack-specific rules
-├── agents/                # Agent dirs per profile
-└── docs/                  # General documentation
+
+---
+
+## Worktree Support
+
+Work on multiple features in parallel using git worktrees, each with its own Arcane installation.
+
+### Create a worktree with Arcane pre-installed
+
+```bash
+# Create worktree + install Arcane in one step
+npx arcane worktree feat/new-api --profile backend-ts+agile
+
+# Inherits profile from current installation
+npx arcane worktree feat/new-api
+
+# With dependency install and Docker port isolation
+npx arcane worktree feat/new-api --install-deps --isolate
+
+# Custom path and base branch
+npx arcane worktree feat/new-api --path ../my-api-worktree --base develop
+
+# Preview without creating
+npx arcane worktree feat/new-api --dry-run
 ```
+
+### Worktree-aware installation
+
+When you run `npx arcane install` inside a git worktree, Arcane automatically:
+- Detects it's in a worktree
+- Finds the main worktree's Arcane installation
+- **Shares** hooks/ and docs/ via symlink (read-only, identical across worktrees)
+- **Copies** skills/, agents/, and rules/ independently (can diverge per worktree)
+
+```bash
+# Manual: share from a specific installation
+npx arcane install backend-ts --share-from /path/to/main/worktree
+
+# Disable sharing
+npx arcane worktree feat/api --no-share
+```
+
+### What gets shared vs independent
+
+| Asset | Behavior | Why |
+|-------|----------|-----|
+| `hooks/` | Shared (symlink) | Same hooks for all worktrees |
+| `docs/` | Shared (symlink) | Documentation doesn't change per branch |
+| `skills/` | Independent (copy) | Different worktrees may add/remove skills |
+| `agents/` | Independent (copy) | Agent definitions could vary |
+| `rules/` | Independent (copy) | Rules may differ per profile |
+| `settings.json` | Independent (generated) | Permissions/hooks config per profile |
+| `arcane-manifest.json` | Independent | Tracks this worktree's installation |
+
+### Status shows worktree info
+
+```bash
+npx arcane status
+# === Arcane Status ===
+#   Profiles:  backend-ts + agile
+#   Worktree:  yes (main: /path/to/main/checkout)
+#   Shared:    hooks, docs (symlinked)
+#   ...
+```
+
+---
 
 ## Architecture
 
 ```
 claude-code-arcane/
-├── arcane/                # Python CLI (installer, profiles, cli)
-├── profiles/              # 27 profiles (.profile)
-├── agents/                # 12 dirs, 80 agents (.md)
-│   ├── quality/           # Code review, testing, standards
-│   ├── engineering/       # Architecture, API design, performance
-│   ├── game/              # Unity, game design, playtesting
-│   ├── devops/            # CI/CD, infra, monitoring
-│   ├── management/        # Sprint planning, estimation
-│   ├── product/           # UX, design systems, requirements
-│   ├── integrations/      # External service agents
-│   ├── ai/                # AI/ML architecture, data science
-│   ├── clevel/            # C-suite advisory
-│   ├── business/          # Revenue ops, finance, sales
-│   ├── marketing/         # Content, growth, SEO, analytics
-│   └── regulatory/        # Regulatory affairs, QMS, compliance
-├── .claude/
-│   ├── skills-git/        # Git, workflow, code review skills
-│   ├── skills-testing/    # Testing skills
-│   ├── skills-docs/       # Documentation generation
-│   ├── skills-frontend/   # Frontend-specific skills
-│   ├── skills-mobile/     # Mobile-specific skills
-│   ├── skills-backend/    # Backend, API, auth skills
-│   ├── skills-devops/     # Infra, CI/CD, observability
-│   ├── skills-agile/      # Project management skills
-│   ├── skills-design/     # UX, design system skills
-│   ├── skills-gamedev/    # Unity, game design skills
-│   ├── skills-integrations/ # Slack, Postman, GitHub Projects
-│   ├── skills-release/    # Release, versioning skills
-│   ├── skills-security/   # Security audit skills
-│   ├── skills-arcane/     # In-session self-management
-│   ├── skills-ai/         # AI/ML, RAG, data engineering
-│   ├── skills-business/   # Contracts, revenue ops, sales
-│   ├── skills-clevel-advisors/   # C-suite advisors
-│   ├── skills-clevel-operations/ # Board meetings, org health
-│   ├── skills-finance/    # Financial analysis, SaaS metrics
-│   ├── skills-marketing-content/  # Copywriting, social, video
-│   ├── skills-marketing-growth/   # Ads, email, launches
-│   ├── skills-marketing-seo/     # SEO, CRO, site architecture
-│   ├── skills-marketing-strategy/ # Pricing, analytics, PMM
-│   ├── skills-regulatory/ # FDA, GDPR, ISO, SOC 2
-│   ├── hooks/             # 14 lifecycle hooks
-│   └── rules/             # 9 rules
-└── tools/                 # Migration scripts
+├── package.json               # npm package (bin: arcane)
+├── src/                       # TypeScript CLI (15 files)
+│   ├── cli.ts                 # Entry point (Commander.js)
+│   ├── commands/              # 9 commands (install, add, remove, list, status, update, clean, worktree, global)
+│   ├── profiles.ts            # YAML profile parser + merge
+│   ├── installer.ts           # Copy logic (skills, hooks, rules, agents, docs)
+│   ├── worktree.ts            # Git worktree detection, creation, sharing
+│   ├── manifest.ts            # Read/write arcane-manifest.json
+│   ├── types.ts               # TypeScript interfaces
+│   └── utils.ts               # Cross-platform helpers
+├── skills/                    # 321 skills (flat, one dir per skill)
+├── profiles/                  # 29 profiles (YAML)
+├── agents/                    # 13 dirs, 86+ agents (Markdown)
+├── hooks/                     # 15 lifecycle hooks (Bash)
+├── rules/                     # 19 rules (Markdown)
+├── templates/                 # Gamedev templates
+├── docs/                      # Documentation
+└── skills-selftest/           # QA framework
 ```
 
 ## Philosophy
@@ -210,12 +360,13 @@ claude-code-arcane/
 - **Selective:** install only what you need — fewer tokens, better performance
 - **Replaceable:** switching profiles replaces the previous config (with automatic backup)
 - **Deduplicated:** combined profiles never duplicate skills
-- **Self-managing:** `/arcane-add` and `/arcane-remove` from within Claude Code
+- **Self-managing:** add, remove, and list from within Claude Code
+- **Safe removal:** removing a profile only deletes assets not shared with other active profiles
 
 ---
 
 ## Compatibility
 
 - **OS:** Windows 10/11, macOS, Linux
-- **Python:** 3.9+
+- **Node:** 20+
 - **Claude Code:** v1.0+

@@ -5,10 +5,12 @@ vendor/
 venv/
 __pycache__/
 *.pyc
+*.egg-info/
 
 # Build outputs
 dist/
 build/
+*.tgz
 target/
 *.exe
 *.dll

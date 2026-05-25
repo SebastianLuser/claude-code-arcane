@@ -1,0 +1,30 @@
+name: security
+description: "Security — audits, OWASP, secrets, backups"
+type: addon
+
+skills:
+  - security-audit
+  - audit-dev
+  - owasp-top10-check
+  - secret-management
+  - backup-strategy
+  - ai-security
+  - cloud-security
+  - red-team
+  - security-pen-testing
+  - threat-detection
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  []
+
+permissions:
+  allow:
+    []
+  deny:
+    []

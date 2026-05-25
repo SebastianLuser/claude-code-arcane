@@ -1,0 +1,28 @@
+name: database
+description: "Database avanzado — indexing, migrations, seeding, replicas"
+type: addon
+
+skills:
+  - database-indexing
+  - db-diagram
+  - data-seeding
+  - local-database-setup
+  - query-optimization
+  - run-migrations
+  - read-replicas
+  - create-test-user
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  []
+
+permissions:
+  allow:
+    []
+  deny:
+    []
