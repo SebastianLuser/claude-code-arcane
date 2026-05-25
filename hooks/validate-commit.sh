@@ -1,28 +1,24 @@
 #!/usr/bin/env bash
-# Validate git commit commands
-# Blocks commits with obvious issues
+set +e
 
-# Read the tool input from stdin (Claude Code passes it as JSON)
-INPUT=$(cat)
+main() {
+  local INPUT
+  INPUT=$(cat 2>/dev/null) || true
 
-# Extract command if it's a git commit
-COMMAND=$(echo "$INPUT" | grep -oE '"command"\s*:\s*"[^"]*"' | head -1 | sed 's/.*"command"\s*:\s*"//;s/"$//')
+  local COMMAND
+  COMMAND=$(echo "$INPUT" | grep -oE '"command"\s*:\s*"[^"]*"' | head -1 | sed 's/.*"command"\s*:\s*"//;s/"$//') || true
 
-# Only validate git commit commands
-if [[ "$COMMAND" != *"git commit"* ]]; then
-  exit 0
-fi
+  [[ -z "$COMMAND" || "$COMMAND" != *"git commit"* ]] && return 0
 
-# Block if --no-verify is present (would skip hooks)
-if [[ "$COMMAND" == *"--no-verify"* ]]; then
-  echo "BLOCK: --no-verify is not allowed. Fix the underlying issue instead of bypassing hooks." >&2
-  exit 2
-fi
+  if [[ "$COMMAND" == *"--no-verify"* ]]; then
+    echo "BLOCK: --no-verify is not allowed. Fix the underlying issue instead of bypassing hooks." >&2
+    exit 2
+  fi
 
-# Block empty commits unless explicitly --allow-empty
-if [[ "$COMMAND" == *"-m \"\""* ]]; then
-  echo "BLOCK: empty commit message not allowed." >&2
-  exit 2
-fi
-
+  if [[ "$COMMAND" == *"-m \"\""* ]]; then
+    echo "BLOCK: empty commit message not allowed." >&2
+    exit 2
+  fi
+}
+main
 exit 0

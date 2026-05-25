@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Session stop hook
-
-SESSION_LOG="production/session-state/sessions.log"
-[[ -d production/session-state ]] && echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Session stopped" >> "$SESSION_LOG"
-
+set +e
+main() {
+  [[ -d production/session-state ]] && echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Session stopped" >> production/session-state/sessions.log
+}
+main 2>/dev/null
 exit 0

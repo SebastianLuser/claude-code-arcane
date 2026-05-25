@@ -9,6 +9,7 @@ import { statusCommand } from "./commands/status.js";
 import { updateCommand } from "./commands/update.js";
 import { cleanCommand } from "./commands/clean.js";
 import { worktreeCommand } from "./commands/worktree.js";
+import { globalCommand } from "./commands/global.js";
 
 const program = new Command();
 
@@ -106,6 +107,17 @@ program
   .option("--no-share", "Don't share hooks/docs from current installation")
   .action(async (branch: string, opts) => {
     await worktreeCommand(branch, opts);
+  });
+
+program
+  .command("global")
+  .description(
+    "Install or manage global hooks (worktree-isolation auto-apply on SessionStart).",
+  )
+  .option("--remove", "Remove global hooks")
+  .option("--status", "Show global hooks status")
+  .action(async (opts) => {
+    await globalCommand(opts);
   });
 
 program.parse();

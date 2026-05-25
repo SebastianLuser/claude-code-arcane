@@ -1,11 +1,9 @@
 #!/bin/bash
-# Hook: detect-gaps.sh
-# Event: SessionStart
-# Purpose: Detect missing documentation based on project stack (software or gamedev)
-# Cross-platform: Windows Git Bash compatible (uses grep -E, not -P)
-
+# Hook: detect-gaps.sh — SessionStart
+# Graceful: wraps in main(), never blocks session
 set +e
 
+main() {
 echo "=== Checking for Documentation Gaps ==="
 
 # --- Stack detection ---
@@ -227,4 +225,6 @@ fi
 echo ""
 echo "Run /project-stage-detect for full analysis"
 echo "==================================="
+}
+main 2>/dev/null
 exit 0

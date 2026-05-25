@@ -1,20 +1,21 @@
 #!/usr/bin/env bash
-# Validate git push commands
-# Blocks destructive pushes
+set +e
 
-INPUT=$(cat)
-COMMAND=$(echo "$INPUT" | grep -oE '"command"\s*:\s*"[^"]*"' | head -1 | sed 's/.*"command"\s*:\s*"//;s/"$//')
+main() {
+  local INPUT
+  INPUT=$(cat 2>/dev/null) || true
 
-if [[ "$COMMAND" != *"git push"* ]]; then
-  exit 0
-fi
+  local COMMAND
+  COMMAND=$(echo "$INPUT" | grep -oE '"command"\s*:\s*"[^"]*"' | head -1 | sed 's/.*"command"\s*:\s*"//;s/"$//') || true
 
-# Block force push to main/master
-if [[ "$COMMAND" == *"--force"* || "$COMMAND" == *"-f "* ]]; then
-  if [[ "$COMMAND" == *"main"* || "$COMMAND" == *"master"* ]]; then
-    echo "BLOCK: force push to main/master is prohibited." >&2
-    exit 2
+  [[ -z "$COMMAND" || "$COMMAND" != *"git push"* ]] && return 0
+
+  if [[ "$COMMAND" == *"--force"* || "$COMMAND" == *"-f "* ]]; then
+    if [[ "$COMMAND" == *"main"* || "$COMMAND" == *"master"* ]]; then
+      echo "BLOCK: force push to main/master is prohibited." >&2
+      exit 2
+    fi
   fi
-fi
-
+}
+main
 exit 0

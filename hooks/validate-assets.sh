@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-# Validate asset files after Write/Edit
-# Placeholder - checks file extensions, sizes, naming
+set +e
 
+main() {
+  local INPUT
+  INPUT=$(cat 2>/dev/null) || true
+  # Placeholder — future: validate file extensions, sizes, naming conventions
+}
+main 2>/dev/null
 exit 0
