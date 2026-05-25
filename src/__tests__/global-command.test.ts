@@ -51,7 +51,7 @@ describe("globalCommand", () => {
       await globalCommand({ status: true });
 
       const output = logSpy.mock.calls
-        .map((c) => String(c[0]))
+        .map((c: unknown[]) => String(c[0]))
         .join("\n");
       expect(output).toContain("Global Status");
       expect(output).toContain("not installed");
@@ -74,7 +74,7 @@ describe("globalCommand", () => {
       await globalCommand({ status: true });
 
       const output = logSpy.mock.calls
-        .map((c) => String(c[0]))
+        .map((c: unknown[]) => String(c[0]))
         .join("\n");
       expect(output).toContain("installed");
     });
@@ -108,7 +108,7 @@ describe("globalCommand", () => {
       await globalCommand({ status: true });
 
       const output = logSpy.mock.calls
-        .map((c) => String(c[0]))
+        .map((c: unknown[]) => String(c[0]))
         .join("\n");
       expect(output).toContain("active");
     });
@@ -161,7 +161,7 @@ describe("globalCommand", () => {
       await mod2.globalCommand({});
 
       const output = logSpy.mock.calls
-        .map((c) => String(c[0]))
+        .map((c: unknown[]) => String(c[0]))
         .join("\n");
       expect(output).toContain("[skip]");
     });
@@ -193,7 +193,7 @@ describe("globalCommand", () => {
       expect(fs.existsSync(scriptsDir)).toBe(false);
 
       const output = logSpy.mock.calls
-        .map((c) => String(c[0]))
+        .map((c: unknown[]) => String(c[0]))
         .join("\n");
       expect(output).toContain("Removed");
     });
@@ -205,7 +205,7 @@ describe("globalCommand", () => {
       await globalCommand({ remove: true });
 
       const output = logSpy.mock.calls
-        .map((c) => String(c[0]))
+        .map((c: unknown[]) => String(c[0]))
         .join("\n");
       expect(output).toContain("[skip]");
     });
@@ -225,7 +225,7 @@ describe("globalCommand", () => {
     await globalCommand({ status: true });
 
     const output = logSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("\n");
     expect(output).toContain("Global Status");
     expect(output).toContain("not configured");

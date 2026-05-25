@@ -32,7 +32,7 @@ describe("CLI setup", () => {
     }
 
     const output = stdoutSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("");
     expect(output).toContain("arcane");
     expect(output).toContain("install");
@@ -56,7 +56,7 @@ describe("CLI setup", () => {
     }
 
     const output = stdoutSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("");
     expect(output).toContain("1.0.0");
   });

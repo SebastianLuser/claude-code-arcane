@@ -35,7 +35,7 @@ describe("updateCommand", () => {
     const { updateCommand } = await import("../commands/update.js");
     await updateCommand({});
 
-    const output = logSpy.mock.calls.map((c) => c[0]).join("\n");
+    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
     expect(output).toContain("up to date");
   });
 
@@ -55,7 +55,7 @@ describe("updateCommand", () => {
     const { updateCommand } = await import("../commands/update.js");
     await updateCommand({});
 
-    const output = logSpy.mock.calls.map((c) => c[0]).join("\n");
+    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
     expect(output).toContain("Update available");
   });
 
@@ -75,7 +75,7 @@ describe("updateCommand", () => {
     const { updateCommand } = await import("../commands/update.js");
     await updateCommand({ quiet: true });
 
-    const output = logSpy.mock.calls.map((c) => c[0]).join("\n");
+    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
     expect(output).toContain("update available");
   });
 
@@ -92,7 +92,7 @@ describe("updateCommand", () => {
     const { updateCommand } = await import("../commands/update.js");
     await updateCommand({});
 
-    const output = logSpy.mock.calls.map((c) => c[0]).join("\n");
+    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
     expect(output).toContain("Could not check");
   });
 

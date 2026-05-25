@@ -81,7 +81,7 @@ describe("worktreeCommand", () => {
     ).rejects.toThrow("process.exit called");
 
     const output = errorSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("\n");
     expect(output).toContain("Not a git repository");
   });
@@ -105,7 +105,7 @@ describe("worktreeCommand", () => {
     ).rejects.toThrow("process.exit called");
 
     const output = errorSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("\n");
     expect(output).toContain("already exists");
   });
@@ -128,7 +128,7 @@ describe("worktreeCommand", () => {
     ).rejects.toThrow("process.exit called");
 
     const output = errorSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("\n");
     expect(output).toContain("No profile specified");
   });
@@ -152,7 +152,7 @@ describe("worktreeCommand", () => {
     });
 
     const output = logSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("\n");
     expect(output).toContain("[dry-run]");
     expect(mockCreateGitWorktree).not.toHaveBeenCalled();
@@ -179,7 +179,7 @@ describe("worktreeCommand", () => {
     ).rejects.toThrow("process.exit called");
 
     const output = errorSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("\n");
     expect(output).toContain("Failed to create worktree");
   });
@@ -222,7 +222,7 @@ describe("worktreeCommand", () => {
     ).toBe(true);
 
     const output = logSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("\n");
     expect(output).toContain("Worktree ready");
   });
@@ -292,7 +292,7 @@ describe("worktreeCommand", () => {
     await worktreeCommand("feat/test", { share: false });
 
     const output = logSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("\n");
     expect(output).toContain("Inheriting profile");
     expect(output).toContain("Worktree ready");
@@ -323,7 +323,7 @@ describe("worktreeCommand", () => {
     });
 
     const output = logSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("\n");
     expect(output).toContain("Base");
     expect(output).toContain("develop");
@@ -362,7 +362,7 @@ describe("worktreeCommand", () => {
       worktreePath,
     );
     const output = logSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("\n");
     expect(output).toContain("Dependencies installed");
   });
@@ -399,7 +399,7 @@ describe("worktreeCommand", () => {
     });
 
     const output = warnSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("\n");
     expect(output).toContain("Dependency install failed");
   });
@@ -429,7 +429,7 @@ describe("worktreeCommand", () => {
     });
 
     const output = warnSpy.mock.calls
-      .map((c) => String(c[0]))
+      .map((c: unknown[]) => String(c[0]))
       .join("\n");
     expect(output).toContain("worktree-isolation skill not installed");
   });

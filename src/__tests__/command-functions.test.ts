@@ -50,7 +50,7 @@ describe("statusCommand", () => {
     const { statusCommand } = await import("../commands/status.js");
     await statusCommand();
 
-    const output = logSpy.mock.calls.map((c) => c[0]).join("\n");
+    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
     expect(output).toContain("No Arcane installation found");
   });
 
@@ -60,14 +60,14 @@ describe("statusCommand", () => {
     await statusCommand();
 
     expect(logSpy).toHaveBeenCalled();
-    const output = logSpy.mock.calls.map((c) => c[0]).join("\n");
+    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
     expect(output).toContain("Arcane Status");
   });
 
   it("should display worktree info when manifest has worktree data", async () => {
     installProfile(tmpDir);
     const manifest = readManifest(tmpDir)!;
-    (manifest as Record<string, unknown>).worktree = {
+    manifest.worktree = {
       is_worktree: true,
       main_worktree: "/main/repo",
       shared_dirs: ["hooks", "docs"],
@@ -78,7 +78,7 @@ describe("statusCommand", () => {
     const { statusCommand } = await import("../commands/status.js");
     await statusCommand();
 
-    const output = logSpy.mock.calls.map((c) => c[0]).join("\n");
+    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
     expect(output).toContain("Worktree");
     expect(output).toContain("Shared");
   });
@@ -107,7 +107,7 @@ describe("cleanCommand", () => {
     const { cleanCommand } = await import("../commands/clean.js");
     await cleanCommand({});
 
-    const output = logSpy.mock.calls.map((c) => c[0]).join("\n");
+    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
     expect(output).toContain("No Arcane installation found");
   });
 
@@ -116,7 +116,7 @@ describe("cleanCommand", () => {
     const { cleanCommand } = await import("../commands/clean.js");
     await cleanCommand({});
 
-    const output = logSpy.mock.calls.map((c) => c[0]).join("\n");
+    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
     expect(output).toContain("--force");
     expect(fs.existsSync(path.join(tmpDir, ".claude"))).toBe(true);
   });
@@ -154,7 +154,7 @@ describe("listCommand", () => {
     await listCommand();
 
     expect(logSpy).toHaveBeenCalled();
-    const output = logSpy.mock.calls.map((c) => c[0]).join("\n");
+    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
     expect(output).toContain("Available Profiles");
     expect(output).toContain("Skills");
   });
@@ -164,7 +164,7 @@ describe("listCommand", () => {
     const { listCommand } = await import("../commands/list.js");
     await listCommand();
 
-    const output = logSpy.mock.calls.map((c) => c[0]).join("\n");
+    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
     expect(output).toContain("installed");
   });
 });
@@ -189,7 +189,7 @@ describe("installCommand", () => {
     const { installCommand } = await import("../commands/install.js");
     await installCommand(undefined, { target: tmpDir });
 
-    const output = logSpy.mock.calls.map((c) => c[0]).join("\n");
+    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
     expect(output).toContain("Available profiles");
   });
 
@@ -308,8 +308,8 @@ describe("addCommand", () => {
     await addCommand(["nonexistent-skill-xyz"]);
 
     const output = [
-      ...logSpy.mock.calls.map((c) => String(c[0])),
-      ...errorSpy.mock.calls.map((c) => String(c[0])),
+      ...logSpy.mock.calls.map((c: unknown[]) => String(c[0])),
+      ...errorSpy.mock.calls.map((c: unknown[]) => String(c[0])),
     ].join("\n");
     expect(output).toContain("not found");
   });
@@ -410,7 +410,7 @@ describe("removeCommand", () => {
     await removeCommand(["+nonexistent-profile"]);
 
     expect(warnSpy).toHaveBeenCalled();
-    const output = warnSpy.mock.calls.map((c) => String(c[0])).join("\n");
+    const output = warnSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
     expect(output).toContain("not installed");
   });
 
@@ -443,7 +443,7 @@ describe("removeCommand", () => {
     const { removeCommand } = await import("../commands/remove.js");
     await removeCommand(["some-nonexistent-skill"]);
 
-    const output = logSpy.mock.calls.map((c) => String(c[0])).join("\n");
+    const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
     expect(output).toContain("[skip]");
   });
 });
