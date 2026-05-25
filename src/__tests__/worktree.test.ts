@@ -86,7 +86,7 @@ describe("detectPackageManager", () => {
 
   afterEach(() => {
     if (tmpDir && fs.existsSync(tmpDir)) {
-      fs.rmSync(tmpDir, { recursive: true, force: true });
+      fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
     }
   });
 
@@ -159,7 +159,7 @@ describe("findMainArcaneInstall", () => {
 
   afterEach(() => {
     if (tmpDir && fs.existsSync(tmpDir)) {
-      fs.rmSync(tmpDir, { recursive: true, force: true });
+      fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
     }
   });
 
@@ -191,7 +191,7 @@ describe("linkOrCopyDir", () => {
 
   afterEach(() => {
     if (tmpDir && fs.existsSync(tmpDir)) {
-      fs.rmSync(tmpDir, { recursive: true, force: true });
+      fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
     }
   });
 
@@ -259,7 +259,7 @@ describe("isSymlinkOrJunction", () => {
 
   afterEach(() => {
     if (tmpDir && fs.existsSync(tmpDir)) {
-      fs.rmSync(tmpDir, { recursive: true, force: true });
+      fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
     }
   });
 
@@ -307,7 +307,7 @@ describe("getWorktreeInfo", { timeout: 15000 }, () => {
       const info = getWorktreeInfo(tmpDir);
       expect(info).toBeNull();
     } finally {
-      fs.rmSync(tmpDir, { recursive: true, force: true });
+      fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
     }
   });
 

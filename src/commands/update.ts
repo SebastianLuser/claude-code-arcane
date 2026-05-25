@@ -47,9 +47,10 @@ export async function updateCommand(opts: UpdateOpts): Promise<void> {
 function getCurrentVersion(): string {
   try {
     const pkg = JSON.parse(
-      execSync("npm list -g claude-code-arcane --json 2>/dev/null", {
+      execSync("npm list -g claude-code-arcane --json", {
         encoding: "utf-8",
         timeout: 10_000,
+        stdio: ["pipe", "pipe", "ignore"],
       }),
     );
     return (
@@ -62,9 +63,10 @@ function getCurrentVersion(): string {
 
 function getLatestVersion(): string | null {
   try {
-    return execSync("npm view claude-code-arcane version 2>/dev/null", {
+    return execSync("npm view claude-code-arcane version", {
       encoding: "utf-8",
       timeout: 10_000,
+      stdio: ["pipe", "pipe", "ignore"],
     }).trim();
   } catch {
     return null;

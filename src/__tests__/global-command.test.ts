@@ -39,7 +39,7 @@ describe("globalCommand", () => {
     warnSpy.mockRestore();
     exitSpy.mockRestore();
     if (tmpDir && fs.existsSync(tmpDir)) {
-      fs.rmSync(tmpDir, { recursive: true, force: true });
+      fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
     }
   });
 
