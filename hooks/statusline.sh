@@ -12,9 +12,15 @@ else
   BRANCH=""
 fi
 
-# Follow symlinks — .claude/skills/ is an aggregator of junctions to per-stack dirs
-SKILLS=$(find -L .claude/skills -name "SKILL.md" 2>/dev/null | wc -l | tr -d ' ')
-AGENTS=$(find -L .claude/agents -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
+# Skills/agents Claude can actually invoke = global (~/.claude) + project (.claude),
+# deduped by name (project overrides global). Follow -L so .claude/skills junctions count.
+# Top-level only (mindepth/maxdepth 2) so bundled sub-skills don't inflate the total.
+SKILLS=$( { find -L "$HOME/.claude/skills" -mindepth 2 -maxdepth 2 -name "SKILL.md" 2>/dev/null;
+            find -L .claude/skills          -mindepth 2 -maxdepth 2 -name "SKILL.md" 2>/dev/null; } \
+          | xargs -n1 dirname 2>/dev/null | xargs -n1 basename 2>/dev/null | sort -u | wc -l | tr -d ' ')
+AGENTS=$( { find -L "$HOME/.claude/agents" -name "*.md" 2>/dev/null;
+            find -L .claude/agents         -name "*.md" 2>/dev/null; } \
+          | xargs -n1 basename 2>/dev/null | sort -u | wc -l | tr -d ' ')
 
 PYCMD=$(command -v python 2>/dev/null || command -v python3 2>/dev/null || command -v py 2>/dev/null)
 
