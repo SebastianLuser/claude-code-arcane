@@ -35,6 +35,11 @@ const SETTINGS_TEMPLATE = {
             command: "bash .claude/hooks/detect-gaps.sh",
             timeout: 10,
           },
+          {
+            type: "command",
+            command: "bash .claude/hooks/check-update.sh",
+            timeout: 10,
+          },
         ],
       },
     ],

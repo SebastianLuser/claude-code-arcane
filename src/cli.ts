@@ -11,6 +11,7 @@ import { cleanCommand } from "./commands/clean.js";
 import { worktreeCommand } from "./commands/worktree.js";
 import { globalCommand } from "./commands/global.js";
 import { getPackageVersion } from "./utils.js";
+import { checkForUpdates } from "./update-check.js";
 
 const program = new Command();
 
@@ -126,3 +127,7 @@ program
   });
 
 program.parse();
+
+if (!process.env.ARCANE_SOURCE && !process.env.VITEST) {
+  checkForUpdates({ quiet: false }).catch(() => {});
+}
