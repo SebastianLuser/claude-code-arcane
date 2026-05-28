@@ -3,7 +3,8 @@ import path from "node:path";
 import chalk from "chalk";
 import { readManifest } from "../manifest.js";
 import { parseProfile } from "../profiles.js";
-import { getPackageRoot, writeJsonSync } from "../utils.js";
+import { writeJsonSync } from "../utils.js";
+import { resolveContentSource } from "../content-source.js";
 
 const CORE_SKILLS = [
   "commit",
@@ -31,7 +32,8 @@ const CORE_SKILLS = [
 
 export async function removeCommand(items: string[]): Promise<void> {
   const target = process.cwd();
-  const root = getPackageRoot();
+  const source = await resolveContentSource({ quiet: true });
+  const root = await source.getContentRoot();
   const manifest = readManifest(target);
 
   if (!manifest) {

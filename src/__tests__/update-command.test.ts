@@ -1,128 +1,175 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
+import { mergeProfiles } from "../profiles.js";
+import { Installer } from "../installer.js";
+import { getPackageRoot, getPackageVersion } from "../utils.js";
+import type { ArcaneManifest } from "../types.js";
 
-const mockExecSync = vi.fn();
+function makeTmpDir(): string {
+  return fs.mkdtempSync(path.join(os.tmpdir(), "arcane-update-test-"));
+}
 
-vi.mock("node:child_process", () => ({
-  execSync: mockExecSync,
-}));
+const REPO_ROOT = getPackageRoot();
+
+function installTestingProfile(tmpDir: string) {
+  const profilesDir = path.join(REPO_ROOT, "profiles");
+  const merged = mergeProfiles(profilesDir, ["testing"]);
+
+  const installer = new Installer(merged, {
+    target: tmpDir,
+    dryRun: false,
+    force: false,
+  });
+  installer.run("testing");
+  return merged;
+}
 
 describe("updateCommand", () => {
+  let tmpDir: string;
   let logSpy: ReturnType<typeof vi.spyOn>;
+  let originalCwd: string;
 
   beforeEach(() => {
-    mockExecSync.mockReset();
     logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-    vi.resetModules();
+    originalCwd = process.cwd();
   });
 
   afterEach(() => {
     logSpy.mockRestore();
+    process.chdir(originalCwd);
+    if (tmpDir && fs.existsSync(tmpDir)) {
+      fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+    }
   });
 
-  it("should show already up to date when versions match", async () => {
-    mockExecSync.mockImplementation((cmd: string) => {
-      if (cmd.includes("npm list")) {
-        return JSON.stringify({
-          dependencies: { "claude-code-arcane": { version: "1.0.0" } },
-        });
-      }
-      if (cmd.includes("npm view")) {
-        return "1.0.0\n";
-      }
-      return "";
-    });
+  it("should report no installation found when no manifest exists", async () => {
+    // Arrange
+    tmpDir = makeTmpDir();
+    process.chdir(tmpDir);
 
+    // Act
     const { updateCommand } = await import("../commands/update.js");
     await updateCommand({});
 
-    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
+    // Assert
+    const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
+    expect(output).toContain("No Arcane installation found");
+  });
+
+  it("should report already up to date when version matches", async () => {
+    // Arrange
+    tmpDir = makeTmpDir();
+    installTestingProfile(tmpDir);
+    process.chdir(tmpDir);
+
+    // Act
+    const { updateCommand } = await import("../commands/update.js");
+    await updateCommand({});
+
+    // Assert
+    const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
     expect(output).toContain("up to date");
   });
 
-  it("should show update available when versions differ", async () => {
-    mockExecSync.mockImplementation((cmd: string) => {
-      if (cmd.includes("npm list")) {
-        return JSON.stringify({
-          dependencies: { "claude-code-arcane": { version: "1.0.0" } },
-        });
-      }
-      if (cmd.includes("npm view")) {
-        return "2.0.0\n";
-      }
-      return "";
-    });
+  it("should be silent in quiet mode when up to date", async () => {
+    // Arrange
+    tmpDir = makeTmpDir();
+    installTestingProfile(tmpDir);
+    process.chdir(tmpDir);
+    logSpy.mockClear();
 
-    const { updateCommand } = await import("../commands/update.js");
-    await updateCommand({});
-
-    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
-    expect(output).toContain("Update available");
-  });
-
-  it("should show short message in quiet mode when update available", async () => {
-    mockExecSync.mockImplementation((cmd: string) => {
-      if (cmd.includes("npm list")) {
-        return JSON.stringify({
-          dependencies: { "claude-code-arcane": { version: "1.0.0" } },
-        });
-      }
-      if (cmd.includes("npm view")) {
-        return "2.0.0\n";
-      }
-      return "";
-    });
-
+    // Act
     const { updateCommand } = await import("../commands/update.js");
     await updateCommand({ quiet: true });
 
-    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
-    expect(output).toContain("update available");
-  });
-
-  it("should show warning when latest version unavailable", async () => {
-    mockExecSync.mockImplementation((cmd: string) => {
-      if (cmd.includes("npm list")) {
-        return JSON.stringify({
-          dependencies: { "claude-code-arcane": { version: "1.0.0" } },
-        });
-      }
-      throw new Error("npm view failed");
-    });
-
-    const { updateCommand } = await import("../commands/update.js");
-    await updateCommand({});
-
-    const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
-    expect(output).toContain("Could not check");
-  });
-
-  it("should be silent in quiet mode when check fails", async () => {
-    mockExecSync.mockImplementation(() => {
-      throw new Error("npm failed");
-    });
-
-    const { updateCommand } = await import("../commands/update.js");
-    await updateCommand({ quiet: true });
-
+    // Assert
     expect(logSpy).not.toHaveBeenCalled();
   });
 
-  it("should not output in quiet mode when already up to date", async () => {
-    mockExecSync.mockImplementation((cmd: string) => {
-      if (cmd.includes("npm list")) {
-        return JSON.stringify({
-          dependencies: { "claude-code-arcane": { version: "1.0.0" } },
-        });
-      }
-      if (cmd.includes("npm view")) {
-        return "1.0.0\n";
-      }
-      return "";
-    });
+  it("should detect changes when manifest version differs", async () => {
+    // Arrange
+    tmpDir = makeTmpDir();
+    installTestingProfile(tmpDir);
 
+    const manifestPath = path.join(tmpDir, ".claude", "arcane-manifest.json");
+    const manifest: ArcaneManifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+    manifest.source_version = "0.0.1";
+    manifest.arcane_version = "0.0.1";
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
+
+    process.chdir(tmpDir);
+
+    // Act
     const { updateCommand } = await import("../commands/update.js");
-    await updateCommand({ quiet: true });
+    await updateCommand({ dryRun: true });
 
-    expect(logSpy).not.toHaveBeenCalled();
+    // Assert
+    const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
+    expect(output).toContain("0.0.1");
+    expect(output).toContain(getPackageVersion());
+  });
+
+  it("should force update even when version matches", async () => {
+    // Arrange
+    tmpDir = makeTmpDir();
+    installTestingProfile(tmpDir);
+    process.chdir(tmpDir);
+
+    // Act
+    const { updateCommand } = await import("../commands/update.js");
+    await updateCommand({ force: true });
+
+    // Assert
+    const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
+    expect(output).toContain("Updated to");
+  });
+
+  it("should detect locally modified skills and skip them", async () => {
+    // Arrange
+    tmpDir = makeTmpDir();
+    installTestingProfile(tmpDir);
+
+    const manifestPath = path.join(tmpDir, ".claude", "arcane-manifest.json");
+    const manifest: ArcaneManifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+    manifest.source_version = "0.0.1";
+    manifest.arcane_version = "0.0.1";
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
+
+    const skillsDir = path.join(tmpDir, ".claude", "skills");
+    const skillDirs = fs.readdirSync(skillsDir);
+    if (skillDirs.length > 0) {
+      const skillMd = path.join(skillsDir, skillDirs[0], "SKILL.md");
+      if (fs.existsSync(skillMd)) {
+        fs.writeFileSync(skillMd, "# Customized by user\n");
+      }
+    }
+
+    process.chdir(tmpDir);
+
+    // Act
+    const { updateCommand } = await import("../commands/update.js");
+    await updateCommand({ dryRun: true });
+
+    // Assert
+    const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
+    expect(output).toContain("customized");
+  });
+
+  it("should write content_hashes to manifest after install", async () => {
+    // Arrange
+    tmpDir = makeTmpDir();
+    installTestingProfile(tmpDir);
+
+    // Act
+    const manifestPath = path.join(tmpDir, ".claude", "arcane-manifest.json");
+    const manifest: ArcaneManifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+
+    // Assert
+    expect(manifest.content_hashes).toBeDefined();
+    expect(manifest.content_hashes!.skills).toBeDefined();
+    expect(manifest.content_hashes!.rules).toBeDefined();
+    expect(Object.keys(manifest.content_hashes!.skills).length).toBeGreaterThan(0);
   });
 });

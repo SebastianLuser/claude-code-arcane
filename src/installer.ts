@@ -10,6 +10,7 @@ import {
 } from "./utils.js";
 import { writeManifest } from "./manifest.js";
 import { linkOrCopyDir } from "./worktree.js";
+import { computeContentHashes } from "./content-hash.js";
 
 const SETTINGS_TEMPLATE = {
   $schema: "https://json.schemastore.org/claude-code-settings.json",
@@ -163,7 +164,7 @@ export class Installer {
   private sharedDirs: string[] = [];
 
   constructor(merged: MergedProfile, opts: InstallerOptions) {
-    this.root = getPackageRoot();
+    this.root = opts.contentRoot ?? getPackageRoot();
     this.target = opts.target;
     this.claudeDir = path.join(opts.target, ".claude");
     this.merged = merged;
@@ -199,7 +200,11 @@ export class Installer {
           : worktreeMeta
             ? { ...worktreeMeta, shared_dirs: [] }
             : undefined;
-      writeManifest(this.target, this.merged, profileCommand, this.root, wt);
+      const contentHashes = computeContentHashes(this.claudeDir);
+      writeManifest(this.target, this.merged, profileCommand, this.root, {
+        worktree: wt,
+        contentHashes,
+      });
       this.log("  [ok] arcane-manifest.json");
     } else {
       this.log("  [dry-run] arcane-manifest.json");

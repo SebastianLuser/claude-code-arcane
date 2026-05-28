@@ -4,6 +4,9 @@ export default defineConfig({
   test: {
     testTimeout: 15_000,
     include: ["src/__tests__/**/*.test.ts"],
+    env: {
+      ARCANE_SOURCE: "bundled",
+    },
     coverage: {
       provider: "v8",
       include: ["src/**/*.ts"],

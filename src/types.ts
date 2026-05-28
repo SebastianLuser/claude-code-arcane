@@ -41,6 +41,15 @@ export interface ArcaneManifest {
     main_worktree: string;
     shared_dirs: string[];
   };
+  content_hashes?: {
+    skills: Record<string, string>;
+    rules: Record<string, string>;
+    agents: Record<string, string>;
+    hooks: Record<string, string>;
+  };
+  updated_at?: string;
+  source_version?: string;
+  source_type?: "bundled" | "github" | "cache";
 }
 
 export interface InstallerOptions {
@@ -48,6 +57,7 @@ export interface InstallerOptions {
   dryRun: boolean;
   force: boolean;
   shareFrom?: string;
+  contentRoot?: string;
 }
 
 export interface WorktreeInfo {

@@ -3,10 +3,11 @@ import path from "node:path";
 import chalk from "chalk";
 import { listProfiles } from "../profiles.js";
 import { readManifest } from "../manifest.js";
-import { getPackageRoot } from "../utils.js";
+import { resolveContentSource } from "../content-source.js";
 
 export async function listCommand(): Promise<void> {
-  const root = getPackageRoot();
+  const source = await resolveContentSource({ quiet: true });
+  const root = await source.getContentRoot();
   const profilesDir = path.join(root, "profiles");
   const skillsDir = path.join(root, "skills");
   const target = process.cwd();

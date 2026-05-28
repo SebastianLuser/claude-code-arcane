@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import { readManifest, writeManifest, manifestPath } from "../manifest.js";
+import { getPackageVersion } from "../utils.js";
 import type { MergedProfile } from "../types.js";
 
 function makeTmpDir(): string {
@@ -54,7 +55,7 @@ describe("writeManifest + readManifest", () => {
     expect(manifest!.cli).toBe("npm");
     expect(manifest!.profile_command).toBe("testing");
     expect(manifest!.source).toBe("/pkg/root");
-    expect(manifest!.arcane_version).toBe("1.0.0");
+    expect(manifest!.arcane_version).toBe(getPackageVersion());
   });
 
   it("includes worktree metadata when provided", () => {

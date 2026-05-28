@@ -7,19 +7,25 @@ import {
   getWorktreeInfo,
   findMainArcaneInstall,
 } from "../worktree.js";
+import { resolveContentSource, type SourcePreference } from "../content-source.js";
 
 interface InstallOpts {
   target?: string;
   dryRun?: boolean;
   force?: boolean;
   shareFrom?: string;
+  source?: SourcePreference;
 }
 
 export async function installCommand(
   profileExpr: string | undefined,
   opts: InstallOpts,
 ): Promise<void> {
-  const root = getPackageRoot();
+  const source = await resolveContentSource({
+    source: opts.source ?? "auto",
+    quiet: !profileExpr,
+  });
+  const root = await source.getContentRoot();
   const profilesDir = path.join(root, "profiles");
   const target = path.resolve(opts.target ?? process.cwd());
 
@@ -90,6 +96,7 @@ export async function installCommand(
     dryRun: opts.dryRun ?? false,
     force: opts.force ?? false,
     shareFrom,
+    contentRoot: root,
   });
   installer.run(profileExpr, worktreeMeta);
 

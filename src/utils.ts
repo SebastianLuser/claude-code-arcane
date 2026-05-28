@@ -46,6 +46,12 @@ export function isSymlinkOrJunction(p: string): boolean {
   }
 }
 
+export function getPackageVersion(): string {
+  const pkgPath = path.join(getPackageRoot(), "package.json");
+  const pkg = readJsonSync<{ version: string }>(pkgPath);
+  return pkg.version;
+}
+
 export function safeRemove(p: string): void {
   if (isSymlinkOrJunction(p)) {
     fs.unlinkSync(p);

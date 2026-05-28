@@ -10,6 +10,7 @@ import { updateCommand } from "./commands/update.js";
 import { cleanCommand } from "./commands/clean.js";
 import { worktreeCommand } from "./commands/worktree.js";
 import { globalCommand } from "./commands/global.js";
+import { getPackageVersion } from "./utils.js";
 
 const program = new Command();
 
@@ -18,7 +19,7 @@ program
   .description(
     "Claude Code Arcane — Skills, agents, hooks and rules for Claude Code",
   )
-  .version("1.0.0");
+  .version(getPackageVersion());
 
 program
   .command("install [profile]")
@@ -32,6 +33,7 @@ program
     "-s, --share-from <dir>",
     "Share hooks/docs from an existing Arcane installation (e.g., main worktree)",
   )
+  .option("--source <source>", "Content source: auto, github, or bundled", "auto")
   .action(async (profile: string | undefined, opts) => {
     await installCommand(profile, opts);
   });
@@ -70,8 +72,11 @@ program
 
 program
   .command("update")
-  .description("Check for Arcane updates.")
+  .description("Update installed Arcane content to latest version.")
   .option("-q, --quiet", "Quiet mode for hook usage")
+  .option("-n, --dry-run", "Show what would change without applying")
+  .option("-f, --force", "Overwrite even locally modified files")
+  .option("--source <source>", "Content source: auto, github, or bundled", "auto")
   .action(async (opts) => {
     await updateCommand(opts);
   });

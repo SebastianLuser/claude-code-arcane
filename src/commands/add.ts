@@ -3,12 +3,14 @@ import path from "node:path";
 import chalk from "chalk";
 import { parseProfile } from "../profiles.js";
 import { readManifest, writeManifest } from "../manifest.js";
-import { copyDirSync, getPackageRoot } from "../utils.js";
+import { copyDirSync } from "../utils.js";
+import { resolveContentSource } from "../content-source.js";
 import type { MergedProfile } from "../types.js";
 
 export async function addCommand(items: string[]): Promise<void> {
   const target = process.cwd();
-  const root = getPackageRoot();
+  const source = await resolveContentSource({ quiet: true });
+  const root = await source.getContentRoot();
   const manifest = readManifest(target);
 
   if (!manifest) {

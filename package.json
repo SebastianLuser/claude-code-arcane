@@ -14,14 +14,16 @@
     "hooks/",
     "rules/",
     "templates/",
-    "docs/"
+    "docs/",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsup src/cli.ts --format esm --target node20 --clean",
     "dev": "tsup src/cli.ts --format esm --target node20 --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "release": "semantic-release"
   },
   "keywords": [
     "claude-code",
@@ -34,12 +36,16 @@
   "dependencies": {
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "tar": "^7.5.15"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.0.0",
     "@vitest/coverage-v8": "^4.1.7",
+    "semantic-release": "^24.0.0",
     "tsup": "^8.0.0",
     "typescript": "^5.5.0",
     "vitest": "^4.1.7"

@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { Installer, clean } from "../installer.js";
 import { mergeProfiles, parseProfile } from "../profiles.js";
 import { readManifest, writeManifest } from "../manifest.js";
-import { copyDirSync } from "../utils.js";
+import { copyDirSync, getPackageVersion } from "../utils.js";
 import type { MergedProfile } from "../types.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -407,7 +407,7 @@ describe("status command logic", () => {
     expect(manifest!.profile_command).toBe("testing");
     expect(manifest!.total_skills).toBe(merged.skills.length);
     expect(manifest!.installed_skills).toEqual(merged.skills);
-    expect(manifest!.arcane_version).toBe("1.0.0");
+    expect(manifest!.arcane_version).toBe(getPackageVersion());
     expect(manifest!.cli).toBe("npm");
   });
 

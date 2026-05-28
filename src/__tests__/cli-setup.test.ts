@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { getPackageVersion } from "../utils.js";
 
 describe("CLI setup", () => {
   let exitSpy: ReturnType<typeof vi.spyOn>;
@@ -58,6 +59,6 @@ describe("CLI setup", () => {
     const output = stdoutSpy.mock.calls
       .map((c: unknown[]) => String(c[0]))
       .join("");
-    expect(output).toContain("1.0.0");
+    expect(output).toContain(getPackageVersion());
   });
 });
