@@ -24,12 +24,14 @@ skills:
   - arcane-add
   - arcane-remove
   - arcane-clean
+  - kickoff
 
 rules:
   universal:
     - data-files
     - prototype-code
     - test-standards
+    - implementation-workflow
   gamedev:
     []
 
