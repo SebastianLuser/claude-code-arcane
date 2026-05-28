@@ -32,11 +32,77 @@ Usar AskUserQuestion con estas opciones:
 
 | Opción | Descripción |
 |--------|-------------|
-| **Action Plan (Recomendado)** | Definimos un plan paso a paso antes de implementar. Ideal para features, refactors, y tareas de más de 30 min. |
-| **Goal-driven** | Seteamos un objetivo claro para la sesión y trabajamos hacia él con checkpoints. Para sesiones largas o exploratorias. |
-| **Directo** | Arrancamos a implementar ya. Para fixes rápidos, tareas claras, o cuando ya sabés exactamente qué hacer. |
+| **Plan + Goal (Recomendado)** | Combo completo: un plan detallado de CÓMO implementar + un goal claro de HASTA DÓNDE llegar en esta sesión y cómo validarlo. Lo más potente para features y refactors. |
+| **Action Plan** | Solo plan paso a paso. Sin goal de sesión — implementamos hasta que se termine o el usuario corte. |
+| **Goal-driven** | Solo objetivo verificable con checkpoints. Sin plan formal — vamos resolviendo sobre la marcha. |
+| **Directo** | Arrancamos a implementar ya. Para fixes rápidos o cuando ya sabés exactamente qué hacer. |
 
-## Paso 2A: Action Plan (si eligió plan)
+## Paso 2A: Plan + Goal (si eligió combo, recomendado)
+
+Este es el flujo más completo. Tiene 2 fases: primero seteamos el goal de la sesión, después el plan de implementación.
+
+### Fase 1 — Definir el goal de la sesión
+
+1. Preguntar: "¿Cuál es el objetivo verificable de esta sesión?"
+2. Reformular como statement verificable (qué tiene que ser cierto al terminar):
+   - MAL: "Mejorar el login"
+   - BIEN: "Al terminar esta sesión, OAuth Google funciona end-to-end en dev y tiene 2 tests pasando"
+3. Definir criterio de validación: cómo sabemos que el goal se cumplió
+4. Presentar al usuario para confirmar
+
+```
+## Session Goal
+[Goal verificable]
+
+## Validation
+- [ ] Cómo verificamos que está hecho (comando, test, observación)
+- [ ] Cómo verificamos que está hecho bien (criterio de calidad)
+```
+
+### Fase 2 — Armar el plan de implementación
+
+1. Usar EnterPlanMode
+2. Dentro del plan:
+   - Explorar el codebase relevante
+   - Identificar archivos a modificar
+   - Diseñar el approach
+   - Listar pasos concretos con criterio de "done" por paso
+   - Identificar riesgos o decisiones pendientes
+3. Presentar el plan al usuario para aprobación, vinculado al goal
+
+```
+## Goal (de Fase 1)
+[Goal verificable]
+
+## Implementation Plan
+1. [ ] Paso concreto — criterio de done
+2. [ ] Paso concreto — criterio de done
+...
+
+## Stop Conditions
+- ✅ Goal cumplido y validado → frenar y reportar
+- ⚠️ Bloqueo no resuelto → frenar y pedir decisión
+- ⚠️ Scope creep detectado → frenar y reconfirmar
+
+## Risks
+- [Decisiones que podrían cambiar el approach]
+```
+
+### Fase 3 — Ejecutar
+
+1. Crear TaskCreate por cada paso del plan
+2. Implementar paso a paso, marcando completado cada uno
+3. **Después de cada paso significativo**, verificar contra el goal:
+   - "¿Estamos más cerca del goal?"
+   - "¿Apareció algo que cambia el plan?"
+4. **Al cumplir el goal**, FRENAR. No seguir agregando features.
+5. Correr la validación definida en Fase 1
+6. Reportar al usuario:
+   - Qué se hizo
+   - Validación: pasa / no pasa
+   - Qué quedó pendiente fuera del goal (si algo)
+
+## Paso 2B: Action Plan (si eligió solo plan)
 
 1. Pedir al usuario que describa qué quiere lograr en 1-2 oraciones
 2. Usar EnterPlanMode
@@ -70,7 +136,7 @@ Usar AskUserQuestion con estas opciones:
 - [ ] Cómo sabemos que está bien hecho
 ```
 
-## Paso 2B: Goal-driven (si eligió goal)
+## Paso 2C: Goal-driven (si eligió solo goal)
 
 1. Preguntar al usuario con AskUserQuestion:
    - **"¿Cuál es el objetivo de esta sesión?"** (free text)
@@ -99,7 +165,7 @@ Usar AskUserQuestion con estas opciones:
 7. Al completar cada checkpoint, reportar status:
    - "Checkpoint 1 completado. Progreso: 33%. Siguiente: [checkpoint 2]"
 
-## Paso 2C: Directo (si eligió directo)
+## Paso 2D: Directo (si eligió directo)
 
 Proceder con la implementación inmediatamente. Sin plan formal, sin goal tracking.
 Solo decir: "Perfecto, arrancamos." y empezar a trabajar.

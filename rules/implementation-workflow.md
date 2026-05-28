@@ -26,15 +26,17 @@ Use AskUserQuestion exactly like this:
 
 - Question: "¿Cómo querés encarar esta tarea?"
 - Header: "Work mode"
-- Options:
-  1. **Action Plan (Recommended)** — "Definimos un plan paso a paso antes de implementar. Ideal para features y refactors."
-  2. **Goal-driven** — "Seteamos un objetivo verificable para la sesión y trabajamos con checkpoints."
-  3. **Directo** — "Arrancamos a implementar sin plan formal. Para tareas claras y rápidas."
+- Options (4):
+  1. **Plan + Goal (Recommended)** — "Plan detallado de CÓMO + goal de HASTA DÓNDE llegar. Lo más completo: el plan guía la ejecución, el goal define cuándo frenar y qué validar."
+  2. **Action Plan** — "Solo plan paso a paso. Sin goal de sesión — implementamos hasta terminar el plan."
+  3. **Goal-driven** — "Solo objetivo verificable con checkpoints. Sin plan formal."
+  4. **Directo** — "Arrancamos sin ceremonia. Para tareas claras y rápidas."
 
 ## After selection
 
-- **Action Plan:** Use EnterPlanMode, design the approach, get approval, create tasks, then implement step by step.
-- **Goal-driven:** Help the user define a verifiable goal statement and 2-4 checkpoints, create tasks, implement toward each checkpoint.
+- **Plan + Goal:** First define the verifiable session goal with validation criteria. Then EnterPlanMode and design the implementation plan linked to the goal. Plan includes explicit stop conditions (goal met, blocker, scope creep). After approval, create tasks and execute. After each significant step, check progress against the goal. When goal is met, STOP and run validation.
+- **Action Plan:** Use EnterPlanMode, design the approach, get approval, create tasks, then implement step by step. No formal goal — implement until the plan is done.
+- **Goal-driven:** Help the user define a verifiable goal statement and 2-4 checkpoints, create tasks, implement toward each checkpoint. No formal plan.
 - **Directo:** Proceed immediately without ceremony.
 
 ## Key principles
