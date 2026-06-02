@@ -129,7 +129,25 @@
       "Bash(export PATH=\"$PATH:/c/Users/Educabot/gh_cli/bin\")",
       "Bash(grep '\\\\.py$')",
       "Bash(mkdir -p .claude/skills-ai/rag-architect/scripts)",
-      "Bash(git mv *)"
+      "Bash(git mv *)",
+      "Bash(pip --version)",
+      "Bash(powershell.exe *)",
+      "Bash(cp -r /tmp/arcane-core-stage-545/.claude/hooks /c/Users/Sebastarbucks/.claude/hooks)",
+      "Bash(cp /tmp/arcane-core-stage-545/.claude/statusline.sh /c/Users/Sebastarbucks/.claude/statusline.sh)",
+      "Bash(mkdir -p /c/Users/Sebastarbucks/.claude/skills /c/Users/Sebastarbucks/.claude/agents /c/Users/Sebastarbucks/.claude/rules)",
+      "Bash(cp -r /tmp/arcane-core-stage-545/.claude/skills/. /c/Users/Sebastarbucks/.claude/skills/)",
+      "Bash(cp -r /tmp/arcane-core-stage-545/.claude/agents/. /c/Users/Sebastarbucks/.claude/agents/)",
+      "Bash([ -f \"$F\" ])",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(git fetch *)",
+      "Bash(git rebase *)",
+      "Bash(git stash *)",
+      "Bash(git restore *)",
+      "Bash(command -v arcane)",
+      "Bash(node dist/cli.js --help)",
+      "Bash(npx arcane *)",
+      "Bash(arcane --version)",
+      "Bash(arcane --help)"
     ]
   }
 }

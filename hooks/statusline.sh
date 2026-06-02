@@ -38,6 +38,9 @@ try:
 except Exception:
     sys.exit(0)
 path = data.get("transcript_path") or ""
+# Windows python cannot resolve MSYS/Git-Bash paths (/c/Users/...); convert to C:/Users/...
+if os.name == "nt" and len(path) > 2 and path[0] == "/" and path[2] == "/" and path[1].isalpha():
+    path = path[1].upper() + ":" + path[2:]
 model = data.get("model") or {}
 model_id = model.get("id", "")
 model_name = model.get("display_name") or model_id or ""
