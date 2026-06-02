@@ -63,14 +63,23 @@ try:
                     last_usage = u
 except Exception:
     sys.exit(0)
+def fmt(n):
+    if n >= 1000000:
+        return ("%.1fM" % (n / 1000000.0)).replace(".0M", "M")
+    if n >= 1000:
+        return "%dk" % int(round(n / 1000.0))
+    return str(n)
 parts = []
 if last_usage:
     total = (last_usage.get("input_tokens", 0)
              + last_usage.get("cache_read_input_tokens", 0)
              + last_usage.get("cache_creation_input_tokens", 0))
     limit = 1000000 if ("[1m]" in model_id or model_id.endswith("-1m")) else 200000
-    pct = int(round(total * 100 / limit))
-    parts.append("\U0001F9E0 %d%% ctx" % pct)
+    # pct is always total/limit so it stays consistent with the tokens shown.
+    # Under the correct limit it never exceeds 100% in normal use; if it does,
+    # the limit is wrong (broken statusline) and we want to see it, not mask it.
+    pct = int(round(total * 100 / limit)) if limit else 0
+    parts.append("\U0001F9E0 %s / %s (%d%%)" % (fmt(total), fmt(limit), pct))
 print("EXTRA=" + " | ".join(parts))
 ' <<< "$INPUT" 2>/dev/null)
   MODEL=$(echo "$OUT" | grep '^MODEL=' | head -1 | sed 's/^MODEL=//')
