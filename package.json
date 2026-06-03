@@ -33,6 +33,13 @@
   ],
   "author": "Educabot",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SebastianLuser/claude-code-arcane.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
