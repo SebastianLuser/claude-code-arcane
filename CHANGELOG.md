@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.0.0...v1.0.1) (2026-06-05)
+
+
+### Bug Fixes
+
+* add/remove commands now handle full profile assets (rules, agents, statusline, permissions) ([2425ea9](https://github.com/SebastianLuser/claude-code-arcane/commit/2425ea93e3b41cc28d4b7622e6cf1a58dfaa814e))
+
 # 1.0.0 (2026-06-03)
 
 

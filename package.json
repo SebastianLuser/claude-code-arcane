@@ -1,6 +1,6 @@
 {
   "name": "claude-code-arcane",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Skills, agents, hooks and rules for Claude Code — installable via npx arcane",
   "type": "module",
   "bin": {
