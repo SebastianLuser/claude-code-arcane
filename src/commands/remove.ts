@@ -199,10 +199,29 @@ function removeProfile(
     );
   }
 
+  if (profileName === "statusline") {
+    const statuslineFile = path.join(target, ".claude", "statusline.sh");
+    if (fs.existsSync(statuslineFile)) {
+      fs.rmSync(statuslineFile);
+    }
+    removeStatuslineFromSettings(path.join(target, ".claude"));
+  }
+
   manifest.profiles = remainingProfiles;
   manifest.profile_command = remainingProfiles
     .filter((p) => p !== "core")
     .join("+");
 
   return { removed: true, skills: removedSkills, agents: removedAgents };
+}
+
+function removeStatuslineFromSettings(claudeDir: string): void {
+  const settingsPath = path.join(claudeDir, "settings.json");
+  if (!fs.existsSync(settingsPath)) return;
+
+  const settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
+  if (settings.statusLine) {
+    delete settings.statusLine;
+    fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + "\n", "utf-8");
+  }
 }
