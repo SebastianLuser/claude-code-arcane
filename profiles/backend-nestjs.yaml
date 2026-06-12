@@ -1,0 +1,58 @@
+name: backend-nestjs
+description: "Backend NestJS — feature modules, DI, guards/pipes, Prisma, JWT, testing, microservicios. Best practices priorizadas por impacto."
+type: base
+
+skills:
+  # NestJS-specific (nuevas)
+  - nestjs-scaffold
+  - nestjs-best-practices
+  - pgvector-search
+  # API & data
+  - database
+  - database-indexing
+  - data-migrations
+  - api-design
+  - api-docs
+  - api-versioning
+  - caching-strategy
+  - webhooks
+  - rate-limiting
+  # Auth & security
+  - auth-strategy
+  - jwt-strategy
+  - oauth-setup
+  - rbac-abac
+  - audit-log
+  # Ops & quality
+  - testing
+  - contract-testing
+  - deps-audit
+  - env-sync
+  - observability
+  - performance
+  - async-ops
+  - ci-cd-setup
+
+rules:
+  universal:
+    - backend-code
+    - api-code
+    - nestjs-code
+    - migration-code
+  gamedev:
+    []
+
+agents:
+  - engineering
+
+permissions:
+  allow:
+    - "Bash(npm *)"
+    - "Bash(yarn *)"
+    - "Bash(pnpm *)"
+    - "Bash(npx *)"
+    - "Bash(nest *)"
+    - "Bash(docker ps*)"
+    - "Bash(docker images*)"
+  deny:
+    []
