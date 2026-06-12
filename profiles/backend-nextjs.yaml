@@ -1,0 +1,56 @@
+name: backend-nextjs
+description: "Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK, performance (64 reglas de Vercel). Front + back en un solo runtime."
+type: base
+
+skills:
+  # Next.js-specific (nuevas)
+  - nextjs-scaffold
+  - nextjs-best-practices
+  - seo-nextjs
+  - ai-sdk-setup
+  - pgvector-search
+  # Backend / API (Next es full-stack)
+  - api-design
+  - database
+  - caching-strategy
+  - rate-limiting
+  # Auth & security
+  - auth-strategy
+  - jwt-strategy
+  - oauth-setup
+  - web-security
+  - csp-headers
+  # Frontend quality
+  - accessibility
+  - performance
+  # Ops & quality
+  - testing
+  - deps-audit
+  - env-sync
+  - observability
+  - ci-cd-setup
+  - cdn-setup
+
+rules:
+  universal:
+    - nextjs-code
+    - react-perf
+    - frontend-code
+    - backend-code
+    - api-code
+  gamedev:
+    []
+
+agents:
+  - engineering
+
+permissions:
+  allow:
+    - "Bash(npm *)"
+    - "Bash(yarn *)"
+    - "Bash(pnpm *)"
+    - "Bash(npx *)"
+    - "Bash(docker ps*)"
+    - "Bash(docker images*)"
+  deny:
+    []
