@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.0.1...v1.1.0) (2026-06-12)
+
+
+### Features
+
+* add backend-nestjs and backend-nextjs profiles with skills, rules and agents ([39e11f2](https://github.com/SebastianLuser/claude-code-arcane/commit/39e11f29825645afa64d686a5da7da853ba939b8))
+
 ## [1.0.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.0.0...v1.0.1) (2026-06-05)
 
 
