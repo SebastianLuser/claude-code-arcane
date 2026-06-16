@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.1.0...v1.1.1) (2026-06-16)
+
+
+### Bug Fixes
+
+* **statusline:** derive context % from real session window, not hardcoded limit ([e9b835f](https://github.com/SebastianLuser/claude-code-arcane/commit/e9b835f457a69a9bbc371da382d7673abce10113))
+
 # [1.1.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.0.1...v1.1.0) (2026-06-12)
 
 
