@@ -70,7 +70,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 
 ---
 
-## Gamedev (20 skills)
+## Gamedev (21 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -82,6 +82,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/consistency-check` | Detecta inconsistencias cross-documento en stats/items | `[full \| since-last \| entity:<name>]` |
 | `/doc-gdd` | Genera Game Design Document completo | `[game-name]` |
 | `/doc-pas` | Documentacion PAS (Problem-Analysis-Solution) | `[problem o decision title]` |
+| `/install-mcp` | Instala y registra el MCP de Unity (CoplayDev) en el proyecto | `[--secondary] [project-path]` |
 | `/map-systems` | Descompone concepto en sistemas, mapea dependencias | `[next \| system-name] [--review]` |
 | `/playtest-report` | Genera o analiza reporte de playtest | `[new\|analyze path] [--review]` |
 | `/scaffold-unity` | Scaffoldea proyecto Unity estilo Project_T | `[project-name]` |
