@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.1.1...v1.2.0) (2026-06-19)
+
+
+### Features
+
+* **update:** make 'arcane update' a machine-wide general update ([0ec4bdb](https://github.com/SebastianLuser/claude-code-arcane/commit/0ec4bdb3c0582ba2b60a384d05d27153ce7930a7))
+
 ## [1.1.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.1.0...v1.1.1) (2026-06-16)
 
 
