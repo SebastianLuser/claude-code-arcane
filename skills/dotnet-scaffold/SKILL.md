@@ -26,14 +26,14 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ### Step 1: Crear base
 ```bash
 dotnet new sln -n <Name>
-dotnet new webapi -n <Name>.Api --use-minimal-apis    # o sin flag para Controllers
+dotnet new webapi -n <Name>.Api                       # Minimal APIs (default en .NET 8+); para Controllers: --use-controllers
 dotnet sln add <Name>.Api
 dotnet new xunit -n <Name>.Tests && dotnet sln add <Name>.Tests
 cd <Name>.Api
 dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
 dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
 dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore
-dotnet add package FluentValidation.AspNetCore
+dotnet add package FluentValidation.DependencyInjectionExtensions    # core + DI; FluentValidation.AspNetCore (auto-validation) está deprecado
 dotnet add package Serilog.AspNetCore
 ```
 
@@ -62,7 +62,7 @@ src/
 - `<Nullable>enable</Nullable>` + `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` en el `.csproj`
 - **Async end-to-end**: handlers `async Task<>`, `CancellationToken` propagado a EF Core y HTTP; nunca `.Result`/`.Wait()`
 - **DI por constructor** (primary constructors); registrar servicios con scope correcto (`AddScoped` para DbContext/handlers)
-- **Validación**: FluentValidation por slice → responder `ValidationProblemDetails` (RFC 7807)
+- **Validación**: FluentValidation por slice, invocada manualmente (pipeline behavior MediatR o endpoint filter — no auto-validation) → responder `ValidationProblemDetails` (RFC 7807)
 - **Errores**: `AddProblemDetails()` + exception handler global → `ProblemDetails` consistente, sin filtrar stack traces
 - **EF Core**: migraciones versionadas (`dotnet ef migrations add`), **nunca** `EnsureCreated()` en prod; `DbContext` como Unit of Work (sin repos genéricos salvo necesidad)
 - **Auth**: JWT de vida corta + refresh, secretos en `user-secrets`/secret manager, authorization por policies declarativas

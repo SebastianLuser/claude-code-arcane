@@ -67,6 +67,10 @@ Si todo el checklist pasa → código **COMPLIANT**. Antes de escribir cambios s
 | Tests frágiles o que pegan a servicios/DB reales sin control | Testing |
 | Respuestas inconsistentes / over-fetching de entidades | API Design |
 
+## Próximos pasos
+
+Para estructurar el proyecto → `/dotnet-architecture`. Para iniciar un backend nuevo con estos defaults → `/dotnet-scaffold`.
+
 ---
 
 _Adaptado de [github/awesome-copilot](https://github.com/github/awesome-copilot) (dotnet-best-practices), [dotnet/skills](https://github.com/dotnet/skills) y [Aaronontheweb/dotnet-skills](https://github.com/Aaronontheweb/dotnet-skills). Reorganizado al formato skill+references de Arcane._

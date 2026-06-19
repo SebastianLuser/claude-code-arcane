@@ -57,6 +57,10 @@ Antes de aplicar una reestructuración significativa, confirmar el approach con 
 | Mejor para | CRUD, features, velocidad | Dominios complejos, long-lived |
 | Riesgo | Duplicación entre slices | Sobre-ingeniería |
 
+## Próximos pasos
+
+Definida la arquitectura → `/dotnet-scaffold` para generar el proyecto, y `/dotnet-best-practices` para revisar el código contra las 40 reglas.
+
 ---
 
 _Inspirado en [ardalis/CleanArchitecture](https://github.com/ardalis/CleanArchitecture), [nadirbad/VerticalSliceArchitecture](https://github.com/nadirbad/VerticalSliceArchitecture) y la guía de Vertical Slice de [Milan Jovanović](https://www.milanjovanovic.tech/blog/vertical-slice-architecture-dotnet). Adaptado al formato Arcane._
