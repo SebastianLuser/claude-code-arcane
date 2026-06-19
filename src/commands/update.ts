@@ -1,8 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
+import os from "node:os";
 import chalk from "chalk";
-import { readManifest, updateManifestFields } from "../manifest.js";
-import { getPackageVersion, copyDirSync } from "../utils.js";
+import { readManifest, updateManifestFields, manifestPath } from "../manifest.js";
+import { copyDirSync } from "../utils.js";
 import { mergeProfiles } from "../profiles.js";
 import {
   computeContentHashes,
@@ -10,15 +11,33 @@ import {
   type ContentHashes,
 } from "../content-hash.js";
 import { resolveContentSource, type SourcePreference } from "../content-source.js";
+import { registerInstallation, pruneRegistry } from "../registry.js";
+import { selfUpdateNpm } from "../self-update.js";
 
 interface UpdateOpts {
   quiet?: boolean;
   dryRun?: boolean;
   force?: boolean;
   source?: SourcePreference;
+  /** Update only the current working directory (legacy behavior). */
+  here?: boolean;
+  /** Run the global npm self-update. Defaults to true. */
+  selfUpdate?: boolean;
 }
 
 type UpdateAction = "update" | "skip-customized" | "skip-unchanged" | "conflict" | "add" | "remove";
+
+type UpdateStatus = "no-manifest" | "up-to-date" | "no-changes" | "updated" | "dry-run";
+
+interface UpdateResult {
+  target: string;
+  status: UpdateStatus;
+  fromVersion?: string;
+  toVersion?: string;
+  updated: number;
+  skipped: number;
+  removed: number;
+}
 
 interface UpdateItem {
   type: "skill" | "rule" | "agent" | "hook";
@@ -26,15 +45,105 @@ interface UpdateItem {
   action: UpdateAction;
 }
 
+/**
+ * General update: refresh the global npm package, then propagate content
+ * updates to every registered Arcane installation (plus the global ~/.claude
+ * install if present). Use `--here` to update only the current repo.
+ */
 export async function updateCommand(opts: UpdateOpts): Promise<void> {
-  const target = process.cwd();
+  if (opts.here) {
+    await updateTarget(process.cwd(), opts);
+    return;
+  }
+
+  // 1. Keep the globally-installed CLI current.
+  const self = await selfUpdateNpm({
+    quiet: opts.quiet,
+    dryRun: opts.dryRun,
+    selfUpdate: opts.selfUpdate,
+  });
+  if (!opts.quiet) {
+    if (self.updated) {
+      console.log(chalk.green("npm package updated to latest."));
+    } else if (self.skipped && self.reason !== "dev/test environment") {
+      console.log(chalk.dim(`npm self-update skipped (${self.reason}).`));
+    } else if (!self.skipped) {
+      console.log(chalk.yellow(`npm self-update failed: ${self.reason}`));
+    }
+  }
+
+  // 2. Seed the registry with the current repo (covers pre-registry installs).
+  const cwd = process.cwd();
+  if (fs.existsSync(manifestPath(cwd))) {
+    registerInstallation(cwd);
+  }
+
+  // 3. Collect all targets: registered installs + the global ~/.claude install.
+  const targets = pruneRegistry().map((e) => e.path);
+  const globalTarget = os.homedir();
+  if (
+    !process.env.VITEST &&
+    fs.existsSync(manifestPath(globalTarget)) &&
+    !targets.includes(globalTarget)
+  ) {
+    targets.push(globalTarget);
+  }
+
+  if (targets.length === 0) {
+    if (!opts.quiet) {
+      console.log(chalk.red("\nNo Arcane installations found. Run 'arcane install' first."));
+    }
+    return;
+  }
+
+  // 4. Update each target independently; one failure must not abort the rest.
+  if (!opts.quiet) {
+    console.log(
+      chalk.bold(`\nUpdating ${targets.length} installation${targets.length === 1 ? "" : "s"}...`),
+    );
+  }
+
+  const results: UpdateResult[] = [];
+  for (const target of targets) {
+    if (!opts.quiet) {
+      console.log(chalk.bold.cyan(`\n• ${target}`));
+    }
+    try {
+      results.push(await updateTarget(target, opts));
+    } catch (err) {
+      if (!opts.quiet) {
+        console.log(chalk.red(`  Update failed: ${(err as Error).message}`));
+      }
+      results.push({
+        target,
+        status: "no-changes",
+        updated: 0,
+        skipped: 0,
+        removed: 0,
+      });
+    }
+  }
+
+  if (!opts.quiet) {
+    printGeneralSummary(results, opts.dryRun ?? false);
+  }
+}
+
+/**
+ * Update a single Arcane installation directory. Returns a structured result;
+ * also logs human-readable progress unless `quiet`.
+ */
+export async function updateTarget(
+  target: string,
+  opts: UpdateOpts,
+): Promise<UpdateResult> {
   const manifest = readManifest(target);
 
   if (!manifest) {
     if (!opts.quiet) {
       console.log(chalk.red("No Arcane installation found. Run 'arcane install' first."));
     }
-    return;
+    return { target, status: "no-manifest", updated: 0, skipped: 0, removed: 0 };
   }
 
   const contentSource = await resolveContentSource({
@@ -49,7 +158,15 @@ export async function updateCommand(opts: UpdateOpts): Promise<void> {
     if (!opts.quiet) {
       console.log(chalk.green(`Already up to date (v${currentVersion}).`));
     }
-    return;
+    return {
+      target,
+      status: "up-to-date",
+      fromVersion: installedVersion,
+      toVersion: currentVersion,
+      updated: 0,
+      skipped: 0,
+      removed: 0,
+    };
   }
 
   if (!opts.quiet) {
@@ -85,11 +202,27 @@ export async function updateCommand(opts: UpdateOpts): Promise<void> {
     if (!opts.quiet) {
       console.log(chalk.green("\nNo changes to apply."));
     }
-    return;
+    return {
+      target,
+      status: "no-changes",
+      fromVersion: installedVersion,
+      toVersion: currentVersion,
+      updated: 0,
+      skipped: skipped.length,
+      removed: 0,
+    };
   }
 
   if (opts.dryRun) {
-    return;
+    return {
+      target,
+      status: "dry-run",
+      fromVersion: installedVersion,
+      toVersion: currentVersion,
+      updated: updates.length,
+      skipped: skipped.length,
+      removed: removed.length,
+    };
   }
 
   applyUpdates(items, root, claudeDir, merged, opts.force ?? false);
@@ -111,6 +244,25 @@ export async function updateCommand(opts: UpdateOpts): Promise<void> {
     console.log(chalk.green(`\nUpdated to v${currentVersion}.`));
     console.log(`  ${updates.length} updated, ${skipped.length} skipped, ${removed.length} removed`);
   }
+
+  return {
+    target,
+    status: "updated",
+    fromVersion: installedVersion,
+    toVersion: currentVersion,
+    updated: updates.length,
+    skipped: skipped.length,
+    removed: removed.length,
+  };
+}
+
+function printGeneralSummary(results: UpdateResult[], isDryRun: boolean): void {
+  const prefix = isDryRun ? chalk.yellow("[dry-run] ") : "";
+  const updated = results.filter((r) => r.status === "updated" || r.status === "dry-run").length;
+  const unchanged = results.filter((r) => r.status === "up-to-date" || r.status === "no-changes").length;
+
+  console.log(chalk.bold(`\n${prefix}Done. ${results.length} installation${results.length === 1 ? "" : "s"} processed:`));
+  console.log(`  ${chalk.green(updated)} ${isDryRun ? "would change" : "updated"}, ${chalk.dim(unchanged + " unchanged")}`);
 }
 
 function computeUpdatePlan(

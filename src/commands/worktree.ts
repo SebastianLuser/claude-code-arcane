@@ -5,6 +5,7 @@ import chalk from "chalk";
 import { mergeProfiles } from "../profiles.js";
 import { Installer } from "../installer.js";
 import { readManifest } from "../manifest.js";
+import { registerInstallation } from "../registry.js";
 import { getPackageRoot } from "../utils.js";
 import {
   getWorktreeInfo,
@@ -111,6 +112,7 @@ export async function worktreeCommand(
     is_worktree: true,
     main_worktree: repoRoot,
   });
+  registerInstallation(worktreePath);
   console.log(chalk.green("  [ok] Arcane installed"));
 
   if (opts.installDeps) {

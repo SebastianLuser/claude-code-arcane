@@ -73,10 +73,14 @@ program
 
 program
   .command("update")
-  .description("Update installed Arcane content to latest version.")
+  .description(
+    "Update everything: the global npm package + all registered Arcane installations.",
+  )
   .option("-q, --quiet", "Quiet mode for hook usage")
   .option("-n, --dry-run", "Show what would change without applying")
   .option("-f, --force", "Overwrite even locally modified files")
+  .option("--here", "Update only the current repo (legacy per-repo behavior)")
+  .option("--no-self-update", "Skip updating the global npm package")
   .option("--source <source>", "Content source: auto, github, or bundled", "auto")
   .action(async (opts) => {
     await updateCommand(opts);
