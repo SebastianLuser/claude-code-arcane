@@ -1,6 +1,6 @@
 # Skills Catalog — Claude Code Arcane
 
-Catalogo completo de los 308 skills disponibles para proyectos consumidores. Organizados por division.
+Catalogo completo de los 320 skills disponibles para proyectos consumidores. Organizados por division.
 
 ## Como ejecutar un skill
 
@@ -429,6 +429,25 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 |-------|-------------|-----|
 | `/playwright-pro` | Production-grade Playwright testing: generate tests, fix flaky failures, migrate from Cypress/Selenium, sync with TestRail | `[generate\|fix\|migrate\|review]` |
 | `/tdd-guide` | Test-driven development: writing unit tests, generating fixtures and mocks, analyzing coverage gaps, and red-green-refactor workflows | `[write\|fixture\|coverage\|refactor]` |
+
+---
+
+## Job Hunt (12 skills)
+
+| Skill | Descripcion | Uso |
+|-------|-------------|-----|
+| `/job-hunt` | Entry point: crea/gestiona el career workspace (perfiles, CVs, aplicaciones, empresas, contactos, entrevistas) y rutea | `[setup\|status\|next]` |
+| `/master-profile` | Perfil maestro single-source-of-truth del que derivan CVs, LinkedIn y portfolio | `[build\|update\|derive <role>]` |
+| `/cv-tailor` | Adapta el CV a una oferta: keywords ATS, que resaltar/bajar, reescritura de highlights | `[job-url\|jd-path\|application]` |
+| `/cv-ats-export` | Markdown -> PDF ATS-compliant (una columna, texto seleccionable) via Chrome/Edge headless | `[cv-name\|all] [--workspace <path>]` |
+| `/linkedin-optimize` | Optimiza LinkedIn: headline, About, experiencia con KPIs, keywords, value prop, pitch 30s | `[section\|full]` |
+| `/portfolio-site` | Genera/actualiza portfolio web desde el source-of-truth | `[sync\|scaffold] [repo\|--new]` |
+| `/job-search` | Busca, scorea y prioriza ofertas + plan de busqueda de 7 dias | `[search <query>\|score <url>\|plan]` |
+| `/cover-letter` | Cover letters y mensajes de aplicacion concisos y custom | `[application\|company + role]` |
+| `/cold-outreach` | Mensajes en frio a recruiters/hiring managers + follow-ups post-aplicacion | `[contact\|recruiter + company]` |
+| `/interview-prep` | Prep de entrevista: research, banco de preguntas, respuestas STAR, red flags | `[application\|company + role + round]` |
+| `/network-map` | Convierte el export de conexiones de LinkedIn en contactos por empresa + warm intros + mensajes | `[company] \| import <Connections.csv>` |
+| `/personal-brand` | Backlog secuenciado de posts de LinkedIn (4 pilares) para construir autoridad antes del outreach | `[plan\|ideas <N>\|draft <idea>]` |
 
 ---
 

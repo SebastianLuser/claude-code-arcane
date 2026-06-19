@@ -1,0 +1,35 @@
+name: job-hunt
+description: "Job Hunt — busqueda laboral end-to-end: perfil maestro, CV ATS, LinkedIn, portfolio, cover letters, outreach a recruiters, scoring de ofertas y prep de entrevistas"
+type: addon
+
+skills:
+  - job-hunt
+  - master-profile
+  - cv-tailor
+  - cv-ats-export
+  - linkedin-optimize
+  - portfolio-site
+  - job-search
+  - cover-letter
+  - cold-outreach
+  - interview-prep
+  - network-map
+  - personal-brand
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  []
+
+permissions:
+  allow:
+    - "Bash(python *cv_export.py*)"
+    - "Bash(python3 *cv_export.py*)"
+    - "Bash(python *network_map.py*)"
+    - "Bash(python3 *network_map.py*)"
+  deny:
+    []
