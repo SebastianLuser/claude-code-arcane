@@ -8,6 +8,7 @@ import {
   findMainArcaneInstall,
 } from "../worktree.js";
 import { resolveContentSource, type SourcePreference } from "../content-source.js";
+import { registerInstallation } from "../registry.js";
 
 interface InstallOpts {
   target?: string;
@@ -101,6 +102,7 @@ export async function installCommand(
   installer.run(profileExpr, worktreeMeta);
 
   if (!opts.dryRun) {
+    registerInstallation(target);
     console.log(chalk.green("\n  Installation complete."));
   }
 }

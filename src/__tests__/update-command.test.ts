@@ -26,19 +26,16 @@ function installTestingProfile(tmpDir: string) {
   return merged;
 }
 
-describe("updateCommand", () => {
+describe("updateTarget", () => {
   let tmpDir: string;
   let logSpy: ReturnType<typeof vi.spyOn>;
-  let originalCwd: string;
 
   beforeEach(() => {
     logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-    originalCwd = process.cwd();
   });
 
   afterEach(() => {
     logSpy.mockRestore();
-    process.chdir(originalCwd);
     if (tmpDir && fs.existsSync(tmpDir)) {
       fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
     }
@@ -47,42 +44,41 @@ describe("updateCommand", () => {
   it("should report no installation found when no manifest exists", async () => {
     // Arrange
     tmpDir = makeTmpDir();
-    process.chdir(tmpDir);
 
     // Act
-    const { updateCommand } = await import("../commands/update.js");
-    await updateCommand({});
+    const { updateTarget } = await import("../commands/update.js");
+    const result = await updateTarget(tmpDir, {});
 
     // Assert
     const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
     expect(output).toContain("No Arcane installation found");
+    expect(result.status).toBe("no-manifest");
   });
 
   it("should report already up to date when version matches", async () => {
     // Arrange
     tmpDir = makeTmpDir();
     installTestingProfile(tmpDir);
-    process.chdir(tmpDir);
 
     // Act
-    const { updateCommand } = await import("../commands/update.js");
-    await updateCommand({});
+    const { updateTarget } = await import("../commands/update.js");
+    const result = await updateTarget(tmpDir, {});
 
     // Assert
     const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
     expect(output).toContain("up to date");
+    expect(result.status).toBe("up-to-date");
   });
 
   it("should be silent in quiet mode when up to date", async () => {
     // Arrange
     tmpDir = makeTmpDir();
     installTestingProfile(tmpDir);
-    process.chdir(tmpDir);
     logSpy.mockClear();
 
     // Act
-    const { updateCommand } = await import("../commands/update.js");
-    await updateCommand({ quiet: true });
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, { quiet: true });
 
     // Assert
     expect(logSpy).not.toHaveBeenCalled();
@@ -99,11 +95,9 @@ describe("updateCommand", () => {
     manifest.arcane_version = "0.0.1";
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
 
-    process.chdir(tmpDir);
-
     // Act
-    const { updateCommand } = await import("../commands/update.js");
-    await updateCommand({ dryRun: true });
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, { dryRun: true });
 
     // Assert
     const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
@@ -115,15 +109,15 @@ describe("updateCommand", () => {
     // Arrange
     tmpDir = makeTmpDir();
     installTestingProfile(tmpDir);
-    process.chdir(tmpDir);
 
     // Act
-    const { updateCommand } = await import("../commands/update.js");
-    await updateCommand({ force: true });
+    const { updateTarget } = await import("../commands/update.js");
+    const result = await updateTarget(tmpDir, { force: true });
 
     // Assert
     const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
     expect(output).toContain("Updated to");
+    expect(result.status).toBe("updated");
   });
 
   it("should detect locally modified skills and skip them", async () => {
@@ -146,11 +140,9 @@ describe("updateCommand", () => {
       }
     }
 
-    process.chdir(tmpDir);
-
     // Act
-    const { updateCommand } = await import("../commands/update.js");
-    await updateCommand({ dryRun: true });
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, { dryRun: true });
 
     // Assert
     const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
