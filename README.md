@@ -165,6 +165,7 @@ Once installed, manage the installation from within a Claude Code session:
 | `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 17 | game |
 | `backend-ts` | Backend TypeScript — Fastify, Prisma, Zod, API design | 33 | engineering |
 | `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 19 | engineering |
+| `backend-dotnet` | Backend .NET — ASP.NET Core, Vertical Slice/Clean, EF Core, JWT | 25 | engineering |
 | `frontend` | React + Vite + TypeScript | 14 | engineering |
 | `mobile` | React Native + Expo + TypeScript | 12 | engineering |
 | `flutter` | Flutter + Dart cross-platform | 8 | engineering |

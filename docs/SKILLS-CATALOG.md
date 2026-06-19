@@ -1,6 +1,6 @@
 # Skills Catalog — Claude Code Arcane
 
-Catalogo completo de los 305 skills disponibles para proyectos consumidores. Organizados por division.
+Catalogo completo de los 308 skills disponibles para proyectos consumidores. Organizados por division.
 
 ## Como ejecutar un skill
 
@@ -159,7 +159,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 
 ---
 
-## Software (45 skills)
+## Software (48 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -182,6 +182,9 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/distributed-tracing` | Setup de tracing distribuido | `[go\|ts\|react\|rn] [gcp\|tempo\|datadog]` |
 | `/doc-rfc` | Genera RFC tecnico estilo Alizia-BE | `[rfc-title o feature]` |
 | `/docker-setup` | Dockerfiles + docker-compose multi-stage | `[go\|ts\|react\|rn] [--dev\|--prod]` |
+| `/dotnet-architecture` | Arquitectura .NET: Vertical Slice y Clean Architecture | `[vertical-slice\|clean\|when-to-use]` |
+| `/dotnet-best-practices` | ASP.NET Core best practices: 40 reglas priorizadas | `[architecture\|di\|security\|performance\|all]` |
+| `/dotnet-scaffold` | Scaffold ASP.NET Core: .NET 10, EF Core, Postgres, JWT | `[project-name]` |
 | `/file-uploads` | Implementacion de file uploads | `[go\|ts\|react\|rn]` |
 | `/form-validation` | Validacion de forms: RHF + Zod | `[react\|rn] [form-name]` |
 | `/go-clean-architecture` | Clean architecture en Go | `[module o feature]` |

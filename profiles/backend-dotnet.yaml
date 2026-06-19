@@ -1,0 +1,54 @@
+name: backend-dotnet
+description: "Backend .NET — ASP.NET Core (.NET 10), Vertical Slice / Clean Architecture, EF Core + PostgreSQL, JWT + Identity, testing. Best practices priorizadas por impacto."
+type: base
+
+skills:
+  # .NET-specific (nuevas)
+  - dotnet-scaffold
+  - dotnet-best-practices
+  - dotnet-architecture
+  # API & data
+  - database
+  - database-indexing
+  - data-migrations
+  - api-design
+  - api-docs
+  - api-versioning
+  - caching-strategy
+  - webhooks
+  - rate-limiting
+  # Auth & security
+  - auth-strategy
+  - jwt-strategy
+  - oauth-setup
+  - rbac-abac
+  - audit-log
+  # Ops & quality
+  - testing
+  - contract-testing
+  - deps-audit
+  - env-sync
+  - observability
+  - performance
+  - async-ops
+  - ci-cd-setup
+
+rules:
+  universal:
+    - backend-code
+    - api-code
+    - dotnet-code
+    - migration-code
+  gamedev:
+    []
+
+agents:
+  - engineering
+
+permissions:
+  allow:
+    - "Bash(dotnet *)"
+    - "Bash(docker ps*)"
+    - "Bash(docker images*)"
+  deny:
+    []
