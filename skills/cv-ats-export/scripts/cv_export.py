@@ -15,9 +15,12 @@ Workspace resolution order:
     3. walk up from the cwd looking for a folder containing "02-CVs" (or "02 - CVs")
     4. the current working directory
 
-Output: <workspace>/02-CVs/exports/<name>.pdf
-The PDF name comes from the frontmatter field `archivo_pdf` if present,
-otherwise from the .md filename with the "CV - " prefix stripped.
+Output path:
+    - If frontmatter has `archivo_pdf`, the PDF is written to that path
+      relative to the CVs folder (<workspace>/02-CVs/<archivo_pdf>).
+    - Otherwise it goes to <workspace>/02-CVs/exports/<name>.pdf, where
+      <name> is the frontmatter field `archivo_final` if present, else the
+      .md filename with the "CV - " prefix stripped.
 
 Supported Markdown (what CVs use):
   # ## ### headings · **bold** · *italic* · [text](url) · - bullets · ---

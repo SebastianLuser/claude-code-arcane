@@ -1,6 +1,6 @@
 # Skills Catalog — Claude Code Arcane
 
-Catalogo completo de los 320 skills disponibles para proyectos consumidores. Organizados por division.
+Catalogo completo de los 321 skills disponibles para proyectos consumidores. Organizados por division.
 
 ## Como ejecutar un skill
 

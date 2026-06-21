@@ -192,6 +192,7 @@ Once installed, manage the installation from within a Claude Code session:
 | `+finance` | Investment analysis, financial modeling, SaaS metrics | 3 | business |
 | `+marketing` | Content, growth, SEO/CRO, strategy, analytics | 44 | marketing |
 | `+regulatory` | ISO 13485, GDPR, FDA, SOC 2, ISMS, QMS, MDR | 13 | regulatory |
+| `+job-hunt` | Job search end-to-end — master profile, ATS CV, LinkedIn, portfolio, cover letters, outreach, interview prep | 12 | — |
 | `+self-improving` | Agent self-improvement and skill extraction | 2 | — |
 | `+statusline` | Claude Code status bar (branch, division, session info) | 0 | — |
 
