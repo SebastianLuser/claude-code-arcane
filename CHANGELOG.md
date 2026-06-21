@@ -1,3 +1,12 @@
+# [1.3.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.2.0...v1.3.0) (2026-06-21)
+
+
+### Features
+
+* **skills:** add .NET/C# backend skill set ([3775260](https://github.com/SebastianLuser/claude-code-arcane/commit/377526032a05c2a97790a3a4396cbeada6071c1e))
+* **skills:** add install-mcp skill for Unity MCP setup ([5290038](https://github.com/SebastianLuser/claude-code-arcane/commit/52900386844a18d91a3c4f9135e27c2be0be396f))
+* **skills:** add job-hunt skillset (12 skills + profile) ([d5329e2](https://github.com/SebastianLuser/claude-code-arcane/commit/d5329e211a273719ded43639aa582b98c5dfc7ac))
+
 # [1.2.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.1.1...v1.2.0) (2026-06-19)
 
 
