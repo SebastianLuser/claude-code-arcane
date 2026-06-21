@@ -12,6 +12,7 @@ skills:
   - release-checklist
   - patch-notes
   - onboard
+  - install-mcp
   - scaffold-unity
   - unity-game-architecture
   - map-systems
