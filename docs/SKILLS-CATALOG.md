@@ -1,6 +1,6 @@
 # Skills Catalog — Claude Code Arcane
 
-Catalogo completo de los 321 skills disponibles para proyectos consumidores. Organizados por division.
+Catalogo completo de los 333 skills disponibles para proyectos consumidores. Organizados por division.
 
 ## Como ejecutar un skill
 
@@ -448,6 +448,25 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/interview-prep` | Prep de entrevista: research, banco de preguntas, respuestas STAR, red flags | `[application\|company + role + round]` |
 | `/network-map` | Convierte el export de conexiones de LinkedIn en contactos por empresa + warm intros + mensajes | `[company] \| import <Connections.csv>` |
 | `/personal-brand` | Backlog secuenciado de posts de LinkedIn (4 pilares) para construir autoridad antes del outreach | `[plan\|ideas <N>\|draft <idea>]` |
+
+---
+
+## E-Commerce (12 skills)
+
+| Skill | Descripcion | Uso |
+|-------|-------------|-----|
+| `/commerce-data-model` | Modela y audita el dominio de catalogo: product/variant/SKU/option, collections, atributos, taxonomia, faceted search y paginacion | `[model\|audit\|taxonomy]` |
+| `/cart-checkout` | Disena/audita carrito y checkout: estado del cart, multi-step vs one-page, guest checkout, abandoned-cart recovery | `[design\|audit\|abandoned]` |
+| `/inventory-stock` | Inventario y stock: tracking, optimistic locking anti-overselling, reservas, multi-location, restock forecast (script) | `[design\|forecast\|audit]` |
+| `/order-lifecycle` | State machine de ordenes: order/payment/fulfillment, returns/RMA, refunds, eventos/webhooks | `[design\|states\|returns]` |
+| `/payments-architecture` | Arquitectura de pagos PSP-agnostica: payment intents, idempotencia, webhooks fiables, reconciliacion, PCI, fraude | `[design\|webhooks\|audit]` |
+| `/promotions-discounts` | Motor de promociones: cupones, automaticos, BOGO, tiered, reglas de stacking/exclusividad, gift cards | `[design\|rules\|audit]` |
+| `/shipping-tax` | Envios (zonas/rates/metodos) e impuestos (VAT/GST/nexus, duties, landed cost) calculados server-side | `[shipping\|tax\|audit]` |
+| `/product-listing` | Optimiza PDP y listings de marketplace (Amazon A10/COSMO/Rufus), titulos, bullets, A+, copy en bulk | `[pdp\|marketplace\|bulk]` |
+| `/commerce-analytics` | KPIs de commerce (CR, AOV, CLV, cohort) + spec de eventos GA4 ecommerce + validador de dataLayer (script) | `[kpis\|events\|audit]` |
+| `/merchant-feed` | Feeds de producto Google Merchant / Meta Catalog: atributos requeridos, mapping y validacion (script) | `[validate\|generate\|map]` |
+| `/storefront-architecture` | IA del storefront (home/PLP/PDP/cart/checkout/search/megamenu) + decision headless-vs-monolito + performance | `[design\|pages\|headless]` |
+| `/subscription-billing` | Billing recurrente: modelos, ciclos, proration, trials, plan changes y dunning anti-churn involuntario | `[design\|dunning\|audit]` |
 
 ---
 

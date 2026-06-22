@@ -1,0 +1,48 @@
+name: ecommerce
+description: "E-Commerce — dominio commerce end-to-end agnostico de lenguaje: data model, carrito/checkout, inventario, ordenes, pagos, promociones, shipping/tax, listings, analytics, feeds, storefront y suscripciones"
+type: addon
+
+skills:
+  # net-new (12)
+  - commerce-data-model
+  - cart-checkout
+  - inventory-stock
+  - order-lifecycle
+  - payments-architecture
+  - promotions-discounts
+  - shipping-tax
+  - product-listing
+  - commerce-analytics
+  - merchant-feed
+  - storefront-architecture
+  - subscription-billing
+  # reutilizadas (existentes, relevantes a e-commerce)
+  - stripe-integration-expert
+  - page-cro
+  - form-cro
+  - schema-markup
+  - seo-audit
+  - analytics-tracking
+  - pricing-strategy
+  - ab-test-setup
+  - referral-program
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  - ecommerce
+
+permissions:
+  allow:
+    - "Bash(python *restock_forecast.py*)"
+    - "Bash(python3 *restock_forecast.py*)"
+    - "Bash(python *ga4_ecommerce_validate.py*)"
+    - "Bash(python3 *ga4_ecommerce_validate.py*)"
+    - "Bash(python *feed_validate.py*)"
+    - "Bash(python3 *feed_validate.py*)"
+  deny:
+    []
