@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **321 skills, 86 agents, 15 hooks and 19 rules for Claude Code — selective deploy by profile.**
+> **333 skills, 87 agents, 15 hooks and 19 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
@@ -193,6 +193,7 @@ Once installed, manage the installation from within a Claude Code session:
 | `+marketing` | Content, growth, SEO/CRO, strategy, analytics | 44 | marketing |
 | `+regulatory` | ISO 13485, GDPR, FDA, SOC 2, ISMS, QMS, MDR | 13 | regulatory |
 | `+job-hunt` | Job search end-to-end — master profile, ATS CV, LinkedIn, portfolio, cover letters, outreach, interview prep | 12 | — |
+| `+ecommerce` | Commerce end-to-end agnóstico de lenguaje — data model, checkout, inventario, órdenes, pagos, promociones, shipping/tax, listings, analytics, feeds, storefront, suscripciones | 12 | ecommerce |
 | `+self-improving` | Agent self-improvement and skill extraction | 2 | — |
 | `+statusline` | Claude Code status bar (branch, division, session info) | 0 | — |
 
@@ -347,7 +348,7 @@ claude-code-arcane/
 │   ├── manifest.ts            # Read/write arcane-manifest.json
 │   ├── types.ts               # TypeScript interfaces
 │   └── utils.ts               # Cross-platform helpers
-├── skills/                    # 321 skills (flat, one dir per skill)
+├── skills/                    # 333 skills (flat, one dir per skill)
 ├── profiles/                  # 29 profiles (YAML)
 ├── agents/                    # 13 dirs, 86+ agents (Markdown)
 ├── hooks/                     # 15 lifecycle hooks (Bash)
