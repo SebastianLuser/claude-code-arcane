@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.3.0...v1.4.0) (2026-06-22)
+
+
+### Features
+
+* **ecommerce:** add language-agnostic +ecommerce addon profile ([4ccfc38](https://github.com/SebastianLuser/claude-code-arcane/commit/4ccfc387e7ae48672a3ce5ddbc18bf778f68c883))
+
 # [1.3.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.2.0...v1.3.0) (2026-06-21)
 
 
