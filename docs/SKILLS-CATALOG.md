@@ -1,6 +1,6 @@
 # Skills Catalog — Claude Code Arcane
 
-Catalogo completo de los 333 skills disponibles para proyectos consumidores. Organizados por division.
+Catalogo completo de los 337 skills disponibles para proyectos consumidores. Organizados por division.
 
 ## Como ejecutar un skill
 
@@ -432,7 +432,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 
 ---
 
-## Job Hunt (12 skills)
+## Job Hunt (16 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -443,6 +443,10 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/linkedin-optimize` | Optimiza LinkedIn: headline, About, experiencia con KPIs, keywords, value prop, pitch 30s | `[section\|full]` |
 | `/portfolio-site` | Genera/actualiza portfolio web desde el source-of-truth | `[sync\|scaffold] [repo\|--new]` |
 | `/job-search` | Busca, scorea y prioriza ofertas + plan de busqueda de 7 dias | `[search <query>\|score <url>\|plan]` |
+| `/job-scrape` | Busca ofertas (CLIs LinkedIn + GetOnBoard bundleados) con dedup entre corridas, scorea y ofrece crear notas | `[perfil] [--jobage N]` |
+| `/job-aplicar` | Pipeline completo de una postulacion: fit, CV custom, cover, review, PDF verificado y dashboard | `<url\|nota>` |
+| `/job-outcome` | Registra resultado/avance de una aplicacion y actualiza nota + dashboard | `[empresa]` |
+| `/job-upskill` | Gaps de skills agregados de las aplicaciones + plan de estudio con recursos reales | `[url\|nota]` |
 | `/cover-letter` | Cover letters y mensajes de aplicacion concisos y custom | `[application\|company + role]` |
 | `/cold-outreach` | Mensajes en frio a recruiters/hiring managers + follow-ups post-aplicacion | `[contact\|recruiter + company]` |
 | `/interview-prep` | Prep de entrevista: research, banco de preguntas, respuestas STAR, red flags | `[application\|company + role + round]` |
