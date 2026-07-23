@@ -10,6 +10,10 @@ skills:
   - linkedin-optimize
   - portfolio-site
   - job-search
+  - job-scrape
+  - job-aplicar
+  - job-outcome
+  - job-upskill
   - cover-letter
   - cold-outreach
   - interview-prep
@@ -18,7 +22,7 @@ skills:
 
 rules:
   universal:
-    []
+    - drafter-reviewer
   gamedev:
     []
 
@@ -29,7 +33,11 @@ permissions:
   allow:
     - "Bash(python *cv_export.py*)"
     - "Bash(python3 *cv_export.py*)"
+    - "Bash(python *verify_pdf.py*)"
+    - "Bash(python3 *verify_pdf.py*)"
     - "Bash(python *network_map.py*)"
     - "Bash(python3 *network_map.py*)"
+    - "Bash(node *linkedin-search/cli.ts*)"
+    - "Bash(node *getonbrd-search/cli.ts*)"
   deny:
     []
