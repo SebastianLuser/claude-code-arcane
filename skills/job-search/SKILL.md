@@ -19,6 +19,9 @@ Encontrás ofertas, las **scoreás** contra el perfil del usuario, priorizás, y
 ## Modos
 
 ### `search <query>` — Encontrar ofertas
+
+> Si el skill `job-scrape` está instalado, para corridas recurrentes preferí `/job-scrape`: usa CLIs locales (LinkedIn + GetOnBoard) con dedup entre corridas. Este modo queda para búsquedas puntuales o fuentes que los CLIs no cubren.
+
 1. **Sourcing.** Conseguir ofertas frescas que matcheen el perfil (rol + stack + modalidad + mercado). Dos caminos:
    - **Apify MCP (opcional).** Si hay un MCP de Apify conectado, podés usar un actor de scraping de LinkedIn Jobs para traer ofertas estructuradas. Ejemplo de pedido: *"Scrapeá LinkedIn jobs para [rol] posteadas en los últimos 7 días en empresas de 50–5000 empleados; filtrá por match con mi background en [dominio]; devolvé tabla rankeada con empresa, rol, ubicación, salario, fecha de posteo y fit score 1–10 basado en mi resume; marcá el top 10 para aplicar hoy."* Buscá el actor con ToolSearch (`apify`) si el MCP está presente. **⚠️ OBLIGATORIO: antes de invocar Apify, mostrá el warning de abajo y pedí confirmación explícita.**
    - **WebSearch/WebFetch (default recomendado).** Camino sin Apify: buscar en job boards (muchos con feed/API pública: WeWorkRemotely, RemoteOK, etc.) y fetchear los JDs. Es el default seguro y gratis.
@@ -35,7 +38,7 @@ Encontrás ofertas, las **scoreás** contra el perfil del usuario, priorizás, y
 > Si el usuario no confirma, usá el camino WebSearch/WebFetch.
 2. Para cada oferta candidata: extraer rol, empresa, stack, modalidad, ubicación, rango salarial, link, fecha de cierre.
 3. Scorear (ver rúbrica) y filtrar por el umbral del perfil.
-4. Crear nota en `03-Aplicaciones/` (template `Aplicacion`, estado `interesado`, con `score`) + nota en `04-Empresas/` (template `Empresa`) por cada una sobre el umbral.
+4. Crear nota en `03-Aplicaciones/` (template `Aplicacion`, estado `interesado`, con `match_score`) + nota en `04-Empresas/` (template `Empresa`) por cada una sobre el umbral.
 5. Actualizar el `00-Dashboard.md` con las activas por prioridad, marcando el **top 10 para hoy**.
 
 ### `score <job-url>` — Scorear una oferta puntual
@@ -68,7 +71,7 @@ Umbral default ≥75 (configurable en el frontmatter del perfil, campo `match_sc
 
 ## Tracking
 
-- Estados de aplicación: `interesado` → `aplicado` → `en proceso` → `entrevista` → `oferta` / `rechazado` / `descartado`.
+- Estados de aplicación: `interesado` → `aplicado` → `entrevista` → `oferta`, y cierres: `contratado` / `rechazado` / `sin_respuesta` / `declinada` / `descartado` (los registra `/job-outcome`).
 - Mantener el `00-Dashboard.md` como vista única: activas por prioridad, próximas entrevistas, qué cierra pronto, a seguir esta semana.
 
 ## Reglas

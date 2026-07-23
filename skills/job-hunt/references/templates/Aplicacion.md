@@ -4,7 +4,8 @@ empresa:
 perfil: 
 cv_usado: 
 estado: interesado
-score: 
+match_score: 
+fuente: 
 fecha_aplicacion: 
 fecha_actualizacion: {{date:YYYY-MM-DD}}
 link_oferta: 
@@ -14,6 +15,7 @@ modalidad:
 ubicacion: 
 prioridad: media
 ---
+%% estado: interesado -> aplicado -> entrevista -> oferta | cierres: contratado / rechazado / sin_respuesta / declinada / descartado (los mueve /job-outcome) %%
 
 # {{title}}
 
@@ -29,6 +31,8 @@ prioridad: media
 - Perfil base: [[]]
 - Qué de mi experiencia alinea con lo que piden:
   - 
+- Gaps reales (alimentan /job-upskill):
+  - 
 
 ## A quién escribirle / contacto principal
 - [[]]
@@ -39,7 +43,7 @@ prioridad: media
 - [[]]
 
 ## Timeline / seguimiento
-- {{date:YYYY-MM-DD}} — creada la nota
+- {{date:YYYY-MM-DD}} - creada la nota
 
 ## Entrevistas
 - 

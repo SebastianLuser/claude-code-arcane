@@ -32,10 +32,13 @@ career-workspace/
   07-Recursos/             cover letters reutilizables, links
   portfolio/               datos source-of-truth del portfolio web
   Templates/               plantillas con frontmatter
-  tools/                   cv_export.py (lo instala /cv-ats-export)
+  tools/                   cv_export.py + verify_pdf.py (los instala /cv-ats-export)
+                           y job_scraper/seen_jobs.json (memoria de dedup de /job-scrape)
 ```
 
 Es **portable y agnóstico de Obsidian**: usa `[[wikilinks]]` (funcionan en Obsidian si el usuario lo usa, y son legibles en texto plano), frontmatter YAML, y prefijos numéricos para ordenar carpetas. No requiere Obsidian instalado.
+
+Estados de una aplicación (frontmatter `estado`): `interesado → aplicado → entrevista → oferta`, con cierres `contratado | rechazado | sin_respuesta | declinada | descartado`. Los mueve `/job-outcome`; ninguna otra skill marca `aplicado`.
 
 ## Modos
 
@@ -61,6 +64,10 @@ Según el estado del workspace, recomendar el skill siguiente (ver routing).
 | No hay workspace | `/job-hunt setup` |
 | Falta perfil maestro | `/master-profile` |
 | Encontrar/scorear ofertas, plan de búsqueda | `/job-search` |
+| Corrida de búsqueda con CLIs y dedup entre corridas | `/job-scrape` |
+| Postulación completa (nota + CV + cover + review + PDF) | `/job-aplicar` |
+| Registrar resultado/avance de una postulación | `/job-outcome` |
+| Gaps de skills agregados + plan de estudio | `/job-upskill` |
 | Adaptar CV a una oferta | `/cv-tailor` |
 | Exportar CV a PDF ATS | `/cv-ats-export` |
 | Escribir cover letter / mensaje de aplicación | `/cover-letter` |
@@ -71,13 +78,13 @@ Según el estado del workspace, recomendar el skill siguiente (ver routing).
 
 ## Workflow estándar para una nueva oportunidad
 
-1. `/job-search` → encontrar y scorear la oferta, crear nota en `03-Aplicaciones/` + `04-Empresas/`.
+1. `/job-scrape` → corrida de búsqueda con dedup (o `/job-search` para una oferta/búsqueda puntual): nota en `03-Aplicaciones/` + `04-Empresas/`.
 2. Identificar contacto objetivo → nota en `05-Contactos/`.
-3. `/cv-tailor` → CV custom partiendo del perfil base + research.
-4. `/cv-ats-export` → PDF ATS a `02-CVs/exports/`.
-5. `/cover-letter` → mensaje de aplicación custom.
-6. `/cold-outreach` → si hay contacto al que escribirle directo.
-7. Cuando haya entrevista → `/interview-prep`.
+3. `/job-aplicar` → pipeline completo de la postulación: CV custom + cover + review (regla drafter-reviewer) + PDF ATS verificado. (A mano: `/cv-tailor` → `/cv-ats-export` → `/cover-letter`.)
+4. `/cold-outreach` → si hay contacto al que escribirle directo.
+5. Enviar la postulación (**siempre manual**) → `/job-outcome <empresa>` para marcar `aplicado`; registrar ahí cada avance.
+6. Cuando haya entrevista → `/interview-prep`.
+7. Con rechazos acumulados → `/job-upskill` para el plan de estudio según gaps reales.
 
 ## Reglas
 
