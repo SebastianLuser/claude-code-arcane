@@ -22,7 +22,7 @@ async function backoffFetch(url: string, accept: string): Promise<Response | nul
   let delay = 500
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     const response = await fetch(url, {
-      headers: { "User-Agent": UA, Accept: accept, "Content-Type": "application/json" },
+      headers: { "User-Agent": UA, Accept: accept },
       redirect: "follow",
     })
     if (response.status === 429 || response.status >= 500) {

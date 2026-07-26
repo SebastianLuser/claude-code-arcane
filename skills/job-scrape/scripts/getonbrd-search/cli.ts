@@ -45,17 +45,20 @@ SEARCH FLAGS
   --jobage <days>         Posted within N days (client-side filter). Default: all.
   --remote <mode>         remote | hybrid | onsite (client-side filter).
   --page <n>              1-indexed page (20 results/page). Default 1.
-  --limit, -n <n>         Cap results emitted (client-side).
+  --limit, -n <n>         Cap results emitted (client-side; 0 emits none).
+  --brief                 json only: truncate each description to 300 chars.
   --format <fmt>          json (default) | table | plain.
 
 NOTES
   No --location flag: GetOnBoard is LATAM/remote by nature; filter with --remote
   and read the countries field. Salary fields are USD/month when published.
   detail accepts the slug from search results or any getonbrd.com job URL.
+  Full JDs are ~80% of a json payload: use --brief to triage, then detail the
+  shortlist.
 
 EXAMPLES
   node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts search -q "fullstack developer" --jobage 14 --format table
-  node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts search -q ".NET" --remote remote --format table
+  node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts search -q ".NET" --remote remote --brief
   node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts detail net-backend-developer-2brains-remote --format plain
 `
 
@@ -109,10 +112,12 @@ async function main(): Promise<number> {
 
     const opts: SearchOpts = {
       query,
-      jobage: flags.jobage ? parseInt(flags.jobage as string, 10) : 9999,
+      // parseIntFlag already validated these; a string here is always numeric.
+      jobage: typeof flags.jobage === "string" ? parseInt(flags.jobage, 10) : 9999,
       remote: typeof flags.remote === "string" ? flags.remote : undefined,
-      page: flags.page ? Math.max(1, parseInt(flags.page as string, 10)) : 1,
-      limit: flags.limit ? parseInt(flags.limit as string, 10) : undefined,
+      page: typeof flags.page === "string" ? Math.max(1, parseInt(flags.page, 10)) : 1,
+      limit: typeof flags.limit === "string" ? parseInt(flags.limit, 10) : undefined,
+      brief: flags.brief === true,
       format: (["json", "table", "plain"].includes(fmt) ? fmt : "json") as SearchOpts["format"],
     }
     return runSearch(opts)

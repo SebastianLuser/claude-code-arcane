@@ -17,7 +17,8 @@ Flags:
 - `--jobage <dias>` - publicada en los ultimos N dias (filtro client-side sobre `published_at`).
 - `--remote <modo>` - `remote` | `hybrid` | `onsite` (filtro client-side).
 - `--page <n>` - paginacion (20 resultados por pagina).
-- `-n / --limit <n>` - tope de resultados.
+- `-n / --limit <n>` - tope de resultados (`0` no emite ninguno).
+- `--brief` - solo en `json`: trunca cada `description` a 300 chars y marca `description_truncated`. Los JD completos son ~80% del payload, asi que para triage conviene `--brief` y despues `detail` del shortlist.
 - `--format json|table|plain` - default `json`.
 
 Sin flag `--location`: GetOnBoard es LATAM/remoto por naturaleza; filtrar con `--remote` y leer `countries` en el JSON.
@@ -41,6 +42,9 @@ Acepta el `ID` (slug) de los resultados de search o cualquier URL de getonbrd.co
 ```bash
 # Fullstack, ultimas 2 semanas
 node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts search -q "fullstack developer" --jobage 14 --format table
+
+# Triage barato: estructurado completo, JD truncado
+node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts search -q "fullstack developer" --jobage 14 --brief
 
 # .NET remoto
 node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts search -q ".NET developer" --remote remote --format table

@@ -12,8 +12,12 @@ export interface SearchOpts {
   remote?: string // "remote" | "hybrid" | "onsite"
   page: number
   limit?: number
+  brief?: boolean
   format: "json" | "table" | "plain"
 }
+
+/** Chars of description kept per result under --brief. */
+const BRIEF_DESCRIPTION_CHARS = 300
 
 function buildUrl(opts: SearchOpts): string {
   const params = new URLSearchParams()
@@ -48,6 +52,20 @@ function withinJobage(job: GobJob, days: number): boolean {
 function salaryCol(job: GobJob): string {
   if (job.salary_min_usd_month === null && job.salary_max_usd_month === null) return "-"
   return `${job.salary_min_usd_month ?? "?"}-${job.salary_max_usd_month ?? "?"}`
+}
+
+/**
+ * Same shape as GobJob with the description truncated, so a consumer can still
+ * keyword-match on the opening lines and knows when text was dropped.
+ */
+export function briefJob(job: GobJob): GobJob & { description_truncated: boolean } {
+  const full = job.description ?? ""
+  const truncated = full.length > BRIEF_DESCRIPTION_CHARS
+  return {
+    ...job,
+    description: truncated ? full.slice(0, BRIEF_DESCRIPTION_CHARS).trimEnd() + "..." : job.description,
+    description_truncated: truncated,
+  }
 }
 
 function renderTable(jobs: GobJob[]): string {
@@ -97,8 +115,9 @@ export async function runSearch(opts: SearchOpts): Promise<number> {
           .join("\n\n") + "\n",
       )
     } else {
-      // In JSON output, omit the long description per result unless it is the
-      // only copy of the data a consumer needs; /scrape reads it from here.
+      // Full JDs are ~80% of this payload, and a triage pass only needs the
+      // structured fields; --brief truncates them so a multi-query run stays
+      // cheap to read. Fetch `detail <slug>` for the shortlist's full text.
       process.stdout.write(
         JSON.stringify(
           {
@@ -106,8 +125,9 @@ export async function runSearch(opts: SearchOpts): Promise<number> {
               count: jobs.length,
               page: opts.page,
               total_pages: data.meta?.total_pages ?? null,
+              brief: opts.brief === true,
             },
-            results: jobs,
+            results: opts.brief ? jobs.map(briefJob) : jobs,
           },
           null,
           2,
