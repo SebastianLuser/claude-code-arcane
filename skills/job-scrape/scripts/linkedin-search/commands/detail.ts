@@ -5,11 +5,16 @@ export interface DetailOpts {
   format: "json" | "plain"
 }
 
-/** Accept a raw job ID, a job-view URL, or a job URN. */
-function normalizeId(input: string): string | null {
+/**
+ * Accept a raw job ID, a job-view URL, or a job URN. The ID may be followed by
+ * a slash as well as a query string: the share button yields URLs shaped like
+ * `/jobs/view/<id>/?refId=...`, so anchoring on `?` alone rejects the most
+ * common paste.
+ */
+export function normalizeId(input: string): string | null {
   const urn = input.match(/urn:li:jobPosting:(\d+)/)
   if (urn) return urn[1]
-  const url = input.match(/-(\d{6,})(?:\?|$)/) || input.match(/\/(\d{6,})(?:\?|$)/)
+  const url = input.match(/-(\d{6,})(?:[/?]|$)/) || input.match(/\/(\d{6,})(?:[/?]|$)/)
   if (url) return url[1]
   const bare = input.match(/^\d{6,}$/)
   if (bare) return input
@@ -33,7 +38,7 @@ export async function runDetail(opts: DetailOpts): Promise<number> {
     if (opts.format === "plain") {
       const lines = [
         job.title,
-        `${job.company || "—"} · ${job.location || "—"}`,
+        `${job.company || "-"} · ${job.location || "-"}`,
         "",
         job.seniority ? `Seniority: ${job.seniority}` : "",
         job.employmentType ? `Employment: ${job.employmentType}` : "",

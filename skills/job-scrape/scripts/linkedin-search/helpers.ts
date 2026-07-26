@@ -12,6 +12,11 @@ export function writeError(error: string, code: string): void {
   process.stderr.write(JSON.stringify({ error, code }) + "\n")
 }
 
+/** Non-fatal diagnostic on stderr. Same JSON-line shape, `warning` key. */
+export function writeWarning(warning: string, code: string): void {
+  process.stderr.write(JSON.stringify({ warning, code }) + "\n")
+}
+
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " +
   "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -98,11 +103,8 @@ function clean(html: string): string {
   return decodeHtmlEntities(stripTags(html))
 }
 
-/** Parse the job ID out of a LinkedIn job-view URL or URN. */
-function idFromUrl(url: string): string | null {
-  const m = url.match(/-(\d{6,})(?:\?|$)/) || url.match(/(\d{6,})/)
-  return m ? m[1] : null
-}
+/** Below this size a response is empty/an error page, not a markup change. */
+const MARKUP_SANITY_BYTES = 5000
 
 /**
  * Parse the search response: a flat list of <li> job cards. We split on the
@@ -156,6 +158,16 @@ export function parseJobCards(html: string): JobCard[] {
       date,
       url: url || `https://www.linkedin.com/jobs/view/${id}`,
     })
+  }
+
+  // Regex parsing degrades silently when LinkedIn changes its markup: a page
+  // full of content yields zero cards, which reads exactly like "no job matches
+  // the query". Warn so the caller can tell the two apart.
+  if (results.length === 0 && html.length > MARKUP_SANITY_BYTES) {
+    writeWarning(
+      `parsed 0 job cards out of a ${html.length}-byte response; LinkedIn markup may have changed`,
+      "NO_CARDS_PARSED",
+    )
   }
 
   return results

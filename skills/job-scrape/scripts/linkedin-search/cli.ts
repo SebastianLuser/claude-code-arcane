@@ -1,7 +1,8 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 // Self-contained CLI for searching jobs on LinkedIn's public jobs-guest endpoints,
-// for any country/region (plus remote). No external CLI framework, so it runs
-// anywhere `bun` is available with zero install beyond the repo clone.
+// for any country/region (plus remote). No external CLI framework and zero
+// dependencies, so it runs anywhere Node 24+ is available (native type stripping,
+// no build step).
 //
 // Personal use only. This reads LinkedIn's public job pages; automated access is
 // against LinkedIn's Terms of Service, so keep volume low and do not use it
@@ -36,11 +37,13 @@ function parseFlags(argv: string[]): Flags {
   return flags
 }
 
-const HELP = `linkedin-cli — search jobs on LinkedIn (any country/region, plus remote)
+const CLI = "node .claude/skills/job-scrape/scripts/linkedin-search/cli.ts"
+
+const HELP = `linkedin-cli - search jobs on LinkedIn (any country/region, plus remote)
 
 USAGE
-  bun run src/cli.ts search --location "<place>" [flags]
-  bun run src/cli.ts detail <id|url> [--format json|plain]
+  ${CLI} search --location "<place>" [flags]
+  ${CLI} detail <id|url> [--format json|plain]
 
 SEARCH FLAGS
   --location, -l <text>   Location to search. REQUIRED. e.g. "Mumbai, Maharashtra, India",
@@ -49,16 +52,16 @@ SEARCH FLAGS
   --jobage <days>         Posted within N days: 1, 7, 14, 30. Default: all.
   --remote <mode>         remote | hybrid | onsite. Filter by workplace type.
   --page <n>              1-indexed page (10 results/page). Default 1.
-  --limit, -n <n>         Cap results emitted (client-side).
+  --limit, -n <n>         Cap results emitted (client-side; 0 emits none).
   --format <fmt>          json (default) | table | plain.
 
 EXAMPLES
-  bun run src/cli.ts search -q "data engineer" -l "Bengaluru, Karnataka, India" --jobage 30 --format table
-  bun run src/cli.ts search -q "product manager" -l "Berlin, Germany" --remote remote --format table
-  bun run src/cli.ts search -q "paralegal" -l "Remote" --format table
-  bun run src/cli.ts detail 4300011451 --format plain
+  ${CLI} search -q "data engineer" -l "Bengaluru, Karnataka, India" --jobage 30 --format table
+  ${CLI} search -q "product manager" -l "Berlin, Germany" --remote remote --format table
+  ${CLI} search -q "paralegal" -l "Remote" --format table
+  ${CLI} detail 4300011451 --format plain
 
-Personal use only — uses LinkedIn's public pages; keep volume low (LinkedIn ToS).
+Personal use only - uses LinkedIn's public pages; keep volume low (LinkedIn ToS).
 `
 
 async function main(): Promise<number> {
@@ -112,10 +115,11 @@ async function main(): Promise<number> {
     const opts: SearchOpts = {
       query: typeof flags.query === "string" ? flags.query : undefined,
       location,
-      jobage: flags.jobage ? parseInt(flags.jobage as string, 10) : 9999,
+      // parseIntFlag already validated these; a string here is always numeric.
+      jobage: typeof flags.jobage === "string" ? parseInt(flags.jobage, 10) : 9999,
       remote: typeof flags.remote === "string" ? flags.remote : undefined,
-      page: flags.page ? Math.max(1, parseInt(flags.page as string, 10)) : 1,
-      limit: flags.limit ? parseInt(flags.limit as string, 10) : undefined,
+      page: typeof flags.page === "string" ? Math.max(1, parseInt(flags.page, 10)) : 1,
+      limit: typeof flags.limit === "string" ? parseInt(flags.limit, 10) : undefined,
       format: (["json", "table", "plain"].includes(fmt) ? fmt : "json") as SearchOpts["format"],
     }
     return runSearch(opts)

@@ -34,9 +34,9 @@ function renderTable(cards: JobCard[]): string {
   if (cards.length === 0) return "No results."
   const rows = cards.map((c) => {
     const title = (c.title || "").slice(0, 42).padEnd(42)
-    const company = (c.company || "—").slice(0, 26).padEnd(26)
-    const loc = (c.location || "—").slice(0, 24).padEnd(24)
-    const date = c.date || "—"
+    const company = (c.company || "-").slice(0, 26).padEnd(26)
+    const loc = (c.location || "-").slice(0, 24).padEnd(24)
+    const date = c.date || "-"
     return `${c.id.padEnd(11)} ${title} ${company} ${loc} ${date}`
   })
   const header =
@@ -64,7 +64,7 @@ export async function runSearch(opts: SearchOpts): Promise<number> {
         cards
           .map(
             (c) =>
-              `${c.title}\n  ${c.company || "—"} · ${c.location || "—"} · ${c.date || "—"}\n  id: ${c.id}\n  ${c.url}`,
+              `${c.title}\n  ${c.company || "-"} · ${c.location || "-"} · ${c.date || "-"}\n  id: ${c.id}\n  ${c.url}`,
           )
           .join("\n\n") + "\n",
       )
