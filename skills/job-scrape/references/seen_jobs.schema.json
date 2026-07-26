@@ -42,10 +42,26 @@
             "enum": ["new", "descartado", "nota_creada"],
             "description": "Estados del triage. Deliberadamente NO existe 'aplicado': al crear la nota la entrada se congela y el pipeline sigue en el frontmatter de la nota (lo mueve /job-outcome)."
           },
-          "descarte_motivo": { "type": ["string", "null"], "description": "Obligatorio si status=descartado" },
-          "nota": { "type": ["string", "null"], "description": "Nombre de archivo de la nota en 03-Aplicaciones/ (obligatorio si status=nota_creada)" },
+          "descarte_motivo": { "type": ["string", "null"], "description": "Obligatorio si status=descartado (ver allOf)" },
+          "nota": { "type": ["string", "null"], "description": "Nombre de archivo de la nota en 03-Aplicaciones/ (obligatorio si status=nota_creada, ver allOf)" },
           "salario_max_usd_mes": { "type": ["integer", "null"], "description": "Salario maximo publicado en USD/mes, para re-triage sin re-fetch" }
-        }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "status": { "const": "descartado" } }, "required": ["status"] },
+            "then": {
+              "required": ["descarte_motivo"],
+              "properties": { "descarte_motivo": { "type": "string", "minLength": 1 } }
+            }
+          },
+          {
+            "if": { "properties": { "status": { "const": "nota_creada" } }, "required": ["status"] },
+            "then": {
+              "required": ["nota"],
+              "properties": { "nota": { "type": "string", "minLength": 1 } }
+            }
+          }
+        ]
       }
     }
   }
