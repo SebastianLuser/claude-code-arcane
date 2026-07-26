@@ -8,7 +8,8 @@ replacing poppler (pdftotext/pdfinfo) with pypdf so it runs on Windows
 without external binaries.
 
 Usage:
-    python verify_pdf.py <pdf> [--pages N] [--min-chars N] [--contains TEXT ...]
+    python verify_pdf.py <pdf> [--pages N] [--max-pages N] [--min-chars N]
+                               [--contains TEXT ...]
 
 Example:
     python verify_pdf.py "career-workspace/02-CVs/exports/Backend.pdf" \
@@ -31,7 +32,7 @@ def extract_text(pdf_path):
     return len(reader.pages), " ".join(text.split())
 
 
-def verify(pdf_path, pages=None, min_chars=1, contains=()):
+def verify(pdf_path, pages=None, min_chars=1, contains=(), max_pages=None):
     """Return a list of problems (empty = PDF OK). Raises ImportError without pypdf."""
     pdf_path = Path(pdf_path)
     if not pdf_path.exists():
@@ -42,6 +43,8 @@ def verify(pdf_path, pages=None, min_chars=1, contains=()):
 
     if pages is not None and n_pages != pages:
         problems.append(f"has {n_pages} pages (expected {pages})")
+    if max_pages is not None and n_pages > max_pages:
+        problems.append(f"has {n_pages} pages (ideally 1-{max_pages} for a CV)")
     if len(text) < min_chars:
         problems.append(
             f"text layer has {len(text)} extractable chars (minimum {min_chars}); "
@@ -59,6 +62,7 @@ def main():
     ap.add_argument("pdf", help="path to the PDF")
     ap.add_argument("--pages", type=int, default=None, help="expected page count")
     ap.add_argument("--min-chars", type=int, default=1, help="minimum extractable chars")
+    ap.add_argument("--max-pages", type=int, default=None, help="warn above N pages")
     ap.add_argument(
         "--contains", action="append", default=[], metavar="TEXT",
         help="string that must appear in the text (repeatable)",
@@ -66,7 +70,9 @@ def main():
     args = ap.parse_args()
 
     try:
-        problems = verify(args.pdf, args.pages, args.min_chars, args.contains)
+        problems = verify(
+            args.pdf, args.pages, args.min_chars, args.contains, args.max_pages
+        )
     except ImportError:
         print("[ERROR] pypdf is missing. Install with: pip install pypdf")
         sys.exit(2)

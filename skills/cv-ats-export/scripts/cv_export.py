@@ -212,10 +212,13 @@ def find_browser():
 
 def verify_ats(pdf_path, body):
     """Verify the exported PDF's text layer. Never breaks the export: reports."""
+    # Two distinct failures, two distinct messages: verify_pdf.py missing next to
+    # this script (installing pypdf would not help) vs pypdf missing, which
+    # verify_pdf only imports when it actually reads the PDF.
     try:
-        from verify_pdf import extract_text, verify
+        from verify_pdf import verify
     except ImportError:
-        print("        [ATS SKIP] pypdf not installed (pip install pypdf)")
+        print(f"        [ATS SKIP] verify_pdf.py not found next to {Path(__file__).name}")
         return
 
     contains = []
@@ -227,10 +230,7 @@ def verify_ats(pdf_path, body):
         contains.append(m.group(0))
 
     try:
-        problems = verify(pdf_path, min_chars=200, contains=contains)
-        n_pages, _ = extract_text(pdf_path)
-        if n_pages > 2:
-            problems.append(f"has {n_pages} pages (ideally 1-2 for a CV)")
+        problems = verify(pdf_path, min_chars=200, contains=contains, max_pages=2)
     except ImportError:
         print("        [ATS SKIP] pypdf not installed (pip install pypdf)")
         return
