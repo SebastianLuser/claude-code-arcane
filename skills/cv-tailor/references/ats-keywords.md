@@ -1,4 +1,4 @@
-# ATS Keywords — Cómo extraer y mapear
+# ATS Keywords - Cómo extraer y mapear
 
 Los Applicant Tracking Systems (Greenhouse, Lever, Workday, Workable, etc.) hacen un primer filtro automático antes de que un humano vea el CV. Entender cómo "leen" cambia el resultado.
 
@@ -11,12 +11,12 @@ Los Applicant Tracking Systems (Greenhouse, Lever, Workday, Workable, etc.) hace
 
 ## Extracción de keywords del JD
 
-1. **Hard skills / tecnologías** — lenguajes, frameworks, DBs, cloud, herramientas. Copiá la forma **literal** (React.js ≠ React ≠ ReactJS para un match exacto; cuando puedas, incluí la variante que usa la oferta).
-2. **Responsabilidades / verbos** — "design REST APIs", "lead a team", "CI/CD pipelines".
-3. **Metodologías** — Agile, Scrum, TDD, clean architecture.
-4. **Seniority y años** — "5+ years", "senior", "lead".
-5. **Soft skills explícitos** — communication, ownership, cross-functional.
-6. **Señales de cultura / frases gatillo** — ej. "code-forward", "startup mentality", "high autonomy". Suelen indicar qué valoran y dan ángulo para el summary y la cover letter.
+1. **Hard skills / tecnologías** - lenguajes, frameworks, DBs, cloud, herramientas. Copiá la forma **literal** (React.js ≠ React ≠ ReactJS para un match exacto; cuando puedas, incluí la variante que usa la oferta).
+2. **Responsabilidades / verbos** - "design REST APIs", "lead a team", "CI/CD pipelines".
+3. **Metodologías** - Agile, Scrum, TDD, clean architecture.
+4. **Seniority y años** - "5+ years", "senior", "lead".
+5. **Soft skills explícitos** - communication, ownership, cross-functional.
+6. **Señales de cultura / frases gatillo** - ej. "code-forward", "startup mentality", "high autonomy". Suelen indicar qué valoran y dan ángulo para el summary y la cover letter.
 
 ## Mapeo contra el perfil
 
@@ -24,7 +24,7 @@ Los Applicant Tracking Systems (Greenhouse, Lever, Workday, Workable, etc.) hace
 |---|---|---|---|
 | React.js | Sí | "Built React + TS frontends @ X" | resaltar arriba |
 | Kubernetes | Parcial | exposición en CI/CD | mencionar honesto |
-| Go | No | — | gap; no inventar |
+| Go | No | - | gap; no inventar |
 
 - **Must-have que tenés** → arriba, con espacio, con la palabra exacta.
 - **Must-have parcial** → mencionar con honestidad ("exposure to…").
@@ -41,6 +41,6 @@ Los Applicant Tracking Systems (Greenhouse, Lever, Workday, Workable, etc.) hace
 - [ ] Una sola columna, sin tablas/text boxes.
 - [ ] Headers de sección estándar (Experience, Skills, Education…).
 - [ ] Fechas consistentes MM/YYYY.
-- [ ] Texto seleccionable (no imagen) — el export de `/cv-ats-export` ya lo garantiza.
+- [ ] Texto seleccionable (no imagen) - el export de `/cv-ats-export` ya lo garantiza.
 - [ ] Nombre del archivo profesional (`Nombre_Apellido_Empresa.pdf`).
 - [ ] Contacto en el cuerpo, no en el header/footer del documento.

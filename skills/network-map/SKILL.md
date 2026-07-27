@@ -7,7 +7,7 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 
-# Network Map — Inteligencia de contactos para warm intros
+# Network Map - Inteligencia de contactos para warm intros
 
 Convertís el **export de conexiones de LinkedIn** en inteligencia accionable: dado un target company, quién de tu red 1er-grado trabaja (o trabajó) ahí, quién puede darte un warm intro, y un mensaje custom por contacto. Reemplaza a LinkedIn Premium para esto: solo necesitás tu propio export + Claude.
 
@@ -20,9 +20,9 @@ En LinkedIn → **Settings → Data Privacy → Get a copy of your data → Down
 ## Qué produce
 
 Dado un target company:
-1. **1er-grado en la empresa** — contactos tuyos que trabajan ahí ahora (match por `Company`).
-2. **Paths de warm intro** — contactos 1er-grado que probablemente conozcan gente del target (ej. ex-empleados de la empresa, gente del mismo rubro/rol) y podrían presentarte. *Nota honesta:* el export solo tiene tus 1er-grado; el verdadero 2do-grado (las conexiones de ellos) no está en el archivo. Lo que hacemos es **inferir** buenos candidatos a intro desde tus 1er-grado (empleo actual/pasado en el target, overlap de empresa/rol), no leer la red de cada uno.
-3. **Mensaje por contacto** — template custom según historia compartida (misma empresa pasada, mismo rubro, conexión vieja vs reciente).
+1. **1er-grado en la empresa** - contactos tuyos que trabajan ahí ahora (match por `Company`).
+2. **Paths de warm intro** - contactos 1er-grado que probablemente conozcan gente del target (ej. ex-empleados de la empresa, gente del mismo rubro/rol) y podrían presentarte. *Nota honesta:* el export solo tiene tus 1er-grado; el verdadero 2do-grado (las conexiones de ellos) no está en el archivo. Lo que hacemos es **inferir** buenos candidatos a intro desde tus 1er-grado (empleo actual/pasado en el target, overlap de empresa/rol), no leer la red de cada uno.
+3. **Mensaje por contacto** - template custom según historia compartida (misma empresa pasada, mismo rubro, conexión vieja vs reciente).
 
 ## El motor
 
@@ -40,10 +40,10 @@ Devuelve nombre, posición, empresa, URL del perfil y fecha de conexión. Vos (C
 
 ## Modos
 
-### `import <path>` — Registrar el export
+### `import <path>` - Registrar el export
 Copiar/referenciar `Connections.csv` en `05-Contactos/`, verificar que parsea (corré el script con `--top-companies`), y reportar tamaño de la red + top empresas.
 
-### `[company]` — Mapear una empresa
+### `[company]` - Mapear una empresa
 1. Correr el script filtrando por la empresa.
 2. Clasificar: 1er-grado actuales en la empresa vs candidatos a warm-intro (ex-empleados / mismo rubro).
 3. Priorizar por relevancia (seniority/rol vs tu objetivo) y calidez (conexión reciente, historia compartida).
@@ -53,7 +53,7 @@ Copiar/referenciar `Connections.csv` en `05-Contactos/`, verificar que parsea (c
 ## Reglas
 
 - Data de terceros: tratamiento local, nunca a un remoto sin confirmación; respetá privacidad.
-- No inventar relaciones ni 2do-grado que el export no soporta — sé explícito sobre qué es dato y qué es inferencia.
+- No inventar relaciones ni 2do-grado que el export no soporta - sé explícito sobre qué es dato y qué es inferencia.
 - Calidad sobre cantidad: 5 contactos bien elegidos > 50 mensajes genéricos.
 
 ## Handoff

@@ -1,17 +1,17 @@
-# Post Pillars — Ángulos, hooks y formatos
+# Post Pillars - Ángulos, hooks y formatos
 
 Guía para generar ideas con sustancia por cada uno de los 4 pilares. Cada idea final = **hook + ángulo + formato**.
 
 ## Formatos disponibles
 
-- **Text post corto** — 1 idea, 3–6 líneas, hook fuerte.
-- **Lista / "X things"** — escaneable, alto guardado.
-- **Carrusel** — paso a paso o framework (si el usuario hace slides).
-- **Hot take / POV** — opinión con tensión, invita a debate.
-- **Story / mini-caso** — situación → acción → resultado (mini-STAR público).
-- **Pregunta** — abre conversación, sube engagement.
+- **Text post corto** - 1 idea, 3-6 líneas, hook fuerte.
+- **Lista / "X things"** - escaneable, alto guardado.
+- **Carrusel** - paso a paso o framework (si el usuario hace slides).
+- **Hot take / POV** - opinión con tensión, invita a debate.
+- **Story / mini-caso** - situación → acción → resultado (mini-STAR público).
+- **Pregunta** - abre conversación, sube engagement.
 
-## Pilar 1 — Builder credibility
+## Pilar 1 - Builder credibility
 
 Demostrar que entregás. Ángulos:
 - Un problema real que resolviste + el número de impacto.
@@ -21,7 +21,7 @@ Demostrar que entregás. Ángulos:
 
 Hooks ejemplo: *"Bajé la latencia de matchmaking 25%. El cambio que más movió la aguja no fue el que esperaba."*
 
-## Pilar 2 — Lessons from current role
+## Pilar 2 - Lessons from current role
 
 Aprendizajes concretos, no abstractos. Ángulos:
 - Un error que cometiste y qué cambiaste.
@@ -31,7 +31,7 @@ Aprendizajes concretos, no abstractos. Ángulos:
 
 Hooks ejemplo: *"Pasé 2 años optimizando lo que no importaba. Esto es lo que mido ahora."*
 
-## Pilar 3 — POVs on your domain
+## Pilar 3 - POVs on your domain
 
 Posicionarte como alguien que piensa el dominio. Ángulos:
 - Una tendencia y por qué estás de acuerdo / en contra.
@@ -41,7 +41,7 @@ Posicionarte como alguien que piensa el dominio. Ángulos:
 
 Hooks ejemplo: *"Todos dicen que [tendencia]. En producción, lo que veo es otra cosa."*
 
-## Pilar 4 — Behind-the-scenes del job search
+## Pilar 4 - Behind-the-scenes del job search
 
 Cercanía + a veces atrae ofertas directas. Usar con medida (no quejas). Ángulos:
 - Qué buscás y por qué (señal clara para recruiters).
@@ -53,9 +53,9 @@ Hooks ejemplo: *"Estoy buscando mi próximo rol como [rol]. Esto es exactamente 
 
 ## Secuenciación (90 días)
 
-- **Días 1–30 (autoridad):** ~70% pilares 1–3, ~30% pilar 2. Casi nada de "busco trabajo" todavía — primero construís credibilidad.
-- **Días 31–60 (visibilidad + señal):** introducir pilar 4 (qué buscás), mantener 1–3. Empezar outreach (`/cold-outreach`) apoyado en los posts.
-- **Días 61–90 (conversión):** mezclar los 4, más casos de builder credibility, CTAs suaves hacia conversaciones.
+- **Días 1-30 (autoridad):** ~70% pilares 1-3, ~30% pilar 2. Casi nada de "busco trabajo" todavía - primero construís credibilidad.
+- **Días 31-60 (visibilidad + señal):** introducir pilar 4 (qué buscás), mantener 1-3. Empezar outreach (`/cold-outreach`) apoyado en los posts.
+- **Días 61-90 (conversión):** mezclar los 4, más casos de builder credibility, CTAs suaves hacia conversaciones.
 
 ## Anti-patrones
 

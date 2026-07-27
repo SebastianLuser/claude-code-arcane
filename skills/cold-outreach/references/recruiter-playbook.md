@@ -1,10 +1,10 @@
 # Recruiter / Hiring Manager Playbook
 
-Plantillas y psicología para outreach de candidato. Adaptá siempre la primera línea — las plantillas son esqueleto, no copy-paste.
+Plantillas y psicología para outreach de candidato. Adaptá siempre la primera línea - las plantillas son esqueleto, no copy-paste.
 
 ## Por qué responden (y por qué no)
 
-Responden cuando: el mensaje es corto, claro sobre el fit, fácil de responder, y se nota que es para *ellos*. No responden cuando: es genérico, largo, pide demasiado de entrada, o suena desesperado. El recruiter recibe decenas por día — el filtro es "¿esto me ahorra trabajo o me lo agrega?".
+Responden cuando: el mensaje es corto, claro sobre el fit, fácil de responder, y se nota que es para *ellos*. No responden cuando: es genérico, largo, pide demasiado de entrada, o suena desesperado. El recruiter recibe decenas por día - el filtro es "¿esto me ahorra trabajo o me lo agrega?".
 
 ## Plantillas
 
@@ -37,14 +37,14 @@ Hola {nombre}, me interesa mucho {empresa/área}. Vengo de {1 cosa}.
 Me encantaría conectar y, si surge, charlar sobre {rol/equipo}.
 ```
 
-### 5. Follow-up 1 (día 4–5) — con valor nuevo
+### 5. Follow-up 1 (día 4-5) - con valor nuevo
 ```
 Hola {nombre}, te escribo para reafirmar mi interés en {rol}.
 Sumo un dato: {proyecto/idea relevante para su producto}.
 Quedo a disposición para lo que necesiten del proceso.
 ```
 
-### 6. Follow-up 2 (día 10–12) — cierre digno
+### 6. Follow-up 2 (día 10-12) - cierre digno
 ```
 Hola {nombre}, entiendo que están con mucho.
 Dejo la puerta abierta por si avanza {rol}; me encantaría sumar.
@@ -55,7 +55,7 @@ Dejo la puerta abierta por si avanza {rol}; me encantaría sumar.
 
 - Máximo 2 follow-ups. Después, soltar.
 - Cada follow-up agrega algo (no "¿novedades?").
-- Espaciar 4–5 días. Nunca el mismo día ni días consecutivos.
+- Espaciar 4-5 días. Nunca el mismo día ni días consecutivos.
 - Registrar cada toque en la nota de `05-Contactos/`.
 
 ## Tono

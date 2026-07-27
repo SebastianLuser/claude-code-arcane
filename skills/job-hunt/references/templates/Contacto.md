@@ -21,7 +21,7 @@ ultima_interaccion: {{date:YYYY-MM-DD}}
 
 
 ## Historial de interacciones
-- {{date:YYYY-MM-DD}} — creada la nota
+- {{date:YYYY-MM-DD}} - creada la nota
 
 ## Mensajes intercambiados
 

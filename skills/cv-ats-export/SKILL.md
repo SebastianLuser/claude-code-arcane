@@ -1,15 +1,15 @@
 ---
 name: cv-ats-export
-description: "Export a Markdown CV to an ATS-compliant PDF (single column, selectable text, A4) using headless Chrome/Edge — no Obsidian or design tool needed. Triggers: exportar CV a PDF, generar PDF del CV, CV ATS PDF, convertir CV markdown a PDF, imprimir CV."
+description: "Export a Markdown CV to an ATS-compliant PDF (single column, selectable text, A4) using headless Chrome/Edge - no Obsidian or design tool needed. Triggers: exportar CV a PDF, generar PDF del CV, CV ATS PDF, convertir CV markdown a PDF, imprimir CV."
 argument-hint: "[cv-name | all] [--workspace <path>]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write
 ---
 
-# CV ATS Export — Markdown → PDF ATS-compliant
+# CV ATS Export - Markdown → PDF ATS-compliant
 
-Convertís un CV en Markdown a un **PDF que pasa filtros ATS**: una sola columna, texto seleccionable (no imagen), A4, tipografía limpia. Usa Chrome o Edge en modo headless — no requiere Obsidian, LaTeX ni herramienta de diseño.
+Convertís un CV en Markdown a un **PDF que pasa filtros ATS**: una sola columna, texto seleccionable (no imagen), A4, tipografía limpia. Usa Chrome o Edge en modo headless - no requiere Obsidian, LaTeX ni herramienta de diseño.
 
 El motor es `scripts/cv_export.py` + `scripts/verify_pdf.py` (verificación ATS post-export). La primera vez, instalá ambos en el workspace (`tools/`) para que queden versionados con los CVs; o corrélos directo desde el skill (van juntos: `cv_export` importa `verify_pdf` desde su mismo directorio).
 
@@ -64,7 +64,7 @@ python scripts/verify_pdf.py "02-CVs/exports/Backend.pdf" --min-chars 200 --max-
 
 ## Personalizar el estilo
 
-El CSS ATS está en la constante `CSS` dentro de `scripts/cv_export.py` (tamaño de fuente, márgenes A4, estilos de h1/h2). Editá ahí si querés ajustar tipografía o espaciado — mantené una sola columna y texto real.
+El CSS ATS está en la constante `CSS` dentro de `scripts/cv_export.py` (tamaño de fuente, márgenes A4, estilos de h1/h2). Editá ahí si querés ajustar tipografía o espaciado - mantené una sola columna y texto real.
 
 ## Reglas
 

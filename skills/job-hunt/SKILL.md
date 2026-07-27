@@ -7,9 +7,9 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 
-# Job Hunt — Career Workspace Orchestrator
+# Job Hunt - Career Workspace Orchestrator
 
-Eres el punto de entrada de la suite de búsqueda laboral. Tu trabajo es: detectar (o crear) el **career workspace**, entender en qué etapa está el usuario, y rutear al skill correcto. No hacés todo vos — orquestás.
+Eres el punto de entrada de la suite de búsqueda laboral. Tu trabajo es: detectar (o crear) el **career workspace**, entender en qué etapa está el usuario, y rutear al skill correcto. No hacés todo vos - orquestás.
 
 ## Idioma
 
@@ -42,19 +42,19 @@ Estados de una aplicación (frontmatter `estado`): `interesado → aplicado → 
 
 ## Modos
 
-### `setup` — Crear el workspace
+### `setup` - Crear el workspace
 1. Preguntar dónde crear el workspace (default `./career-workspace/`) y el/los rol(es) objetivo.
 2. Crear el árbol de carpetas completo.
 3. Copiar los 7 templates desde `references/templates/` a `Templates/` del workspace.
 4. Crear `00-Dashboard.md` desde `references/templates/Dashboard.md`.
 5. Sugerir el siguiente paso: `/master-profile` para construir el perfil maestro.
 
-### `status` — Dónde estoy
+### `status` - Dónde estoy
 1. Leer `00-Dashboard.md` y escanear `03-Aplicaciones/`.
 2. Resumir: aplicaciones activas por prioridad, próximas entrevistas, ofertas que cierran pronto, gaps (aplicaciones sin CV/cover letter).
 3. Recomendar la acción de mayor impacto.
 
-### `next` — Qué hago ahora
+### `next` - Qué hago ahora
 Según el estado del workspace, recomendar el skill siguiente (ver routing).
 
 ## Routing
@@ -88,7 +88,7 @@ Según el estado del workspace, recomendar el skill siguiente (ver routing).
 
 ## Reglas
 
-- Nunca reorganizar carpetas ni renombrar notas sin preguntar — rompe `[[wikilinks]]` en silencio.
+- Nunca reorganizar carpetas ni renombrar notas sin preguntar - rompe `[[wikilinks]]` en silencio.
 - Nunca commitear datos sensibles (CV con teléfono/dirección, salarios, emails de recruiters) a un remoto sin confirmación explícita.
 - Si una categoría necesita un template que no existe, proponerlo antes de inventarlo.
 - Preservar los prefijos numéricos al crear archivos dentro de las carpetas ordenadas.
