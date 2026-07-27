@@ -3,11 +3,9 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     testTimeout: 15_000,
-    // `tests/` holds specs for shipped skill assets (e.g. the job-scrape CLIs),
-    // which live outside tsconfig's rootDir: src. Keeping them here rather than
-    // in src/__tests__ is what lets `tsc --noEmit` stay green while vitest
-    // still transpiles the .ts sources it imports.
-    include: ["src/__tests__/**/*.test.ts", "tests/**/*.test.ts"],
+    // Only the installer is TypeScript. Specs for shipped skill assets are
+    // Python and live in tests/ (see docs/coding-standards.md).
+    include: ["src/__tests__/**/*.test.ts"],
     env: {
       ARCANE_SOURCE: "bundled",
     },

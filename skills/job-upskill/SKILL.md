@@ -42,7 +42,7 @@ Argumento: `$ARGUMENTS` (vacío = modo agregado; URL o nota = modo targeted)
 
 ## Modo targeted (`/job-upskill <url|nota>`)
 
-1. Obtener el JD: nota existente → leer su "Match con mi perfil"; URL → `detail` del CLI que corresponda (`.claude/skills/job-scrape/scripts/getonbrd-search/` o `linkedin-search/`; si job-scrape no está instalado, WebFetch).
+1. Obtener el JD: nota existente → leer su "Match con mi perfil"; URL → `detail` del script que corresponda (`.claude/skills/job-scrape/scripts/getonbrd_search.py` o `linkedin_search.py`; si job-scrape no está instalado, WebFetch).
 2. Comparar contra el perfil de `01-Perfiles/` que corresponda: gaps solo de esa oferta, clasificados.
 3. Mini-plan: 1-2 recursos por gap (WebSearch, año actual), horas estimadas.
 4. **Responder en el chat.** Guardar como `07-Recursos/Upskill - YYYY-MM-DD - <Empresa>.md` solo si el usuario lo pide (no llenar Recursos de reportes de una sola oferta).

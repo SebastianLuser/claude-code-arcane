@@ -25,7 +25,7 @@ GET /categories    -> categorias (programming, design-ux, etc.)
 ## Lo que NO es publico
 
 - `GET /jobs/<slug>` devuelve **401** (endpoint privado, requiere API key de cuenta).
-  Por eso `detail` del CLI usa search + filtro por id exacto, con fallback a microdata.
+  Por eso `detail` del script usa search + filtro por id exacto, con fallback a microdata.
 
 ## Paginas SSR (fallback de detail)
 

@@ -11,13 +11,15 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 
 Corre los CLIs de búsqueda bundleados (LinkedIn + GetOnBoard, en `scripts/`) con los criterios de un perfil, deduplica contra `seen_jobs.json` y contra las notas existentes, scorea lo nuevo y ofrece crear notas de aplicación. Adaptado del skill job-scraper de MadsLorentzen/ai-job-search.
 
+Flags y datos que devuelve cada script: `references/linkedin-cli.md` y `references/getonbrd-cli.md`.
+
 Argumentos: `$ARGUMENTS` (perfil, opcional; `--jobage N` para override de recencia, default 7 días).
 
 Todas las rutas de notas son relativas al **career workspace** (flag `--workspace`, env `CAREER_WORKSPACE`, o `./career-workspace/`; lo crea `/job-hunt setup`). El estado de dedup vive en `<workspace>/tools/job_scraper/seen_jobs.json`.
 
 ## Requisitos
 
-- **Node 24+** (los CLIs son TypeScript sin build: type stripping nativo; cero dependencias, sin package.json).
+- **Python 3** en el PATH (los scripts usan solo la stdlib: cero dependencias, sin build, sin venv).
 - Career workspace con al menos un perfil en `01-Perfiles/`.
 - Opcional: skill `job-search` instalado (aporta la rúbrica de scoring completa).
 
@@ -38,8 +40,8 @@ Todas las rutas de notas son relativas al **career workspace** (flag `--workspac
 
 5. **Ejecutar los CLIs** (tolerar el fallo de uno y reportar la degradación):
    ```
-   node .claude/skills/job-scrape/scripts/linkedin-search/cli.ts search -q "<query>" -l "<location>" --remote remote --jobage <N> --format json
-   node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts search -q "<query>" --jobage <N> --brief
+   python .claude/skills/job-scrape/scripts/linkedin_search.py search -q "<query>" -l "<location>" --remote remote --jobage <N> --format json
+   python .claude/skills/job-scrape/scripts/getonbrd_search.py search -q "<query>" --jobage <N> --brief
    ```
    La `<location>` de LinkedIn sale del `mercado_objetivo` del perfil; si es worldwide, usar además `-l "Remote"`. Volumen bajo: máximo ~5 queries por CLI por corrida.
 

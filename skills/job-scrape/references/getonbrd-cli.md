@@ -1,15 +1,15 @@
 # GetOnBoard Search CLI
 
-Busca ofertas en GetOnBoard (job board tech de LATAM) via su API pública v0. Sin auth, sin API key, cero dependencias - corre con Node 24+ directamente. Espejo del contrato de `linkedin-search/` para que `/job-scrape` pueda usar ambos de forma intercambiable.
+Busca ofertas en GetOnBoard (job board tech de LATAM) via su API pública v0. Sin auth, sin API key, **cero dependencias**: solo la stdlib de Python 3. Espejo del contrato de `linkedin_search.py` para que `/job-scrape` pueda usar ambos de forma intercambiable.
 
-Construido a medida siguiendo el patrón `/add-portal` de MadsLorentzen/ai-job-search (investigar endpoint → scaffold con el mismo contrato → test en vivo).
+El script es `scripts/getonbrd_search.py`. Construido a medida siguiendo el patrón `/add-portal` de MadsLorentzen/ai-job-search (investigar endpoint → scaffold con el mismo contrato → test en vivo), y portado de TypeScript a Python por la regla de lenguaje por capa (`docs/coding-standards.md`); la salida de las dos versiones se comparó campo por campo sobre las mismas queries: identica.
 
 ## Uso
 
 ### Buscar ofertas
 
 ```bash
-node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts search -q "<keywords>" [flags]
+python .claude/skills/job-scrape/scripts/getonbrd_search.py search -q "<keywords>" [flags]
 ```
 
 Flags:
@@ -26,7 +26,7 @@ Sin flag `--location`: GetOnBoard es LATAM/remoto por naturaleza; filtrar con `-
 ### Detalle de una oferta
 
 ```bash
-node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts detail <slug|url> [--format json|plain]
+python .claude/skills/job-scrape/scripts/getonbrd_search.py detail <slug|url> [--format json|plain]
 ```
 
 Acepta el `ID` (slug) de los resultados de search o cualquier URL de getonbrd.com (`/jobs/...` o `/empleos/...`, con o sin categoria). Dos capas:
@@ -41,16 +41,16 @@ Acepta el `ID` (slug) de los resultados de search o cualquier URL de getonbrd.co
 
 ```bash
 # Fullstack, ultimas 2 semanas
-node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts search -q "fullstack developer" --jobage 14 --format table
+python .claude/skills/job-scrape/scripts/getonbrd_search.py search -q "fullstack developer" --jobage 14 --format table
 
 # Triage barato: estructurado completo, JD truncado
-node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts search -q "fullstack developer" --jobage 14 --brief
+python .claude/skills/job-scrape/scripts/getonbrd_search.py search -q "fullstack developer" --jobage 14 --brief
 
 # .NET remoto
-node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts search -q ".NET developer" --remote remote --format table
+python .claude/skills/job-scrape/scripts/getonbrd_search.py search -q ".NET developer" --remote remote --format table
 
 # JD completo de una oferta
-node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts detail "https://www.getonbrd.com/jobs/programming/full-stack-developer-buildwithin-remote-b1ef" --format plain
+python .claude/skills/job-scrape/scripts/getonbrd_search.py detail "https://www.getonbrd.com/jobs/programming/full-stack-developer-buildwithin-remote-b1ef" --format plain
 ```
 
 ## Notas
@@ -58,4 +58,5 @@ node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts detail "https://ww
 - API publica en beta (`api/v0`); si cambia, el fallback de microdata sigue funcionando.
 - Errores a **stderr** como `{ "error": "...", "code": "..." }` con exit code `1`.
 - Volumen bajo por cortesia; la API es publica pero no esta pensada para bulk scraping.
-- Referencia de endpoints: `url-reference.md`.
+- Referencia de endpoints: `getonbrd-urls.md`.
+- Tests de los parsers: `tests/job_scrape/test_getonbrd_search.py` en el repo de Arcane.

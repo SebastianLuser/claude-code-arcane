@@ -21,7 +21,7 @@ Query params:
 | `f_WT` | Workplace type | `1` on-site · `2` remote · `3` hybrid |
 | `start` | Pagination offset (10/page) | `0`, `10`, `20`, … |
 
-Returns an HTML list of job cards (one `<li>` per posting). The CLI parses each card by
+Returns an HTML list of job cards (one `<li>` per posting). The script parses each card by
 its `data-entity-urn="urn:li:jobPosting:<id>"` and extracts title, company, location, date, URL.
 
 ## Detail
@@ -38,5 +38,5 @@ Returns a single job's HTML: title (`top-card-layout__title`), company
 ## Notes
 
 - No authentication required.
-- Respect rate limits — the CLI backs off on 429/5xx.
+- Respect rate limits: the script backs off on 429/5xx.
 - Country-agnostic: pass any `--location` (city, region, country, or "Remote").

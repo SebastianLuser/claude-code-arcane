@@ -25,8 +25,8 @@ Rutas relativas al career workspace (`--workspace`, env `CAREER_WORKSPACE`, o `.
 
 ## Paso 1 - Obtener el JD
 
-- URL de GetOnBoard → `node .claude/skills/job-scrape/scripts/getonbrd-search/cli.ts detail "<url>" --format plain` (si reporta CERRADA, avisar y preguntar si igual seguir).
-- URL de LinkedIn → `node .claude/skills/job-scrape/scripts/linkedin-search/cli.ts detail "<url>" --format plain`.
+- URL de GetOnBoard → `python .claude/skills/job-scrape/scripts/getonbrd_search.py detail "<url>" --format plain` (si reporta CERRADA, avisar y preguntar si igual seguir).
+- URL de LinkedIn → `python .claude/skills/job-scrape/scripts/linkedin_search.py detail "<url>" --format plain`.
 - Otra fuente, o si `job-scrape` no está instalado → WebFetch.
 - Registrar `fuente` (getonbrd / linkedin / otro).
 

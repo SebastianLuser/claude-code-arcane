@@ -37,7 +37,9 @@ permissions:
     - "Bash(python3 *verify_pdf.py*)"
     - "Bash(python *network_map.py*)"
     - "Bash(python3 *network_map.py*)"
-    - "Bash(node *linkedin-search/cli.ts*)"
-    - "Bash(node *getonbrd-search/cli.ts*)"
+    - "Bash(python *linkedin_search.py*)"
+    - "Bash(python3 *linkedin_search.py*)"
+    - "Bash(python *getonbrd_search.py*)"
+    - "Bash(python3 *getonbrd_search.py*)"
   deny:
     []
