@@ -1,3 +1,41 @@
+# [2.0.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.4.0...v2.0.0) (2026-07-27)
+
+
+* refactor(job-scrape)!: port both search CLIs from TypeScript to Python ([4a30a3e](https://github.com/SebastianLuser/claude-code-arcane/commit/4a30a3e7b30cbf616d01b860620172c602e5c6cf))
+
+
+### Bug Fixes
+
+* **cv-ats-export:** tell a missing verify_pdf.py apart from a missing pypdf ([f2b907e](https://github.com/SebastianLuser/claude-code-arcane/commit/f2b907e4f844725abe2b967941cef78d5fb98a0d))
+* **installer:** skip Python bytecode when copying skill assets ([525967d](https://github.com/SebastianLuser/claude-code-arcane/commit/525967d0270058b9cb5967c932a4969b23e4ea27))
+* **job-scrape:** accept share-button LinkedIn URLs in detail ([7f874e7](https://github.com/SebastianLuser/claude-code-arcane/commit/7f874e71007214540c5814561f8c5e9d46848cea))
+* **job-scrape:** read published dates as UTC in the jobage filter ([fa8e4d7](https://github.com/SebastianLuser/claude-code-arcane/commit/fa8e4d73e68fb1b3f8071cbdd15b1da53882d6e2))
+
+
+### Features
+
+* **cv-ats-export:** add ATS text-layer verification to PDF export ([dd79cc9](https://github.com/SebastianLuser/claude-code-arcane/commit/dd79cc966f88fc3e2ab38a8ebfcc1b51f4f1ad5f))
+* **job-hunt:** adopt extended application-state vocabulary and route to new skills ([4a39add](https://github.com/SebastianLuser/claude-code-arcane/commit/4a39add45301841625581ad4a42bb54442c51a8f))
+* **job-scrape:** confirm the LinkedIn ToS warning before running the CLIs ([294d905](https://github.com/SebastianLuser/claude-code-arcane/commit/294d9054b8c1014bde5babdce928da6d61570102))
+* **profiles:** add job-search tooling suite to job-hunt profile ([b4b061a](https://github.com/SebastianLuser/claude-code-arcane/commit/b4b061a8d724a2f9b4e94c40e83890d564ee9fd8))
+* **rules:** add drafter-reviewer rule for CV and cover review ([8467c38](https://github.com/SebastianLuser/claude-code-arcane/commit/8467c38b2b0e7af98838c3a4d91c3bb0dd36b8c4))
+* **skills:** add job-aplicar, job-outcome and job-upskill skills ([0401ca7](https://github.com/SebastianLuser/claude-code-arcane/commit/0401ca7e0c79b9e619ad064bb726a31d646b3fd3))
+* **skills:** add job-scrape skill with bundled linkedin/getonbrd CLIs ([562bd7b](https://github.com/SebastianLuser/claude-code-arcane/commit/562bd7bd261567efcfaaa17c871f80e47a3f0824))
+
+
+### Performance Improvements
+
+* **job-scrape:** add --brief to trim JD text from GetOnBoard search ([f2309e5](https://github.com/SebastianLuser/claude-code-arcane/commit/f2309e59ffd670894829a0730763d71733e2bffd))
+
+
+### BREAKING CHANGES
+
+* the CLI paths changed from
+scripts/<portal>-search/cli.ts to scripts/<portal>_search.py, and the profile's
+Bash permissions moved from node to python. Reinstall the job-hunt profile.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+
 # [1.4.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.3.0...v1.4.0) (2026-06-22)
 
 
