@@ -1,5 +1,5 @@
 name: job-hunt
-description: "Job Hunt — busqueda laboral end-to-end: perfil maestro, CV ATS, LinkedIn, portfolio, cover letters, outreach a recruiters, scoring de ofertas y prep de entrevistas"
+description: "Job Hunt — busqueda laboral end-to-end: perfil maestro, CV ATS con verificacion, scraping de ofertas con dedup, pipeline de postulacion, LinkedIn, portfolio, cover letters, outreach a recruiters, scoring de ofertas, gaps/upskill y prep de entrevistas"
 type: addon
 
 skills:
@@ -10,6 +10,10 @@ skills:
   - linkedin-optimize
   - portfolio-site
   - job-search
+  - job-scrape
+  - job-aplicar
+  - job-outcome
+  - job-upskill
   - cover-letter
   - cold-outreach
   - interview-prep
@@ -18,7 +22,7 @@ skills:
 
 rules:
   universal:
-    []
+    - drafter-reviewer
   gamedev:
     []
 
@@ -29,7 +33,13 @@ permissions:
   allow:
     - "Bash(python *cv_export.py*)"
     - "Bash(python3 *cv_export.py*)"
+    - "Bash(python *verify_pdf.py*)"
+    - "Bash(python3 *verify_pdf.py*)"
     - "Bash(python *network_map.py*)"
     - "Bash(python3 *network_map.py*)"
+    - "Bash(python *linkedin_search.py*)"
+    - "Bash(python3 *linkedin_search.py*)"
+    - "Bash(python *getonbrd_search.py*)"
+    - "Bash(python3 *getonbrd_search.py*)"
   deny:
     []

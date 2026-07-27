@@ -9,9 +9,15 @@ export function getPackageRoot(): string {
   return path.resolve(path.dirname(thisFile), "..");
 }
 
+// Build artifacts of the source tree, never content: skill scripts are Python,
+// so running one (or compileall in CI) leaves __pycache__ next to it, and
+// copying that into every install ships stale bytecode as if it were an asset.
+const COPY_SKIP = new Set(["__pycache__", ".pytest_cache"]);
+
 export function copyDirSync(src: string, dest: string): void {
   fs.mkdirSync(dest, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    if (COPY_SKIP.has(entry.name) || entry.name.endsWith(".pyc")) continue;
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
     if (entry.isDirectory()) {

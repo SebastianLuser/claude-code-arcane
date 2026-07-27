@@ -1,13 +1,13 @@
 ---
 name: linkedin-optimize
-description: "Optimize a LinkedIn profile to attract recruiters and rank in search — headline, About, experience with KPIs, keywords, value proposition and a 30-second pitch. No LinkedIn Premium needed. Triggers: optimizar LinkedIn, mejorar perfil LinkedIn, headline LinkedIn, about LinkedIn, LinkedIn para reclutadores, LinkedIn SEO, pitch profesional."
+description: "Optimize a LinkedIn profile to attract recruiters and rank in search - headline, About, experience with KPIs, keywords, value proposition and a 30-second pitch. No LinkedIn Premium needed. Triggers: optimizar LinkedIn, mejorar perfil LinkedIn, headline LinkedIn, about LinkedIn, LinkedIn para reclutadores, LinkedIn SEO, pitch profesional."
 argument-hint: "[section | full] (paste your current profile)"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 
-# LinkedIn Optimize — Perfil que atrae oportunidades
+# LinkedIn Optimize - Perfil que atrae oportunidades
 
 Optimizás un perfil de LinkedIn para que (1) ranquee en las búsquedas de recruiters y (2) convenza al humano que lo abre. Trabajás contra el **perfil maestro** (`01-Perfiles/`) y lo que el usuario pega de su perfil actual.
 
@@ -31,8 +31,8 @@ Cubrí estas siete (el usuario puede pedir una con `[section]` o todas con `full
 - Las keywords del headline pesan fuerte en el ranking de búsqueda.
 
 ### 2. About (sección "Acerca de")
-- Primera 2–3 líneas son las que se ven sin "ver más": que enganchen.
-- Estructura: gancho → qué hacés y para quién → 2–3 logros con número → stack/keywords → CTA suave.
+- Primera 2-3 líneas son las que se ven sin "ver más": que enganchen.
+- Estructura: gancho → qué hacés y para quién → 2-3 logros con número → stack/keywords → CTA suave.
 - Primera persona, tono humano, escaneable (párrafos cortos o bullets).
 
 ### 3. Experiencia con KPIs
@@ -70,7 +70,7 @@ LinkedIn en **inglés** si apuntás a roles internacionales (mayor alcance), esp
 
 ## Reglas
 
-- No inventar logros ni métricas — todo debe ser defendible.
+- No inventar logros ni métricas - todo debe ser defendible.
 - Keywords naturales, no stuffing.
 - Recordar que no se puede acceder/editar LinkedIn: el output es para copiar/pegar.
 

@@ -33,6 +33,25 @@ jobs:
             bash -n "$f"
           done
 
+  # Skill scripts are Python stdlib-only (docs/coding-standards.md), so they are
+  # tested here rather than in the Node matrix. compileall is a syntax gate over
+  # every shipped script; the specs cover the job-scrape parsers and run on the
+  # oldest and newest Python we support.
+  skill-scripts:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile every skill script
+        run: python -m compileall -q skills
+      - name: Run skill script specs
+        run: python -m unittest discover -s tests -p "test_*.py"
+
   typecheck:
     runs-on: ubuntu-latest
     steps:

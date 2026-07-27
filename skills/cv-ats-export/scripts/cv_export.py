@@ -8,6 +8,12 @@ Usage (from anywhere; the script locates the career workspace):
     python cv_export.py                          # all base CVs (CV - *.md)
     python cv_export.py "CV - Acme - Backend"    # a single CV (with/without .md)
     python cv_export.py --workspace ./career-workspace "CV - Acme"
+    python cv_export.py --no-verify ...          # skip the ATS verification
+
+After exporting, the PDF text layer is verified with verify_pdf.py (pypdf):
+extractable text, the H1 name and the email must survive the export, and a
+warning is printed above 2 pages. Reports [ATS OK] / [ATS WARN]; if pypdf is
+not installed, [ATS SKIP] without breaking the export.
 
 Workspace resolution order:
     1. --workspace <path> flag
@@ -204,7 +210,41 @@ def find_browser():
     return None
 
 
-def export(md_path, browser, cv_dir, export_dir):
+def verify_ats(pdf_path, body):
+    """Verify the exported PDF's text layer. Never breaks the export: reports."""
+    # Two distinct failures, two distinct messages: verify_pdf.py missing next to
+    # this script (installing pypdf would not help) vs pypdf missing, which
+    # verify_pdf only imports when it actually reads the PDF.
+    try:
+        from verify_pdf import verify
+    except ImportError:
+        print(f"        [ATS SKIP] verify_pdf.py not found next to {Path(__file__).name}")
+        return
+
+    contains = []
+    m = re.search(r"^#\s+(.+)$", body, re.MULTILINE)
+    if m:
+        contains.append(re.sub(r"\*|\[|\]\([^)]*\)", "", m.group(1)).strip())
+    m = re.search(r"[\w.+-]+@[\w-]+\.[\w.]+", body)
+    if m:
+        contains.append(m.group(0))
+
+    try:
+        problems = verify(pdf_path, min_chars=200, contains=contains, max_pages=2)
+    except ImportError:
+        print("        [ATS SKIP] pypdf not installed (pip install pypdf)")
+        return
+    except Exception as e:
+        problems = [f"could not verify: {e}"]
+
+    if problems:
+        for p in problems:
+            print(f"        [ATS WARN] {p}")
+    else:
+        print("        [ATS OK] text layer verified (name + email extractable)")
+
+
+def export(md_path, browser, cv_dir, export_dir, check_ats=True):
     text = md_path.read_text(encoding="utf-8")
     fm, body = strip_frontmatter(text)
 
@@ -252,12 +292,15 @@ def export(md_path, browser, cv_dir, export_dir):
 
     size_kb = pdf_path.stat().st_size // 1024
     print(f"[OK] {md_path.name} -> {pdf_path} ({size_kb} KB)")
+    if check_ats:
+        verify_ats(pdf_path, body)
     return True
 
 
 def parse_args(argv):
     workspace = None
     names = []
+    check_ats = True
     i = 0
     while i < len(argv):
         a = argv[i]
@@ -266,14 +309,16 @@ def parse_args(argv):
             workspace = argv[i] if i < len(argv) else None
         elif a.startswith("--workspace="):
             workspace = a.split("=", 1)[1]
+        elif a == "--no-verify":
+            check_ats = False
         else:
             names.append(a)
         i += 1
-    return workspace, names
+    return workspace, names, check_ats
 
 
 def main():
-    workspace, names = parse_args(sys.argv[1:])
+    workspace, names, check_ats = parse_args(sys.argv[1:])
 
     browser = find_browser()
     if not browser:
@@ -298,7 +343,7 @@ def main():
         print(f"[ERROR] No CVs (CV - *.md) found in {cv_dir}.")
         sys.exit(1)
 
-    ok = all([export(t, browser, cv_dir, export_dir) for t in targets])
+    ok = all([export(t, browser, cv_dir, export_dir, check_ats) for t in targets])
     sys.exit(0 if ok else 1)
 
 

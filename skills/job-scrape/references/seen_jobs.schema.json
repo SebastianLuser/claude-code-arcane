@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "seen_jobs",
+  "description": "Registro de ofertas vistas por /job-scrape para deduplicacion entre corridas. Fuente de verdad SOLO del triage pre-nota; el estado del pipeline vive en el frontmatter de las notas de 03-Aplicaciones/ del career workspace y el dashboard es una vista derivada.",
+  "type": "object",
+  "required": ["schema_version", "actualizado", "jobs"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "type": "integer", "const": 1 },
+    "actualizado": { "type": "string", "format": "date", "description": "Fecha ISO de la ultima escritura" },
+    "jobs": {
+      "type": "object",
+      "description": "Mapa job_key -> entrada. job_key = slug normalizado de 'empresa|titulo' (lowercase, sin acentos, sin puntuacion, sin sufijos legales de empresa, sin calificadores '(remote)'/'(latam)' del titulo).",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["title", "company", "sources", "first_seen", "last_seen", "status"],
+        "properties": {
+          "title": { "type": "string", "description": "Titulo como se vio la primera vez" },
+          "company": { "type": "string" },
+          "sources": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["source", "url", "first_seen", "last_seen"],
+              "properties": {
+                "source": { "enum": ["linkedin", "getonbrd", "manual", "otro"] },
+                "source_id": { "type": ["string", "null"], "description": "ID nativo de la fuente (numerico LinkedIn, slug GetOnBoard)" },
+                "url": { "type": "string", "description": "URL canonica (sin utm/tracking; linkedin.com/jobs/view/<id>; getonbrd /empleos/ -> /jobs/)" },
+                "publicada": { "type": ["string", "null"], "format": "date" },
+                "first_seen": { "type": "string", "format": "date" },
+                "last_seen": { "type": "string", "format": "date" }
+              }
+            }
+          },
+          "first_seen": { "type": "string", "format": "date", "description": "Primera vez vista en cualquier fuente" },
+          "last_seen": { "type": "string", "format": "date" },
+          "perfil": { "type": ["string", "null"], "description": "Nota de perfil contra la que se evaluo (nombre de la nota de 01-Perfiles/)" },
+          "quick_score": { "enum": ["high", "medium", "low", null], "description": "Triage barato sobre datos del listing" },
+          "match_score": { "type": ["integer", "null"], "minimum": 0, "maximum": 100, "description": "Score de la rubrica completa de job-search, si se corrio" },
+          "status": {
+            "enum": ["new", "descartado", "nota_creada"],
+            "description": "Estados del triage. Deliberadamente NO existe 'aplicado': al crear la nota la entrada se congela y el pipeline sigue en el frontmatter de la nota (lo mueve /job-outcome)."
+          },
+          "descarte_motivo": { "type": ["string", "null"], "description": "Obligatorio si status=descartado (ver allOf)" },
+          "nota": { "type": ["string", "null"], "description": "Nombre de archivo de la nota en 03-Aplicaciones/ (obligatorio si status=nota_creada, ver allOf)" },
+          "salario_max_usd_mes": { "type": ["integer", "null"], "description": "Salario maximo publicado en USD/mes, para re-triage sin re-fetch" }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "status": { "const": "descartado" } }, "required": ["status"] },
+            "then": {
+              "required": ["descarte_motivo"],
+              "properties": { "descarte_motivo": { "type": "string", "minLength": 1 } }
+            }
+          },
+          {
+            "if": { "properties": { "status": { "const": "nota_creada" } }, "required": ["status"] },
+            "then": {
+              "required": ["nota"],
+              "properties": { "nota": { "type": "string", "minLength": 1 } }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

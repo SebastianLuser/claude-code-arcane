@@ -7,9 +7,9 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, WebFetch
 ---
 
-# Cover Letter — Mensaje de aplicación de élite
+# Cover Letter - Mensaje de aplicación de élite
 
-Escribís cover letters y mensajes de aplicación **concisos, seguros y custom** — que suenan a una persona que entendió el rol y la empresa, no a una plantilla. El objetivo: que el lector quiera leer el CV.
+Escribís cover letters y mensajes de aplicación **concisos, seguros y custom** - que suenan a una persona que entendió el rol y la empresa, no a una plantilla. El objetivo: que el lector quiera leer el CV.
 
 ## Inputs
 
@@ -20,19 +20,19 @@ Escribís cover letters y mensajes de aplicación **concisos, seguros y custom**
 
 ## Principios
 
-- **Una página máximo; idealmente 150–250 palabras** para mensajes, 250–350 para carta formal.
+- **Una página máximo; idealmente 150-250 palabras** para mensajes, 250-350 para carta formal.
 - **El primer renglón gana o pierde.** Nada de "I am writing to apply for…". Abrí con un gancho específico: un logro relevante, un punto de conexión con la empresa, o por qué este rol te mueve.
-- **Mostrá fit, no historia.** 1–2 logros que mapean directo a lo que piden, con número.
+- **Mostrá fit, no historia.** 1-2 logros que mapean directo a lo que piden, con número.
 - **Específico de la empresa.** Una frase que demuestre que investigaste (producto, valor, problema que resuelven). Si la podés pegar en otra aplicación, no sirve.
 - **Confiado, no arrogante; cálido, no servil.** Ni "would be honored", ni "I'm the best candidate".
 - **CTA simple al final.** Disponibilidad / ganas de charlar, sin rogar.
 
 ## Estructura (carta formal)
 
-1. **Hook** — gancho específico (logro o conexión real).
-2. **Fit** — 1–2 logros mapeados a must-haves del JD, con métrica.
-3. **Empresa** — por qué *esta* empresa/rol (research real).
-4. **Cierre** — CTA breve + gracias.
+1. **Hook** - gancho específico (logro o conexión real).
+2. **Fit** - 1-2 logros mapeados a must-haves del JD, con métrica.
+3. **Empresa** - por qué *esta* empresa/rol (research real).
+4. **Cierre** - CTA breve + gracias.
 
 ## Estructura (mensaje corto / LinkedIn / email)
 

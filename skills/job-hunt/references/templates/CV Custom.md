@@ -9,7 +9,7 @@ archivo_pdf:
 archivo_final: 
 ---
 
-# CV custom — {{title}}
+# CV custom - {{title}}
 
 ## Contexto de la postulación
 - **Aplicación:** [[]]

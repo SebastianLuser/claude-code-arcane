@@ -13,10 +13,10 @@ regla_seniority:
 fuentes: []
 ---
 
-# Perfil — {{title}}
+# Perfil - {{title}}
 
 ## Resumen
-> 2–3 líneas: quién sos para este rol y qué te hace fuerte.
+> 2-3 líneas: quién sos para este rol y qué te hace fuerte.
 
 ## Stack principal
 - 
