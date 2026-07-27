@@ -44,6 +44,23 @@ describe("copyDirSync", () => {
 
     expect(fs.existsSync(path.join(dest, "file.txt"))).toBe(true);
   });
+
+  it("skips Python bytecode artifacts of the source tree", () => {
+    tmpDir = makeTmpDir();
+    const src = path.join(tmpDir, "src");
+    const dest = path.join(tmpDir, "dest");
+
+    fs.mkdirSync(path.join(src, "__pycache__"), { recursive: true });
+    fs.writeFileSync(path.join(src, "tool.py"), "print('hi')");
+    fs.writeFileSync(path.join(src, "__pycache__", "tool.cpython-312.pyc"), "bytecode");
+    fs.writeFileSync(path.join(src, "stray.pyc"), "bytecode");
+
+    copyDirSync(src, dest);
+
+    expect(fs.existsSync(path.join(dest, "tool.py"))).toBe(true);
+    expect(fs.existsSync(path.join(dest, "__pycache__"))).toBe(false);
+    expect(fs.existsSync(path.join(dest, "stray.pyc"))).toBe(false);
+  });
 });
 
 describe("isSymlinkOrJunction", () => {
