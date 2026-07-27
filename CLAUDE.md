@@ -6,6 +6,8 @@ Repo de configuración: skills, agentes, hooks y rules para Claude Code. Instala
 
 TypeScript (CLI installer) + Markdown (skills, agents, rules, docs) + Bash (hooks) + Python (skill scripts/helpers). QA: `skills-selftest/`. Skills: `skills/`. Profiles: `profiles/*.yaml`.
 
+El lenguaje lo dicta el contexto de ejecución: **TS solo en `src/`** (tiene build y typecheck), **Bash en hooks**, **Python stdlib-only en `skills/*/scripts/`** (se copian al proyecto del usuario y corren sin build). Otro lenguaje solo si una dependencia obligatoria lo impone, justificado en el SKILL.md. Detalle y casos vigentes: `docs/coding-standards.md`.
+
 ## Reglas
 
 - Espanol para comunicación, ingles para código/commits (conventional commits)

@@ -18,6 +18,32 @@ Las rules path-scoped específicas viven en `.claude/rules/`.
 
 ---
 
+## Elección de lenguaje en este repo
+
+El lenguaje lo dicta **el contexto de ejecución**, no la preferencia. Hay cuatro contextos y uno solo por cada uno:
+
+| Contexto | Lenguaje | Por qué | Garantía en CI |
+|---|---|---|---|
+| Installer (`src/`) | **TypeScript** | Es el paquete npm publicado: el único código con build (`tsup`) y typechecker | `npm run build`, `tsc --noEmit`, `vitest` |
+| Hooks de lifecycle (`hooks/`, `skills/*/hooks/`) | **Bash** | Claude Code los invoca por path, sin intérprete de por medio | `bash -n` sobre todos |
+| Scripts de skill (`skills/*/scripts/`) | **Python 3, solo stdlib** | Se copian al proyecto del usuario y corren ahí: sin build, sin `package.json`, sin `node_modules` | Specs en `tests/` (ver Testing) |
+| Templates (`*/templates/`) | **El del proyecto destino** | Son contenido que se emite al proyecto del usuario; el repo nunca los ejecuta | N/A |
+
+**TypeScript fuera de `src/` no es una elección de lenguaje: es un requisito de runtime disfrazado.** Sin build step, un `.ts` solo corre con el type stripping nativo de Node 24+, que la matriz de CI (20 y 22) no cubre. Si el script tiene que correr en la máquina del usuario, es Python.
+
+**Dependencias opcionales:** permitidas solo con degradación explícita. Referencia: `cv-ats-export` usa `pypdf` si está y reporta `[ATS SKIP]` si no, sin romper el export.
+
+### Escotilla de escape
+
+Otro lenguaje **únicamente cuando una dependencia obligatoria lo impone** — nunca por gusto ni por familiaridad. Requiere una línea de justificación en el SKILL.md del skill. Los dos casos vigentes:
+
+- `pdf-generator/scripts/render_cover.js` → Node, porque **Playwright es una librería de Node**.
+- `docx-generator/scripts/` (`.cs`, `.slnx`, `setup.ps1`) → .NET, porque **vendorea un proyecto .NET** (MiniMaxAIDocx); el `.ps1` es su setup en Windows.
+
+Si podés hacerlo con la stdlib de Python, la escotilla no aplica.
+
+---
+
 ## Naming
 
 - **Variables/funciones:** camelCase (JS/TS/Java/C#) o snake_case (Python/Rust) o PascalCase (Go exports)
