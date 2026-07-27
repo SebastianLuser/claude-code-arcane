@@ -21,6 +21,7 @@ Errors go to stderr as {"error": "...", "code": "..."} with exit code 1.
 """
 
 import argparse
+import calendar
 import html
 import json
 import random
@@ -196,7 +197,9 @@ def matches_remote(job, mode):
 def within_jobage(job, days):
     if not days or days <= 0 or days >= JOBAGE_ALL or not job["date"]:
         return True
-    published = time.mktime(time.strptime(job["date"], "%Y-%m-%d")) - time.timezone
+    # timegm, not mktime: published_at is UTC, and mktime would read the date in
+    # local time - off by an hour in any DST zone, which drops boundary-day jobs.
+    published = calendar.timegm(time.strptime(job["date"], "%Y-%m-%d"))
     return (time.time() - published) <= days * 86400
 
 

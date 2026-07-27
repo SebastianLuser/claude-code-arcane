@@ -5,6 +5,7 @@ Run from the repo root: python -m unittest discover -s tests -p "test_*.py"
 """
 
 import sys
+import time
 import unittest
 from pathlib import Path
 
@@ -174,6 +175,21 @@ class TestClientSideFilters(unittest.TestCase):
         job = gob.normalize_job(RECORD)  # published 2026-01-01
 
         self.assertFalse(gob.within_jobage(job, 7))
+
+    def test_jobage_window_is_measured_from_utc_midnight(self):
+        # published_at is UTC and the window is days * 86400 from the date's UTC
+        # midnight, so "--jobage 7" covers today plus the six previous days: a
+        # posting dated exactly 7 days ago is already 7d + the current time of
+        # day old. Reading the date in local time instead (mktime) shifts this
+        # by an hour under DST and drops the oldest day of the window.
+        job = gob.normalize_job(RECORD)
+
+        def days_ago(n):
+            return time.strftime("%Y-%m-%d", time.gmtime(time.time() - n * 86400))
+
+        self.assertTrue(gob.within_jobage({**job, "date": days_ago(0)}, 7))
+        self.assertTrue(gob.within_jobage({**job, "date": days_ago(6)}, 7))
+        self.assertFalse(gob.within_jobage({**job, "date": days_ago(8)}, 7))
 
     def test_salary_column_marks_unknown_bounds(self):
         job = gob.normalize_job(RECORD)
