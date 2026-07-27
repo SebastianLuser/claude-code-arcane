@@ -1,6 +1,6 @@
 # Skills Catalog — Claude Code Arcane
 
-Catalogo completo de los 337 skills disponibles para proyectos consumidores. Organizados por division.
+Catalogo completo de los 350 skills disponibles para proyectos consumidores. Organizados por division.
 
 ## Como ejecutar un skill
 
@@ -452,6 +452,26 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/interview-prep` | Prep de entrevista: research, banco de preguntas, respuestas STAR, red flags | `[application\|company + role + round]` |
 | `/network-map` | Convierte el export de conexiones de LinkedIn en contactos por empresa + warm intros + mensajes | `[company] \| import <Connections.csv>` |
 | `/personal-brand` | Backlog secuenciado de posts de LinkedIn (4 pilares) para construir autoridad antes del outreach | `[plan\|ideas <N>\|draft <idea>]` |
+
+---
+
+## Second Brain (13 skills)
+
+| Skill | Descripcion | Uso |
+|-------|-------------|-----|
+| `/second-brain` | Entry point: crea o adopta el vault (PARA + Zettelkasten + hub files), escribe su CLAUDE.md, detecta plugins y rutea | `[setup\|adopt\|status\|next]` |
+| `/brain-dump` | Captura sin friccion al dump del dia: sin tags, sin clasificar, sin decidir donde va | `[texto a capturar]` |
+| `/review-dump` | Procesa el dump: clasifica item por item con confirmacion, actualiza hubs, rutea tareas y crea el daily | `[today\|YYYY-MM-DD]` |
+| `/review-weekly` | Retrospectiva semanal: temas recurrentes, hilos abiertos y tareas hechas vs no hechas | `[current\|YYYY-Www\|YYYY-MM-DD]` |
+| `/review-monthly` | Retrospectiva mensual: patrones, logros con evidencia, semillas y salud del vault | `[current\|YYYY-MM]` |
+| `/zettel` | Nota atomica con el criterio de cuando una idea pasa de nota de proyecto a permanente | `[idea\|ruta#seccion\|dump YYYY-MM-DD]` |
+| `/hub-note` | Hub file (MOC) por entidad que importa: el tejido entre PARA y Zettelkasten | `[entidad] [--update]` |
+| `/vault-clip` | URL a nota limpia: contenido sin menus ni banners, con resumen propio y fuente | `<url> [--full\|--summary]` |
+| `/vault-audit` | Reporte de salud via script Python: huerfanas, links roto, stale, tag sprawl, nombres duplicados. Read-only | `[--vault <path>] [--stale-days N]` |
+| `/vault-tidy` | Aplica los arreglos del audit con approval item por item. Nunca borra, archiva | `[orphans\|broken\|duplicates\|tasks\|frontmatter\|archive\|all]` |
+| `/obsidian-markdown` | Sintaxis Obsidian: wikilinks, embeds, callouts, block IDs, propiedades. Valida o corrige una nota | `[reference\|check <archivo>\|fix <archivo>]` |
+| `/obsidian-bases` | Archivos .base: vistas, filtros, formulas y summaries. Incluye migracion desde Dataview | `[create <desc>\|explain <archivo>\|migrate <query>]` |
+| `/obsidian-canvas` | Archivos .canvas (JSON Canvas): nodos, grupos y edges con direccion y color | `[create <desc>\|explain <archivo>\|edit <archivo>]` |
 
 ---
 
