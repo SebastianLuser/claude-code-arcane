@@ -2,7 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [main, feat/*]
+    # Both prefixes are in use (PRs #1-#4 and #6 came from feat/*, #5 and #7
+    # from feature/*). Dropping either one costs no error, just a branch that
+    # pushes green until the PR is opened.
+    branches: [main, feat/*, feature/*]
   pull_request:
     branches: [main]
 
