@@ -15,6 +15,8 @@ Idea o fuente: `$ARGUMENTS`
 
 Aplica la rule `vault-conventions`.
 
+**Rutas por rol:** los destinos se nombran por rol y la ruta real de cada uno sale del `## Rutas` del `CLAUDE.md` del vault (leelo antes de escribir). Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+
 ## Fase 1 - Decidir si merece nota propia
 
 Una idea merece nota atómica propia cuando pasa **las tres**:
@@ -27,14 +29,14 @@ Si falla alguna, decirlo y proponer el destino real: se queda en el dump, va a l
 
 ## Fase 2 - Buscar duplicados
 
-Antes de escribir, `Grep` en `03_Resources/` por los términos del título y sus sinónimos obvios. Si ya hay una nota que cubre la idea:
+Antes de escribir, buscar duplicados con `/vault-recall` si está disponible (rankea, y encuentra la nota que usó otro nombre), o `Grep` en `<atomic>` (default `03_Resources/`) por los términos del título y sus sinónimos obvios. Si ya hay una nota que cubre la idea:
 
 - **Misma idea:** proponer ampliar la nota existente en vez de crear otra. Es el caso más frecuente y el que evita el vault con cinco notas del mismo concepto bajo cinco nombres.
 - **Idea relacionada pero distinta:** crear la nueva y linkear ambas explícitamente, con una línea de por qué se distinguen.
 
 ## Fase 3 - Escribir
 
-Con approval sobre el título y el destino, crear la nota en `03_Resources/` desde `Templates/Atomic.md`:
+Con approval sobre el título y el destino, crear la nota en `<atomic>` (default `03_Resources/`) desde `<templates>/Atomic.md`:
 
 - **Título como afirmación**, no como etiqueta. Es el nombre del archivo y lo que vas a ver en el autocompletado de links dentro de tres años.
 - **La idea en las palabras del usuario**, no en las de la fuente. Si es una cita, va entre comillas con su fuente; el cuerpo de la nota es la reformulación.

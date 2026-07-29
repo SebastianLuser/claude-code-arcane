@@ -99,25 +99,42 @@ class TestLinkTarget(unittest.TestCase):
 
 class TestResolve(unittest.TestCase):
     def setUp(self):
-        notes = {"Hubs/Postgres.md": {}, "03_Resources/Indices.md": {}, "a/Dup.md": {}, "b/Dup.md": {}}
-        self.by_path, self.by_name = va.build_index(notes, {"assets/img.png": {}})
+        notes = {
+            "Hubs/Postgres.md": {"fields": {"aliases": ["PG", "postgre sql"]}},
+            "03_Resources/Indices.md": {},
+            "a/Dup.md": {},
+            "b/Dup.md": {},
+        }
+        self.by_path, self.by_name, self.by_alias = va.build_index(notes, {"assets/img.png": {}})
+
+    def resolve(self, target):
+        return va.resolve(target, self.by_path, self.by_name, self.by_alias)
 
     def test_resolves_by_bare_name_by_path_and_case_insensitively(self):
-        self.assertEqual(va.resolve("Postgres", self.by_path, self.by_name), ("Hubs/Postgres.md", False))
-        self.assertEqual(va.resolve("Hubs/Postgres", self.by_path, self.by_name), ("Hubs/Postgres.md", False))
-        self.assertEqual(va.resolve("postgres", self.by_path, self.by_name), ("Hubs/Postgres.md", False))
+        self.assertEqual(self.resolve("Postgres"), ("Hubs/Postgres.md", False))
+        self.assertEqual(self.resolve("Hubs/Postgres"), ("Hubs/Postgres.md", False))
+        self.assertEqual(self.resolve("postgres"), ("Hubs/Postgres.md", False))
 
     def test_resolves_an_attachment(self):
-        self.assertEqual(va.resolve("img.png", self.by_path, self.by_name), ("assets/img.png", False))
+        self.assertEqual(self.resolve("img.png"), ("assets/img.png", False))
 
     def test_flags_a_duplicated_basename_as_ambiguous(self):
-        resolved, ambiguous = va.resolve("Dup", self.by_path, self.by_name)
+        resolved, ambiguous = self.resolve("Dup")
 
         self.assertIn(resolved, ("a/Dup.md", "b/Dup.md"))
         self.assertTrue(ambiguous)
 
+    def test_resolves_a_link_written_as_an_alias(self):
+        # Obsidian follows frontmatter aliases, so [[PG]] is a working link and
+        # reporting it as broken would flood the audit with false positives.
+        self.assertEqual(self.resolve("PG"), ("Hubs/Postgres.md", False))
+        self.assertEqual(self.resolve("postgre sql"), ("Hubs/Postgres.md", False))
+
+    def test_a_filename_wins_over_an_alias(self):
+        self.assertEqual(self.resolve("Indices"), ("03_Resources/Indices.md", False))
+
     def test_returns_none_for_a_target_that_does_not_exist(self):
-        self.assertEqual(va.resolve("Nope", self.by_path, self.by_name), (None, False))
+        self.assertEqual(self.resolve("Nope"), (None, False))
 
 
 class TestLinkFindings(VaultFixture):
@@ -203,6 +220,16 @@ class TestNoteFindings(VaultFixture):
         self.assertEqual(report["counts"]["notes"], 2)
         self.assertEqual(report["counts"]["notes_audited"], 0)
         self.assertEqual(report["findings"]["orphans"], [])
+
+    def test_exempt_folders_are_configurable_for_a_vault_with_its_own_layout(self):
+        self.note("Plantillas/Atomic.md", "hollow by design\n")
+        self.note("03_Resources/Real.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\nreal\n")
+
+        report = self.audit("--exempt", "Plantillas")
+
+        self.assertEqual(report["thresholds"]["exempt_dirs"], ["Plantillas"])
+        self.assertEqual(report["counts"]["notes_audited"], 1)
+        self.assertEqual(report["findings"]["orphans"], ["03_Resources/Real.md"])
 
     def test_audit_all_includes_them(self):
         self.note("Templates/Atomic.md", "hollow by design\n")

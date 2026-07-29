@@ -15,12 +15,20 @@ Día a procesar: `$ARGUMENTS` (default: hoy)
 
 Aplica la rule `vault-conventions`.
 
+**Rutas por rol:** los destinos se nombran por rol y la ruta real de cada uno sale del `## Rutas` del `CLAUDE.md` del vault. Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+
 ## Fase 1 - Preparación
 
 1. **Ubicar el vault** (`--vault`, env `OBSIDIAN_VAULT`, o directorio actual con `.obsidian/`) y leer su `CLAUDE.md`: de ahí salen la estructura real, el contrato de frontmatter y los plugins disponibles. Si no hay `CLAUDE.md`, ofrecer `/second-brain adopt` y parar.
 2. **Verificar git.** Si el vault es un repo y el árbol está sucio, avisarlo antes de escribir: esta corrida toca varias notas y git es el undo.
-3. **Leer el dump** `_inbox/YYYY-MM-DD.md`. Si no existe, decirlo y ofrecer `/brain-dump`. Si ya existe el daily de ese día, avisar que se va a actualizar y no duplicar secciones.
-4. **Inventariar el vault una sola vez**: `Glob` de `Hubs/`, `01_Projects/`, `02_Areas/` y `03_Resources/`. Sirve para proponer destinos reales y detectar entidades ya existentes sin releer el vault por cada item.
+3. **Leer el dump** `<inbox>/YYYY-MM-DD.md` (default `_inbox/`). Si no existe, decirlo y ofrecer `/brain-dump`. Si ya existe el daily de ese día, avisar que se va a actualizar y no duplicar secciones.
+4. **Inventariar el vault una sola vez**, desde el índice cacheado y no con `Glob`:
+
+   ```bash
+   python .claude/skills/vault-recall/scripts/vault_index.py "<vault>" inventory --format text
+   ```
+
+   Devuelve hubs con sus alias, proyectos, areas, los dumps sin daily y las fechas del último weekly y monthly. Es lo que necesitás para proponer destinos reales, y su costo no crece con el vault: un `Glob` de cuatro carpetas sobre miles de notas mete un listado enorme en contexto en cada corrida. Si el vault usa otra estructura, pasar `--role nombre=ruta` con lo que diga el contrato. Sin el script, `Glob` de los roles `hubs`, `projects`, `areas` y `atomic`.
 
 ## Fase 2 - Clasificación item por item
 
@@ -28,9 +36,9 @@ Para cada línea del dump, proponer un destino y esperar confirmación. Una lín
 
 | Lo que es | Destino |
 |---|---|
-| Tarea de un proyecto existente | La nota del proyecto en `01_Projects/` |
+| Tarea de un proyecto existente | La nota del proyecto en `<projects>` (default `01_Projects/`) |
 | Tarea del día sin proyecto | Se queda en el dump |
-| Idea que se sostiene sola | Nota atómica nueva en `03_Resources/` (delegar a `/zettel`) |
+| Idea que se sostiene sola | Nota atómica nueva en `<atomic>` (default `03_Resources/`), delegar a `/zettel` |
 | Mención de una entidad con hub existente | Entrada en `## Historial` de ese hub |
 | Mención de una entidad recurrente sin hub | Proponer hub nuevo (delegar a `/hub-note`) |
 | URL para leer después | Se queda en el dump, o `/vault-clip` si el usuario lo quiere ahora |
@@ -61,7 +69,7 @@ Con approval sobre lo recolectado, en este orden:
 1. Notas atómicas nuevas y hubs nuevos (para que existan antes de que algo los linkee).
 2. Actualización de hubs existentes: entrada en `## Historial`, y reescritura de `## Estado actual` solo si cambió de verdad.
 3. Tareas en las notas de proyecto.
-4. El daily en `Reflect/Daily/YYYY-MM-DD.md` desde `Templates/Daily.md`: link al dump, síntesis de 3 a 5 líneas, links a las notas creadas, y el estado real de las tareas del día.
+4. El daily en `<daily>/YYYY-MM-DD.md` (default `Reflect/Daily/`) desde `<templates>/Daily.md`: link al dump, síntesis de 3 a 5 líneas, links a las notas creadas, y el estado real de las tareas del día.
 5. El dump queda como está, salvo las marcas de tarea. **El dump no se borra ni se vacía nunca:** es el registro crudo de lo que pasó ese día.
 
 Los links van hacia arriba: el daily linkea al dump y a las notas creadas; ninguna nota atómica linkea de vuelta al daily.

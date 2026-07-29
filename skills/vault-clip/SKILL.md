@@ -15,6 +15,8 @@ URL: `$ARGUMENTS`
 
 Aplica la rule `vault-conventions`.
 
+**Rutas por rol:** los destinos se nombran por rol y la ruta real de cada uno sale del `## Rutas` del `CLAUDE.md` del vault. Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+
 ## Fase 1 - Traer el contenido
 
 1. **Ubicar el vault** y leer su `CLAUDE.md`.
@@ -33,7 +35,7 @@ En los dos modos, **el resumen lo escribís vos y va arriba**: si dentro de un a
 
 ## Fase 3 - Escribir
 
-Con approval sobre destino y modo, crear la nota en `03_Resources/`:
+Con approval sobre destino y modo, crear la nota en `<atomic>` (default `03_Resources/`):
 
 ```yaml
 ---

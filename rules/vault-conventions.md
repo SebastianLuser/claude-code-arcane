@@ -10,6 +10,31 @@ Las rutas son relativas al vault (`--vault`, env `OBSIDIAN_VAULT`, o el director
 - Cualquier escritura en un directorio que contenga `.obsidian/`, incluso desde otro skill.
 - NO aplica a los archivos de configuracion del vault (`.obsidian/**`): no se tocan nunca sin pedido explicito del usuario.
 
+## Resolución de rutas: roles, no carpetas
+
+Ningún skill escribe en una ruta literal. Escribe en un **rol**, y el `## Rutas` del `CLAUDE.md` del vault dice qué carpeta es ese rol en este vault. Es lo que hace que un vault adoptado con otra estructura funcione sin tocar los skills.
+
+| Rol | Qué contiene | Default del `setup` |
+|---|---|---|
+| `inbox` | captura cruda del día | `_inbox` |
+| `daily` | síntesis diaria | `Reflect/Daily` |
+| `weekly` | retrospectiva semanal | `Reflect/Weekly` |
+| `monthly` | balance mensual | `Reflect/Monthly` |
+| `atomic` | notas atómicas | `03_Resources` |
+| `hubs` | hub files por entidad | `Hubs` |
+| `projects` | proyectos con deadline | `01_Projects` |
+| `areas` | responsabilidades continuas | `02_Areas` |
+| `archive` | cerrado, nunca borrado | `04_Archive` |
+| `templates` | plantillas del usuario | `Templates` |
+
+Orden de resolución, sin excepciones:
+
+1. El `## Rutas` del `CLAUDE.md` del vault.
+2. Si el vault no lo declara, el default de la tabla, **avisándole al usuario que se está asumiendo**.
+3. Si el rol no existe en este vault (no todos tienen `areas`), preguntar antes de crear la carpeta.
+
+Los scripts reciben el mapeo por flag (`--role hubs=People`), nunca lo adivinan. **Si el `CLAUDE.md` del vault declara rutas distintas del default y un skill escribe en el default igual, eso es un bug del skill, no una preferencia.**
+
 ## Las tres reglas de estructura
 
 ### 1. Los links van hacia arriba, nunca hacia abajo

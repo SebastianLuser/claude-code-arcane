@@ -35,7 +35,9 @@ SKIP_DIRS = {
 
 # Scanned so links into them resolve, but excluded from the findings that would
 # be pure noise: a template is hollow and unlinked by design, and an archived
-# note is stale by definition. --audit-all includes them anyway.
+# note is stale by definition. Override with --exempt when the vault names those
+# folders differently (its CLAUDE.md declares the mapping); --audit-all drops the
+# exemption entirely.
 EXEMPT_DIRS = ("Templates", "04_Archive")
 
 ATTACHMENT_EXTS = {
@@ -132,8 +134,21 @@ def relative(path, root):
     return os.path.relpath(path, root).replace(os.sep, "/")
 
 
+def resolve_exempt(args):
+    """
+    Folders scanned so links into them resolve, but kept out of the findings. A
+    vault that renamed them (an adopted vault keeps its own layout) passes
+    --exempt; argparse cannot carry a default for an append action without
+    appending to it, so the fallback lives here.
+    """
+    if not getattr(args, "exempt", None):
+        return EXEMPT_DIRS
+    return tuple(d.strip().strip("/").replace("\\", "/") for d in args.exempt if d.strip())
+
+
 def scan(root, args):
     """One walk over the vault. Returns (notes, attachments)."""
+    exempt = resolve_exempt(args)
     notes = {}
     attachments = {}
 
@@ -177,7 +192,7 @@ def scan(root, args):
                 "words": len(body.split()),
                 "mtime": mtime,
                 "tasks": TASK.findall(body),
-                "exempt": rel.startswith(EXEMPT_DIRS) and not args.audit_all,
+                "exempt": rel.startswith(exempt) and not args.audit_all,
             }
 
     return notes, attachments
@@ -185,30 +200,43 @@ def scan(root, args):
 
 def build_index(notes, attachments):
     """
-    Obsidian resolves [[Name]] by unique basename anywhere in the vault, and by
-    path when the link contains one. Two files sharing a basename make every
-    short link to that name ambiguous, which is why by_name keeps every match.
+    Obsidian resolves [[Name]] by unique basename anywhere in the vault, by path
+    when the link contains one, and by the `aliases` a note declares in its
+    frontmatter. Two files sharing a basename make every short link to that name
+    ambiguous, which is why by_name keeps every match.
+
+    Aliases are not a nicety here: hub notes exist to be linked by every name the
+    entity goes by, so ignoring them reports every [[Nacho]] as a broken link
+    while Obsidian resolves it fine.
     """
     by_path = {}
     by_name = {}
+    by_alias = {}
     for rel in list(notes) + list(attachments):
         stem = rel[:-3] if rel.endswith(".md") else rel
         by_path[stem.lower()] = rel
         by_path[rel.lower()] = rel
         by_name.setdefault(os.path.basename(stem).lower(), []).append(rel)
-    return by_path, by_name
+    for rel, note in notes.items():
+        declared = (note.get("fields") or {}).get("aliases")
+        if isinstance(declared, str):
+            declared = [a.strip() for a in declared.split(",")]
+        for alias in declared or []:
+            if alias:
+                by_alias.setdefault(alias.strip().lower(), []).append(rel)
+    return by_path, by_name, by_alias
 
 
-def resolve(target, by_path, by_name):
+def resolve(target, by_path, by_name, by_alias=None):
     """Returns (resolved_path_or_None, is_ambiguous)."""
     key = target.lower().rstrip("/")
     if key in by_path:
         return by_path[key], False
-    matches = by_name.get(os.path.basename(key), [])
-    if len(matches) == 1:
-        return matches[0], False
-    if len(matches) > 1:
-        return matches[0], True
+    for candidates in (by_name.get(os.path.basename(key), []), (by_alias or {}).get(key, [])):
+        if len(candidates) == 1:
+            return candidates[0], False
+        if len(candidates) > 1:
+            return candidates[0], True
     return None, False
 
 
@@ -218,7 +246,7 @@ def audit(root, args):
     # main() having normalized its arguments first.
     required = tuple(args.require) if args.require else DEFAULT_REQUIRED_FIELDS
     notes, attachments = scan(root, args)
-    by_path, by_name = build_index(notes, attachments)
+    by_path, by_name, by_alias = build_index(notes, attachments)
 
     backlinks = {rel: 0 for rel in notes}
     broken = []
@@ -229,7 +257,7 @@ def audit(root, args):
     for note in notes.values():
         for target in note["links"] + note["embeds"]:
             total_links += 1
-            resolved, is_ambiguous = resolve(target, by_path, by_name)
+            resolved, is_ambiguous = resolve(target, by_path, by_name, by_alias)
             if resolved is None:
                 broken.append({"source": note["path"], "target": target})
                 continue
@@ -299,7 +327,7 @@ def audit(root, args):
             "hollow_words": args.hollow_words,
             "task_days": args.task_days,
             "required_fields": list(required),
-            "exempt_dirs": [] if args.audit_all else list(EXEMPT_DIRS),
+            "exempt_dirs": [] if args.audit_all else list(resolve_exempt(args)),
         },
         "counts": {
             "notes": note_count,
@@ -423,8 +451,11 @@ def build_parser():
                              "Default: created, type")
     parser.add_argument("-n", "--limit", type=int, default=DEFAULT_LIMIT,
                         help="max items per finding list; 0 for no cap. Default: 25")
+    parser.add_argument("--exempt", action="append", metavar="DIR",
+                        help="folder scanned but kept out of the findings (repeatable). "
+                             "Default: Templates, 04_Archive")
     parser.add_argument("--audit-all", action="store_true",
-                        help="include Templates/ and 04_Archive/ in the findings")
+                        help="include the exempt folders in the findings too")
     return parser
 
 

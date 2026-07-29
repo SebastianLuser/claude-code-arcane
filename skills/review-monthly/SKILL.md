@@ -15,10 +15,12 @@ Mes a procesar: `$ARGUMENTS` (default: el mes en curso)
 
 Aplica la rule `vault-conventions`.
 
+**Rutas por rol:** los destinos se nombran por rol y la ruta real de cada uno sale del `## Rutas` del `CLAUDE.md` del vault. Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+
 ## Fase 1 - Leer el mes
 
 1. **Ubicar el vault** y leer su `CLAUDE.md`.
-2. **Leer los `Reflect/Weekly/` del mes.** Los weeklies son la fuente: no releas los dailies ni los dumps, ese trabajo ya está hecho y releerlo quema contexto sin agregar nada. Si faltan weeklies, listarlos y ofrecer `/review-weekly` para esas semanas antes de seguir.
+2. **Leer los weeklies del mes (rol `weekly`).** Los weeklies son la fuente: no releas los dailies ni los dumps, ese trabajo ya está hecho y releerlo quema contexto sin agregar nada. Si faltan weeklies, listarlos y ofrecer `/review-weekly` para esas semanas antes de seguir.
 3. **Correr `/vault-audit`** para tener las métricas de salud del vault del mes (huérfanas, notas stale, tareas viejas abiertas). El monthly es el momento natural del ciclo para mirarlas.
 
 ## Fase 2 - Extraer
@@ -31,7 +33,7 @@ Aplica la rule `vault-conventions`.
 
 ## Fase 3 - Escribir
 
-Con approval sobre lo extraído, crear `Reflect/Monthly/YYYY-MM.md` desde `Templates/Monthly.md`, con links a los weeklies del mes. Si ya existe, actualizarlo sin duplicar secciones.
+Con approval sobre lo extraído, crear `<monthly>/YYYY-MM.md` (default `Reflect/Monthly/`) desde `<templates>/Monthly.md`, con links a los weeklies del mes. Si ya existe, actualizarlo sin duplicar secciones.
 
 Los links van hacia arriba: el monthly linkea a los weeklies y a las notas que respaldan los logros. No se edita ningún weekly desde acá.
 

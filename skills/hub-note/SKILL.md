@@ -15,11 +15,13 @@ Entidad: `$ARGUMENTS`
 
 Aplica la rule `vault-conventions`.
 
+**Rutas por rol:** los destinos se nombran por rol y la ruta real de cada uno sale del `## Rutas` del `CLAUDE.md` del vault (leelo antes de escribir). Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+
 ## Fase 1 - Decidir si la entidad merece hub
 
 El criterio es la recurrencia, no la importancia: **la entidad apareció en tres dumps o notas distintas**. Antes de eso es una mención, y un hub por mención produce cientos de notas de una línea que nadie visita.
 
-1. `Grep` en `_inbox/`, `Reflect/` y `03_Resources/` por el nombre de la entidad y sus variantes.
+1. Buscar la entidad con `/vault-recall` si está disponible, o `Grep` en los roles `inbox`, `daily` y `atomic` (defaults `_inbox/`, `Reflect/Daily/`, `03_Resources/`) por el nombre y sus variantes.
 2. Contar apariciones y reportarlas con los links.
 3. Si hay menos de tres, decirlo y proponer esperar. Si el usuario quiere el hub igual (una persona nueva en el equipo, un proyecto que arranca), se crea: la anticipación es un motivo válido, la duda no.
 
@@ -27,11 +29,11 @@ Verdict: PASS si hay tres apariciones o una razón explícita del usuario.
 
 ## Fase 2 - Buscar el hub existente
 
-`Glob` en `Hubs/` y revisar los `aliases` del frontmatter de los hubs que haya. Las entidades llegan con nombres distintos ("Educabot", "educabot", "EB"): si ya existe un hub para la entidad bajo otro nombre, **actualizar ese** y agregar el nombre nuevo a `aliases`. Nunca crear un segundo hub para la misma entidad: es el duplicado más caro del vault, porque parte el conocimiento en dos lugares que nadie reconcilia.
+`Glob` en `<hubs>` (default `Hubs/`) y revisar los `aliases` del frontmatter de los hubs que haya. Las entidades llegan con nombres distintos ("Educabot", "educabot", "EB"): si ya existe un hub para la entidad bajo otro nombre, **actualizar ese** y agregar el nombre nuevo a `aliases`. Nunca crear un segundo hub para la misma entidad: es el duplicado más caro del vault, porque parte el conocimiento en dos lugares que nadie reconcilia.
 
 ## Fase 3 - Escribir
 
-Con approval, crear o actualizar el hub en `Hubs/` desde `Templates/Hub.md`.
+Con approval, crear o actualizar el hub en `<hubs>` (default `Hubs/`) desde `<templates>/Hub.md`.
 
 Al **crear**:
 - Título: el nombre canónico de la entidad. Las variantes van a `aliases`.

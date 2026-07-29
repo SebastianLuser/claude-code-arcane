@@ -15,6 +15,8 @@ Categoría a arreglar: `$ARGUMENTS` (default: preguntar cuál, nunca `all` por o
 
 Aplica la rule `vault-conventions`.
 
+**Rutas por rol:** los destinos se nombran por rol y la ruta real de cada uno sale del `## Rutas` del `CLAUDE.md` del vault. Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+
 ## Fase 1 - Antes de tocar nada
 
 1. **Ubicar el vault** y leer su `CLAUDE.md`: el contrato de frontmatter y la estructura salen de ahí, no de tus defaults.
@@ -50,7 +52,7 @@ Para cada tarea abierta en un día que ya cerró: marcarla `- [-]` en su día or
 Completar los campos ausentes del contrato del vault. `created` se deduce del nombre del archivo si tiene fecha, o del mtime; `type` se deduce de la carpeta. Si no se puede deducir, preguntar. **Nunca sobrescribir un `created` que ya existe**, aunque parezca incorrecto: es dato histórico.
 
 ### `archive` - Archivar
-Mover a `04_Archive/` lo que el usuario confirme cerrado, preservando el nombre. **Nunca borrar nada.** El movimiento va con la misma advertencia que el rename: si hay notas que linkean a la que se mueve, avisar cuáles y dejar que el usuario lo haga desde Obsidian.
+Mover al rol `archive` (default `04_Archive/`) lo que el usuario confirme cerrado, preservando el nombre. **Nunca borrar nada.** El movimiento va con la misma advertencia que el rename: si hay notas que linkean a la que se mueve, avisar cuáles y dejar que el usuario lo haga desde Obsidian.
 
 ## Fase 3 - Aplicar y reportar
 
@@ -65,7 +67,7 @@ Tidy COMPLETE cuando los cambios aprobados están aplicados y el resto quedó ex
 - **Nunca borrar una nota.** Archivar.
 - **Nunca renombrar ni mover desde el filesystem** sin avisar que rompe wikilinks: proponé que lo haga el usuario desde Obsidian.
 - Nada de ediciones en masa sin approval, ni siquiera las triviales.
-- No tocar `Templates/` ni `.obsidian/`.
+- No tocar el rol `templates` (default `Templates/`) ni `.obsidian/`.
 - No reescribir contenido del usuario: agregás links y frontmatter, no editás su prosa.
 - Sin guiones largos.
 

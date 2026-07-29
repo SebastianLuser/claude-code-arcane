@@ -15,11 +15,13 @@ Semana a procesar: `$ARGUMENTS` (default: la semana en curso, lunes a domingo)
 
 Aplica la rule `vault-conventions`.
 
+**Rutas por rol:** los destinos se nombran por rol y la ruta real de cada uno sale del `## Rutas` del `CLAUDE.md` del vault. Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+
 ## Fase 1 - Leer la semana
 
 1. **Ubicar el vault** y leer su `CLAUDE.md`.
 2. **Resolver el rango**: si el argumento es una fecha, la semana ISO que la contiene; si es `YYYY-Www`, esa; si no hay argumento, la semana en curso.
-3. **Leer los `Reflect/Daily/` del rango y sus dumps de `_inbox/`.** Los dailies dan la síntesis, los dumps dan lo que no llegó a la síntesis. Faltan dailies casi siempre: anotá qué días quedaron sin procesar y ofrecé `/review-dump` para esos días antes de seguir, porque un weekly sobre dumps crudos es peor.
+3. **Leer los dailies del rango (rol `daily`) y sus dumps (rol `inbox`).** Los dailies dan la síntesis, los dumps dan lo que no llegó a la síntesis. Faltan dailies casi siempre: anotá qué días quedaron sin procesar y ofrecé `/review-dump` para esos días antes de seguir, porque un weekly sobre dumps crudos es peor.
 4. **No leer el vault entero.** Solo el rango, más los hubs que los dailies de la semana efectivamente linkean.
 
 ## Fase 2 - Extraer
@@ -32,7 +34,7 @@ Aplica la rule `vault-conventions`.
 
 ## Fase 3 - Escribir
 
-Con approval sobre lo extraído, crear `Reflect/Weekly/YYYY-Www.md` desde `Templates/Weekly.md`, con links a los dailies de la semana. Si el weekly ya existe, actualizarlo sin duplicar secciones.
+Con approval sobre lo extraído, crear `<weekly>/YYYY-Www.md` (default `Reflect/Weekly/`) desde `<templates>/Weekly.md`, con links a los dailies de la semana. Si el weekly ya existe, actualizarlo sin duplicar secciones.
 
 Los links van hacia arriba: el weekly linkea a los dailies. Ningún daily se edita para linkear al weekly.
 

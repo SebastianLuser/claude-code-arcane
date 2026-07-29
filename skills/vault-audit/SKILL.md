@@ -21,9 +21,11 @@ El conteo lo hace Python, no vos: leer nota por nota para contar links cuesta ci
 python .claude/skills/vault-audit/scripts/vault_audit.py "<vault>" --format json
 ```
 
-Flags útiles: `--stale-days N` (default 180), `--hollow-words N` (default 30), `--task-days N` (default 7), `--require <campo>` (repetible, default `created` y `type`), `-n 0` para no truncar listas, `--audit-all` para incluir `Templates/` y `04_Archive/`.
+Flags útiles: `--stale-days N` (default 180), `--hollow-words N` (default 30), `--task-days N` (default 7), `--require <campo>` (repetible, default `created` y `type`), `--exempt <carpeta>` (repetible, default `Templates` y `04_Archive`), `-n 0` para no truncar listas, `--audit-all` para auditar también las carpetas exentas.
 
-El script solo lee el filesystem: sin dependencias, corre sobre miles de notas en segundos. Si el vault tiene un contrato de frontmatter propio en su `CLAUDE.md`, pasarlo con `--require` en vez de aceptar el default.
+El script solo lee el filesystem: sin dependencias, corre sobre miles de notas en segundos.
+
+**Los defaults no son la verdad del vault: el `CLAUDE.md` lo es.** Antes de correr, leer su contrato y traducirlo a flags: los campos de frontmatter a `--require`, y los roles `templates` y `archive` a `--exempt`. Auditar un vault adoptado con los defaults produce hallazgos falsos (sus plantillas aparecen como huérfanas huecas) y esconde los reales.
 
 ## Fase 2 - Interpretar
 
@@ -33,7 +35,7 @@ Un hallazgo no es un problema hasta que sabés por qué está ahí. Las lecturas
 |---|---|---|
 | `orphans` | Notas que nadie linkea y que no linkean nada: el síntoma del vault-cementerio | Casi nunca. Es el hallazgo que más vale atacar. |
 | `no_backlinks` | Nada apunta a la nota, aunque ella sí apunta a otras | Notas de entrada (dashboards, hubs de primer nivel) |
-| `broken_links` | Link a una nota que no existe | **Un link roto es muchas veces una intención, no un error:** es la nota que el usuario todavía no escribió. Distinguí typo de intención antes de proponer nada. |
+| `broken_links` | Link a una nota que no existe. Los `aliases` del frontmatter ya se resuelven, igual que en Obsidian, así que un `[[Nacho]]` que apunta al hub "Ignacio Martinez" no aparece acá | **Un link roto es muchas veces una intención, no un error:** es la nota que el usuario todavía no escribió. Distinguí typo de intención antes de proponer nada. |
 | `ambiguous_names` | Dos archivos con el mismo nombre en carpetas distintas | Nunca: hace que todo `[[link corto]]` a ese nombre resuelva de forma impredecible. Es el hallazgo más urgente aunque parezca menor. |
 | `stale` | Sin tocar en 180 días o más | Referencia que ya hizo su trabajo. Una nota vieja no es una nota muerta. |
 | `hollow` | Menos de 30 palabras | Semilla reciente. Dejala crecer. |

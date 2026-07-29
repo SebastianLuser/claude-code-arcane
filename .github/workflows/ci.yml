@@ -29,9 +29,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # Both locations: hooks/ is the shared lifecycle set, and skills/*/hooks/
+      # holds the ones scoped to a single skill (see docs/coding-standards.md).
+      # A skill-scoped hook is still a hook and breaks the same way.
       - name: Syntax check all bash hooks
         run: |
-          for f in hooks/*.sh; do
+          for f in hooks/*.sh skills/*/hooks/*.sh; do
+            [ -e "$f" ] || continue
             echo "Checking $f..."
             bash -n "$f"
           done

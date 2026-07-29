@@ -15,24 +15,28 @@ Contenido a capturar: `$ARGUMENTS`
 
 Aplica la rule `vault-conventions`.
 
+**Rutas por rol:** el destino se nombra por rol (`inbox`, `templates`), y la ruta real sale del `## Rutas` del `CLAUDE.md` del vault. Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+
 ## Pasos
 
 1. **Ubicar el vault.** Flag `--vault <path>`, env `OBSIDIAN_VAULT`, o el directorio actual si contiene `.obsidian/`. Si no hay vault, decirlo en una línea y ofrecer `/second-brain setup`. No inventar una carpeta.
 
-2. **Abrir el dump de hoy.** `_inbox/YYYY-MM-DD.md` con la fecha de hoy. Si no existe, crearlo desde `Templates/Dump.md` del vault (o con el frontmatter mínimo `created`, `type: dump`, `tags: []` si el template no está).
+2. **Resolver el rol `inbox`.** Leer el `## Rutas` del `CLAUDE.md` del vault. Es lo único que hace falta leer del contrato acá, y cuesta una lectura: escribir en `_inbox/` cuando el vault usa otra carpeta deja la captura en un lugar que ningún review va a mirar. Si el vault no tiene `CLAUDE.md`, usar el default y avisar en la misma línea de confirmación.
 
-3. **Agregar el contenido al final**, una línea por cosa, sin reordenar ni reescribir lo que ya había:
+3. **Abrir el dump de hoy.** `<inbox>/YYYY-MM-DD.md` (default `_inbox/`) con la fecha de hoy. Si no existe, crearlo desde `<templates>/Dump.md` (default `Templates/`), o con el frontmatter mínimo `created`, `type: dump`, `tags: []` si el template no está.
+
+4. **Agregar el contenido al final**, una línea por cosa, sin reordenar ni reescribir lo que ya había:
    - Lo que suena a tarea va como `- [ ] <texto>`. Lo que suena a idea, nota o link va como `- <texto>`.
    - URLs sueltas se dejan crudas, con el título de la página al lado solo si el usuario lo dio. No abrir la URL: eso es `/vault-clip`.
    - Se preserva la redacción del usuario. No corregís su ortografía ni su registro, no resumís, no traducís.
 
-4. **Si no vino contenido en `$ARGUMENTS`**, preguntar qué capturar en una sola línea y esperar. No abrir un cuestionario.
+5. **Si no vino contenido en `$ARGUMENTS`**, preguntar qué capturar en una sola línea y esperar. No abrir un cuestionario.
 
-5. **Confirmar en una línea** qué se agregó y a qué archivo. Nada más: el usuario está en medio de otra cosa.
+6. **Confirmar en una línea** qué se agregó y a qué archivo. Nada más: el usuario está en medio de otra cosa.
 
 ## Approval
 
-La invocación del skill es la aprobación para agregar al dump de hoy: pedir confirmación en cada captura destruiría el punto del skill. Los límites son estrictos en cambio para todo lo demás: **pedí approval explícito antes de escribir fuera de `_inbox/`**, antes de editar líneas que ya estaban en el dump, y antes de crear cualquier nota en `03_Resources/` o `Hubs/`. Clasificar es trabajo de `/review-dump`, no de acá.
+La invocación del skill es la aprobación para agregar al dump de hoy: pedir confirmación en cada captura destruiría el punto del skill. Los límites son estrictos en cambio para todo lo demás: **pedí approval explícito antes de escribir fuera del rol `inbox`**, antes de editar líneas que ya estaban en el dump, y antes de crear cualquier nota en los roles `atomic` o `hubs`. Clasificar es trabajo de `/review-dump`, no de acá.
 
 ## Reglas
 

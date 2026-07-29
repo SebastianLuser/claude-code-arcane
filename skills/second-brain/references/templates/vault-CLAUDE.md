@@ -6,6 +6,27 @@ Vault de Obsidian usado como segundo cerebro. Este archivo es el contrato: Claud
 
 <Rol, en qué proyectos estoy, qué temas me interesan. Dos o tres líneas: sirve para que las síntesis tengan contexto y no sean genéricas.>
 
+## Rutas
+
+Contrato de rutas: los skills escriben en **roles**, y esta tabla dice qué carpeta es cada rol en este vault. Si cambiás una carpeta de lugar, se cambia acá y todo lo demás sigue funcionando.
+
+| Rol | Ruta en este vault |
+|---|---|
+| `inbox` | `_inbox` |
+| `daily` | `Reflect/Daily` |
+| `weekly` | `Reflect/Weekly` |
+| `monthly` | `Reflect/Monthly` |
+| `atomic` | `03_Resources` |
+| `hubs` | `Hubs` |
+| `projects` | `01_Projects` |
+| `areas` | `02_Areas` |
+| `archive` | `04_Archive` |
+| `templates` | `Templates` |
+
+Un rol que este vault no usa se marca `(no usa)` en vez de borrar la fila: así queda explícito que la ausencia fue una decisión.
+
+Los scripts reciben esto por flag: `--role hubs=Hubs --role atomic=03_Resources`.
+
 ## Estructura
 
 | Carpeta | Qué vive acá |

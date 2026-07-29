@@ -39,6 +39,8 @@ Bases/                 vistas .base
 Templates/             plantillas del usuario
 ```
 
+Ese árbol es el **default del `setup`**, no una imposición: el `## Rutas` del `CLAUDE.md` del vault mapea cada rol (`inbox`, `daily`, `hubs`...) a la carpeta que lo cumple, y los skills leen ese mapeo. Un vault adoptado conserva sus nombres y todo sigue funcionando.
+
 Dos frameworks, dos capas: **PARA es la capa de navegación** (toda nota tiene una casa) y **Zettelkasten es la capa de conocimiento** (las notas atómicas viven planas en `03_Resources/` y se conectan por links). Los **hub files** son el tejido entre las dos: una nota por entidad que importa (persona, herramienta, concepto, empresa) que acumula conocimiento con el tiempo.
 
 Las carpetas agrupan por propósito, los links agrupan por significado: una nota vive en una carpeta y linkea a muchas.
@@ -53,7 +55,7 @@ Antes de generar cualquier vista o sintaxis que dependa de un plugin, leer `.obs
 | `dataview` | campos inline y texto computado que Bases no expresa | reformular la vista para que la exprese Bases |
 | `obsidian-tasks-plugin` | sintaxis de fechas y prioridad en tareas | checkboxes markdown planos |
 | `templater-obsidian` | templates de alta frecuencia (daily) | los skills escriben el archivo directo |
-| `omnisearch` | sugerir búsqueda semántica al usuario | `Grep` sobre el vault |
+| `omnisearch` | ofrecerlo para búsqueda difusa desde la UI de Obsidian | `/vault-recall`, que rankea sin depender de plugins |
 
 Nunca mencionar en una nota una sintaxis de un plugin que el usuario no tiene instalado: queda como texto roto en la vista de lectura. Registrar el resultado de la detección en el `CLAUDE.md` del vault para no repetirla cada sesión.
 
@@ -64,31 +66,58 @@ Nunca mencionar en una nota una sintaxis de un plugin que el usuario no tiene in
 2. Correr la detección de capacidades.
 3. Crear el árbol de carpetas.
 4. Copiar los templates de `references/templates/` a `Templates/` del vault.
-5. Escribir el `CLAUDE.md` del vault desde `references/templates/vault-CLAUDE.md`, completando estructura, contrato de frontmatter y plugins detectados.
+5. Escribir el `CLAUDE.md` del vault desde `references/templates/vault-CLAUDE.md`, completando **el `## Rutas`** (rol a carpeta), el contrato de frontmatter y los plugins detectados. El `## Rutas` no es decorativo: es de donde todos los demás skills sacan dónde escribir.
 6. Si hay `bases`, crear `Bases/Dashboard.base` con las vistas de tareas abiertas y notas recientes (delegar la sintaxis a `/obsidian-bases`).
-7. Verificar que el vault sea un repo git; si no lo es, recomendarlo y explicar por qué (es el undo de cualquier corrida).
+7. **Construir el índice** para que la primera búsqueda y el primer review no paguen la indexación completa:
+   ```bash
+   python .claude/skills/vault-recall/scripts/vault_index.py "<vault>" refresh
+   ```
+8. **Ofrecer el hook de validación** (opcional, ver abajo).
+9. Verificar que el vault sea un repo git; si no lo es, recomendarlo y explicar por qué (es el undo de cualquier corrida).
 
-Pedir approval antes de escribir. Verdict: vault READY cuando existen el árbol, los templates y el `CLAUDE.md`.
+Pedir approval antes de escribir. Verdict: vault READY cuando existen el árbol, los templates y el `CLAUDE.md` con su `## Rutas`.
 
 ### `adopt` - Adoptar un vault existente
 Para un vault ya armado, con o sin estructura coherente. No migra nada por su cuenta.
 
 1. Mapear lo que hay: `Glob` de carpetas de primer nivel, conteo de notas por carpeta, campos de frontmatter en uso (`Grep`), convención de nombres de las notas periódicas, tags más usados.
-2. Correr `/vault-audit` para tener las métricas de salud reales antes de opinar.
-3. Reportar el mapeo y proponer **una de dos** rutas, con el costo de cada una:
-   - **Adoptar la estructura existente:** escribir el `CLAUDE.md` describiendo las convenciones que ya usa el vault. Cero movimiento de archivos, cero links roto.
+2. **Mapear rol a carpeta**, que es el entregable central de este modo. Para cada rol (`inbox`, `daily`, `weekly`, `monthly`, `atomic`, `hubs`, `projects`, `areas`, `archive`, `templates`), proponer qué carpeta del vault lo cumple hoy, y marcar `(no usa)` los que no existen. Confirmar el mapeo con el usuario item por item: es la traducción de la que dependen todos los demás skills, y un rol mal mapeado hace que escriban en la carpeta equivocada sin error visible.
+3. Correr `/vault-audit` con los flags que salen de ese mapeo (`--exempt` para `templates` y `archive`, `--require` con los campos de frontmatter que el vault ya usa) para tener métricas reales y no hallazgos falsos.
+4. Reportar el mapeo y proponer **una de dos** rutas, con el costo de cada una:
+   - **Adoptar la estructura existente:** escribir el `CLAUDE.md` con el `## Rutas` que acabás de mapear. Cero movimiento de archivos, cero links roto. Es la opción por default.
    - **Migrar a la estructura de `setup`:** plan explícito de qué carpeta va a dónde, ejecutado por `/vault-tidy` con approval item por item, en un repo git limpio.
-4. Escribir el `CLAUDE.md` de la ruta elegida. Nunca mover archivos en este modo.
+5. Escribir el `CLAUDE.md` de la ruta elegida, con el `## Rutas` completo. Nunca mover archivos en este modo.
+6. Construir el índice (`vault_index.py refresh`) pasando el mapeo: `--role hubs=<carpeta> --role atomic=<carpeta> ...`.
 
-Verdict: vault READY cuando el `CLAUDE.md` describe las convenciones reales del vault, no las ideales.
+Verdict: vault READY cuando el `CLAUDE.md` describe las convenciones reales del vault, no las ideales, y su `## Rutas` cubre los diez roles o los marca como no usados.
 
 ### `status` - Dónde estoy
-1. Leer el `CLAUDE.md` del vault y listar `_inbox/` y `Reflect/`.
-2. Reportar: dumps sin procesar (los que no tienen daily correspondiente), último weekly y monthly, tareas abiertas, proyectos sin actividad reciente.
-3. Recomendar la acción de mayor impacto.
+1. Leer el `CLAUDE.md` del vault para resolver los roles.
+2. Correr `vault_index.py "<vault>" inventory --format text`: ya devuelve los dumps sin daily, el último weekly y monthly, y los hubs con sus alias. Es una llamada en vez de varios `Glob`, y no crece con el vault.
+3. Reportar eso más las tareas abiertas y los proyectos sin actividad reciente.
+4. Recomendar la acción de mayor impacto.
 
 ### `next` - Qué hago ahora
 Según el estado, recomendar el skill siguiente (ver routing).
+
+## Hook de validación (opcional)
+
+El profile trae un `PostToolUse` que revisa cada nota escrita en el vault: frontmatter presente, `created` y `type` declarados, y al menos un `[[wikilink]]` salvo en los dumps. Avisa por stderr y **nunca bloquea la escritura**.
+
+Sirve para lo que los skills no cubren: las notas que escribís a mano o desde otra sesión. Para activarlo, agregar a `.claude/settings.json` **del vault** el contenido de `.claude/skills/second-brain/hooks/hooks.json`:
+
+```json
+"PostToolUse": [
+  {
+    "matcher": "Write|Edit",
+    "hooks": [
+      { "type": "command", "command": "bash .claude/skills/second-brain/hooks/validate-note.sh", "timeout": 5 }
+    ]
+  }
+]
+```
+
+Es opt-in a propósito y va en el settings del vault, no en el del repo: un hook que corre en cada `Write` de cualquier proyecto es peso que nadie pidió. Ofrecelo en el `setup`, explicá que es solo un warning, y respetá el no.
 
 ## Routing
 
@@ -103,6 +132,7 @@ Según el estado, recomendar el skill siguiente (ver routing).
 | Una idea del dump merece nota propia | `/zettel` |
 | Una entidad se repite en varios dumps | `/hub-note` |
 | Guardar un artículo o página web | `/vault-clip` |
+| Encontrar algo que ya escribiste | `/vault-recall` |
 | Saber qué tan sano está el vault | `/vault-audit` |
 | Aplicar los arreglos que propuso el audit | `/vault-tidy` |
 | Dudas de sintaxis Obsidian, Bases o Canvas | `/obsidian-markdown`, `/obsidian-bases`, `/obsidian-canvas` |
