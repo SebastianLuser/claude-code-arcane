@@ -240,6 +240,85 @@ class TestNoteFindings(VaultFixture):
         self.assertEqual(report["findings"]["orphans"], ["Templates/Atomic.md"])
 
 
+class TestStatusMaturity(VaultFixture):
+    """The contract's status field is what makes stale and hollow actionable."""
+
+    def aged(self, rel, body, days):
+        path = self.note(rel, body)
+        when = time.time() - days * 86400
+        os.utime(path, (when, when))
+        return path
+
+    def test_an_evergreen_note_is_not_stale_no_matter_how_old(self):
+        self.aged("03_Resources/Vieja.md",
+                  "---\ncreated: 2020-01-01\ntype: atomic\nstatus: evergreen\n---\n" + "palabra " * 50,
+                  400)
+        self.aged("03_Resources/Otra.md",
+                  "---\ncreated: 2020-01-01\ntype: atomic\n---\n" + "palabra " * 50, 400)
+
+        findings = self.audit()["findings"]
+
+        self.assertEqual([s["path"] for s in findings["stale"]], ["03_Resources/Otra.md"])
+
+    def test_a_seed_is_allowed_to_be_short_but_not_forever(self):
+        self.aged("03_Resources/Reciente.md",
+                  "---\ncreated: 2026-07-01\ntype: atomic\nstatus: seed\n---\ncorta\n", 3)
+        self.aged("03_Resources/Abandonada.md",
+                  "---\ncreated: 2026-01-01\ntype: atomic\nstatus: seed\n---\ncorta\n", 60)
+
+        findings = self.audit("--seed-days", "30")["findings"]
+
+        self.assertEqual(findings["hollow"], [])  # neither counts as hollow
+        self.assertEqual([s["path"] for s in findings["stale_seeds"]],
+                         ["03_Resources/Abandonada.md"])
+
+    def test_an_old_seed_is_reported_once_not_as_three_separate_problems(self):
+        self.aged("03_Resources/Abandonada.md",
+                  "---\ncreated: 2026-01-01\ntype: atomic\nstatus: seed\n---\ncorta\n", 400)
+
+        findings = self.audit("--seed-days", "30", "--stale-days", "180")["findings"]
+
+        self.assertEqual(len(findings["stale_seeds"]), 1)
+        self.assertEqual(findings["stale"], [])
+        self.assertEqual(findings["hollow"], [])
+
+    def test_an_archived_note_is_out_of_scope_wherever_it_lives(self):
+        self.note("03_Resources/Cerrada.md",
+                  "---\ncreated: 2026-01-01\ntype: atomic\nstatus: archived\n---\nsin links\n")
+
+        report = self.audit()
+
+        self.assertEqual(report["counts"]["notes_audited"], 0)
+        self.assertEqual(report["findings"]["orphans"], [])
+
+    def test_contested_notes_are_listed_so_a_review_can_resolve_them(self):
+        self.note("03_Resources/Discutida.md",
+                  "---\ncreated: 2026-07-01\ntype: atomic\nstatus: contested\n---\n"
+                  "esto contradice [[Otra]]\n")
+
+        report = self.audit()
+
+        self.assertEqual(report["findings"]["contested"], ["03_Resources/Discutida.md"])
+        self.assertEqual(report["counts"]["by_status"]["contested"], 1)
+
+    def test_a_project_lifecycle_value_is_inert_not_misread_as_maturity(self):
+        # Projects reuse `status` for their own vocabulary (activo|pausado|cerrado).
+        # The audit must treat an unknown value as no value instead of guessing.
+        self.aged("01_Projects/Migracion.md",
+                  "---\ncreated: 2026-01-01\ntype: project\nstatus: activo\n---\n" + "palabra " * 50,
+                  400)
+
+        findings = self.audit()["findings"]
+
+        self.assertEqual([s["path"] for s in findings["stale"]], ["01_Projects/Migracion.md"])
+        self.assertEqual(findings["stale_seeds"], [])
+
+    def test_notes_without_a_status_are_counted_as_such(self):
+        self.note("A.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\ncuerpo\n")
+
+        self.assertEqual(self.audit()["counts"]["by_status"], {"(sin status)": 1})
+
+
 class TestTasks(VaultFixture):
     def days_ago(self, days):
         return time.strftime("%Y-%m-%d", time.localtime(time.time() - days * 86400))

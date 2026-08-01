@@ -41,6 +41,7 @@ Al **crear**:
 - `## Estado actual`: lo que hay que saber hoy.
 - `## Notas`: links a las notas atómicas y proyectos del tema que ya existan (los que encontraste en la fase 1).
 - `## Historial`: una línea por aparición relevante, formato `- YYYY-MM-DD - qué pasó`, lo más nuevo arriba.
+- `status`: `seed` al crearlo, `provisional` cuando ya acumuló contenido. Un hub que el usuario mantiene al día puede quedar `evergreen`, pero lo marca él.
 
 Al **actualizar** (`--update`, o cuando el hub ya existe):
 - Agregar la entrada nueva al `## Historial`, sin duplicar una que ya esté con la misma fecha y el mismo contenido.

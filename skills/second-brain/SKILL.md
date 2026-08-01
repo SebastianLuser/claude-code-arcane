@@ -1,7 +1,7 @@
 ---
 name: second-brain
-description: "Entry point del segundo cerebro en Obsidian. Crea o adopta un vault (PARA + Zettelkasten + hub files), escribe su CLAUDE.md, detecta que plugins hay instalados y rutea al skill correcto. Triggers: second brain, segundo cerebro, setup vault obsidian, organizar mi vault, empezar vault, adoptar mi vault."
-argument-hint: "[setup | adopt | status | next]"
+description: "Entry point del segundo cerebro en Obsidian. Crea o adopta un vault (PARA + Zettelkasten + hub files), escribe su CLAUDE.md, detecta que plugins hay instalados, conecta otros proyectos al mismo vault y rutea al skill correcto. Triggers: second brain, segundo cerebro, setup vault obsidian, organizar mi vault, empezar vault, adoptar mi vault."
+argument-hint: "[setup | adopt | status | next | link]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
@@ -25,7 +25,8 @@ En este orden: flag `--vault <path>`, env `OBSIDIAN_VAULT`, o el directorio actu
 
 ```
 CLAUDE.md              contrato del vault: estructura, frontmatter, reglas de link
-_inbox/                captura cruda, un archivo por dia (YYYY-MM-DD.md)
+hot.md                 cache de contexto reciente, lo reescribe /review-dump
+_inbox/                captura cruda, un archivo por dia (YYYY-MM-DD dump.md)
 Reflect/
   Daily/               sintesis del dia, la crea /review-dump
   Weekly/              retrospectiva semanal
@@ -68,12 +69,13 @@ Nunca mencionar en una nota una sintaxis de un plugin que el usuario no tiene in
 4. Copiar los templates de `references/templates/` a `Templates/` del vault.
 5. Escribir el `CLAUDE.md` del vault desde `references/templates/vault-CLAUDE.md`, completando **el `## Rutas`** (rol a carpeta), el contrato de frontmatter y los plugins detectados. El `## Rutas` no es decorativo: es de donde todos los demás skills sacan dónde escribir.
 6. Si hay `bases`, crear `Bases/Dashboard.base` con las vistas de tareas abiertas y notas recientes (delegar la sintaxis a `/obsidian-bases`).
-7. **Construir el índice** para que la primera búsqueda y el primer review no paguen la indexación completa:
+7. Crear `hot.md` desde `references/templates/hot.md`, vacío. Es el caché que abre las sesiones siguientes (ver abajo).
+8. **Construir el índice** para que la primera búsqueda y el primer review no paguen la indexación completa:
    ```bash
    python .claude/skills/vault-recall/scripts/vault_index.py "<vault>" refresh
    ```
-8. **Ofrecer el hook de validación** (opcional, ver abajo).
-9. Verificar que el vault sea un repo git; si no lo es, recomendarlo y explicar por qué (es el undo de cualquier corrida).
+9. **Ofrecer el hook de validación** (opcional, ver abajo).
+10. Verificar que el vault sea un repo git; si no lo es, recomendarlo y explicar por qué (es el undo de cualquier corrida).
 
 Pedir approval antes de escribir. Verdict: vault READY cuando existen el árbol, los templates y el `CLAUDE.md` con su `## Rutas`.
 
@@ -92,13 +94,39 @@ Para un vault ya armado, con o sin estructura coherente. No migra nada por su cu
 Verdict: vault READY cuando el `CLAUDE.md` describe las convenciones reales del vault, no las ideales, y su `## Rutas` cubre los diez roles o los marca como no usados.
 
 ### `status` - Dónde estoy
-1. Leer el `CLAUDE.md` del vault para resolver los roles.
-2. Correr `vault_index.py "<vault>" inventory --format text`: ya devuelve los dumps sin daily, el último weekly y monthly, y los hubs con sus alias. Es una llamada en vez de varios `Glob`, y no crece con el vault.
-3. Reportar eso más las tareas abiertas y los proyectos sin actividad reciente.
-4. Recomendar la acción de mayor impacto.
+1. Leer `hot.md` primero: son 40 líneas y responden "dónde estaba" sin abrir nada más. Si está vacío o desactualizado, seguir igual y decirlo.
+2. Leer el `CLAUDE.md` del vault para resolver los roles.
+3. Correr `vault_index.py "<vault>" inventory --format text`: ya devuelve los dumps sin daily, el último weekly y monthly, y los hubs con sus alias. Es una llamada en vez de varios `Glob`, y no crece con el vault.
+4. Reportar eso más las tareas abiertas y los proyectos sin actividad reciente.
+5. Recomendar la acción de mayor impacto.
 
 ### `next` - Qué hago ahora
 Según el estado, recomendar el skill siguiente (ver routing).
+
+### `link` - Conectar otro proyecto al vault
+Para usar el mismo segundo cerebro desde cualquier repo, sin duplicar notas.
+
+1. Confirmar el path del vault y que el proyecto actual no sea el vault mismo.
+2. Leer `references/cross-project.md` y proponer el snippet, con el path real completado.
+3. Con approval, agregarlo al `CLAUDE.md` **del proyecto actual** (crear el archivo si no existe). Nunca se toca el vault en este modo.
+4. Explicar las dos reglas que hacen que esto funcione: la cascada de lectura (`hot.md` → búsqueda → hub → nota) y que **el vault no se lee para preguntas generales de programación**. Sin la segunda, cada consulta paga el costo del vault sin recibir nada.
+
+Verdict: proyecto READY cuando su `CLAUDE.md` declara el path, la cascada y el límite de escritura.
+
+## El caché caliente (`hot.md`)
+
+Un archivo corto en la raíz del vault con dónde estabas: en qué trabajás, qué notas cambiaron, qué hilos siguen abiertos, qué tareas viven. Lo reescribe `/review-dump` al cerrar el día y lo lee `/second-brain status`, además de cualquier otro proyecto conectado con `link`.
+
+Idea tomada de `AgriciDaniel/claude-obsidian`, y es la que resuelve el agujero del ciclo: los tres reviews devuelven algo **cuando vos los pedís**. El caché devuelve algo al abrir la sesión, sin pedirlo.
+
+Cuatro reglas, duras porque es lo único del vault que se reescribe sin preguntar:
+
+- **Techo de 40 líneas.** Si no entra, hay que resumir más, no agrandar el techo.
+- **Nada de secretos ni transcripciones crudas**, aunque aparezcan en un dump.
+- **Ninguna afirmación sin su link.** El caché no crea conocimiento, apunta al que existe.
+- **Se reescribe completo.** Un caché al que se le agrega al final es un log, y un log nadie lo lee.
+
+Es descartable por diseño: si contradice una nota, la nota gana, y borrarlo no pierde nada porque se regenera.
 
 ## Hook de validación (opcional)
 
@@ -133,6 +161,7 @@ Es opt-in a propósito y va en el settings del vault, no en el del repo: un hook
 | Una entidad se repite en varios dumps | `/hub-note` |
 | Guardar un artículo o página web | `/vault-clip` |
 | Encontrar algo que ya escribiste | `/vault-recall` |
+| Usar el vault desde otro proyecto | `/second-brain link` |
 | Saber qué tan sano está el vault | `/vault-audit` |
 | Aplicar los arreglos que propuso el audit | `/vault-tidy` |
 | Dudas de sintaxis Obsidian, Bases o Canvas | `/obsidian-markdown`, `/obsidian-bases`, `/obsidian-canvas` |

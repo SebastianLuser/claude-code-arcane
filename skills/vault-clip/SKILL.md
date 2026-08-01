@@ -43,6 +43,7 @@ created: YYYY-MM-DD
 type: clip
 source: <URL>
 author: <si la página lo declara>
+status: seed
 tags: []
 ---
 ```

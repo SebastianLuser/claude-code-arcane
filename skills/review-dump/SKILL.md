@@ -21,7 +21,7 @@ Aplica la rule `vault-conventions`.
 
 1. **Ubicar el vault** (`--vault`, env `OBSIDIAN_VAULT`, o directorio actual con `.obsidian/`) y leer su `CLAUDE.md`: de ahí salen la estructura real, el contrato de frontmatter y los plugins disponibles. Si no hay `CLAUDE.md`, ofrecer `/second-brain adopt` y parar.
 2. **Verificar git.** Si el vault es un repo y el árbol está sucio, avisarlo antes de escribir: esta corrida toca varias notas y git es el undo.
-3. **Leer el dump** `<inbox>/YYYY-MM-DD.md` (default `_inbox/`). Si no existe, decirlo y ofrecer `/brain-dump`. Si ya existe el daily de ese día, avisar que se va a actualizar y no duplicar secciones.
+3. **Leer el dump** `<inbox>/YYYY-MM-DD dump.md` (default `_inbox/`), aceptando también el nombre sin sufijo si el vault viene de antes. Si no existe, decirlo y ofrecer `/brain-dump`. Si ya existe el daily de ese día, avisar que se va a actualizar y no duplicar secciones.
 4. **Inventariar el vault una sola vez**, desde el índice cacheado y no con `Glob`:
 
    ```bash
@@ -43,6 +43,18 @@ Para cada línea del dump, proponer un destino y esperar confirmación. Una lín
 | Mención de una entidad recurrente sin hub | Proponer hub nuevo (delegar a `/hub-note`) |
 | URL para leer después | Se queda en el dump, o `/vault-clip` si el usuario lo quiere ahora |
 | Ruido, duplicado, ya resuelto | Nada: se deja en el dump y se marca resuelto |
+
+**Taxonomía de la captura.** Antes de decidir destino, clasificá qué **tipo** de captura es. Adaptado del patrón de organización por tipo en vez de por tema: el tema crea silos (una nota de psicología de la atención y una de por qué el contenido corto rinde nunca se cruzan), el tipo crea colisiones, y las colisiones son de donde sale lo original.
+
+| Tipo | Qué es | Suele terminar en |
+|---|---|---|
+| observación | algo que noté, sin conclusión todavía | dump, o `atomic` si se sostiene sola |
+| reacción | mi respuesta honesta a algo que leí o escuché | dump, o `## Historial` del hub del tema |
+| patrón | el mismo principio apareciendo en dos dominios distintos | casi siempre `atomic`: es la materia prima del conocimiento |
+| pregunta | algo que genuinamente no sé | dump, y al weekly como hilo abierto |
+| número | un dato concreto, con su fuente | hub del tema, o `atomic` si el número prueba algo |
+
+**Afilado.** Cada item que se mueve del dump se reescribe en una línea que se entienda sola: si todavía necesita explicación, no está afilada. "las notas sin links no se encuentran" es flojo; "una nota sin link entrante es invisible desde el día que se escribe" se sostiene sin contexto. El afilado se muestra al usuario para que confirme, porque es su idea y sus palabras.
 
 Reglas de la clasificación:
 
@@ -76,11 +88,12 @@ Los links van hacia arriba: el daily linkea al dump y a las notas creadas; ningu
 
 ## Fase 5 - Cierre
 
-1. Reportar en una tabla qué se creó, qué se actualizó y qué quedó en el dump.
-2. La sección `## Reflexión` del daily queda vacía: la escribe el usuario. No la completes ni la sugieras.
-3. Si el vault es un repo git, recordar el commit.
+1. **Reescribir `hot.md`** en la raíz del vault (desde `Templates/hot.md` la primera vez): dónde está el usuario, las notas que cambiaron con un link cada una, los hilos abiertos y las tareas vivas. Techo de 40 líneas, sin secretos, sin transcripciones crudas, y ninguna afirmación sin su link. **Se reescribe completo, no se le agrega al final.** Es el archivo que hace que la próxima sesión abra sabiendo dónde estabas, y es descartable: si contradice a una nota, la nota gana.
+2. Reportar en una tabla qué se creó, qué se actualizó y qué quedó en el dump.
+3. La sección `## Reflexión` del daily queda vacía: la escribe el usuario. No la completes ni la sugieras.
+4. Si el vault es un repo git, recordar el commit.
 
-Review COMPLETE cuando existe el daily, los hubs tocados quedaron consistentes y ninguna tarea quedó duplicada.
+Review COMPLETE cuando existe el daily, `hot.md` refleja el estado de hoy, los hubs tocados quedaron consistentes y ninguna tarea quedó duplicada.
 
 ## Reglas
 

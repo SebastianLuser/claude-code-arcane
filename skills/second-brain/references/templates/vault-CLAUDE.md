@@ -23,6 +23,8 @@ Contrato de rutas: los skills escriben en **roles**, y esta tabla dice qué carp
 | `archive` | `04_Archive` |
 | `templates` | `Templates` |
 
+Y dos archivos fijos en la raíz: este `CLAUDE.md` (el contrato) y `hot.md` (el caché de contexto reciente, lo reescribe `/review-dump`).
+
 Un rol que este vault no usa se marca `(no usa)` en vez de borrar la fila: así queda explícito que la ausencia fue una decisión.
 
 Los scripts reciben esto por flag: `--role hubs=Hubs --role atomic=03_Resources`.
@@ -31,7 +33,7 @@ Los scripts reciben esto por flag: `--role hubs=Hubs --role atomic=03_Resources`
 
 | Carpeta | Qué vive acá |
 |---|---|
-| `_inbox/` | Captura cruda, un archivo por día (`YYYY-MM-DD.md`). Sin estructura, sin tags, sin pensar. |
+| `_inbox/` | Captura cruda, un archivo por día (`YYYY-MM-DD dump.md`). Sin estructura, sin tags, sin pensar. El sufijo evita que el nombre choque con el del daily. |
 | `Reflect/Daily/` | Síntesis del día (`YYYY-MM-DD.md`), la crea `/review-dump`. |
 | `Reflect/Weekly/` | Retrospectiva semanal (`YYYY-Www.md`). |
 | `Reflect/Monthly/` | Balance del mes (`YYYY-MM.md`). |
@@ -51,9 +53,26 @@ Todo campo que se escriba tiene que estar acá. Un campo que no está declarado 
 ---
 created: YYYY-MM-DD        # ISO, nunca se reescribe
 type: daily                # daily | weekly | monthly | dump | atomic | hub | project | area | clip
+status: seed               # madurez, solo en atomic, hub y clip (ver abajo)
 tags: []
 ---
 ```
+
+### `status`: madurez de la nota
+
+Solo para `atomic`, `hub` y `clip`. Las notas periódicas (`daily`, `weekly`, `monthly`, `dump`) no lo llevan: son registro, no conocimiento, y no maduran.
+
+| Valor | Significa | Efecto |
+|---|---|---|
+| `seed` | Apenas plantada, incompleta a propósito | No cuenta como hueca. Si sigue `seed` a los 30 días, el audit la marca: una semilla que no crecio es la falla clasica del vault. |
+| `provisional` | Tiene cuerpo pero no la sostendría en una discusión | Default de una nota recién escrita con contenido |
+| `evergreen` | Dice lo que tiene que decir. Puede quedarse quieta años | **No cuenta como stale.** Es lo que distingue una nota que ya hizo su trabajo de una abandonada. |
+| `contested` | Contradice a otra nota del vault y no está resuelto | El audit la lista para que un review la mire. La contradicción se preserva, no se resuelve sola. |
+| `archived` | Cerrada | Fuera del alcance del audit, viva donde viva |
+
+Sin este campo el audit no puede distinguir una nota de referencia que terminó su trabajo de un stub que nunca creció, y reporta las dos como stale.
+
+**Los proyectos usan el mismo campo con otro vocabulario** (`activo | pausado | cerrado`): es su ciclo de vida, no su madurez. El audit solo interpreta los cinco valores de arriba, así que un `activo` le resulta inerte y el proyecto se evalúa como cualquier otra nota. Si eso te molesta, renombralo acá y el contrato manda.
 
 Campos adicionales por tipo:
 
@@ -90,6 +109,10 @@ Las tareas viven en la nota a la que pertenecen, no en una lista central. Una ta
 ## Plugins instalados
 
 <Completado por `/second-brain setup` con la detección real. Lo que no está en esta lista no se usa en las notas.>
+
+## Uso desde otros proyectos
+
+Otros repos pueden leer este vault. El orden de lectura es `hot.md` → búsqueda con `vault_index.py` → el hub del tema → la nota. **No se lee el vault para preguntas generales de programación**, y no se escribe en él desde otro proyecto salvo pedido explícito. Receta completa: `/second-brain link`.
 
 ## Git
 

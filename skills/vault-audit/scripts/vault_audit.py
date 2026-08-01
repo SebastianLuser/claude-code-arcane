@@ -6,6 +6,10 @@ resolves every [[wikilink]] the way Obsidian does, and emits the metrics a
 review session needs to decide what to fix: orphans, broken links, stale notes,
 tag sprawl, hollow notes, ambiguous filenames and frontmatter contract misses.
 
+The `status` field of the contract (seed | provisional | evergreen | contested |
+archived) changes what counts as a problem: evergreen notes are not stale, seeds
+are allowed to be short but not forever, and archived ones are out of scope.
+
 This exists because the same report built by reading notes through an agent
 costs hundreds of thousands of tokens on a real vault and gets the counts wrong.
 Python counts; the agent decides what the counts mean.
@@ -48,8 +52,17 @@ ATTACHMENT_EXTS = {
 DEFAULT_STALE_DAYS = 180
 DEFAULT_HOLLOW_WORDS = 30
 DEFAULT_TASK_DAYS = 7
+DEFAULT_SEED_DAYS = 30
 DEFAULT_LIMIT = 25
 DEFAULT_REQUIRED_FIELDS = ("created", "type")
+
+# Maturity vocabulary of the frontmatter contract. Without it the audit cannot
+# tell a reference note that finished its job from a stub that never grew, so it
+# reports both as stale and the report stops being actionable.
+STATUS_EVERGREEN = "evergreen"
+STATUS_SEED = "seed"
+STATUS_CONTESTED = "contested"
+STATUS_ARCHIVED = "archived"
 
 FENCED_CODE = re.compile(r"^```.*?^```", re.DOTALL | re.MULTILINE)
 INLINE_CODE = re.compile(r"`[^`\n]*`")
@@ -192,7 +205,10 @@ def scan(root, args):
                 "words": len(body.split()),
                 "mtime": mtime,
                 "tasks": TASK.findall(body),
-                "exempt": rel.startswith(exempt) and not args.audit_all,
+                "status": str(fields.get("status") or "").strip().lower(),
+                "exempt": (rel.startswith(exempt)
+                           or str(fields.get("status") or "").strip().lower() == STATUS_ARCHIVED)
+                and not args.audit_all,
             }
 
     return notes, attachments
@@ -274,6 +290,8 @@ def audit(root, args):
             tag_use[tag] = tag_use.get(tag, 0) + 1
 
     orphans, no_backlinks, stale, hollow, missing_fields, stale_tasks = [], [], [], [], [], []
+    stale_seeds, contested = [], []
+    by_status = {}
     open_tasks = done_tasks = 0
 
     for note in notes.values():
@@ -291,12 +309,29 @@ def audit(root, args):
         elif not incoming:
             no_backlinks.append(note["path"])
 
-        age_days = int((now - note["mtime"]) // 86400)
-        if age_days >= args.stale_days:
-            stale.append({"path": note["path"], "days": age_days})
+        status = note["status"]
+        by_status[status or "(sin status)"] = by_status.get(status or "(sin status)", 0) + 1
+        if status == STATUS_CONTESTED:
+            contested.append(note["path"])
 
-        if note["words"] < args.hollow_words:
-            hollow.append({"path": note["path"], "words": note["words"]})
+        age_days = int((now - note["mtime"]) // 86400)
+
+        # A seed is allowed to be short, but not forever: a seed that never grew
+        # is the "notes go in, nothing matures" failure, and it is invisible
+        # unless the vault declares maturity. It reports here and nowhere else:
+        # the same note in stale and hollow too would read as three problems.
+        if status == STATUS_SEED:
+            if age_days >= args.seed_days:
+                stale_seeds.append({"path": note["path"], "days": age_days,
+                                    "words": note["words"]})
+        else:
+            # An evergreen note is meant to sit still: it already says what it
+            # has to say. Reporting it as stale trains the reader to ignore the
+            # whole list.
+            if age_days >= args.stale_days and status != STATUS_EVERGREEN:
+                stale.append({"path": note["path"], "days": age_days})
+            if note["words"] < args.hollow_words:
+                hollow.append({"path": note["path"], "words": note["words"]})
 
         missing = [f for f in required if f not in note["fields"]]
         if missing:
@@ -326,6 +361,7 @@ def audit(root, args):
             "stale_days": args.stale_days,
             "hollow_words": args.hollow_words,
             "task_days": args.task_days,
+            "seed_days": args.seed_days,
             "required_fields": list(required),
             "exempt_dirs": [] if args.audit_all else list(resolve_exempt(args)),
         },
@@ -338,6 +374,7 @@ def audit(root, args):
             "tags": len(tag_use),
             "tasks_open": open_tasks,
             "tasks_done": done_tasks,
+            "by_status": by_status,
         },
         "metrics": {
             # The signal for whether this is a vault of ideas or a folder of
@@ -359,6 +396,8 @@ def audit(root, args):
                 for name, paths in sorted(by_name.items()) if len(paths) > 1
             ],
             "stale": sorted(stale, key=lambda s: -s["days"]),
+            "stale_seeds": sorted(stale_seeds, key=lambda s: -s["days"]),
+            "contested": contested,
             "hollow": sorted(hollow, key=lambda h: h["words"]),
             "single_use_tags": sorted(t for t, n in tag_use.items() if n == 1),
             "orphan_attachments": sorted(
@@ -408,6 +447,8 @@ def format_text(report):
         ("ambiguous_names", "duplicate filenames (short links are ambiguous)"),
         ("stale_open_tasks", "dated notes with tasks still open"),
         ("stale", "stale notes"),
+        ("stale_seeds", "seeds that never grew"),
+        ("contested", "notes marked contested"),
         ("hollow", "hollow notes"),
         ("single_use_tags", "tags used once"),
         ("orphan_attachments", "unused attachments"),
@@ -451,6 +492,8 @@ def build_parser():
                              "Default: created, type")
     parser.add_argument("-n", "--limit", type=int, default=DEFAULT_LIMIT,
                         help="max items per finding list; 0 for no cap. Default: 25")
+    parser.add_argument("--seed-days", type=int, default=DEFAULT_SEED_DAYS,
+                        help="days after which a note still marked seed is flagged. Default: 30")
     parser.add_argument("--exempt", action="append", metavar="DIR",
                         help="folder scanned but kept out of the findings (repeatable). "
                              "Default: Templates, 04_Archive")

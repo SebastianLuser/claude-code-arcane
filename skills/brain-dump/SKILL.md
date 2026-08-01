@@ -23,7 +23,9 @@ Aplica la rule `vault-conventions`.
 
 2. **Resolver el rol `inbox`.** Leer el `## Rutas` del `CLAUDE.md` del vault. Es lo único que hace falta leer del contrato acá, y cuesta una lectura: escribir en `_inbox/` cuando el vault usa otra carpeta deja la captura en un lugar que ningún review va a mirar. Si el vault no tiene `CLAUDE.md`, usar el default y avisar en la misma línea de confirmación.
 
-3. **Abrir el dump de hoy.** `<inbox>/YYYY-MM-DD.md` (default `_inbox/`) con la fecha de hoy. Si no existe, crearlo desde `<templates>/Dump.md` (default `Templates/`), o con el frontmatter mínimo `created`, `type: dump`, `tags: []` si el template no está.
+3. **Abrir el dump de hoy.** `<inbox>/YYYY-MM-DD dump.md` (default `_inbox/`) con la fecha de hoy. El dump se llama `YYYY-MM-DD dump.md` y no `YYYY-MM-DD.md` a propósito: el daily de ese día ya se llama `YYYY-MM-DD.md`, y dos archivos con el mismo nombre hacen que `[[2026-07-28]]` resuelva de forma impredecible en todo el vault. Es la colisión que el audit reporta como `ambiguous_names`, y sin el sufijo pasaría todos los días. Si el vault ya tiene dumps con el nombre viejo, seguir su convención y avisarlo, en vez de partir la serie en dos.
+
+   Si no existe, crearlo desde `<templates>/Dump.md` (default `Templates/`), o con el frontmatter mínimo `created`, `type: dump`, `tags: []` si el template no está.
 
 4. **Agregar el contenido al final**, una línea por cosa, sin reordenar ni reescribir lo que ya había:
    - Lo que suena a tarea va como `- [ ] <texto>`. Lo que suena a idea, nota o link va como `- <texto>`.

@@ -6,7 +6,7 @@ tags: []
 
 # {{date:YYYY-MM-DD}}
 
-Dump del día: [[{{date:YYYY-MM-DD}}]]
+Dump del día: [[{{date:YYYY-MM-DD}} dump]]
 
 ## Qué pasó
 

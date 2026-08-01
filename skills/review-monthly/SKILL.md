@@ -21,7 +21,8 @@ Aplica la rule `vault-conventions`.
 
 1. **Ubicar el vault** y leer su `CLAUDE.md`.
 2. **Leer los weeklies del mes (rol `weekly`).** Los weeklies son la fuente: no releas los dailies ni los dumps, ese trabajo ya está hecho y releerlo quema contexto sin agregar nada. Si faltan weeklies, listarlos y ofrecer `/review-weekly` para esas semanas antes de seguir.
-3. **Correr `/vault-audit`** para tener las métricas de salud del vault del mes (huérfanas, notas stale, tareas viejas abiertas). El monthly es el momento natural del ciclo para mirarlas.
+3. **Correr `/vault-audit`** para tener las métricas de salud del vault del mes (huérfanas, notas stale, semillas que no crecieron, notas `contested`, tareas viejas abiertas). El monthly es el momento natural del ciclo para mirarlas.
+4. **Presupuesto de lectura:** los weeklies del mes más el reporte del audit. Techo de 15 lecturas. Si faltan weeklies, se listan y se para: un monthly sobre dailies crudos cuesta diez veces más y sale peor.
 
 ## Fase 2 - Extraer
 
@@ -30,6 +31,7 @@ Aplica la rule `vault-conventions`.
 3. **Lo que no se movió:** proyectos abiertos sin actividad en el mes, hilos que siguen abiertos desde la primera semana. Se nombran.
 4. **Semillas:** lo que apareció este mes y merece seguimiento, con el link a donde apareció.
 5. **Salud del vault:** las tres o cuatro métricas del audit que cambiaron respecto del mes anterior, si hay un monthly previo para comparar.
+6. **Contradicciones sin resolver:** las notas que el audit reporta como `contested`, con las dos posiciones y de dónde salió cada una. No las resuelvas: mostralas. Que el vault te avise cuándo se contradice consigo mismo es una función, no un defecto.
 
 ## Fase 3 - Escribir
 

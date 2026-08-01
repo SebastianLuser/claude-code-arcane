@@ -459,7 +459,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
-| `/second-brain` | Entry point: crea o adopta el vault (PARA + Zettelkasten + hub files), escribe su CLAUDE.md, detecta plugins y rutea | `[setup\|adopt\|status\|next]` |
+| `/second-brain` | Entry point: crea o adopta el vault (PARA + Zettelkasten + hub files), escribe su CLAUDE.md y su cache hot.md, detecta plugins, conecta otros proyectos al mismo vault y rutea | `[setup\|adopt\|status\|next\|link]` |
 | `/brain-dump` | Captura sin friccion al dump del dia: sin tags, sin clasificar, sin decidir donde va | `[texto a capturar]` |
 | `/review-dump` | Procesa el dump: clasifica item por item con confirmacion, actualiza hubs, rutea tareas y crea el daily | `[today\|YYYY-MM-DD]` |
 | `/review-weekly` | Retrospectiva semanal: temas recurrentes, hilos abiertos y tareas hechas vs no hechas | `[current\|YYYY-Www\|YYYY-MM-DD]` |
@@ -468,7 +468,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/hub-note` | Hub file (MOC) por entidad que importa: el tejido entre PARA y Zettelkasten | `[entidad] [--update]` |
 | `/vault-recall` | Busqueda con ranking sobre el vault: BM25, acentos plegados y expansion con los alias de tus hubs, via indice cacheado | `<consulta> [-n N] [--literal\|--refresh]` |
 | `/vault-clip` | URL a nota limpia: contenido sin menus ni banners, con resumen propio y fuente | `<url> [--full\|--summary]` |
-| `/vault-audit` | Reporte de salud via script Python: huerfanas, links roto, stale, tag sprawl, nombres duplicados. Read-only | `[--vault <path>] [--stale-days N]` |
+| `/vault-audit` | Reporte de salud via script Python: huerfanas, links roto, stale, semillas que no crecieron, contradicciones, tag sprawl, nombres duplicados. Read-only | `[--vault <path>] [--stale-days N]` |
 | `/vault-tidy` | Aplica los arreglos del audit con approval item por item. Nunca borra, archiva | `[orphans\|broken\|duplicates\|tasks\|frontmatter\|archive\|all]` |
 | `/obsidian-markdown` | Sintaxis Obsidian: wikilinks, embeds, callouts, block IDs, propiedades. Valida o corrige una nota | `[reference\|check <archivo>\|fix <archivo>]` |
 | `/obsidian-bases` | Archivos .base: vistas, filtros, formulas y summaries. Incluye migracion desde Dataview | `[create <desc>\|explain <archivo>\|migrate <query>]` |

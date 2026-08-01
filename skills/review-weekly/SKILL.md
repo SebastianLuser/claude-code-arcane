@@ -22,17 +22,32 @@ Aplica la rule `vault-conventions`.
 1. **Ubicar el vault** y leer su `CLAUDE.md`.
 2. **Resolver el rango**: si el argumento es una fecha, la semana ISO que la contiene; si es `YYYY-Www`, esa; si no hay argumento, la semana en curso.
 3. **Leer los dailies del rango (rol `daily`) y sus dumps (rol `inbox`).** Los dailies dan la síntesis, los dumps dan lo que no llegó a la síntesis. Faltan dailies casi siempre: anotá qué días quedaron sin procesar y ofrecé `/review-dump` para esos días antes de seguir, porque un weekly sobre dumps crudos es peor.
-4. **No leer el vault entero.** Solo el rango, más los hubs que los dailies de la semana efectivamente linkean.
+4. **Presupuesto de lectura:** los 7 dailies del rango, sus dumps, y hasta 10 hubs de los que esos dailies linkean. Techo duro de 25 lecturas. Si el material no alcanza para sacar conclusiones, **decilo y pará** en vez de entregar un weekly a medias con cara de completo.
 
 ## Fase 2 - Extraer
 
 1. **Temas:** de 3 a 5 asuntos que aparecen en dos días o más. Cada tema con los dailies donde aparece. Un tema que aparece un solo día no es un tema, es un evento.
+
+Una conexión califica solo si es de uno de estos cuatro tipos (rúbrica adaptada del patrón de sesiones de conexión):
+
+| Tipo | Qué buscar |
+|---|---|
+| **A** | El mismo principio en dos dominios distintos |
+| **B** | Dos notas que se contradicen y la contradicción es productiva |
+| **C** | Un patrón que solo aparece juntando tres notas o más, y todavía no tiene nombre |
+| **D** | Una pregunta de una nota que otra nota responde sin proponérselo |
+
+**Si la conexión es obvia, no califica.** El test es: ¿el usuario la habría encontrado solo, eventualmente? Si sí, sobra. Este paso se gana el lugar encontrando lo que él se pierde. Mínimo 3, máximo 5: por encima de eso la lista deja de leerse.
+
+Las del tipo B se marcan: las dos notas involucradas van al weekly como contradicción, y si el usuario confirma que sigue sin resolverse, se les pone `status: contested` en el frontmatter con approval. La contradicción se preserva, no se resuelve sola.
 2. **Hilos abiertos:** preguntas o decisiones pendientes, distintas de una tarea. "Definir si migramos" es un hilo; "mandar el mail" es una tarea.
 3. **Tareas:** conteo de hechas y de no hechas, con las no hechas nombradas una por una. No suavizar el número ni omitirlas.
 4. **Notas que crecieron:** hubs y notas atómicas que recibieron contenido en la semana.
 5. **Señales, si aparecen:** un tema que se repite tres semanas seguidas sin avanzar, o un proyecto sin una sola mención en toda la semana. Reportarlas como observación, sin diagnóstico ni consejo.
 
 ## Fase 3 - Escribir
+
+Refrescar también `hot.md` con los hilos abiertos de la semana, respetando su techo de 40 líneas.
 
 Con approval sobre lo extraído, crear `<weekly>/YYYY-Www.md` (default `Reflect/Weekly/`) desde `<templates>/Weekly.md`, con links a los dailies de la semana. Si el weekly ya existe, actualizarlo sin duplicar secciones.
 

@@ -43,6 +43,7 @@ Con approval sobre el título y el destino, crear la nota en `<atomic>` (default
 - **Sección `## Por qué me importa`:** una o dos líneas sobre qué problema del usuario toca. Es lo que separa una nota atómica de un resumen de Wikipedia. Si el usuario no lo dijo, preguntar en una línea, no inventarlo.
 - **Sección `## Relacionado`:** al menos un `[[wikilink]]`, siempre. Si no hay a qué linkear, falta el hub del tema: crearlo con `/hub-note` antes de cerrar esta nota.
 - **Sección `## Fuente`:** el clip, el libro, la conversación, o "propia" si salió del usuario.
+- **`status` del frontmatter:** `seed` si la nota queda como semilla a propósito, `provisional` si ya tiene cuerpo. **Nunca pongas `evergreen` vos:** eso lo decide el usuario cuando la nota deja de moverse, y es lo que hace que el audit no la reporte como stale.
 
 Si la idea vino de una nota de proyecto o de un dump, **la fuente no se vacía**: la línea original se queda donde estaba y se le agrega el link a la nota nueva.
 

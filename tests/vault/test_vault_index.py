@@ -247,8 +247,10 @@ class TestInventory(IndexFixture):
         self.assertEqual([a["title"] for a in inv["areas"]], ["Salud"])
 
     def test_reports_the_dumps_that_never_got_a_daily(self):
-        self.note("_inbox/2026-07-20.md", "---\ntype: dump\n---\nx\n")
-        self.note("_inbox/2026-07-21.md", "---\ntype: dump\n---\nx\n")
+        # Dumps carry a "dump" suffix so their filename does not collide with the
+        # daily of the same date; the date still has to be picked up from it.
+        self.note("_inbox/2026-07-20 dump.md", "---\ntype: dump\n---\nx\n")
+        self.note("_inbox/2026-07-21 dump.md", "---\ntype: dump\n---\nx\n")
         self.note("Reflect/Daily/2026-07-21.md", "---\ntype: daily\n---\nx\n")
         cache, _ = self.refresh()
 
