@@ -1,7 +1,7 @@
 ---
 name: vault-recall
 description: "Busqueda con ranking sobre el vault via indice cacheado: BM25, acentos plegados y expansion de la consulta con los alias de tus propios hubs. Responde con las notas relevantes, no con la primera que contiene la palabra. Triggers: buscar en el vault, que escribi sobre, encontrar la nota de, recall, donde anote, que tengo sobre."
-argument-hint: "<consulta> [-n N] [--literal | --refresh]"
+argument-hint: "<consulta> [-n N] [--no-expand] [--refresh]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash
@@ -21,15 +21,21 @@ python .claude/skills/vault-recall/scripts/vault_index.py "<vault>" search "<con
 
 El índice vive en `<vault>/.vault-index.json` (dotfile, Obsidian lo ignora) y se actualiza solo lo que cambió: la primera corrida indexa todo, las siguientes cuestan milisegundos. Si no existe, el script lo construye sin que tengas que pedirlo.
 
-Flags: `-n 0` para todos los resultados, `--no-expand` cuando querés la consulta literal, y `--role nombre=ruta` si el vault tiene otra estructura (sale del `## Rutas` de su `CLAUDE.md`).
+Flags del skill, que son los del script y se pasan tal cual:
 
-Si el vault cambió mucho por fuera de Claude (sync desde el teléfono, edición masiva), correr `refresh` antes.
+| Flag | Qué hace |
+|---|---|
+| `-n N` | máximo de resultados; `-n 0` para todos. Default 10 |
+| `--no-expand` | consulta literal, sin expandir con los alias de los hubs |
+| `--role nombre=ruta` | estructura del vault distinta de la default (sale del `## Rutas` de su `CLAUDE.md`) |
+
+**`--refresh`** no es un flag del script: es un paso previo. Con `--refresh`, correr primero `vault_index.py "<vault>" refresh` y después la búsqueda. Sirve cuando el vault cambió por fuera de Claude (sync desde el teléfono, edición masiva en Obsidian): el índice es incremental por mtime, así que cuesta milisegundos y evita buscar contra un caché viejo.
 
 ## Fase 2 - Leer y responder
 
 1. **Leé las 2 o 3 primeras**, no las 10. El ranking está para que no tengas que abrir todo.
 2. **Respondé la pregunta del usuario citando las notas**, con `[[wikilinks]]` para que pueda saltar. No pegues las notas enteras.
-3. **Decí qué mirasteis y qué no.** Si el resultado 1 tenía score 8 y el 2 tenía 0.4, decilo: significa que hay una sola nota sobre el tema.
+3. **Decí qué miraste y qué no.** Si el resultado 1 tenía score 8 y el 2 tenía 0.4, decilo: significa que hay una sola nota sobre el tema.
 4. **Si la respuesta no está en el vault, decilo.** No la completes con conocimiento general disfrazado de nota del usuario: la utilidad del vault es que lo que sale de ahí es lo que él pensó.
 
 ## Qué encuentra y qué no
