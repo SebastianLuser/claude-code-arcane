@@ -1,6 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Catalogo completo de los 351 skills disponibles para proyectos consumidores. Organizados por division.
+Los 375 skills disponibles para proyectos consumidores, organizados por division.
+
+La tabla cubre 333: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -98,7 +100,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 
 ---
 
-## General (55 skills)
+## General (54 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -466,7 +468,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/review-monthly` | Retrospectiva mensual: patrones, logros con evidencia, semillas y salud del vault | `[current\|YYYY-MM]` |
 | `/zettel` | Nota atomica con el criterio de cuando una idea pasa de nota de proyecto a permanente | `[idea\|ruta#seccion\|dump YYYY-MM-DD]` |
 | `/hub-note` | Hub file (MOC) por entidad que importa: el tejido entre PARA y Zettelkasten | `[entidad] [--update]` |
-| `/vault-recall` | Busqueda con ranking sobre el vault: BM25, acentos plegados y expansion con los alias de tus hubs, via indice cacheado | `<consulta> [-n N] [--literal\|--refresh]` |
+| `/vault-recall` | Busqueda con ranking (BM25, acentos plegados, expansion por alias) y notas relacionadas por vocabulario compartido, via indice cacheado | `<consulta> \| related <nota> [-n N]` |
 | `/vault-clip` | URL a nota limpia: contenido sin menus ni banners, con resumen propio y fuente | `<url> [--full\|--summary]` |
 | `/vault-audit` | Reporte de salud via script Python: huerfanas, links roto, stale, semillas que no crecieron, contradicciones, tag sprawl, nombres duplicados. Read-only | `[--vault <path>] [--stale-days N]` |
 | `/vault-tidy` | Aplica los arreglos del audit con approval item por item. Nunca borra, archiva | `[orphans\|broken\|duplicates\|tasks\|frontmatter\|archive\|all]` |

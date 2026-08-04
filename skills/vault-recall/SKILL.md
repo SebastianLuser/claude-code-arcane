@@ -1,7 +1,7 @@
 ---
 name: vault-recall
-description: "Busqueda con ranking sobre el vault via indice cacheado: BM25, acentos plegados y expansion de la consulta con los alias de tus propios hubs. Responde con las notas relevantes, no con la primera que contiene la palabra. Triggers: buscar en el vault, que escribi sobre, encontrar la nota de, recall, donde anote, que tengo sobre."
-argument-hint: "<consulta> [-n N] [--no-expand] [--refresh]"
+description: "Busqueda con ranking sobre el vault via indice cacheado: BM25, acentos plegados y expansion con los alias que declaran tus notas. Tambien encuentra las notas mas parecidas a una dada. Triggers: buscar en el vault, que escribi sobre, encontrar la nota de, recall, donde anote, que tengo sobre, que se parece a esta nota, notas relacionadas."
+argument-hint: "<consulta> | related <nota> [-n N] [--no-expand] [--refresh]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash
@@ -31,6 +31,19 @@ Flags del skill, que son los del script y se pasan tal cual:
 
 **`--refresh`** no es un flag del script: es un paso previo. Con `--refresh`, correr primero `vault_index.py "<vault>" refresh` y después la búsqueda. Sirve cuando el vault cambió por fuera de Claude (sync desde el teléfono, edición masiva en Obsidian): el índice es incremental por mtime, así que cuesta milisegundos y evita buscar contra un caché viejo.
 
+### Modo `related`: qué se parece a esta nota
+
+```bash
+python .claude/skills/vault-recall/scripts/vault_index.py "<vault>" related "<nota o titulo>" -n 10
+```
+
+Ranquea por vocabulario compartido (tf-idf cosine) y devuelve qué términos comparten, así se ve **por qué** dos notas quedaron cerca. Sirve para dos cosas concretas:
+
+- Antes de crear una nota atómica, ver si ya existe una que dice lo mismo con otras palabras.
+- Buscar candidatos de conexión para `/review-weekly`, que es donde el vault empieza a producir ideas propias.
+
+Si el título es ambiguo (dos notas con el mismo nombre), no elige: reporta las dos y para. Eso es el hallazgo `ambiguous_names` del audit apareciendo por otra puerta.
+
 ## Fase 2 - Leer y responder
 
 1. **Leé las 2 o 3 primeras**, no las 10. El ranking está para que no tengas que abrir todo.
@@ -47,12 +60,12 @@ Esto es **recuperación léxica con sinónimos derivados del vault**, no búsque
 | Buscás `indice` y la nota dice `índices` | Lo encuentra: pliega acentos y colapsa plurales |
 | Buscás `PG` y la nota dice `postgres` | Lo encuentra, **si existe el hub con `PG` en `aliases`** |
 | La palabra aparece una vez en un dump de 900 palabras | Rankea bajo, como corresponde |
-| Buscás `performance de queries` y la nota habla de `indices parciales` sin nombrar ninguna de esas palabras | **No lo encuentra.** No hay embeddings. |
+| Buscás `performance de queries` y la nota habla de `indices parciales` sin nombrar ninguna de esas palabras | **No lo encuentra.** No hay embeddings, ni en `search` ni en `related`: los dos necesitan palabras compartidas. |
 
 Ese último caso es el límite real y hay que decirlo cuando pasa, en vez de responder "no tenés nada sobre eso". Las tres salidas, en orden de costo:
 
 1. **Reformular con el vocabulario del usuario**, que es el que está en el vault.
-2. **Agregar el alias al hub** del tema (`/hub-note --update`): la expansión sale de ahí, así que enseñarle un sinónimo al vault lo arregla para siempre. Es el mecanismo, no un workaround.
+2. **Agregar el alias** donde corresponda (`/hub-note --update`, o el frontmatter de la nota: `aliases:` de **cualquier** nota alimenta la expansión). Enseñarle un sinónimo al vault lo arregla para siempre, y es el mecanismo, no un workaround.
 3. **Recorrer los hubs** del tema y leer sus `## Notas`: el mapa hecho a mano sigue siendo mejor que cualquier búsqueda.
 
 ## Reglas

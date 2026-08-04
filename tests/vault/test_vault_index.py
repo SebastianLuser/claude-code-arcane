@@ -193,6 +193,20 @@ class TestSearch(IndexFixture):
         self.assertIn("postgr", expanded)
         self.assertIn("03_Resources/Vacuum.md", paths)
 
+    def test_any_note_can_teach_a_synonym_not_only_a_hub(self):
+        # Aliases are the synonym mechanism, so restricting them to hub notes
+        # would mean the vault can only learn vocabulary in one folder.
+        self.note("03_Resources/OKR.md",
+                  "---\ntype: atomic\naliases:\n  - objetivos y resultados\n---\nmarco de metas\n")
+        self.note("03_Resources/Trimestre.md",
+                  "---\ntype: atomic\n---\nrevisamos los objetivos y resultados del trimestre\n")
+        cache, _ = self.refresh()
+
+        results, expanded = vi.search(cache, "OKR", 10)
+
+        self.assertIn("objetivo", expanded)
+        self.assertIn("03_Resources/Trimestre.md", [r["path"] for r in results])
+
     def test_no_expand_keeps_the_query_literal(self):
         self.note("Hubs/Postgres.md", "---\ntype: hub\naliases:\n  - PG\n---\nbase de datos\n")
         self.note("03_Resources/Vacuum.md", "---\ntype: atomic\n---\nen postgres el autovacuum\n")
@@ -230,6 +244,51 @@ class TestSearch(IndexFixture):
         cache, _ = self.refresh()
 
         self.assertEqual(len(vi.search(cache, "indice", 0)[0]), 5)
+
+
+class TestRelated(IndexFixture):
+    def test_ranks_the_note_sharing_the_most_distinctive_vocabulary(self):
+        self.note("03_Resources/Indices parciales.md",
+                  "---\ntype: atomic\n---\nun indice parcial cubre solo las filas consultadas\n")
+        self.note("03_Resources/Vacuum.md",
+                  "---\ntype: atomic\n---\nel autovacuum limpia las filas muertas del indice\n")
+        self.note("03_Resources/Cocina.md", "---\ntype: atomic\n---\nreceta de milanesas\n")
+        cache, _ = self.refresh()
+
+        found, _ = vi.related(cache, "03_Resources/Indices parciales.md", 10)
+        paths = [r["path"] for r in found["results"]]
+
+        self.assertEqual(paths[0], "03_Resources/Vacuum.md")
+        self.assertNotIn("03_Resources/Cocina.md", paths)
+
+    def test_resolves_a_note_by_title_and_never_returns_itself(self):
+        self.note("03_Resources/Una.md", "---\ntype: atomic\n---\nindice parcial\n")
+        self.note("03_Resources/Otra.md", "---\ntype: atomic\n---\nindice parcial\n")
+        cache, _ = self.refresh()
+
+        found, _ = vi.related(cache, "Una", 10)
+
+        self.assertEqual(found["target"], "03_Resources/Una.md")
+        self.assertNotIn("03_Resources/Una.md", [r["path"] for r in found["results"]])
+
+    def test_reports_an_unknown_note_instead_of_returning_nothing(self):
+        self.note("A.md", "---\ntype: atomic\n---\ncuerpo\n")
+        cache, _ = self.refresh()
+
+        found, ambiguous = vi.related(cache, "Fantasma", 10)
+
+        self.assertIsNone(found)
+        self.assertEqual(ambiguous, [])
+
+    def test_flags_an_ambiguous_title_rather_than_picking_one(self):
+        self.note("a/Dup.md", "---\ntype: atomic\n---\nuno\n")
+        self.note("b/Dup.md", "---\ntype: atomic\n---\ndos\n")
+        cache, _ = self.refresh()
+
+        found, ambiguous = vi.related(cache, "Dup", 10)
+
+        self.assertIsNone(found)
+        self.assertEqual(sorted(ambiguous), ["a/Dup.md", "b/Dup.md"])
 
 
 class TestInventory(IndexFixture):

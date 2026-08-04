@@ -8,11 +8,17 @@ only the notes whose mtime or size changed.
 Two problems this solves, both of which show up around a thousand notes:
 
   search     Grep finds the notes containing your exact words. This ranks by
-             BM25, folds accents, and expands the query with the aliases of your
-             own hub notes, so searching "postgres" also reaches the notes that
-             only ever said "PG". It is lexical retrieval with vault-derived
-             synonyms, NOT embeddings: it will not connect "indices parciales"
-             to "performance de queries" unless a hub links those words.
+             BM25, folds accents, and expands the query with the aliases any note
+             declares, so searching "postgres" also reaches the notes that only
+             ever said "PG". It is lexical retrieval with vault-derived synonyms,
+             NOT embeddings: it will not connect "indices parciales" to
+             "performance de queries" unless some note ties those words together.
+             Teaching it a synonym is one frontmatter line.
+
+  related    Notes closest to one note by tf-idf cosine over shared vocabulary.
+             Answers "what else talks about this", which is what a review session
+             needs to propose connections. Same limit as search: no shared words,
+             no match.
 
   inventory  A review session needs to know what hubs, projects and areas exist
              before it can propose where an item goes. Globbing the vault on
@@ -25,6 +31,7 @@ adopted vault keep its own structure (see the ## Rutas contract in its CLAUDE.md
 Usage:
     python vault_index.py <vault> refresh [--role name=path ...]
     python vault_index.py <vault> search "<query>" [-n 10] [--no-expand]
+    python vault_index.py <vault> related "<note>" [-n 10]
     python vault_index.py <vault> inventory [--format json|text]
 
 Errors go to stderr as {"error": "...", "code": "..."} with exit code 1.
@@ -286,15 +293,16 @@ def refresh(root, roles):
 
 def alias_map(cache, roles):
     """
-    Entity -> every other name it is known by, taken from the hub notes. This is
-    the whole synonym mechanism: it comes from the user's own vocabulary rather
-    than from a generic thesaurus, which is why it is worth having.
+    Entity -> every other name it is known by, taken from the aliases any note
+    declares. This is the whole synonym mechanism: it comes from the user's own
+    vocabulary rather than from a generic thesaurus, which is why it is worth
+    having, and it means teaching the vault a synonym is one frontmatter line.
+
+    Hubs are where this normally lives, but not exclusively: an atomic note that
+    declares `aliases: [OKR, objetivos y resultados]` is teaching the same thing.
     """
-    hubs_dir = roles.get("hubs", DEFAULT_ROLES["hubs"])
     groups = []
-    for rel, record in cache["docs"].items():
-        if not rel.startswith(hubs_dir + "/") and record.get("type") != "hub":
-            continue
+    for record in cache["docs"].values():
         names = [record["title"]] + record.get("aliases", [])
         if len(names) > 1:
             groups.append(names)
@@ -352,6 +360,55 @@ def search(cache, query, limit, expand=True):
     return scored[:limit] if limit > 0 else scored, expanded
 
 
+def related(cache, target, limit):
+    """
+    Notes closest to one note by tf-idf cosine over the shared vocabulary.
+
+    This is the honest middle ground between search and embeddings. It answers
+    "what else talks about this" without a model, and it is what feeds a review
+    session looking for connections. What it cannot do is connect two notes that
+    share no words: for that you need embeddings, and this file does not have
+    them. It says so rather than pretending.
+    """
+    docs = cache["docs"]
+    if target not in docs:
+        matches = [rel for rel in docs
+                   if os.path.splitext(os.path.basename(rel))[0].lower() == target.lower()]
+        if len(matches) != 1:
+            return None, matches
+        target = matches[0]
+
+    n_docs = cache["n_docs"] or 1
+    df = cache["df"]
+
+    def vector(record):
+        out = {}
+        for term, freq in record["terms"].items():
+            idf = math.log(1 + n_docs / (df.get(term, 0) + 0.5))
+            out[term] = freq * idf
+        norm = math.sqrt(sum(v * v for v in out.values())) or 1.0
+        return {term: value / norm for term, value in out.items()}
+
+    base = vector(docs[target])
+    scored = []
+    for rel, record in docs.items():
+        if rel == target:
+            continue
+        other = vector(record)
+        shared = set(base) & set(other)
+        if not shared:
+            continue
+        score = sum(base[term] * other[term] for term in shared)
+        if score <= 0:
+            continue
+        top = sorted(shared, key=lambda term: -(base[term] * other[term]))[:5]
+        scored.append({"path": rel, "title": record["title"], "type": record["type"],
+                       "score": round(score, 3), "shared": top})
+
+    scored.sort(key=lambda r: (-r["score"], r["path"]))
+    return {"target": target, "results": scored[:limit] if limit > 0 else scored}, None
+
+
 def inventory(cache, roles):
     docs = cache["docs"]
 
@@ -405,6 +462,16 @@ def format_search_text(results, expanded):
     for rank, hit in enumerate(results, 1):
         out.append("{0:>2}. {1:<6} {2}".format(rank, hit["score"], hit["path"]))
         out.append("    matched: {0}".format(", ".join(hit["matched"])))
+    return "\n".join(out)
+
+
+def format_related_text(found):
+    if not found["results"]:
+        return "nothing shares vocabulary with {0}".format(found["target"])
+    out = ["related to {0}:".format(found["target"]), ""]
+    for rank, hit in enumerate(found["results"], 1):
+        out.append("{0:>2}. {1:<6} {2}".format(rank, hit["score"], hit["path"]))
+        out.append("    shared: {0}".format(", ".join(hit["shared"])))
     return "\n".join(out)
 
 
@@ -478,6 +545,12 @@ def build_parser():
                             help="do not expand the query with hub aliases")
     search_cmd.add_argument("--format", choices=["json", "text"], default="json")
 
+    rel = sub.add_parser("related", help="notes closest to one note by shared vocabulary")
+    rel.add_argument("note", help="path relative to the vault, or the note title")
+    rel.add_argument("-n", "--limit", type=int, default=10,
+                     help="max results; 0 for all. Default: 10")
+    rel.add_argument("--format", choices=["json", "text"], default="json")
+
     inv = sub.add_parser("inventory", help="compact listing of hubs, projects and areas")
     inv.add_argument("--format", choices=["json", "text"], default="json")
 
@@ -522,6 +595,23 @@ def main():
         else:
             print(json.dumps({"query": args.query, "terms": expanded, "results": results},
                              indent=2, ensure_ascii=False))
+        return 0
+
+    if args.command == "related":
+        found, ambiguous = related(cache, args.note, args.limit)
+        if found is None:
+            write_error(
+                "no single note matches '{0}'{1}".format(
+                    args.note,
+                    ": " + ", ".join(ambiguous) if ambiguous else "",
+                ),
+                "AMBIGUOUS_NOTE" if ambiguous else "NO_NOTE",
+            )
+            return 1
+        if args.format == "text":
+            print(format_related_text(found))
+        else:
+            print(json.dumps(found, indent=2, ensure_ascii=False))
         return 0
 
     inv = inventory(cache, cache.get("roles") or roles)

@@ -31,7 +31,7 @@ Aplica la rule `vault-conventions`.
 3. **Lo que no se movió:** proyectos abiertos sin actividad en el mes, hilos que siguen abiertos desde la primera semana. Se nombran.
 4. **Semillas:** lo que apareció este mes y merece seguimiento, con el link a donde apareció.
 5. **Salud del vault:** las tres o cuatro métricas del audit que cambiaron respecto del mes anterior, si hay un monthly previo para comparar.
-6. **Contradicciones sin resolver:** las notas que el audit reporta como `contested`, con las dos posiciones y de dónde salió cada una. No las resuelvas: mostralas. Que el vault te avise cuándo se contradice consigo mismo es una función, no un defecto.
+6. **Contradicciones sin resolver:** las notas que el audit reporta como `contested`, cada una con el bloque `> [!warning] Contradicción sin resolver` que trae las dos posiciones y su fuente (mismo formato que usa `/review-weekly`). No las resuelvas: mostralas, con desde cuándo están abiertas. Que el vault te avise cuándo se contradice consigo mismo es una función, no un defecto. Si el usuario resuelve una en el momento, la resolución es una nota atómica nueva que linkea a las dos, y recién ahí se les saca el `contested`.
 
 ## Fase 3 - Escribir
 

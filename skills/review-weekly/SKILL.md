@@ -37,9 +37,30 @@ Una conexión califica solo si es de uno de estos cuatro tipos (rúbrica adaptad
 | **C** | Un patrón que solo aparece juntando tres notas o más, y todavía no tiene nombre |
 | **D** | Una pregunta de una nota que otra nota responde sin proponérselo |
 
+Para no depender solo de lo que recordás de la semana, pedile candidatos al índice: `vault_index.py "<vault>" related "<nota de la semana>"` devuelve las notas más cercanas por vocabulario compartido, y ahí suelen estar las del tipo A y C. El criterio de si califican sigue siendo tuyo: el script propone vecinos, no conexiones.
+
 **Si la conexión es obvia, no califica.** El test es: ¿el usuario la habría encontrado solo, eventualmente? Si sí, sobra. Este paso se gana el lugar encontrando lo que él se pierde. Mínimo 3, máximo 5: por encima de eso la lista deja de leerse.
 
 Las del tipo B se marcan: las dos notas involucradas van al weekly como contradicción, y si el usuario confirma que sigue sin resolverse, se les pone `status: contested` en el frontmatter con approval. La contradicción se preserva, no se resuelve sola.
+
+### El artefacto de una contradicción
+
+Cuando una conexión tipo B se confirma, el weekly lleva un bloque con **las dos posiciones enfrentadas y su fuente**, no una síntesis que las promedie:
+
+```markdown
+> [!warning] Contradicción sin resolver
+> **[[Nota A]]** dice: <la afirmación, textual o parafraseada fielmente>
+> **[[Nota B]]** dice: <la otra>
+> Sin resolver desde YYYY-MM-DD. Las dos quedan `status: contested`.
+```
+
+Se usa `[!warning]` con título propio y no `[!contradiction]`: ese tipo no existe en Obsidian y renderizaría como un `note` cualquiera sin avisar (ver `/obsidian-markdown`).
+
+Tres reglas del artefacto:
+
+- **No la resuelvas.** Si te parece obvio cuál de las dos gana, decilo como comentario aparte; la nota no elige.
+- **No borres ninguna de las dos.** Una contradicción resuelta borrando la mitad no se resolvió, se tapó.
+- **Cuando el usuario la resuelve**, se le saca el `contested` a las dos y la resolución va como nota atómica propia, linkeando a ambas. Eso es conocimiento nuevo: es el caso donde la contradicción produjo algo.
 2. **Hilos abiertos:** preguntas o decisiones pendientes, distintas de una tarea. "Definir si migramos" es un hilo; "mandar el mail" es una tarea.
 3. **Tareas:** conteo de hechas y de no hechas, con las no hechas nombradas una por una. No suavizar el número ni omitirlas.
 4. **Notas que crecieron:** hubs y notas atómicas que recibieron contenido en la semana.

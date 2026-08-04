@@ -9,6 +9,14 @@ on:
   pull_request:
     branches: [main]
 
+# A branch with an open PR fires both triggers, so every push ran the suite
+# twice. Grouping by ref collapses that to one run and cancels the previous one
+# when you push again mid-run. main is excluded from cancellation: there, a
+# cancelled run would leave a commit without a verdict.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest

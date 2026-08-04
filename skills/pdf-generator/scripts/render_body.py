@@ -27,6 +27,8 @@ Block types:
 Exit codes: 0 success, 1 bad args/missing file, 2 missing dep, 3 render error
 """
 
+from __future__ import annotations
+
 import argparse
 import io
 import json
