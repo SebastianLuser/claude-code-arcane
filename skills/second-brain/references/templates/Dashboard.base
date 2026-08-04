@@ -1,0 +1,70 @@
+filters:
+  and:
+    - '!file.inFolder("Templates")'
+    - '!file.inFolder("04_Archive")'
+
+formulas:
+  dias_sin_tocar: '(now() - file.mtime).days'
+
+properties:
+  status:
+    displayName: Madurez
+  formula.dias_sin_tocar:
+    displayName: "Dias sin tocar"
+  file.mtime:
+    displayName: Modificada
+
+views:
+  - type: table
+    name: "Semillas que no crecieron"
+    filters:
+      and:
+        - 'status == "seed"'
+        - "formula.dias_sin_tocar > 30"
+    order:
+      - file.name
+      - formula.dias_sin_tocar
+      - created
+    summaries:
+      formula.dias_sin_tocar: Average
+
+  - type: table
+    name: "Contradicciones abiertas"
+    filters:
+      - 'status == "contested"'
+    order:
+      - file.name
+      - created
+
+  - type: table
+    name: "Tocado esta semana"
+    limit: 30
+    filters:
+      - "file.mtime > now() - 7d"
+    order:
+      - file.mtime
+      - file.name
+      - status
+
+  - type: table
+    name: "Conocimiento por madurez"
+    filters:
+      - 'type == "atomic" || type == "hub" || type == "clip"'
+    groupBy:
+      property: status
+      direction: ASC
+    order:
+      - file.name
+      - type
+      - formula.dias_sin_tocar
+
+  - type: table
+    name: "Proyectos activos"
+    filters:
+      and:
+        - 'type == "project"'
+        - 'status != "cerrado"'
+    order:
+      - file.name
+      - status
+      - deadline

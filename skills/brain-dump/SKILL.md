@@ -1,0 +1,53 @@
+---
+name: brain-dump
+description: "Captura sin friccion al dump del dia en el vault de Obsidian: tareas, ideas, links, transcripciones. Sin tags, sin decidir donde va. Triggers: anota, capturar, brain dump, tirame esto al vault, apunta esto, agregar al inbox, dump del dia."
+argument-hint: "[texto a capturar]"
+category: "pkm"
+user-invocable: true
+allowed-tools: Read, Glob, Write, Edit
+---
+
+# Brain Dump - Captura sin fricción
+
+Agregás lo que el usuario te pasa al dump del día y te callás. Este skill existe para que capturar cueste cero: el momento en que el usuario tiene que pensar "¿dónde va esto?", el sistema ya falló.
+
+Contenido a capturar: `$ARGUMENTS`
+
+Aplica la rule `vault-conventions`.
+
+**Rutas por rol:** el destino se nombra por rol (`inbox`, `templates`), y la ruta real sale del `## Rutas` del `CLAUDE.md` del vault. Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+
+## Pasos
+
+1. **Ubicar el vault.** Flag `--vault <path>`, env `OBSIDIAN_VAULT`, o el directorio actual si contiene `.obsidian/`. Si no hay vault, decirlo en una línea y ofrecer `/second-brain setup`. No inventar una carpeta.
+
+2. **Resolver el rol `inbox`.** Leer el `## Rutas` del `CLAUDE.md` del vault. Es lo único que hace falta leer del contrato acá, y cuesta una lectura: escribir en `_inbox/` cuando el vault usa otra carpeta deja la captura en un lugar que ningún review va a mirar. Si el vault no tiene `CLAUDE.md`, usar el default y avisar en la misma línea de confirmación.
+
+3. **Abrir el dump de hoy.** `<inbox>/YYYY-MM-DD dump.md` (default `_inbox/`) con la fecha de hoy. El dump se llama `YYYY-MM-DD dump.md` y no `YYYY-MM-DD.md` a propósito: el daily de ese día ya se llama `YYYY-MM-DD.md`, y dos archivos con el mismo nombre hacen que `[[2026-07-28]]` resuelva de forma impredecible en todo el vault. Es la colisión que el audit reporta como `ambiguous_names`, y sin el sufijo pasaría todos los días. Si el vault ya tiene dumps con el nombre viejo, seguir su convención y avisarlo, en vez de partir la serie en dos.
+
+   Si no existe, crearlo desde `<templates>/Dump.md` (default `Templates/`), o con el frontmatter mínimo `created`, `type: dump`, `tags: []` si el template no está.
+
+4. **Agregar el contenido al final**, una línea por cosa, sin reordenar ni reescribir lo que ya había:
+   - Lo que suena a tarea va como `- [ ] <texto>`. Lo que suena a idea, nota o link va como `- <texto>`.
+   - URLs sueltas se dejan crudas, con el título de la página al lado solo si el usuario lo dio. No abrir la URL: eso es `/vault-clip`.
+   - Se preserva la redacción del usuario. No corregís su ortografía ni su registro, no resumís, no traducís.
+
+5. **Si no vino contenido en `$ARGUMENTS`**, preguntar qué capturar en una sola línea y esperar. No abrir un cuestionario.
+
+6. **Confirmar en una línea** qué se agregó y a qué archivo. Nada más: el usuario está en medio de otra cosa.
+
+## Approval
+
+La invocación del skill es la aprobación para agregar al dump de hoy: pedir confirmación en cada captura destruiría el punto del skill. Los límites son estrictos en cambio para todo lo demás: **pedí approval explícito antes de escribir fuera del rol `inbox`**, antes de editar líneas que ya estaban en el dump, y antes de crear cualquier nota en los roles `atomic` o `hubs`. Clasificar es trabajo de `/review-dump`, no de acá.
+
+## Reglas
+
+- No clasificar, no taggear, no linkear, no crear notas nuevas. Nada de eso pasa en la captura.
+- No juzgar el contenido ni sugerir mejoras. Es un dump, no un borrador.
+- Nunca reescribir ni reordenar lo que ya estaba en el archivo: solo append.
+- Sin guiones largos en lo que agregues de tu parte.
+- Si el usuario captura algo que claramente es una tarea de un proyecto que existe, **igual va al dump**. La ruteada la hace el review, así el usuario nunca decide en el momento.
+
+## Handoff
+
+Captura COMPLETE cuando el contenido está en el dump del día. A la noche, o cuando el usuario quiera cerrar el día, el siguiente paso es `/review-dump` para clasificar todo lo capturado y generar el daily.

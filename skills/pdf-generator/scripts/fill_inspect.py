@@ -12,6 +12,8 @@ allowed values (for checkboxes / dropdowns), and page number.
 Exit codes: 0 success, 1 bad args / file not found, 2 dep missing, 3 read error
 """
 
+from __future__ import annotations
+
 import argparse
 import json
 import sys

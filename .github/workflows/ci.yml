@@ -2,9 +2,26 @@ name: CI
 
 on:
   push:
-    branches: [main, feat/*]
+    # Both prefixes are in use (PRs #1-#4 and #6 came from feat/*, #5 and #7
+    # from feature/*). Dropping either one costs no error, just a branch that
+    # pushes green until the PR is opened.
+    branches: [main, feat/*, feature/*]
   pull_request:
     branches: [main]
+
+# Supersede a branch's own in-flight run when you push again, so three pushes in
+# a row leave one running suite instead of three.
+#
+# The group deliberately includes the event name. Grouping only by branch does
+# collapse the push and pull_request runs of a branch with an open PR into one,
+# which sounds better and measured worse: the cancelled run reports its jobs as
+# FAILED on the pull request, so the PR goes red while the surviving run is
+# green. A duplicated run costs a minute of CI; a red PR costs the merge signal.
+#
+# main never cancels: there, a cancelled run leaves a commit with no verdict.
+concurrency:
+  group: ci-${{ github.event_name }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: ${{ github.ref_name != 'main' }}
 
 jobs:
   build-and-test:
@@ -26,9 +43,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # Both locations: hooks/ is the shared lifecycle set, and skills/*/hooks/
+      # holds the ones scoped to a single skill (see docs/coding-standards.md).
+      # A skill-scoped hook is still a hook and breaks the same way.
       - name: Syntax check all bash hooks
         run: |
-          for f in hooks/*.sh; do
+          for f in hooks/*.sh skills/*/hooks/*.sh; do
+            [ -e "$f" ] || continue
             echo "Checking $f..."
             bash -n "$f"
           done

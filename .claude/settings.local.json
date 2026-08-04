@@ -147,7 +147,13 @@
       "Bash(node dist/cli.js --help)",
       "Bash(npx arcane *)",
       "Bash(arcane --version)",
-      "Bash(arcane --help)"
+      "Bash(arcane --help)",
+      "Bash(git ls-remote *)",
+      "Bash(git tag *)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(git pull *)",
+      "Skill(code-review)"
     ]
   }
 }

@@ -1,0 +1,37 @@
+name: second-brain
+description: "Second Brain — vault de Obsidian gestionado con Claude Code: captura sin friccion, reviews diario/semanal/mensual, notas atomicas y hub files (PARA + Zettelkasten), busqueda con ranking, captura web, auditoria de salud del vault y sintaxis nativa de Obsidian (markdown, Bases, Canvas)"
+type: addon
+
+skills:
+  - second-brain
+  - brain-dump
+  - review-dump
+  - review-weekly
+  - review-monthly
+  - zettel
+  - hub-note
+  - vault-recall
+  - vault-clip
+  - vault-audit
+  - vault-tidy
+  - obsidian-markdown
+  - obsidian-bases
+  - obsidian-canvas
+
+rules:
+  universal:
+    - vault-conventions
+  gamedev:
+    []
+
+agents:
+  []
+
+permissions:
+  allow:
+    - "Bash(python *vault_audit.py*)"
+    - "Bash(python3 *vault_audit.py*)"
+    - "Bash(python *vault_index.py*)"
+    - "Bash(python3 *vault_index.py*)"
+  deny:
+    []
