@@ -1,3 +1,20 @@
+# [2.1.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.0.0...v2.1.0) (2026-08-04)
+
+
+### Bug Fixes
+
+* **ci:** group concurrency by branch name so a push really runs once ([54a83b7](https://github.com/SebastianLuser/claude-code-arcane/commit/54a83b729c9a82213880cf02de0bf44098040d38))
+* **ci:** scope the concurrency group per event, not per branch ([1ce5273](https://github.com/SebastianLuser/claude-code-arcane/commit/1ce52739a7182f29b51af68b00b6164fc6911b72)), closes [#7](https://github.com/SebastianLuser/claude-code-arcane/issues/7)
+
+
+### Features
+
+* related notes, doc-count and python-floor guards, .base dashboard ([f4fe5c6](https://github.com/SebastianLuser/claude-code-arcane/commit/f4fe5c65deedf0ad247aaa31edfb2498183092e1))
+* **second-brain:** add a hot context cache, note maturity, and cross-project reads ([9b1669f](https://github.com/SebastianLuser/claude-code-arcane/commit/9b1669f2b9808d2815a653fa34acd62531274bd0))
+* **second-brain:** add Obsidian second brain profile ([882c836](https://github.com/SebastianLuser/claude-code-arcane/commit/882c83680efcb3d345888486423fad3d73f2d176))
+* **second-brain:** resolve paths by role, add ranked recall, cache the inventory ([f4c9c7c](https://github.com/SebastianLuser/claude-code-arcane/commit/f4c9c7c8bbf27a4388598cdec50ed9a1141bdf7a))
+* **second-brain:** who-writes-what classes, a code bridge, and sync rules ([03236d2](https://github.com/SebastianLuser/claude-code-arcane/commit/03236d20fdcee3aa55e1b26056021a0334c5497d))
+
 # [2.0.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v1.4.0...v2.0.0) (2026-07-27)
 
 
