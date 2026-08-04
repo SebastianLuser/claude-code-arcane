@@ -9,14 +9,18 @@ on:
   pull_request:
     branches: [main]
 
-# A branch with an open PR fires both triggers, so every push ran the suite
-# twice. The group has to be the branch NAME, not github.ref: on push that is
-# refs/heads/<branch> and on pull_request it is refs/pull/N/merge, so grouping by
-# ref leaves the two events in different groups and both still run.
-# main is excluded from cancellation: there, a cancelled run would leave a commit
-# without a verdict.
+# Supersede a branch's own in-flight run when you push again, so three pushes in
+# a row leave one running suite instead of three.
+#
+# The group deliberately includes the event name. Grouping only by branch does
+# collapse the push and pull_request runs of a branch with an open PR into one,
+# which sounds better and measured worse: the cancelled run reports its jobs as
+# FAILED on the pull request, so the PR goes red while the surviving run is
+# green. A duplicated run costs a minute of CI; a red PR costs the merge signal.
+#
+# main never cancels: there, a cancelled run leaves a commit with no verdict.
 concurrency:
-  group: ci-${{ github.event.pull_request.head.ref || github.ref_name }}
+  group: ci-${{ github.event_name }}-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: ${{ github.ref_name != 'main' }}
 
 jobs:
