@@ -70,12 +70,13 @@ Nunca mencionar en una nota una sintaxis de un plugin que el usuario no tiene in
 5. Escribir el `CLAUDE.md` del vault desde `references/templates/vault-CLAUDE.md`, completando **el `## Rutas`** (rol a carpeta), el contrato de frontmatter y los plugins detectados. El `## Rutas` no es decorativo: es de donde todos los demás skills sacan dónde escribir.
 6. Si hay `bases`, crear `Bases/Dashboard.base` con las vistas de tareas abiertas y notas recientes (delegar la sintaxis a `/obsidian-bases`).
 7. Crear `hot.md` desde `references/templates/hot.md`, vacío. Es el caché que abre las sesiones siguientes (ver abajo).
-8. **Construir el índice** para que la primera búsqueda y el primer review no paguen la indexación completa:
+8. Si el usuario escribe código, crear `codebases.md` desde su template: es el puente del vault al repo, y lo que evita que la arquitectura se copie al vault.
+9. **Construir el índice** para que la primera búsqueda y el primer review no paguen la indexación completa:
    ```bash
    python .claude/skills/vault-recall/scripts/vault_index.py "<vault>" refresh
    ```
-9. **Ofrecer el hook de validación** (opcional, ver abajo).
-10. Verificar que el vault sea un repo git; si no lo es, recomendarlo y explicar por qué (es el undo de cualquier corrida).
+10. **Ofrecer el hook de validación** (opcional, ver abajo).
+11. Verificar que el vault sea un repo git; si no lo es, recomendarlo y explicar por qué (es el undo de cualquier corrida). Preguntar además si el vault se sincroniza y, si la respuesta es sí, aplicar las reglas de sync de abajo **antes** de escribir nada más.
 
 Pedir approval antes de escribir. Verdict: vault READY cuando existen el árbol, los templates y el `CLAUDE.md` con su `## Rutas`.
 
@@ -113,6 +114,12 @@ Para usar el mismo segundo cerebro desde cualquier repo, sin duplicar notas.
 
 Verdict: proyecto READY cuando su `CLAUDE.md` declara el path, la cascada y el límite de escritura.
 
+## El puente al código (`repos:`)
+
+Una nota de hub o de proyecto que tenga código declara `repos:` en su frontmatter, y `codebases.md` traduce cada repo a su path local, cómo se corre y si tiene un grafo consultable. Es la dirección inversa de `/second-brain link`: ese modo hace que un repo lea el vault, esto hace que el vault sepa dónde está el repo.
+
+La regla que lo sostiene es **el vault apunta, no copia**: la arquitectura vive en el repo y se desactualiza el día que alguien mergea. Y si el repo tiene un grafo de código, consultarlo es la primera parada antes de mandar subagentes a explorar: un relevamiento cuesta del orden de 100k tokens, una consulta al grafo uno o dos mil.
+
 ## El caché caliente (`hot.md`)
 
 Un archivo corto en la raíz del vault con dónde estabas: en qué trabajás, qué notas cambiaron, qué hilos siguen abiertos, qué tareas viven. Lo reescribe `/review-dump` al cerrar el día y lo lee `/second-brain status`, además de cualquier otro proyecto conectado con `link`.
@@ -127,6 +134,24 @@ Cuatro reglas, duras porque es lo único del vault que se reescribe sin pregunta
 - **Se reescribe completo.** Un caché al que se le agrega al final es un log, y un log nadie lo lee.
 
 Es descartable por diseño: si contradice una nota, la nota gana, y borrarlo no pierde nada porque se regenera.
+
+## Sync: dos reglas que evitan el 90% de los problemas
+
+Si el vault se sincroniza (Drive, iCloud, Dropbox, Obsidian Sync, git), dos cosas rompen de forma reproducible:
+
+1. **`.obsidian/` no se sincroniza.** Es config por máquina (plugins, tema, layout) y es la fuente número uno de conflictos. El patrón que lo resuelve es tener la raíz del vault local y meter el contenido compartido adentro por symlink:
+
+   ```
+   ~/ObsidianVault/          raiz local, nunca se sincroniza
+   ├── .obsidian/            TU config, queda local
+   └── contenido/            symlink a la carpeta sincronizada
+   ```
+
+   Obsidian sigue el symlink y lee las notas; la config nunca sale de tu máquina. Si el vault es solo tuyo y usás git, la alternativa es `.gitignore` con `.obsidian/`, `.vault-index.json` y `.trash/`.
+
+2. **Un solo transporte.** Nunca dos mecanismos de sync sobre la misma carpeta (Drive + Obsidian Sync, o iCloud + git con auto-commit): producen reversiones aleatorias que después nadie puede explicar.
+
+Y si el vault se comparte con otras personas: **un escritor por nota**. Ningún sync mergea markdown; el segundo que guarda genera una copia en conflicto. Este profile asume vault personal, y ese es su límite honesto: para equipo hace falta declarar dueño por nota y aceptar que la co-edición no existe.
 
 ## Hook de validación (opcional)
 

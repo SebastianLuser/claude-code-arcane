@@ -23,7 +23,7 @@ Contrato de rutas: los skills escriben en **roles**, y esta tabla dice qué carp
 | `archive` | `04_Archive` |
 | `templates` | `Templates` |
 
-Y dos archivos fijos en la raíz: este `CLAUDE.md` (el contrato) y `hot.md` (el caché de contexto reciente, lo reescribe `/review-dump`).
+Y tres archivos fijos en la raíz: este `CLAUDE.md` (el contrato), `hot.md` (el caché de contexto reciente, lo reescribe `/review-dump`) y `codebases.md` (el puente a los repos, si hay código).
 
 Un rol que este vault no usa se marca `(no usa)` en vez de borrar la fila: así queda explícito que la ausencia fue una decisión.
 
@@ -78,9 +78,11 @@ Campos adicionales por tipo:
 
 | `type` | Campos propios |
 |---|---|
-| `project` | `status: activo \| pausado \| cerrado`, `deadline` (opcional) |
+| `project` | `status: activo \| pausado \| cerrado`, `deadline` (opcional), `repos:` si tiene código |
 | `clip` | `source` (URL), `author` (opcional) |
-| `hub` | `aliases` (nombres alternativos de la entidad) |
+| `hub` | `aliases` (nombres alternativos de la entidad), `repos:` si la entidad tiene código |
+
+`repos:` es el puente al código: la lista de repos que implementan esa entidad. Se traduce a path local en `codebases.md`. **El vault apunta, no copia:** la arquitectura vive en el repo.
 
 ## Reglas de link
 
@@ -109,6 +111,12 @@ Las tareas viven en la nota a la que pertenecen, no en una lista central. Una ta
 ## Plugins instalados
 
 <Completado por `/second-brain setup` con la detección real. Lo que no está en esta lista no se usa en las notas.>
+
+## Quién escribe qué
+
+- **Autorado** (lo escribo yo, Claude no lo toca sin approval): dumps, notas atómicas, hubs, clips, proyectos, este archivo, y la `## Reflexión` de los reviews.
+- **Sintetizado** (Claude lo escribe con mi OK y queda como nota): dailies, weeklies, monthlies, el `## Historial` de los hubs.
+- **Proyectado** (Claude lo reescribe sin preguntar, es derivado y descartable): `hot.md`, `.vault-index.json`, las vistas `.base`. No los edito a mano porque se pisan.
 
 ## Uso desde otros proyectos
 
