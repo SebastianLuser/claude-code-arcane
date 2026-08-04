@@ -10,12 +10,14 @@ on:
     branches: [main]
 
 # A branch with an open PR fires both triggers, so every push ran the suite
-# twice. Grouping by ref collapses that to one run and cancels the previous one
-# when you push again mid-run. main is excluded from cancellation: there, a
-# cancelled run would leave a commit without a verdict.
+# twice. The group has to be the branch NAME, not github.ref: on push that is
+# refs/heads/<branch> and on pull_request it is refs/pull/N/merge, so grouping by
+# ref leaves the two events in different groups and both still run.
+# main is excluded from cancellation: there, a cancelled run would leave a commit
+# without a verdict.
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  group: ci-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: ${{ github.ref_name != 'main' }}
 
 jobs:
   build-and-test:
