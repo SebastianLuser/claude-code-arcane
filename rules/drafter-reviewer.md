@@ -9,14 +9,19 @@ Las rutas son relativas al career workspace (`./career-workspace/` o env `CAREER
 - Al terminar el borrador de un CV custom (flujo cv-tailor) o de una cover / mensaje de aplicación (flujo cover-letter) destinado a una postulación concreta.
 - NO aplica a ediciones menores de un CV ya revisado (typos, cambiar una fecha) ni a los CVs base de `02-CVs/` fuera de una postulación.
 
+Quién la ejecuta: `/job-aplicar` (paso 7, obligatorio), y `/cv-tailor` y `/cover-letter` cuando se corren sueltos. Los tres declaran `Task` en `allowed-tools` justamente para poder cumplirla - un skill sin `Task` no puede aplicar esta regla, y ahí la regla sería solo una intención.
+
 ## El paso reviewer
 
-Lanzar UN agente `general-purpose` de contexto fresco vía el Agent tool, con este contenido inline en el prompt (para que no dependa de leer archivos de la conversación):
+Lanzar UN agente **`cv-reviewer`** de contexto fresco vía el Agent tool. El agente ya trae la persona, el límite de lectura y el contrato de salida; el prompt solo tiene que aportar lo que el agente no puede saber:
 
 1. El texto completo de la job description.
 2. El borrador del CV y/o cover, verbatim.
-3. Instrucción de lectura acotada: solo puede leer `01-Perfiles/<perfil usado>.md` del workspace. NO debe leer los templates ni el resto del workspace - critica contenido, no estructura.
-4. Instrucción de research: búsqueda web breve sobre la empresa (misión, producto, noticias recientes, cultura) para detectar ángulos no aprovechados.
+3. Cuál es el perfil usado, para que sepa qué archivo de `01-Perfiles/` puede leer.
+
+Va inline en el prompt para que no dependa de leer archivos de la conversación.
+
+Si el agente `cv-reviewer` no está instalado (perfil `+job-hunt` sin su directorio de agentes), usar un `general-purpose` y pasarle en el prompt las cuatro restricciones: lectura acotada a `01-Perfiles/<perfil usado>.md`, prohibido leer templates y el resto del workspace, research web breve de la empresa, y el contrato de salida de abajo.
 
 El reviewer devuelve dos partes:
 
@@ -26,6 +31,14 @@ El reviewer devuelve dos partes:
   - Ángulos de empresa no aprovechados (del research)
   - Bullets que se pueden reformular como logro medible
   - Tono / estilo (registro, longitud, muletillas)
+
+## Segunda lente (opcional): `hiring-manager`
+
+`cv-reviewer` contesta "¿pasa el filtro?". Un CV puede pasar con match del 85% y morir igual en el escritorio de quien contrata, por una razón distinta: **no hay evidencia de que la persona ya hizo el trabajo**.
+
+Cuándo vale el segundo agente: postulación que importa, rol senior, o racha de rechazos post-CV. Se lanza **en paralelo** con `cv-reviewer` (no en cadena: son lentes independientes y encadenarlos solo suma latencia). Devuelve veredicto, evidencia faltante y las 3 preguntas que haría, que además son material de `/interview-prep`.
+
+No es obligatorio. Para una aplicación de rutina, `cv-reviewer` solo alcanza.
 
 ## Reglas de aplicación del feedback
 

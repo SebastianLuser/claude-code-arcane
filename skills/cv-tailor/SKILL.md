@@ -4,7 +4,7 @@ description: "Tailor a CV to a specific job description: extract ATS keywords, d
 argument-hint: "[job-url | path-to-jd | application-note]"
 category: "career"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, WebFetch
+allowed-tools: Read, Glob, Grep, Write, Edit, WebFetch, Task
 ---
 
 # CV Tailor - Adaptar el CV a la oferta
@@ -46,6 +46,14 @@ Tomás un job description y el perfil base del usuario, y producís un **CV cust
 - Documentar las decisiones (keywords, qué se resaltó/bajó) en las secciones del template - sirve para la entrevista y para iterar.
 - El cuerpo del CV en sí debe quedar listo para `/cv-ats-export` (markdown limpio: `# nombre`, `## secciones`, bullets, `---`).
 
+### 6. Review antes de exportar (regla drafter-reviewer, obligatorio)
+
+Con el `.md` aprobado y **antes** de mandar a `/cv-ats-export`, seguir `.claude/rules/drafter-reviewer.md`: lanzar el agente `cv-reviewer` de contexto fresco con el JD y el borrador inline. Aplicar la Parte A (reemplazos exactos) e incorporar de la Parte B lo que corresponda. Una sola ronda.
+
+Si el rol es senior o la postulación importa, lanzar además `hiring-manager` en paralelo - contesta si el CV convence a quien contrata, que es una pregunta distinta.
+
+El que redacta no se auto-revisa: no saltear este paso porque el CV "ya quedó bien". Si el usuario decide exportar sin review, avisar que se está saltando la regla y seguir.
+
 ## Formato del CV (ATS-friendly)
 
 - **Una columna.** Sin tablas, sin cajas de texto, sin columnas - los ATS las leen mal.
@@ -64,7 +72,8 @@ CV en **inglés** para roles internacionales/remotos globales; **español** si l
 - No keyword-stuffing: cada keyword debe vivir en un bullet verdadero.
 - Un CV custom por postulación - no pisar el perfil base ni el maestro.
 - Después de generar el `.md`, recordar al usuario correr `/cv-ats-export` para el PDF.
+- No exportar a PDF sin pasar por el review del paso 6.
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir el CV custom. Cuando el `.md` está READY, el siguiente paso es `/cv-ats-export` para generar el PDF ATS y `/cover-letter` para el mensaje.
+Pedí aprobación (approval) antes de escribir el CV custom. Cuando el `.md` está READY, corré el review del paso 6 (`cv-reviewer`); recién con el feedback aplicado el siguiente paso es `/cv-ats-export` para generar el PDF ATS y `/cover-letter` para el mensaje.

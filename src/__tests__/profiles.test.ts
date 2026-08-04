@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseProfile, listProfiles, mergeProfiles } from "../profiles.js";
@@ -104,5 +105,52 @@ describe("mergeProfiles", () => {
 
     expect(merged.loaded).toContain("core");
     expect(merged.loaded).not.toContain("nonexistent-profile");
+  });
+});
+
+/**
+ * `agents:` is a list of directory names copied wholesale by the installer
+ * (installer.ts). A name that does not match a real directory is skipped in
+ * silence: the install prints no agents line and nobody notices until an agent
+ * is invoked and does not exist. Same for an empty directory.
+ */
+describe("profile agent dirs resolve to real agents", () => {
+  const AGENTS_DIR = path.resolve(__dirname, "..", "..", "agents");
+
+  it("every agents: entry points to a directory with at least one agent", () => {
+    const broken: string[] = [];
+
+    for (const entry of fs.readdirSync(PROFILES_DIR)) {
+      if (!entry.endsWith(".yaml")) continue;
+      const profile = parseProfile(path.join(PROFILES_DIR, entry));
+      for (const dir of profile.agents) {
+        const full = path.join(AGENTS_DIR, dir);
+        if (!fs.existsSync(full)) {
+          broken.push(`${entry}: agents/${dir}/ does not exist`);
+          continue;
+        }
+        const agents = fs.readdirSync(full).filter((f) => f.endsWith(".md"));
+        if (agents.length === 0) broken.push(`${entry}: agents/${dir}/ has no .md files`);
+      }
+    }
+
+    expect(broken).toEqual([]);
+  });
+
+  it("career agents are read-only", () => {
+    // They exist to give a *fresh-context* second opinion and hand findings
+    // back; a career agent that can Write could edit the CV it is reviewing.
+    const offenders: string[] = [];
+    const careerDir = path.join(AGENTS_DIR, "career");
+
+    for (const file of fs.readdirSync(careerDir).filter((f) => f.endsWith(".md"))) {
+      const front = fs.readFileSync(path.join(careerDir, file), "utf-8").split("---")[1] ?? "";
+      const tools = front.match(/^tools:\s*(.+)$/m)?.[1] ?? "";
+      const writers = ["Write", "Edit", "NotebookEdit"].filter((t) => tools.includes(t));
+      if (writers.length) offenders.push(`${file}: tools includes ${writers.join(", ")}`);
+    }
+
+    expect(offenders).toEqual([]);
+    expect(fs.readdirSync(careerDir).filter((f) => f.endsWith(".md")).length).toBe(4);
   });
 });

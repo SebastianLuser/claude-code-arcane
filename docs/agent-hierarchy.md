@@ -21,7 +21,7 @@ Cada división sigue una jerarquía de estudio real con 3 niveles de autoridad:
 
 ---
 
-## Roster Completo (135 Agentes)
+## Roster Completo (139 Agentes)
 
 ### División 1 — Game Development Studio (44)
 
@@ -120,6 +120,16 @@ Cada división sigue una jerarquía de estudio real con 3 niveles de autoridad:
 **Directors (1):** `regulatory-director`
 
 **Specialists (2):** `quality-manager`, `compliance-officer`
+
+### División 14 — Career & Job Hunt (4)
+
+**Leads (1):** `career-strategist`
+
+**Specialists (3):** `cv-reviewer`, `hiring-manager`, `mock-interviewer`
+
+Los cuatro son **read-only por diseño, no por precaución**. Existen porque la búsqueda laboral tiene lecturas que solo sirven con contexto fresco: el que escribió el CV no lo puede revisar, y el que preparó las respuestas STAR no puede simular la entrevista. Un agente que hereda ese contexto no agrega nada.
+
+Se lanzan desde los skills del perfil `+job-hunt`, no entre ellos: `cv-reviewer` y `hiring-manager` son lentes independientes sobre la misma postulación y corren **en paralelo**.
 
 ---
 

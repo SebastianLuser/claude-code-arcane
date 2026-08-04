@@ -54,7 +54,11 @@ Usar el skill **cover-letter** según el canal de aplicación (formulario ATS �
 
 ## Paso 7 - Reviewer (regla drafter-reviewer, obligatorio)
 
-Seguir `.claude/rules/drafter-reviewer.md`: lanzar UN agente general-purpose de contexto fresco con el JD + borradores inline; lectura acotada al perfil; research web breve de la empresa. Aplicar la Parte A (reemplazos exactos) e incorporar lo relevante de la Parte B. Una sola ronda. Never stuff keywords: los gaps se reconocen en el cover, no se rellenan en el CV. Normalizar guiones largos del texto sugerido.
+Seguir `.claude/rules/drafter-reviewer.md`: lanzar el agente **`cv-reviewer`** de contexto fresco con el JD + borradores inline y el perfil usado. Aplicar la Parte A (reemplazos exactos) e incorporar lo relevante de la Parte B. Una sola ronda. Never stuff keywords: los gaps se reconocen en el cover, no se rellenan en el CV. Normalizar guiones largos del texto sugerido.
+
+**Segunda lente si el rol es senior o la postulación importa:** lanzar `hiring-manager` **en paralelo** con `cv-reviewer` (no en cadena). Contesta si el CV convence a quien contrata, que es una pregunta distinta a si pasa el filtro. Sus 3 preguntas van a `## Notas` de la nota: son material directo de `/interview-prep`.
+
+Si el directorio de agentes no está instalado, el fallback con `general-purpose` está en la regla.
 
 ## Paso 8 - CONFIRMACIÓN 2: aprobar CV final
 
