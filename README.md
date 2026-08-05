@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **375 skills, 96 agents, 16 hooks and 25 rules for Claude Code — selective deploy by profile.**
+> **381 skills, 100 agents, 16 hooks and 26 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
@@ -193,6 +193,7 @@ Once installed, manage the installation from within a Claude Code session:
 | `+marketing` | Content, growth, SEO/CRO, strategy, analytics | 44 | marketing |
 | `+regulatory` | ISO 13485, GDPR, FDA, SOC 2, ISMS, QMS, MDR | 13 | regulatory |
 | `+job-hunt` | Job search end-to-end — master profile, ATS CV with verification, job scraping with dedup, LinkedIn, portfolio, cover letters, outreach, interview prep, fresh-context review agents | 16 | career |
+| `+freelance` | Freelance projects on Upwork — platform profile, offer scan with dedup, client risk screening, proposals priced above your net floor rate, contracts/SOWs, Connects ROI and utilization pipeline | 12 | freelance |
 | `+ecommerce` | Commerce end-to-end agnóstico de lenguaje — data model, checkout, inventario, órdenes, pagos, promociones, shipping/tax, listings, analytics, feeds, storefront, suscripciones | 12 | ecommerce |
 | `+second-brain` | Second brain en Obsidian — captura sin fricción, reviews diario/semanal/mensual, notas atómicas y hub files (PARA + Zettelkasten), búsqueda con ranking, caché de contexto entre sesiones, auditoría de salud del vault, sintaxis nativa (markdown, Bases, Canvas) | 14 | — |
 | `+self-improving` | Agent self-improvement and skill extraction | 2 | — |
@@ -349,11 +350,11 @@ claude-code-arcane/
 │   ├── manifest.ts            # Read/write arcane-manifest.json
 │   ├── types.ts               # TypeScript interfaces
 │   └── utils.ts               # Cross-platform helpers
-├── skills/                    # 375 skills (flat, one dir per skill)
-├── profiles/                  # 35 profiles (YAML)
-├── agents/                    # 15 dirs, 96 agents (Markdown)
+├── skills/                    # 381 skills (flat, one dir per skill)
+├── profiles/                  # 36 profiles (YAML)
+├── agents/                    # 16 dirs, 100 agents (Markdown)
 ├── hooks/                     # 16 lifecycle hooks (Bash)
-├── rules/                     # 25 rules (Markdown)
+├── rules/                     # 26 rules (Markdown)
 ├── templates/                 # Gamedev templates
 ├── docs/                      # Documentation
 └── skills-selftest/           # QA framework

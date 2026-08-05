@@ -137,20 +137,25 @@ describe("profile agent dirs resolve to real agents", () => {
     expect(broken).toEqual([]);
   });
 
-  it("career agents are read-only", () => {
-    // They exist to give a *fresh-context* second opinion and hand findings
-    // back; a career agent that can Write could edit the CV it is reviewing.
+  // They exist to give a *fresh-context* second opinion and hand findings back.
+  // One that could Write would edit the very CV or proposal it is reviewing, and
+  // docs/agent-hierarchy.md states agents never write files directly.
+  it.each([
+    ["career", 4],
+    ["freelance", 4],
+  ])("%s agents are read-only (%i of them)", (dir, expected) => {
     const offenders: string[] = [];
-    const careerDir = path.join(AGENTS_DIR, "career");
+    const agentDir = path.join(AGENTS_DIR, dir);
+    const files = fs.readdirSync(agentDir).filter((f) => f.endsWith(".md"));
 
-    for (const file of fs.readdirSync(careerDir).filter((f) => f.endsWith(".md"))) {
-      const front = fs.readFileSync(path.join(careerDir, file), "utf-8").split("---")[1] ?? "";
+    for (const file of files) {
+      const front = fs.readFileSync(path.join(agentDir, file), "utf-8").split("---")[1] ?? "";
       const tools = front.match(/^tools:\s*(.+)$/m)?.[1] ?? "";
       const writers = ["Write", "Edit", "NotebookEdit"].filter((t) => tools.includes(t));
-      if (writers.length) offenders.push(`${file}: tools includes ${writers.join(", ")}`);
+      if (writers.length) offenders.push(`${dir}/${file}: tools includes ${writers.join(", ")}`);
     }
 
     expect(offenders).toEqual([]);
-    expect(fs.readdirSync(careerDir).filter((f) => f.endsWith(".md")).length).toBe(4);
+    expect(files.length).toBe(expected);
   });
 });

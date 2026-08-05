@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 375 skills disponibles para proyectos consumidores, organizados por division.
+Los 381 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 333: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 339: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -494,6 +494,21 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/merchant-feed` | Feeds de producto Google Merchant / Meta Catalog: atributos requeridos, mapping y validacion (script) | `[validate\|generate\|map]` |
 | `/storefront-architecture` | IA del storefront (home/PLP/PDP/cart/checkout/search/megamenu) + decision headless-vs-monolito + performance | `[design\|pages\|headless]` |
 | `/subscription-billing` | Billing recurrente: modelos, ciclos, proration, trials, plan changes y dunning anti-churn involuntario | `[design\|dunning\|audit]` |
+
+---
+
+## Freelance (6 skills)
+
+Perfil `+freelance`. Reutiliza ademas 6 skills ya catalogados: `/master-profile`, `/portfolio-site`, `/cold-outreach`, `/job-outcome` (Job Hunt), `/contract-and-proposal-writer` (Business) y `/estimate` (Agile). Comparte el career workspace con `+job-hunt`: una propuesta es una aplicacion con `tipo: freelance`.
+
+| Skill | Descripcion | Uso |
+|-------|-------------|-----|
+| `/freelance-hunt` | Orquestador: extiende el career workspace con contratos y ledger de Connects, define piso de tarifa y capacidad, y rutea | `[setup\|status\|next]` |
+| `/upwork-profile` | Perfil de la plataforma: titulo de nicho, primeros 250 caracteres del overview, portfolio items, specialized profiles y tarifa derivada del piso | `[audit\|title\|overview\|portfolio\|rate]` |
+| `/upwork-scan` | Encuentra y scorea ofertas (fit tecnico + viabilidad economica + probabilidad de que la oferta exista) con dedup entre corridas. Manual-first; API GraphQL opcional | `[busqueda\|job-url\|post]` |
+| `/client-screen` | Riesgo del cliente antes de gastar Connects: payment verificado, hire rate, brecha presupuesto/alcance, red flags. Registra el descarte tambien | `[job-url\|nota\|post]` |
+| `/upwork-proposal` | Propuesta que sobrevive la vista de lista (2 primeras lineas) + bid sobre el piso neto: fijo vs hora, buffer de riesgo, comision | `[nota\|job-url]` |
+| `/freelance-pipeline` | Diagnostico del negocio: ROI de Connects, embudo, tarifa efectiva real neta de horas no facturables, utilizacion, concentracion, scope drift | `[--desde YYYY-MM-DD]` |
 
 ---
 

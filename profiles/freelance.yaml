@@ -1,0 +1,35 @@
+name: freelance
+description: "Freelance — conseguir proyectos como freelancer en Upwork y marketplaces: perfil de plataforma, scan y scoring de ofertas con dedup, screening de riesgo del cliente, propuestas con cotizacion sobre piso de tarifa, contratos y SOWs, pipeline con ROI de Connects y utilizacion, y 4 agentes de contexto fresco (review de propuesta, screener adversarial, discovery call, estratega de pipeline)"
+type: addon
+
+skills:
+  # Nucleo del perfil
+  - freelance-hunt
+  - upwork-profile
+  - upwork-scan
+  - client-screen
+  - upwork-proposal
+  - freelance-pipeline
+  # Compartidas con +job-hunt (una sola fuente de verdad del perfil profesional)
+  - master-profile
+  - portfolio-site
+  - cold-outreach
+  - job-outcome
+  # Compartidas con +business y +agile
+  - contract-and-proposal-writer
+  - estimate
+
+rules:
+  universal:
+    - freelance-guardrails
+  gamedev:
+    []
+
+agents:
+  - freelance
+
+permissions:
+  allow:
+    []
+  deny:
+    []

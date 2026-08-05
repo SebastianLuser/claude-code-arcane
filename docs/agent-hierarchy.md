@@ -21,7 +21,7 @@ Cada división sigue una jerarquía de estudio real con 3 niveles de autoridad:
 
 ---
 
-## Roster Completo (139 Agentes)
+## Roster Completo (143 Agentes)
 
 ### División 1 — Game Development Studio (44)
 
@@ -130,6 +130,16 @@ Cada división sigue una jerarquía de estudio real con 3 niveles de autoridad:
 Los cuatro son **read-only por diseño, no por precaución**. Existen porque la búsqueda laboral tiene lecturas que solo sirven con contexto fresco: el que escribió el CV no lo puede revisar, y el que preparó las respuestas STAR no puede simular la entrevista. Un agente que hereda ese contexto no agrega nada.
 
 Se lanzan desde los skills del perfil `+job-hunt`, no entre ellos: `cv-reviewer` y `hiring-manager` son lentes independientes sobre la misma postulación y corren **en paralelo**.
+
+### División 15 — Freelance (4)
+
+**Leads (1):** `pipeline-strategist`
+
+**Specialists (3):** `client-screener`, `proposal-reviewer`, `discovery-call`
+
+Read-only, igual que la División 14, y por la misma razón de fondo con una vuelta más: acá el que redacta no solo está convencido de su propio texto, además **está gastando plata en enviarlo**. `client-screener` es explícitamente adversarial - arranca de la hipótesis de que el trabajo es un problema, porque el sesgo del usuario apunta al otro lado.
+
+Se lanzan desde los skills de `+freelance`. `client-screener` y `proposal-reviewer` corren **en paralelo**: uno juzga al cliente, el otro la propuesta.
 
 ---
 
