@@ -23,13 +23,14 @@ career-workspace/
   04-Empresas/             ← compartida: empresas Y clientes
   08-Contratos/            NUEVA: contratos activos, milestones, horas, change orders
   07-Recursos/
-    Connects - YYYY.md     NUEVO: ledger de Connects (gasto por propuesta y resultado)
+    Connects - YYYY.md     NUEVO: ledger del costo de postularse (Connects en Upwork,
+                           bids en otras plataformas, horas en outreach directo)
   Templates/
     Propuesta.md           NUEVO
     Contrato.md            NUEVO
 ```
 
-Una propuesta de Upwork **es** una aplicación: vive en `03-Aplicaciones/` con `tipo: freelance`. Un cliente **es** una empresa: vive en `04-Empresas/`. Así `/job-outcome`, `/cold-outreach` y `/master-profile` funcionan sobre las dos mitades sin cambios.
+Una propuesta **es** una aplicación: vive en `03-Aplicaciones/` con `tipo: freelance`. Un cliente **es** una empresa: vive en `04-Empresas/`. Así `/job-outcome`, `/cold-outreach` y `/master-profile` funcionan sobre las dos mitades sin cambios.
 
 Si el usuario no tiene `+job-hunt` instalado, el modo `setup` crea el árbol completo igual: el workspace no depende del otro perfil, solo lo comparte.
 
@@ -51,8 +52,8 @@ Cierres: `ganado_cerrado | sin_respuesta | rechazado | descartado | disputa`
 2. Crear `08-Contratos/` y copiar `Propuesta.md` y `Contrato.md` desde `references/templates/` a `Templates/`.
 3. Crear el ledger `07-Recursos/Connects - <año>.md` desde `references/templates/Connects.md`.
 4. Agregar al `00-Dashboard.md` las secciones freelance (propuestas activas, contratos en curso, Connects del mes). Si el dashboard no existe, crearlo.
-5. Preguntar y registrar en `01-Perfiles/` los **dos números que gobiernan todo el perfil**: el piso de tarifa neto y la capacidad semanal de horas facturables. Sin el piso, `/upwork-proposal` no puede validar un bid (ver `freelance-guardrails` regla 3).
-6. Si el usuario ya tiene cuenta de Upwork, sugerir `/upwork-profile` como siguiente paso; si no, `/master-profile` primero.
+5. Preguntar y registrar en `01-Perfiles/` los **dos números que gobiernan todo el perfil**: el piso de tarifa neto y la capacidad semanal de horas facturables. Sin el piso, `/freelance-proposal` no puede validar un bid (ver `freelance-guardrails` regla 3).
+6. Si el usuario ya tiene cuenta en alguna plataforma, sugerir `/freelance-profile` como siguiente paso; si no, `/master-profile` primero. Si todavía no sabe qué piso poner, `/freelance-scan market` da la mediana de lo que cobran otros con su perfil.
 
 ### `status` - Dónde estoy
 
@@ -71,10 +72,11 @@ Según el estado del workspace, recomendar el skill siguiente (ver routing).
 |-----------|-------|
 | No hay workspace | `/freelance-hunt setup` |
 | Falta perfil maestro | `/master-profile` |
-| Perfil de Upwork flojo o vacío | `/upwork-profile` |
-| Buscar y scorear ofertas | `/upwork-scan` |
+| Perfil de plataforma flojo o vacío | `/freelance-profile` |
+| Buscar y scorear ofertas | `/freelance-scan` |
+| Qué cobran otros con mi perfil | `/freelance-scan market` |
 | Evaluar riesgo de un cliente | `/client-screen` |
-| Escribir la propuesta y el bid | `/upwork-proposal` |
+| Escribir la propuesta y el bid | `/freelance-proposal` |
 | Contrato, SOW, NDA o change order | `/contract-and-proposal-writer` |
 | Estimar esfuerzo de un proyecto | `/estimate` |
 | Registrar respuesta o resultado | `/job-outcome` |
@@ -89,18 +91,18 @@ El perfil instala `agents/freelance/`. Existen porque hay lecturas que solo sirv
 | Agente | Contesta | Lo lanza |
 |---|---|---|
 | `client-screener` | ¿Este cliente es un riesgo? (adversarial por diseño) | `/client-screen` |
-| `proposal-reviewer` | ¿Vale gastar Connects en esta propuesta? | `/upwork-proposal` |
-| `discovery-call` | ¿Aguanto la llamada, el regateo y el alcance de contrabando? | `/upwork-proposal`, `/client-screen` |
+| `proposal-reviewer` | ¿Vale gastar Connects en esta propuesta? | `/freelance-proposal` |
+| `discovery-call` | ¿Aguanto la llamada, el regateo y el alcance de contrabando? | `/freelance-proposal`, `/client-screen` |
 | `pipeline-strategist` | ¿Esto es un negocio o un pasatiempo caro? | `/freelance-pipeline` (10+ propuestas resueltas) |
 
 `client-screener` y `proposal-reviewer` corren **en paralelo** cuando van los dos: son preguntas independientes.
 
 ## Workflow estándar para una oportunidad
 
-1. `/upwork-scan` → ofertas scoreadas, dedup contra corridas anteriores.
+1. `/freelance-scan` → ofertas scoreadas, dedup contra corridas anteriores.
 2. `/client-screen` → riesgo del cliente. **Si el veredicto es no postularse, se registra el descarte y termina acá.** Ese es el paso que ahorra plata.
 3. `/estimate` → esfuerzo real del alcance descrito.
-4. `/upwork-proposal` → propuesta + bid sobre el piso + review con `proposal-reviewer`.
+4. `/freelance-proposal` → propuesta + bid sobre el piso + review con `proposal-reviewer`.
 5. Enviar (**siempre manual**) → `/job-outcome` para marcar `propuesta_enviada` y registrar el gasto de Connects.
 6. Si el cliente responde → ensayar con `discovery-call`, después la llamada real.
 7. Si se cierra → `/contract-and-proposal-writer` para el SOW, nota en `08-Contratos/`.
@@ -116,4 +118,4 @@ El perfil instala `agents/freelance/`. Existen porque hay lecturas que solo sirv
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir o sobrescribir archivos del workspace. Cuando el workspace queda READY, el siguiente paso es `/upwork-profile` si ya hay cuenta de Upwork, o `/master-profile` si falta el perfil maestro.
+Pedí aprobación (approval) antes de escribir o sobrescribir archivos del workspace. Cuando el workspace queda READY, el siguiente paso es `/freelance-profile` si ya hay cuenta en una plataforma, o `/master-profile` si falta el perfil maestro.

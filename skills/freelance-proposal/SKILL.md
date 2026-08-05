@@ -1,5 +1,5 @@
 ---
-name: upwork-proposal
+name: freelance-proposal
 description: "Write an Upwork proposal that survives the list view and price it above your net floor rate: hook in the first two lines, proof instead of adjectives, fixed vs hourly, risk buffer and platform fee. Reviewed by a fresh-context agent before spending Connects. Triggers: escribir propuesta upwork, cover letter upwork, cuanto cobrar por este proyecto, bid, cotizar proyecto freelance, propuesta freelance."
 argument-hint: "[nota de aplicación | job-url]"
 category: "career"

@@ -49,7 +49,7 @@ La etapa clave es **enviada → responde**. Cruzarla con el score cambia el diag
 | Sin respuesta + score alto | Sin respuesta + score bajo |
 |---|---|
 | Problema de propuesta: apertura, precio, plantilla detectable | Problema de targeting: te postulás a lo que no te corresponde |
-| Va a `/upwork-proposal` | Va a `/upwork-scan` y `/upwork-profile` |
+| Va a `/freelance-proposal` | Va a `/freelance-scan` y `/freelance-profile` |
 
 ### 3. Tarifa efectiva real
 
@@ -91,4 +91,4 @@ El patrón importa más que el caso: si pasa en casi todos, el problema está en
 
 ## Handoff
 
-Reporte COMPLETE en `07-Recursos/`. El siguiente paso es el que salga del punto de fuga: `/upwork-proposal` (propuesta), `/upwork-scan` o `/upwork-profile` (targeting y posicionamiento), `/client-screen` (criterios de descarte), o `/contract-and-proposal-writer` (alcances y change orders).
+Reporte COMPLETE en `07-Recursos/`. El siguiente paso es el que salga del punto de fuga: `/freelance-proposal` (propuesta), `/freelance-scan` o `/freelance-profile` (targeting y posicionamiento), `/client-screen` (criterios de descarte), o `/contract-and-proposal-writer` (alcances y change orders).

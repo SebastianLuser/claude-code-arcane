@@ -501,13 +501,15 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 
 Perfil `+freelance`. Reutiliza ademas 6 skills ya catalogados: `/master-profile`, `/portfolio-site`, `/cold-outreach`, `/job-outcome` (Job Hunt), `/contract-and-proposal-writer` (Business) y `/estimate` (Agile). Comparte el career workspace con `+job-hunt`: una propuesta es una aplicacion con `tipo: freelance`.
 
+Las fuentes automaticas son publicas y **sin API key**, para que funcionen apenas se instala el perfil: una fuente con credenciales por usuario dejaria el skill roto para todos menos uno. Upwork, Freelancer.com y las verticales cerradas se pegan a mano. El analisis de cada plataforma, con lo que se midio de cada una, esta en `skills/freelance-scan/references/platforms.md`.
+
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
 | `/freelance-hunt` | Orquestador: extiende el career workspace con contratos y ledger de Connects, define piso de tarifa y capacidad, y rutea | `[setup\|status\|next]` |
-| `/upwork-profile` | Perfil de la plataforma: titulo de nicho, primeros 250 caracteres del overview, portfolio items, specialized profiles y tarifa derivada del piso | `[audit\|title\|overview\|portfolio\|rate]` |
-| `/upwork-scan` | Encuentra y scorea ofertas (fit tecnico + viabilidad economica + probabilidad de que la oferta exista) con dedup entre corridas. Manual-first; API GraphQL opcional | `[busqueda\|job-url\|post]` |
+| `/freelance-profile` | Perfil de la plataforma: titulo de nicho, primeros 250 caracteres del overview, portfolio items, specialized profiles y tarifa derivada del piso | `[audit\|title\|overview\|portfolio\|rate]` |
+| `/freelance-scan` | Scorea ofertas (fit tecnico + viabilidad economica + probabilidad de que la oferta exista) con dedup entre corridas. Script sobre fuentes publicas sin API key (GetOnBrd, Himalayas); modo `market` para tarifas de mercado | `[search\|market\|sources\|post]` |
 | `/client-screen` | Riesgo del cliente antes de gastar Connects: payment verificado, hire rate, brecha presupuesto/alcance, red flags. Registra el descarte tambien | `[job-url\|nota\|post]` |
-| `/upwork-proposal` | Propuesta que sobrevive la vista de lista (2 primeras lineas) + bid sobre el piso neto: fijo vs hora, buffer de riesgo, comision | `[nota\|job-url]` |
+| `/freelance-proposal` | Propuesta que sobrevive la vista de lista (2 primeras lineas) + bid sobre el piso neto: fijo vs hora, buffer de riesgo, comision | `[nota\|job-url]` |
 | `/freelance-pipeline` | Diagnostico del negocio: ROI de Connects, embudo, tarifa efectiva real neta de horas no facturables, utilizacion, concentracion, scope drift | `[--desde YYYY-MM-DD]` |
 
 ---

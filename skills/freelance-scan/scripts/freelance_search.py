@@ -1,0 +1,484 @@
+#!/usr/bin/env python3
+"""
+Busca proyectos freelance en fuentes publicas y sin API key.
+
+Toda fuente incluida cumple tres condiciones, porque este repo es publico y lo
+instala cualquiera: no pide key ni registro, sus terminos permiten consumirla
+desde una herramienta local, y expone trabajo freelance/contract de verdad.
+
+Dos fuentes que parecen candidatas quedaron afuera a proposito (RemoteOK y
+Remotive): sus terminos exigen un backlink do-follow desde un sitio web y
+amenazan con suspender el acceso si falta. Un CLI local no tiene sitio web, asi
+que no podemos cumplirlo, y usarlas igual haria que le suspendan la IP al
+usuario. Detalle en ../references/platforms.md.
+
+Ojo con los filtros: ni GetOnBrd ni Himalayas filtran por modalidad del lado del
+servidor. Aceptan el parametro, devuelven 200, y te mandan full-time igual (se
+probaron 7 variantes de nombre en GetOnBrd y 4 en Himalayas). Por eso el filtro
+de freelance es del lado del cliente y hay que paginar para juntar volumen.
+
+El hilo mensual "Ask HN: Freelancer? Seeking freelancer?" no esta en `search` a
+proposito. Se midieron 6 meses con el propio subcomando `market`: 113
+freelancers ofreciendose contra 2 ofertas de trabajo. Como fuente de proyectos no sirve; como fuente de que cobran
+y como se posicionan otros, es la mejor que hay sin pagar. Por eso vive en el
+subcomando `market`, que es lo que realmente es.
+
+Uso:
+  python freelance_search.py sources
+  python freelance_search.py search --query "unity developer" --source all
+  python freelance_search.py search --query python --source getonbrd --pages 3
+  python freelance_search.py market --months 3
+  python freelance_search.py detail --source getonbrd --id <id>
+
+Salida: JSON a stdout. Errores: JSON con "error" y "code" a stdout, exit 1.
+Solo stdlib. Compatible con Python 3.9.
+"""
+
+from __future__ import annotations
+
+import argparse
+import collections
+import html
+import json
+import re
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+
+UA = "Mozilla/5.0 (compatible; claude-code-arcane/freelance-scan; +https://github.com/SebastianLuser/claude-code-arcane)"
+TIMEOUT = 30
+MAX_RETRIES = 3
+RETRY_SLEEP = 2
+
+GETONBRD_API = "https://www.getonbrd.com/api/v0"
+GETONBRD_JOBS = "https://www.getonbrd.com/jobs"
+# /api/v0/modalities -> 1 Full time, 2 Part time, 3 Freelance, 4 Internship.
+# Se filtra por locale_key y no por id: con expand[] el id viene como string "3"
+# y sin expand como int 3, asi que comparar el id se rompe en silencio.
+GETONBRD_FREELANCE_KEY = "freelance"
+# expand[] inlinea los atributos de las referencias. Sin esto, company y tags
+# vienen como {"data":{"id":...}} y no hay nombre que mostrar. Lo aprendimos de
+# job-scrape/scripts/getonbrd_search.py, que ya lo usaba.
+GETONBRD_EXPAND = ("company", "tags", "modality")
+
+HIMALAYAS_API = "https://himalayas.app/jobs/api"
+HIMALAYAS_CONTRACT = "Contractor"
+HIMALAYAS_PAGE = 20  # el limit se topea en 20 aunque pidas mas
+
+HN_SEARCH = "https://hn.algolia.com/api/v1/search_by_date"
+HN_ITEM = "https://hn.algolia.com/api/v1/items"
+HN_THREAD_QUERY = '"Seeking freelancer"'
+HN_HIRING = "seeking_freelancer"
+HN_AVAILABLE = "seeking_work"
+
+# Fuentes de proyectos. HN no esta aca: ver `market` y el docstring de arriba.
+SOURCES = ("getonbrd", "himalayas")
+
+RATE_PATTERNS = (
+    r"(?:USD|US\$|\$|EUR|€)\s?(\d{1,4})(?:\s?[-a]\s?(?:USD|US\$|\$|EUR|€)?\s?(\d{1,4}))?\s?(?:/|per\s)\s?(hour|hr|h|day|d|week|wk|month|mo)",
+    r"(\d{1,4})(?:\s?[-a]\s?(\d{1,4}))?\s?(?:USD|US\$|\$|EUR|€)\s?(?:/|per\s)\s?(hour|hr|h|day|d|week|wk|month|mo)",
+)
+
+
+class SourceError(RuntimeError):
+    pass
+
+
+def fetch(url: str) -> str:
+    request = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
+    last = ""
+    for attempt in range(MAX_RETRIES):
+        try:
+            with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
+                return response.read().decode("utf-8", "replace")
+        except urllib.error.HTTPError as e:
+            # 4xx no se reintenta: no va a cambiar.
+            if 400 <= e.code < 500 and e.code != 429:
+                raise SourceError("HTTP {0} {1}".format(e.code, e.reason))
+            last = "HTTP {0} {1}".format(e.code, e.reason)
+        except Exception as e:  # timeout, DNS, reset
+            last = "{0}: {1}".format(type(e).__name__, e)
+        if attempt < MAX_RETRIES - 1:
+            time.sleep(RETRY_SLEEP * (attempt + 1))
+    raise SourceError(last or "request failed")
+
+
+def fetch_json(url: str):
+    body = fetch(url)
+    try:
+        return json.loads(body)
+    except ValueError as e:
+        raise SourceError("respuesta no es JSON: {0}".format(e))
+
+
+def strip_html(raw: str) -> str:
+    text = re.sub(r"<p>", "\n", raw or "")
+    text = re.sub(r"<[^>]+>", "", text)
+    return html.unescape(text).strip()
+
+
+def record(**kw):
+    """Forma comun para que el dedup de /freelance-scan trate todo igual."""
+    base = {
+        "source": None, "id": None, "title": None, "company": None, "url": None,
+        "modality": None, "published_at": None, "location": None,
+        "salary_min": None, "salary_max": None, "tags": [], "excerpt": None,
+    }
+    base.update(kw)
+    return base
+
+
+# --------------------------------------------------------------------------- #
+# GetOnBrd: LatAm + remoto. Comparte API con /job-scrape, sin key.
+# --------------------------------------------------------------------------- #
+
+def expanded_name(node):
+    """Saca el nombre de una referencia JSON:API expandida, o None."""
+    data = (node or {}).get("data") or {}
+    return ((data.get("attributes") or {}).get("name")) or None
+
+
+def expanded_names(node):
+    data = (node or {}).get("data") or []
+    if isinstance(data, dict):
+        data = [data]
+    return [n for n in ((item.get("attributes") or {}).get("name") for item in data) if n]
+
+
+def getonbrd_search(query: str, pages: int, per_page: int = 50):
+    out = []
+    truncated = False
+    scanned = 0
+    for page in range(1, pages + 1):
+        params = [("query", query), ("per_page", str(per_page)), ("page", str(page))]
+        params += [("expand[]", field) for field in GETONBRD_EXPAND]
+        payload = fetch_json("{0}/search/jobs?{1}".format(GETONBRD_API, urllib.parse.urlencode(params)))
+        data = payload.get("data") or []
+        scanned += len(data)
+        for job in data:
+            attrs = job.get("attributes") or {}
+            modality = (attrs.get("modality") or {}).get("data") or {}
+            if ((modality.get("attributes") or {}).get("locale_key")) != GETONBRD_FREELANCE_KEY:
+                continue
+            out.append(record(
+                source="getonbrd",
+                id=str(job.get("id")),
+                title=attrs.get("title"),
+                company=expanded_name(attrs.get("company")),
+                url="{0}/{1}".format(GETONBRD_JOBS, job.get("id")),
+                modality="freelance",
+                published_at=attrs.get("published_at"),
+                location=attrs.get("remote_modality") or ", ".join(attrs.get("location_cities") or []),
+                salary_min=attrs.get("min_salary"),
+                salary_max=attrs.get("max_salary"),
+                tags=expanded_names(attrs.get("tags")),
+                excerpt=(attrs.get("description_headline") or "")[:400] or None,
+            ))
+        total_pages = (payload.get("meta") or {}).get("total_pages") or 1
+        if page >= total_pages:
+            break
+        if page == pages and total_pages > pages:
+            truncated = True
+    return out, truncated, scanned
+
+
+def getonbrd_detail(job_id: str):
+    payload = fetch_json("{0}/jobs/{1}".format(GETONBRD_API, urllib.parse.quote(str(job_id))))
+    data = payload.get("data") or {}
+    attrs = data.get("attributes") or {}
+    return {
+        "source": "getonbrd",
+        "id": str(data.get("id") or job_id),
+        "title": attrs.get("title"),
+        "url": "{0}/{1}".format(GETONBRD_JOBS, data.get("id") or job_id),
+        "modality_id": (((attrs.get("modality") or {}).get("data") or {}).get("id")),
+        "description": strip_html(attrs.get("description") or ""),
+        "desirable": strip_html(attrs.get("desirable") or ""),
+        "functions": strip_html(attrs.get("functions") or ""),
+        "min_salary": attrs.get("min_salary"),
+        "max_salary": attrs.get("max_salary"),
+        "remote_modality": attrs.get("remote_modality"),
+        "tags": attrs.get("tags") or [],
+    }
+
+
+# --------------------------------------------------------------------------- #
+# Himalayas: remoto global. employmentType "Contractor" existe pero no filtra.
+# --------------------------------------------------------------------------- #
+
+def himalayas_search(query: str, pages: int):
+    out = []
+    truncated = False
+    scanned = 0
+    needle = (query or "").strip().lower()
+    for page in range(pages):
+        params = urllib.parse.urlencode({"limit": HIMALAYAS_PAGE, "offset": page * HIMALAYAS_PAGE})
+        payload = fetch_json("{0}?{1}".format(HIMALAYAS_API, params))
+        jobs = payload.get("jobs") or []
+        if not jobs:
+            break
+        scanned += len(jobs)
+        for job in jobs:
+            if job.get("employmentType") != HIMALAYAS_CONTRACT:
+                continue
+            haystack = " ".join(str(job.get(k) or "") for k in ("title", "excerpt", "companyName"))
+            if needle and needle not in haystack.lower():
+                continue
+            out.append(record(
+                source="himalayas",
+                id=str(job.get("guid") or job.get("applicationLink")),
+                title=job.get("title"),
+                company=job.get("companyName"),
+                url=job.get("applicationLink"),
+                modality="contract",
+                published_at=job.get("pubDate"),
+                location=", ".join(job.get("locationRestrictions") or []) or "remote",
+                salary_min=job.get("minSalary"),
+                salary_max=job.get("maxSalary"),
+                tags=job.get("categories") or [],
+                excerpt=(job.get("excerpt") or "")[:400] or None,
+            ))
+        total = payload.get("totalCount")
+        if total and (page + 1) * HIMALAYAS_PAGE >= total:
+            break
+        if page + 1 == pages:
+            truncated = True
+    return out, truncated, scanned
+
+
+# --------------------------------------------------------------------------- #
+# Hacker News: el hilo mensual "Freelancer? Seeking freelancer?".
+#
+# Esto NO es un buscador de proyectos, aunque el titulo del hilo lo sugiera. Se
+# midieron 6 meses (marzo a agosto 2026): 113 comentarios de freelancers
+# ofreciendose contra 2 ofertas de trabajo. Lo que si te da, y gratis, es
+# como se presentan y cuanto cobran otros con tu perfil. Eso alimenta
+# /freelance-profile y la decision de tarifa.
+# --------------------------------------------------------------------------- #
+
+def hn_latest_threads(limit: int = 3):
+    params = urllib.parse.urlencode({
+        "query": HN_THREAD_QUERY, "tags": "story", "hitsPerPage": limit,
+    })
+    payload = fetch_json("{0}?{1}".format(HN_SEARCH, params))
+    return [
+        {"id": h.get("objectID"), "title": h.get("title"),
+         "created_at": h.get("created_at"), "num_comments": h.get("num_comments")}
+        for h in (payload.get("hits") or [])
+    ]
+
+
+def hn_classify(text: str) -> str:
+    """La convencion del hilo: el comentario arranca declarando de que lado esta."""
+    head = re.sub(r"[^A-Za-z ]", " ", text[:110]).upper()
+    head = re.sub(r"\s+", " ", head)
+    if "SEEKING FREELANCER" in head:
+        return HN_HIRING
+    if "SEEKING WORK" in head:
+        return HN_AVAILABLE
+    return "unknown"
+
+
+def extract_rates(text: str):
+    """Tarifas mencionadas en el texto. Devuelve lo que encuentra, sin inventar."""
+    found = []
+    for pattern in RATE_PATTERNS:
+        for m in re.finditer(pattern, text, re.IGNORECASE):
+            low, high, unit = m.group(1), m.group(2), m.group(3).lower()
+            unit = {"hr": "hour", "h": "hour", "d": "day", "wk": "week", "mo": "month"}.get(unit, unit)
+            found.append({"min": int(low), "max": int(high) if high else None,
+                          "unit": unit, "quote": m.group(0).strip()})
+    return found
+
+
+def hn_market(months: int, query: str):
+    """Inteligencia de posicionamiento, no ofertas. Ver el comentario de arriba."""
+    profiles, offers, counts = [], [], collections.Counter()
+    threads_read = []
+
+    for thread in hn_latest_threads(months):
+        payload = fetch_json("{0}/{1}".format(HN_ITEM, thread["id"]))
+        threads_read.append({"title": thread["title"], "id": thread["id"],
+                             "created_at": thread["created_at"]})
+        for child in (payload.get("children") or []):
+            if child.get("type") != "comment":
+                continue
+            text = strip_html(child.get("text") or "")
+            if not text:
+                continue
+            kind = hn_classify(text)
+            counts[kind] += 1
+            if query and query.strip().lower() not in text.lower():
+                continue
+            first = next((line.strip() for line in text.splitlines() if line.strip()), "")
+            entry = {
+                "author": child.get("author"),
+                "created_at": child.get("created_at"),
+                "url": "https://news.ycombinator.com/item?id={0}".format(child.get("id")),
+                "headline": first[:160],
+                "rates_mentioned": extract_rates(text),
+                "excerpt": text[:700],
+            }
+            if kind == HN_HIRING:
+                offers.append(entry)
+            else:
+                profiles.append(entry)
+
+    rates = [r for p in profiles for r in p["rates_mentioned"]]
+    return {
+        "threads_read": threads_read,
+        "composition": dict(counts),
+        "note": ("El hilo lo dominan freelancers ofreciendose, no clientes buscando. "
+                 "Usalo para posicionamiento y tarifa, no como cola de trabajo. "
+                 "Solo ~3% de los perfiles declara una tarifa parseable: mira siempre el n "
+                 "de rates_summary antes de tratar la mediana como dato de mercado."),
+        "competitor_profiles": profiles,
+        "actual_offers": offers,
+        "rates_found": rates,
+        "rates_summary": rate_summary(rates),
+    }
+
+
+def rate_summary(rates):
+    by_unit = {}
+    for r in rates:
+        by_unit.setdefault(r["unit"], []).append(r["min"])
+    out = {}
+    for unit, values in by_unit.items():
+        values.sort()
+        mid = len(values) // 2
+        out[unit] = {
+            "n": len(values), "min": values[0], "max": values[-1],
+            "median": values[mid] if len(values) % 2 else (values[mid - 1] + values[mid]) / 2,
+        }
+    return out
+
+
+# --------------------------------------------------------------------------- #
+
+def run_search(args) -> int:
+    wanted = SOURCES if args.source == "all" else (args.source,)
+    results, errors, truncated, scanned = [], {}, [], {}
+
+    for name in wanted:
+        try:
+            if name == "getonbrd":
+                found, cut, seen = getonbrd_search(args.query or "developer", args.pages)
+            else:
+                found, cut, seen = himalayas_search(args.query or "", args.pages)
+            results.extend(found)
+            scanned[name] = {"scanned": seen, "freelance": len(found)}
+            if cut:
+                truncated.append(name)
+        except SourceError as e:
+            # Una fuente caida no invalida las otras: se reporta y se sigue.
+            errors[name] = str(e)
+
+    if errors and not results:
+        emit({"error": "todas las fuentes fallaron", "code": "ALL_SOURCES_FAILED", "detail": errors})
+        return 1
+
+    emit({
+        "query": args.query,
+        "sources_requested": list(wanted),
+        "sources_failed": errors,
+        # El rendimiento por fuente se reporta siempre: filtrar freelance del lado
+        # del cliente significa descartar mucho, y eso tiene que quedar a la vista
+        # en vez de parecer que la fuente no tiene nada.
+        "yield_by_source": scanned,
+        "truncated": truncated,
+        "count": len(results),
+        "results": results,
+    })
+    return 0
+
+
+def run_sources(_args) -> int:
+    emit({"project_sources": [
+        {"name": "getonbrd", "scope": "LatAm y remoto", "auth": "ninguna",
+         "freelance_filter": "client-side (modality id 3); el parametro del server no filtra",
+         "shares_cli_with": "job-scrape"},
+        {"name": "himalayas", "scope": "remoto global", "auth": "ninguna",
+         "freelance_filter": "client-side (employmentType Contractor); el parametro del server no filtra",
+         "note": "limit topeado en 20 por pagina"},
+    ], "market_intel_only": [
+        {"name": "hn", "subcommand": "market", "auth": "ninguna (10k req/hora)",
+         "why_not_projects": ("medido sobre 6 meses: 113 freelancers ofreciendose contra 2 ofertas. "
+                              "Sirve para tarifa y posicionamiento, no como cola de trabajo")},
+    ], "excluded": [
+        {"name": "remoteok", "why": "sus terminos exigen backlink do-follow o suspenden el acceso; un CLI local no puede cumplirlo"},
+        {"name": "remotive", "why": "backlink do-follow obligatorio, maximo 4 requests por dia y datos con 24h de retraso"},
+        {"name": "upwork", "why": "API con aprobacion manual por usuario y sin busqueda abierta; scrapear viola los ToS. Se usa a mano"},
+        {"name": "freelancer.com", "why": "OAuth con credenciales por usuario; no sirve para un repo que instala cualquiera"},
+    ]})
+    return 0
+
+
+def run_market(args) -> int:
+    emit(hn_market(args.months, args.query))
+    return 0
+
+
+def run_detail(args) -> int:
+    if args.source != "getonbrd":
+        emit({"error": "detail solo esta implementado para getonbrd; las otras fuentes ya traen el texto completo en search",
+              "code": "NO_DETAIL"})
+        return 1
+    emit(getonbrd_detail(args.id))
+    return 0
+
+
+def emit(payload) -> None:
+    json.dump(payload, sys.stdout, ensure_ascii=False, indent=2)
+    sys.stdout.write("\n")
+
+
+def force_utf8_streams() -> None:
+    """
+    En Windows stdout es cp1252, asi que un acento o una vinieta en una
+    descripcion revienta con UnicodeEncodeError en cuanto se pipea a un archivo.
+    Mismo fix que job-scrape/scripts/getonbrd_search.py.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
+
+
+def main(argv=None) -> int:
+    force_utf8_streams()
+    parser = argparse.ArgumentParser(description="Busca proyectos freelance en fuentes publicas sin API key.")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    search = sub.add_parser("search", help="buscar proyectos freelance")
+    search.add_argument("--query", default="", help="terminos a buscar")
+    search.add_argument("--source", default="all", choices=list(SOURCES) + ["all"])
+    search.add_argument("--pages", type=int, default=3, help="paginas por fuente (default 3)")
+    search.set_defaults(func=run_search)
+
+    sources = sub.add_parser("sources", help="listar fuentes disponibles y las descartadas con su motivo")
+    sources.set_defaults(func=run_sources)
+
+    market = sub.add_parser("market", help="que cobran y como se posicionan otros freelancers (hilo mensual de HN)")
+    market.add_argument("--months", type=int, default=3, help="cuantos hilos mensuales leer (default 3)")
+    market.add_argument("--query", default="", help="filtrar por stack o palabra")
+    market.set_defaults(func=run_market)
+
+    detail = sub.add_parser("detail", help="traer el detalle completo de una oferta")
+    detail.add_argument("--source", default="getonbrd", choices=list(SOURCES))
+    detail.add_argument("--id", required=True)
+    detail.set_defaults(func=run_detail)
+
+    args = parser.parse_args(argv)
+    try:
+        return args.func(args)
+    except SourceError as e:
+        emit({"error": str(e), "code": "SOURCE_ERROR"})
+        return 1
+    except KeyboardInterrupt:
+        return 130
+
+
+if __name__ == "__main__":
+    sys.exit(main())

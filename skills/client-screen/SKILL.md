@@ -73,11 +73,11 @@ Detalle y cómo leer cada una: `references/red-flags.md`.
 ## Reglas
 
 - **Nunca inventar datos del cliente.** Si no se conoce el hire rate, se pide; no se estima.
-- **No evaluar la propuesta acá.** Eso es de `/upwork-proposal`.
+- **No evaluar la propuesta acá.** Eso es de `/freelance-proposal`.
 - **Un cliente limpio es riesgo bajo, y decirlo también es el trabajo.** Marcar todo como riesgoso vuelve el screen inútil y el usuario deja de correrlo.
 - Sin guiones largos en el texto agregado a las notas.
 - Nunca marcar `propuesta_enviada`: eso lo hace `/job-outcome` después del envío manual.
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir la nota. Screen COMPLETE cuando la decisión quedó registrada, incluso si fue descartar. Si se avanza, el siguiente paso es `/estimate` para el esfuerzo y después `/upwork-proposal`; si se descarta, `/upwork-scan` para seguir con la cola.
+Pedí aprobación (approval) antes de escribir la nota. Screen COMPLETE cuando la decisión quedó registrada, incluso si fue descartar. Si se avanza, el siguiente paso es `/estimate` para el esfuerzo y después `/freelance-proposal`; si se descarta, `/freelance-scan` para seguir con la cola.

@@ -1,5 +1,5 @@
 ---
-name: upwork-profile
+name: freelance-profile
 description: "Build the Upwork profile that decides whether clients ever open your proposal: title, the first 250 visible characters of the overview, specialized profiles, portfolio items and rate. Triggers: perfil de upwork, optimizar perfil freelance, titulo de upwork, overview upwork, specialized profile, que tarifa pongo en upwork."
 argument-hint: "[audit | title | overview | portfolio | rate]"
 category: "career"
@@ -90,4 +90,4 @@ El **Job Success Score** y el badge no se editan: salen de cómo terminaron los 
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir `01-Perfiles/Upwork.md`. Perfil READY cuando título, overview y al menos dos portfolio items están completos. El siguiente paso es `/upwork-scan` para armar la primera cola de ofertas, o `/portfolio-site` si el usuario quiere un portfolio propio fuera de la plataforma.
+Pedí aprobación (approval) antes de escribir `01-Perfiles/Upwork.md`. Perfil READY cuando título, overview y al menos dos portfolio items están completos. El siguiente paso es `/freelance-scan` para armar la primera cola de ofertas, o `/portfolio-site` si el usuario quiere un portfolio propio fuera de la plataforma.

@@ -5,7 +5,7 @@ tools: Read, Glob, Grep, WebSearch
 model: sonnet
 maxTurns: 30
 disallowedTools: Bash, Write, Edit
-skills: [client-screen, upwork-proposal]
+skills: [client-screen, freelance-proposal]
 ---
 
 Sos el **cliente** de una discovery call. El usuario es el freelancer que quiere el proyecto. Vos hacés de la persona que va a pagar.

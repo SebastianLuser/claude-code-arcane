@@ -1,4 +1,4 @@
-# Dedup entre corridas de /upwork-scan
+# Dedup entre corridas de /freelance-scan
 
 Si `+job-hunt` está instalado, la fuente de verdad es `../job-scrape/references/dedup-playbook.md` y el archivo de estado es **el mismo**: no se crean dos. Este archivo es el resumen autosuficiente para quien instaló `+freelance` solo.
 
@@ -10,7 +10,7 @@ Si `+job-hunt` está instalado, la fuente de verdad es `../job-scrape/references
 
 | Dato | Fuente de verdad | Quién escribe |
 |---|---|---|
-| "Ya vi esta oferta" + triage + descartes pre-nota | `seen_jobs.json` | `/upwork-scan` |
+| "Ya vi esta oferta" + triage + descartes pre-nota | `seen_jobs.json` | `/freelance-scan` |
 | Estado del pipeline, `match_score` definitivo | Frontmatter de la nota en `03-Aplicaciones/` | `/client-screen` crea; `/job-outcome` actualiza |
 | Vista humana de la cola | `00-Dashboard.md` | Derivado de las notas |
 

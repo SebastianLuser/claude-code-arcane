@@ -47,7 +47,7 @@ prioridad: media
   - 
 
 ## Cotización
-%% lo llena /upwork-proposal - el piso es neto, el bid tiene que cubrir la comision %%
+%% lo llena /freelance-proposal - el piso es neto, el bid tiene que cubrir la comision %%
 - **Esfuerzo estimado:** 
 - **Buffer de riesgo aplicado:** 
 - **Horas no facturables previstas:** 
