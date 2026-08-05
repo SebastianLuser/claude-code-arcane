@@ -30,9 +30,19 @@ python .claude/skills/freelance-scan/scripts/freelance_search.py market --months
 | **GetOnBrd** | LatAm y remoto | `modality` Freelance, filtrado del lado del cliente |
 | **Himalayas** | Remoto global | `employmentType` Contractor, filtrado del lado del cliente |
 
-**Las dos aceptan un parámetro de modalidad y lo ignoran.** Devuelven 200 y mandan full-time igual (se probaron 7 variantes de nombre en GetOnBrd y 4 en Himalayas). Por eso el filtro es del lado del cliente y hay que paginar para juntar volumen: el script reporta `yield_by_source` con cuánto escaneó y cuánto quedó, así queda a la vista que descartar mucho es lo normal y no que la fuente esté vacía.
+**Las dos aceptan un parámetro de modalidad y lo ignoran.** Devuelven 200 y mandan full-time igual (se probaron 7 variantes de nombre en GetOnBrd y 4 en Himalayas). Y **la búsqueda de GetOnBrd ordena por relevancia, no filtra**: `query=unity` devuelve 21 páginas donde el fondo es SAP y COBOL. Por eso el filtro de modalidad *y* el de relevancia son del lado del cliente.
 
-Rendimiento medido: GetOnBrd ~10 freelance cada 200 escaneados; Himalayas ~28 cada 120 sin filtro de query.
+El script reporta `yield_by_source` en cada corrida, y hay que mostrárselo al usuario:
+
+```
+{'getonbrd': {'scanned': 103, 'freelance': 0, 'freelance_pero_irrelevante': 9}}
+```
+
+Eso se lee así: se leyeron 103 ofertas, 9 eran freelance, ninguna tenía que ver con lo buscado. **`freelance_pero_irrelevante` alto con `freelance: 0` significa que ese nicho no existe hoy en esa fuente** - no que la corrida falló. Decirlo explícitamente evita que el usuario repita la búsqueda pensando que se rompió algo.
+
+Rendimiento medido: GetOnBrd ~10 freelance cada 200 escaneados antes del filtro de relevancia; Himalayas ~28 cada 120.
+
+El match es por **límite de palabra**, no substring: en este dominio `go`, `ux`, `ai` y `qa` son búsquedas legítimas, y por substring `ux` matchearía dentro de "Linux" y `go` dentro de "Django". Costo aceptado y testeado: buscar `script` ya no encuentra "JavaScript". Los términos con símbolos (`c#`, `.net`, `node.js`) caen a substring.
 
 ### Las plataformas grandes van a mano
 

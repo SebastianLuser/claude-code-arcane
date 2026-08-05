@@ -96,7 +96,7 @@ class TestGetOnBrd(unittest.TestCase):
 
     def test_keeps_only_freelance_modality(self):
         fs.fetch_json = FakeFetcher(GETONBRD_PAGE)
-        results, truncated, scanned = fs.getonbrd_search("developer", pages=1)
+        results, truncated, scanned, _ = fs.getonbrd_search("developer", pages=1)
 
         self.assertEqual(len(results), 1, "el full-time no deberia pasar el filtro")
         self.assertEqual(results[0]["id"], "abc-freelance-job")
@@ -107,7 +107,7 @@ class TestGetOnBrd(unittest.TestCase):
     def test_resolves_expanded_company_and_tags(self):
         # Sin expand[] estos campos son {"data":{"id":...}} y no hay nombre.
         fs.fetch_json = FakeFetcher(GETONBRD_PAGE)
-        results, _, _ = fs.getonbrd_search("developer", pages=1)
+        results, _, _, _ = fs.getonbrd_search("developer", pages=1)
 
         self.assertEqual(results[0]["company"], "Acme")
         self.assertEqual(results[0]["tags"], ["Unity", "C#"])
@@ -132,7 +132,7 @@ class TestGetOnBrd(unittest.TestCase):
     def test_marks_truncated_when_pages_run_out(self):
         page = dict(GETONBRD_PAGE, meta={"total_pages": 9})
         fs.fetch_json = FakeFetcher(page)
-        _, truncated, _ = fs.getonbrd_search("developer", pages=1)
+        _, truncated, _, _ = fs.getonbrd_search("developer", pages=1)
 
         self.assertTrue(truncated, "hay 9 paginas y se leyo 1: el usuario tiene que saberlo")
 
@@ -147,19 +147,86 @@ class TestHimalayas(unittest.TestCase):
     def test_keeps_only_contractor(self):
         # El server acepta employmentType y lo ignora, asi que filtramos aca.
         fs.fetch_json = FakeFetcher(HIMALAYAS_PAGE)
-        results, _, scanned = fs.himalayas_search("", pages=1)
+        results, _, scanned, _ = fs.himalayas_search("", pages=1)
 
         self.assertEqual([r["id"] for r in results], ["h1"])
         self.assertEqual(scanned, 2)
 
     def test_query_filters_client_side(self):
         fs.fetch_json = FakeFetcher(HIMALAYAS_PAGE)
-        results, _, _ = fs.himalayas_search("unity", pages=1)
+        results, _, _, _ = fs.himalayas_search("unity", pages=1)
         self.assertEqual(len(results), 1)
 
         fs.fetch_json = FakeFetcher(HIMALAYAS_PAGE)
-        results, _, _ = fs.himalayas_search("kubernetes", pages=1)
+        results, _, _, _ = fs.himalayas_search("kubernetes", pages=1)
         self.assertEqual(results, [])
+
+
+class TestRelevance(unittest.TestCase):
+    """
+    GetOnBrd ordena por relevancia, no filtra: `query=unity` devuelve 21 paginas
+    donde el fondo no tiene nada que ver. Sin este chequeo, paginar en
+    profundidad y quedarse con lo freelance devolvia SAP, COBOL y un recruiter
+    para una busqueda de Unity.
+    """
+
+    def setUp(self):
+        self.original = fs.fetch_json
+
+    def tearDown(self):
+        fs.fetch_json = self.original
+
+    def test_any_term_is_enough(self):
+        # "unity developer": los que dicen Unity entran aunque no digan developer.
+        self.assertTrue(fs.matches_query("unity developer", "Unity Gameplay Programmer"))
+
+    def test_drops_what_has_nothing_to_do(self):
+        self.assertFalse(fs.matches_query("unity", "Desarrollador COBOL Mainframe", "SQL, Linux"))
+
+    def test_empty_query_keeps_everything(self):
+        self.assertTrue(fs.matches_query("", "cualquier cosa"))
+
+    def test_two_letter_terms_are_real_searches_here(self):
+        # go, ux, ai, qa son busquedas legitimas en este dominio.
+        self.assertTrue(fs.matches_query("ux", "UX Design Lead"))
+        self.assertTrue(fs.matches_query("go", "Go Backend Engineer"))
+        self.assertFalse(fs.matches_query("ux", "Backend Engineer"))
+
+    def test_word_boundary_not_substring(self):
+        # Por substring, "ux" matchea dentro de Linux y "go" dentro de Django.
+        # Ese falso positivo es peor que perder un match parcial.
+        self.assertFalse(fs.matches_query("ux", "Linux Sysadmin"))
+        self.assertFalse(fs.matches_query("go", "Django Developer"))
+
+    def test_terms_with_symbols_fall_back_to_substring(self):
+        # \b no funciona contra # ni . , asi que c# y .net van por substring.
+        self.assertTrue(fs.matches_query("c#", "Unity Developer", "C#, .NET"))
+        self.assertTrue(fs.matches_query("node.js", "Backend", "Node.js, TypeScript"))
+
+    def test_known_cost_of_word_boundaries(self):
+        # Contrapartida aceptada y documentada: buscar "script" ya no encuentra
+        # "JavaScript". Si esto cambia alguna vez, que sea una decision, no un
+        # accidente.
+        self.assertFalse(fs.matches_query("script", "JavaScript Developer"))
+
+    def test_getonbrd_counts_irrelevant_separately(self):
+        # El freelance descartado por irrelevante se cuenta aparte del full-time:
+        # es el numero que le dice al usuario que su query no existe en la fuente.
+        fs.fetch_json = FakeFetcher(GETONBRD_PAGE)
+        results, _, scanned, irrelevant = fs.getonbrd_search("kubernetes", pages=1)
+
+        self.assertEqual(results, [], "el job freelance es de Unity, no de kubernetes")
+        self.assertEqual(irrelevant, 1)
+        self.assertEqual(scanned, 2)
+
+    def test_relevance_runs_after_the_modality_filter(self):
+        # Si corriera antes, `irrelevant` contaria full-time descartado y el
+        # numero dejaria de significar "tu query no existe aca".
+        fs.fetch_json = FakeFetcher(GETONBRD_PAGE)
+        results, _, _, irrelevant = fs.getonbrd_search("unity", pages=1)
+
+        self.assertEqual(len(results), 1)
+        self.assertEqual(irrelevant, 0, "el full-time no debe contarse como irrelevante")
 
 
 class TestHackerNewsClassification(unittest.TestCase):

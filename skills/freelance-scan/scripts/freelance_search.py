@@ -119,6 +119,41 @@ def strip_html(raw: str) -> str:
     return html.unescape(text).strip()
 
 
+def matches_query(query: str, *fields) -> bool:
+    """
+    Chequeo de relevancia del lado del cliente.
+
+    La busqueda de GetOnBrd ordena por relevancia, no filtra: `query=unity`
+    devuelve 21 paginas donde las ultimas no tienen nada que ver (SAP, COBOL,
+    un recruiter). Paginando en profundidad y quedandose con lo freelance de esa
+    cola larga, el resultado es basura relevante a nada.
+
+    Se exige que al menos un termino de la query aparezca en el texto. Con varios
+    terminos alcanza uno: "unity developer" tiene que traer los que dicen Unity
+    aunque no digan developer.
+
+    Match por limite de palabra y no por substring. En este dominio hay muchas
+    busquedas de dos letras que son legitimas (go, ux, ai, qa) y por substring
+    "ux" matchearia dentro de "Linux" y "go" dentro de "Django". El costo es que
+    buscar "script" ya no encuentra "JavaScript"; se prefiere ese costo antes que
+    devolver ofertas de Linux a quien busca UX.
+
+    Los terminos con caracteres no alfanumericos (c#, .net, node.js) caen a
+    substring: \\b no funciona contra un `#` o un `.`.
+    """
+    terms = [t for t in re.split(r"\s+", (query or "").strip().lower()) if t]
+    if not terms:
+        return True
+    haystack = " ".join(str(f or "") for f in fields).lower()
+    for term in terms:
+        if term.isalnum():
+            if re.search(r"\b{0}\b".format(re.escape(term)), haystack):
+                return True
+        elif term in haystack:
+            return True
+    return False
+
+
 def record(**kw):
     """Forma comun para que el dedup de /freelance-scan trate todo igual."""
     base = {
@@ -151,6 +186,7 @@ def getonbrd_search(query: str, pages: int, per_page: int = 50):
     out = []
     truncated = False
     scanned = 0
+    irrelevant = 0
     for page in range(1, pages + 1):
         params = [("query", query), ("per_page", str(per_page)), ("page", str(page))]
         params += [("expand[]", field) for field in GETONBRD_EXPAND]
@@ -161,6 +197,14 @@ def getonbrd_search(query: str, pages: int, per_page: int = 50):
             attrs = job.get("attributes") or {}
             modality = (attrs.get("modality") or {}).get("data") or {}
             if ((modality.get("attributes") or {}).get("locale_key")) != GETONBRD_FREELANCE_KEY:
+                continue
+            tags = expanded_names(attrs.get("tags"))
+            # El orden importa: la relevancia se chequea DESPUES de la modalidad,
+            # asi `irrelevant` cuenta solo freelance descartado por no tener nada
+            # que ver, que es el numero que le dice al usuario que afine la query.
+            if not matches_query(query, attrs.get("title"), " ".join(tags),
+                                 attrs.get("description_headline")):
+                irrelevant += 1
                 continue
             out.append(record(
                 source="getonbrd",
@@ -173,7 +217,7 @@ def getonbrd_search(query: str, pages: int, per_page: int = 50):
                 location=attrs.get("remote_modality") or ", ".join(attrs.get("location_cities") or []),
                 salary_min=attrs.get("min_salary"),
                 salary_max=attrs.get("max_salary"),
-                tags=expanded_names(attrs.get("tags")),
+                tags=tags,
                 excerpt=(attrs.get("description_headline") or "")[:400] or None,
             ))
         total_pages = (payload.get("meta") or {}).get("total_pages") or 1
@@ -181,7 +225,7 @@ def getonbrd_search(query: str, pages: int, per_page: int = 50):
             break
         if page == pages and total_pages > pages:
             truncated = True
-    return out, truncated, scanned
+    return out, truncated, scanned, irrelevant
 
 
 def getonbrd_detail(job_id: str):
@@ -212,7 +256,7 @@ def himalayas_search(query: str, pages: int):
     out = []
     truncated = False
     scanned = 0
-    needle = (query or "").strip().lower()
+    irrelevant = 0
     for page in range(pages):
         params = urllib.parse.urlencode({"limit": HIMALAYAS_PAGE, "offset": page * HIMALAYAS_PAGE})
         payload = fetch_json("{0}?{1}".format(HIMALAYAS_API, params))
@@ -223,8 +267,9 @@ def himalayas_search(query: str, pages: int):
         for job in jobs:
             if job.get("employmentType") != HIMALAYAS_CONTRACT:
                 continue
-            haystack = " ".join(str(job.get(k) or "") for k in ("title", "excerpt", "companyName"))
-            if needle and needle not in haystack.lower():
+            if not matches_query(query, job.get("title"), job.get("excerpt"),
+                                 " ".join(job.get("categories") or [])):
+                irrelevant += 1
                 continue
             out.append(record(
                 source="himalayas",
@@ -245,7 +290,7 @@ def himalayas_search(query: str, pages: int):
             break
         if page + 1 == pages:
             truncated = True
-    return out, truncated, scanned
+    return out, truncated, scanned, irrelevant
 
 
 # --------------------------------------------------------------------------- #
@@ -365,11 +410,12 @@ def run_search(args) -> int:
     for name in wanted:
         try:
             if name == "getonbrd":
-                found, cut, seen = getonbrd_search(args.query or "developer", args.pages)
+                found, cut, seen, off = getonbrd_search(args.query or "developer", args.pages)
             else:
-                found, cut, seen = himalayas_search(args.query or "", args.pages)
+                found, cut, seen, off = himalayas_search(args.query or "", args.pages)
             results.extend(found)
-            scanned[name] = {"scanned": seen, "freelance": len(found)}
+            scanned[name] = {"scanned": seen, "freelance": len(found),
+                             "freelance_pero_irrelevante": off}
             if cut:
                 truncated.append(name)
         except SourceError as e:
@@ -386,7 +432,8 @@ def run_search(args) -> int:
         "sources_failed": errors,
         # El rendimiento por fuente se reporta siempre: filtrar freelance del lado
         # del cliente significa descartar mucho, y eso tiene que quedar a la vista
-        # en vez de parecer que la fuente no tiene nada.
+        # en vez de parecer que la fuente no tiene nada. `freelance_pero_irrelevante`
+        # alto quiere decir que la query es muy amplia para el catalogo de la fuente.
         "yield_by_source": scanned,
         "truncated": truncated,
         "count": len(results),
