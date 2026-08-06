@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 382 skills disponibles para proyectos consumidores, organizados por division.
+Los 384 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 340: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 342: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -498,7 +498,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 
 ---
 
-## Freelance (6 skills)
+## Freelance (8 skills)
 
 Perfil `+freelance`. Reutiliza ademas 6 skills ya catalogados: `/master-profile`, `/portfolio-site`, `/cold-outreach`, `/job-outcome` (Job Hunt), `/contract-and-proposal-writer` (Business) y `/estimate` (Agile). Comparte el career workspace con `+job-hunt`: una propuesta es una aplicacion con `tipo: freelance`.
 
@@ -511,6 +511,8 @@ Las fuentes automaticas son publicas y **sin API key**, para que funcionen apena
 | `/freelance-scan` | Scorea ofertas (fit tecnico + viabilidad economica + probabilidad de que la oferta exista) con dedup entre corridas. Script sobre fuentes publicas sin API key (GetOnBrd, Himalayas); modo `market` para tarifas de mercado | `[search\|market\|sources\|post]` |
 | `/client-screen` | Riesgo del cliente antes de gastar Connects: payment verificado, hire rate, brecha presupuesto/alcance, red flags. Registra el descarte tambien | `[job-url\|nota\|post]` |
 | `/freelance-proposal` | Propuesta que sobrevive la vista de lista (2 primeras lineas) + bid sobre el piso neto: fijo vs hora, buffer de riesgo, comision | `[nota\|job-url]` |
+| `/freelance-kickoff` | Convierte el contrato ganado en plan: desarma alcance en entregables, criterios de aceptacion, y valida si entra en las horas cotizadas antes de arrancar | `[nota de contrato\|cliente]` |
+| `/freelance-deliver` | Loop de ejecucion: registra horas facturables y no facturables, detecta scope creep el dia que pasa, y cotiza el change order antes de hacer el trabajo | `[log\|check\|change\|close]` |
 | `/freelance-pipeline` | Diagnostico del negocio: ROI de Connects, embudo, tarifa efectiva real neta de horas no facturables, utilizacion, concentracion, scope drift | `[--desde YYYY-MM-DD]` |
 
 ---

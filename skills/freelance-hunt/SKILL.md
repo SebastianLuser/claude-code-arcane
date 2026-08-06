@@ -83,6 +83,8 @@ Según el estado del workspace, recomendar el skill siguiente (ver routing).
 | ¿Ya me postulé acá? / exportar el registro a CSV | `/career-registry` |
 | Mensaje directo a un cliente o follow-up | `/cold-outreach` |
 | Portfolio web | `/portfolio-site` |
+| Gané el proyecto: desarmar alcance y validar horas | `/freelance-kickoff` |
+| Registrar horas, scope creep, change orders | `/freelance-deliver` |
 | ROI de Connects, utilización, tarifa efectiva | `/freelance-pipeline` |
 
 ## Los 4 agentes del perfil
@@ -107,7 +109,9 @@ El perfil instala `agents/freelance/`. Existen porque hay lecturas que solo sirv
 5. Enviar (**siempre manual**) → `/job-outcome` para marcar `propuesta_enviada` y registrar el gasto de Connects.
 6. Si el cliente responde → ensayar con `discovery-call`, después la llamada real.
 7. Si se cierra → `/contract-and-proposal-writer` para el SOW, nota en `08-Contratos/`.
-8. Cada 2 semanas o con 10+ propuestas resueltas → `/freelance-pipeline`.
+8. **`/freelance-kickoff`** → desarmar el alcance y validar si entra en lo cotizado. Acá se descubre la brecha, no en la semana 5.
+9. Mientras se ejecuta → `/freelance-deliver` para horas, scope creep y change orders.
+10. Al cerrar → `/freelance-deliver close`, y cada 2 semanas o con 10+ propuestas resueltas, `/freelance-pipeline`.
 
 ## Reglas
 

@@ -10,6 +10,8 @@ skills:
   - client-screen
   - freelance-proposal
   - freelance-pipeline
+  - freelance-kickoff
+  - freelance-deliver
   # Compartidas con +job-hunt (una sola fuente de verdad del perfil profesional)
   - master-profile
   - portfolio-site
@@ -31,6 +33,8 @@ agents:
 
 permissions:
   allow:
+    - "Bash(python *import_history.py*)"
+    - "Bash(python3 *import_history.py*)"
     - "Bash(python *career_registry.py*)"
     - "Bash(python3 *career_registry.py*)"
     - "Bash(python *freelance_search.py*)"

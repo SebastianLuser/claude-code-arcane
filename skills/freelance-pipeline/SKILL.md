@@ -22,6 +22,21 @@ Ventana: `$ARGUMENTS` (vacío = todo el historial).
 - El ledger de Connects en `07-Recursos/` - gasto por propuesta y resultado.
 - `01-Perfiles/` - el piso de tarifa neto y la capacidad semanal declarada.
 
+### Los datos duros salen del export, no de la memoria
+
+Si el usuario tiene historial en una plataforma, **no le preguntes los montos y las horas**: que baje el CSV y usamos el importador. Nadie recuerda bien cuánto facturó.
+
+```bash
+python .claude/skills/freelance-pipeline/scripts/import_history.py inspect historial.csv
+python .claude/skills/freelance-pipeline/scripts/import_history.py summary historial.csv
+```
+
+Mismo patrón que `network_map.py` de `+job-hunt`: sin credenciales, sin tocar la cuenta. El usuario exporta, el script lee.
+
+**Correr `inspect` primero, siempre, y mostrarle el mapeo.** El script detecta las columnas porque los exports no tienen esquema estable, y reporta `columnas_sin_mapear` y `columnas_ambiguas`. Antes de creerle a un total hay que ver qué columna se usó; si eligió mal, se corrige con `--map "Columna=campo"`.
+
+Dos cosas que el summary te dice y hay que respetar: `tarifa_efectiva_calculable: false` significa que el export no trae horas y **la tarifa efectiva no se estima**, se pide el dato; y `muestra_suficiente: false` significa que no alcanza para hablar de tasas.
+
 ## El guard de volumen (primero, obligatorio)
 
 Contar antes de afirmar.
