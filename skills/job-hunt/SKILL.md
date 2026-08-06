@@ -67,6 +67,7 @@ Según el estado del workspace, recomendar el skill siguiente (ver routing).
 | Corrida de búsqueda con CLIs y dedup entre corridas | `/job-scrape` |
 | Postulación completa (nota + CV + cover + review + PDF) | `/job-aplicar` |
 | Registrar resultado/avance de una postulación | `/job-outcome` |
+| ¿Ya me postulé acá? / exportar el registro a CSV | `/career-registry` |
 | Gaps de skills agregados + plan de estudio | `/job-upskill` |
 | Adaptar CV a una oferta | `/cv-tailor` |
 | Exportar CV a PDF ATS | `/cv-ats-export` |

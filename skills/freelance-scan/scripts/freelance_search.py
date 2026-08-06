@@ -109,14 +109,25 @@ SYNONYMS = {
     "mobile": ["react native", "flutter", "swift", "kotlin", "ios", "android"],
     "go": ["golang"],
     "golang": ["go"],
-    "gamedev": ["unity", "unreal", "godot", "gameplay"],
-    "juegos": ["unity", "unreal", "godot", "gameplay"],
-    "unity": ["c#", "gameplay", "unreal"],
+    "api": ["rest", "graphql", "openapi", "webhook", "integracion"],
+    "integraciones": ["api", "webhook", "erp", "crm", "salesforce", "middleware"],
+    "saas": ["multi-tenant", "stripe", "billing", "subscription", "dashboard"],
+    "dashboard": ["bi", "reporting", "metabase", "looker", "analytics"],
+    "database": ["postgres", "mysql", "mongodb", "sql", "migracion"],
+    "migracion": ["legacy", "refactor", "modernizacion", "migration"],
+    "testing": ["qa", "automation", "cypress", "playwright", "pytest"],
+    "qa": ["testing", "cypress", "playwright", "automation"],
     "devops": ["kubernetes", "docker", "terraform", "aws", "ci/cd"],
     "data": ["sql", "etl", "airflow", "bigquery", "dbt"],
+    "scraping": ["crawler", "scraper", "playwright", "extraction"],
     "ai": ["llm", "openai", "rag", "machine learning", "langchain"],
     "automatizacion": ["zapier", "n8n", "make", "airflow", "automation"],
     "automation": ["zapier", "n8n", "make", "workflow"],
+    # Unity y game design entran porque son perfil del usuario, no porque el
+    # mapa apunte a gamedev: Unreal y Godot quedan afuera a proposito. El foco
+    # de este perfil es software en general.
+    "unity": ["c#", "gameplay", "game design"],
+    "gamedesign": ["game design", "level design", "unity"],
 }
 MAX_EXPANDED_TERMS = 6  # tope de terminos extra: cada uno es una request mas
 

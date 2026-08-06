@@ -13,6 +13,7 @@ skills:
   - job-scrape
   - job-aplicar
   - job-outcome
+  - career-registry
   - job-upskill
   - cover-letter
   - cold-outreach
@@ -31,6 +32,8 @@ agents:
 
 permissions:
   allow:
+    - "Bash(python *career_registry.py*)"
+    - "Bash(python3 *career_registry.py*)"
     - "Bash(python *cv_export.py*)"
     - "Bash(python3 *cv_export.py*)"
     - "Bash(python *verify_pdf.py*)"

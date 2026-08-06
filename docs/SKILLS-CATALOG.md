@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 381 skills disponibles para proyectos consumidores, organizados por division.
+Los 382 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 339: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 340: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -434,7 +434,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 
 ---
 
-## Job Hunt (16 skills)
+## Job Hunt (17 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -447,6 +447,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/job-search` | Busca, scorea y prioriza ofertas + plan de busqueda de 7 dias | `[search <query>\|score <url>\|plan]` |
 | `/job-scrape` | Busca ofertas (CLIs LinkedIn + GetOnBoard bundleados) con dedup entre corridas, scorea y ofrece crear notas | `[perfil] [--jobage N]` |
 | `/job-aplicar` | Pipeline completo de una postulacion: fit, CV custom, cover, review, PDF verificado y dashboard | `<url\|nota>` |
+| `/career-registry` | Trazabilidad: contesta si ya te postulaste a una empresa/URL, exporta todo a CSV, audita huecos, notas frenadas y horas por encima de lo estimado. Sirve a empleo y freelance | `[check\|export\|stats\|audit]` |
 | `/job-outcome` | Registra resultado/avance de una aplicacion y actualiza nota + dashboard | `[empresa]` |
 | `/job-upskill` | Gaps de skills agregados de las aplicaciones + plan de estudio con recursos reales | `[url\|nota]` |
 | `/cover-letter` | Cover letters y mensajes de aplicacion concisos y custom | `[application\|company + role]` |

@@ -15,6 +15,7 @@ skills:
   - portfolio-site
   - cold-outreach
   - job-outcome
+  - career-registry
   # Compartidas con +business y +agile
   - contract-and-proposal-writer
   - estimate
@@ -30,6 +31,8 @@ agents:
 
 permissions:
   allow:
+    - "Bash(python *career_registry.py*)"
+    - "Bash(python3 *career_registry.py*)"
     - "Bash(python *freelance_search.py*)"
     - "Bash(python3 *freelance_search.py*)"
   deny:

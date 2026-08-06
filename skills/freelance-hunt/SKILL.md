@@ -80,6 +80,7 @@ Según el estado del workspace, recomendar el skill siguiente (ver routing).
 | Contrato, SOW, NDA o change order | `/contract-and-proposal-writer` |
 | Estimar esfuerzo de un proyecto | `/estimate` |
 | Registrar respuesta o resultado | `/job-outcome` |
+| ¿Ya me postulé acá? / exportar el registro a CSV | `/career-registry` |
 | Mensaje directo a un cliente o follow-up | `/cold-outreach` |
 | Portfolio web | `/portfolio-site` |
 | ROI de Connects, utilización, tarifa efectiva | `/freelance-pipeline` |
