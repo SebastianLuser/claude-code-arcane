@@ -38,7 +38,7 @@ Lo que la propuesta decía en una línea acá se convierte en tres o cuatro item
 
 ### 2. Escribir los criterios de aceptación
 
-Por cada entregable: **cómo sabemos que está terminado**, en términverificables.
+Por cada entregable: **cómo sabemos que está terminado**, en términos verificables.
 
 Sin esto, "terminado" lo define el cliente cuando quiera, y siempre está un poco más lejos. Es el mecanismo más barato que existe contra el scope creep, y casi nadie lo escribe.
 
