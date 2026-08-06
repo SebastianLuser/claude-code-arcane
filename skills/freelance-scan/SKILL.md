@@ -42,7 +42,28 @@ Eso se lee así: se leyeron 103 ofertas, 9 eran freelance, ninguna tenía que ve
 
 Rendimiento medido: GetOnBrd ~10 freelance cada 200 escaneados antes del filtro de relevancia; Himalayas ~28 cada 120.
 
-El match es por **límite de palabra**, no substring: en este dominio `go`, `ux`, `ai` y `qa` son búsquedas legítimas, y por substring `ux` matchearía dentro de "Linux" y `go` dentro de "Django". Costo aceptado y testeado: buscar `script` ya no encuentra "JavaScript". Los términos con símbolos (`c#`, `.net`, `node.js`) caen a substring.
+El match es por **límite de palabra**, no substring: en este dominio `go`, `ux`, `ai` y `qa` son búsquedas legítimas, y por substring `ux` matchearía dentro de "Linux" y `go` dentro de "Django". Costo aceptado y testeado: buscar `script` ya no encuentra "JavaScript". Los términos con símbolos (`c#`, `.net`, `node.js`, `react native`) caen a substring.
+
+### Expansión por sinónimos
+
+**Nadie titula una oferta "ecommerce".** La titula "Shopify". Buscar por categoría escondía trabajo real, medido sobre el pool completo:
+
+| Buscás | Sin expansión | Con expansión |
+|---|---|---|
+| `website` | 0 | 7 |
+| `backend` | 1 | 6 |
+| `ecommerce` | 0 | 1 (el Shopify que estaba ahí) |
+| `frontend` | 1 | 2 |
+| `go` | 0 | 1 (la oferta dice "Golang") |
+
+El mapa está en `SYNONYMS` dentro del script. Dos decisiones de diseño que importan:
+
+- **La expansión es unidireccional**: `ecommerce → shopify`, nunca al revés. Quien ya busca preciso no quiere que le infles los resultados.
+- **Se consulta el server una vez por término**, no solo se filtra distinto. El ranking de GetOnBrd depende de `query`, así que buscar "ecommerce" nunca trae el pool donde vive el de Shopify. El término del usuario se pagina hondo; cada sinónimo, una página. Tope de 6 términos extra, porque cada uno es una request.
+
+El output trae `terms_searched` y `synonyms_applied`: **mostráselos al usuario**, si no no entiende por qué una búsqueda de "ecommerce" le trajo Shopify. Con `--no-expand` se apaga.
+
+Si un nicho del usuario no está en el mapa, agregarlo es una línea - y conviene, porque el vocabulario de cada rubro es distinto.
 
 ### Las plataformas grandes van a mano
 

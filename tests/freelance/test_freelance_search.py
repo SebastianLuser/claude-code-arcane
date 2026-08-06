@@ -229,6 +229,54 @@ class TestRelevance(unittest.TestCase):
         self.assertEqual(irrelevant, 0, "el full-time no debe contarse como irrelevante")
 
 
+class TestSynonymExpansion(unittest.TestCase):
+    """
+    Medido sobre el pool real: buscar "ecommerce" devolvia 0 con un
+    "Desarrollador Web Shopify" adentro, y "go" devolvia 0 con un "Golang
+    Back-end Developer" adentro. Nadie titula una oferta con la categoria.
+    """
+
+    def test_category_expands_to_technologies(self):
+        terms, applied = fs.expand_query("ecommerce")
+        self.assertEqual(terms[0], "ecommerce", "el termino del usuario va primero")
+        self.assertIn("shopify", terms)
+        self.assertEqual(applied["ecommerce"][0], "shopify")
+
+    def test_go_finds_golang(self):
+        terms, _ = fs.expand_query("go")
+        self.assertIn("golang", terms)
+
+    def test_unknown_term_is_left_alone(self):
+        terms, applied = fs.expand_query("murex")
+        self.assertEqual(terms, ["murex"])
+        self.assertEqual(applied, {})
+
+    def test_caps_the_number_of_extra_terms(self):
+        # Cada termino extra es una request mas: sin tope, "backend frontend web"
+        # dispararia veinte.
+        terms, _ = fs.expand_query("backend frontend web mobile data")
+        extra = len(terms) - 5
+        self.assertLessEqual(extra, fs.MAX_EXPANDED_TERMS)
+
+    def test_does_not_duplicate_a_term_already_typed(self):
+        terms, _ = fs.expand_query("frontend react")
+        self.assertEqual(terms.count("react"), 1)
+
+    def test_multiword_synonyms_survive_matching(self):
+        # "react native" tiene un espacio: partirlo en palabras lo rompe, asi que
+        # matches_terms recibe la lista ya armada y no vuelve a splitear.
+        terms, _ = fs.expand_query("mobile")
+        self.assertIn("react native", terms)
+        self.assertTrue(fs.matches_terms(terms, "React Native Developer"))
+
+    def test_expansion_is_one_directional(self):
+        # Expandir shopify -> ecommerce le inflaria los resultados a quien ya
+        # busca preciso. Solo se baja de categoria a tecnologia.
+        terms, applied = fs.expand_query("shopify")
+        self.assertEqual(terms, ["shopify"])
+        self.assertEqual(applied, {})
+
+
 class TestHackerNewsClassification(unittest.TestCase):
     def test_separates_offers_from_freelancers_advertising(self):
         self.assertEqual(fs.hn_classify("SEEKING FREELANCER | Remote | Rust"), fs.HN_HIRING)

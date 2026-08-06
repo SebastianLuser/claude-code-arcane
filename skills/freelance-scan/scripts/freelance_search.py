@@ -23,6 +23,13 @@ freelancers ofreciendose contra 2 ofertas de trabajo. Como fuente de proyectos n
 y como se posicionan otros, es la mejor que hay sin pagar. Por eso vive en el
 subcomando `market`, que es lo que realmente es.
 
+Buscar por categoria escondia trabajo real: "ecommerce" devolvia 0 mientras
+habia un "Desarrollador Web Shopify" en el pool, porque nadie titula una oferta
+"ecommerce". Por eso `search` expande sinonimos (ver SYNONYMS) y consulta el
+server una vez por termino: el ranking del server depende de `query`, asi que
+buscar "ecommerce" nunca trae el pool donde vive el de Shopify. Con --no-expand
+se apaga.
+
 Uso:
   python freelance_search.py sources
   python freelance_search.py search --query "unity developer" --source all
@@ -76,6 +83,43 @@ HN_AVAILABLE = "seeking_work"
 # Fuentes de proyectos. HN no esta aca: ver `market` y el docstring de arriba.
 SOURCES = ("getonbrd", "himalayas")
 
+# Expansion por sinonimos.
+#
+# Nadie titula una oferta "ecommerce": la titula "Shopify" o "WooCommerce". Se
+# midio el pool completo de las dos fuentes (29 ofertas freelance) y buscar
+# "ecommerce" devolvia 0 mientras habia un "Desarrollador Web Shopify" adentro;
+# "website" devolvia 0 con un "Especialista WordPress" y un "Partner Tecnico
+# Astro" presentes. Buscar por categoria escondia trabajo real.
+#
+# La clave es la palabra que el freelancer piensa; los valores son las que el
+# cliente escribe. Solo se expande hacia abajo (categoria -> tecnologias): al
+# reves inflaria los resultados de quien ya busca preciso.
+SYNONYMS = {
+    "ecommerce": ["shopify", "woocommerce", "magento", "vtex", "tiendanube", "prestashop"],
+    "tienda": ["shopify", "woocommerce", "vtex", "tiendanube"],
+    "website": ["wordpress", "webflow", "astro", "landing", "next.js", "html"],
+    "web": ["wordpress", "webflow", "astro", "landing", "next.js"],
+    "sitio": ["wordpress", "webflow", "astro", "landing"],
+    "landing": ["wordpress", "webflow", "astro", "html"],
+    "cms": ["wordpress", "strapi", "contentful", "sanity", "headless"],
+    "backend": ["node", "nestjs", "express", "django", "fastapi", "spring", ".net", "laravel"],
+    "frontend": ["react", "vue", "angular", "svelte", "next.js", "tailwind"],
+    "fullstack": ["node", "react", "typescript", "django", "laravel"],
+    "full-stack": ["node", "react", "typescript", "django", "laravel"],
+    "mobile": ["react native", "flutter", "swift", "kotlin", "ios", "android"],
+    "go": ["golang"],
+    "golang": ["go"],
+    "gamedev": ["unity", "unreal", "godot", "gameplay"],
+    "juegos": ["unity", "unreal", "godot", "gameplay"],
+    "unity": ["c#", "gameplay", "unreal"],
+    "devops": ["kubernetes", "docker", "terraform", "aws", "ci/cd"],
+    "data": ["sql", "etl", "airflow", "bigquery", "dbt"],
+    "ai": ["llm", "openai", "rag", "machine learning", "langchain"],
+    "automatizacion": ["zapier", "n8n", "make", "airflow", "automation"],
+    "automation": ["zapier", "n8n", "make", "workflow"],
+}
+MAX_EXPANDED_TERMS = 6  # tope de terminos extra: cada uno es una request mas
+
 RATE_PATTERNS = (
     r"(?:USD|US\$|\$|EUR|€)\s?(\d{1,4})(?:\s?[-a]\s?(?:USD|US\$|\$|EUR|€)?\s?(\d{1,4}))?\s?(?:/|per\s)\s?(hour|hr|h|day|d|week|wk|month|mo)",
     r"(\d{1,4})(?:\s?[-a]\s?(\d{1,4}))?\s?(?:USD|US\$|\$|EUR|€)\s?(?:/|per\s)\s?(hour|hr|h|day|d|week|wk|month|mo)",
@@ -119,7 +163,29 @@ def strip_html(raw: str) -> str:
     return html.unescape(text).strip()
 
 
-def matches_query(query: str, *fields) -> bool:
+def expand_query(query: str):
+    """
+    Devuelve (terminos_de_busqueda, expansiones_aplicadas).
+
+    El primer termino es siempre lo que el usuario escribio: es el que se pagina
+    en profundidad. Los sinonimos van despues y se consultan mas superficialmente.
+    """
+    words = [w for w in re.split(r"\s+", (query or "").strip().lower()) if w]
+    terms = list(words)
+    applied = {}
+    for word in words:
+        extra = [s for s in SYNONYMS.get(word, []) if s not in terms]
+        if not extra:
+            continue
+        room = MAX_EXPANDED_TERMS - (len(terms) - len(words))
+        if room <= 0:
+            break
+        applied[word] = extra[:room]
+        terms.extend(applied[word])
+    return terms, applied
+
+
+def matches_terms(terms, *fields) -> bool:
     """
     Chequeo de relevancia del lado del cliente.
 
@@ -128,9 +194,9 @@ def matches_query(query: str, *fields) -> bool:
     un recruiter). Paginando en profundidad y quedandose con lo freelance de esa
     cola larga, el resultado es basura relevante a nada.
 
-    Se exige que al menos un termino de la query aparezca en el texto. Con varios
-    terminos alcanza uno: "unity developer" tiene que traer los que dicen Unity
-    aunque no digan developer.
+    Alcanza que UN termino aparezca: "unity developer" tiene que traer los que
+    dicen Unity aunque no digan developer, y con expansion "ecommerce" tiene que
+    traer los de Shopify.
 
     Match por limite de palabra y no por substring. En este dominio hay muchas
     busquedas de dos letras que son legitimas (go, ux, ai, qa) y por substring
@@ -138,10 +204,11 @@ def matches_query(query: str, *fields) -> bool:
     buscar "script" ya no encuentra "JavaScript"; se prefiere ese costo antes que
     devolver ofertas de Linux a quien busca UX.
 
-    Los terminos con caracteres no alfanumericos (c#, .net, node.js) caen a
-    substring: \\b no funciona contra un `#` o un `.`.
+    Los terminos con caracteres no alfanumericos (c#, .net, node.js, react
+    native) caen a substring: \\b no funciona contra `#`, `.` ni el espacio
+    interno de un termino de dos palabras.
     """
-    terms = [t for t in re.split(r"\s+", (query or "").strip().lower()) if t]
+    terms = [t for t in (terms or []) if t]
     if not terms:
         return True
     haystack = " ".join(str(f or "") for f in fields).lower()
@@ -152,6 +219,11 @@ def matches_query(query: str, *fields) -> bool:
         elif term in haystack:
             return True
     return False
+
+
+def matches_query(query: str, *fields) -> bool:
+    """Version sin expansion, partiendo la query en palabras."""
+    return matches_terms([t for t in re.split(r"\s+", (query or "").strip().lower()) if t], *fields)
 
 
 def record(**kw):
@@ -182,7 +254,16 @@ def expanded_names(node):
     return [n for n in ((item.get("attributes") or {}).get("name") for item in data) if n]
 
 
-def getonbrd_search(query: str, pages: int, per_page: int = 50):
+def getonbrd_search(query: str, pages: int, per_page: int = 50, terms=None):
+    """
+    `query` maneja el pool que devuelve el server; `terms` filtra lo que se queda.
+
+    Los dos hacen falta y no son lo mismo: el server rankea por relevancia
+    respecto de `query`, asi que buscar "ecommerce" nunca trae el pool donde vive
+    el "Desarrollador Web Shopify". Por eso el caller llama una vez por termino
+    expandido y dedupea; aca solo se resuelve una.
+    """
+    terms = terms if terms is not None else [query]
     out = []
     truncated = False
     scanned = 0
@@ -202,7 +283,7 @@ def getonbrd_search(query: str, pages: int, per_page: int = 50):
             # El orden importa: la relevancia se chequea DESPUES de la modalidad,
             # asi `irrelevant` cuenta solo freelance descartado por no tener nada
             # que ver, que es el numero que le dice al usuario que afine la query.
-            if not matches_query(query, attrs.get("title"), " ".join(tags),
+            if not matches_terms(terms, attrs.get("title"), " ".join(tags),
                                  attrs.get("description_headline")):
                 irrelevant += 1
                 continue
@@ -252,7 +333,9 @@ def getonbrd_detail(job_id: str):
 # Himalayas: remoto global. employmentType "Contractor" existe pero no filtra.
 # --------------------------------------------------------------------------- #
 
-def himalayas_search(query: str, pages: int):
+def himalayas_search(query: str, pages: int, terms=None):
+    """Himalayas devuelve un feed unico, asi que la expansion es solo del filtro."""
+    terms = terms if terms is not None else [query]
     out = []
     truncated = False
     scanned = 0
@@ -267,7 +350,7 @@ def himalayas_search(query: str, pages: int):
         for job in jobs:
             if job.get("employmentType") != HIMALAYAS_CONTRACT:
                 continue
-            if not matches_query(query, job.get("title"), job.get("excerpt"),
+            if not matches_terms(terms, job.get("title"), job.get("excerpt"),
                                  " ".join(job.get("categories") or [])):
                 irrelevant += 1
                 continue
@@ -405,16 +488,43 @@ def rate_summary(rates):
 
 def run_search(args) -> int:
     wanted = SOURCES if args.source == "all" else (args.source,)
+    base_query = args.query or "developer"
+
+    if args.no_expand:
+        terms, applied = [t for t in re.split(r"\s+", base_query.lower()) if t], {}
+    else:
+        terms, applied = expand_query(base_query)
+
     results, errors, truncated, scanned = [], {}, [], {}
+    by_id = {}
 
     for name in wanted:
         try:
             if name == "getonbrd":
-                found, cut, seen, off = getonbrd_search(args.query or "developer", args.pages)
+                # Una request por termino: el server rankea segun `query`, asi que
+                # "ecommerce" y "shopify" devuelven pools distintos. El termino del
+                # usuario se pagina hondo; los sinonimos, una pagina (el tope de
+                # relevancia es lo que importa y cada uno cuesta una request).
+                found, seen, off, cut = [], 0, 0, False
+                for i, term in enumerate(terms):
+                    depth = args.pages if i < len(re.split(r"\s+", base_query.strip())) else 1
+                    got, c, s, o = getonbrd_search(term, depth, terms=terms)
+                    found.extend(got)
+                    seen += s
+                    off += o
+                    cut = cut or c
             else:
-                found, cut, seen, off = himalayas_search(args.query or "", args.pages)
-            results.extend(found)
-            scanned[name] = {"scanned": seen, "freelance": len(found),
+                found, cut, seen, off = himalayas_search(base_query, args.pages, terms=terms)
+
+            fresh = 0
+            for row in found:
+                key = (row["source"], row["id"])
+                if key in by_id:
+                    continue
+                by_id[key] = row
+                results.append(row)
+                fresh += 1
+            scanned[name] = {"scanned": seen, "freelance": fresh,
                              "freelance_pero_irrelevante": off}
             if cut:
                 truncated.append(name)
@@ -428,6 +538,10 @@ def run_search(args) -> int:
 
     emit({
         "query": args.query,
+        # Que se busco realmente. Sin esto el usuario no entiende por que una
+        # busqueda de "ecommerce" le trajo una oferta de Shopify.
+        "terms_searched": terms,
+        "synonyms_applied": applied,
         "sources_requested": list(wanted),
         "sources_failed": errors,
         # El rendimiento por fuente se reporta siempre: filtrar freelance del lado
@@ -502,6 +616,8 @@ def main(argv=None) -> int:
     search.add_argument("--query", default="", help="terminos a buscar")
     search.add_argument("--source", default="all", choices=list(SOURCES) + ["all"])
     search.add_argument("--pages", type=int, default=3, help="paginas por fuente (default 3)")
+    search.add_argument("--no-expand", action="store_true",
+                        help="no expandir por sinonimos (ecommerce no busca shopify, etc)")
     search.set_defaults(func=run_search)
 
     sources = sub.add_parser("sources", help="listar fuentes disponibles y las descartadas con su motivo")
