@@ -9,7 +9,7 @@ export async function statusCommand(): Promise<void> {
     console.log(
       chalk.yellow("No Arcane installation found in this project."),
     );
-    console.log(chalk.dim("Run `npx arcane install <profile>` to install."));
+    console.log(chalk.dim("Run `npx claude-code-arcane install <profile>` to install."));
     return;
   }
 

@@ -18,7 +18,7 @@ export async function addCommand(items: string[]): Promise<void> {
   if (!manifest) {
     console.error(
       chalk.red(
-        "No arcane-manifest.json found. Run `npx arcane install` first.",
+        "No arcane-manifest.json found. Run `npx claude-code-arcane install` first.",
       ),
     );
     process.exit(1);

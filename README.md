@@ -13,7 +13,7 @@ A configuration harness installable via `npx`. Pick a **profile** that matches y
 cd ~/projects/my-app
 
 # Install a profile (no clone needed)
-npx arcane install backend-ts+agile
+npx claude-code-arcane install backend-ts+agile
 
 # Open Claude Code
 claude
@@ -44,7 +44,7 @@ permissions:
 ### 2. Combine profiles with `+`
 
 ```bash
-npx arcane install backend-ts+agile+testing
+npx claude-code-arcane install backend-ts+agile+testing
 #                  ^^^^^^^^^^  ^^^^^  ^^^^^^^
 #                  base        addon  addon
 ```
@@ -82,27 +82,27 @@ my-project/.claude/
 ### Install a profile
 
 ```bash
-npx arcane install backend-ts+agile     # Install profile combination
-npx arcane install                       # Show available profiles (interactive)
-npx arcane install unity-dev --dry-run   # Preview without installing
+npx claude-code-arcane install backend-ts+agile     # Install profile combination
+npx claude-code-arcane install                       # Show available profiles (interactive)
+npx claude-code-arcane install unity-dev --dry-run   # Preview without installing
 ```
 
 ### Add skills or profiles to an existing installation
 
 ```bash
-npx arcane add api-design                # Add a single skill
-npx arcane add security-audit owasp      # Add multiple skills
-npx arcane add +security                 # Add an entire profile as addon
-npx arcane add +database +testing        # Add multiple profiles
+npx claude-code-arcane add api-design                # Add a single skill
+npx claude-code-arcane add security-audit owasp      # Add multiple skills
+npx claude-code-arcane add +security                 # Add an entire profile as addon
+npx claude-code-arcane add +database +testing        # Add multiple profiles
 ```
 
 ### Remove skills, profiles, or agents
 
 ```bash
-npx arcane remove api-design             # Remove a single skill
-npx arcane remove slack postman          # Remove multiple skills
-npx arcane remove +agile                 # Remove entire profile (skills + agents + rules)
-npx arcane remove +testing api-design    # Mix: remove a profile and a skill
+npx claude-code-arcane remove api-design             # Remove a single skill
+npx claude-code-arcane remove slack postman          # Remove multiple skills
+npx claude-code-arcane remove +agile                 # Remove entire profile (skills + agents + rules)
+npx claude-code-arcane remove +testing api-design    # Mix: remove a profile and a skill
 ```
 
 When removing a profile, Arcane only deletes assets **exclusive** to that profile. Skills, agents, and rules shared with other active profiles are preserved.
@@ -112,9 +112,9 @@ Core skills (21) and the core profile cannot be removed.
 ### Global hooks (worktree-isolation auto-apply)
 
 ```bash
-npx arcane global                        # Install global SessionStart hook
-npx arcane global --status               # Show global hooks status
-npx arcane global --remove               # Remove global hooks
+npx claude-code-arcane global                        # Install global SessionStart hook
+npx claude-code-arcane global --status               # Show global hooks status
+npx claude-code-arcane global --remove               # Remove global hooks
 ```
 
 Installs worktree-isolation scripts into `~/.claude/scripts/` and adds a `SessionStart` hook to `~/.claude/settings.json` that auto-applies isolation on every new Claude Code session.
@@ -122,10 +122,10 @@ Installs worktree-isolation scripts into `~/.claude/scripts/` and adds a `Sessio
 ### Other commands
 
 ```bash
-npx arcane list                          # List all profiles and skills
-npx arcane status                        # Show current installation
-npx arcane update                        # Check for updates
-npx arcane clean --force                 # Remove Arcane entirely from project
+npx claude-code-arcane list                          # List all profiles and skills
+npx claude-code-arcane status                        # Show current installation
+npx claude-code-arcane update                        # Check for updates
+npx claude-code-arcane clean --force                 # Remove Arcane entirely from project
 ```
 
 ---
@@ -209,37 +209,37 @@ Once installed, manage the installation from within a Claude Code session:
 
 ```bash
 # Unity dev only
-npx arcane install unity-dev
+npx claude-code-arcane install unity-dev
 
 # Unity with team and management
-npx arcane install unity-dev+unity-design+agile+clickup
+npx claude-code-arcane install unity-dev+unity-design+agile+clickup
 
 # Go microservice with infra
-npx arcane install backend-go+infra+agile+jira
+npx claude-code-arcane install backend-go+infra+agile+jira
 
 # Full-stack monorepo
-npx arcane install backend-ts+frontend+testing+database
+npx claude-code-arcane install backend-ts+frontend+testing+database
 
 # Mobile app with CI/CD
-npx arcane install mobile+agile+clickup+testing
+npx claude-code-arcane install mobile+agile+clickup+testing
 
 # Secure backend with docs
-npx arcane install backend-ts+security+docs+database
+npx claude-code-arcane install backend-ts+security+docs+database
 
 # AI/ML project with data pipelines
-npx arcane install backend-go+ai+infra
+npx claude-code-arcane install backend-go+ai+infra
 
 # SaaS with full marketing stack
-npx arcane install backend-ts+marketing+business+finance
+npx claude-code-arcane install backend-ts+marketing+business+finance
 
 # Regulated medical device
-npx arcane install backend-ts+regulatory+security+testing
+npx claude-code-arcane install backend-ts+regulatory+security+testing
 
 # Founder advisory setup
-npx arcane install clevel+business+finance+marketing
+npx claude-code-arcane install clevel+business+finance+marketing
 
 # With status bar
-npx arcane install backend-ts+agile+statusline
+npx claude-code-arcane install backend-ts+agile+statusline
 ```
 
 ---
@@ -248,26 +248,26 @@ npx arcane install backend-ts+agile+statusline
 
 ```bash
 # Start with a base profile
-npx arcane install backend-ts
+npx claude-code-arcane install backend-ts
 
 # Later, add testing and security
-npx arcane add +testing +security
+npx claude-code-arcane add +testing +security
 
 # Add a specific skill you need
-npx arcane add docker-setup
+npx claude-code-arcane add docker-setup
 
 # Realize you don't need testing anymore
-npx arcane remove +testing
+npx claude-code-arcane remove +testing
 
 # Remove a specific skill
-npx arcane remove docker-setup
+npx claude-code-arcane remove docker-setup
 
 # Check what you have now
-npx arcane status
+npx claude-code-arcane status
 
 # Start over
-npx arcane clean --force
-npx arcane install backend-ts+agile
+npx claude-code-arcane clean --force
+npx claude-code-arcane install backend-ts+agile
 ```
 
 ---
@@ -280,24 +280,24 @@ Work on multiple features in parallel using git worktrees, each with its own Arc
 
 ```bash
 # Create worktree + install Arcane in one step
-npx arcane worktree feat/new-api --profile backend-ts+agile
+npx claude-code-arcane worktree feat/new-api --profile backend-ts+agile
 
 # Inherits profile from current installation
-npx arcane worktree feat/new-api
+npx claude-code-arcane worktree feat/new-api
 
 # With dependency install and Docker port isolation
-npx arcane worktree feat/new-api --install-deps --isolate
+npx claude-code-arcane worktree feat/new-api --install-deps --isolate
 
 # Custom path and base branch
-npx arcane worktree feat/new-api --path ../my-api-worktree --base develop
+npx claude-code-arcane worktree feat/new-api --path ../my-api-worktree --base develop
 
 # Preview without creating
-npx arcane worktree feat/new-api --dry-run
+npx claude-code-arcane worktree feat/new-api --dry-run
 ```
 
 ### Worktree-aware installation
 
-When you run `npx arcane install` inside a git worktree, Arcane automatically:
+When you run `npx claude-code-arcane install` inside a git worktree, Arcane automatically:
 - Detects it's in a worktree
 - Finds the main worktree's Arcane installation
 - **Shares** hooks/ and docs/ via symlink (read-only, identical across worktrees)
@@ -305,10 +305,10 @@ When you run `npx arcane install` inside a git worktree, Arcane automatically:
 
 ```bash
 # Manual: share from a specific installation
-npx arcane install backend-ts --share-from /path/to/main/worktree
+npx claude-code-arcane install backend-ts --share-from /path/to/main/worktree
 
 # Disable sharing
-npx arcane worktree feat/api --no-share
+npx claude-code-arcane worktree feat/api --no-share
 ```
 
 ### What gets shared vs independent
@@ -326,7 +326,7 @@ npx arcane worktree feat/api --no-share
 ### Status shows worktree info
 
 ```bash
-npx arcane status
+npx claude-code-arcane status
 # === Arcane Status ===
 #   Profiles:  backend-ts + agile
 #   Worktree:  yes (main: /path/to/main/checkout)

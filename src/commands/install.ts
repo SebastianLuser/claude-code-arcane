@@ -47,7 +47,7 @@ export async function installCommand(
       );
     }
     console.log(
-      chalk.dim("\n  Usage: npx arcane install backend-ts+agile+testing\n"),
+      chalk.dim("\n  Usage: npx claude-code-arcane install backend-ts+agile+testing\n"),
     );
     return;
   }
