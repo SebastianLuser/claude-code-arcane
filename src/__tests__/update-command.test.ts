@@ -105,6 +105,81 @@ describe("updateTarget", () => {
     expect(output).toContain(getPackageVersion());
   });
 
+  // The no-changes path used to return before writing the manifest, so an
+  // install whose content already matched the source kept the old version on
+  // disk forever: every later run re-announced the same update and applied
+  // nothing to it. These two pin the write and its dry-run guard.
+  describe("no-changes path", () => {
+    function stampOldVersion(dir: string): void {
+      const manifestPath = path.join(dir, ".claude", "arcane-manifest.json");
+      const manifest: ArcaneManifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+      manifest.source_version = "0.0.1";
+      manifest.arcane_version = "0.0.1";
+      fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
+    }
+
+    function readVersion(dir: string): string | undefined {
+      const manifestPath = path.join(dir, ".claude", "arcane-manifest.json");
+      const manifest: ArcaneManifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+      return manifest.source_version;
+    }
+
+    // A fresh install has no content_hashes in its manifest, and resolveAction
+    // reads a missing hash as "cannot tell, copy it again". So the empty plan
+    // this path needs only exists after one real update has settled the
+    // hashes. Stamping an old version on top of that is the exact state a
+    // released install lands in.
+    async function settleThenStampOld(dir: string): Promise<void> {
+      const { updateTarget } = await import("../commands/update.js");
+      installTestingProfile(dir);
+      await updateTarget(dir, { source: "bundled", force: true, quiet: true });
+      stampOldVersion(dir);
+    }
+
+    it("records the new version when the content already matches", async () => {
+      // Arrange
+      tmpDir = makeTmpDir();
+      await settleThenStampOld(tmpDir);
+
+      // Act
+      const { updateTarget } = await import("../commands/update.js");
+      const result = await updateTarget(tmpDir, { source: "bundled", quiet: true });
+
+      // Assert
+      expect(result.status).toBe("no-changes");
+      expect(readVersion(tmpDir)).toBe(getPackageVersion());
+    });
+
+    it("stops announcing the update on the next run", async () => {
+      // Arrange
+      tmpDir = makeTmpDir();
+      await settleThenStampOld(tmpDir);
+
+      // Act
+      const { updateTarget } = await import("../commands/update.js");
+      await updateTarget(tmpDir, { source: "bundled", quiet: true });
+      const second = await updateTarget(tmpDir, { source: "bundled", quiet: true });
+
+      // Assert: this is the symptom the bug produced, so it is the assertion
+      // that matters. Before the fix it stayed "no-changes" on every run.
+      expect(second.status).toBe("up-to-date");
+    });
+
+    it("leaves the manifest alone on a dry run", async () => {
+      // Arrange: the no-changes block sits above the dry-run return, so the
+      // write needs its own guard. A preview that mutates is not a preview.
+      tmpDir = makeTmpDir();
+      await settleThenStampOld(tmpDir);
+
+      // Act
+      const { updateTarget } = await import("../commands/update.js");
+      await updateTarget(tmpDir, { source: "bundled", quiet: true, dryRun: true });
+
+      // Assert
+      expect(readVersion(tmpDir)).toBe("0.0.1");
+    });
+  });
+
   it("should force update even when version matches", async () => {
     // Arrange
     tmpDir = makeTmpDir();

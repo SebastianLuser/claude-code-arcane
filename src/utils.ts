@@ -14,10 +14,24 @@ export function getPackageRoot(): string {
 // copying that into every install ships stale bytecode as if it were an asset.
 const COPY_SKIP = new Set(["__pycache__", ".pytest_cache"]);
 
+/**
+ * Whether a directory entry is a build artifact of the source tree rather than
+ * content to ship.
+ *
+ * Copying and hashing have to agree on this, and they did not. The installer
+ * skipped __pycache__ while the content hashes counted it, so any source tree
+ * where a Python skill had run produced a source hash that no install could
+ * ever match: `update` listed that skill as changed, copied it, computed the
+ * same mismatch again, and offered it forever without converging.
+ */
+export function isBuildArtifact(name: string): boolean {
+  return COPY_SKIP.has(name) || name.endsWith(".pyc");
+}
+
 export function copyDirSync(src: string, dest: string): void {
   fs.mkdirSync(dest, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
-    if (COPY_SKIP.has(entry.name) || entry.name.endsWith(".pyc")) continue;
+    if (isBuildArtifact(entry.name)) continue;
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
     if (entry.isDirectory()) {

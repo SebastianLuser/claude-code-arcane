@@ -246,6 +246,44 @@ export async function resolveContentSource(
   return new BundledContentSource();
 }
 
+/**
+ * Resolve the content a given version was installed from, falling back to the
+ * normal preference order when that version is no longer cached.
+ *
+ * `remove` computes what to delete from the profile YAML, so it has to read the
+ * same definitions the install read. Resolving "auto" instead reads whatever
+ * version is current, and a profile whose skill or agent list grew since then
+ * deletes the wrong set. That failure is silent in the worst way: the command
+ * prints "Removed +profile" over files that are still on disk.
+ *
+ * When the installed version is gone from the cache there is nothing better to
+ * use, so the fallback is the current source plus a warning. Guessing quietly is
+ * what produced the bug; saying which definitions were used is the fix.
+ */
+export async function resolveContentSourceForVersion(
+  version: string | undefined,
+  opts: ResolveOptions = {},
+): Promise<ContentSource> {
+  if (version && isCached(version)) {
+    if (!opts.quiet) console.log(`  Source: cache (${version}, as installed)`);
+    return new CachedContentSource(version);
+  }
+
+  const source = await resolveContentSource(opts);
+
+  if (version) {
+    const resolved = await source.getVersion();
+    if (resolved !== version && !opts.quiet) {
+      console.warn(
+        `  WARNING: installed v${version} is not cached, using v${resolved} definitions.\n` +
+          "  If a profile changed between those versions, some files may be left behind.",
+      );
+    }
+  }
+
+  return source;
+}
+
 function findLatestCache(): string | null {
   const cacheDir = path.join(os.homedir(), ".arcane", "cache");
   if (!fs.existsSync(cacheDir)) return null;
