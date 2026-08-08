@@ -1,0 +1,69 @@
+{
+  "name": "Explore Calm — bed + pulse",
+  "tempo": 84,
+  "ppq": 480,
+  "time_signature": [4, 4],
+  "key": "D",
+  "mode": "minor",
+  "tracks": [
+    {
+      "name": "Bed (strings)",
+      "channel": 0,
+      "program": 48,
+      "notes": [
+        { "pitch": "D3", "start": 0, "duration": 4, "velocity": 62 },
+        { "pitch": "A3", "start": 0, "duration": 4, "velocity": 58 },
+        { "pitch": "F4", "start": 0, "duration": 4, "velocity": 54 },
+
+        { "pitch": "Bb2", "start": 4, "duration": 4, "velocity": 62 },
+        { "pitch": "F3", "start": 4, "duration": 4, "velocity": 58 },
+        { "pitch": "D4", "start": 4, "duration": 4, "velocity": 54 },
+
+        { "pitch": "C3", "start": 8, "duration": 4, "velocity": 62 },
+        { "pitch": "G3", "start": 8, "duration": 4, "velocity": 58 },
+        { "pitch": "E4", "start": 8, "duration": 4, "velocity": 54 },
+
+        { "pitch": "A2", "start": 12, "duration": 4, "velocity": 60 },
+        { "pitch": "E3", "start": 12, "duration": 4, "velocity": 56 },
+        { "pitch": "C4", "start": 12, "duration": 4, "velocity": 52 }
+      ]
+    },
+    {
+      "name": "Melody (clarinet)",
+      "channel": 1,
+      "program": 71,
+      "notes": [
+        { "pitch": "A4", "start": 0.0, "duration": 2.0, "velocity": 78 },
+        { "pitch": "F4", "start": 2.0, "duration": 1.0, "velocity": 72 },
+        { "pitch": "E4", "start": 3.0, "duration": 1.0, "velocity": 72 },
+        { "pitch": "D4", "start": 4.0, "duration": 3.0, "velocity": 80 },
+        { "pitch": "F4", "start": 7.0, "duration": 1.0, "velocity": 70 },
+        { "pitch": "G4", "start": 8.0, "duration": 2.0, "velocity": 76 },
+        { "pitch": "E4", "start": 10.0, "duration": 2.0, "velocity": 72 },
+        { "pitch": "D4", "start": 12.0, "duration": 4.0, "velocity": 74 }
+      ]
+    },
+    {
+      "name": "Pulse (percussion)",
+      "channel": 9,
+      "drums": true,
+      "program": 0,
+      "notes": [
+        { "pitch": 42, "start": 0.0, "duration": 0.25, "velocity": 54 },
+        { "pitch": 42, "start": 1.0, "duration": 0.25, "velocity": 44 },
+        { "pitch": 42, "start": 2.0, "duration": 0.25, "velocity": 54 },
+        { "pitch": 42, "start": 3.0, "duration": 0.25, "velocity": 44 },
+        { "pitch": 42, "start": 4.0, "duration": 0.25, "velocity": 54 },
+        { "pitch": 42, "start": 5.0, "duration": 0.25, "velocity": 44 },
+        { "pitch": 42, "start": 6.0, "duration": 0.25, "velocity": 54 },
+        { "pitch": 42, "start": 7.0, "duration": 0.25, "velocity": 44 },
+        { "pitch": 36, "start": 8.0, "duration": 0.5, "velocity": 66 },
+        { "pitch": 42, "start": 9.0, "duration": 0.25, "velocity": 44 },
+        { "pitch": 42, "start": 10.0, "duration": 0.25, "velocity": 54 },
+        { "pitch": 42, "start": 11.0, "duration": 0.25, "velocity": 44 },
+        { "pitch": 36, "start": 12.0, "duration": 0.5, "velocity": 66 },
+        { "pitch": 42, "start": 14.0, "duration": 0.25, "velocity": 50 }
+      ]
+    }
+  ]
+}
