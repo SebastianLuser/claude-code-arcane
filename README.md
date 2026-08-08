@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **375 skills, 92 agents, 16 hooks and 25 rules for Claude Code — selective deploy by profile.**
+> **388 skills, 98 agents, 16 hooks and 26 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
@@ -163,6 +163,7 @@ Once installed, manage the installation from within a Claude Code session:
 |---------|-------|--------|--------|
 | `unity-dev` | Unity programmer — C#, architecture, performance, builds | 25 | game |
 | `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 17 | game |
+| `audio` | Game audio — direction, composition, sound design, middleware, VO, QA | 13 | audio |
 | `backend-ts` | Backend TypeScript — Fastify, Prisma, Zod, API design | 33 | engineering |
 | `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 19 | engineering |
 | `backend-dotnet` | Backend .NET — ASP.NET Core, Vertical Slice/Clean, EF Core, JWT | 25 | engineering |
@@ -349,11 +350,11 @@ claude-code-arcane/
 │   ├── manifest.ts            # Read/write arcane-manifest.json
 │   ├── types.ts               # TypeScript interfaces
 │   └── utils.ts               # Cross-platform helpers
-├── skills/                    # 375 skills (flat, one dir per skill)
-├── profiles/                  # 29 profiles (YAML)
+├── skills/                    # 388 skills (flat, one dir per skill)
+├── profiles/                  # 36 profiles (YAML)
 ├── agents/                    # 13 dirs, 86+ agents (Markdown)
 ├── hooks/                     # 15 lifecycle hooks (Bash)
-├── rules/                     # 25 rules (Markdown)
+├── rules/                     # 26 rules (Markdown)
 ├── templates/                 # Gamedev templates
 ├── docs/                      # Documentation
 └── skills-selftest/           # QA framework

@@ -1,0 +1,45 @@
+name: audio
+description: "Game Audio — direccion sonora, composicion, sound design, middleware, VO y QA"
+type: base
+
+skills:
+  - audio-bible
+  - audio-spec
+  - music-composition
+  - adaptive-music
+  - midi-compose
+  - sfx-design
+  - procedural-audio
+  - ui-sound-design
+  - spatial-audio
+  - audio-mix
+  - middleware-integration
+  - voice-pipeline
+  - audio-audit
+
+rules:
+  universal:
+    []
+  gamedev:
+    - audio-code
+
+agents:
+  - audio
+
+permissions:
+  allow:
+    - "Bash(python *)"
+    - "Bash(python3 *)"
+    - "Bash(git status*)"
+    - "Bash(git add*)"
+    - "Bash(git commit*)"
+    - "Bash(git diff*)"
+    - "Bash(git log*)"
+    - "Bash(ls *)"
+    - "Bash(find *)"
+    - "Read(*)"
+    - "Glob(*)"
+    - "Grep(*)"
+  deny:
+    - "Bash(rm -rf *)"
+    - "Bash(git push --force*)"
