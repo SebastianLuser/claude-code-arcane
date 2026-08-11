@@ -174,6 +174,13 @@ def strip_html(raw: str) -> str:
     return html.unescape(text).strip()
 
 
+# Comas y espacios separan terminos. Solo espacios no alcanza: "typescript,backend"
+# es la forma natural de escribir una lista, y separando solo por espacios se
+# buscaba ese string literal, que no aparece en ningun aviso. El resultado eran
+# cero hits, que se leen como "no hay trabajo" en vez de "no busque nada".
+TERM_SEPARATOR = r"[,\s]+"
+
+
 def expand_query(query: str):
     """
     Devuelve (terminos_de_busqueda, expansiones_aplicadas).
@@ -181,7 +188,7 @@ def expand_query(query: str):
     El primer termino es siempre lo que el usuario escribio: es el que se pagina
     en profundidad. Los sinonimos van despues y se consultan mas superficialmente.
     """
-    words = [w for w in re.split(r"\s+", (query or "").strip().lower()) if w]
+    words = [w for w in re.split(TERM_SEPARATOR, (query or "").strip().lower()) if w]
     terms = list(words)
     applied = {}
     for word in words:
@@ -502,7 +509,7 @@ def run_search(args) -> int:
     base_query = args.query or "developer"
 
     if args.no_expand:
-        terms, applied = [t for t in re.split(r"\s+", base_query.lower()) if t], {}
+        terms, applied = [t for t in re.split(TERM_SEPARATOR, base_query.lower()) if t], {}
     else:
         terms, applied = expand_query(base_query)
 

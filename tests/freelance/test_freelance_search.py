@@ -269,6 +269,28 @@ class TestSynonymExpansion(unittest.TestCase):
         self.assertIn("react native", terms)
         self.assertTrue(fs.matches_terms(terms, "React Native Developer"))
 
+    def test_commas_separate_terms(self):
+        # Una lista con comas es la forma natural de escribirla. Separando solo
+        # por espacios se buscaba el string literal "typescript,backend", que no
+        # aparece en ningun aviso: cero resultados que se leen como "no hay
+        # trabajo" en vez de "no busque nada".
+        terms, applied = fs.expand_query("typescript,go")
+        self.assertIn("typescript", terms)
+        self.assertIn("go", terms)
+        self.assertIn("golang", terms, "y los sinonimos siguen aplicando")
+        self.assertIn("go", applied)
+
+    def test_mixed_commas_and_spaces(self):
+        terms, _ = fs.expand_query("typescript, backend  frontend")
+        for expected in ("typescript", "backend", "frontend"):
+            self.assertIn(expected, terms)
+
+    def test_no_empty_terms_from_trailing_separators(self):
+        # Un termino vacio matchea todo y convierte el filtro de relevancia en
+        # un colador.
+        terms, _ = fs.expand_query("typescript,,go, ")
+        self.assertNotIn("", terms)
+
     def test_expansion_is_one_directional(self):
         # Expandir shopify -> ecommerce le inflaria los resultados a quien ya
         # busca preciso. Solo se baja de categoria a tecnologia.
