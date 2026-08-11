@@ -71,7 +71,8 @@ Tiene `job_type` con valores `freelance` y `contract` reales, así que el punto 
 
 ### Upwork
 
-- **API GraphQL** en `api.upwork.com/graphql` con OAuth 2.0. La key se pide desde la cuenta (cualquier freelancer o cliente, cualquier plan - **no** hace falta cuenta de empresa) y **Upwork responde por mail en hasta 2 semanas**, aprobando o rechazando. El rechazo más común es data de cuenta incompleta.
+- **API GraphQL** en `api.upwork.com/graphql` con OAuth 2.0. La key se pide desde el API Center de la cuenta (cualquier freelancer o cliente, cualquier plan - **no** hace falta cuenta de empresa) y según el propio soporte de Upwork **responden por mail en aproximadamente una semana**. El rechazo más común es data de cuenta incompleta.
+- **Sí tiene búsqueda de ofertas** (`marketplaceJobPostingsSearch`) entre las operaciones de lectura, junto con perfiles y contratos. Lo que no tiene es escritura de propuestas.
 - Límites si te la aprueban: 40.000 requests por día, 10 por segundo por IP.
 - **No hay mutation para enviar una propuesta ni para gastar Connects.** Está cerrado a propósito para frenar auto-bidding.
 - **Los RSS feeds murieron el 20 de agosto de 2024**, por la misma razón. Cualquier tutorial que los mencione está viejo.
@@ -140,6 +141,22 @@ Falla el punto 3, que es el que importa: sobre 100 avisos, `jobType` dio **99 Fu
 **No tiene campo de tipo de contrato.** Las claves son `category_name`, `company_name`, `location`, `tags`, `title`, `url` y nada más, así que no hay forma de filtrar freelance: habría que adivinar por el título, y sobre 50 avisos solo 1 lo mencionaba.
 
 Detalle que igual vale registrar: la cabeza del feed la dominan Proxify (15 de 50) y Lemon.io (6), que son marketplaces de devs freelance. O sea que buena parte de esos puestos *son* contract en la práctica, pero eso es inferencia nuestra y no dato, y esas dos ya están descartadas por screening previo. Adivinar la modalidad desde el nombre de la empresa mete ruido en la cola, que es peor que no traerla.
+
+## El camino que sí llega a los marketplaces: WebSearch
+
+Medido en agosto de 2026. Es la excepción al problema de credenciales, porque la credencial es Claude Code mismo: todo el que instala el perfil ya la tiene.
+
+**Qué funciona.** `WebSearch` con `allowed_domains` devuelve URLs de proyectos reales en Upwork, Workana, Freelancer.com, PeoplePerHour y Guru. Tres búsquedas en paralelo en un turno traen candidatos de cinco plataformas a la vez, con títulos, y a veces con tarifa y stack en el resumen. Ejemplos que devolvió: `upwork.com/job/Golang-Developer_~0157b3a527d0809956/`, `workana.com/es/job/crear-tienda-shopify-ecommerce`.
+
+**Qué no funciona, y es la mitad importante.** `WebFetch` devuelve **403 en todo**: el listado de Workana, la búsqueda de Upwork y hasta las páginas de proyecto individuales que el buscador ya tenía indexadas. Cloudflare bloquea el fetcher. O sea que se puede descubrir la oferta pero **no leerla**: presupuesto, cantidad de propuestas, país del cliente y si tiene el pago verificado siguen requiriendo abrir el link vos.
+
+**Tres límites que hay que decir de frente:**
+
+1. **Frescura.** El índice no filtra por fecha. Una de las ofertas de Upwork que devolvió estaba **posteada en julio de 2021**. Para un marketplace donde una oferta de tres días ya está fría, es un problema serio.
+2. **Ruido de SEO.** Cerca de la mitad de los resultados no son ofertas: son landings de "Hire Golang developers", tablas de tarifas y gigs del Project Catalog. Hay que descartarlos por patrón de URL.
+3. **El resumen no es dato.** Lo que devuelve la búsqueda es un modelo resumiendo varias páginas: puede mezclar detalles de dos ofertas. Sirve como pista para abrir, no como campo para guardar.
+
+**Conclusión de diseño.** Da para descubrimiento y triage, no para screening ni para una cola confiable. Un skill que haga esto tiene que entregar links para abrir y decir explícitamente que la fecha no está verificada; guardar esos datos en el registro como si fueran ciertos sería peor que no tenerlos.
 
 ## Si querés agregar una fuente
 
