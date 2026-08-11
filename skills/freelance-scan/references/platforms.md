@@ -85,6 +85,30 @@ API con OAuth 2.0 y credenciales por usuario (`Freelancer-Developer-OAuth-Client
 
 Hay wrappers de terceros en RapidAPI que dicen exponer la búsqueda sin credenciales. No los usamos: son intermediarios no oficiales, se caen sin aviso y su forma de obtener los datos no es auditable.
 
+### El resto de los marketplaces tipo Upwork
+
+Distinción que importa: GetOnBrd y Himalayas son **job boards** con una modalidad freelance. Upwork es un **marketplace**: el cliente publica, vos ofertás, hay Connects y escrow. Ninguna de las fuentes incluidas es un marketplace, y no es por falta de ganas.
+
+Probado en agosto de 2026, códigos reales:
+
+| Plataforma | Endpoint probado | Resultado |
+|---|---|---|
+| Workana (LatAm) | `/jobs.rss`, `/jobs.rss?language=es`, `/api/v1/projects` | 404 en las tres. No hay feed público |
+| Guru | `/rss/jobs/`, `api.guru.com` | 404 y DNS inexistente. Su `robots.txt` tiene `Disallow: /api/` explícito |
+| PeoplePerHour | `/freelance-jobs.rss` | 404. Su `robots.txt` tiene `Disallow: /*?`, o sea que las URLs de búsqueda con filtros están prohibidas |
+| Truelancer | `/api/projects` | 429 desde la primera request |
+| Freelancermap (DACH) | `/project-rss.xml`, `/api/v1/projects` | 404 y **401**: la API existe pero pide credenciales |
+| Malt (Europa) | `/api/missions` | **401**: misma historia |
+| Codeable, Twine | `/api/projects`, `/api/jobs` | 404 |
+
+Los dos 401 son el mismo problema estructural que Upwork: API real, credencial por usuario. No entran por el punto 1.
+
+El resto no expone nada, y donde el `robots.txt` habla, habla en contra: PeoplePerHour prohíbe justo las URLs con filtros y Guru prohíbe `/api/`. Sacar los proyectos de ahí sería scrapear contra la política declarada del sitio.
+
+**Conclusión para el diseño del perfil:** los marketplaces se usan a mano, en el navegador. El skill no busca ahí; ayuda con lo que pasa después de encontrar el posteo, que es donde se pierde la plata. Pegar la oferta a mano es el camino soportado, no un parche.
+
+Nota lateral útil: Lemon.io y Proxify (marketplaces con screening) publican sus búsquedas en Working Nomads, 21 de 50 avisos entre las dos. No se puede filtrar por modalidad ahí, pero dice algo sobre estrategia: pasar el screening de una de esas una vez rinde más que ofertar de a una.
+
 ### Fiverr
 
 Modelo invertido: no te postulás a trabajos, publicás gigs y el comprador te encuentra. Los "Buyer Requests" ya no existen como los conocía la gente. No hay cola que scorear.
