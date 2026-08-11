@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.1.0...v2.2.0) (2026-08-08)
+
+
+### Features
+
+* audio profile — game audio end-to-end ([76941ed](https://github.com/SebastianLuser/claude-code-arcane/commit/76941edc6937f6df0fce3fd9ef68057c11cba751))
+
 # [2.1.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.0.0...v2.1.0) (2026-08-04)
 
 

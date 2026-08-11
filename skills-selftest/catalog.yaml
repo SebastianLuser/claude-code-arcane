@@ -2466,6 +2466,165 @@ skills:
     category: authoring
 
   # =====================================================
+  # Stack: audio (13 skills --- game audio, music, sound design, middleware, VO)
+  # =====================================================
+  - name: audio-bible
+    spec: null
+    stack: audio
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: audio
+
+  - name: audio-spec
+    spec: null
+    stack: audio
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: audio
+
+  - name: music-composition
+    spec: null
+    stack: audio
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: audio
+
+  - name: adaptive-music
+    spec: null
+    stack: audio
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: audio
+
+  - name: midi-compose
+    spec: null
+    stack: audio
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: audio
+
+  - name: sfx-design
+    spec: null
+    stack: audio
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: audio
+
+  - name: procedural-audio
+    spec: null
+    stack: audio
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: audio
+
+  - name: ui-sound-design
+    spec: null
+    stack: audio
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: audio
+
+  - name: spatial-audio
+    spec: null
+    stack: audio
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: audio
+
+  - name: audio-mix
+    spec: null
+    stack: audio
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: audio
+
+  - name: middleware-integration
+    spec: null
+    stack: audio
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: critical
+    category: audio
+
+  - name: voice-pipeline
+    spec: null
+    stack: audio
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: audio
+
+  - name: audio-audit
+    spec: null
+    stack: audio
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: critical
+    category: audio
+
+  # =====================================================
   # Stack: design (9 skills --- UX, UI, Figma, design systems)
   # =====================================================
   - name: design-handoff
@@ -4109,6 +4268,57 @@ agents:
     last_spec: ""
     priority: medium
     tier: specialists
+
+  # =====================================================
+  # Division: audio (6 agents) --- game audio department
+  # =====================================================
+  - name: audio-director
+    spec: null
+    division: audio
+    last_static: ""
+    last_spec: ""
+    priority: critical
+    tier: directors
+
+  - name: audio-programmer
+    spec: null
+    division: audio
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: specialists
+
+  - name: audio-qa
+    spec: null
+    division: audio
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: specialists
+
+  - name: composer
+    spec: null
+    division: audio
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: leads
+
+  - name: technical-sound-designer
+    spec: null
+    division: audio
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: specialists
+
+  - name: voice-director
+    spec: null
+    division: audio
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: leads
 
   # =====================================================
   # Division: engineering (11 agents) --- software engineering

@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 384 skills disponibles para proyectos consumidores, organizados por division.
+Los 397 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 342: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 355: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -97,6 +97,26 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/team-release` | Orquesta equipo de release | `[version o next]` |
 | `/team-ui` | Orquesta equipo UI end-to-end | `[UI feature]` |
 | `/unity-game-architecture` | Arquitectura Unity 6 moderna | `[system o module]` |
+
+---
+
+## Audio (13 skills)
+
+| Skill | Descripcion | Uso |
+|-------|-------------|-----|
+| `/audio-bible` | Identidad sonora: paleta, emotional targets por game state, frequency allocation, standards | `[full\|core\|standards]` |
+| `/audio-spec` | SFX spec sheets y event lists con concurrencia, cooldown y prioridad | `[system-name \| all \| events]` |
+| `/music-composition` | Armonia, melodia, forma, groove, orquestacion con salida accionable | `[harmony\|melody\|form\|groove\|orchestration\|analyze]` |
+| `/adaptive-music` | Musica interactiva: layering, re-secuenciacion, stingers, sync points, histeresis | `[design\|layers\|transitions\|stingers\|map]` |
+| `/midi-compose` | Genera `.mid` desde spec JSON con scripts Python stdlib-only | `[spec-path \| new \| validate]` |
+| `/sfx-design` | Capas attack/body/tail, variacion, round-robin, anti-repeticion | `[sound-name \| layers \| variation \| review]` |
+| `/procedural-audio` | Footsteps, viento y ambientes por sintesis; decision y presupuesto de CPU | `[decide \| footsteps \| wind \| ambience \| budget]` |
+| `/ui-sound-design` | Feedback de UI: duraciones y niveles por tipo, jerarquia, haptics, accesibilidad | `[set \| event-name \| review \| haptics]` |
+| `/spatial-audio` | HRTF vs Ambisonics vs panning, atenuacion, oclusion vs obstruccion, presupuesto | `[decide \| hrtf \| ambisonics \| occlusion \| budget]` |
+| `/audio-mix` | Jerarquia de buses, ducking, mix states, masking, loudness | `[buses \| ducking \| states \| loudness \| review]` |
+| `/middleware-integration` | Wwise/FMOD: containers, eventos, Switch/State/RTPC, banks, contrato con codigo | `[structure \| events \| rtpc \| banks \| contract]` |
+| `/voice-pipeline` | VO: naming, script con contexto, casting, barks, localizacion, batch | `[script \| casting \| naming \| loc \| barks]` |
+| `/audio-audit` | QA: voice count, CPU, memoria, leaks, loudness ASWG-R001, conformidad de assets | `[full \| perf \| loudness \| assets \| platform]` |
 
 ---
 
