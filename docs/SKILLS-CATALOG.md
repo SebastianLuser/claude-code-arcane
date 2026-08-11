@@ -522,13 +522,17 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 
 Perfil `+freelance`. Reutiliza ademas 6 skills ya catalogados: `/master-profile`, `/portfolio-site`, `/cold-outreach`, `/job-outcome` (Job Hunt), `/contract-and-proposal-writer` (Business) y `/estimate` (Agile). Comparte el career workspace con `+job-hunt`: una propuesta es una aplicacion con `tipo: freelance`.
 
-Las fuentes automaticas son publicas y **sin API key**, para que funcionen apenas se instala el perfil: una fuente con credenciales por usuario dejaria el skill roto para todos menos uno. Upwork, Freelancer.com y las verticales cerradas se pegan a mano. El analisis de cada plataforma, con lo que se midio de cada una, esta en `skills/freelance-scan/references/platforms.md`.
+Las fuentes automaticas son publicas y **sin API key**, para que funcionen apenas se instala el perfil: una fuente con credenciales por usuario dejaria el skill roto para todos menos uno.
+
+A los marketplaces (Upwork, Workana, Freelancer.com, PeoplePerHour, Guru), que no tienen API publica, se llega por el modo `web` de `/freelance-scan`: WebSearch en paralelo mas un triage por patron de URL, porque la mitad de lo que devuelve la busqueda son landings y no ofertas. Ese modo descubre pero no lee (WebFetch da 403 en todas), asi que entrega links para abrir y tiene prohibido escribir fechas sin confirmar en el registro.
+
+Quien consiga una API key propia la activa poniendo una variable de entorno: `keys` explica como conseguir cada una y avisa si falta. El analisis de cada plataforma, con los codigos medidos, esta en `skills/freelance-scan/references/platforms.md`.
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
 | `/freelance-hunt` | Orquestador: extiende el career workspace con contratos y ledger de Connects, define piso de tarifa y capacidad, y rutea | `[setup\|status\|next]` |
 | `/freelance-profile` | Perfil de la plataforma: titulo de nicho, primeros 250 caracteres del overview, portfolio items, specialized profiles y tarifa derivada del piso | `[audit\|title\|overview\|portfolio\|rate]` |
-| `/freelance-scan` | Scorea ofertas (fit tecnico + viabilidad economica + probabilidad de que la oferta exista) con dedup entre corridas. Script sobre fuentes publicas sin API key (GetOnBrd, Himalayas); modo `market` para tarifas de mercado | `[search\|market\|sources\|post]` |
+| `/freelance-scan` | Scorea ofertas (fit tecnico + viabilidad economica + probabilidad de que la oferta exista) con dedup entre corridas. `search` sobre fuentes publicas sin API key (GetOnBrd, Himalayas), `web` llega a los marketplaces via WebSearch + triage de ruido SEO, `market` para tarifas, `keys` para las fuentes con credencial propia | `[search\|web\|market\|keys\|sources\|post pegado]` |
 | `/client-screen` | Riesgo del cliente antes de gastar Connects: payment verificado, hire rate, brecha presupuesto/alcance, red flags. Registra el descarte tambien | `[job-url\|nota\|post]` |
 | `/freelance-proposal` | Propuesta que sobrevive la vista de lista (2 primeras lineas) + bid sobre el piso neto: fijo vs hora, buffer de riesgo, comision | `[nota\|job-url]` |
 | `/freelance-kickoff` | Convierte el contrato ganado en plan: desarma alcance en entregables, criterios de aceptacion, y valida si entra en las horas cotizadas antes de arrancar | `[nota de contrato\|cliente]` |
