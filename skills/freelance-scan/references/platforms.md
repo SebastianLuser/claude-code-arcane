@@ -101,6 +101,22 @@ Tiene RSS y funciona (`/remote-jobs.rss`, 100 items), pero **el feed de la categ
 
 Sin key y funciona. Tiene `job_types` con `Contract` (7 de ~100), pero es sobre todo ATS alemán y austríaco con puestos permanentes. Marginal: si en algún momento el usuario apunta al mercado DACH, vale agregarlo.
 
+### Jobicy
+
+`https://jobicy.com/api/v2/remote-jobs` · sin key · responde 200 y pagina bien.
+
+Pasa el punto 1 y, a diferencia de RemoteOK y Remotive, **pasa el punto 2**: su `friendlyNotice` pide crédito con link directo y que el botón de postularse apunte a la URL original del feed. Eso un CLI lo cumple, porque ya imprime fuente y URL, y no hay amenaza de suspensión.
+
+Falla el punto 3, que es el que importa: sobre 100 avisos, `jobType` dio **99 Full-Time y 1 Part-Time, ningún contract ni freelance**. Pedir `jobType=contract` devuelve HTTP 400, o sea que el valor no existe. Además el pool está dominado por Customer Support (25) y Sales (19), con solo 10 de Software Engineering.
+
+### Working Nomads
+
+`https://www.workingnomads.com/api/exposed_jobs/` · sin key · 50 avisos por llamada.
+
+**No tiene campo de tipo de contrato.** Las claves son `category_name`, `company_name`, `location`, `tags`, `title`, `url` y nada más, así que no hay forma de filtrar freelance: habría que adivinar por el título, y sobre 50 avisos solo 1 lo mencionaba.
+
+Detalle que igual vale registrar: la cabeza del feed la dominan Proxify (15 de 50) y Lemon.io (6), que son marketplaces de devs freelance. O sea que buena parte de esos puestos *son* contract en la práctica, pero eso es inferencia nuestra y no dato, y esas dos ya están descartadas por screening previo. Adivinar la modalidad desde el nombre de la empresa mete ruido en la cola, que es peor que no traerla.
+
 ## Si querés agregar una fuente
 
 1. **Correr la request y mirar el payload**, no la documentación. Las dos APIs incluidas mienten sobre sus propios filtros.
