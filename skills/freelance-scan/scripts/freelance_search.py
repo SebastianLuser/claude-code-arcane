@@ -47,6 +47,7 @@ import argparse
 import collections
 import html
 import json
+import os
 import re
 import sys
 import time
@@ -82,6 +83,51 @@ HN_AVAILABLE = "seeking_work"
 
 # Fuentes de proyectos. HN no esta aca: ver `market` y el docstring de arriba.
 SOURCES = ("getonbrd", "himalayas")
+
+# --------------------------------------------------------------------------- #
+# Fuentes con credencial por usuario
+#
+# No pueden entrar a la corrida automatica: la key es de una persona y este repo
+# lo instala cualquiera. Pero omitirlas en silencio es peor, porque el usuario
+# no se entera de que existe una fuente que podria usar. Asi que se declaran
+# aca: `keys` explica como conseguir cada una, y si la variable de entorno esta
+# puesta la fuente se activa sola sin tocar nada mas.
+# --------------------------------------------------------------------------- #
+
+UPWORK_GRAPHQL = "https://api.upwork.com/graphql"
+
+KEYED_SOURCES = {
+    "upwork": {
+        "env": "UPWORK_ACCESS_TOKEN",
+        "scope": "el marketplace mas grande; proyectos de todo el mundo",
+        "como_conseguirla": [
+            "Entrar al API Center de tu cuenta de Upwork (freelancer o cliente, cualquier plan).",
+            "Pedir una API key nueva. No hace falta cuenta de empresa.",
+            "Upwork revisa a mano y contesta por mail en ~1 semana.",
+            "Completar los datos de la cuenta antes de pedirla: el rechazo mas comun es data incompleta.",
+            "Con el client id y secret, sacar un access token OAuth 2.0 y exportarlo en UPWORK_ACCESS_TOKEN.",
+        ],
+        "limites": "40.000 requests por dia, 10 por segundo por IP",
+        "lo_que_no_se_puede": (
+            "no hay mutation para enviar una propuesta ni para gastar Connects: "
+            "Upwork lo cerro a proposito contra el auto-bidding. Postularse sigue siendo a mano"
+        ),
+        "doc": "https://www.upwork.com/developer/documentation/graphql/api/docs/index.html",
+    },
+    "freelancer": {
+        "env": "FREELANCER_OAUTH_TOKEN",
+        "scope": "marketplace global, mucho volumen y mucha competencia por precio",
+        "como_conseguirla": [
+            "Crear una app en la seccion de desarrolladores de Freelancer.com.",
+            "Es self-service: no hay revision manual como en Upwork.",
+            "Exportar el token en FREELANCER_OAUTH_TOKEN.",
+        ],
+        "limites": "sin publicar",
+        "lo_que_no_se_puede": "el adaptador todavia no esta escrito; la guia esta para quien quiera hacerlo",
+        "doc": "https://developers.freelancer.com/",
+        "adapter": False,
+    },
+}
 
 # Expansion por sinonimos.
 #
@@ -404,6 +450,283 @@ def himalayas_search(query: str, pages: int, terms=None):
 # /freelance-profile y la decision de tarifa.
 # --------------------------------------------------------------------------- #
 
+# --------------------------------------------------------------------------- #
+# Triage de resultados de WebSearch
+#
+# WebSearch es el unico camino que llega a los marketplaces sin credencial, pero
+# ~la mitad de lo que devuelve no son ofertas: son landings de "Hire Golang
+# developers", tablas de tarifas y gigs del Project Catalog. Se separan por
+# patron de URL, que es la parte determinista y por eso vive aca y no en el
+# criterio del modelo.
+#
+# Lo que no matchea ningun patron queda `unknown` a proposito. Adivinar mete
+# landings en la cola, y una cola con basura se deja de mirar.
+# --------------------------------------------------------------------------- #
+
+URL_RULES = (
+    ("upwork", r"(^|\.)upwork\.com$", (
+        r"/jobs?/[^/]*~[0-9a-z]+",          # /job/Slug_~017abc...
+        r"/freelance-jobs/apply/[^/]*~",    # variante con /apply/
+    ), (
+        r"/hire/", r"/services/product/", r"/services/",
+        r"/freelance-jobs/[a-z]{2}/", r"/developer", r"/support",
+        r"/nx/search/",                     # la busqueda, no una oferta
+    )),
+    ("workana", r"(^|\.)workana\.com$", (
+        r"/job/[^/?]+$",
+        r"/(es|en|pt)/job/[^/?]+$",
+    ), (
+        r"/hire/", r"/skill/", r"/jobs\b", r"/work/",
+    )),
+    ("freelancer", r"(^|\.)freelancer\.(com|[a-z]{2})$", (
+        r"/projects/[^/]+/[^/]+",
+    ), (
+        r"/jobs/", r"/freelancers/", r"/hire/",
+    )),
+    ("peopleperhour", r"(^|\.)peopleperhour\.com$", (
+        r"/freelance-job/", r"/job/[^/?]+",
+    ), (
+        r"/hire-freelancers/", r"/freelance-[a-z-]+-jobs$", r"/site/",
+    )),
+    ("guru", r"(^|\.)guru\.com$", (
+        r"/jobs/[^/]+/\d+",
+    ), (
+        r"/m/hire/", r"/m/find/", r"/d/jobs/browse/", r"/help/",
+    )),
+)
+
+
+def classify_url(url: str):
+    """
+    Devuelve (plataforma, veredicto) donde veredicto es posting | landing | unknown.
+
+    Se mira solo el path: los parametros de query cambian por sesion y por
+    campania, asi que meterlos en la decision la vuelve inestable.
+    """
+    try:
+        parts = urllib.parse.urlsplit(url)
+    except ValueError:
+        return None, "unknown"
+
+    host = (parts.netloc or "").lower().split(":")[0]
+    path = parts.path or "/"
+
+    for name, host_re, posting_res, landing_res in URL_RULES:
+        if not re.search(host_re, host):
+            continue
+        for pattern in posting_res:
+            if re.search(pattern, path, re.IGNORECASE):
+                return name, "posting"
+        for pattern in landing_res:
+            if re.search(pattern, path, re.IGNORECASE):
+                return name, "landing"
+        return name, "unknown"
+
+    return None, "unknown"
+
+
+def triage_urls(urls):
+    postings, landings, unknown, other = [], [], [], []
+    seen = set()
+    for raw in urls:
+        url = (raw or "").strip()
+        if not url or url in seen:
+            continue
+        seen.add(url)
+        platform, verdict = classify_url(url)
+        row = {"url": url, "platform": platform}
+        if platform is None:
+            other.append(row)
+        elif verdict == "posting":
+            postings.append(row)
+        elif verdict == "landing":
+            landings.append(row)
+        else:
+            unknown.append(row)
+
+    by_platform = {}
+    for row in postings:
+        by_platform[row["platform"]] = by_platform.get(row["platform"], 0) + 1
+
+    return {
+        # Lo unico que vale abrir. El resto se reporta para que se vea cuanto
+        # ruido trajo la busqueda, no para esconderlo.
+        "postings": postings,
+        "postings_por_plataforma": by_platform,
+        "descartados_landing": landings,
+        "sin_clasificar": unknown,
+        "fuera_de_plataformas_conocidas": other,
+        "total_recibidas": len(seen),
+        "advertencia": (
+            "El indice de busqueda no filtra por fecha: estas URLs pueden ser viejas. "
+            "Verificar la fecha al abrir cada una antes de invertir tiempo."
+        ),
+    }
+
+
+# --------------------------------------------------------------------------- #
+# Upwork (opt-in, requiere UPWORK_ACCESS_TOKEN)
+# --------------------------------------------------------------------------- #
+
+# La query va aparte para que se pueda ajustar sin tocar la logica. Sale de la
+# doc GraphQL de Upwork; el transporte y el parseo estan testeados contra un
+# payload fijo, pero la forma exacta de la query no se pudo verificar contra la
+# API real porque hace falta una key aprobada. Si Upwork cambio un nombre de
+# campo, el error de abajo lo dice con el mensaje del server en la mano.
+UPWORK_QUERY = """
+query marketplaceJobPostings($filter: MarketplaceJobPostingsSearchFilter,
+                             $pagination: PaginationInput) {
+  marketplaceJobPostingsSearch(marketPlaceJobFilter: $filter,
+                               searchType: USER_JOBS_SEARCH,
+                               pagination: $pagination) {
+    totalCount
+    edges {
+      node {
+        id
+        title
+        description
+        ciphertext
+        duration
+        engagement
+        createdDateTime
+        amount { rawValue currency }
+        hourlyBudgetMin { rawValue }
+        hourlyBudgetMax { rawValue }
+        client { totalHires totalSpent { rawValue } verificationStatus location { country } }
+        skills { name }
+      }
+    }
+  }
+}
+"""
+
+
+def upwork_token():
+    return os.environ.get(KEYED_SOURCES["upwork"]["env"], "").strip()
+
+
+def _walk_nodes(obj, out, depth=0):
+    """
+    Junta los `node` de cualquier conexion GraphQL sin asumir el anidamiento.
+
+    Upwork cambio la forma de la respuesta al menos una vez; caminar el arbol
+    cuesta poco y evita que un nivel extra rompa todo con un KeyError.
+    """
+    if depth > 8:
+        return
+    if isinstance(obj, dict):
+        if "node" in obj and isinstance(obj["node"], dict):
+            out.append(obj["node"])
+            return
+        for value in obj.values():
+            _walk_nodes(value, out, depth + 1)
+    elif isinstance(obj, list):
+        for value in obj:
+            _walk_nodes(value, out, depth + 1)
+
+
+def _money(node, *path):
+    cur = node
+    for key in path:
+        if not isinstance(cur, dict):
+            return None
+        cur = cur.get(key)
+    if isinstance(cur, dict):
+        cur = cur.get("rawValue")
+    return cur
+
+
+def upwork_search(query: str, pages: int, terms=None):
+    token = upwork_token()
+    if not token:
+        raise SourceError(
+            "falta {0}. Correr `keys` para ver como conseguir la credencial".format(
+                KEYED_SOURCES["upwork"]["env"]
+            )
+        )
+
+    found, seen = [], 0
+    for page in range(max(1, pages)):
+        payload = json.dumps({
+            "query": UPWORK_QUERY,
+            "variables": {
+                "filter": {"titleExpression_eq": query or "developer"},
+                "pagination": {"first": 50, "after": str(page * 50)},
+            },
+        }).encode("utf-8")
+
+        req = urllib.request.Request(
+            UPWORK_GRAPHQL,
+            data=payload,
+            headers={
+                "Authorization": "Bearer {0}".format(token),
+                "Content-Type": "application/json",
+                "User-Agent": UA,
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
+                body = json.loads(resp.read().decode("utf-8", "replace"))
+        except urllib.error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", "replace")[:300] if exc.fp else ""
+            if exc.code in (401, 403):
+                raise SourceError(
+                    "Upwork rechazo el token ({0}). Puede estar vencido: los access token "
+                    "de OAuth 2.0 caducan y hay que refrescarlos. {1}".format(exc.code, detail)
+                )
+            raise SourceError("Upwork HTTP {0}: {1}".format(exc.code, detail))
+        except Exception as exc:  # noqa: BLE001
+            raise SourceError("Upwork inalcanzable: {0}".format(exc))
+
+        # GraphQL responde 200 con los errores adentro, asi que hay que mirarlos.
+        if body.get("errors"):
+            msgs = "; ".join(str(e.get("message", e))[:160] for e in body["errors"][:3])
+            raise SourceError(
+                "Upwork devolvio errores de GraphQL: {0}. Si menciona un campo desconocido, "
+                "ajustar UPWORK_QUERY: el schema pudo haber cambiado.".format(msgs)
+            )
+
+        nodes = []
+        _walk_nodes(body.get("data"), nodes)
+        if not nodes:
+            break
+
+        for node in nodes:
+            seen += 1
+            title = node.get("title") or ""
+            desc = strip_html(node.get("description") or "")
+            skills = " ".join(s.get("name", "") for s in (node.get("skills") or [])
+                              if isinstance(s, dict))
+            if not matches_terms(terms, title, desc, skills):
+                continue
+            client = node.get("client") or {}
+            cipher = node.get("ciphertext") or ""
+            found.append(record(
+                source="upwork",
+                id=node.get("id"),
+                title=title,
+                description=desc[:600],
+                url="https://www.upwork.com/jobs/{0}".format(cipher) if cipher else None,
+                modality="freelance",
+                published=node.get("createdDateTime"),
+                engagement=node.get("engagement"),
+                duration=node.get("duration"),
+                budget=_money(node, "amount"),
+                hourly_min=_money(node, "hourlyBudgetMin"),
+                hourly_max=_money(node, "hourlyBudgetMax"),
+                client_hires=client.get("totalHires"),
+                client_spent=_money(client, "totalSpent"),
+                client_verified=client.get("verificationStatus"),
+                client_country=(client.get("location") or {}).get("country"),
+                tags=[s.get("name") for s in (node.get("skills") or []) if isinstance(s, dict)],
+            ))
+
+        if len(nodes) < 50:
+            break
+
+    return found, seen, 0
+
+
 def hn_latest_threads(limit: int = 3):
     params = urllib.parse.urlencode({
         "query": HN_THREAD_QUERY, "tags": "story", "hitsPerPage": limit,
@@ -505,7 +828,16 @@ def rate_summary(rates):
 # --------------------------------------------------------------------------- #
 
 def run_search(args) -> int:
-    wanted = SOURCES if args.source == "all" else (args.source,)
+    if args.source == "all":
+        # Las fuentes con credencial se suman solas cuando la variable esta
+        # puesta. Sin ella no se intentan, porque fallarian en cada corrida y el
+        # usuario aprenderia a ignorar los errores.
+        wanted = list(SOURCES) + [
+            name for name, spec in KEYED_SOURCES.items()
+            if spec.get("adapter", True) and os.environ.get(spec["env"], "").strip()
+        ]
+    else:
+        wanted = [args.source]
     base_query = args.query or "developer"
 
     if args.no_expand:
@@ -531,6 +863,9 @@ def run_search(args) -> int:
                     seen += s
                     off += o
                     cut = cut or c
+            elif name == "upwork":
+                found, seen, off = upwork_search(base_query, args.pages, terms=terms)
+                cut = False
             else:
                 found, cut, seen, off = himalayas_search(base_query, args.pages, terms=terms)
 
@@ -586,12 +921,78 @@ def run_sources(_args) -> int:
         {"name": "hn", "subcommand": "market", "auth": "ninguna (10k req/hora)",
          "why_not_projects": ("medido sobre 6 meses: 113 freelancers ofreciendose contra 2 ofertas. "
                               "Sirve para tarifa y posicionamiento, no como cola de trabajo")},
+    ], "con_credencial_propia": [
+        {"name": name, "env": spec["env"],
+         "configurada": bool(os.environ.get(spec["env"], "").strip()),
+         "detalle": "correr `keys` para ver como conseguirla"}
+        for name, spec in KEYED_SOURCES.items()
     ], "excluded": [
         {"name": "remoteok", "why": "sus terminos exigen backlink do-follow o suspenden el acceso; un CLI local no puede cumplirlo"},
         {"name": "remotive", "why": "backlink do-follow obligatorio, maximo 4 requests por dia y datos con 24h de retraso"},
-        {"name": "upwork", "why": "API con aprobacion manual por usuario y sin busqueda abierta; scrapear viola los ToS. Se usa a mano"},
-        {"name": "freelancer.com", "why": "OAuth con credenciales por usuario; no sirve para un repo que instala cualquiera"},
-    ]})
+        {"name": "jobicy", "why": "sin key y con terminos cumplibles, pero 99 de 100 avisos son full-time y jobType=contract devuelve HTTP 400"},
+        {"name": "workingnomads", "why": "sin campo de tipo de contrato: no hay forma de filtrar freelance sin adivinar por el titulo"},
+        {"name": "workana", "why": "sin API ni RSS publico (404 en las tres rutas probadas). Se busca con WebSearch y se abre a mano"},
+        {"name": "peopleperhour", "why": "sin RSS, y su robots.txt prohibe las URLs con filtros que usaria un buscador"},
+        {"name": "guru", "why": "sin RSS y con Disallow: /api/ explicito en robots.txt"},
+        {"name": "malt / freelancermap", "why": "API real detras de 401: credencial por usuario, mismo muro que Upwork"},
+    ], "sin_api_pero_alcanzables": {
+        "como": "WebSearch con allowed_domains, y despues `triage` para separar ofertas del ruido SEO",
+        "plataformas": ["upwork", "workana", "freelancer", "peopleperhour", "guru"],
+        "limite": "WebFetch devuelve 403 en todas: se descubre la oferta pero hay que abrirla a mano",
+    }})
+    return 0
+
+
+def run_keys(_args) -> int:
+    """
+    Que fuentes necesitan credencial, como se consigue cada una y cual esta lista.
+
+    Existe porque omitirlas en silencio le esconde al usuario que hay una fuente
+    que podria estar usando. El estado se calcula mirando el entorno, asi que
+    responde por la maquina donde corre y no por lo que diga un README.
+    """
+    out = []
+    for name, spec in KEYED_SOURCES.items():
+        configurada = bool(os.environ.get(spec["env"], "").strip())
+        tiene_adaptador = spec.get("adapter", True)
+        if configurada and tiene_adaptador:
+            estado = "lista: la variable esta puesta, `search --source {0}` ya la usa".format(name)
+        elif configurada:
+            estado = "credencial puesta pero el adaptador no esta escrito todavia"
+        elif tiene_adaptador:
+            estado = "no disponible: falta {0}. Con la variable puesta se activa sola".format(spec["env"])
+        else:
+            estado = "no disponible: falta {0} y ademas el adaptador no esta escrito".format(spec["env"])
+        out.append({
+            "fuente": name,
+            "estado": estado,
+            "configurada": configurada,
+            "variable_de_entorno": spec["env"],
+            "scope": spec["scope"],
+            "como_conseguirla": spec["como_conseguirla"],
+            "limites": spec["limites"],
+            "lo_que_no_se_puede": spec["lo_que_no_se_puede"],
+            "doc": spec["doc"],
+        })
+    emit({
+        "fuentes_con_credencial": out,
+        "por_que_no_vienen_por_defecto": (
+            "la credencial es de una persona y este repo lo instala cualquiera. "
+            "Una fuente que necesita key funcionaria para uno y estaria rota para el resto"
+        ),
+        "sin_credencial_ya_funcionan": list(SOURCES),
+    })
+    return 0
+
+
+def run_triage(args) -> int:
+    urls = list(args.url or [])
+    if not urls and not sys.stdin.isatty():
+        urls = [line.strip() for line in sys.stdin.read().splitlines()]
+    if not urls:
+        emit({"error": "no llegaron URLs; pasar --url o por stdin", "code": "NO_URLS"})
+        return 1
+    emit(triage_urls(urls))
     return 0
 
 
@@ -632,7 +1033,8 @@ def main(argv=None) -> int:
 
     search = sub.add_parser("search", help="buscar proyectos freelance")
     search.add_argument("--query", default="", help="terminos a buscar")
-    search.add_argument("--source", default="all", choices=list(SOURCES) + ["all"])
+    search.add_argument("--source", default="all",
+                        choices=list(SOURCES) + list(KEYED_SOURCES) + ["all"])
     search.add_argument("--pages", type=int, default=3, help="paginas por fuente (default 3)")
     search.add_argument("--no-expand", action="store_true",
                         help="no expandir por sinonimos (ecommerce no busca shopify, etc)")
@@ -640,6 +1042,16 @@ def main(argv=None) -> int:
 
     sources = sub.add_parser("sources", help="listar fuentes disponibles y las descartadas con su motivo")
     sources.set_defaults(func=run_sources)
+
+    keys = sub.add_parser("keys", help="fuentes que piden credencial, como conseguirla y cual esta lista")
+    keys.set_defaults(func=run_keys)
+
+    triage = sub.add_parser(
+        "triage",
+        help="separar ofertas reales del ruido SEO en URLs traidas por WebSearch",
+    )
+    triage.add_argument("--url", action="append", help="repetible; si falta, lee de stdin")
+    triage.set_defaults(func=run_triage)
 
     market = sub.add_parser("market", help="que cobran y como se posicionan otros freelancers (hilo mensual de HN)")
     market.add_argument("--months", type=int, default=3, help="cuantos hilos mensuales leer (default 3)")

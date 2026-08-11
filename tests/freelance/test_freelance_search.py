@@ -372,3 +372,158 @@ class TestSourceContract(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestUrlTriage(unittest.TestCase):
+    """
+    WebSearch es el unico camino a los marketplaces sin credencial, pero la
+    mitad de lo que devuelve son landings de "Hire X developers", tablas de
+    tarifas y gigs. Las URLs de abajo son las que devolvio de verdad.
+    """
+
+    def test_upwork_posting_shapes(self):
+        for url in (
+            "https://www.upwork.com/job/Golang-Developer_~0157b3a527d0809956/",
+            "https://www.upwork.com/freelance-jobs/apply/Senior-Backend_~016ee6131b64a1238f/",
+        ):
+            self.assertEqual(fs.classify_url(url), ("upwork", "posting"), url)
+
+    def test_upwork_landings(self):
+        # /services/ es el Project Catalog: son gigs que vende un freelancer,
+        # no ofertas de un cliente. Meterlos en la cola invierte el sentido.
+        for url in (
+            "https://www.upwork.com/hire/golang-developers/cost/",
+            "https://www.upwork.com/services/product/a-golang-developer-1728313002997911552",
+            "https://www.upwork.com/freelance-jobs/us/golang/",
+            "https://www.upwork.com/nx/search/jobs/?q=golang",
+        ):
+            self.assertEqual(fs.classify_url(url), ("upwork", "landing"), url)
+
+    def test_workana_posting_and_landing(self):
+        self.assertEqual(
+            fs.classify_url("https://www.workana.com/es/job/crear-tienda-shopify-ecommerce"),
+            ("workana", "posting"),
+        )
+        self.assertEqual(
+            fs.classify_url("https://www.workana.com/job/front-end-shopify-developer"),
+            ("workana", "posting"),
+        )
+        for url in (
+            "https://www.workana.com/en/jobs?skills=typescript",
+            "https://www.workana.com/en/hire/shopify",
+            "https://www.workana.com/es/skill/node-js",
+        ):
+            self.assertEqual(fs.classify_url(url)[1], "landing", url)
+
+    def test_other_platforms_landings(self):
+        for url in (
+            "https://www.freelancer.com/jobs/golang",
+            "https://www.peopleperhour.com/freelance-golang-jobs",
+            "https://www.guru.com/m/find/freelance-jobs/back-end-developer/",
+        ):
+            self.assertEqual(fs.classify_url(url)[1], "landing", url)
+
+    def test_unknown_domain_is_not_guessed(self):
+        platform, verdict = fs.classify_url("https://news.ycombinator.com/item?id=1")
+        self.assertIsNone(platform)
+        self.assertEqual(verdict, "unknown")
+
+    def test_query_string_does_not_decide(self):
+        # Los parametros cambian por campania y por sesion; si entraran en la
+        # decision, la misma oferta se clasificaria distinto segun de donde vino.
+        with_params = "https://www.workana.com/es/job/crear-tienda?ref=email&utm_source=x"
+        self.assertEqual(fs.classify_url(with_params)[1], "posting")
+
+    def test_triage_splits_and_dedupes(self):
+        rows = fs.triage_urls([
+            "https://www.upwork.com/job/A_~01aa/",
+            "https://www.upwork.com/job/A_~01aa/",   # repetida
+            "https://www.upwork.com/hire/golang-developers/",
+            "https://example.com/whatever",
+            "",
+        ])
+        self.assertEqual(len(rows["postings"]), 1, "la repetida no se cuenta dos veces")
+        self.assertEqual(len(rows["descartados_landing"]), 1)
+        self.assertEqual(len(rows["fuera_de_plataformas_conocidas"]), 1)
+        self.assertEqual(rows["total_recibidas"], 3, "las vacias no cuentan")
+        self.assertEqual(rows["postings_por_plataforma"], {"upwork": 1})
+
+    def test_triage_always_warns_about_dates(self):
+        # El indice no filtra por fecha y una de las ofertas reales que devolvio
+        # era de 2021. Callarlo haria perder tiempo en ofertas muertas.
+        rows = fs.triage_urls(["https://www.upwork.com/job/A_~01aa/"])
+        self.assertIn("fecha", rows["advertencia"].lower())
+
+
+class TestKeyedSources(unittest.TestCase):
+    """
+    Las fuentes con credencial no pueden venir prendidas, pero tampoco pueden
+    desaparecer: el usuario tiene que enterarse de que existen y como activarlas.
+    """
+
+    def test_every_keyed_source_documents_how_to_get_the_key(self):
+        for name, spec in fs.KEYED_SOURCES.items():
+            self.assertTrue(spec["env"], name)
+            self.assertTrue(spec["como_conseguirla"], name)
+            self.assertTrue(spec["doc"].startswith("https://"), name)
+            self.assertTrue(spec["lo_que_no_se_puede"], name)
+
+    def test_keyed_sources_are_not_in_the_default_run(self):
+        for name in fs.KEYED_SOURCES:
+            self.assertNotIn(name, fs.SOURCES, name)
+
+    def test_upwork_refuses_clearly_without_a_token(self):
+        import os
+        old = os.environ.pop("UPWORK_ACCESS_TOKEN", None)
+        try:
+            with self.assertRaises(fs.SourceError) as ctx:
+                fs.upwork_search("golang", 1, terms=["golang"])
+            self.assertIn("UPWORK_ACCESS_TOKEN", str(ctx.exception))
+            self.assertIn("keys", str(ctx.exception))
+        finally:
+            if old is not None:
+                os.environ["UPWORK_ACCESS_TOKEN"] = old
+
+
+class TestUpworkParsing(unittest.TestCase):
+    """
+    La query no se pudo verificar contra la API real (hace falta una key
+    aprobada), asi que lo que se fija aca es el parseo: que la respuesta se lea
+    bien y que un cambio de schema falle diciendo por que.
+    """
+
+    NODE = {
+        "id": "1234",
+        "title": "Golang backend for a Shopify integration",
+        "description": "<p>We need <b>Go</b> and Postgres.</p>",
+        "ciphertext": "~01abcdef",
+        "createdDateTime": "2026-08-05T10:00:00Z",
+        "engagement": "30+ hrs/week",
+        "amount": {"rawValue": "1500", "currency": "USD"},
+        "hourlyBudgetMin": {"rawValue": "35"},
+        "hourlyBudgetMax": {"rawValue": "60"},
+        "client": {
+            "totalHires": 12,
+            "totalSpent": {"rawValue": "48000"},
+            "verificationStatus": "VERIFIED",
+            "location": {"country": "Germany"},
+        },
+        "skills": [{"name": "Go"}, {"name": "PostgreSQL"}],
+    }
+
+    def test_walks_nodes_regardless_of_nesting(self):
+        shallow = {"data": {"search": {"edges": [{"node": self.NODE}]}}}
+        deeper = {"data": {"a": {"b": {"search": {"edges": [{"node": self.NODE}]}}}}}
+        for payload in (shallow, deeper):
+            out = []
+            fs._walk_nodes(payload, out)
+            self.assertEqual(len(out), 1)
+            self.assertEqual(out[0]["id"], "1234")
+
+    def test_money_unwraps_raw_value(self):
+        self.assertEqual(fs._money(self.NODE, "amount"), "1500")
+        self.assertEqual(fs._money(self.NODE["client"], "totalSpent"), "48000")
+        self.assertIsNone(fs._money(self.NODE, "noSuchField"))
+
+    def test_money_survives_a_missing_branch(self):
+        self.assertIsNone(fs._money({}, "client", "totalSpent"))

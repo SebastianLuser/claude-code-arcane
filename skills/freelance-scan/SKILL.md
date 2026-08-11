@@ -1,7 +1,7 @@
 ---
 name: freelance-scan
 description: "Find and score freelance projects across public keyless sources with dedup between runs, plus market intel on what other freelancers charge. Triggers: buscar proyectos freelance, scan de ofertas, scorear ofertas freelance, corrida de busqueda freelance, que ofertas me convienen, cuanto cobran otros freelancers, tarifa de mercado."
-argument-hint: "[search | market | sources | post pegado]"
+argument-hint: "[search | web | market | keys | sources | post pegado]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, WebFetch, WebSearch
@@ -65,11 +65,56 @@ El output trae `terms_searched` y `synonyms_applied`: **mostráselos al usuario*
 
 Si un nicho del usuario no está en el mapa, agregarlo es una línea - y conviene, porque el vocabulario de cada rubro es distinto.
 
-### Las plataformas grandes van a mano
+## Modo `web` - llegar a los marketplaces sin credencial
 
-Upwork, Freelancer.com, Fiverr y las verticales cerradas (Toptal, Gun.io, Braintrust) **no tienen búsqueda pública consumible**: o piden credenciales aprobadas por usuario, o prohíben el acceso automatizado en sus términos. Para esas, el usuario pega la URL o el texto de la oferta y el skill scorea igual. No es un modo degradado: decidir a qué postularse es el trabajo, y pegar 10 ofertas cuesta minutos.
+Upwork, Workana, Freelancer.com, PeoplePerHour y Guru no tienen API pública. Pero **WebSearch sí los alcanza**, y la credencial es Claude Code, que ya tiene todo el que instaló el perfil.
 
-**Nunca scrapear ninguna de ellas ni sugerir herramientas que lo hagan.** Motivos y detalle por plataforma: `references/platforms.md`.
+### Cómo se corre
+
+Disparar **varias `WebSearch` en un solo turno** (en paralelo, no una tras otra), combinando plataforma y término del stack del usuario:
+
+```
+WebSearch  allowed_domains: ["upwork.com"]     query: "<stack> freelance project hourly contract"
+WebSearch  allowed_domains: ["workana.com"]    query: "proyecto <stack> desarrollo freelance"
+WebSearch  allowed_domains: ["freelancer.com", "peopleperhour.com", "guru.com"]
+```
+
+Después pasar **todas** las URLs por el triage, que es la parte determinista:
+
+```bash
+python .claude/skills/freelance-scan/scripts/freelance_search.py triage \
+  --url "https://..." --url "https://..."
+```
+
+Devuelve `postings` (lo único que vale abrir), `descartados_landing` y `sin_clasificar`.
+
+### Por qué el triage no es opcional
+
+Medido sobre una corrida real: **de 13 URLs, 3 eran ofertas.** Las otras 10 eran landings de "Hire Golang developers", tablas de tarifas, gigs del Project Catalog y páginas de búsqueda. Sin filtrar, la cola es mitad basura y el usuario deja de mirarla.
+
+### Los tres límites, y hay que decirlos
+
+1. **La fecha no está verificada.** El índice no filtra por recencia: en la prueba real apareció una oferta de Upwork **posteada en 2021**. Siempre avisar que hay que mirar la fecha al abrir.
+2. **No se puede leer la oferta.** `WebFetch` devuelve **403 en todas** estas plataformas, incluso en páginas de proyecto individuales. Presupuesto, cantidad de propuestas y reputación del cliente requieren que el usuario abra el link.
+3. **El resumen de la búsqueda no es dato.** Es un modelo leyendo varias páginas; puede mezclar detalles de dos ofertas.
+
+Por eso este modo entrega **links para abrir**, no filas para el registro. Nunca guardar en `seen_jobs.json` una oferta que vino de acá con fecha o presupuesto sin confirmar: un dato inventado en el registro contamina todas las decisiones que se apoyan en él.
+
+## Modo `keys` - las fuentes que piden credencial propia
+
+```bash
+python .claude/skills/freelance-scan/scripts/freelance_search.py keys
+```
+
+Lista qué fuentes necesitan API key, **cómo conseguir cada una**, y si está configurada en esta máquina.
+
+**Upwork** tiene adaptador escrito. Se pide la key desde el API Center de la cuenta (freelancer o cliente, cualquier plan, sin cuenta de empresa) y contestan por mail en ~1 semana. Con `UPWORK_ACCESS_TOKEN` en el entorno, `search` la suma sola a la corrida y trae presupuesto, tarifa horaria y reputación del cliente, que es justo lo que el modo `web` no puede ver.
+
+Sin la variable puesta **no se intenta y se avisa**, en vez de fallar en cada corrida hasta que el usuario aprenda a ignorar los errores.
+
+Lo que ni con key se puede: **enviar propuestas**. Upwork no expone mutation para postularse ni para gastar Connects, a propósito, contra el auto-bidding. Postularse sigue siendo a mano siempre.
+
+**Nunca scrapear ninguna plataforma ni sugerir herramientas que lo hagan.** Donde el `robots.txt` opina, opina en contra: PeoplePerHour prohíbe las URLs con filtros y Guru prohíbe `/api/`. Detalle por plataforma con los códigos medidos: `references/platforms.md`.
 
 ## Scoring
 
@@ -140,7 +185,8 @@ Reposteos: es común que un cliente cierre y republique la misma oferta. Si el `
 
 - **Nunca inventar ofertas, presupuestos ni datos de clientes.** Todo sale del post real o del script.
 - **Nunca scrapear** Upwork, Freelancer.com, Fiverr ni ninguna plataforma cuyos términos lo prohíban, ni sugerir herramientas que lo hagan.
-- **Nunca agregar a la corrida automática una fuente que exija credenciales por usuario.** Rompe el skill para todos los que instalen el perfil menos uno. Si aporta, va documentada como opt-in manual en `references/platforms.md`.
+- **Nunca prender por defecto una fuente que exija credenciales por usuario.** Rompe el skill para todos los que instalen el perfil menos uno. Va en `KEYED_SOURCES`: se activa sola si la variable de entorno está, y si no, `keys` explica cómo conseguirla.
+- **Nunca guardar en el registro un dato que vino del modo `web` sin confirmar.** Fecha y presupuesto ahí no están verificados; escribirlos como si lo estuvieran envenena todas las decisiones posteriores.
 - Un presupuesto abajo del piso no se "compensa" con entusiasmo por el proyecto.
 - En `market`, nunca reportar una mediana sin su `n`.
 - Sin guiones largos en las notas. No crear notas para ofertas que no pasan el umbral.
