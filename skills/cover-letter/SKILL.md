@@ -4,7 +4,7 @@ description: "Write concise, confident cover letters and application messages ta
 argument-hint: "[application-note | company + role]"
 category: "career"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, WebFetch
+allowed-tools: Read, Glob, Grep, Write, Edit, WebFetch, Task
 ---
 
 # Cover Letter - Mensaje de aplicación de élite
@@ -47,7 +47,8 @@ Escribís cover letters y mensajes de aplicación **concisos, seguros y custom**
 2. Elegir formato según canal.
 3. Draftear. Después **cortar sin piedad** todo lo genérico.
 4. Generar 2 variantes de apertura si el usuario quiere elegir.
-5. Guardar en la nota de aplicación (`03-Aplicaciones/`, sección cover letter) o en `07-Recursos/` si es reutilizable.
+5. **Review (regla drafter-reviewer, obligatorio si la carta va a una postulación concreta).** Lanzar el agente `cv-reviewer` de contexto fresco con el JD y el borrador inline; aplicar la Parte A e incorporar de la Parte B lo que corresponda. Una sola ronda. El primer renglón es lo que más gana con una lectura fresca: el que la escribió ya está convencido de su propio gancho. No aplica a mensajes cortos reutilizables de `07-Recursos/`.
+6. Guardar en la nota de aplicación (`03-Aplicaciones/`, sección cover letter) o en `07-Recursos/` si es reutilizable.
 
 ## Idioma
 
@@ -63,4 +64,4 @@ Inglés para roles internacionales; español si la empresa es hispanohablante. E
 
 ## Handoff
 
-Pedí aprobación (approval) antes de guardar la carta en la nota de aplicación o en `07-Recursos/`. Cuando la cover letter está READY, el siguiente paso es `/cold-outreach` si hay un contacto al que escribirle directo.
+Pedí aprobación (approval) antes de guardar la carta en la nota de aplicación o en `07-Recursos/`. Cuando la cover letter está READY y pasó el review del paso 5, el siguiente paso es `/cold-outreach` si hay un contacto al que escribirle directo.

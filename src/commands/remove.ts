@@ -4,7 +4,11 @@ import chalk from "chalk";
 import { readManifest } from "../manifest.js";
 import { parseProfile } from "../profiles.js";
 import { writeJsonSync } from "../utils.js";
-import { resolveContentSource } from "../content-source.js";
+import {
+  resolveContentSource,
+  resolveContentSourceForVersion,
+  type SourcePreference,
+} from "../content-source.js";
 
 const CORE_SKILLS = [
   "commit",
@@ -30,20 +34,36 @@ const CORE_SKILLS = [
   "arcane-clean",
 ];
 
-export async function removeCommand(items: string[]): Promise<void> {
+export interface RemoveOpts {
+  source?: SourcePreference;
+}
+
+export async function removeCommand(
+  items: string[],
+  opts: RemoveOpts = {},
+): Promise<void> {
   const target = process.cwd();
-  const source = await resolveContentSource({ quiet: true });
-  const root = await source.getContentRoot();
   const manifest = readManifest(target);
 
   if (!manifest) {
     console.error(
       chalk.red(
-        "No arcane-manifest.json found. Run `npx arcane install` first.",
+        "No arcane-manifest.json found. Run `npx claude-code-arcane install` first.",
       ),
     );
     process.exit(1);
   }
+
+  // Read the manifest before resolving content: what gets deleted comes from the
+  // profile YAML, so it has to be the YAML of the version that was installed.
+  // Resolving the current version instead is how `remove +profile` ended up
+  // reporting success while leaving that profile's agent directories on disk.
+  const source = opts.source
+    ? await resolveContentSource({ source: opts.source })
+    : await resolveContentSourceForVersion(
+        manifest.source_version ?? manifest.arcane_version,
+      );
+  const root = await source.getContentRoot();
 
   const removedSkills: string[] = [];
   const removedAgents: string[] = [];

@@ -35,14 +35,28 @@ Empresa/oferta indicada: `$ARGUMENTS`
    - `rechazado` con feedback → anotar la lección en la nota; si se acumulan 3+ resoluciones, ofrecer `/job-upskill` y revisar los criterios de búsqueda contra los resultados reales.
    - `sin_respuesta` a los 10-14 días → ofrecer follow-up con `/cold-outreach`.
    - `contratado` → 🎉 y actualizar el resto de las aplicaciones abiertas (¿retirarse de procesos?).
+   - **Freelance** - `en_conversacion` → ofrecer ensayar con el agente `discovery-call`; `contrato_activo` → crear la nota en `08-Contratos/`; `sin_respuesta` o `rechazado` acumulados (10+ propuestas resueltas) → ofrecer `/freelance-pipeline`, que es donde se ve si el problema es la propuesta o el targeting.
 
 6. **Confirmar** al usuario qué se registró (nota, campos tocados, fila del dashboard).
 
 ## Vocabulario de `estado` (frontmatter)
 
+Depende del `tipo:` de la nota. Leelo primero: son dos pipelines distintos y confundirlos rompe el dashboard y los reportes.
+
+**`tipo: aplicacion` (empleo, perfil `+job-hunt`):**
+
 `interesado → aplicado → entrevista → oferta` y cierra en: `contratado | rechazado | sin_respuesta | declinada | descartado`
 
-Emojis del dashboard: ⬜ interesado · ✅ aplicado · 📅 entrevista/oferta · ❌ rechazado/sin_respuesta/declinada · 🚫 descartado/cerrada
+**`tipo: freelance` (propuestas, perfil `+freelance`):**
+
+`interesado → screeneado → propuesta_enviada → en_conversacion → contrato_activo → entregado` y cierra en: `ganado_cerrado | sin_respuesta | rechazado | descartado | disputa`
+
+En freelance hay dos registros extra que no existen en empleo, y sin ellos `/freelance-pipeline` no puede calcular nada:
+
+- Al marcar `propuesta_enviada`, preguntar y registrar **cuántos Connects costó** (frontmatter `connects_gastados`) y agregar la fila al ledger de `07-Recursos/Connects - <año>.md`.
+- Si la oferta se cerró sin que el cliente contratara a nadie, el resultado en el ledger es `oferta_nunca_contrato`, no `sin_respuesta`. Son cosas distintas: la primera es Connects perdidos por mal screening, la segunda es tu propuesta que no convenció.
+
+Emojis del dashboard: ⬜ interesado/screeneado · ✅ aplicado/propuesta_enviada · 📅 entrevista/oferta/en_conversacion · 🔨 contrato_activo/entregado · ❌ rechazado/sin_respuesta/declinada · 🚫 descartado/cerrada · ⚠️ disputa
 
 ## Reglas
 

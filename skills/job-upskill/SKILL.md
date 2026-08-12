@@ -4,7 +4,7 @@ description: "Aggregate skill gaps across all scored job applications, weigh the
 argument-hint: "[url | nota de aplicación]"
 category: "career"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash, WebFetch, WebSearch
+allowed-tools: Read, Glob, Grep, Write, Bash, WebFetch, WebSearch, Task
 ---
 
 # /job-upskill - Análisis de gaps y plan de estudio
@@ -12,6 +12,14 @@ allowed-tools: Read, Glob, Grep, Write, Bash, WebFetch, WebSearch
 Detecta qué skills te están costando puntos de match en las ofertas reales y arma un plan de estudio priorizado. Adaptado del /upskill de MadsLorentzen/ai-job-search: en vez de un CSV, la evidencia sale del frontmatter y las secciones de las notas de `03-Aplicaciones/` del career workspace (rutas relativas al workspace: `--workspace`, env `CAREER_WORKSPACE`, o `./career-workspace/`).
 
 Argumento: `$ARGUMENTS` (vacío = modo agregado; URL o nota = modo targeted)
+
+## Antes del plan: ¿el gap es real o de presentación?
+
+Este skill asume que la respuesta es estudiar. A veces no lo es: si la experiencia está en el perfil maestro pero no llega al CV, el plan de estudio manda al usuario a aprender meses lo que ya sabe.
+
+En **modo agregado con 10+ aplicaciones resueltas**, lanzar primero el agente `career-strategist` (contexto fresco, read-only). Diagnostica el embudo completo y separa gap real de gap de presentación. Si el punto de fuga no es la etapa técnica, decílo antes del heatmap: el plan de estudio no es la palanca y conviene ir a `/cv-tailor` o `/interview-prep`.
+
+Con menos de 10 resueltas, saltear: no hay volumen para un embudo y el propio agente lo va a rechazar. Seguí directo al modo agregado.
 
 ## Modo agregado (sin argumento)
 
@@ -55,4 +63,4 @@ Argumento: `$ARGUMENTS` (vacío = modo agregado; URL o nota = modo targeted)
 
 ## Handoff
 
-Reporte COMPLETE en `07-Recursos/`. Retomar el pipeline con `/job-aplicar` en las ofertas abiertas, o `/job-scrape` para una corrida nueva apuntando a los gaps que ya se están cerrando.
+Reporte COMPLETE en `07-Recursos/`. Retomar el pipeline con `/job-aplicar` en las ofertas abiertas, o `/job-scrape` para una corrida nueva apuntando a los gaps que ya se están cerrando. Si el `career-strategist` ubicó la fuga fuera de la etapa técnica, el siguiente paso es ese (`/cv-tailor`, `/interview-prep` o `/job-search`), no el plan de estudio.

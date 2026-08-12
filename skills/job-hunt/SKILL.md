@@ -67,6 +67,7 @@ Según el estado del workspace, recomendar el skill siguiente (ver routing).
 | Corrida de búsqueda con CLIs y dedup entre corridas | `/job-scrape` |
 | Postulación completa (nota + CV + cover + review + PDF) | `/job-aplicar` |
 | Registrar resultado/avance de una postulación | `/job-outcome` |
+| ¿Ya me postulé acá? / exportar el registro a CSV | `/career-registry` |
 | Gaps de skills agregados + plan de estudio | `/job-upskill` |
 | Adaptar CV a una oferta | `/cv-tailor` |
 | Exportar CV a PDF ATS | `/cv-ats-export` |
@@ -75,6 +76,22 @@ Según el estado del workspace, recomendar el skill siguiente (ver routing).
 | Optimizar perfil de LinkedIn | `/linkedin-optimize` |
 | Crear/actualizar portfolio web | `/portfolio-site` |
 | Preparar una entrevista | `/interview-prep` |
+| Diagnosticar por qué se frena la búsqueda | agente `career-strategist` (vía `/job-upskill`) |
+
+## Los 4 agentes del perfil
+
+El perfil instala `agents/career/`. Los agentes existen por una sola razón: **hay lecturas que solo sirven con contexto fresco**. Vos no podés revisar un CV que acabás de escribir, ni entrevistar a alguien cuyas respuestas preparadas leíste. Son read-only: devuelven análisis, los archivos los escribe la sesión principal.
+
+| Agente | Contesta | Lo lanza |
+|---|---|---|
+| `cv-reviewer` | ¿Pasa el filtro del ATS y del recruiter? | `/job-aplicar`, `/cv-tailor`, `/cover-letter` |
+| `hiring-manager` | ¿Convence a quien contrata? (evidencia de impacto, no keywords) | `/job-aplicar`, `/cv-tailor` (opcional) |
+| `mock-interviewer` | ¿Aguanta la entrevista real? | `/interview-prep` |
+| `career-strategist` | ¿Por qué me frenan siempre en la misma etapa? | `/job-upskill` (10+ aplicaciones resueltas) |
+
+`cv-reviewer` y `hiring-manager` se lanzan **en paralelo** cuando van los dos: son lentes independientes, encadenarlos solo suma latencia.
+
+Si el usuario instaló el perfil sin el directorio de agentes, la regla `drafter-reviewer` documenta el fallback con `general-purpose`.
 
 ## Workflow estándar para una nueva oportunidad
 

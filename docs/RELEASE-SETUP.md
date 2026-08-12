@@ -76,7 +76,7 @@ semantic-release commitea el changelog automaticamente con `[skip ci]` para no g
 
 Ademas del release automatico, Arcane soporta distribucion hibrida:
 
-- **GitHub source:** `npx arcane install backend-ts --source github` baja contenido directamente del repo
+- **GitHub source:** `npx claude-code-arcane install backend-ts --source github` baja contenido directamente del repo
 - **Cache local:** contenido descargado se cachea en `~/.arcane/cache/`
 - **Bundled fallback:** si GitHub no esta disponible, usa el contenido empaquetado en npm
 - **Auto:** `--source auto` (default) intenta GitHub → cache → bundled

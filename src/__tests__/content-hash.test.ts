@@ -13,6 +13,71 @@ function makeTmpDir(): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), "arcane-hash-test-"));
 }
 
+/**
+ * hashDirectory used to count __pycache__ while copyDirSync skipped it, so a
+ * source tree where a Python skill had run hashed to something no install could
+ * reproduce. `update` then listed that skill as changed, copied it, hit the same
+ * mismatch, and offered it again on every run without ever converging.
+ */
+describe("hashDirectory build artifacts", () => {
+  let tmpDir: string;
+
+  afterEach(() => {
+    if (tmpDir && fs.existsSync(tmpDir)) {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  function writeSkill(dir: string): void {
+    fs.mkdirSync(path.join(dir, "scripts"), { recursive: true });
+    fs.writeFileSync(path.join(dir, "SKILL.md"), "# Skill");
+    fs.writeFileSync(path.join(dir, "scripts", "run.py"), "print(1)\n");
+  }
+
+  it("ignores __pycache__ directories", () => {
+    // Arrange
+    tmpDir = makeTmpDir();
+    const clean = path.join(tmpDir, "clean");
+    const dirty = path.join(tmpDir, "dirty");
+    writeSkill(clean);
+    writeSkill(dirty);
+    fs.mkdirSync(path.join(dirty, "scripts", "__pycache__"), { recursive: true });
+    fs.writeFileSync(path.join(dirty, "scripts", "__pycache__", "run.cpython-312.pyc"), "bytecode");
+
+    // Act
+    const cleanHashes = hashDirectory(clean);
+    const dirtyHashes = hashDirectory(dirty);
+
+    // Assert: having run the script must not change what the skill *is*.
+    expect(Object.keys(dirtyHashes).sort()).toEqual(Object.keys(cleanHashes).sort());
+  });
+
+  it("ignores loose .pyc files", () => {
+    // Arrange
+    tmpDir = makeTmpDir();
+    writeSkill(tmpDir);
+    fs.writeFileSync(path.join(tmpDir, "scripts", "stale.pyc"), "bytecode");
+
+    // Act
+    const hashes = hashDirectory(tmpDir);
+
+    // Assert
+    expect(Object.keys(hashes)).not.toContain("scripts/stale.pyc");
+  });
+
+  it("still hashes the real content", () => {
+    // Arrange: the exclusion must not swallow the files that matter.
+    tmpDir = makeTmpDir();
+    writeSkill(tmpDir);
+
+    // Act
+    const hashes = hashDirectory(tmpDir);
+
+    // Assert
+    expect(Object.keys(hashes).sort()).toEqual(["SKILL.md", "scripts/run.py"]);
+  });
+});
+
 describe("hashFile", () => {
   let tmpDir: string;
 

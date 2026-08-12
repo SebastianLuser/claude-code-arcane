@@ -65,7 +65,7 @@ export async function worktreeCommand(
     console.error(
       chalk.red(
         "No profile specified and no existing installation to inherit from.\n" +
-          "Use --profile to specify one: npx arcane worktree feat/api --profile backend-ts+agile",
+          "Use --profile to specify one: npx claude-code-arcane worktree feat/api --profile backend-ts+agile",
       ),
     );
     process.exit(1);
@@ -165,7 +165,7 @@ export async function worktreeCommand(
     } else {
       console.warn(
         chalk.yellow(
-          "  WARN: worktree-isolation skill not installed. Add it with: npx arcane add worktree-isolation",
+          "  WARN: worktree-isolation skill not installed. Add it with: npx claude-code-arcane add worktree-isolation",
         ),
       );
     }

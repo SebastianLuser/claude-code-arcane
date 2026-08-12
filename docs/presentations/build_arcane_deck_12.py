@@ -172,7 +172,7 @@ txt(s, 0.78, 1.95, 11.7, 0.9,
 rect(s, 0.78, 3.05, 11.7, 1.45, CODEBG, radius=True, line=VIOLET, line_w=1.5)
 txt(s, 1.1, 3.22, 11, 0.35, [[("terminal", 11, MUTED, False)]], font=MONO)
 txt(s, 1.1, 3.62, 11, 0.7,
-    [[("$ ", 24, CYAN, True), ("npx arcane install ", 24, WHITE, True),
+    [[("$ ", 24, CYAN, True), ("npx claude-code-arcane install ", 24, WHITE, True),
       ("backend-ts", 24, GREEN, True), ("+agile", 24, AMBER, True), ("+testing", 24, AMBER, True)]], font=MONO)
 cols = [("backend-ts", "base", GREEN), ("+agile", "addon", AMBER), ("+testing", "addon", AMBER)]
 cx = 0.78
@@ -390,7 +390,7 @@ rect(s, 0.78, 5.25, 11.7, 1.45, VIOLET, radius=True)
 txt(s, 0.78, 5.4, 11.7, 0.5,
     [[("Configuracion de IA, modular y versionada — un comando para empezar.", 17, WHITE, True)]],
     align=PP_ALIGN.CENTER)
-txt(s, 0.78, 5.95, 11.7, 0.5, [[("npx arcane install backend-ts+agile", 21, WHITE, True)]],
+txt(s, 0.78, 5.95, 11.7, 0.5, [[("npx claude-code-arcane install backend-ts+agile", 21, WHITE, True)]],
     align=PP_ALIGN.CENTER, font=MONO)
 
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "arcane-overview-12.pptx")

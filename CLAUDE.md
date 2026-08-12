@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-Repo de configuración: skills, agentes, hooks y rules para Claude Code. Instalable via `npx arcane install <profile>`.
+Repo de configuración: skills, agentes, hooks y rules para Claude Code. Instalable via `npx claude-code-arcane install <profile>`.
 
 ## Stack
 

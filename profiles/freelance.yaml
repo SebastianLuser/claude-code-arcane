@@ -1,0 +1,43 @@
+name: freelance
+description: "Freelance — conseguir proyectos como freelancer y ejecutarlos: scan de fuentes publicas sin API key con dedup y scoring, busqueda en los marketplaces (Upwork, Workana) via WebSearch, inteligencia de tarifas de mercado, screening de riesgo del cliente, perfil de plataforma, propuestas con cotizacion sobre piso de tarifa neto, contratos y SOWs, kickoff con validacion de horas contra lo cotizado, registro de horas y change orders, pipeline con costo de adquisicion y utilizacion, y 4 agentes de contexto fresco (review de propuesta, screener adversarial, discovery call, estratega de pipeline)"
+type: addon
+
+skills:
+  # Nucleo del perfil
+  - freelance-hunt
+  - freelance-profile
+  - freelance-scan
+  - client-screen
+  - freelance-proposal
+  - freelance-pipeline
+  - freelance-kickoff
+  - freelance-deliver
+  # Compartidas con +job-hunt (una sola fuente de verdad del perfil profesional)
+  - master-profile
+  - portfolio-site
+  - cold-outreach
+  - job-outcome
+  - career-registry
+  # Compartidas con +business y +agile
+  - contract-and-proposal-writer
+  - estimate
+
+rules:
+  universal:
+    - freelance-guardrails
+  gamedev:
+    []
+
+agents:
+  - freelance
+
+permissions:
+  allow:
+    - "Bash(python *import_history.py*)"
+    - "Bash(python3 *import_history.py*)"
+    - "Bash(python *career_registry.py*)"
+    - "Bash(python3 *career_registry.py*)"
+    - "Bash(python *freelance_search.py*)"
+    - "Bash(python3 *freelance_search.py*)"
+  deny:
+    []

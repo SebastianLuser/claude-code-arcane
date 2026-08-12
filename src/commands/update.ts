@@ -199,6 +199,28 @@ export async function updateTarget(
   }
 
   if (updates.length === 0 && removed.length === 0) {
+    // Nothing was copied, but the content already matches the source, so this
+    // install *is* on the new version. Recording that is what ends the update.
+    //
+    // Without this write the manifest keeps the old version, the early
+    // "already up to date" check above never short-circuits, and every future
+    // run announces the same phantom update and then applies nothing to it.
+    //
+    // Guarded on dryRun because this block sits above the dry-run return: a
+    // preview that rewrites the manifest is not a preview.
+    if (!opts.dryRun) {
+      updateManifestFields(target, {
+        arcane_version: currentVersion,
+        source_version: currentVersion,
+        updated_at: new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
+        content_hashes: installedHashes,
+        installed_skills: merged.skills,
+        installed_rules: allRules,
+        installed_agents: merged.agents,
+        total_skills: merged.skills.length,
+        total_rules: allRules.length,
+      });
+    }
     if (!opts.quiet) {
       console.log(chalk.green("\nNo changes to apply."));
     }

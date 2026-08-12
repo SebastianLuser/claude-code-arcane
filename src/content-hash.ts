@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
+import { isBuildArtifact } from "./utils.js";
 
 export function hashFile(filePath: string): string {
   const content = fs.readFileSync(filePath);
@@ -19,6 +20,9 @@ function walkDir(
   hashes: Record<string, string>,
 ): void {
   for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+    // Must match what copyDirSync skips, or the source and the install describe
+    // different content and no update can ever settle.
+    if (isBuildArtifact(entry.name)) continue;
     const fullPath = path.join(current, entry.name);
     const relPath = path.relative(base, fullPath).split(path.sep).join("/");
     if (entry.isDirectory()) {

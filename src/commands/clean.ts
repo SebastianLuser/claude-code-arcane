@@ -34,6 +34,6 @@ export async function cleanCommand(opts: CleanOpts): Promise<void> {
 
   clean(target);
   console.log(
-    chalk.green("\n  Run `npx arcane install` to reinstall.\n"),
+    chalk.green("\n  Run `npx claude-code-arcane install` to reinstall.\n"),
   );
 }

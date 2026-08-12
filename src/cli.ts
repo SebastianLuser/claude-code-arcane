@@ -53,8 +53,12 @@ program
   .description(
     "Remove skills or profiles. Use +profileName for profiles, skillName for individual skills.",
   )
-  .action(async (items: string[]) => {
-    await removeCommand(items);
+  .option(
+    "--source <source>",
+    "Content source: auto, github, or bundled. Defaults to the version recorded in the manifest.",
+  )
+  .action(async (items: string[], opts) => {
+    await removeCommand(items, { source: opts.source });
   });
 
 program

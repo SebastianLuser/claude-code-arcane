@@ -4,7 +4,7 @@ description: "Prepare for a job interview: company research, likely question ban
 argument-hint: "[application-note | company + role + round]"
 category: "career"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, WebFetch
+allowed-tools: Read, Glob, Grep, Write, Edit, WebFetch, Task
 ---
 
 # Interview Prep - Preparación de entrevista
@@ -57,8 +57,16 @@ Preparás al usuario para una entrevista concreta: research de la empresa, banco
 1. Leer aplicación + empresa + perfil. WebFetch del sitio/notas de la empresa.
 2. Crear nota en `06-Entrevistas/` con el template `Entrevista`.
 3. Llenar research, banco de preguntas (marcando las top), STAR de las 3-5 historias clave, preguntas a hacer, red flags.
-4. Ofrecer un **mock**: vos hacés de entrevistador y das feedback sobre las respuestas.
+4. Ofrecer un **mock** con el agente `mock-interviewer` (ver abajo).
 5. Post-entrevista: ayudar a registrar feedback y definir próximo paso / follow-up (con `/cold-outreach`).
+
+## El mock va en un agente, no en esta sesión
+
+El mock lo corre el agente `mock-interviewer`, no vos. La razón es dura: vos acabás de escribir las respuestas STAR del usuario, así que ibas a preguntar exactamente lo que preparó, iba a salir perfecto, y el usuario iba a entrar a la entrevista real con confianza falsa.
+
+Al lanzarlo, pasale **inline**: el JD, la ronda, y el CV que se mandó. **No** le pases el perfil maestro ni la nota de `06-Entrevistas/` con las respuestas preparadas - eso invalida el simulacro, y el agente tiene instrucción de rechazarlos.
+
+Cuando devuelve el feedback, tu trabajo es registrarlo: agregá en la nota de `06-Entrevistas/` qué respuestas hay que rehacer y por qué. Ese es el valor que queda para la próxima ronda.
 
 ## Idioma
 
@@ -66,4 +74,4 @@ En el idioma de la entrevista. Preparar respuestas en inglés si el rol es inter
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir la nota en `06-Entrevistas/`. Cuando la prep está READY, ofrecé un mock; post-entrevista, seguí con `/cold-outreach` para el follow-up.
+Pedí aprobación (approval) antes de escribir la nota en `06-Entrevistas/`. Cuando la prep está READY, ofrecé el mock con `mock-interviewer` y registrá su feedback; post-entrevista, seguí con `/cold-outreach` para el follow-up.
