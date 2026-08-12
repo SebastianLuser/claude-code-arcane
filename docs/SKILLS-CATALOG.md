@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 397 skills disponibles para proyectos consumidores, organizados por division.
+Los 426 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 355: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 384: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -84,7 +84,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/consistency-check` | Detecta inconsistencias cross-documento en stats/items | `[full \| since-last \| entity:<name>]` |
 | `/doc-gdd` | Genera Game Design Document completo | `[game-name]` |
 | `/doc-pas` | Documentacion PAS (Problem-Analysis-Solution) | `[problem o decision title]` |
-| `/install-mcp` | Instala y registra el MCP de Unity (CoplayDev) en el proyecto | `[--secondary] [project-path]` |
+| `/install-mcp` | Conecta Claude con el MCP del engine: Unity (package UPM) o Unreal (plugins del engine) | `[unity\|unreal] [--secondary] [path]` |
 | `/map-systems` | Descompone concepto en sistemas, mapea dependencias | `[next \| system-name] [--review]` |
 | `/playtest-report` | Genera o analiza reporte de playtest | `[new\|analyze path] [--review]` |
 | `/scaffold-unity` | Scaffoldea proyecto Unity estilo Project_T | `[project-name]` |
@@ -97,6 +97,44 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/team-release` | Orquesta equipo de release | `[version o next]` |
 | `/team-ui` | Orquesta equipo UI end-to-end | `[UI feature]` |
 | `/unity-game-architecture` | Arquitectura Unity 6 moderna | `[system o module]` |
+
+---
+
+## Unreal (29 skills)
+
+Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.md`.
+
+| Skill | Descripcion | Uso |
+|-------|-------------|-----|
+| `/ue-project-context` | Documento de contexto del proyecto: modulos, plataformas, convenciones, standards | `[new \| update \| section]` |
+| `/ue-cpp-foundations` | UPROPERTY, UFUNCTION, UCLASS, TArray, TMap, delegates, FString, garbage collection | `[class, type o question]` |
+| `/ue-actor-component-architecture` | Diseno de actors y components: BeginPlay, Tick, attachment, ownership, child actors | `[actor o component]` |
+| `/ue-gameplay-framework` | GameMode, GameState, PlayerController, PlayerState, Pawn, HUD | `[class o flow]` |
+| `/ue-module-build-system` | Build.cs, Target.cs, creacion de modulos, setup de plugins, configuracion de build | `[module o plugin]` |
+| `/ue-async-threading` | Operaciones async, threading, ejecucion paralela, tasks, FRunnable, AsyncTask | `[operation o task]` |
+| `/ue-blueprints` | Blueprint visual scripting: Event Graph, Construction Script, Cast vs Interface vs Dispatcher | `[blueprint o graph]` |
+| `/ue-gameplay-abilities` | GAS: Gameplay Abilities, Effects, Attribute Sets, Tags, Gameplay Cues | `[ability, effect o attribute]` |
+| `/ue-character-movement` | CharacterMovementComponent, movement modes, root motion, network prediction | `[movement mode o feature]` |
+| `/ue-animation-system` | AnimInstance, montages, blend spaces, state machines, notifies, linked anim graphs | `[character o anim feature]` |
+| `/ue-physics-collision` | Colisiones, traces, simulacion fisica, interacciones, Chaos physics | `[interaction o collision setup]` |
+| `/ue-game-features` | Game Feature plugins, modular gameplay, GameFeatureAction, ComponentManager | `[plugin o experience]` |
+| `/ue-networking-replication` | Multiplayer: replication, RPCs, net roles, autoridad server/client | `[system o property]` |
+| `/ue-ai-navigation` | AI controllers, behavior trees, blackboards, perception, NavMesh, EQS | `[behavior o AI feature]` |
+| `/ue-state-trees` | State Tree, state machines, StateTreeTask, Condition, Evaluator | `[state tree o behavior]` |
+| `/ue-mass-entity` | Mass Entity: MassProcessor, MassFragment, MassTag, MassObserver (UE 5.5+) | `[system o entity type]` |
+| `/ue-materials-rendering` | Materials, shaders, dynamic instances, post-process, render targets, Nanite, Lumen | `[material o effect]` |
+| `/ue-niagara-effects` | Niagara: sistemas de particulas, VFX, emitters, data interfaces, simulacion GPU | `[effect o system]` |
+| `/ue-audio-system` | UAudioComponent, SoundCue, MetaSound, atenuacion, concurrencia, analisis | `[sound o audio system]` |
+| `/ue-sequencer-cinematics` | Sequencer, LevelSequence, cutscenes, camera tracks, Movie Render Queue | `[sequence o shot]` |
+| `/ue-world-level-streaming` | World Partition, level streaming, level travel, data layers, world subsystems | `[level o streaming strategy]` |
+| `/ue-procedural-generation` | PCG framework, ProceduralMesh, instanced mesh, generacion en runtime, noise | `[generator o PCG graph]` |
+| `/ue-data-assets-tables` | DataAsset, DataTable, soft references, TSoftObjectPtr, async loading, Asset Manager | `[data type o asset]` |
+| `/ue-serialization-savegames` | Save/load, persistencia de progreso, serializacion de datos, FArchive | `[save system o data]` |
+| `/ue-ui-umg-slate` | UMG, Slate, UserWidget, HUD, BindWidget, Common UI, MVVM | `[widget o UI flow]` |
+| `/ue-input-system` | Enhanced Input: Input Actions, Mapping Contexts, modifiers, triggers | `[action o input scheme]` |
+| `/ue-editor-tools` | Editor utility widgets, Blutility, detail customization, property editors, subsystems | `[tool o customization]` |
+| `/ue-testing-debugging` | Automation tests, functional tests, UE_LOG, visual logger, debug drawing | `[test o debug target]` |
+| `/ue-packaging` | Packaging y cooking: build configs, Game Default Map, RunUAT BuildCookRun | `[platform o build config]` |
 
 ---
 

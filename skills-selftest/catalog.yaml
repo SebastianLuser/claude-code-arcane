@@ -1,5 +1,8 @@
-version: 5
-last_updated: "2026-05-25"
+version: 6
+last_updated: "2026-08-12"
+# v6: added the unreal stack (29 ue-* skills) and the three ue-* sub-specialists
+#     that unreal-specialist already delegated to. Specs for the agents already
+#     existed under agents/engine/unreal/; the skills have no specs yet.
 # v5: full regeneration from filesystem 321 skills + 86 agents.
 #     Synced with flat skills/ directory structure.
 #     Removed phantom entries, added all missing skills.
@@ -4049,6 +4052,357 @@ skills:
     priority: medium
     category: analysis
 
+  # =====================================================
+  # Stack: unreal (29 skills --- Unreal Engine 5, see ATTRIBUTION.md)
+  # =====================================================
+  - name: ue-project-context
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: authoring
+
+  - name: ue-cpp-foundations
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: critical
+    category: authoring
+
+  - name: ue-actor-component-architecture
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: authoring
+
+  - name: ue-gameplay-framework
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: authoring
+
+  - name: ue-module-build-system
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-async-threading
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-blueprints
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: authoring
+
+  - name: ue-gameplay-abilities
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: authoring
+
+  - name: ue-character-movement
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-animation-system
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-physics-collision
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-game-features
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-networking-replication
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: critical
+    category: authoring
+
+  - name: ue-ai-navigation
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-state-trees
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-mass-entity
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: authoring
+
+  - name: ue-materials-rendering
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-niagara-effects
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-audio-system
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-sequencer-cinematics
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: authoring
+
+  - name: ue-world-level-streaming
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-procedural-generation
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: authoring
+
+  - name: ue-data-assets-tables
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-serialization-savegames
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-ui-umg-slate
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-input-system
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: ue-editor-tools
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: low
+    category: authoring
+
+  - name: ue-testing-debugging
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: analysis
+
+  - name: ue-packaging
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: utility
+
 agents:
   # =====================================================
   # Division: game (27 agents) --- game dev studio
@@ -4215,6 +4569,30 @@ agents:
 
   - name: ue-replication-specialist
     spec: skills-selftest/agents/engine/unreal/ue-replication-specialist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: ue-gas-specialist
+    spec: skills-selftest/agents/engine/unreal/ue-gas-specialist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: high
+    tier: specialists
+
+  - name: ue-blueprint-specialist
+    spec: skills-selftest/agents/engine/unreal/ue-blueprint-specialist.md
+    division: game
+    last_static: ""
+    last_spec: ""
+    priority: medium
+    tier: specialists
+
+  - name: ue-umg-specialist
+    spec: skills-selftest/agents/engine/unreal/ue-umg-specialist.md
     division: game
     last_static: ""
     last_spec: ""
