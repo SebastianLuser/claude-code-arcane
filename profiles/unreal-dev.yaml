@@ -1,0 +1,96 @@
+name: unreal-dev
+description: "Programador Unreal Engine 5 — C++, Blueprints, GAS, replication, rendering, build y editor MCP"
+type: base
+
+skills:
+  # Foundation — read this first, every other ue-* skill depends on it
+  - ue-project-context
+  # C++ & architecture
+  - ue-cpp-foundations
+  - ue-actor-component-architecture
+  - ue-gameplay-framework
+  - ue-module-build-system
+  - ue-async-threading
+  # Blueprints
+  - ue-blueprints
+  # Gameplay systems
+  - ue-gameplay-abilities
+  - ue-character-movement
+  - ue-animation-system
+  - ue-physics-collision
+  - ue-game-features
+  - ue-networking-replication
+  # AI & behaviour
+  - ue-ai-navigation
+  - ue-state-trees
+  - ue-mass-entity
+  # Rendering & VFX
+  - ue-materials-rendering
+  - ue-niagara-effects
+  # Audio & cinematics
+  - ue-audio-system
+  - ue-sequencer-cinematics
+  # World & data
+  - ue-world-level-streaming
+  - ue-procedural-generation
+  - ue-data-assets-tables
+  - ue-serialization-savegames
+  # UI & input
+  - ue-ui-umg-slate
+  - ue-input-system
+  # Tooling, build & QA
+  - ue-editor-tools
+  - ue-testing-debugging
+  - ue-packaging
+  # Cross-engine, reused from the shared library
+  # Unreal ships its own MCP as engine plugins; install-mcp only enables and connects it.
+  - install-mcp
+  - test-setup
+  - perf-profile
+  - optimize
+  - deps-audit
+  - env-sync
+  - security-audit
+  - release-checklist
+  - patch-notes
+  - onboard
+  - map-systems
+  - game-audit
+  - audit-game
+  - asset-audit
+  - accessibility
+  - balance-check
+  - consistency-check
+  - doc-gdd
+  - playtest-report
+
+rules:
+  universal:
+    []
+  gamedev:
+    - unreal-code
+    - gameplay-code
+    - engine-code
+    - shader-code
+    - network-code
+    - ui-code
+    - ai-code
+
+agents:
+  - game
+
+permissions:
+  allow:
+    - "Bash(*RunUAT*)"
+    - "Bash(*UnrealBuildTool*)"
+    - "Bash(*UnrealEditor-Cmd*)"
+    - "Bash(*GenerateProjectFiles*)"
+    - "Glob(Source/**)"
+    - "Glob(Plugins/**)"
+    - "Grep(Source/**)"
+  deny:
+    - "Write(Content/**)"
+    - "Edit(Content/**)"
+    - "Write(Binaries/**)"
+    - "Write(Intermediate/**)"
+    - "Write(DerivedDataCache/**)"
