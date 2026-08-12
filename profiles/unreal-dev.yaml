@@ -1,10 +1,11 @@
 name: unreal-dev
-description: "Programador Unreal Engine 5 — C++, Blueprints, GAS, replication, rendering, build y editor MCP"
+description: "Programador Unreal Engine 5 — C++, Blueprints, GAS, replication, rendering, naming conventions, build y editor MCP"
 type: base
 
 skills:
   # Foundation — read this first, every other ue-* skill depends on it
   - ue-project-context
+  - ue-naming-conventions
   # C++ & architecture
   - ue-cpp-foundations
   - ue-actor-component-architecture

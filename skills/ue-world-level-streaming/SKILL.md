@@ -491,6 +491,7 @@ if (GI) GI->PlayerScore += 100;
 - `/ue-data-assets-tables` — async asset loading patterns that complement level streaming.
 - `/ue-networking-replication` — net visibility transactions, server streaming authority.
 - `/ue-cpp-foundations` — subsystem patterns, `UGameInstance` lifetime.
+- `/ue-naming-conventions` — asset prefixes and Content folder layout for these assets
 
 ## Reference Files
 

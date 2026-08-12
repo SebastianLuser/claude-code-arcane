@@ -109,6 +109,7 @@ Primary docs: [Blueprints Visual Scripting](https://dev.epicgames.com/documentat
 - `/ue-gameplay-framework` — the framework classes these Blueprints usually derive from
 - `/ue-input-system` — the modern way to feed input events into these graphs
 - `/ue-ai-navigation` — AI decision logic that Blueprints trigger
+- `/ue-naming-conventions` — asset prefixes and Content folder layout for these assets
 
 ---
 

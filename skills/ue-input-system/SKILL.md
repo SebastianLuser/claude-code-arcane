@@ -365,6 +365,7 @@ CommonUI automates input routing through `UCommonActivatableWidget` stacks and e
 - `/ue-gameplay-framework` — PlayerController input lifecycle, `Possess`/`UnPossess`, `SetupPlayerInputComponent`
 - `/ue-ui-umg-slate` — `SetInputMode(FInputModeUIOnly())`/`FInputModeGameAndUI()`, cursor visibility, CommonUI `UCommonActivatableWidget` stacks
 - `/ue-gameplay-abilities` — binding Enhanced Input actions to GAS ability activation via input ID tags
+- `/ue-naming-conventions` — asset prefixes and Content folder layout for these assets
 
 ## Reference Files
 

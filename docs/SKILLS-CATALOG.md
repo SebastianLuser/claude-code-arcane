@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 426 skills disponibles para proyectos consumidores, organizados por division.
+Los 427 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 384: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 385: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -100,13 +100,14 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 
 ---
 
-## Unreal (29 skills)
+## Unreal (30 skills)
 
 Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.md`.
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
 | `/ue-project-context` | Documento de contexto del proyecto: modulos, plataformas, convenciones, standards | `[new \| update \| section]` |
+| `/ue-naming-conventions` | Naming de assets y estructura de Content: Prefix_BaseAssetName_Variant_Suffix, prefijos por tipo, layout de carpetas | `[asset, folder o review]` |
 | `/ue-cpp-foundations` | UPROPERTY, UFUNCTION, UCLASS, TArray, TMap, delegates, FString, garbage collection | `[class, type o question]` |
 | `/ue-actor-component-architecture` | Diseno de actors y components: BeginPlay, Tick, attachment, ownership, child actors | `[actor o component]` |
 | `/ue-gameplay-framework` | GameMode, GameState, PlayerController, PlayerState, Pawn, HUD | `[class o flow]` |

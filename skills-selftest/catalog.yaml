@@ -1,6 +1,6 @@
 version: 6
 last_updated: "2026-08-12"
-# v6: added the unreal stack (29 ue-* skills) and the three ue-* sub-specialists
+# v6: added the unreal stack (30 ue-* skills) and the three ue-* sub-specialists
 #     that unreal-specialist already delegated to. Specs for the agents already
 #     existed under agents/engine/unreal/; the skills have no specs yet.
 # v5: full regeneration from filesystem 321 skills + 86 agents.
@@ -4053,9 +4053,21 @@ skills:
     category: analysis
 
   # =====================================================
-  # Stack: unreal (29 skills --- Unreal Engine 5, see ATTRIBUTION.md)
+  # Stack: unreal (30 skills --- Unreal Engine 5, see ATTRIBUTION.md)
   # =====================================================
   - name: ue-project-context
+    spec: null
+    stack: unreal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: authoring
+
+  - name: ue-naming-conventions
     spec: null
     stack: unreal
     last_static: ""

@@ -499,6 +499,7 @@ PublicDependencyModuleNames.AddRange(new string[]
 - `/ue-actor-component-architecture` — setting up components (UDecalComponent, USceneCaptureComponent2D, UPostProcessComponent)
 - `/ue-niagara-effects` — particle materials use MIDs; parameter passing into Niagara from C++
 - `/ue-project-context` — engine version, target platforms, rendering feature flags
+- `/ue-naming-conventions` — asset prefixes and Content folder layout for these assets
 
 ## Reference Files
 

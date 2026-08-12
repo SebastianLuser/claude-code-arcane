@@ -494,6 +494,7 @@ replication after `InitAbilityActorInfo`. Never apply startup GEs in `BeginPlay`
 - `/ue-animation-system` — Montage ability tasks (PlayMontageAndWait)
 - `/ue-gameplay-framework` — PlayerState ownership pattern, Pawn/Controller lifecycle
 - `/ue-cpp-foundations` — Delegate binding, UPROPERTY macros, TSubclassOf patterns
+- `/ue-naming-conventions` — asset prefixes and Content folder layout for these assets
 
 ---
 

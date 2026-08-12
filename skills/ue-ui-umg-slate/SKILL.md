@@ -403,6 +403,7 @@ PrivateDependencyModuleNames.Add("ModelViewViewModel"); // If using MVVM
 - `/ue-cpp-foundations` — UPROPERTY meta specifiers, TObjectPtr, module setup
 - `/ue-input-system` — Enhanced Input, FInputModeXxx, input contexts
 - `/ue-editor-tools` — Slate for editor detail panels and custom tools
+- `/ue-naming-conventions` — asset prefixes and Content folder layout for these assets
 
 ## Reference Files
 

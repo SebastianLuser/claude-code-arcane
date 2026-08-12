@@ -10,8 +10,8 @@ own content; it records the terms attached to the imported material.
 
 ## The `unreal-dev` profile
 
-The `ue-*` skills installed by the `unreal-dev` profile were brought over from three
-upstream skill collections and adapted to Arcane's skill contract.
+The `ue-*` skills installed by the `unreal-dev` profile were brought over from four
+upstream sources and adapted to Arcane's skill contract.
 
 Note on MCP: Arcane deliberately ships no skill that *operates* an engine's MCP server. For
 Unity that skill comes from the CoplayDev package; for Unreal it comes from the engine and
@@ -194,3 +194,59 @@ only. Their use does not imply any affiliation with or endorsement by those owne
 
 The full Apache License 2.0 text is available at
 <https://www.apache.org/licenses/LICENSE-2.0>.
+
+---
+
+### Allar/ue5-style-guide (Gamemakin UE Style Guide) — MIT
+
+Source: <https://github.com/Allar/ue5-style-guide>
+
+Provides the `ue-naming-conventions` skill and its two reference files.
+
+**On currency:** despite the repository name, the content is UE4-era. The `main` branch says so
+explicitly, and the `v2` branch intended to modernise it is an unfinished draft last touched in
+October 2023. The naming and directory conventions are engine-version-agnostic and remain the
+de-facto community standard, so those were carried over; the dated parts were not.
+
+Changes:
+
+- Sections 00.1 (forbidden characters), 1.1–1.2 (asset naming), and 2.1–2.9 (content directory
+  structure) were adapted into `ue-naming-conventions` plus
+  `references/asset-name-modifiers.md` and `references/content-structure.md`, with Arcane
+  frontmatter, the ask-before-write gate, a PASS/CONCERNS/FAIL checklist and Next Steps added.
+- **Static Mesh defaults to `SM_`, not upstream's `S_`.** Upstream notes many teams use `SM_`;
+  Epic's own tooling, including the asset prefixes its MCP server keys off, assumes `SM_`. The
+  divergence and how to resolve it are called out in the skill.
+- **UE5 asset types the guide predates were added**: Niagara, Control Rig, IK Rig/Retargeter,
+  Enhanced Input, Gameplay Ability System, MetaSounds, State Tree, PCG, Level Instances, Data
+  Layers, Chaos, Material Layers, Composite Data Tables.
+- **Deprecated entries are marked rather than carried silently**: Cascade `PS_`, Matinee,
+  Destructible Mesh. A prefix-collision section was added for cases the guide does not cover
+  (`SM_`, `MT_`, `GC_`, `PM_`).
+- Not carried over: the UE4-specific asset-hygiene sections (built lighting, marketplace
+  submission rules, Paper 2D beyond naming) and the Blueprint graph rules already covered by
+  `/ue-blueprints`.
+
+```
+The MIT License
+
+Copyright (c) 2016 Gamemakin LLC. https://gamemak.in
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+```

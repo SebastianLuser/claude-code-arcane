@@ -41,7 +41,22 @@
 Engine plugins to record if enabled: GameplayAbilities, EnhancedInput, CommonUI, Niagara, PCG,
 MetaSounds, Chaos, OnlineSubsystem, MassEntity, StateTree, ModelContextProtocol + AllToolsets.
 
-## 4. Coding Conventions
+## 4. Coding & Asset Conventions
+
+### Asset naming
+
+- **Pattern**: [`Prefix_BaseAssetName_Variant_Suffix`, or the project's own]
+- **Static Mesh prefix**: [`SM_` or `S_` — the two common conventions disagree; pick one]
+- **Structs / enums authored in Blueprint**: [`F`/`E` like C++, or `F_`/`E_` to distinguish]
+- **Texture packing order**: [e.g. `_RAM` = Roughness/AO/Metallic in RGB]
+- **Prefix collisions resolved**: [e.g. `Submix_` vs `SM_`, `GEOC_` vs `GC_`]
+- **Top-level content folder**: [`Content/MyProject/`]
+- **`Developers/` in use?**: [yes/no]
+
+> Full prefix tables live in `/ue-naming-conventions`. Record here only what this project
+> decided or does differently.
+
+### Code conventions
 
 - **Naming prefixes**: [Epic standard `F`/`U`/`A`/`E`/`I`, plus any exceptions]
 - **Header guards**: [`#pragma once` / traditional]

@@ -502,6 +502,7 @@ particles should not follow a moving actor). The space setting lives on each emi
 - `/ue-actor-component-architecture` — component creation, attachment, lifecycle
 - `/ue-materials-rendering` — particle material setup, dynamic material instances
 - `/ue-cpp-foundations` — UObject lifetime, delegates, UPROPERTY references
+- `/ue-naming-conventions` — asset prefixes and Content folder layout for these assets
 
 ## Reference Files
 

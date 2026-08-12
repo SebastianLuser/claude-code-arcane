@@ -9,6 +9,7 @@ paths:
 - Every UObject reference held by another UObject must be a `TObjectPtr<>` marked `UPROPERTY()` — an unmarked pointer is invisible to the GC and becomes a dangling pointer
 - Never `new`/`delete` a UObject — use `NewObject<>()` or `CreateDefaultSubobject<>()`; use `TSharedPtr`/`TUniquePtr`/`TWeakPtr` only for non-UObject types
 - Follow engine naming: `U` for UObject, `A` for AActor, `F` for structs, `E` for enums, `I` for interfaces, `T` for templates
+- Restrict every identifier to `[A-Za-z0-9_]` — no whitespace, no symbols, no Unicode. This applies to type names, asset references and paths alike; non-ASCII identifiers break cooking, batch tools and source control in ways that surface far from the cause
 - Use `FName` for identifiers and lookups, `FText` for anything shown to a player, `FString` only for manipulation — never build display strings by concatenating `FString` for localized UI
 - Use `TArray`/`TMap`/`TSet`, not STL containers, in any reflected or engine-facing code
 - `Tick` is opt-in, not default: disable it (`PrimaryActorTick.bCanEverTick = false`) and use timers, delegates or events instead. Ticking work multiplied across instances is a measured cost, not an assumption

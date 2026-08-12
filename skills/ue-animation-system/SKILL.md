@@ -489,6 +489,7 @@ PrivateDependencyModuleNames.Add("GameplayAbilities"); // GAS montage tasks
 
 - `/ue-gameplay-abilities` — `PlayMontageAndWait` task, GAS montage replication.
 - `/ue-actor-component-architecture` — SkeletalMeshComponent setup, Character
+- `/ue-naming-conventions` — asset prefixes and Content folder layout for these assets
   hierarchy, component tick ordering.
 - `/ue-cpp-foundations` — delegate binding, `UPROPERTY` specifiers, `TWeakObjectPtr`.
 

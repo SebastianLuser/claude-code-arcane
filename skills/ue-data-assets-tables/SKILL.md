@@ -499,6 +499,7 @@ Adding a column to an existing DataTable struct invalidates serialized row data 
 - `/ue-cpp-foundations` — UPROPERTY specifiers, USTRUCT, UObject lifecycle
 - `/ue-serialization-savegames` — saving and loading soft object references across sessions
 - `/ue-module-build-system` — adding `AssetRegistry`, `Engine` module dependencies to Build.cs
+- `/ue-naming-conventions` — asset prefixes and Content folder layout for these assets
 
 ## Reference Files
 

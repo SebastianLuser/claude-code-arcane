@@ -499,6 +499,7 @@ void UMyAudioManager::OnAppDeactivate()
 - `/ue-actor-component-architecture` — UAudioComponent lifetime, attachment, and replication patterns
 - `/ue-niagara-effects` — synchronizing audio events with particle system callbacks
 - `/ue-cpp-foundations` — delegate binding patterns, UPROPERTY and UFUNCTION macros
+- `/ue-naming-conventions` — asset prefixes and Content folder layout for these assets
 
 ## Reference Files
 

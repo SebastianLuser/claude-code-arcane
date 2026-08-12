@@ -496,6 +496,7 @@ if (Res.IsValid())
 - `/ue-gameplay-framework` — GameMode AI spawning, controller/pawn relationships
 - `/ue-cpp-foundations` — delegates, subsystems, UObject patterns
 - `/ue-gameplay-abilities` — GAS + AI integration
+- `/ue-naming-conventions` — asset prefixes and Content folder layout for these assets
 
 ## Reference Files
 
