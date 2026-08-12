@@ -1,3 +1,25 @@
+# [2.3.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.2.0...v2.3.0) (2026-08-12)
+
+
+### Bug Fixes
+
+* **cli:** stop update and remove from reporting work they never did ([4473090](https://github.com/SebastianLuser/claude-code-arcane/commit/44730906cd0f62e349841bc728a09105498d9825))
+* **docs:** name the published package in every install instruction ([2cc21ec](https://github.com/SebastianLuser/claude-code-arcane/commit/2cc21ecbc0bb949715857d6594426f47fd17be72))
+* **freelance-kickoff:** repair a word split in the acceptance criteria step ([cd5140d](https://github.com/SebastianLuser/claude-code-arcane/commit/cd5140d3d23809d69b14cb1916b2c6b58f8074d5))
+* **freelance-scan:** filter by relevance, GetOnBrd search only ranks ([8f2a088](https://github.com/SebastianLuser/claude-code-arcane/commit/8f2a0887d134f15e0490e106a8248f741a6d5c84))
+* **freelance-scan:** split search terms on commas, not only spaces ([03eaf18](https://github.com/SebastianLuser/claude-code-arcane/commit/03eaf18b9de6d876f9a41c11c940a9df0d9c8d69))
+* **freelance:** source projects from public keyless APIs, not a per-user key ([6cb1c73](https://github.com/SebastianLuser/claude-code-arcane/commit/6cb1c738a55f0ca83501fd38421746d750ff02e4))
+
+
+### Features
+
+* **career:** add /career-registry for traceability across job hunt and freelance ([0dfe091](https://github.com/SebastianLuser/claude-code-arcane/commit/0dfe0914be20c14c8f04ebb482c4ce75e305e873))
+* **freelance-scan:** expand category searches into the words clients write ([6ef3a93](https://github.com/SebastianLuser/claude-code-arcane/commit/6ef3a932d9345e6cbb0d48fe9b81421d6f368c3f))
+* **freelance-scan:** reach the marketplaces through WebSearch, and open the door for API keys ([84a46f3](https://github.com/SebastianLuser/claude-code-arcane/commit/84a46f33b1828387ef2c125d15087835335dbfce))
+* **freelance:** add +freelance profile for Upwork project hunting ([6612336](https://github.com/SebastianLuser/claude-code-arcane/commit/66123369545fcba3853a855eb9ff500c6b462e5e))
+* **freelance:** close the loop from won contract to delivered work ([01dd077](https://github.com/SebastianLuser/claude-code-arcane/commit/01dd0774aed710b4f339dab6f58de97d647d9f87))
+* **job-hunt:** add 4 fresh-context career agents ([97ecfa8](https://github.com/SebastianLuser/claude-code-arcane/commit/97ecfa8139158c5cf159615381d74d0973b81211))
+
 # [2.2.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.1.0...v2.2.0) (2026-08-08)
 
 
