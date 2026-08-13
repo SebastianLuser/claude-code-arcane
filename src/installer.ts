@@ -32,6 +32,11 @@ const SETTINGS_TEMPLATE = {
           },
           {
             type: "command",
+            command: "bash .claude/hooks/detect-unreal.sh",
+            timeout: 10,
+          },
+          {
+            type: "command",
             command: "bash .claude/hooks/detect-gaps.sh",
             timeout: 10,
           },

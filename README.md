@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **397 skills, 106 agents, 16 hooks and 27 rules for Claude Code — selective deploy by profile.**
+> **427 skills, 109 agents, 17 hooks and 28 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
@@ -163,6 +163,7 @@ Once installed, manage the installation from within a Claude Code session:
 |---------|-------|--------|--------|
 | `unity-dev` | Unity programmer — C#, architecture, performance, builds | 25 | game |
 | `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 17 | game |
+| `unreal-dev` | Unreal Engine 5 programmer — C++, Blueprints, GAS, replication, rendering, packaging | 49 | game |
 | `audio` | Game audio — direction, composition, sound design, middleware, VO, QA | 13 | audio |
 | `backend-ts` | Backend TypeScript — Fastify, Prisma, Zod, API design | 33 | engineering |
 | `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 19 | engineering |
@@ -203,6 +204,42 @@ Once installed, manage the installation from within a Claude Code session:
 ### Core (always included)
 
 21 universal skills (commit, create-pr, changelog, check, code-review, context-prime, help, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, + 5 arcane self-management), 15 hooks, 3 base rules, 1 agent dir (quality), and security permissions.
+
+---
+
+## Recommended MCPs
+
+Several profiles ship skills that drive an external tool over MCP. **Arcane does not bundle any
+MCP server** — install the ones your stack needs and Claude Code connects to them.
+
+### Game engines
+
+| Engine | MCP server | Where it comes from | Wire it up with |
+|--------|------------|---------------------|-----------------|
+| **Unreal Engine 5** | `ModelContextProtocol` + `AllToolsets` | **Ships with the engine** — nothing to add to the project, just enable the plugins in the `.uproject` | `/install-mcp unreal` |
+| **Unity** | [CoplayDev — MCP for Unity](https://github.com/CoplayDev/unity-mcp) | UPM package added to `Packages/manifest.json` | `/install-mcp unity` |
+| **Unity** (alternative) | [CoderGamester — mcp-unity](https://github.com/CoderGamester/mcp-unity) | UPM package, opt-in | `/install-mcp unity --secondary` |
+
+Both engines need the editor **open and running** for the server to answer — registering the
+client does not start the server.
+
+For Unreal, Epic also publishes a companion plugin:
+[unreal-engine-skills-for-claude-code-plugin](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin).
+It ships the in-editor skills that operate and extend the MCP (`unreal-mcp`, `create-toolset`,
+`unreal-skill`), which Arcane deliberately does **not** duplicate — see `ATTRIBUTION.md`.
+
+### Other integrations
+
+| MCP server | Used by | Profile |
+|------------|---------|---------|
+| ClickUp | `/clickup` | `+clickup` |
+| Figma | `/figma`, `/figma-to-code`, `/figma-tokens` | `+design` |
+| Atlassian (Confluence) | `/confluence-expert`, `/atlassian-templates` | `+agile` |
+| TestRail + BrowserStack | `/playwright-pro` (ships its own `.mcp.json`) | `+testing` |
+
+`/jira-tickets` is the exception: it talks to the Jira REST API v3 over `curl`, not MCP.
+
+Building your own server? `/mcp-server-builder` scaffolds one.
 
 ---
 
@@ -351,11 +388,11 @@ claude-code-arcane/
 │   ├── manifest.ts            # Read/write arcane-manifest.json
 │   ├── types.ts               # TypeScript interfaces
 │   └── utils.ts               # Cross-platform helpers
-├── skills/                    # 397 skills (flat, one dir per skill)
-├── profiles/                  # 37 profiles (YAML)
-├── agents/                    # 17 dirs, 106 agents (Markdown)
-├── hooks/                     # 16 lifecycle hooks (Bash)
-├── rules/                     # 27 rules (Markdown)
+├── skills/                    # 427 skills (flat, one dir per skill)
+├── profiles/                  # 38 profiles (YAML)
+├── agents/                    # 17 dirs, 109 agents (Markdown)
+├── hooks/                     # 17 lifecycle hooks (Bash)
+├── rules/                     # 28 rules (Markdown)
 ├── templates/                 # Gamedev templates
 ├── docs/                      # Documentation
 └── skills-selftest/           # QA framework
@@ -376,3 +413,14 @@ claude-code-arcane/
 - **OS:** Windows 10/11, macOS, Linux
 - **Node:** 20+
 - **Claude Code:** v1.0+
+
+---
+
+## Attribution
+
+Arcane is MIT licensed (see `LICENSE`). The `ue-*` skills shipped by the `unreal-dev` profile
+are derived from three upstream collections — [quodsoler/unreal-engine-skills](https://github.com/quodsoler/unreal-engine-skills)
+(MIT), [EpicGames/unreal-engine-skills-for-claude-code-plugin](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)
+(MIT), and [gamedev-skills/awesome-gamedev-agent-skills](https://github.com/gamedev-skills/awesome-gamedev-agent-skills)
+(Apache-2.0). See `ATTRIBUTION.md` for the per-skill provenance, the changes made, and the
+required license notices.
