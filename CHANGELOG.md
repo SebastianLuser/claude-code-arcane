@@ -1,3 +1,18 @@
+# [2.4.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.3.0...v2.4.0) (2026-08-13)
+
+
+### Bug Fixes
+
+* **agents:** add the three ue-* sub-specialists unreal-specialist delegates to ([9b52708](https://github.com/SebastianLuser/claude-code-arcane/commit/9b527081c9d7166a96a299c2658a1b0adfb4db58))
+
+
+### Features
+
+* **hooks:** detect Unreal projects on session start ([dfb66ae](https://github.com/SebastianLuser/claude-code-arcane/commit/dfb66ae6b70f40dda226f18027aefe574005a5d8))
+* **install-mcp:** handle Unreal's engine-provided MCP alongside Unity ([96fe518](https://github.com/SebastianLuser/claude-code-arcane/commit/96fe51817015d69d31aebc84088c774c9a55dd0b))
+* **unreal:** add the unreal-dev profile with 29 ue-* skills ([011a3f1](https://github.com/SebastianLuser/claude-code-arcane/commit/011a3f1992f1ac515acf9595cfc568f2824a6d21))
+* **unreal:** add ue-naming-conventions from the Gamemakin style guide ([301880e](https://github.com/SebastianLuser/claude-code-arcane/commit/301880e25c8ebd71987e96387fbf74650d313574))
+
 # [2.3.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.2.0...v2.3.0) (2026-08-12)
 
 
