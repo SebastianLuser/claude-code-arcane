@@ -1,6 +1,6 @@
 name: finance
 description: "Finance — investment analysis, financial modeling, SaaS metrics"
-type: addon
+category: business
 
 skills:
   - business-investment-advisor

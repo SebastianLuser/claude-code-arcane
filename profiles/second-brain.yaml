@@ -1,6 +1,6 @@
 name: second-brain
 description: "Second Brain — vault de Obsidian gestionado con Claude Code: captura sin friccion, reviews diario/semanal/mensual, notas atomicas y hub files (PARA + Zettelkasten), busqueda con ranking, captura web, auditoria de salud del vault y sintaxis nativa de Obsidian (markdown, Bases, Canvas)"
-type: addon
+category: personal
 
 skills:
   - second-brain

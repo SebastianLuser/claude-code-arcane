@@ -1,6 +1,6 @@
 name: core
 description: "Skills universales, hooks y rules base"
-type: base
+category: core
 
 skills:
   - commit

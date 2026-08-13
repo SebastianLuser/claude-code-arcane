@@ -1,6 +1,6 @@
 name: frontend
 description: "Frontend React + Vite + TypeScript"
-type: base
+category: frontend
 
 skills:
   - testing

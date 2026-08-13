@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
-import { listProfiles } from "../profiles.js";
+import { listProfiles, groupByCategory } from "../profiles.js";
 import { readManifest } from "../manifest.js";
 import { resolveContentSource } from "../content-source.js";
 
@@ -14,29 +14,21 @@ export async function listCommand(): Promise<void> {
   const manifest = readManifest(target);
 
   const profiles = listProfiles(profilesDir);
-  const bases = profiles.filter((p) => p.type === "base");
-  const addons = profiles.filter((p) => p.type === "addon");
-
   const installedSkills = new Set(manifest?.installed_skills ?? []);
 
   console.log(chalk.bold("\n=== Available Profiles ===\n"));
-  console.log(chalk.cyan("Base:"));
-  for (const p of bases) {
-    const tag = manifest?.profiles.includes(p.name)
-      ? chalk.green(" [installed]")
-      : "";
-    console.log(
-      `  ${chalk.green(p.name.padEnd(20))} ${p.description}${tag}`,
-    );
-  }
-  console.log(chalk.cyan("\nAddons:"));
-  for (const p of addons) {
-    const tag = manifest?.profiles.includes(p.name)
-      ? chalk.green(" [installed]")
-      : "";
-    console.log(
-      `  ${chalk.green(("+" + p.name).padEnd(20))} ${p.description}${tag}`,
-    );
+  console.log(chalk.dim("Profiles combine freely: install a+b+c\n"));
+  for (const group of groupByCategory(profiles)) {
+    console.log(chalk.cyan(`${group.label}:`));
+    for (const p of group.profiles) {
+      const tag = manifest?.profiles.includes(p.name)
+        ? chalk.green(" [installed]")
+        : "";
+      console.log(
+        `  ${chalk.green(p.name.padEnd(20))} ${p.description}${tag}`,
+      );
+    }
+    console.log();
   }
 
   if (fs.existsSync(skillsDir)) {

@@ -1,6 +1,6 @@
 name: mobile
 description: "Mobile React Native + Expo + TypeScript"
-type: base
+category: mobile
 
 skills:
   - testing

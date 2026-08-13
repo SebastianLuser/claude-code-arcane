@@ -1,6 +1,6 @@
 name: integrations
 description: "Integraciones externas — GitHub Projects, Slack, Postman"
-type: addon
+category: management
 
 skills:
   - gh-projects

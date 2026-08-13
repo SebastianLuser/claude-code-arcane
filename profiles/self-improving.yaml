@@ -1,6 +1,6 @@
 name: self-improving
 description: "Self-improving — auto-memory curation, skill auditing and optimization"
-type: addon
+category: utilities
 
 skills:
   - self-improving-agent

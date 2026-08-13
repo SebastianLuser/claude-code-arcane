@@ -1,6 +1,6 @@
 name: unity-dev
 description: "Programador Unity — C#, arquitectura, performance, builds"
-type: base
+category: gamedev
 
 skills:
   - test-setup

@@ -1,6 +1,6 @@
 name: backend-go
 description: "Backend Go — scaffold, DB, auth, API design, CI"
-type: base
+category: backend
 
 skills:
   - test-setup

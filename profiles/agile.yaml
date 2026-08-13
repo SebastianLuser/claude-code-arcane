@@ -1,6 +1,6 @@
 name: agile
 description: "Gestión de proyecto — sprints, standups, retros, estimates"
-type: addon
+category: management
 
 skills:
   - gh-projects

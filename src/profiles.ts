@@ -14,7 +14,7 @@ export function parseProfile(filePath: string): ProfileDefinition {
   return {
     name: String(raw.name ?? path.basename(filePath, ".yaml")),
     description: String(raw.description ?? ""),
-    type: (raw.type as "base" | "addon") ?? "addon",
+    category: String(raw.category ?? "other"),
     skills: (raw.skills as string[]) ?? [],
     rules: {
       universal: rules.universal ?? [],
@@ -27,6 +27,35 @@ export function parseProfile(filePath: string): ProfileDefinition {
       deny: perms.deny ?? [],
     },
   };
+}
+
+// Display order for profile categories. Categories not listed here (including
+// the "other" fallback for profiles without a category) render last.
+export const CATEGORY_ORDER: ReadonlyArray<{ id: string; label: string }> = [
+  { id: "backend", label: "Backend" },
+  { id: "frontend", label: "Frontend & Design" },
+  { id: "mobile", label: "Mobile" },
+  { id: "gamedev", label: "Gamedev" },
+  { id: "platform", label: "Platform & Quality" },
+  { id: "management", label: "Project Management" },
+  { id: "business", label: "Business" },
+  { id: "personal", label: "Personal" },
+  { id: "utilities", label: "Utilities" },
+];
+
+export function groupByCategory(
+  profiles: ProfileDefinition[],
+): Array<{ id: string; label: string; profiles: ProfileDefinition[] }> {
+  const known = new Set(CATEGORY_ORDER.map((c) => c.id));
+  const groups = CATEGORY_ORDER.map((c) => ({
+    ...c,
+    profiles: profiles.filter((p) => p.category === c.id),
+  }));
+  const rest = profiles.filter((p) => !known.has(p.category));
+  if (rest.length > 0) {
+    groups.push({ id: "other", label: "Other", profiles: rest });
+  }
+  return groups.filter((g) => g.profiles.length > 0);
 }
 
 export function listProfiles(profilesDir: string): ProfileDefinition[] {

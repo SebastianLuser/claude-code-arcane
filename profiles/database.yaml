@@ -1,6 +1,6 @@
 name: database
 description: "Database avanzado — indexing, migrations, seeding, replicas"
-type: addon
+category: platform
 
 skills:
   - database-indexing

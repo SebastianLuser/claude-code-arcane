@@ -1,6 +1,6 @@
 name: clickup
 description: "ClickUp via MCP — tasks, docs, time tracking"
-type: addon
+category: management
 
 skills:
   - clickup

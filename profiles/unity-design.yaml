@@ -1,6 +1,6 @@
 name: unity-design
 description: "Game Designer — GDDs, balance, art bible, playtesting, UX de juego"
-type: base
+category: gamedev
 
 skills:
   - user-persona

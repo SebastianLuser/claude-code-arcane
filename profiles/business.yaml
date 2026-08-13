@@ -1,6 +1,6 @@
 name: business
 description: "Business — contracts, customer success, revenue ops, sales engineering"
-type: addon
+category: business
 
 skills:
   - contract-and-proposal-writer

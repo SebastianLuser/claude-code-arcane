@@ -303,7 +303,7 @@ export class Installer {
         statusline,
         path.join(this.claudeDir, "statusline.sh"),
       );
-      this.log("  [ok] statusline.sh (+statusline addon)");
+      this.log("  [ok] statusline.sh (statusline profile)");
     }
   }
 
