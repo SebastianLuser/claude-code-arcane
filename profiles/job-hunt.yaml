@@ -1,6 +1,6 @@
 name: job-hunt
 description: "Job Hunt — busqueda laboral end-to-end: perfil maestro, CV ATS con verificacion, scraping de ofertas con dedup, pipeline de postulacion, LinkedIn, portfolio, cover letters, outreach a recruiters, scoring de ofertas, gaps/upskill, prep de entrevistas y 4 agentes de contexto fresco (review de CV, hiring manager, mock interview, diagnostico del embudo)"
-type: addon
+category: personal
 
 skills:
   - job-hunt

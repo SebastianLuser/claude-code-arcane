@@ -1,6 +1,6 @@
 name: ecommerce
 description: "E-Commerce — dominio commerce end-to-end agnostico de lenguaje: data model, carrito/checkout, inventario, ordenes, pagos, promociones, shipping/tax, listings, analytics, feeds, storefront y suscripciones"
-type: addon
+category: business
 
 skills:
   # net-new (12)

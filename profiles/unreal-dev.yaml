@@ -1,6 +1,6 @@
 name: unreal-dev
 description: "Programador Unreal Engine 5 — C++, Blueprints, GAS, replication, rendering, naming conventions, build y editor MCP"
-type: base
+category: gamedev
 
 skills:
   # Foundation — read this first, every other ue-* skill depends on it

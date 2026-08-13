@@ -1,6 +1,6 @@
 name: freelance
 description: "Freelance — conseguir proyectos como freelancer y ejecutarlos: scan de fuentes publicas sin API key con dedup y scoring, busqueda en los marketplaces (Upwork, Workana) via WebSearch, inteligencia de tarifas de mercado, screening de riesgo del cliente, perfil de plataforma, propuestas con cotizacion sobre piso de tarifa neto, contratos y SOWs, kickoff con validacion de horas contra lo cotizado, registro de horas y change orders, pipeline con costo de adquisicion y utilizacion, y 4 agentes de contexto fresco (review de propuesta, screener adversarial, discovery call, estratega de pipeline)"
-type: addon
+category: personal
 
 skills:
   # Nucleo del perfil

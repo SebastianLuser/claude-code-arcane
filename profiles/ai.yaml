@@ -1,6 +1,6 @@
 name: ai
 description: "AI & ML — LLM optimization, RAG, computer vision, data engineering, prompt engineering"
-type: addon
+category: platform
 
 skills:
   - llm-cost-optimizer

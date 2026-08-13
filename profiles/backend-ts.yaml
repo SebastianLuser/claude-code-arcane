@@ -1,6 +1,6 @@
 name: backend-ts
 description: "Backend TypeScript — Fastify, Prisma, Zod, API design, CI"
-type: base
+category: backend
 
 skills:
   - testing

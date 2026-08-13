@@ -1,6 +1,6 @@
 name: regulatory
 description: "Regulatory & Compliance — ISO 13485, GDPR, FDA, SOC2, ISMS, QMS, MDR"
-type: addon
+category: business
 
 skills:
   - capa-officer

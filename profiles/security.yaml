@@ -1,6 +1,6 @@
 name: security
 description: "Security — audits, OWASP, secrets, backups"
-type: addon
+category: platform
 
 skills:
   - security-audit

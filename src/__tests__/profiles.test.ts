@@ -2,7 +2,13 @@ import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseProfile, listProfiles, mergeProfiles } from "../profiles.js";
+import {
+  parseProfile,
+  listProfiles,
+  mergeProfiles,
+  groupByCategory,
+  CATEGORY_ORDER,
+} from "../profiles.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROFILES_DIR = path.resolve(__dirname, "..", "..", "profiles");
@@ -12,7 +18,7 @@ describe("parseProfile", () => {
     const profile = parseProfile(path.join(PROFILES_DIR, "core.yaml"));
 
     expect(profile.name).toBe("core");
-    expect(profile.type).toBe("base");
+    expect(profile.category).toBe("core");
     expect(profile.skills).toContain("commit");
     expect(profile.skills).toContain("help");
     expect(profile.rules.universal).toContain("data-files");
@@ -22,11 +28,11 @@ describe("parseProfile", () => {
     expect(profile.permissions.deny.length).toBeGreaterThan(0);
   });
 
-  it("parses an addon profile", () => {
+  it("parses a categorized profile", () => {
     const profile = parseProfile(path.join(PROFILES_DIR, "testing.yaml"));
 
     expect(profile.name).toBe("testing");
-    expect(profile.type).toBe("addon");
+    expect(profile.category).toBe("platform");
     expect(profile.skills).toContain("contract-testing");
     expect(profile.description).toBeTruthy();
   });
@@ -59,6 +65,40 @@ describe("listProfiles", () => {
   it("returns empty array for non-existent directory", () => {
     const profiles = listProfiles("/nonexistent/profiles");
     expect(profiles).toEqual([]);
+  });
+});
+
+describe("groupByCategory", () => {
+  it("every profile in the repo has a known category", () => {
+    // A typo'd or missing category silently lands in "Other" and breaks the
+    // curated grouping — catch it here.
+    const known = new Set(CATEGORY_ORDER.map((c) => c.id));
+    const stray = listProfiles(PROFILES_DIR).filter(
+      (p) => !known.has(p.category),
+    );
+    expect(stray.map((p) => `${p.name}: ${p.category}`)).toEqual([]);
+  });
+
+  it("groups profiles in CATEGORY_ORDER order, skipping empty groups", () => {
+    const groups = groupByCategory(listProfiles(PROFILES_DIR));
+    const ids = groups.map((g) => g.id);
+    const expected = CATEGORY_ORDER.map((c) => c.id).filter((id) =>
+      ids.includes(id),
+    );
+    expect(ids).toEqual(expected);
+    for (const g of groups) {
+      expect(g.profiles.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("collects unknown categories into a trailing Other group", () => {
+    const fake = [
+      { category: "backend" },
+      { category: "does-not-exist" },
+    ] as ReturnType<typeof listProfiles>;
+    const groups = groupByCategory(fake);
+    expect(groups.at(-1)?.id).toBe("other");
+    expect(groups.at(-1)?.profiles.length).toBe(1);
   });
 });
 

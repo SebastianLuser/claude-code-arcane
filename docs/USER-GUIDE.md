@@ -11,8 +11,7 @@ Arcane is a configuration harness for [Claude Code](https://docs.anthropic.com/e
 - [Quick Start](#quick-start)
 - [Commands Reference](#commands-reference)
 - [Profiles](#profiles)
-  - [Base Profiles](#base-profiles)
-  - [Add-on Profiles](#add-on-profiles)
+  - [Profile Catalog](#profile-catalog)
   - [Core (always included)](#core-always-included)
 - [Profile Composition](#profile-composition)
 - [Adding and Removing Skills](#adding-and-removing-skills)
@@ -65,7 +64,8 @@ Your project now has skills, agents, hooks, rules, and permissions tailored for 
 ### `npx claude-code-arcane install` — Install profiles
 
 ```bash
-# Show available profiles (interactive)
+# Interactive picker: detects your stack, pre-selects matching profiles,
+# and lets you add more from a menu grouped by category
 npx claude-code-arcane install
 
 # Install a specific profile
@@ -95,7 +95,7 @@ npx claude-code-arcane add api-design
 # Add multiple skills
 npx claude-code-arcane add security-audit owasp
 
-# Add an entire profile as addon
+# Add an entire profile
 npx claude-code-arcane add +security
 
 # Add multiple profiles
@@ -131,7 +131,7 @@ What gets deleted is read from that profile's definition, so `remove` uses the c
 npx claude-code-arcane list
 ```
 
-Shows all base profiles and add-ons with descriptions, and marks which are currently installed.
+Shows all profiles grouped by category, with descriptions, and marks which are currently installed.
 
 ### `npx claude-code-arcane status` — Check current installation
 
@@ -197,46 +197,21 @@ npx claude-code-arcane global --remove
 
 ## Profiles
 
-### Base Profiles
+### Profile Catalog
 
-Base profiles define the primary stack for a project. Pick one or combine multiple.
+All profiles are equal — pick any combination that fits your work. They are grouped by category for discovery (same grouping the interactive picker and `list` use). The full per-profile detail lives in the [README](../README.md#available-profiles); summary by category:
 
-| Profile | Stack | Skills | Agents |
-|---------|-------|--------|--------|
-| `unity-dev` | Unity programmer — C#, architecture, performance, builds | 25 | game |
-| `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 17 | game |
-| `backend-ts` | Backend TypeScript — Fastify, Prisma, Zod, API design | 33 | engineering |
-| `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 19 | engineering |
-| `frontend` | React + Vite + TypeScript | 14 | engineering |
-| `mobile` | React Native + Expo + TypeScript | 12 | engineering |
-| `flutter` | Flutter + Dart cross-platform | 8 | engineering |
-| `android-native` | Kotlin + Jetpack Compose + Material Design 3 | 8 | engineering |
-| `ios-native` | Swift + UIKit/SwiftUI + Apple HIG | 8 | engineering |
-
-### Add-on Profiles
-
-Add-ons extend a base profile with extra capabilities. Combine them with `+`.
-
-| Add-on | Adds | Skills | Agents |
-|--------|------|--------|--------|
-| `+agile` | Sprints, standups, retros, estimates | 10 | management, product |
-| `+docs` | PDF, PPTX, XLSX, DOCX, architecture decisions | 8 | — |
-| `+testing` | Contract, performance, regression, flakiness | 11 | quality |
-| `+infra` | Terraform, observability, secrets, rollback, K8s | 17 | devops |
-| `+database` | Indexing, migrations, seeding, replicas, optimization | 8 | — |
-| `+security` | Audits, OWASP, secrets, backups | 5 | — |
-| `+design` | Figma, UX review, design system, handoff | 6 | product |
-| `+integrations` | GitHub Projects, Slack, Postman | 3 | integrations |
-| `+clickup` | ClickUp via MCP — tasks, docs, time tracking | 3 | — |
-| `+jira` | Jira via REST API — issues, sprints, boards | 3 | — |
-| `+ai` | LLM cost optimization, RAG, ML, data engineering | 7 | ai |
-| `+business` | Contracts, customer success, revenue ops, sales | 4 | business |
-| `+clevel` | C-suite advisors, board prep, strategic ops | 28 | clevel |
-| `+finance` | Investment analysis, financial modeling, SaaS metrics | 3 | business |
-| `+marketing` | Content, growth, SEO/CRO, strategy, analytics | 44 | marketing |
-| `+regulatory` | ISO 13485, GDPR, FDA, SOC 2, ISMS, QMS, MDR | 13 | regulatory |
-| `+self-improving` | Agent self-improvement and skill extraction | 2 | — |
-| `+statusline` | Claude Code status bar (branch, division, session info) | 0 | — |
+| Category | Profiles |
+|----------|----------|
+| **Backend** | `backend-ts`, `backend-go`, `backend-dotnet`, `backend-nestjs`, `backend-nextjs` |
+| **Frontend & Design** | `frontend`, `design` |
+| **Mobile** | `mobile`, `flutter`, `android-native`, `ios-native` |
+| **Gamedev** | `unity-dev`, `unity-design`, `unreal-dev`, `visual-novel`, `audio` |
+| **Platform & Quality** | `infra`, `database`, `security`, `testing`, `ai` |
+| **Project Management** | `agile`, `jira`, `clickup`, `integrations` |
+| **Business** | `business`, `clevel`, `finance`, `marketing`, `ecommerce`, `regulatory` |
+| **Personal** | `second-brain`, `job-hunt`, `freelance` |
+| **Utilities** | `docs`, `self-improving`, `statusline` |
 
 ### Core (always included)
 
@@ -257,17 +232,16 @@ Every installation automatically loads `core.yaml` first:
 Profiles are combined using the `+` separator. The system deduplicates skills automatically.
 
 ```bash
-npx claude-code-arcane install <base>[+<base>][+<addon>][+<addon>]
+npx claude-code-arcane install <profile>[+<profile>][+<profile>...]
 ```
 
 ### Rules
 
 1. **Always explicit** — there is no "full" or "all" profile. You choose what you need.
 2. **Core is automatic** — the 21 universal skills and all hooks are always included.
-3. **Multiple bases are OK** — combine `unity-dev+unity-design` or `backend-go+frontend`.
-4. **Add-ons extend** — `+agile`, `+clickup`, etc. add capabilities to any base.
-5. **Deduplication is automatic** — overlapping skills across profiles are installed once.
-6. **Replace, not merge** — installing a new profile replaces the previous one entirely (with backup).
+3. **All profiles combine freely** — `unity-dev+unity-design`, `backend-go+frontend`, or `backend-ts+agile+testing`; there is no required "base".
+4. **Deduplication is automatic** — overlapping skills across profiles are installed once.
+5. **Replace, not merge** — installing a new profile replaces the previous one entirely (with backup).
 
 ---
 
@@ -278,7 +252,7 @@ After the initial install, you can incrementally add or remove skills and profil
 ### Add workflow
 
 ```bash
-# Start with a base profile
+# Start with a profile
 npx claude-code-arcane install backend-ts
 
 # Later, add testing and security
@@ -506,7 +480,7 @@ mv ~/projects/my-game/.claude.bak ~/projects/my-game/.claude
 
 ## FAQ
 
-### Can I use multiple base profiles together?
+### Can I combine multiple stack profiles?
 
 Yes. `backend-go+frontend` gives you both Go backend and React frontend skills. Duplicate skills are automatically deduplicated.
 
@@ -541,7 +515,7 @@ Yes, and it's recommended. This way everyone on the team gets the same Claude Co
 
 ### How many tokens does a profile consume?
 
-Each skill adds ~30-100 tokens to the system prompt. A typical base profile (20-30 skills) adds ~1-2k tokens. The core profile adds ~500 tokens. Compare that to loading all 427 skills, which is why selective deploy matters.
+Each skill adds ~30-100 tokens to the system prompt. A typical stack profile (20-30 skills) adds ~1-2k tokens. The core profile adds ~500 tokens. Compare that to loading all 427 skills, which is why selective deploy matters.
 
 ### Why replace instead of merge on install?
 

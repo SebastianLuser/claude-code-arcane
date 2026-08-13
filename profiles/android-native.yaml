@@ -1,6 +1,6 @@
 name: android-native
 description: "Android native — Kotlin + Jetpack Compose + Material Design 3"
-type: base
+category: mobile
 
 skills:
   - testing

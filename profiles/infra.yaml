@@ -1,6 +1,6 @@
 name: infra
 description: "DevOps/Platform/Ops — deploy, observability, secrets, rollback"
-type: addon
+category: platform
 
 skills:
   - observability

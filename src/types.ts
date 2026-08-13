@@ -1,7 +1,7 @@
 export interface ProfileDefinition {
   name: string;
   description: string;
-  type: "base" | "addon";
+  category: string;
   skills: string[];
   rules: {
     universal: string[];

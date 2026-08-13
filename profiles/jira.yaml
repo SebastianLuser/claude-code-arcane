@@ -1,6 +1,6 @@
 name: jira
 description: "Jira via curl/REST API — issues, sprints, boards"
-type: addon
+category: management
 
 skills:
   - jira-tickets

@@ -32,7 +32,7 @@ Each profile is a YAML file that bundles skills, agents, rules, and permissions:
 ```yaml
 # profiles/backend-ts.yaml
 name: backend-ts
-type: base
+category: backend
 skills: [api-design, auth-strategy, jwt-strategy, ...]
 rules:
   universal: [backend-code, api-code, migration-code]
@@ -43,13 +43,15 @@ permissions:
 
 ### 2. Combine profiles with `+`
 
+All profiles are equal — there is no "base vs addon" distinction. Combine as many as you need:
+
 ```bash
 npx claude-code-arcane install backend-ts+agile+testing
-#                  ^^^^^^^^^^  ^^^^^  ^^^^^^^
-#                  base        addon  addon
 ```
 
 The installer merges all profiles, deduplicates skills, and installs only what's needed.
+
+Not sure what to pick? Run `install` with no arguments to get an interactive picker: it detects your stack (Unity, Unreal, Flutter, Go, NestJS, Next.js, React Native, React, .NET, native Android/iOS...) and pre-selects the matching profiles, then lets you add more from a menu grouped by category. Power users can accept the detected suggestion with a single Enter — or skip the menu entirely with the `a+b+c` syntax above.
 
 ### 3. Core is always included
 
@@ -92,7 +94,7 @@ npx claude-code-arcane install unity-dev --dry-run   # Preview without installin
 ```bash
 npx claude-code-arcane add api-design                # Add a single skill
 npx claude-code-arcane add security-audit owasp      # Add multiple skills
-npx claude-code-arcane add +security                 # Add an entire profile as addon
+npx claude-code-arcane add +security                 # Add an entire profile
 npx claude-code-arcane add +database +testing        # Add multiple profiles
 ```
 
@@ -157,49 +159,89 @@ Once installed, manage the installation from within a Claude Code session:
 
 ## Available Profiles
 
-### Base (pick one or combine several)
+All profiles combine freely with `+` — there is no required "base". Grouped by category:
+
+### Backend
+
+| Profile | Stack | Skills | Agents |
+|---------|-------|--------|--------|
+| `backend-ts` | Backend TypeScript — Fastify, Prisma, Zod, API design | 33 | engineering |
+| `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 19 | engineering |
+| `backend-dotnet` | Backend .NET — ASP.NET Core, Vertical Slice/Clean, EF Core, JWT | 25 | engineering |
+| `backend-nestjs` | Backend NestJS — feature modules, DI, Prisma, JWT, microservices | 25 | engineering |
+| `backend-nextjs` | Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK | 22 | engineering |
+
+### Frontend & Design
+
+| Profile | Stack | Skills | Agents |
+|---------|-------|--------|--------|
+| `frontend` | React + Vite + TypeScript | 14 | engineering |
+| `design` | Figma, UX review, design system, handoff | 6 | product |
+
+### Mobile
+
+| Profile | Stack | Skills | Agents |
+|---------|-------|--------|--------|
+| `mobile` | React Native + Expo + TypeScript | 12 | engineering |
+| `flutter` | Flutter + Dart cross-platform | 8 | engineering |
+| `android-native` | Kotlin + Jetpack Compose + Material Design 3 | 8 | engineering |
+| `ios-native` | Swift + UIKit/SwiftUI + Apple HIG | 8 | engineering |
+
+### Gamedev
 
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
 | `unity-dev` | Unity programmer — C#, architecture, performance, builds | 25 | game |
 | `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 17 | game |
 | `unreal-dev` | Unreal Engine 5 programmer — C++, Blueprints, GAS, replication, rendering, packaging | 49 | game |
+| `visual-novel` | Visual novel developer — Ren'Py, narrative, branching | 17 | visualnovel, game |
 | `audio` | Game audio — direction, composition, sound design, middleware, VO, QA | 13 | audio |
-| `backend-ts` | Backend TypeScript — Fastify, Prisma, Zod, API design | 33 | engineering |
-| `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 19 | engineering |
-| `backend-dotnet` | Backend .NET — ASP.NET Core, Vertical Slice/Clean, EF Core, JWT | 25 | engineering |
-| `frontend` | React + Vite + TypeScript | 14 | engineering |
-| `mobile` | React Native + Expo + TypeScript | 12 | engineering |
-| `flutter` | Flutter + Dart cross-platform | 8 | engineering |
-| `android-native` | Kotlin + Jetpack Compose + Material Design 3 | 8 | engineering |
-| `ios-native` | Swift + UIKit/SwiftUI + Apple HIG | 8 | engineering |
 
-### Add-ons (combine with `+`)
+### Platform & Quality
 
-| Add-on | Adds | Skills | Agents |
-|--------|------|--------|--------|
-| `+agile` | Sprints, standups, retros, estimates | 10 | management, product |
-| `+docs` | PDF, PPTX, XLSX, DOCX, architecture decisions | 8 | — |
-| `+testing` | Contract, performance, regression, flakiness | 11 | quality |
-| `+infra` | Terraform, observability, secrets, rollback, K8s | 17 | devops |
-| `+database` | Indexing, migrations, seeding, replicas, optimization | 8 | — |
-| `+security` | Audits, OWASP, secrets, backups | 5 | — |
-| `+design` | Figma, UX review, design system, handoff | 6 | product |
-| `+integrations` | GitHub Projects, Slack, Postman | 3 | integrations |
-| `+clickup` | ClickUp via MCP — tasks, docs, time tracking | 3 | — |
-| `+jira` | Jira via REST API — issues, sprints, boards | 3 | — |
-| `+ai` | LLM cost optimization, RAG, ML, data engineering | 7 | ai |
-| `+business` | Contracts, customer success, revenue ops, sales | 4 | business |
-| `+clevel` | C-suite advisors, board prep, strategic ops | 28 | clevel |
-| `+finance` | Investment analysis, financial modeling, SaaS metrics | 3 | business |
-| `+marketing` | Content, growth, SEO/CRO, strategy, analytics | 44 | marketing |
-| `+regulatory` | ISO 13485, GDPR, FDA, SOC 2, ISMS, QMS, MDR | 13 | regulatory |
-| `+job-hunt` | Job search end-to-end — master profile, ATS CV with verification, job scraping with dedup, LinkedIn, portfolio, cover letters, outreach, interview prep, registry/CSV traceability, fresh-context review agents | 17 | career |
-| `+freelance` | Freelance projects — keyless public-source scanning with dedup, market rate intel, client risk screening, proposals priced above your net floor rate, contracts/SOWs, registry/CSV traceability, kickoff scope validation, delivery and change orders, acquisition-cost pipeline | 15 | freelance |
-| `+ecommerce` | Commerce end-to-end agnóstico de lenguaje — data model, checkout, inventario, órdenes, pagos, promociones, shipping/tax, listings, analytics, feeds, storefront, suscripciones | 12 | ecommerce |
-| `+second-brain` | Second brain en Obsidian — captura sin fricción, reviews diario/semanal/mensual, notas atómicas y hub files (PARA + Zettelkasten), búsqueda con ranking, caché de contexto entre sesiones, auditoría de salud del vault, sintaxis nativa (markdown, Bases, Canvas) | 14 | — |
-| `+self-improving` | Agent self-improvement and skill extraction | 2 | — |
-| `+statusline` | Claude Code status bar (branch, division, session info) | 0 | — |
+| Profile | Adds | Skills | Agents |
+|---------|------|--------|--------|
+| `infra` | Terraform, observability, secrets, rollback, K8s | 17 | devops |
+| `database` | Indexing, migrations, seeding, replicas, optimization | 8 | — |
+| `security` | Audits, OWASP, secrets, backups | 5 | — |
+| `testing` | Contract, performance, regression, flakiness | 11 | quality |
+| `ai` | LLM cost optimization, RAG, ML, data engineering | 7 | ai |
+
+### Project Management
+
+| Profile | Adds | Skills | Agents |
+|---------|------|--------|--------|
+| `agile` | Sprints, standups, retros, estimates | 10 | management, product |
+| `jira` | Jira via REST API — issues, sprints, boards | 3 | — |
+| `clickup` | ClickUp via MCP — tasks, docs, time tracking | 3 | — |
+| `integrations` | GitHub Projects, Slack, Postman | 3 | integrations |
+
+### Business
+
+| Profile | Adds | Skills | Agents |
+|---------|------|--------|--------|
+| `business` | Contracts, customer success, revenue ops, sales | 4 | business |
+| `clevel` | C-suite advisors, board prep, strategic ops | 28 | clevel |
+| `finance` | Investment analysis, financial modeling, SaaS metrics | 3 | business |
+| `marketing` | Content, growth, SEO/CRO, strategy, analytics | 44 | marketing |
+| `ecommerce` | Commerce end-to-end agnóstico de lenguaje — data model, checkout, inventario, órdenes, pagos, promociones, shipping/tax, listings, analytics, feeds, storefront, suscripciones | 12 | ecommerce |
+| `regulatory` | ISO 13485, GDPR, FDA, SOC 2, ISMS, QMS, MDR | 13 | regulatory |
+
+### Personal
+
+| Profile | Adds | Skills | Agents |
+|---------|------|--------|--------|
+| `second-brain` | Second brain en Obsidian — captura sin fricción, reviews diario/semanal/mensual, notas atómicas y hub files (PARA + Zettelkasten), búsqueda con ranking, caché de contexto entre sesiones, auditoría de salud del vault, sintaxis nativa (markdown, Bases, Canvas) | 14 | — |
+| `job-hunt` | Job search end-to-end — master profile, ATS CV with verification, job scraping with dedup, LinkedIn, portfolio, cover letters, outreach, interview prep, registry/CSV traceability, fresh-context review agents | 17 | career |
+| `freelance` | Freelance projects — keyless public-source scanning with dedup, market rate intel, client risk screening, proposals priced above your net floor rate, contracts/SOWs, registry/CSV traceability, kickoff scope validation, delivery and change orders, acquisition-cost pipeline | 15 | freelance |
+
+### Utilities
+
+| Profile | Adds | Skills | Agents |
+|---------|------|--------|--------|
+| `docs` | PDF, PPTX, XLSX, DOCX, architecture decisions | 8 | — |
+| `self-improving` | Agent self-improvement and skill extraction | 2 | — |
+| `statusline` | Claude Code status bar (branch, division, session info) | 0 | — |
 
 ### Core (always included)
 
@@ -285,7 +327,7 @@ npx claude-code-arcane install backend-ts+agile+statusline
 ## Add/Remove Workflow
 
 ```bash
-# Start with a base profile
+# Start with a profile
 npx claude-code-arcane install backend-ts
 
 # Later, add testing and security

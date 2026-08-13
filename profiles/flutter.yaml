@@ -1,6 +1,6 @@
 name: flutter
 description: "Flutter + Dart cross-platform development"
-type: base
+category: mobile
 
 skills:
   - testing

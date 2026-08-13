@@ -1,6 +1,6 @@
 name: ios-native
 description: "iOS native — Swift + UIKit/SwiftUI + Apple HIG"
-type: base
+category: mobile
 
 skills:
   - testing

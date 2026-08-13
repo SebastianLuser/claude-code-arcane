@@ -1,6 +1,6 @@
 name: docs
 description: "Document generation — PDF, PPTX, XLSX, DOCX, architecture"
-type: addon
+category: utilities
 
 skills:
   - pdf-generator

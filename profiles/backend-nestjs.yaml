@@ -1,6 +1,6 @@
 name: backend-nestjs
 description: "Backend NestJS — feature modules, DI, guards/pipes, Prisma, JWT, testing, microservicios. Best practices priorizadas por impacto."
-type: base
+category: backend
 
 skills:
   # NestJS-specific (nuevas)

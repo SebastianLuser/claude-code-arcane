@@ -15,24 +15,23 @@ List all profiles and skills available in the Arcane source repo, so you can see
 1. Read `.claude/arcane-manifest.json` to find the `source` path (Arcane repo location)
 2. If no manifest, ask the user for the Arcane repo path
 3. From the source repo, list:
-   - **Base profiles** from `profiles/*.yaml` where type = base
-   - **Addon profiles** from `profiles/*.yaml` where type = addon
+   - **Profiles** from `profiles/*.yaml`, grouped by their `category` field (backend, frontend, mobile, gamedev, platform, management, business, personal, utilities)
    - **All skills** in `skills/` directory, grouped by category from SKILL.md frontmatter
 4. Mark skills that are already installed in the current project with `[installed]`
+5. Close with a one-line summary (`COMPLETE — N profiles, M skills, K installed`)
 
 ## Output format
 
 ```
 === Available Profiles ===
-Base:
+Backend:
   backend-ts     Backend TypeScript — Fastify, Prisma, Zod
   backend-go     Backend Go — scaffold, DB, auth, API design
-  frontend       Frontend React + Vite + TypeScript
   ...
 
-Addons:
-  +agile         Gestión de proyecto — sprints, standups
-  +testing       Testing avanzado — contract, performance
+Project Management:
+  agile          Gestión de proyecto — sprints, standups
+  jira           Jira via curl/REST API — issues, sprints, boards
   ...
 
 === Skills by Category ===
@@ -43,4 +42,10 @@ workflow (12):
 testing (4):
   skill-test [installed], check [installed], ...
 ...
+
+COMPLETE — 37 profiles, 427 skills, 52 installed
 ```
+
+## Next steps
+
+If the user wants something from the list, suggest `/arcane-add <skill>` or `/arcane-add +<profile>` to install it.

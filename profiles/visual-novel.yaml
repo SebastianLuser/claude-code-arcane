@@ -1,6 +1,6 @@
 name: visual-novel
 description: "Visual Novel Developer — Ren"
-type: base
+category: gamedev
 
 skills:
   - vn-renpy-setup

@@ -1,6 +1,6 @@
 name: backend-dotnet
 description: "Backend .NET — ASP.NET Core (.NET 10), Vertical Slice / Clean Architecture, EF Core + PostgreSQL, JWT + Identity, testing. Best practices priorizadas por impacto."
-type: base
+category: backend
 
 skills:
   # .NET-specific (nuevas)

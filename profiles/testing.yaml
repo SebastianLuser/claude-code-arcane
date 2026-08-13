@@ -1,6 +1,6 @@
 name: testing
 description: "Testing avanzado — contract, performance, regression, flakiness"
-type: addon
+category: platform
 
 skills:
   - contract-testing

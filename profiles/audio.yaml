@@ -1,6 +1,6 @@
 name: audio
 description: "Game Audio — direccion sonora, composicion, sound design, middleware, VO y QA"
-type: base
+category: gamedev
 
 skills:
   - audio-bible

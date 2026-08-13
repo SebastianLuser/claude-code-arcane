@@ -64,7 +64,7 @@ for (const file of files) {
   const name = path.basename(file, ".profile");
   const content = fs.readFileSync(path.join(PROFILES_DIR, file), "utf-8");
 
-  const profileType = parseHeader(content, "Type") || "addon";
+  const category = parseHeader(content, "Category") || "other";
   const description = parseDescription(content) || parseHeader(content, "Description") || "";
 
   const skills = parseBashArray(content, "SKILLS");
@@ -85,7 +85,7 @@ for (const file of files) {
   let yaml = "";
   yaml += `name: ${name}\n`;
   yaml += `description: "${description.replace(/"/g, '\\"')}"\n`;
-  yaml += `type: ${profileType}\n`;
+  yaml += `category: ${category}\n`;
 
   yaml += `\nskills:\n`;
   if (uniqueSkills.length === 0) {
