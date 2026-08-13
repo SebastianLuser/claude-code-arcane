@@ -1,3 +1,11 @@
+# [2.5.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.4.0...v2.5.0) (2026-08-13)
+
+
+### Features
+
+* **install:** interactive wizard with stack auto-detection ([ae0b9b8](https://github.com/SebastianLuser/claude-code-arcane/commit/ae0b9b8a67146faa22258f30c9d33bf7e4fffbf9))
+* **profiles:** replace base/addon split with thematic categories ([5bcddab](https://github.com/SebastianLuser/claude-code-arcane/commit/5bcddab2e9081e6d6505ac00b6345dd3b57eed4a))
+
 # [2.4.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.3.0...v2.4.0) (2026-08-13)
 
 
