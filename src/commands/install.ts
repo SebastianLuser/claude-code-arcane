@@ -1,6 +1,8 @@
 import path from "node:path";
 import chalk from "chalk";
-import { listProfiles, mergeProfiles } from "../profiles.js";
+import { listProfiles, mergeProfiles, groupByCategory } from "../profiles.js";
+import { detectStack } from "../detect.js";
+import { runInstallWizard } from "../wizard.js";
 import { Installer } from "../installer.js";
 import { getPackageRoot } from "../utils.js";
 import {
@@ -32,24 +34,27 @@ export async function installCommand(
 
   if (!profileExpr) {
     const profiles = listProfiles(profilesDir);
-    const bases = profiles.filter((p) => p.type === "base");
-    const addons = profiles.filter((p) => p.type === "addon");
 
-    console.log(chalk.bold("\nAvailable profiles:\n"));
-    console.log(chalk.cyan("  Base (pick one):"));
-    for (const p of bases) {
-      console.log(`    ${chalk.green(p.name.padEnd(20))} ${p.description}`);
-    }
-    console.log(chalk.cyan("\n  Addons (combine with +):"));
-    for (const p of addons) {
+    if (process.stdin.isTTY && process.stdout.isTTY) {
+      const selected = await runInstallWizard(profiles, detectStack(target));
+      if (!selected) return;
+      profileExpr = selected.join("+");
+    } else {
+      console.log(chalk.bold("\nAvailable profiles (combine freely with +):\n"));
+      for (const group of groupByCategory(profiles)) {
+        console.log(chalk.cyan(`  ${group.label}:`));
+        for (const p of group.profiles) {
+          console.log(
+            `    ${chalk.green(p.name.padEnd(20))} ${p.description}`,
+          );
+        }
+        console.log();
+      }
       console.log(
-        `    ${chalk.green(("+" + p.name).padEnd(20))} ${p.description}`,
+        chalk.dim("  Usage: npx claude-code-arcane install backend-ts+agile+testing\n"),
       );
+      return;
     }
-    console.log(
-      chalk.dim("\n  Usage: npx claude-code-arcane install backend-ts+agile+testing\n"),
-    );
-    return;
   }
 
   const profileNames = profileExpr.split("+").filter(Boolean);

@@ -25,7 +25,7 @@ program
 program
   .command("install [profile]")
   .description(
-    "Install a profile (e.g., backend-ts+agile). Without args, shows available profiles.",
+    "Install profiles (e.g., backend-ts+agile). Without args, opens an interactive picker.",
   )
   .option("-t, --target <dir>", "Target project directory", process.cwd())
   .option("-n, --dry-run", "Show what would be installed without changing files")
