@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.5.0...v2.6.0) (2026-08-18)
+
+
+### Features
+
+* **profiles:** add meshy profile for 3D asset production ([c550bf2](https://github.com/SebastianLuser/claude-code-arcane/commit/c550bf24aff143ce0284457b4c70c9b356935069))
+
 # [2.5.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.4.0...v2.5.0) (2026-08-13)
 
 
