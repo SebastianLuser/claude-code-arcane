@@ -193,7 +193,7 @@ All profiles combine freely with `+` — there is no required "base". Grouped by
 |---------|-------|--------|--------|
 | `unity-dev` | Unity programmer — C#, architecture, performance, builds | 25 | game |
 | `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 17 | game |
-| `meshy` | 3D asset production with Meshy AI — credit-gated generation, single master + cheap derivatives, printability | 5 | game |
+| `meshy` | 3D asset production with Meshy AI — credit-gated generation, single master + cheap derivatives, printability | 5 | — |
 | `unreal-dev` | Unreal Engine 5 programmer — C++, Blueprints, GAS, replication, rendering, packaging | 49 | game |
 | `visual-novel` | Visual novel developer — Ren'Py, narrative, branching | 17 | visualnovel, game |
 | `audio` | Game audio — direction, composition, sound design, middleware, VO, QA | 13 | audio |
