@@ -1,3 +1,10 @@
+## [2.6.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.6.0...v2.6.1) (2026-08-18)
+
+
+### Bug Fixes
+
+* **update-check:** compare like with like, and check the CLI version too ([fe734ce](https://github.com/SebastianLuser/claude-code-arcane/commit/fe734ce9bff14ec37e22d75fc38e64ba7b17f098))
+
 # [2.6.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.5.0...v2.6.0) (2026-08-18)
 
 
