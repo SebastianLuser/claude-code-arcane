@@ -2,7 +2,7 @@
 
 ## What is Arcane?
 
-Arcane is a configuration harness for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). It provides a curated library of **427 skills**, **109 agents**, **17 hooks**, and **28 rules** that you selectively deploy into any project. Instead of shipping everything to every project (wasting tokens and degrading performance), you pick a **profile** that matches your stack and only the relevant tools get installed.
+Arcane is a configuration harness for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). It provides a curated library of **431 skills**, **109 agents**, **17 hooks**, and **29 rules** that you selectively deploy into any project. Instead of shipping everything to every project (wasting tokens and degrading performance), you pick a **profile** that matches your stack and only the relevant tools get installed.
 
 ## Table of Contents
 
@@ -206,7 +206,7 @@ All profiles are equal — pick any combination that fits your work. They are gr
 | **Backend** | `backend-ts`, `backend-go`, `backend-dotnet`, `backend-nestjs`, `backend-nextjs` |
 | **Frontend & Design** | `frontend`, `design` |
 | **Mobile** | `mobile`, `flutter`, `android-native`, `ios-native` |
-| **Gamedev** | `unity-dev`, `unity-design`, `unreal-dev`, `visual-novel`, `audio` |
+| **Gamedev** | `unity-dev`, `unity-design`, `unreal-dev`, `visual-novel`, `audio`, `meshy` |
 | **Platform & Quality** | `infra`, `database`, `security`, `testing`, `ai` |
 | **Project Management** | `agile`, `jira`, `clickup`, `integrations` |
 | **Business** | `business`, `clevel`, `finance`, `marketing`, `ecommerce`, `regulatory` |
@@ -515,7 +515,7 @@ Yes, and it's recommended. This way everyone on the team gets the same Claude Co
 
 ### How many tokens does a profile consume?
 
-Each skill adds ~30-100 tokens to the system prompt. A typical stack profile (20-30 skills) adds ~1-2k tokens. The core profile adds ~500 tokens. Compare that to loading all 427 skills, which is why selective deploy matters.
+Each skill adds ~30-100 tokens to the system prompt. A typical stack profile (20-30 skills) adds ~1-2k tokens. The core profile adds ~500 tokens. Compare that to loading all 431 skills, which is why selective deploy matters.
 
 ### Why replace instead of merge on install?
 
