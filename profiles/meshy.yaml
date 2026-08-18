@@ -19,7 +19,10 @@ rules:
     []
 
 agents:
-  - game
+  # Meshy siempre se instala junto a unity-* o unreal-dev, que ya traen
+  # agents/game/. Declararlo aca solo copiaria los 30 agentes de gamedev
+  # a quien instale +meshy suelto para impresion 3D.
+  []
 
 permissions:
   allow:
