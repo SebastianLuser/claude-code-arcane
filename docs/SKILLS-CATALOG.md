@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 427 skills disponibles para proyectos consumidores, organizados por division.
+Los 431 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 385: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 389: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -72,7 +72,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 
 ---
 
-## Gamedev (21 skills)
+## Gamedev (25 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -85,6 +85,10 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/doc-gdd` | Genera Game Design Document completo | `[game-name]` |
 | `/doc-pas` | Documentacion PAS (Problem-Analysis-Solution) | `[problem o decision title]` |
 | `/install-mcp` | Conecta Claude con el MCP del engine: Unity (package UPM) o Unreal (plugins del engine) | `[unity\|unreal] [--secondary] [path]` |
+| `/meshy-derive` | Deriva targets (FBX, GLB web, blend, STL) desde el master GLB | `<slug> [game\|web\|edit\|print\|all]` |
+| `/meshy-generate` | Genera asset 3D con Meshy: preview -> refine, con gate de creditos | `<slug> [--from-image <path>] [--spec <path>]` |
+| `/meshy-print` | Prepara asset para impresion 3D: analyze -> repair -> resize -> STL/3MF | `<slug> [--height-mm <n>] [--multicolor]` |
+| `/meshy-setup` | Conecta Claude Code con Meshy AI: API key, MCP oficial, estructura de assets | `[--verify]` |
 | `/map-systems` | Descompone concepto en sistemas, mapea dependencias | `[next \| system-name] [--review]` |
 | `/playtest-report` | Genera o analiza reporte de playtest | `[new\|analyze path] [--review]` |
 | `/scaffold-unity` | Scaffoldea proyecto Unity estilo Project_T | `[project-name]` |

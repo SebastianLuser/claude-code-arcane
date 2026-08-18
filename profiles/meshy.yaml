@@ -1,0 +1,39 @@
+name: meshy
+description: "Produccion de assets 3D con Meshy AI — generacion con gate de creditos, master unico + derivados baratos (FBX game, GLB web, blend, STL print) y printability"
+category: gamedev
+
+skills:
+  # Setup: cablea el MCP oficial de Meshy, no lo vendoriza
+  - meshy-setup
+  # Pipeline
+  - meshy-generate
+  - meshy-derive
+  - meshy-print
+  # Reusada de la libreria compartida
+  - asset-audit
+
+rules:
+  universal:
+    - meshy-assets
+  gamedev:
+    []
+
+agents:
+  - game
+
+permissions:
+  allow:
+    # Derivados locales — cero creditos
+    - "Bash(npx --yes @gltf-transform/cli*)"
+    - "Bash(npx @gltf-transform/cli*)"
+    - "Bash(npx gltf-transform*)"
+    # Verificacion de LFS antes de commitear binarios
+    - "Bash(git check-attr*)"
+    - "Bash(git lfs version)"
+    - "Glob(assets/3d/**)"
+    - "Grep(assets/3d/**)"
+  deny:
+    # El master es inmutable: entra solo via mcp__meshy__download_model,
+    # ninguna herramienta de edicion lo toca despues
+    - "Write(assets/3d/*/master.glb)"
+    - "Edit(assets/3d/*/master.glb)"

@@ -2153,6 +2153,42 @@ skills:
     last_spec_result: ""
     last_category: ""
     last_category_result: ""
+  - name: meshy-derive
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+  - name: meshy-generate
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+  - name: meshy-print
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+  - name: meshy-setup
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
     priority: medium
     category: authoring
 
