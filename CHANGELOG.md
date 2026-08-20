@@ -1,3 +1,10 @@
+## [2.7.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.7.0...v2.7.1) (2026-08-20)
+
+
+### Bug Fixes
+
+* **self-update:** npm self-update never ran on Windows ([13cd7cb](https://github.com/SebastianLuser/claude-code-arcane/commit/13cd7cbfdc9dc38f3c5e0fee3526b8806ebac272))
+
 # [2.7.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.6.1...v2.7.0) (2026-08-20)
 
 
