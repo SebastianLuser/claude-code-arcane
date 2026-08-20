@@ -114,6 +114,8 @@ Nota lateral útil: Lemon.io y Proxify (marketplaces con screening) publican sus
 
 Modelo invertido: no te postulás a trabajos, publicás gigs y el comprador te encuentra. Los "Buyer Requests" ya no existen como los conocía la gente. No hay cola que scorear.
 
+Queda fuera del scanner por eso, no porque no valga la pena: el lado de la oferta lo cubre `/fiverr-gig` (título, packages, gallery, FAQ y precio derivado del piso).
+
 ### Toptal, Gun.io, Braintrust, Arc, Lemon.io
 
 Verticales con screening previo. No hay board público consumible; el acceso se gana pasando su proceso de admisión. Fuera del alcance de un scanner.

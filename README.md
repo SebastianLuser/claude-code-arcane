@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **436 skills, 109 agents, 17 hooks and 30 rules for Claude Code — selective deploy by profile.**
+> **437 skills, 109 agents, 17 hooks and 30 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
@@ -238,7 +238,7 @@ All profiles combine freely with `+` — there is no required "base". Grouped by
 |---------|------|--------|--------|
 | `second-brain` | Second brain en Obsidian — captura sin fricción, reviews diario/semanal/mensual, notas atómicas y hub files (PARA + Zettelkasten), búsqueda con ranking, caché de contexto entre sesiones, auditoría de salud del vault, sintaxis nativa (markdown, Bases, Canvas) | 14 | — |
 | `job-hunt` | Job search end-to-end — master profile, ATS CV with verification, job scraping with dedup, LinkedIn, portfolio, cover letters, outreach, interview prep, registry/CSV traceability, fresh-context review agents | 17 | career |
-| `freelance` | Freelance projects — keyless public-source scanning with dedup, market rate intel, client risk screening, proposals priced above your net floor rate, contracts/SOWs, registry/CSV traceability, kickoff scope validation, delivery and change orders, acquisition-cost pipeline | 15 | freelance |
+| `freelance` | Freelance projects — keyless public-source scanning with dedup, market rate intel, client risk screening, proposals priced above your net floor rate, contracts/SOWs, registry/CSV traceability, kickoff scope validation, delivery and change orders, acquisition-cost pipeline, Fiverr gigs | 16 | freelance |
 
 ### Utilities
 
@@ -435,7 +435,7 @@ claude-code-arcane/
 │   ├── manifest.ts            # Read/write arcane-manifest.json
 │   ├── types.ts               # TypeScript interfaces
 │   └── utils.ts               # Cross-platform helpers
-├── skills/                    # 436 skills (flat, one dir per skill)
+├── skills/                    # 437 skills (flat, one dir per skill)
 ├── profiles/                  # 38 profiles (YAML)
 ├── agents/                    # 17 dirs, 109 agents (Markdown)
 ├── hooks/                     # 17 lifecycle hooks (Bash)
