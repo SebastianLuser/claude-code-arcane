@@ -92,11 +92,14 @@ npx claude-code-arcane install unity-dev --dry-run   # Preview without installin
 ### Add skills or profiles to an existing installation
 
 ```bash
+npx claude-code-arcane add                           # Interactive picker (same wizard as install)
 npx claude-code-arcane add api-design                # Add a single skill
 npx claude-code-arcane add security-audit owasp      # Add multiple skills
 npx claude-code-arcane add +security                 # Add an entire profile
 npx claude-code-arcane add +database +testing        # Add multiple profiles
 ```
+
+Without arguments, `add` opens the same interactive picker as `install`, restricted to what is **not** installed yet: profiles grouped by category, or individual skills searchable by name. Outside a TTY it prints the addable catalog instead.
 
 ### Remove skills, profiles, or agents
 
