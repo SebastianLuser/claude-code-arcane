@@ -59,16 +59,13 @@ export async function selfUpdateNpm(
     return { updated: false, skipped: true, reason: "dry-run", fromVersion };
   }
 
-  const npm = process.platform === "win32" ? "npm.cmd" : "npm";
-  const result = spawnSync(
-    npm,
-    ["install", "-g", `${PACKAGE_NAME}@latest`],
-    {
-      stdio: opts.quiet ? "ignore" : "inherit",
-      encoding: "utf-8",
-      timeout: 120_000,
-    },
-  );
+  const npm = npmInstallCommand();
+  const result = spawnSync(npm.command, npm.args, {
+    stdio: opts.quiet ? "ignore" : "inherit",
+    encoding: "utf-8",
+    timeout: 120_000,
+    shell: npm.shell,
+  });
 
   if (result.status === 0) {
     return { updated: true, skipped: false, fromVersion };
@@ -78,6 +75,28 @@ export async function selfUpdateNpm(
     ? result.error.message
     : `npm exited with code ${result.status ?? "unknown"}`;
   return { updated: false, skipped: false, reason, fromVersion };
+}
+
+/**
+ * How to invoke npm for the self-update.
+ *
+ * On Windows `npm` is a `.cmd` shim, and since the fix for CVE-2024-27980 Node
+ * refuses to spawn one without a shell: `spawnSync` fails outright with EINVAL,
+ * which is why self-update silently never worked there. `shell: true` is the
+ * way through, and the whole invocation goes in the command string because
+ * passing an args array alongside `shell: true` is deprecated (DEP0190). The
+ * args are fixed literals, so routing them via cmd.exe adds no injection
+ * surface. Everywhere else npm is a real executable and needs no shell.
+ */
+export function npmInstallCommand(
+  platform: NodeJS.Platform = process.platform,
+): { command: string; args: string[]; shell: boolean } {
+  const args = ["install", "-g", `${PACKAGE_NAME}@latest`];
+
+  if (platform === "win32") {
+    return { command: ["npm", ...args].join(" "), args: [], shell: true };
+  }
+  return { command: "npm", args, shell: false };
 }
 
 function safeVersion(): string | undefined {
