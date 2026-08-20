@@ -1,3 +1,12 @@
+# [2.7.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.6.1...v2.7.0) (2026-08-20)
+
+
+### Features
+
+* **add:** open an interactive picker when add gets no arguments ([d87523e](https://github.com/SebastianLuser/claude-code-arcane/commit/d87523e0701741ef917792fe8954bf5a93e30095))
+* **blender:** add the blender profile — modeling, materials, animation, validated export ([a79ca03](https://github.com/SebastianLuser/claude-code-arcane/commit/a79ca035245f3c5556204d89ff866debbe6a189d))
+* gate 3D exports on commit, hand off Meshy to Blender, add fiverr-gig ([b01fbf8](https://github.com/SebastianLuser/claude-code-arcane/commit/b01fbf88274a19c7b3d64ad27cd6e021f684760c))
+
 ## [2.6.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.6.0...v2.6.1) (2026-08-18)
 
 
