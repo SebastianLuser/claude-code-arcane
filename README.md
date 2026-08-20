@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **431 skills, 109 agents, 17 hooks and 29 rules for Claude Code — selective deploy by profile.**
+> **437 skills, 109 agents, 17 hooks and 30 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
@@ -92,11 +92,14 @@ npx claude-code-arcane install unity-dev --dry-run   # Preview without installin
 ### Add skills or profiles to an existing installation
 
 ```bash
+npx claude-code-arcane add                           # Interactive picker (same wizard as install)
 npx claude-code-arcane add api-design                # Add a single skill
 npx claude-code-arcane add security-audit owasp      # Add multiple skills
 npx claude-code-arcane add +security                 # Add an entire profile
 npx claude-code-arcane add +database +testing        # Add multiple profiles
 ```
+
+Without arguments, `add` opens the same interactive picker as `install`, restricted to what is **not** installed yet: profiles grouped by category, or individual skills searchable by name. Outside a TTY it prints the addable catalog instead.
 
 ### Remove skills, profiles, or agents
 
@@ -194,6 +197,7 @@ All profiles combine freely with `+` — there is no required "base". Grouped by
 | `unity-dev` | Unity programmer — C#, architecture, performance, builds | 25 | game |
 | `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 17 | game |
 | `meshy` | 3D asset production with Meshy AI — credit-gated generation, single master + cheap derivatives, printability | 5 | — |
+| `blender` | Blender for game assets — tri budget and topology, materials with bake and color space, baked animation, validated export | 6 | — |
 | `unreal-dev` | Unreal Engine 5 programmer — C++, Blueprints, GAS, replication, rendering, packaging | 49 | game |
 | `visual-novel` | Visual novel developer — Ren'Py, narrative, branching | 17 | visualnovel, game |
 | `audio` | Game audio — direction, composition, sound design, middleware, VO, QA | 13 | audio |
@@ -234,7 +238,7 @@ All profiles combine freely with `+` — there is no required "base". Grouped by
 |---------|------|--------|--------|
 | `second-brain` | Second brain en Obsidian — captura sin fricción, reviews diario/semanal/mensual, notas atómicas y hub files (PARA + Zettelkasten), búsqueda con ranking, caché de contexto entre sesiones, auditoría de salud del vault, sintaxis nativa (markdown, Bases, Canvas) | 14 | — |
 | `job-hunt` | Job search end-to-end — master profile, ATS CV with verification, job scraping with dedup, LinkedIn, portfolio, cover letters, outreach, interview prep, registry/CSV traceability, fresh-context review agents | 17 | career |
-| `freelance` | Freelance projects — keyless public-source scanning with dedup, market rate intel, client risk screening, proposals priced above your net floor rate, contracts/SOWs, registry/CSV traceability, kickoff scope validation, delivery and change orders, acquisition-cost pipeline | 15 | freelance |
+| `freelance` | Freelance projects — keyless public-source scanning with dedup, market rate intel, client risk screening, proposals priced above your net floor rate, contracts/SOWs, registry/CSV traceability, kickoff scope validation, delivery and change orders, acquisition-cost pipeline, Fiverr gigs | 16 | freelance |
 
 ### Utilities
 
@@ -431,11 +435,11 @@ claude-code-arcane/
 │   ├── manifest.ts            # Read/write arcane-manifest.json
 │   ├── types.ts               # TypeScript interfaces
 │   └── utils.ts               # Cross-platform helpers
-├── skills/                    # 431 skills (flat, one dir per skill)
+├── skills/                    # 437 skills (flat, one dir per skill)
 ├── profiles/                  # 38 profiles (YAML)
 ├── agents/                    # 17 dirs, 109 agents (Markdown)
 ├── hooks/                     # 17 lifecycle hooks (Bash)
-├── rules/                     # 29 rules (Markdown)
+├── rules/                     # 30 rules (Markdown)
 ├── templates/                 # Gamedev templates
 ├── docs/                      # Documentation
 └── skills-selftest/           # QA framework

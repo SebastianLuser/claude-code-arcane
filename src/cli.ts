@@ -40,11 +40,11 @@ program
   });
 
 program
-  .command("add <items...>")
+  .command("add [items...]")
   .description(
-    "Add skills or profiles. Use +profileName for profiles, skillName for individual skills.",
+    "Add skills or profiles. Use +profileName for profiles, skillName for individual skills. Without args, opens an interactive picker.",
   )
-  .action(async (items: string[]) => {
+  .action(async (items: string[] = []) => {
     await addCommand(items);
   });
 

@@ -1,0 +1,49 @@
+name: blender
+description: "Blender para assets de juego — modelado con presupuesto de tris y topologia, materiales/texturas con bake y color space, rigging y animacion bakeada, y export validado a Unity/UE5/web con validador de glTF stdlib"
+category: gamedev
+
+skills:
+  # Foundation — el resto de los blender-* depende de este
+  - blender-context
+  # Los tres ejes de produccion
+  - blender-modeling
+  - blender-materials
+  - blender-animation
+  # Salida: cierra el pipeline hacia el engine
+  - blender-export
+  # Reusada de la libreria compartida
+  - asset-audit
+
+rules:
+  universal:
+    - blender-pipeline
+  gamedev:
+    []
+
+agents:
+  # Blender se instala junto a unity-*, unreal-dev o meshy, que ya traen
+  # agents/game/. Declararlo aca copiaria los 30 agentes de gamedev a quien
+  # instale +blender suelto para trabajar assets sin engine.
+  []
+
+permissions:
+  allow:
+    # Blender headless es el camino por default del perfil
+    - "Bash(blender --version)"
+    - "Bash(blender --background*)"
+    - "Bash(blender -b *)"
+    # Validador de export — stdlib, no instala nada
+    - "Bash(python *validate_gltf.py*)"
+    - "Bash(python3 *validate_gltf.py*)"
+    # Compresion de glb para web, on-demand via npx
+    - "Bash(npx --yes @gltf-transform/cli*)"
+    - "Bash(npx @gltf-transform/cli*)"
+    # Verificacion de LFS antes de commitear binarios
+    - "Bash(git check-attr*)"
+    - "Bash(git lfs version)"
+    - "Glob(assets/3d/**)"
+    - "Grep(assets/3d/**)"
+  deny:
+    # Los backups de Blender no entran al repo
+    - "Write(**/*.blend1)"
+    - "Write(**/*.blend2)"

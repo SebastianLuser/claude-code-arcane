@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 431 skills disponibles para proyectos consumidores, organizados por division.
+Los 437 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 389: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 395: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -101,6 +101,21 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/team-release` | Orquesta equipo de release | `[version o next]` |
 | `/team-ui` | Orquesta equipo UI end-to-end | `[UI feature]` |
 | `/unity-game-architecture` | Arquitectura Unity 6 moderna | `[system o module]` |
+
+---
+
+## Blender (5 skills)
+
+Instalables con el perfil `blender`. El MCP de Blender es **recomendado, no se instala desde este
+repo**: la comparacion entre el de la comunidad y el oficial esta en `/blender-context`.
+
+| Skill | Descripcion | Uso |
+|-------|-------------|-----|
+| `/blender-context` | Foundation: version, MCP recomendado, headless, unidades y ejes, estructura de assets | `[--verify]` |
+| `/blender-modeling` | Presupuesto de tris, topologia, stack de modifiers, booleans, LODs, bmesh | `[slug] [--budget <tris>] [--lod]` |
+| `/blender-materials` | Principled BSDF, UVs y lightmap UV1, bake, color space, normal maps OpenGL vs DirectX | `[slug] [--bake] [--target unity\|ue5\|web]` |
+| `/blender-animation` | Armature y naming, weights, bake de constraints, NLA como clips, root motion, retarget Mixamo | `[slug] [--retarget <fbx>] [--bake]` |
+| `/blender-export` | Formato y settings, export headless, y validacion automatica del glTF resultante | `[slug] [--target unity\|ue5\|web] [--budget-tris <n>]` |
 
 ---
 
@@ -561,7 +576,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 ---
 
-## Freelance (8 skills)
+## Freelance (9 skills)
 
 Perfil `+freelance`. Reutiliza ademas 6 skills ya catalogados: `/master-profile`, `/portfolio-site`, `/cold-outreach`, `/job-outcome` (Job Hunt), `/contract-and-proposal-writer` (Business) y `/estimate` (Agile). Comparte el career workspace con `+job-hunt`: una propuesta es una aplicacion con `tipo: freelance`.
 
@@ -575,6 +590,7 @@ Quien consiga una API key propia la activa poniendo una variable de entorno: `ke
 |-------|-------------|-----|
 | `/freelance-hunt` | Orquestador: extiende el career workspace con contratos y ledger de Connects, define piso de tarifa y capacidad, y rutea | `[setup\|status\|next]` |
 | `/freelance-profile` | Perfil de la plataforma: titulo de nicho, primeros 250 caracteres del overview, portfolio items, specialized profiles y tarifa derivada del piso | `[audit\|title\|overview\|portfolio\|rate]` |
+| `/fiverr-gig` | Lado de la oferta en Fiverr: titulo I will y tags, los tres packages separados por alcance, gallery, FAQ y precio sobre el piso neto | `[audit\|title\|packages\|gallery\|faq\|price]` |
 | `/freelance-scan` | Scorea ofertas (fit tecnico + viabilidad economica + probabilidad de que la oferta exista) con dedup entre corridas. `search` sobre fuentes publicas sin API key (GetOnBrd, Himalayas), `web` llega a los marketplaces via WebSearch + triage de ruido SEO, `market` para tarifas, `keys` para las fuentes con credencial propia | `[search\|web\|market\|keys\|sources\|post pegado]` |
 | `/client-screen` | Riesgo del cliente antes de gastar Connects: payment verificado, hire rate, brecha presupuesto/alcance, red flags. Registra el descarte tambien | `[job-url\|nota\|post]` |
 | `/freelance-proposal` | Propuesta que sobrevive la vista de lista (2 primeras lineas) + bid sobre el piso neto: fijo vs hora, buffer de riesgo, comision | `[nota\|job-url]` |

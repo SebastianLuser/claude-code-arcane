@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
 import { listProfiles, groupByCategory } from "../profiles.js";
+import { listSkills } from "../skills-catalog.js";
 import { readManifest } from "../manifest.js";
 import { resolveContentSource } from "../content-source.js";
 
@@ -32,16 +33,7 @@ export async function listCommand(): Promise<void> {
   }
 
   if (fs.existsSync(skillsDir)) {
-    const allSkills = fs
-      .readdirSync(skillsDir, { withFileTypes: true })
-      .filter(
-        (d) =>
-          d.isDirectory() &&
-          !d.name.startsWith("_") &&
-          fs.existsSync(path.join(skillsDir, d.name, "SKILL.md")),
-      )
-      .map((d) => d.name)
-      .sort();
+    const allSkills = listSkills(skillsDir).map((s) => s.name);
 
     console.log(chalk.bold(`\n=== Skills (${allSkills.length}) ===\n`));
     const cols = 3;

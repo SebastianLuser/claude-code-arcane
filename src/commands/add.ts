@@ -1,7 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
-import { parseProfile } from "../profiles.js";
+import { parseProfile, listProfiles, groupByCategory } from "../profiles.js";
+import { listSkills } from "../skills-catalog.js";
+import { runAddWizard } from "../wizard.js";
 import { readManifest, writeManifest } from "../manifest.js";
 import { copyDirSync, ensureDir, readJsonSync, writeJsonSync } from "../utils.js";
 import { resolveContentSource } from "../content-source.js";
@@ -9,7 +11,7 @@ import type { MergedProfile } from "../types.js";
 
 type AddResult = "added" | "skipped" | "not-found";
 
-export async function addCommand(items: string[]): Promise<void> {
+export async function addCommand(items: string[] = []): Promise<void> {
   const target = process.cwd();
   const source = await resolveContentSource({ quiet: true });
   const root = await source.getContentRoot();
@@ -22,6 +24,21 @@ export async function addCommand(items: string[]): Promise<void> {
       ),
     );
     process.exit(1);
+  }
+
+  if (items.length === 0) {
+    if (!(process.stdin.isTTY && process.stdout.isTTY)) {
+      printCatalog(root, manifest.profiles, manifest.installed_skills);
+      return;
+    }
+    const selected = await runAddWizard({
+      profiles: listProfiles(path.join(root, "profiles")),
+      skills: listSkills(path.join(root, "skills")),
+      installedProfiles: manifest.profiles,
+      installedSkills: manifest.installed_skills,
+    });
+    if (!selected) return;
+    items = selected;
   }
 
   const claudeDir = path.join(target, ".claude");
@@ -129,8 +146,14 @@ export async function addCommand(items: string[]): Promise<void> {
   };
   writeManifest(target, merged, manifest.profile_command, root);
 
-  const totalAdded = added.length + addedRules.length + addedAgents.length + (statuslineAdded ? 1 : 0);
-  console.log(chalk.bold(`\nAdded ${totalAdded} items:`));
+  const totalAdded =
+    added.length + addedRules.length + addedAgents.length + (statuslineAdded ? 1 : 0);
+
+  console.log(
+    chalk.bold(
+      totalAdded === 0 ? "\nNothing added." : `\nAdded ${totalAdded} items:`,
+    ),
+  );
   for (const s of added) console.log(chalk.green(`  [ok] skill: ${s}`));
   for (const r of addedRules) console.log(chalk.green(`  [ok] rule: ${r}`));
   for (const a of addedAgents) console.log(chalk.green(`  [ok] agents: ${a}/`));
@@ -139,6 +162,52 @@ export async function addCommand(items: string[]): Promise<void> {
     console.log(chalk.dim(`  [skip] ${s} (already installed)`));
   for (const s of notFound)
     console.log(chalk.red(`  [miss] ${s} (not found in source)`));
+  if (totalAdded > 0) {
+    console.log(
+      chalk.dim(
+        `\n  Now installed: ${manifest.installed_skills.length} skills, ${manifest.installed_rules.length} rules, ${manifest.installed_agents.length} agents.`,
+      ),
+    );
+  }
+}
+
+/**
+ * Fallback for `add` with no arguments outside a TTY (CI, piped output):
+ * the wizard needs a terminal, so print what could be added instead.
+ */
+function printCatalog(
+  root: string,
+  installedProfiles: string[],
+  installedSkills: string[],
+): void {
+  const profiles = listProfiles(path.join(root, "profiles")).filter(
+    (pr) => !installedProfiles.includes(pr.name),
+  );
+  const skills = listSkills(path.join(root, "skills")).filter(
+    (sk) => !installedSkills.includes(sk.name),
+  );
+
+  if (profiles.length === 0 && skills.length === 0) {
+    console.log(chalk.dim("\nEverything in the catalog is already installed.\n"));
+    return;
+  }
+
+  console.log(chalk.bold("\nProfiles you can add:\n"));
+  for (const group of groupByCategory(profiles)) {
+    console.log(chalk.cyan(`  ${group.label}:`));
+    for (const pr of group.profiles) {
+      console.log(
+        `    ${chalk.green(`+${pr.name}`.padEnd(20))} ${pr.description}`,
+      );
+    }
+    console.log();
+  }
+  console.log(
+    chalk.dim(`  Plus ${skills.length} individual skills — see \`arcane list\`.`),
+  );
+  console.log(
+    chalk.dim("  Usage: npx claude-code-arcane add +testing docker-setup\n"),
+  );
 }
 
 function addSkill(

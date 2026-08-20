@@ -110,6 +110,9 @@ Reportar: targets generados, creditos gastados reales (delta de `check_balance`)
 
 - `/asset-audit` para validar naming, budgets y formatos contra los standards
 - `/meshy-print <slug>` si ademas va a impresion (tiene su propio flujo de printability)
+- `/blender-context` si el derivado `.blend` necesita limpieza: la topologia que sale de Meshy no
+  esta pensada para deformar, y las UVs suelen necesitar rehacerse. Ahi siguen `/blender-modeling`,
+  `/blender-materials` y `/blender-export` con su validador de glTF
 
 ---
 
