@@ -1,11 +1,11 @@
 ---
 name: coo-advisor
 description: "COO Advisor. Liderazgo operativo para empresas en crecimiento. Process design, OKR execution, operational cadence, scaling playbooks, y coordinación cross-functional. Usar para eficiencia operativa y escalado."
-tools: Read, Glob, Grep, Write, Edit, WebSearch
+tools: Read, Glob, Grep, WebSearch
 model: opus
 maxTurns: 30
 memory: user
-disallowedTools: Bash
+disallowedTools: Bash, Write, Edit
 skills: [coo-advisor, company-os, change-management, strategic-alignment, org-health-diagnostic]
 ---
 

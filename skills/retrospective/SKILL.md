@@ -5,9 +5,11 @@ category: "agile"
 argument-hint: "[sprint-N|milestone-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write
-context: |
-  !git log --oneline --since="2 weeks ago" 2>/dev/null
 ---
+## Commits de las ultimas 2 semanas
+
+!`git log --oneline --since="2 weeks ago" 2>/dev/null || echo "sin commits"`
+
 ## Phase 1: Parse & Check Existing
 
 Determine scope: sprint (`sprint-N`) or milestone. Check for existing retro (`production/retrospectives/retro-[slug]-*.md` or `production/sprints/sprint-[N]-retrospective.md`). If found → offer update existing or start fresh.

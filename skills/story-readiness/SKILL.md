@@ -46,7 +46,7 @@ Resolve: `--review` arg → `production/review-mode.txt` → default `lean`.
 
 ## Phase 8: Director Gate
 
-Solo/lean → skip. Full → spawn `qa-lead` gate QL-STORY-READY with story title, ACs, dependency status, verdict. ADEQUATE → cleared. GAPS/INADEQUATE → surface to user.
+Solo/lean → skip. Full → spawn `qa-director` gate QL-STORY-READY with story title, ACs, dependency status, verdict. ADEQUATE → cleared. GAPS/INADEQUATE → surface to user.
 
 ## Protocol
 

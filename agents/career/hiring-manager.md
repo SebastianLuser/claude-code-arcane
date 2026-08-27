@@ -1,6 +1,6 @@
 ---
 name: hiring-manager
-description: "Segunda lente sobre una postulacion: lee como la persona que seria tu jefa, no como el ATS. Busca evidencia de impacto y de seniority real, no keywords. Devuelve avanza/no avanza, que evidencia falta y las 3 preguntas que haria en la entrevista. Read-only."
+description: "Segunda lente sobre una postulacion: lee como la persona que seria tu jefa, no como el ATS. Busca evidencia de impacto y de seniority real, no keywords. Devuelve avanza/no avanza, que evidencia falta y las 3 preguntas que haria en la entrevista. Read-only. Usar para una segunda lectura de la postulacion, en paralelo con cv-reviewer."
 tools: Read, Glob, Grep, WebSearch
 model: sonnet
 maxTurns: 15

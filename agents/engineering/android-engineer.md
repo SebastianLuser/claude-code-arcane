@@ -2,6 +2,7 @@
 name: android-engineer
 description: "Android Engineer. Specialist in Kotlin + Jetpack Compose, Material Design 3, coroutines, Gradle build system. Usar para Android native development, UI implementation, build troubleshooting."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project

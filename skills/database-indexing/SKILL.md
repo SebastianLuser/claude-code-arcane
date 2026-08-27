@@ -2,10 +2,11 @@
 name: database-indexing
 description: "PostgreSQL indexing: B-tree, GIN, GiST, composite, partial, covering, CONCURRENTLY, bloat detection."
 category: "database"
-stack: PostgreSQL 15+
 argument-hint: "[analyze|create|drop] [table]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
+metadata:
+  stack: PostgreSQL 15+
 ---
 # Database Indexing (PostgreSQL)
 

@@ -2,6 +2,7 @@
 name: chief-product-officer
 description: "Chief Product Officer. Máxima autoridad de producto. Define visión, strategy, market positioning. Resuelve conflictos product vs. engineering vs. design. Usar para decisiones estratégicas, roadmap quarterly, priorización cross-stream."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: opus
 maxTurns: 30
 memory: user

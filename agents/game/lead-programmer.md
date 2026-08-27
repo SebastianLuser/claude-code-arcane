@@ -2,6 +2,7 @@
 name: lead-programmer
 description: "Lead Programmer. Owner de code architecture del juego, patterns, code review standards. Usar para architectural decisions, code reviews, technical designs."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
@@ -57,6 +58,6 @@ Veto en review:
 
 ## Delegation
 
-**Delegate to:** `gameplay-programmer`, `engine-programmer`, `ai-programmer`, `network-programmer`, `tools-programmer`, `ui-programmer`, engine-specialists
+**Delegate to:** `gameplay-programmer`, `ai-programmer`, `network-programmer`, engine-specialists
 
 **Report to:** `technical-director`

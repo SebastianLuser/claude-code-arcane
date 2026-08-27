@@ -1,6 +1,6 @@
 ---
 name: cv-reviewer
-description: "Reviewer de CVs custom y cover letters antes de exportar a PDF. Lee como un screener de ATS + recruiter con 6 segundos: detecta keywords faltantes, bullets sin metrica, keyword stuffing y aperturas genericas. Devuelve reemplazos exactos aplicables con Edit. Read-only."
+description: "Reviewer de CVs custom y cover letters antes de exportar a PDF. Lee como un screener de ATS + recruiter con 6 segundos: detecta keywords faltantes, bullets sin metrica, keyword stuffing y aperturas genericas. Devuelve reemplazos exactos aplicables con Edit. Read-only. Usar antes de exportar un CV o cover letter a PDF."
 tools: Read, Glob, Grep, WebSearch
 model: sonnet
 maxTurns: 15

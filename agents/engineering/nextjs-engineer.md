@@ -1,7 +1,8 @@
 ---
 name: nextjs-engineer
-description: "Specialist en Next.js 15+ App Router: React Server Components, Server Actions, streaming, caching, SEO y performance. Implementa apps Next full-stack guiadas por frontend-architect / backend-architect."
+description: "Specialist en Next.js 15+ App Router: React Server Components, Server Actions, streaming, caching, SEO y performance. Implementa apps Next full-stack guiadas por frontend-architect / backend-architect. Usar para implementar rutas, Server Components y Server Actions en Next.js."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project

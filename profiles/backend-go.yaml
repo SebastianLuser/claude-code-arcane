@@ -46,6 +46,7 @@ rules:
 
 agents:
   - engineering
+  - quality/security-architect
 
 permissions:
   allow:

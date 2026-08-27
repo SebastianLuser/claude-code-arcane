@@ -2,6 +2,7 @@
 name: growth-lead
 description: "Growth Lead. Owner de paid ads, email sequences, launch strategy, referral programs, y churn prevention. Usar para campañas de adquisición, lifecycle emails, product launches, y growth loops."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

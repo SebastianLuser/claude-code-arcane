@@ -1,11 +1,11 @@
 ---
 name: cfo-advisor
 description: "CFO Advisor. Liderazgo financiero para startups y empresas en crecimiento. Modelado financiero, unit economics, fundraising strategy, cash management, y reportes al board. Usar para proyecciones, análisis de runway, y decisiones financieras."
-tools: Read, Glob, Grep, Write, Edit, WebSearch
+tools: Read, Glob, Grep, WebSearch
 model: opus
 maxTurns: 30
 memory: user
-disallowedTools: Bash
+disallowedTools: Bash, Write, Edit
 skills: [cfo-advisor, financial-analyst, saas-metrics-coach, business-investment-advisor]
 ---
 

@@ -79,6 +79,39 @@ describe("documented counts match the filesystem", () => {
     expect(stated(guide, "USER-GUIDE token note", /loading all (\d+) skills/)).toBe(real.skills);
   });
 
+  it("agent-hierarchy roster header", () => {
+    // This file claimed a 143-agent roster while 109 shipped. The 34 that were
+    // never written are where 62 dead delegation references came from.
+    const hierarchy = read("docs/agent-hierarchy.md");
+    expect(stated(hierarchy, "agent-hierarchy roster", /## Roster Completo \((\d+) Agentes\)/)).toBe(
+      real.agents,
+    );
+  });
+
+  it("directory-structure agents tree", () => {
+    // It claimed 80 agents in 12 divisions, omitting five whole divisions.
+    const tree = read("docs/directory-structure.md");
+    expect(stated(tree, "directory-structure total", /agents\/\s+# (\d+) agent definitions/)).toBe(
+      real.agents,
+    );
+
+    const divisions = fs
+      .readdirSync(path.join(repoRoot, "agents"), { withFileTypes: true })
+      .filter((e) => e.isDirectory())
+      .map((e) => e.name)
+      .sort();
+
+    const listed = [...tree.matchAll(/^│\s+[├└]── (\S+)\/\s+# (\d+) agents?$/gm)].map((m) => ({
+      division: m[1],
+      count: Number(m[2]),
+    }));
+    expect(listed.map((l) => l.division)).toEqual(divisions);
+
+    for (const { division, count } of listed) {
+      expect(count, `division ${division}`).toBe(countFiles(path.join("agents", division), ".md"));
+    }
+  });
+
   it("SKILLS-CATALOG intro", () => {
     const catalog = read("docs/SKILLS-CATALOG.md");
     expect(stated(catalog, "catalog intro", /Los (\d+) skills disponibles/)).toBe(real.skills);

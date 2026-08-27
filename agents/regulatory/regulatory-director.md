@@ -2,6 +2,7 @@
 name: regulatory-director
 description: "Regulatory Director. Lead de regulatory affairs y market access. Owner de estrategia regulatoria FDA, EU MDR, CE marking, y expansión global de dispositivos médicos. Usar para submissions, pathway decisions, y market access strategy."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: opus
 maxTurns: 30
 memory: project

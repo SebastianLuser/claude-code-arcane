@@ -2,6 +2,7 @@
 name: sales-engineer
 description: "Sales Engineer. Especialista en pre-sales técnico, RFP/RFI, competitive analysis, y proof-of-concept. Usar para respuestas a licitaciones, matrices competitivas, demos técnicas, y propuestas."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

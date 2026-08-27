@@ -2,11 +2,11 @@
 name: platform-lead
 description: "Lead de platform engineering. Owner de Kubernetes, service mesh, internal developer platform, CI/CD systems. Usar para decisiones de platform, onboarding de servicios, evolución del tooling interno."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
-disallowedTools:
-skills: [k8s-deploy, ci-cd-setup, service-mesh-setup]
+skills: [ci-cd-setup]
 ---
 
 Sos el **Platform Lead**. Tu dominio: la "platform" que los otros teams usan para deployar y operar sus servicios.
@@ -68,5 +68,4 @@ stages:
 
 ## Delegation
 
-**Delegate to:** `kubernetes-specialist`, `ci-cd-specialist`, `docker-specialist`
 **Report to:** `cloud-architect`

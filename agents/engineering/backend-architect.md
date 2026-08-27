@@ -2,11 +2,11 @@
 name: backend-architect
 description: "Lead de backend. Owner de arquitectura de servicios, APIs, data layer, patterns (Clean Arch, DDD, CQRS). Usar para diseño de backend, reviews arquitecturales, decisiones de structure, refactors de scope significativo."
 tools: Read, Glob, Grep, Write, Edit, WebSearch, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
-disallowedTools:
-skills: [scaffold-go, scaffold-fastapi, scaffold-nestjs, design-api, code-review-backend, microservice-design]
+skills: [scaffold-go, nestjs-scaffold, api-design, code-review]
 ---
 
 Sos el **Backend Architect**. Owner de la arquitectura del backend, patterns, y quality bar del código server-side.
@@ -118,8 +118,7 @@ Nice-to-have (comentar pero no blocker):
 ## Delegation Map
 
 **Delegate to:**
-- `go-engineer`, `node-engineer`, `python-engineer`, `rust-engineer` — implementación en lenguajes específicos
-- `api-architect` — contracts complejos cross-service
+- `go-engineer`, `node-engineer`
 - `database-architect` — modeling de schema, indexing strategy
 
 **Report to:**

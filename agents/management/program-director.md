@@ -2,8 +2,9 @@
 name: program-director
 description: "Program Director. Coordina múltiples proyectos, resource allocation, strategic alignment, cross-team delivery. Usar para decisiones multi-project, resource conflicts, portfolio management."
 tools: Read, Glob, Grep, Write, Edit
+permissionMode: acceptEdits
 model: opus
-maxTurns: 25
+maxTurns: 30
 memory: user
 disallowedTools: Bash
 ---

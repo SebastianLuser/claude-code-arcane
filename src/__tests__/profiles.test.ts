@@ -157,20 +157,33 @@ describe("mergeProfiles", () => {
 describe("profile agent dirs resolve to real agents", () => {
   const AGENTS_DIR = path.resolve(__dirname, "..", "..", "agents");
 
-  it("every agents: entry points to a directory with at least one agent", () => {
+  it("every agents: entry resolves, as a division or a single agent", () => {
     const broken: string[] = [];
 
     for (const entry of fs.readdirSync(PROFILES_DIR)) {
       if (!entry.endsWith(".yaml")) continue;
       const profile = parseProfile(path.join(PROFILES_DIR, entry));
-      for (const dir of profile.agents) {
-        const full = path.join(AGENTS_DIR, dir);
+      for (const raw of profile.agents) {
+        // `game` installs the whole division, `game/qa-lead` just that agent.
+        const [division, agent] = raw.includes("/")
+          ? [raw.slice(0, raw.indexOf("/")), raw.slice(raw.indexOf("/") + 1)]
+          : [raw, undefined];
+
+        if (agent) {
+          const file = path.join(AGENTS_DIR, division, `${agent}.md`);
+          if (!fs.existsSync(file)) {
+            broken.push(`${entry}: agents/${division}/${agent}.md does not exist`);
+          }
+          continue;
+        }
+
+        const full = path.join(AGENTS_DIR, division);
         if (!fs.existsSync(full)) {
-          broken.push(`${entry}: agents/${dir}/ does not exist`);
+          broken.push(`${entry}: agents/${division}/ does not exist`);
           continue;
         }
         const agents = fs.readdirSync(full).filter((f) => f.endsWith(".md"));
-        if (agents.length === 0) broken.push(`${entry}: agents/${dir}/ has no .md files`);
+        if (agents.length === 0) broken.push(`${entry}: agents/${division}/ has no .md files`);
       }
     }
 

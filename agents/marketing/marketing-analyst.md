@@ -2,6 +2,7 @@
 name: marketing-analyst
 description: "Marketing Analyst. Especialista en analytics, campaign performance, attribution, A/B testing, y marketing psychology. Usar para setup de tracking, análisis de campañas, diseño de experimentos, y reporting."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

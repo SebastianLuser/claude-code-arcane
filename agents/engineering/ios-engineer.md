@@ -2,6 +2,7 @@
 name: ios-engineer
 description: "iOS Engineer. Specialist in Swift, UIKit, SwiftUI, Apple HIG compliance, accessibility. Usar para iOS native development, UI implementation, App Store preparation."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project

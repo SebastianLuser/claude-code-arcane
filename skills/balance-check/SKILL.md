@@ -5,6 +5,7 @@ category: "gamedev"
 argument-hint: "[system-name|path-to-data-file]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep
+context: fork
 agent: economy-designer
 ---
 

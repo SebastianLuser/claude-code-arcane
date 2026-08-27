@@ -23,6 +23,7 @@ skills:
   - consistency-check
   - doc-gdd
   - playtest-report
+  - architecture-review
 
 rules:
   universal:
@@ -37,6 +38,7 @@ rules:
 
 agents:
   - game
+  - quality/security-architect
 
 permissions:
   allow:

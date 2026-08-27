@@ -2,13 +2,13 @@
 name: slo-sli
 description: "Define and operate SLIs, SLOs, and error budgets for Educabot services (Go + TS, GCP, Prometheus). Trigger: SLO, SLI, error budget, burn rate."
 category: "observability"
-stack: Go, TypeScript, Prometheus, GCP Cloud Monitoring, Terraform, Alertmanager
-context: Educabot EdTech LatAm — servicios con peak en horario escolar AM
 argument-hint: "[service-name] [--availability|--latency|--error]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 metadata:
   category: reliability
+  stack: Go, TypeScript, Prometheus, GCP Cloud Monitoring, Terraform, Alertmanager
+  business-context: Educabot EdTech LatAm — servicios con peak en horario escolar AM
   sources:
     - Google SRE Handbook (sre.google/sre-book)
     - Google SRE Workbook — Implementing SLOs

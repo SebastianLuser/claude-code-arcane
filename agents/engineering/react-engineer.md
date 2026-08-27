@@ -1,7 +1,8 @@
 ---
 name: react-engineer
-description: "Specialist en React 19 + Vite + TS: hooks, server state (TanStack Query), performance, accessibility. Implementa UIs guiadas por frontend-architect / ui-lead."
+description: "Specialist en React 19 + Vite + TS: hooks, server state (TanStack Query), performance, accessibility. Implementa UIs guiadas por frontend-architect / ui-lead. Usar para implementar componentes, hooks y estado en React."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project

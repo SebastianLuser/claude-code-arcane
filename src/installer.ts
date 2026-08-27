@@ -8,6 +8,11 @@ import {
   isSymlinkOrJunction,
   safeRemove,
 } from "./utils.js";
+import {
+  agentEntryLabel,
+  agentSourcePath,
+  copyAgentEntry,
+} from "./agent-entries.js";
 import { writeManifest } from "./manifest.js";
 import { linkOrCopyDir } from "./worktree.js";
 import { computeContentHashes } from "./content-hash.js";
@@ -378,22 +383,18 @@ export class Installer {
   private copyAgents(): void {
     if (this.merged.agents.length === 0) return;
     this.log("\nAgents:");
-    for (const agentDir of this.merged.agents) {
-      const src = path.join(this.root, "agents", agentDir);
-      if (!fs.existsSync(src)) {
-        this.log(`  WARN: Agent dir '${agentDir}' not found`);
+    for (const entry of this.merged.agents) {
+      const label = agentEntryLabel(entry);
+      if (!agentSourcePath(this.root, entry)) {
+        this.log(`  WARN: Agent entry '${entry}' not found`);
         continue;
       }
-      const dst = path.join(this.claudeDir, "agents", agentDir);
       if (this.dryRun) {
-        this.log(`  [dry-run] agents/${agentDir}/`);
-      } else {
-        copyDirSync(src, dst);
-        const count = fs
-          .readdirSync(dst, { recursive: true })
-          .filter((f) => String(f).endsWith(".md")).length;
-        this.log(`  [ok] agents/${agentDir}/ (${count} agents)`);
+        this.log(`  [dry-run] ${label}`);
+        continue;
       }
+      const count = copyAgentEntry(this.root, this.claudeDir, entry);
+      this.log(`  [ok] ${label}${count === 1 ? "" : ` (${count} agents)`}`);
     }
   }
 

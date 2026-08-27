@@ -5,6 +5,12 @@ import { parseProfile, listProfiles, groupByCategory } from "../profiles.js";
 import { listSkills } from "../skills-catalog.js";
 import { runAddWizard } from "../wizard.js";
 import { readManifest, writeManifest } from "../manifest.js";
+import {
+  agentEntryLabel,
+  copyAgentEntry,
+  isGranular,
+  parseAgentEntry,
+} from "../agent-entries.js";
 import { copyDirSync, ensureDir, readJsonSync, writeJsonSync } from "../utils.js";
 import { resolveContentSource } from "../content-source.js";
 import type { MergedProfile } from "../types.js";
@@ -90,15 +96,16 @@ export async function addCommand(items: string[] = []): Promise<void> {
         }
       }
 
-      for (const agentDir of profile.agents) {
-        if (!manifest.installed_agents.includes(agentDir)) {
-          const src = path.join(root, "agents", agentDir);
-          if (fs.existsSync(src)) {
-            const dst = path.join(claudeDir, "agents", agentDir);
-            copyDirSync(src, dst);
-            manifest.installed_agents.push(agentDir);
-            addedAgents.push(agentDir);
-          }
+      for (const entry of profile.agents) {
+        // A division already installed covers its own agents, so a granular
+        // entry under it is a no-op rather than a second copy.
+        const { division } = parseAgentEntry(entry);
+        if (manifest.installed_agents.includes(entry)) continue;
+        if (isGranular(entry) && manifest.installed_agents.includes(division)) continue;
+
+        if (copyAgentEntry(root, claudeDir, entry) !== null) {
+          manifest.installed_agents.push(entry);
+          addedAgents.push(entry);
         }
       }
 
@@ -156,7 +163,7 @@ export async function addCommand(items: string[] = []): Promise<void> {
   );
   for (const s of added) console.log(chalk.green(`  [ok] skill: ${s}`));
   for (const r of addedRules) console.log(chalk.green(`  [ok] rule: ${r}`));
-  for (const a of addedAgents) console.log(chalk.green(`  [ok] agents: ${a}/`));
+  for (const a of addedAgents) console.log(chalk.green(`  [ok] ${agentEntryLabel(a)}`));
   if (statuslineAdded) console.log(chalk.green("  [ok] statusline.sh"));
   for (const s of skipped)
     console.log(chalk.dim(`  [skip] ${s} (already installed)`));

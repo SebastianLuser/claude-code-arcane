@@ -20,6 +20,7 @@ skills:
   - playtest-report
   - consistency-check
   - asset-audit
+  - architecture-review
 
 rules:
   universal:
@@ -30,6 +31,7 @@ rules:
 
 agents:
   - game
+  - product/ux-lead
 
 permissions:
   allow:

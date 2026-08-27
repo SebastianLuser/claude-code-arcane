@@ -2,7 +2,7 @@
 
 ## What is Arcane?
 
-Arcane is a configuration harness for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). It provides a curated library of **437 skills**, **109 agents**, **17 hooks**, and **30 rules** that you selectively deploy into any project. Instead of shipping everything to every project (wasting tokens and degrading performance), you pick a **profile** that matches your stack and only the relevant tools get installed.
+Arcane is a configuration harness for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). It provides a curated library of **437 skills**, **115 agents**, **17 hooks**, and **30 rules** that you selectively deploy into any project. Instead of shipping everything to every project (wasting tokens and degrading performance), you pick a **profile** that matches your stack and only the relevant tools get installed.
 
 ## Table of Contents
 
@@ -391,6 +391,31 @@ my-project/.claude/
 ├── agents/                # Agent dirs per profile
 └── docs/                  # General documentation
 ```
+
+### Qué agentes instala un profile
+
+La lista `agents:` de un profile acepta dos formas:
+
+```yaml
+agents:
+  - game                        # la división entera: 30 agentes
+  - quality/security-architect  # solo ese agente
+```
+
+La forma por división es la original y sigue siendo el default. La granular
+existe porque **las divisiones son temáticas, no funcionales**: `qa-lead`,
+`ux-designer` y `performance-analyst` viven en `game/` y los quieren profiles
+que no tienen nada de gamedev. Antes la única manera de alcanzar uno era
+instalar los 30 — justo el peso que los profiles existen para evitar.
+
+Reglas:
+
+- Si un profile ya trae la división entera, una entrada granular de esa misma
+  división es un no-op, no una segunda copia.
+- Al desinstalar, una entrada granular borra solo su archivo, y se lleva el
+  directorio de la división únicamente si queda vacío.
+- Si otro profile activo declara la división completa, esa gana: la entrada
+  granular no borra nada, porque rompería al otro profile.
 
 ### settings.json
 

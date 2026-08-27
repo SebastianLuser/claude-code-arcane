@@ -2,6 +2,7 @@
 name: marketing-director
 description: "Marketing Director. Lead de ejecución de marketing. Owner de estrategia de contenido, growth, SEO, y brand. Coordina content-lead, growth-lead, seo-lead, y marketing-analyst. Usar como punto de entrada para ejecución de marketing."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: opus
 maxTurns: 30
 memory: project

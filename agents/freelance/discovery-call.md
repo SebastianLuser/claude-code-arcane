@@ -1,6 +1,6 @@
 ---
 name: discovery-call
-description: "Simula la discovery call del lado del cliente para ensayar antes de la real: pregunta como un cliente que paga de su bolsillo, regatea el precio, mete alcance de contrabando y no explica lo que quiere. Feedback al final. Read-only."
+description: "Simula la discovery call del lado del cliente para ensayar antes de la real: pregunta como un cliente que paga de su bolsillo, regatea el precio, mete alcance de contrabando y no explica lo que quiere. Feedback al final. Read-only. Usar para ensayar la discovery call antes de la reunion real."
 tools: Read, Glob, Grep, WebSearch
 model: sonnet
 maxTurns: 30

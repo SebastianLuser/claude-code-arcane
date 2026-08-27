@@ -1,7 +1,8 @@
 ---
 name: go-engineer
-description: "Specialist en Go idiomatico: goroutines, channels, error handling, Gin/Fiber, GORM, pprof. Implementa features y refactors guiados por backend-architect."
+description: "Specialist en Go idiomatico: goroutines, channels, error handling, Gin/Fiber, GORM, pprof. Implementa features y refactors guiados por backend-architect. Usar para implementar features, refactors y optimizaciones en Go."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project

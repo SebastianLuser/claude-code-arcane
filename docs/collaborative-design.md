@@ -434,6 +434,7 @@ Si alguno es "no" → el agente no fue lo suficientemente colaborativo.
 Este principio debe estar embebido en:
 
 - **CLAUDE.md** — sección de collaboration protocol
-- **Todos los agents** — enforce question-asking antes de Write/Edit
+- **Skills y main session** — enforce question-asking antes de Write/Edit
+- **Subagentes ejecutores** — NO pueden preguntar (`AskUserQuestion` no está en su pool). Declaran el supuesto con `ASSUMPTION:` en el reporte y avanzan. Ver `agent-hierarchy.md` § Consultores y ejecutores.
 - **Todos los skills** — require approval antes de escribir
 - **Team orchestrators** — decision points entre fases

@@ -5,7 +5,8 @@ category: "design"
 argument-hint: "[screen/flow name] or 'hud' or 'patterns'"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Task
-agent: ux-designer
+context: fork
+agent: ux-lead
 ---
 # ux-design — UX Spec Authoring
 

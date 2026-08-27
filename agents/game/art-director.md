@@ -2,6 +2,7 @@
 name: art-director
 description: "Art Director. Owner de visual identity, art bible, asset quality. Usar para art direction, asset reviews, consistency checks, outsourcing briefs."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

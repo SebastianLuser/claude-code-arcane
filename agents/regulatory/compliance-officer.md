@@ -2,6 +2,7 @@
 name: compliance-officer
 description: "Compliance Officer. Especialista en GDPR, SOC 2, ISO 27001, y risk management de seguridad de información. Usar para privacy compliance, security audits, ISMS, y data protection."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

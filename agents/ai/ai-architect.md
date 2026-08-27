@@ -2,10 +2,10 @@
 name: ai-architect
 description: "AI Architect. Lead de AI/ML. Owner de estrategia de modelos, arquitectura RAG, optimización de costos LLM, y selección de tecnología AI. Usar para decisiones de arquitectura AI, evaluación de modelos, diseño de pipelines, y estrategia de prompts."
 tools: Read, Glob, Grep, Write, Edit, WebSearch, Bash
+permissionMode: acceptEdits
 model: opus
 maxTurns: 30
 memory: project
-disallowedTools:
 skills: [rag-architect, llm-cost-optimizer, senior-prompt-engineer, senior-ml-engineer]
 ---
 

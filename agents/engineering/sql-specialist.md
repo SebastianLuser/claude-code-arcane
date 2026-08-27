@@ -1,7 +1,8 @@
 ---
 name: sql-specialist
-description: "Specialist en SQL agnostico: query design, JOIN strategies, indexes, EXPLAIN, transactions, normalizacion. Reporta a database-architect."
+description: "Specialist en SQL agnostico: query design, JOIN strategies, indexes, EXPLAIN, transactions, normalizacion. Reporta a database-architect. Usar para disenar u optimizar queries, indices y transacciones SQL."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project
@@ -101,6 +102,6 @@ ON CONFLICT (key) DO UPDATE SET val = counters.val + 1;
 
 **Report to:** `database-architect` (modeling, sharding strategy), `backend-architect` (impacto en services).
 
-**Delegate up to `postgres-specialist`:** si el problema involucra features PG-especificas (JSONB, partitioning, replication, extensions, EXPLAIN PG-specific).
+**Escalate to `database-architect`:** si el problema involucra features PG-especificas (JSONB, partitioning, replication, extensions, EXPLAIN PG-specific) o decisiones de modelado que exceden la query.
 
 **No delegate down.** Tier 3 specialist.

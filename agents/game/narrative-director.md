@@ -2,6 +2,7 @@
 name: narrative-director
 description: "Narrative Director. Owner de story, character arcs, world-building, dialogue direction. Usar para story structure, character design, narrative GDDs."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

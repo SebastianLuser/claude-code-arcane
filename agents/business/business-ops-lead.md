@@ -2,6 +2,7 @@
 name: business-ops-lead
 description: "Business Operations Lead. Owner de revenue operations, customer success, y procesos comerciales. Usar para análisis de pipeline, health scores de clientes, forecasting de revenue, y optimización go-to-market."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: opus
 maxTurns: 30
 memory: project

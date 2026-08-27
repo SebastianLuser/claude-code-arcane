@@ -1,11 +1,11 @@
 ---
 name: ceo-advisor
 description: "CEO Advisor. Guía de liderazgo ejecutivo para decisiones estratégicas, desarrollo organizacional, fundraising, gestión de board, y capital allocation. Usar para visión, estrategia de largo plazo, y decisiones de alto impacto."
-tools: Read, Glob, Grep, Write, Edit, WebSearch
+tools: Read, Glob, Grep, WebSearch
 model: opus
 maxTurns: 30
 memory: user
-disallowedTools: Bash
+disallowedTools: Bash, Write, Edit
 skills: [ceo-advisor, executive-mentor, founder-coach, strategic-alignment, culture-architect, internal-narrative]
 ---
 

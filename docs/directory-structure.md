@@ -27,19 +27,24 @@ Claude-Code-Arcane/
 │   ├── regulatory.profile             # Add-on: Regulatory & compliance
 │   └── ...                            # agile, testing, infra, security, etc.
 │
-├── agents/                            # 80 agent definitions (root level)
-│   ├── game/                          # División 1 — Game Dev (27 agents)
-│   ├── engineering/                   # División 2 — Software Eng (14 agents)
-│   ├── devops/                        # División 3 — DevOps (3 agents)
-│   ├── product/                       # División 4 — Product & Design (5 agents)
-│   ├── management/                    # División 5 — PMO (4 agents)
-│   ├── quality/                       # División 6 — Quality & Security (3 agents)
-│   ├── integrations/                  # División 8 — Tools & Integrations (6 agents)
-│   ├── ai/                            # División 9 — AI & Data Science (4 agents)
-│   ├── clevel/                        # División 10 — C-Suite Advisory (6 agents)
-│   ├── business/                      # División 11 — Business & Finance (3 agents)
-│   ├── marketing/                     # División 12 — Marketing (5 agents)
-│   └── regulatory/                    # División 13 — Regulatory (3 agents)
+├── agents/                            # 115 agent definitions (root level)
+│   ├── ai/                            # 4 agents
+│   ├── audio/                         # 6 agents
+│   ├── business/                      # 3 agents
+│   ├── career/                        # 4 agents
+│   ├── clevel/                        # 6 agents
+│   ├── devops/                        # 4 agents
+│   ├── ecommerce/                     # 1 agent
+│   ├── engineering/                   # 19 agents
+│   ├── freelance/                     # 4 agents
+│   ├── game/                          # 32 agents
+│   ├── integrations/                  # 6 agents
+│   ├── management/                    # 4 agents
+│   ├── marketing/                     # 5 agents
+│   ├── product/                       # 5 agents
+│   ├── quality/                       # 3 agents
+│   ├── regulatory/                    # 3 agents
+│   └── visualnovel/                   # 6 agents
 │
 ├── .claude/                           # Claude Code configuration
 │   ├── settings.json                  # Hooks, permissions, safety

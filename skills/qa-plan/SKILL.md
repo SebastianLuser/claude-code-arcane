@@ -5,7 +5,8 @@ category: "testing"
 argument-hint: "[sprint | feature: system-name | story: path]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
-agent: qa-lead
+context: fork
+agent: qa-director
 ---
 
 # QA Plan

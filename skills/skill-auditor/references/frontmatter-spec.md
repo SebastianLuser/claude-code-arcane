@@ -1,113 +1,120 @@
 # Frontmatter Specification -- Arcane Skills
 
-This is the authoritative frontmatter format for all skills in the Claude Code Arcane repo.
+Formato de frontmatter para todas las skills del repo Claude Code Arcane.
 
-## Required Format
+**Fuente de verdad:** la lista de campos que Claude Code realmente lee está en
+`code.claude.com/docs/en/skills`. Este documento la refleja y agrega la única
+convención local del repo (`category`). No inventar campos: un campo que no está
+en la tabla de abajo lo ignora el runtime, y ese silencio es donde el drift se
+esconde.
 
-Every `SKILL.md` must begin with a YAML frontmatter block:
+## Formato requerido
 
 ```yaml
 ---
 name: skill-name
-description: "Brief 1-2 sentence description of what the skill does."
+description: "Qué hace la skill y cuándo usarla, 1-2 oraciones."
 category: "domain-name"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash
 ---
 ```
 
-## Field Definitions
+## Campos oficiales de Claude Code
 
-### `name` (required, string)
+Todos son opcionales para el runtime; las columnas "Arcane" marcan lo que este
+repo exige por convención propia.
 
-- Must be kebab-case (lowercase, hyphens): `api-design`, `scaffold-go`, `mcp-server-builder`
-- Must match the directory name containing the SKILL.md
-- No quotes needed unless it contains special YAML characters
+| Campo | Arcane | Qué hace |
+|-------|--------|----------|
+| `name` | **requerido** | Etiqueta mostrada en los listados. En skills personales o de proyecto el comando sale del nombre del directorio, no de este campo. |
+| `description` | **requerido** | Qué hace y cuándo usarla. Claude decide con esto si aplicar la skill. `description` + `when_to_use` se truncan juntos a 1.536 caracteres. |
+| `when_to_use` | opcional | Contexto extra de invocación: frases gatillo, ejemplos de pedido. Se anexa a `description` y cuenta para el tope de 1.536. |
+| `argument-hint` | opcional | Hint de autocompletado. Ej: `[issue-number]`, `[filename] [format]`. |
+| `arguments` | opcional | Declaración estructurada de argumentos. |
+| `user-invocable` | **requerido** | `false` cuando solo Claude debe invocarla: la oculta del menú `/`. Default `true`. |
+| `disable-model-invocation` | opcional | `true` impide que Claude la cargue sola. También impide precargarla en subagentes. |
+| `allowed-tools` | **requerido** | Tools que Claude puede usar sin pedir permiso durante el turno que invoca la skill. El permiso se limpia con el mensaje siguiente. |
+| `disallowed-tools` | opcional | Denylist de tools. |
+| `model` | opcional | Modelo para el turno en que la skill está activa. Con `context: fork`, define el modelo del subagente. |
+| `effort` | opcional | Nivel de esfuerzo de razonamiento. |
+| `context` | opcional | **Único valor válido: `fork`.** Corre la skill en un subagente forkeado. |
+| `agent` | opcional | Qué tipo de subagente usar. **Solo tiene efecto si `context: fork` está puesto.** |
+| `background` | opcional | Corre en background. |
+| `hooks` | opcional | Hooks con alcance de esta skill. |
+| `paths` | opcional | Paths asociados. |
+| `shell` | opcional | Shell para los `` !`comando` `` del body: `bash` (default) o `powershell`. |
+| `metadata` | opcional | Map YAML libre para datos propios. **Claude Code no actúa sobre su contenido** — es el lugar correcto para campos que solo lee tooling nuestro. Descarta el valor si no es un map. |
+| `license` | opcional | Licencia. |
+| `compatibility` | opcional | Compatibilidad declarada. |
 
-### `description` (required, string)
+### `category` — convención local, no campo oficial
 
-- 1-2 sentences explaining what the skill does and when to use it
-- Under 200 characters preferred, 300 max
-- Must be quoted (double quotes)
-- Should NOT just repeat the skill name ("MCP Server Builder" is bad)
-- Good: `"Design and ship production-ready MCP servers from OpenAPI contracts."`
+`category` no existe en la doc de Claude Code: el runtime lo ignora. Arcane lo
+exige igual porque `src/skills-catalog.ts` y los profiles lo usan para agrupar.
+Es inocuo. Si en algún momento deja de usarse desde `src/`, moverlo a
+`metadata:` en vez de dejarlo suelto.
 
-### `category` (required, string)
+Categorías estándar: `arcane`, `backend`, `frontend`, `ai`, `devops`,
+`security`, `testing`, `gamedev`, `agile`, `business`, `marketing-content`,
+`marketing-growth`, `marketing-seo`, `marketing-strategy`, `finance`,
+`regulatory`, `git`, `clevel-advisors`, `clevel-operations`, `observability`,
+`database`, `workflow`, `visualnovel`, `audio`.
 
-- Matches the domain folder the skill lives in
-- Inferred from parent: `skills-backend/` -> `"backend"`, `skills-ai/` -> `"ai"`
-- Standard categories: `arcane`, `backend`, `frontend`, `ai`, `devops`, `security`, `testing`, `gamedev`, `agile`, `business`, `marketing-content`, `marketing-growth`, `marketing-seo`, `marketing-strategy`, `finance`, `regulatory`, `git`, `clevel-advisors`, `clevel-operations`
+## Reglas por campo
 
-### `user-invocable` (required, boolean)
+### `name`
+- kebab-case, y tiene que coincidir con el directorio que contiene el SKILL.md.
 
-- `true` -- skill can be called directly by the user via `/skill-name`
-- `false` -- skill is a sub-skill, invoked only by a parent skill
-- Sub-skills live inside another skill's directory (e.g., `self-improving-agent/skills/review/SKILL.md`)
+### `description`
+- 1-2 oraciones. Bajo 200 caracteres preferido, 300 máximo.
+- Entre comillas dobles.
+- No repetir solo el nombre de la skill.
+- Poner el caso de uso principal primero: se trunca a 1.536 caracteres.
 
-### `allowed-tools` (required, comma-separated string)
+### `allowed-tools`
+- Read-only: `Read, Glob, Grep, Bash`
+- Authoring: `Read, Write, Edit, Bash, Glob, Grep`
+- Orquestación: `Read, Write, Edit, Bash, Glob, Grep, Task`
+- Nombres válidos: `Read`, `Write`, `Edit`, `Bash`, `Glob`, `Grep`, `Task`,
+  `WebFetch`, `WebSearch`, `NotebookEdit`
 
-- Lists the Claude Code tools this skill is permitted to use
-- Read-only skills: `Read, Glob, Grep, Bash`
-- Authoring skills: `Read, Write, Edit, Bash, Glob, Grep`
-- Orchestration skills: `Read, Write, Edit, Bash, Glob, Grep, Task`
-- Valid tool names: `Read`, `Write`, `Edit`, `Bash`, `Glob`, `Grep`, `Task`, `WebFetch`, `WebSearch`, `NotebookEdit`
-
-### `argument-hint` (optional, string)
-
-- Shows usage pattern when user invokes help
-- Examples: `"<skill-name|+profile>"`, `"[rest|graphql] [resource-name]"`, `"scan <dir> | fix <path>"`
-
-## Alirezarezvani Format (needs conversion)
-
-Skills imported from `alirezarezvani/claude-skills` use a different frontmatter:
-
-```yaml
----
-name: "skill-name"
-description: Long description...
-license: MIT
-metadata:
-  version: 1.0.0
-  author: Alireza Rezvani
-  category: business-growth
-  domain: customer-success
-  updated: 2026-02-06
-  python-tools: tool1.py, tool2.py
-  tech-stack: keyword1, keyword2
----
-```
-
-### Conversion Rules
-
-1. **Keep**: `name`, `description` (trim to 200 chars if needed)
-2. **Drop entirely**: `license`, `metadata` (and all nested: `version`, `author`, `updated`, `python-tools`, `tech-stack`, `domain`)
-3. **Add**: `category` -- infer from the `skills-*` parent folder, NOT from `metadata.category`
-4. **Add**: `user-invocable: true`
-5. **Add**: `allowed-tools` -- default `Read, Glob, Grep, Bash`; add `Write, Edit` if the skill body contains generation/authoring instructions
-
-### Partially Converted Format
-
-Some skills were partially converted (have `name` and `description` but missing our required fields). These need the missing fields added:
+### `agent` + `context`
+Van siempre juntos. `agent:` sin `context: fork` **no hace nada**:
 
 ```yaml
----
-name: "mcp-server-builder"
-description: "MCP Server Builder"      # <- too short, needs expansion
----
+# MAL - el agente declarado nunca entra en juego
+agent: qa-director
+
+# BIEN
+context: fork
+agent: qa-director
 ```
 
-Fix: add `category`, `user-invocable`, `allowed-tools`, and expand `description`.
+Y el agente nombrado tiene que existir en `agents/` **y** su división tiene que
+estar en la lista `agents:` de todos los profiles que traen la skill. Si no, el
+fork cae en un agente genérico sin system prompt especializado.
 
-## Validation Checklist
+## Inyección de contexto dinámico
 
-When auditing frontmatter, check in order:
+No hay campo de frontmatter para esto. El mecanismo es `` !`comando` `` **en el
+body**, y la salida reemplaza el placeholder antes de que Claude vea la skill:
 
-1. Does the file start with `---` on line 1?
-2. Is there a closing `---` before the first `#` heading?
-3. Is `name` present and kebab-case?
-4. Does `name` match directory name?
-5. Is `description` present and substantive (not just the name)?
-6. Is `category` present?
-7. Is `user-invocable` present and boolean?
-8. Is `allowed-tools` present with valid tool names?
-9. Are there any alirezarezvani-only fields that should be removed?
+```markdown
+## Estado actual
+
+- Branch: !`git branch --show-current`
+- Sprints: !`ls production/sprints/ 2>/dev/null || echo "sin sprints"`
+```
+
+El `!` se reconoce solo al principio de línea o después de whitespace, y el
+comando va entre backticks. `!echo foo` sin backticks es texto literal.
+
+## Formato a convertir (legacy)
+
+Si el frontmatter tiene `version`, `author`, `updated`, `python-tools` o
+`tech-stack`, es formato importado y hay que convertirlo: esos campos no existen
+en la doc oficial ni en Arcane.
+
+**`license` y `metadata` NO son parte de este grupo** — los dos son campos
+oficiales de Claude Code y no hay que tocarlos.

@@ -6,7 +6,8 @@ argument-hint: "[version] [--style brief|detailed|full]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash
 model: haiku
-agent: community-manager
+context: fork
+agent: release-manager
 ---
 
 ## Phase 1: Parse Arguments
