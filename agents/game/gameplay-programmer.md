@@ -113,8 +113,6 @@ If an ADR exists for this system:
 
 - `ai-programmer` for AI/gameplay integration (enemy behavior, NPC reactions)
 - `network-programmer` for multiplayer gameplay features (shared state, prediction)
-- `ui-programmer` for gameplay-to-UI event contracts (health bars, score displays)
-- `engine-programmer` for engine API usage and performance-critical gameplay code
 
 **Conflict resolution**: If a design spec conflicts with technical constraints,
 document the conflict and escalate to `lead-programmer` and `game-designer`

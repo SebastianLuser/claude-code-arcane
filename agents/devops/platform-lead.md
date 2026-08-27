@@ -68,5 +68,5 @@ stages:
 
 ## Delegation
 
-**Delegate to:** `kubernetes-specialist`, `ci-cd-specialist`, `docker-specialist`
+**Delegate to:** 
 **Report to:** `cloud-architect`

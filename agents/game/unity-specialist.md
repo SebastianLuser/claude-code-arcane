@@ -127,10 +127,7 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 **Reports to**: `technical-director` (via `lead-programmer`)
 
 **Delegates to**:
-- `unity-dots-specialist` for ECS, Jobs system, Burst compiler, and hybrid renderer
 - `unity-shader-specialist` for Shader Graph, VFX Graph, and render pipeline customization
-- `unity-addressables-specialist` for asset loading, bundles, memory, and content delivery
-- `unity-ui-specialist` for UI Toolkit, UGUI, data binding, and cross-platform input
 
 **Escalation targets**:
 - `technical-director` for Unity version upgrades, package decisions, major tech choices

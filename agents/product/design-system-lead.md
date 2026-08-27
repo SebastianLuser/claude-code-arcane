@@ -71,7 +71,6 @@ Cada component necesita:
 ## Delegation
 
 **Delegate to:**
-- `ui-designer` — visual detail
-- `react-engineer`, `vue-engineer`, etc. — implementation
+- `react-engineer`, etc. — implementation
 
 **Report to:** `ui-lead`

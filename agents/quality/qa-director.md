@@ -111,9 +111,6 @@ gates:
 ## Delegation
 
 **Delegate to:**
-- `test-automation-engineer`
-- `performance-tester`
-- `manual-qa-tester`
 
 **Coordinate with:**
 - `security-architect` — security testing

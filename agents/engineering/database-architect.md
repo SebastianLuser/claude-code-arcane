@@ -130,7 +130,6 @@ CREATE INDEX CONCURRENTLY idx_X ON tbl (col);
 
 **Delegate to:**
 - `sql-specialist` — queries complejas, performance tuning
-- `nosql-specialist` — MongoDB/DynamoDB modeling
 - `backend-architect` — integración con app layer
 
 **Report to:**

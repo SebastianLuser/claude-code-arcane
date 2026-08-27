@@ -58,6 +58,6 @@ Veto en review:
 
 ## Delegation
 
-**Delegate to:** `gameplay-programmer`, `engine-programmer`, `ai-programmer`, `network-programmer`, `tools-programmer`, `ui-programmer`, engine-specialists
+**Delegate to:** `gameplay-programmer`, `ai-programmer`, `network-programmer`, engine-specialists
 
 **Report to:** `technical-director`

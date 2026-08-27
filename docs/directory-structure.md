@@ -27,17 +27,17 @@ Claude-Code-Arcane/
 │   ├── regulatory.profile             # Add-on: Regulatory & compliance
 │   └── ...                            # agile, testing, infra, security, etc.
 │
-├── agents/                            # 109 agent definitions (root level)
+├── agents/                            # 115 agent definitions (root level)
 │   ├── ai/                            # 4 agents
 │   ├── audio/                         # 6 agents
 │   ├── business/                      # 3 agents
 │   ├── career/                        # 4 agents
 │   ├── clevel/                        # 6 agents
-│   ├── devops/                        # 3 agents
+│   ├── devops/                        # 4 agents
 │   ├── ecommerce/                     # 1 agent
-│   ├── engineering/                   # 16 agents
+│   ├── engineering/                   # 19 agents
 │   ├── freelance/                     # 4 agents
-│   ├── game/                          # 30 agents
+│   ├── game/                          # 32 agents
 │   ├── integrations/                  # 6 agents
 │   ├── management/                    # 4 agents
 │   ├── marketing/                     # 5 agents

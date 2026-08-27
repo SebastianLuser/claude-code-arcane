@@ -92,6 +92,5 @@ Escalate después de 48h sin progress.
 
 **Coordinate with:**
 - `project-manager` — planning + reporting
-- `agile-coach` — process improvements long-term
 
 **Report to:** `project-manager`

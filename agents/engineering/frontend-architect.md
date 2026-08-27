@@ -128,10 +128,9 @@ Veto:
 ## Delegation Map
 
 **Delegate to:**
-- `react-engineer`, `vue-engineer`, `angular-engineer` — implementación
+- `react-engineer`
 - `ux-lead` — diseño de interacciones
 - `design-system-lead` — component library decisions
-- `accessibility-expert` — audits
 
 **Report to:**
 - `chief-technology-officer`

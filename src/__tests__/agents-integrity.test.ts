@@ -73,37 +73,7 @@ const SKILL_FIELDS = new Set([
  * Agents whose `skills:` or delegation targets are still dead. Shrink only.
  * Each line is a debt, not a decision.
  */
-const KNOWN_DEAD_REFS: Record<string, string[]> = {
-  "agents/ai/ai-architect.md": ["chief-technology-officer"],
-  "agents/devops/cloud-architect.md": ["aws-specialist", "chief-technology-officer", "gcp-specialist", "terraform-specialist"],
-  "agents/devops/platform-lead.md": ["ci-cd-specialist", "docker-specialist", "kubernetes-specialist"],
-  "agents/devops/sre-lead.md": ["monitoring-specialist", "security-ops-specialist"],
-  "agents/engineering/android-engineer.md": ["mobile-lead"],
-  "agents/engineering/backend-architect.md": ["api-architect", "chief-technology-officer", "python-engineer", "rust-engineer", "vp-engineering"],
-  "agents/engineering/database-architect.md": ["chief-technology-officer", "nosql-specialist"],
-  "agents/engineering/flutter-engineer.md": ["mobile-lead"],
-  "agents/engineering/frontend-architect.md": ["accessibility-expert", "angular-engineer", "chief-technology-officer", "vue-engineer"],
-  "agents/engineering/ios-engineer.md": ["mobile-lead"],
-  "agents/engineering/react-native-engineer.md": ["mobile-lead"],
-  "agents/game/art-director.md": ["creative-director"],
-  "agents/game/game-designer.md": ["creative-director"],
-  "agents/game/lead-programmer.md": ["engine-programmer", "tools-programmer", "ui-programmer"],
-  "agents/game/narrative-director.md": ["creative-director"],
-  "agents/game/qa-lead.md": ["producer", "qa-tester"],
-  "agents/game/release-manager.md": ["devops-engineer", "producer"],
-  "agents/game/unity-specialist.md": ["devops-engineer", "unity-addressables-specialist", "unity-dots-specialist", "unity-ui-specialist"],
-  "agents/game/unreal-specialist.md": ["devops-engineer"],
-  "agents/integrations/integrations-architect.md": ["chief-technology-officer"],
-  "agents/management/program-director.md": ["chief-technology-officer", "vp-engineering"],
-  "agents/management/project-manager.md": ["business-analyst"],
-  "agents/management/scrum-master.md": ["agile-coach"],
-  "agents/product/design-system-lead.md": ["ui-designer", "vue-engineer"],
-  "agents/product/ui-lead.md": ["accessibility-expert", "interaction-designer", "ui-designer"],
-  "agents/product/ux-lead.md": ["interaction-designer", "ux-researcher", "ux-writer"],
-  "agents/quality/qa-director.md": ["manual-qa-tester", "performance-tester", "test-automation-engineer", "vp-engineering"],
-  "agents/quality/security-architect.md": ["chief-technology-officer", "compliance-specialist", "penetration-tester", "security-ops-specialist"],
-  "agents/visualnovel/vn-narrative-director.md": ["creative-director"],
-};
+const KNOWN_DEAD_REFS: Record<string, string[]> = {};
 
 type Frontmatter = Record<string, string>;
 

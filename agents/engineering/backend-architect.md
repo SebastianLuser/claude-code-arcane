@@ -118,8 +118,7 @@ Nice-to-have (comentar pero no blocker):
 ## Delegation Map
 
 **Delegate to:**
-- `go-engineer`, `node-engineer`, `python-engineer`, `rust-engineer` — implementación en lenguajes específicos
-- `api-architect` — contracts complejos cross-service
+- `go-engineer`, `node-engineer`
 - `database-architect` — modeling de schema, indexing strategy
 
 **Report to:**

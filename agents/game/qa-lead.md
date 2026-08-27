@@ -62,5 +62,5 @@ Sos el **QA Lead** del juego. Owner de quality assurance desde playtesting hasta
 
 ## Delegation
 
-**Delegate to:** `qa-tester`, `accessibility-specialist`
+**Delegate to:** `accessibility-specialist`
 **Report to:** `producer` (schedule) o `technical-director` (tech issues)

@@ -136,9 +136,6 @@ Re-threat-model when: major feature, infra change, incident
 ## Delegation
 
 **Delegate to:**
-- `penetration-tester` — offensive testing
-- `compliance-specialist` — regulatory compliance
-- `security-ops-specialist` — daily ops
 
 **Coordinate with:**
 - `chief-technology-officer` — architectural security

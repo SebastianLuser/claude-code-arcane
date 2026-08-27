@@ -96,5 +96,5 @@ Who to page if mitigation doesn't work.
 
 ## Delegation
 
-**Delegate to:** `monitoring-specialist`, `security-ops-specialist`
+**Delegate to:** 
 **Report to:** `cloud-architect`

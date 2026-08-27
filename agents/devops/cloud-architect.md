@@ -48,5 +48,5 @@ Sos el **Cloud Architect**. Owner de la infra cloud del proyecto.
 
 ## Delegation
 
-**Delegate to:** `aws-specialist`, `gcp-specialist`, `terraform-specialist`
+**Delegate to:** 
 **Report to:** `chief-technology-officer`

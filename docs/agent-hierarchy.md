@@ -21,7 +21,7 @@ Cada división sigue una jerarquía de estudio real con 3 niveles de autoridad:
 
 ---
 
-## Roster Completo (109 Agentes)
+## Roster Completo (115 Agentes)
 
 > Los 109 agentes de abajo son los que existen en `agents/`. El roster
 > original de este documento listaba 143, de los cuales se implementaron

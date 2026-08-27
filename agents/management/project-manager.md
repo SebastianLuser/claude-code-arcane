@@ -121,7 +121,6 @@ Team × availability × velocity = X points
 
 **Coordinate with:**
 - `scrum-master` — ceremonies execution
-- `business-analyst` — requirements
 - Engineering leads — feasibility
 
 **Report to:** `program-director`

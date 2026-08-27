@@ -93,9 +93,6 @@ Visualizar hierarchy de páginas. Max 3 niveles profundos.
 ## Delegation
 
 **Delegate to:**
-- `ux-researcher` — conduct research
-- `interaction-designer` — micro-interactions
-- `ux-writer` — copy
 
 **Coordinate with:**
 - `ui-lead` — visual execution
