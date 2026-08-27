@@ -3,6 +3,11 @@ import path from "node:path";
 import chalk from "chalk";
 import { readManifest } from "../manifest.js";
 import { parseProfile } from "../profiles.js";
+import {
+  isGranular,
+  parseAgentEntry,
+  removeAgentEntry,
+} from "../agent-entries.js";
 import { writeJsonSync } from "../utils.js";
 import {
   resolveContentSource,
@@ -193,15 +198,17 @@ function removeProfile(
   }
 
   const removedAgents: string[] = [];
-  for (const agent of profile.agents) {
-    if (sharedAgents.has(agent)) continue;
-    const agentDir = path.join(target, ".claude", "agents", agent);
-    if (fs.existsSync(agentDir)) {
-      fs.rmSync(agentDir, { recursive: true, force: true });
-      removedAgents.push(agent);
-    }
+  const claudeDir = path.join(target, ".claude");
+  for (const entry of profile.agents) {
+    if (sharedAgents.has(entry)) continue;
+    // A whole division still wanted by another active profile outranks this
+    // granular entry: removing the file would break that profile.
+    const { division } = parseAgentEntry(entry);
+    if (isGranular(entry) && sharedAgents.has(division)) continue;
+
+    if (removeAgentEntry(claudeDir, entry)) removedAgents.push(entry);
     manifest.installed_agents = manifest.installed_agents.filter(
-      (a) => a !== agent,
+      (a) => a !== entry,
     );
   }
 

@@ -38,7 +38,7 @@ rules:
 
 agents:
   - game
-  - quality
+  - quality/security-architect
 
 permissions:
   allow:

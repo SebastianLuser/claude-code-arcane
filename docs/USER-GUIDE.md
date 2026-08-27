@@ -392,6 +392,31 @@ my-project/.claude/
 └── docs/                  # General documentation
 ```
 
+### Qué agentes instala un profile
+
+La lista `agents:` de un profile acepta dos formas:
+
+```yaml
+agents:
+  - game                        # la división entera: 30 agentes
+  - quality/security-architect  # solo ese agente
+```
+
+La forma por división es la original y sigue siendo el default. La granular
+existe porque **las divisiones son temáticas, no funcionales**: `qa-lead`,
+`ux-designer` y `performance-analyst` viven en `game/` y los quieren profiles
+que no tienen nada de gamedev. Antes la única manera de alcanzar uno era
+instalar los 30 — justo el peso que los profiles existen para evitar.
+
+Reglas:
+
+- Si un profile ya trae la división entera, una entrada granular de esa misma
+  división es un no-op, no una segunda copia.
+- Al desinstalar, una entrada granular borra solo su archivo, y se lleva el
+  directorio de la división únicamente si queda vacío.
+- Si otro profile activo declara la división completa, esa gana: la entrada
+  granular no borra nada, porque rompería al otro profile.
+
 ### settings.json
 
 Generated automatically with merged permissions from all selected profiles. Includes:

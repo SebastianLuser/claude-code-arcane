@@ -21,7 +21,7 @@ rules:
     []
 
 agents:
-  - quality
+  - quality/security-architect
 
 permissions:
   allow:

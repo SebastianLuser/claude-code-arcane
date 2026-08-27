@@ -166,6 +166,19 @@ function shippedBy(skill: string): Profile[] {
   return profiles.filter((p) => p.skills.includes(skill));
 }
 
+/**
+ * Whether a profile makes a named agent available. An `agents:` entry is either
+ * a whole division (`game`) or a single agent (`game/qa-lead`), so reachability
+ * is not just "is the division listed".
+ */
+function profileProvides(profile: Profile, agentSlug: string): boolean {
+  const division = agentDivision.get(agentSlug);
+  if (!division) return false;
+  return profile.agents.some(
+    (raw) => raw === division || raw === `${division}/${agentSlug}`,
+  );
+}
+
 function listField(value: string | undefined): string[] {
   if (!value) return [];
   return value
@@ -385,8 +398,10 @@ describe("skill definitions", () => {
       const division = agentDivision.get(target);
       if (!division) continue; // covered by the previous test
       for (const p of shippedBy(s.slug)) {
-        if (!p.agents.includes(division)) {
-          unreachable.push(`${s.slug} -> ${target} (${division}/) unreachable from profile ${p.name}`);
+        if (!profileProvides(p, target)) {
+          unreachable.push(
+            `${s.slug} -> ${target} (${division}/) unreachable from profile ${p.name}`,
+          );
         }
       }
     }
@@ -395,7 +410,7 @@ describe("skill definitions", () => {
 });
 
 describe("profiles", () => {
-  it("every division they install exists", () => {
+  it("every agents: entry resolves, as a division or a single agent", () => {
     const divisions = new Set(
       fs
         .readdirSync(path.join(repoRoot, "agents"), { withFileTypes: true })
@@ -404,8 +419,19 @@ describe("profiles", () => {
     );
     const ghosts: string[] = [];
     for (const p of profiles) {
-      for (const d of p.agents) {
-        if (!divisions.has(d)) ghosts.push(`${p.name}: ${d}`);
+      for (const raw of p.agents) {
+        const slash = raw.indexOf("/");
+        if (slash < 0) {
+          if (!divisions.has(raw)) ghosts.push(`${p.name}: agents/${raw}/ does not exist`);
+          continue;
+        }
+        const division = raw.slice(0, slash);
+        const agent = raw.slice(slash + 1);
+        if (!divisions.has(division)) {
+          ghosts.push(`${p.name}: agents/${division}/ does not exist`);
+        } else if (!fs.existsSync(path.join(repoRoot, "agents", division, `${agent}.md`))) {
+          ghosts.push(`${p.name}: agents/${division}/${agent}.md does not exist`);
+        }
       }
     }
     expect(ghosts).toEqual([]);
