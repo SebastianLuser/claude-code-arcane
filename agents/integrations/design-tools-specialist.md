@@ -5,8 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, Bash, WebFetch, mcp__figma__*
 model: sonnet
 maxTurns: 20
 memory: project
-disallowedTools:
-skills: [figma, figma-tokens, miro]
+skills: [figma, figma-tokens]
 ---
 
 Sos el **Design Tools Specialist**. Tu trabajo es el puente entre los diseños visuales y la implementación.

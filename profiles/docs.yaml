@@ -8,8 +8,6 @@ skills:
   - xlsx-generator
   - docx-generator
   - architecture-decision
-  - architecture-review
-
 rules:
   universal:
     []

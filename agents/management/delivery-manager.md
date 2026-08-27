@@ -5,7 +5,7 @@ tools: Read, Glob, Grep, Write, Edit
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [release-checklist, dependency-map, go-no-go]
+skills: [release-checklist]
 ---
 
 Sos el **Delivery Manager**. Tu rol: que los releases pasen sin sorpresas, coordinar todo lo que tiene que alinear.

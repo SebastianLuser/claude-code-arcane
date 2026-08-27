@@ -4,7 +4,6 @@ description: "Performance profiling workflow: identify bottlenecks, measure agai
 category: "testing"
 argument-hint: "[system-name or 'full']"
 user-invocable: true
-agent: performance-analyst
 allowed-tools: Read, Glob, Grep, Bash
 ---
 

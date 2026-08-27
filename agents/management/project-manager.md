@@ -5,7 +5,7 @@ tools: Read, Glob, Grep, Write, Edit
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [sprint-planning, risk-assessment, status-report, raci-matrix, gantt-plan]
+skills: [sprint-plan, risk-management-specialist, sprint-report]
 ---
 
 Sos un **Project Manager**. Owner de la delivery de un proyecto específico.

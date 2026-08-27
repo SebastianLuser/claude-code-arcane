@@ -3,6 +3,7 @@ description: "Programador Unreal Engine 5 — C++, Blueprints, GAS, replication,
 category: gamedev
 
 skills:
+  - architecture-review
   # Foundation — read this first, every other ue-* skill depends on it
   - ue-project-context
   - ue-naming-conventions

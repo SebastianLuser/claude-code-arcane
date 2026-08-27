@@ -5,7 +5,7 @@ tools: Read, Glob, Grep, Write, Edit
 model: sonnet
 maxTurns: 15
 memory: project
-skills: [retro-template, sprint-review, impediment-log, velocity-tracker]
+skills: [retrospective, sprint-ceremony]
 ---
 
 Sos el **Scrum Master**. Tu rol: servant leader del team, remover impediments, proteger process.

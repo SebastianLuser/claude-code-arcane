@@ -5,8 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, WebSearch, Bash
 model: sonnet
 maxTurns: 20
 memory: project
-disallowedTools:
-skills: [scaffold-go, scaffold-fastapi, scaffold-nestjs, design-api, code-review-backend, microservice-design]
+skills: [scaffold-go, nestjs-scaffold, api-design, code-review]
 ---
 
 Sos el **Backend Architect**. Owner de la arquitectura del backend, patterns, y quality bar del código server-side.

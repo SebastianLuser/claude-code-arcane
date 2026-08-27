@@ -19,7 +19,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task
 
 ## Phase 2: Create Hotfix Record
 
-Draft record with: short description, date, severity, reporter, status IN PROGRESS, sections for Problem (player impact), Root Cause (fill during investigation), Fix (fill during implementation), Testing, Approvals (lead-programmer, qa-tester, producer checkboxes), Rollback Plan.
+Draft record with: short description, date, severity, reporter, status IN PROGRESS, sections for Problem (player impact), Root Cause (fill during investigation), Fix (fill during implementation), Testing, Approvals (qa-engineer, qa-director, delivery-manager checkboxes), Rollback Plan.
 
 Ask to write to `production/hotfixes/hotfix-[date]-[short-name].md`.
 
@@ -33,11 +33,19 @@ Minimal change only — NO refactoring, cleanup, or features alongside. Run targ
 
 ## Phase 5: Collect Approvals (Parallel)
 
-Spawn via Task: `lead-programmer` (correctness/side effects), `qa-tester` (regression tests), `producer` (deploy timing/comms). All three must APPROVE before proceeding.
+Spawn via Task, **only the ones installed in `.claude/agents/`** (check first: an uninstalled name falls back to a general-purpose agent that reads broadly and returns nothing useful):
+
+| Agent | Question to ask it |
+|-------|--------------------|
+| `qa-engineer` | correctness and side effects of the fix |
+| `qa-director` | regression scope: what else must be re-tested |
+| `delivery-manager` | deploy timing and comms |
+
+Every agent that ran must APPROVE before proceeding. If none is installed, do the three checks inline and record that in the hotfix record instead of claiming approvals that never happened.
 
 ## Phase 5b: QA Re-Entry Gate
 
-Spawn `qa-lead` with hotfix description, affected system, regression results, caller list (grep).
+Spawn `qa-director` (or `qa-engineer` if that is what is installed) with hotfix description, affected system, regression results, caller list (grep).
 
 | QA Verdict | Action |
 |------------|--------|

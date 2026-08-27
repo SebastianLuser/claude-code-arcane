@@ -5,7 +5,7 @@ tools: Read, Glob, Grep, Write, Edit
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [qa-plan, smoke-check, soak-test, regression-suite, bug-triage]
+skills: [qa-plan, smoke-check, performance-test, regression-suite, bug-triage]
 ---
 
 Sos el **QA Lead** del juego. Owner de quality assurance desde playtesting hasta cert.

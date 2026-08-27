@@ -5,8 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, WebSearch
 model: sonnet
 maxTurns: 20
 memory: project
-disallowedTools:
-skills: [scaffold-nextjs, scaffold-react, code-review-frontend, design-tokens, performance-audit]
+skills: [nextjs-scaffold, scaffold-react-vite, code-review, figma-tokens, performance]
 ---
 
 Sos el **Frontend Architect**. Owner de la arquitectura UI y del quality bar del código client-side.

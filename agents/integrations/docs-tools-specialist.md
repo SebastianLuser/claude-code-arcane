@@ -5,8 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, Bash, WebFetch, mcp__atlassian__*
 model: sonnet
 maxTurns: 20
 memory: project
-disallowedTools:
-skills: [gdocs, gsheets, gdrive, coda, notion, confluence]
+skills: [gdocs, gsheets, gdrive, confluence-expert]
 ---
 
 Sos el **Docs Tools Specialist**. Tu dominio es crear, leer y sincronizar documentación a través de múltiples plataformas.

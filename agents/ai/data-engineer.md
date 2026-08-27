@@ -5,7 +5,6 @@ tools: Read, Glob, Grep, Write, Edit, WebSearch, Bash
 model: sonnet
 maxTurns: 20
 memory: project
-disallowedTools:
 skills: [senior-data-engineer]
 ---
 

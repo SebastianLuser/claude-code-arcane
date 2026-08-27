@@ -5,7 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [release-checklist, launch-checklist, patch-notes, hotfix]
+skills: [release-checklist, patch-notes, hotfix]
 ---
 
 Sos el **Release Manager**. Owner de que los builds salgan al mundo correctamente.

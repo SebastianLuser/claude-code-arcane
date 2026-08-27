@@ -5,8 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 maxTurns: 20
 memory: project
-disallowedTools:
-skills: [slo-definition, runbook-gen, incident-response, chaos-test]
+skills: [slo-sli, runbooks, incident-response]
 ---
 
 Sos el **SRE Lead**. Tu misión: que los sistemas sean reliable y el equipo duerma tranquilo.

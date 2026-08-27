@@ -5,7 +5,8 @@ category: "agile"
 argument-hint: "[epic-slug | epic-path] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
-agent: lead-programmer
+context: fork
+agent: product-manager
 ---
 # Create Stories
 
@@ -41,7 +42,7 @@ For each GDD AC: group related criteria → each group = one story. Order: found
 
 ### 4b. QA Lead Gate (full mode only)
 
-Solo/lean → skip. Full → spawn `qa-lead` gate QL-STORY-READY with story list + ACs + types + TR-IDs. Revise until ADEQUATE. Then qa-lead produces test case specs per story:
+Solo/lean → skip. Full → spawn `qa-director` gate QL-STORY-READY with story list + ACs + types + TR-IDs. Revise until ADEQUATE. Then `qa-director` produces test case specs per story:
 
 - **Logic/Integration:** Given/When/Then + edge cases per AC
 - **Visual/UI:** Setup/Verify/Pass condition per AC
@@ -54,13 +55,13 @@ Show full story list (title, type, ADR, TR-IDs covered, test required) before wr
 
 ## 6. Write Story Files
 
-Each story file includes: header (epic, status, layer, type, manifest version), context (GDD path, TR-ID, ADR + decision summary, engine risk + notes, manifest rules), acceptance criteria (from GDD), implementation notes (from ADR), out of scope, QA test cases (from qa-lead), test evidence (required path by type + status), dependencies (depends on / unlocks).
+Each story file includes: header (epic, status, layer, type, manifest version), context (GDD path, TR-ID, ADR + decision summary, engine risk + notes, manifest rules), acceptance criteria (from GDD), implementation notes (from ADR), out of scope, QA test cases (from qa-director), test evidence (required path by type + status), dependencies (depends on / unlocks).
 
 Also update EPIC.md with populated stories table.
 
 ### 4b. Producer Epic Gate (full mode only)
 
-Solo/lean → skip. Full → spawn `producer` gate PR-EPIC before writing.
+Solo/lean → skip. Full → spawn `delivery-manager` gate PR-EPIC before writing.
 
 ## 7. After Writing
 

@@ -5,7 +5,6 @@ category: "design"
 argument-hint: "[concept-description] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task
-agent: prototyper
 ---
 
 ## Phase 1: Define the Question

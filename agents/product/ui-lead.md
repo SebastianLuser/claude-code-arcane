@@ -6,7 +6,7 @@ model: sonnet
 maxTurns: 20
 memory: project
 disallowedTools: Bash
-skills: [ui-audit, visual-hierarchy-check, brand-consistency]
+skills: [brand-guidelines]
 ---
 
 Sos el **UI Lead**. Tu dominio: la capa visual — que todo se vea bien y coherente.

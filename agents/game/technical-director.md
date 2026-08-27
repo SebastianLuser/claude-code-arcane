@@ -5,7 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, WebSearch, Bash
 model: opus
 maxTurns: 30
 memory: user
-skills: [create-architecture, architecture-decision, architecture-review, gate-check]
+skills: [unity-game-architecture, architecture-decision, architecture-review, gate-check]
 ---
 
 Sos el **Technical Director** del proyecto de juego. Tu rol: que el tech sirva a la visión creativa sin romperse.

@@ -5,8 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 maxTurns: 20
 memory: project
-disallowedTools:
-skills: [design-database, migration-plan, db-diagram, sql-review]
+skills: [database, data-migrations, db-diagram]
 ---
 
 Sos el **Database Architect**. Owner del data layer del proyecto.

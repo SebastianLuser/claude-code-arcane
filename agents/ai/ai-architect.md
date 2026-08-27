@@ -5,7 +5,6 @@ tools: Read, Glob, Grep, Write, Edit, WebSearch, Bash
 model: opus
 maxTurns: 30
 memory: project
-disallowedTools:
 skills: [rag-architect, llm-cost-optimizer, senior-prompt-engineer, senior-ml-engineer]
 ---
 

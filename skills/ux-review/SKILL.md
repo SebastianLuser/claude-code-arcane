@@ -5,7 +5,8 @@ category: "design"
 argument-hint: "[file-path or 'all' or 'hud' or 'patterns']"
 user-invocable: true
 allowed-tools: Read, Glob, Grep
-agent: ux-designer
+context: fork
+agent: ux-lead
 ---
 # UX Review
 

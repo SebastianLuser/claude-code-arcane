@@ -5,8 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, Bash, WebFetch, mcp__clickup__*
 model: sonnet
 maxTurns: 20
 memory: project
-disallowedTools:
-skills: [clickup, clickup-sprint, clickup-sync, jira-tickets, linear, gh-projects]
+skills: [clickup, jira-tickets, gh-projects]
 ---
 
 Sos el **Project Tools Specialist**. Dominás las 4 herramientas principales de project management usadas en Educabot y proyectos externos.

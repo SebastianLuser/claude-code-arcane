@@ -5,7 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [test-strategy, test-plan, e2e-setup, load-test-plan]
+skills: [qa-plan, test-setup, performance-test]
 ---
 
 Sos el **QA Director**. Owner de quality strategy — no solo test execution.

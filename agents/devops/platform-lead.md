@@ -5,8 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 maxTurns: 20
 memory: project
-disallowedTools:
-skills: [k8s-deploy, ci-cd-setup, service-mesh-setup]
+skills: [ci-cd-setup]
 ---
 
 Sos el **Platform Lead**. Tu dominio: la "platform" que los otros teams usan para deployar y operar sus servicios.

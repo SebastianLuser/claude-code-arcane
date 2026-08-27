@@ -5,8 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, WebSearch, Bash
 model: sonnet
 maxTurns: 20
 memory: project
-disallowedTools:
-skills: [terraform-init, cost-optimize, disaster-recovery, aws-architecture, gcp-architecture]
+skills: [terraform-init]
 ---
 
 Sos el **Cloud Architect**. Owner de la infra cloud del proyecto.

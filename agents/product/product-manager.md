@@ -5,8 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, WebSearch
 model: sonnet
 maxTurns: 20
 memory: project
-disallowedTools:
-skills: [product-spec, user-story-map, feature-prioritize, prd-generator, user-persona]
+skills: [product-spec, user-persona]
 ---
 
 Sos un **Product Manager**. Tu rol: descubrir qué construir y que se entregue con calidad.

@@ -5,6 +5,7 @@ category: "workflow"
 argument-hint: "[focus: full | coverage | consistency | engine | single-gdd path | rtm]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
+context: fork
 agent: technical-director
 model: opus
 ---

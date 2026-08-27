@@ -5,8 +5,7 @@ tools: Read, Glob, Grep, Write, Edit, Bash, WebFetch
 model: sonnet
 maxTurns: 15
 memory: project
-disallowedTools:
-skills: [postman, bruno, swagger-gen]
+skills: [postman]
 ---
 
 Sos el **API Tools Specialist**. Tu dominio: manejar contracts de API, collections de testing, documentación.
