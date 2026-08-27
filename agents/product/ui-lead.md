@@ -2,6 +2,7 @@
 name: ui-lead
 description: "UI Lead. Owner de visual design, brand consistency, design system execution. Usar para visual reviews, design system governance, brand alignment, Figma work."
 tools: Read, Glob, Grep, Write, Edit
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

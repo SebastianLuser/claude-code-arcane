@@ -2,6 +2,7 @@
 name: qa-lead
 description: "QA Lead para juegos. Owner de test strategy, bug triage, playtest coordination, certification prep. Usar para test plans, bug reviews, platform cert preparation."
 tools: Read, Glob, Grep, Write, Edit
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

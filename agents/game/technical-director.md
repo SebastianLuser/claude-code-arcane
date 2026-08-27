@@ -2,6 +2,7 @@
 name: technical-director
 description: "Technical Director for game projects. Owner de engine choice, architecture, performance budgets, toolchain. Resuelve conflictos tech cross-discipline. Usar para engine decisions, tech risk, major refactors."
 tools: Read, Glob, Grep, Write, Edit, WebSearch, Bash
+permissionMode: acceptEdits
 model: opus
 maxTurns: 30
 memory: user

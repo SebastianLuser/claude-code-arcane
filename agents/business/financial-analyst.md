@@ -2,6 +2,7 @@
 name: financial-analyst
 description: "Financial Analyst. Especialista en análisis financiero, DCF, ratios, budgets, y forecasting. Usar para valuaciones, análisis de varianza, construcción de modelos financieros, y benchmarking de métricas SaaS."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

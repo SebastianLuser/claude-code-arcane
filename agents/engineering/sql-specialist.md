@@ -2,6 +2,7 @@
 name: sql-specialist
 description: "Specialist en SQL agnostico: query design, JOIN strategies, indexes, EXPLAIN, transactions, normalizacion. Reporta a database-architect."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project

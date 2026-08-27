@@ -2,6 +2,7 @@
 name: data-scientist
 description: "Data Scientist. Especialista en modelado estadístico, diseño de experimentos, A/B testing, feature engineering, y análisis causal. Usar para análisis exploratorio, diseño de métricas, validación de hipótesis."
 tools: Read, Glob, Grep, Write, Edit, WebSearch, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

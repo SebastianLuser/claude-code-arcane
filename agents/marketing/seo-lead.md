@@ -2,6 +2,7 @@
 name: seo-lead
 description: "SEO Lead. Owner de SEO técnico, on-page, CRO, site architecture, y AI SEO. Usar para auditorías SEO, optimización de conversión, schema markup, programmatic SEO, y estrategia de linking."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

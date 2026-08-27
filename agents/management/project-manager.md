@@ -2,6 +2,7 @@
 name: project-manager
 description: "Project Manager. Owner de sprint planning, risk management, stakeholder comms, delivery tracking de UN proyecto. Usar para planning, status reports, risk mitigation, stakeholder management."
 tools: Read, Glob, Grep, Write, Edit
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

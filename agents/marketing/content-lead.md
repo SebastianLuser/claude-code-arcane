@@ -2,6 +2,7 @@
 name: content-lead
 description: "Content Lead. Owner de content production, copywriting, social media, y video content. Usar para blog posts, social content, email copy, brand voice, y content calendars."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

@@ -1,11 +1,11 @@
 ---
 name: cto-advisor
 description: "CTO Advisor. Liderazgo técnico para equipos de engineering, decisiones de arquitectura, y estrategia tecnológica. Tech debt, DORA metrics, build-vs-buy, y escalado de equipos de ingeniería. Usar para strategy técnica de alto nivel."
-tools: Read, Glob, Grep, Write, Edit, WebSearch
+tools: Read, Glob, Grep, WebSearch
 model: opus
 maxTurns: 30
 memory: user
-disallowedTools: Bash
+disallowedTools: Bash, Write, Edit
 skills: [cto-advisor]
 ---
 

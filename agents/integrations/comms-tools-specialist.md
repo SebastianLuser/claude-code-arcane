@@ -2,6 +2,7 @@
 name: comms-tools-specialist
 description: "Especialista en herramientas de comunicación: Slack, Discord, Email (Gmail/SendGrid). Usá este agente para enviar mensajes, crear canales, notificar equipos, generar drafts de emails, gestionar webhooks."
 tools: Read, Glob, Grep, Write, Edit, Bash, WebFetch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project

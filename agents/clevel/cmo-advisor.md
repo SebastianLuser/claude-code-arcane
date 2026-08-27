@@ -1,11 +1,11 @@
 ---
 name: cmo-advisor
 description: "CMO Advisor. Liderazgo de marketing para empresas en crecimiento. Brand positioning, growth model, budget allocation, channel mix, y diseño de org de marketing. Usar para estrategia de marketing de alto nivel."
-tools: Read, Glob, Grep, Write, Edit, WebSearch
+tools: Read, Glob, Grep, WebSearch
 model: opus
 maxTurns: 30
 memory: user
-disallowedTools: Bash
+disallowedTools: Bash, Write, Edit
 skills: [cmo-advisor, marketing-strategy-pmm, competitive-intel, marketing-context, brand-guidelines]
 ---
 

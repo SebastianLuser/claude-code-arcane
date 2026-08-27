@@ -2,6 +2,7 @@
 name: docs-tools-specialist
 description: "Especialista en herramientas de documentación y knowledge management: Google Docs, Google Sheets, Google Drive, Coda, Notion, Confluence. Usá este agente para crear docs estructurados, manipular spreadsheets, organizar drives, sincronizar knowledge bases."
 tools: Read, Glob, Grep, Write, Edit, Bash, WebFetch, mcp__atlassian__*
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

@@ -2,6 +2,7 @@
 name: security-architect
 description: "Security Architect. Owner de threat modeling, security reviews, compliance, OWASP. Usar para threat models, security audits, pentesting coordination, compliance requirements."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

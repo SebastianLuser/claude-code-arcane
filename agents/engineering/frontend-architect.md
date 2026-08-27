@@ -2,6 +2,7 @@
 name: frontend-architect
 description: "Lead de frontend. Owner de arquitectura de UI, state management, design systems, SSR/SPA, performance. Usar para decisiones de framework, estructura de app, reviews arquitecturales de frontend."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

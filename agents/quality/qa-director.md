@@ -2,6 +2,7 @@
 name: qa-director
 description: "QA Director. Owner de test strategy, automation roadmap, quality gates, test infrastructure. Usar para definir estrategia de testing, diseñar test plans, QA standards."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

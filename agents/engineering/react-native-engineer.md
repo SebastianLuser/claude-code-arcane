@@ -2,6 +2,7 @@
 name: react-native-engineer
 description: "Specialist en React Native + Expo + TS: navigation, native modules, EAS Build, performance mobile. Implementa apps mobile guiadas por mobile-lead."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project

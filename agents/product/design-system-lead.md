@@ -2,6 +2,7 @@
 name: design-system-lead
 description: "Design System Lead. Owner de component library, design tokens, cross-platform governance, documentation. Usar para crear/evolucionar design system, token strategy, component APIs."
 tools: Read, Glob, Grep, Write, Edit
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

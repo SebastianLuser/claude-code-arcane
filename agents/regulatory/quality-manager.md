@@ -2,6 +2,7 @@
 name: quality-manager
 description: "Quality Manager. Especialista en ISO 13485, QMS, document control, auditorías internas, CAPA, y risk management. Usar para implementación de QMS, preparación de auditorías, gestión documental, y procesos CAPA."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

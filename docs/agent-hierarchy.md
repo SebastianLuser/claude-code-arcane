@@ -150,4 +150,37 @@ Se lanzan desde los skills de `+freelance`. `client-screener` y `proposal-review
 3. **Lead de una división → Lead de otra división** (para colaboración cross-area)
 4. **Director → Director** (para conflictos estratégicos)
 
-**Los agentes NUNCA escriben a archivos directamente.** Todos los writes los hace la main session después de que el agente devuelve análisis/propuestas al usuario.
+## Consultores y ejecutores
+
+Cada agente es una de dos cosas, nunca las dos. La distinción no es de estilo:
+**un subagente no puede hacer preguntas.** `AskUserQuestion` no está en su pool
+de tools y su única salida es el reporte final al parent. Un agente con
+`Write`/`Edit` y la instrucción de pedir aprobación antes de escribir lee,
+formula sus preguntas, no tiene a quién hacérselas, devuelve texto y no toca un
+archivo. Ese fue el bug: 46 de 109 agentes estaban en esa situación.
+
+### Consultores (15) - read-only por diseño
+
+`career/` (4), `freelance/` (4), `clevel/` (6) y `engineering/nextjs-reviewer`.
+
+Existen para dar una lectura independiente: el que escribió el CV no lo puede
+revisar, y el que redactó la propuesta está convencido de su propio texto.
+Declaran `tools` sin `Write`/`Edit` y `disallowedTools: Bash, Write, Edit`.
+Read-only por diseño, no por precaución.
+
+### Ejecutores (94) - escriben
+
+Todo el resto. Declaran `permissionMode: acceptEdits`, que es el campo oficial
+que deja al subagente escribir sin gate interactivo.
+
+Su protocolo no es "preguntá y esperá" sino **declará el supuesto y seguí**:
+ante una ambigüedad eligen la opción más consistente con el código existente,
+la anotan en el reporte en una línea que empieza con `ASSUMPTION:` para que el
+caller pueda grepearla y contradecirla, y avanzan. La disciplina de leer el
+diseño antes de escribir se mantiene; lo que se eliminó es la espera imposible.
+
+### Quién aplica los cambios
+
+El ejecutor escribe sus propios archivos. La main session sigue siendo la que
+decide *a quién* invocar y la que integra los resultados, pero ya no es el
+único camino a disco.

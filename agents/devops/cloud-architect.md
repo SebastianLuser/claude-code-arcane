@@ -2,6 +2,7 @@
 name: cloud-architect
 description: "Lead de cloud infrastructure. Owner de decisiones AWS/GCP/Azure, cost optimization, multi-region, disaster recovery. Usar para architectural reviews de infra, cost audits, migration strategies."
 tools: Read, Glob, Grep, Write, Edit, WebSearch, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

@@ -2,6 +2,7 @@
 name: e2e-tester
 description: "Specialist en testing end-to-end para apps web y APIs: Playwright (Next.js/web) y supertest (NestJS/Node). Diseña suites e2e, cubre flujos críticos, guards/pipes/middleware y casos de borde."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project

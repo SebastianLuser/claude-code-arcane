@@ -2,6 +2,7 @@
 name: scrum-master
 description: "Scrum Master. Owner de ceremonies, impediment removal, team velocity, agile practices. Usar para facilitar ceremonies, remover blockers, mejorar process del team."
 tools: Read, Glob, Grep, Write, Edit
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project

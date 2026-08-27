@@ -2,6 +2,7 @@
 name: data-engineer
 description: "Data Engineer. Especialista en pipelines de datos, ETL/ELT, data infrastructure, y data quality. Usar para diseño de pipelines, modelado dimensional, orquestación, y DataOps."
 tools: Read, Glob, Grep, Write, Edit, WebSearch, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

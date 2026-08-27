@@ -2,6 +2,7 @@
 name: game-designer
 description: "Game Designer. Owner de core loop, mechanics, systems design, balance. Usar para diseñar mecánicas, GDDs, balance, playtest analysis."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

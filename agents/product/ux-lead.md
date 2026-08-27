@@ -2,6 +2,7 @@
 name: ux-lead
 description: "UX Lead. Owner de user research, journey mapping, information architecture, usability. Usar para research plans, usability audits, diseño de flows, validación con usuarios."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

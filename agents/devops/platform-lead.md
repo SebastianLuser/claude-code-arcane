@@ -2,6 +2,7 @@
 name: platform-lead
 description: "Lead de platform engineering. Owner de Kubernetes, service mesh, internal developer platform, CI/CD systems. Usar para decisiones de platform, onboarding de servicios, evolución del tooling interno."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

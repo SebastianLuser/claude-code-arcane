@@ -2,6 +2,7 @@
 name: backend-architect
 description: "Lead de backend. Owner de arquitectura de servicios, APIs, data layer, patterns (Clean Arch, DDD, CQRS). Usar para diseño de backend, reviews arquitecturales, decisiones de structure, refactors de scope significativo."
 tools: Read, Glob, Grep, Write, Edit, WebSearch, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

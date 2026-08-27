@@ -2,6 +2,7 @@
 name: project-tools-specialist
 description: "Especialista en herramientas de project management: ClickUp (MCP nativo), Jira (REST API v3), Linear (GraphQL), GitHub Projects (gh CLI). Usá este agente para crear, actualizar, buscar, transicionar tickets/tasks, generar reportes de sprint, o sincronizar entre estas herramientas."
 tools: Read, Glob, Grep, Write, Edit, Bash, WebFetch, mcp__clickup__*
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

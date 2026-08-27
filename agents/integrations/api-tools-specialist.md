@@ -2,6 +2,7 @@
 name: api-tools-specialist
 description: "Especialista en herramientas de API testing y documentación: Postman, Bruno, Swagger/OpenAPI. Usá este agente para gestionar collections, environments, generar specs OpenAPI, convertir entre formatos, automatizar tests de API."
 tools: Read, Glob, Grep, Write, Edit, Bash, WebFetch
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project

@@ -2,6 +2,7 @@
 name: ecommerce-architect
 description: "E-Commerce Architect. Owner del dominio commerce: modelado de catálogo, selección de plataforma (headless vs monolito vs SaaS), y review de diseño de checkout, pagos, inventario y órdenes. Agnóstico de lenguaje/framework. Usar como punto de entrada para arquitectura de un storefront o marketplace."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
+permissionMode: acceptEdits
 model: opus
 maxTurns: 30
 memory: project

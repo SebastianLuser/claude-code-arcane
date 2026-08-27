@@ -2,6 +2,7 @@
 name: node-engineer
 description: "Specialist en Node.js + TypeScript estricto: NestJS/Fastify, async patterns, npm/pnpm, esbuild. Implementa servicios backend TS guiados por backend-architect."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project

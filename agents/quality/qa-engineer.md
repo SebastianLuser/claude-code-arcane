@@ -2,6 +2,7 @@
 name: qa-engineer
 description: "QA Engineer. Ejecuta test plans, automation, regression, bug reporting. Usar para escribir tests, analizar flaky tests, configurar test suites, reportar bugs."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

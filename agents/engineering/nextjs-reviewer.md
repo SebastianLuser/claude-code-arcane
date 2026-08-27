@@ -1,7 +1,8 @@
 ---
 name: nextjs-reviewer
 description: "Reviewer especializado en Next.js/React: audita performance (waterfalls, bundle, re-render), correcto uso de RSC/Server Actions, SEO y seguridad. Aplica las 64 reglas de Vercel priorizadas por impacto."
-tools: Read, Glob, Grep, Bash
+tools: Read, Glob, Grep
+disallowedTools: Bash, Write, Edit
 model: sonnet
 maxTurns: 12
 memory: project

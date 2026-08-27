@@ -1,11 +1,11 @@
 ---
 name: chief-of-staff
 description: "Chief of Staff. Router y orquestador del C-suite. Dirige preguntas al advisor correcto, coordina board meetings multi-agente, sintetiza outputs, y trackea decisiones. Usar como punto de entrada para cualquier consulta ejecutiva."
-tools: Read, Glob, Grep, Write, Edit, WebSearch
+tools: Read, Glob, Grep, WebSearch
 model: opus
 maxTurns: 30
 memory: user
-disallowedTools: Bash
+disallowedTools: Bash, Write, Edit
 skills: [chief-of-staff, board-meeting, board-deck-builder, org-health-diagnostic, scenario-war-room, decision-logger, context-engine]
 ---
 

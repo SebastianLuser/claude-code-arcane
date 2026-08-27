@@ -2,6 +2,7 @@
 name: flutter-engineer
 description: "Flutter Engineer. Specialist in Flutter/Dart cross-platform development, Riverpod/Bloc state management, GoRouter, performance optimization. Usar para Flutter app development, widget patterns, state management decisions."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 15
 memory: project

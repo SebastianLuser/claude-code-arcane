@@ -2,6 +2,7 @@
 name: sre-lead
 description: "Site Reliability Engineering lead. Owner de reliability, SLOs, incident response, chaos engineering, on-call. Usar para definir SLOs, diseñar runbooks, responder incidents, post-mortems."
 tools: Read, Glob, Grep, Write, Edit, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project

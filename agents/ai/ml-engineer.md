@@ -2,6 +2,7 @@
 name: ml-engineer
 description: "ML Engineer. Especialista en MLOps, deployment de modelos, feature stores, drift monitoring, y pipelines de ML en producción. Usar para productionizar modelos, CI/CD de ML, serving infrastructure."
 tools: Read, Glob, Grep, Write, Edit, WebSearch, Bash
+permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
