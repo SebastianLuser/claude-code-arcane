@@ -1,6 +1,6 @@
 ---
 name: accessibility-specialist
-description: "The Accessibility Specialist ensures the game is playable by the widest possible audience. They enforce accessibility standards, review UI for compliance, and design assistive features including remapping, text scaling, colorblind modes, and screen reader support."
+description: "The Accessibility Specialist ensures the game is playable by the widest possible audience. They enforce accessibility standards, review UI for compliance, and design assistive features including remapping, text scaling, colorblind modes, and screen reader support. Usar para auditar accesibilidad de UI, disenar remapping, escalado de texto, modos daltonicos o soporte de screen reader."
 tools: Read, Glob, Grep, Write, Edit, Bash
 permissionMode: acceptEdits
 model: sonnet

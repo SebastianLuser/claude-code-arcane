@@ -1,6 +1,6 @@
 ---
 name: nestjs-engineer
-description: "Specialist en NestJS production-ready: arquitectura por feature modules, DI, guards/pipes/interceptors, Prisma/Drizzle, auth JWT, testing. Implementa APIs backend guiadas por backend-architect."
+description: "Specialist en NestJS production-ready: arquitectura por feature modules, DI, guards/pipes/interceptors, Prisma/Drizzle, auth JWT, testing. Implementa APIs backend guiadas por backend-architect. Usar para implementar modulos, guards, pipes y auth en NestJS."
 tools: Read, Glob, Grep, Write, Edit, Bash
 permissionMode: acceptEdits
 model: sonnet

@@ -246,6 +246,26 @@ describe("agent definitions", () => {
     expect(empty).toEqual([]);
   });
 
+  it("every description says when to invoke the agent", () => {
+    // The description is the only thing that decides whether an agent gets
+    // picked or ignored. A description that only says what the agent *is*
+    // leaves that decision to chance.
+    // "Usar para / cuando / como / antes de …" all count, as do the English
+    // forms. What does not count is a description that never says when.
+    const trigger = /\busar\b|us[aá] este agente|use (when|this agent)|trigger:/i;
+    const silent = agents
+      .filter((a) => !trigger.test(a.fm.description ?? ""))
+      .map((a) => a.file);
+    expect(silent).toEqual([]);
+  });
+
+  it("no description runs past 400 characters", () => {
+    const bloated = agents
+      .filter((a) => (a.fm.description ?? "").length > 400)
+      .map((a) => `${a.file}: ${(a.fm.description ?? "").length} chars`);
+    expect(bloated).toEqual([]);
+  });
+
   it("maxTurns is one of the three tier budgets", () => {
     // docs/agent-hierarchy.md defines Director 30 / Lead 20 / Specialist 15.
     // Nine agents carried 10, 12 or 25, which belongs to no tier.

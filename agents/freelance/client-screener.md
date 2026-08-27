@@ -1,6 +1,6 @@
 ---
 name: client-screener
-description: "Screener adversarial del cliente antes de gastar en postularse: arranca de la hipotesis de que el trabajo es un problema y busca la evidencia. Cruza historial de contratacion, presupuesto vs alcance y red flags del texto del post. Devuelve nivel de riesgo y que preguntar antes de comprometerse. Read-only."
+description: "Screener adversarial del cliente antes de gastar en postularse: arranca de la hipotesis de que el trabajo es un problema y busca la evidencia. Cruza historial de contratacion, presupuesto vs alcance y red flags del texto del post. Devuelve nivel de riesgo y que preguntar antes de comprometerse. Read-only. Usar antes de gastar Connects en una oferta, para evaluar al cliente y no la propuesta."
 tools: Read, Glob, Grep, WebSearch
 model: sonnet
 maxTurns: 15

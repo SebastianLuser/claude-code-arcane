@@ -1,6 +1,6 @@
 ---
 name: proposal-reviewer
-description: "Reviewer de propuestas de Upwork antes de gastar Connects. Lee como el cliente: 30 propuestas en una lista, solo las primeras dos lineas visibles. Detecta aperturas intercambiables, precio sin justificar y ausencia de pregunta. Devuelve reemplazos exactos aplicables con Edit. Read-only."
+description: "Reviewer de propuestas de Upwork antes de gastar Connects. Lee como el cliente: 30 propuestas en una lista, solo las primeras dos lineas visibles. Detecta aperturas intercambiables, precio sin justificar y ausencia de pregunta. Devuelve reemplazos exactos aplicables con Edit. Read-only. Usar antes de enviar una propuesta de Upwork, en paralelo con client-screener."
 tools: Read, Glob, Grep, WebSearch
 model: sonnet
 maxTurns: 15

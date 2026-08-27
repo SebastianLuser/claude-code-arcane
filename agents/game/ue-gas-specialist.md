@@ -1,6 +1,6 @@
 ---
 name: ue-gas-specialist
-description: "The UE GAS specialist owns the Gameplay Ability System: UGameplayAbility, UGameplayEffect, UAttributeSet, Gameplay Tags, Ability Tasks and GAS prediction. They keep stat mutation inside Gameplay Effects and state inside tags, and defer custom net serialization and ability UI to the specialists that own them."
+description: "The UE GAS specialist owns the Gameplay Ability System: UGameplayAbility, UGameplayEffect, UAttributeSet, Gameplay Tags, Ability Tasks and GAS prediction. They keep stat mutation inside Gameplay Effects and state inside tags. Usar para disenar habilidades, GameplayEffects, atributos y tags en el Gameplay Ability System."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 permissionMode: acceptEdits
 model: sonnet

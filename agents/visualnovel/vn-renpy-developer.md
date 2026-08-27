@@ -1,6 +1,6 @@
 ---
 name: vn-renpy-developer
-description: "Ren'Py Developer. Expert in Ren'Py engine: screen language, ATL animations, Python integration, layered images, save/load systems, gallery implementation, localization, and build configuration."
+description: "Ren'Py Developer. Expert in Ren'Py engine: screen language, ATL animations, Python integration, layered images, save/load systems, gallery implementation, localization, and build configuration. Usar para implementar screens, ATL, integracion Python y build en Ren'Py."
 tools: Read, Glob, Grep, Write, Edit, Bash
 permissionMode: acceptEdits
 model: sonnet

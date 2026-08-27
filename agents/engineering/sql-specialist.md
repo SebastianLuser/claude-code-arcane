@@ -1,6 +1,6 @@
 ---
 name: sql-specialist
-description: "Specialist en SQL agnostico: query design, JOIN strategies, indexes, EXPLAIN, transactions, normalizacion. Reporta a database-architect."
+description: "Specialist en SQL agnostico: query design, JOIN strategies, indexes, EXPLAIN, transactions, normalizacion. Reporta a database-architect. Usar para disenar u optimizar queries, indices y transacciones SQL."
 tools: Read, Glob, Grep, Write, Edit, Bash
 permissionMode: acceptEdits
 model: sonnet

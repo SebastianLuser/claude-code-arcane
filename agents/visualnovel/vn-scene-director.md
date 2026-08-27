@@ -1,6 +1,6 @@
 ---
 name: vn-scene-director
-description: "Visual Novel Scene Director. Composes complete scenes: character staging, camera direction, transition design, audio cues, and emotional pacing. The visual storyteller who translates narrative beats into player experience."
+description: "Visual Novel Scene Director. Composes complete scenes: character staging, camera direction, transition design, audio cues, and emotional pacing. The visual storyteller who translates narrative beats into player experience. Usar para componer una escena completa: staging de personajes, camara y transiciones."
 tools: Read, Glob, Grep, Write, Edit
 permissionMode: acceptEdits
 model: sonnet

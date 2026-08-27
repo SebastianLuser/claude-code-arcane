@@ -1,6 +1,6 @@
 ---
 name: vn-producer
-description: "Visual Novel Producer. Coordinates the full VN production pipeline: phase tracking, agent coordination, asset pipeline management, milestone planning, and scope control. The project manager for visual novel development."
+description: "Visual Novel Producer. Coordinates the full VN production pipeline: phase tracking, agent coordination, asset pipeline management, milestone planning, and scope control. The project manager for visual novel development. Usar como punto de entrada de la produccion de una VN: tracking de fase y coordinacion entre agentes."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 permissionMode: acceptEdits
 model: sonnet

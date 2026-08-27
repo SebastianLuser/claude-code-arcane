@@ -1,6 +1,6 @@
 ---
 name: react-native-engineer
-description: "Specialist en React Native + Expo + TS: navigation, native modules, EAS Build, performance mobile. Implementa apps mobile guiadas por mobile-lead."
+description: "Specialist en React Native + Expo + TS: navigation, native modules, EAS Build, performance mobile. Implementa apps mobile guiadas por mobile-lead. Usar para implementar pantallas, navigation y builds EAS en React Native."
 tools: Read, Glob, Grep, Write, Edit, Bash
 permissionMode: acceptEdits
 model: sonnet

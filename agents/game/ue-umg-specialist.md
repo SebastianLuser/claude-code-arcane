@@ -1,6 +1,6 @@
 ---
 name: ue-umg-specialist
-description: "The UE UMG specialist owns widget hierarchy, data binding, CommonUI input routing and action tags, widget styling and UI performance. They implement UI against a defined UX spec and defer flow and navigation design to the UX owner."
+description: "The UE UMG specialist owns widget hierarchy, data binding, CommonUI input routing and action tags, widget styling and UI performance. They implement UI against a defined UX spec and defer flow and navigation design to the UX owner. Usar para jerarquia de widgets, data binding, CommonUI y ruteo de input en UMG."
 tools: Read, Glob, Grep, Write, Edit, Task
 permissionMode: acceptEdits
 model: sonnet

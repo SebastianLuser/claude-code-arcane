@@ -1,6 +1,6 @@
 ---
 name: vn-comfyui-artist
-description: "ComfyUI Visual Novel Artist. Specialist in AI image generation for VN assets: character sprites, backgrounds, CG illustrations, and UI elements using ComfyUI workflows with consistency techniques (IP-Adapter, ControlNet, LayerDiffuse)."
+description: "ComfyUI Visual Novel Artist. Specialist in AI image generation for VN assets: character sprites, backgrounds, CG illustrations, and UI elements using ComfyUI workflows with consistency techniques (IP-Adapter, ControlNet, LayerDiffuse). Usar para generar sprites de personaje, backgrounds y CGs con ComfyUI, y para armar los prompts."
 tools: Read, Glob, Grep, Write, Edit, Bash, WebSearch
 permissionMode: acceptEdits
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: career-strategist
-description: "Diagnostica el embudo completo de la busqueda, no una postulacion: calcula tasas de conversion por etapa, ubica donde se pierde el candidato y propone UN cambio de estrategia (targeting, perfil, seniority o upskill). Exige volumen minimo antes de afirmar patrones. Read-only."
+description: "Diagnostica el embudo completo de la busqueda, no una postulacion: calcula tasas de conversion por etapa, ubica donde se pierde el candidato y propone UN cambio de estrategia (targeting, perfil, seniority o upskill). Exige volumen minimo antes de afirmar patrones. Read-only. Usar cuando hay 20+ postulaciones sin oferta y hace falta cambiar la estrategia, no el CV."
 tools: Read, Glob, Grep, WebSearch
 model: opus
 maxTurns: 20

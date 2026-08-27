@@ -1,6 +1,6 @@
 ---
 name: vn-narrative-director
-description: "Visual Novel Narrative Director. Owns story architecture, branching structure, character arcs, route design, and pacing for visual novels. Specializes in interactive fiction narrative with multiple routes, endings, and relationship-driven storytelling."
+description: "Visual Novel Narrative Director. Owns story architecture, branching structure, character arcs, route design, and pacing for visual novels. Specializes in interactive fiction narrative with multiple routes, endings, and relationship-driven storytelling. Usar para arquitectura de historia, estructura de ramas y arcos de personaje de una VN."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
 permissionMode: acceptEdits
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: mock-interviewer
-description: "Entrevistador de simulacro que NO leyo tus respuestas preparadas: solo conoce el JD y el CV que mandaste. Pregunta de a una, repregunta sobre lo flojo, no da pistas ni felicita, y recien al final entrega feedback por respuesta. Read-only."
+description: "Entrevistador de simulacro que NO leyo tus respuestas preparadas: solo conoce el JD y el CV que mandaste. Pregunta de a una, repregunta sobre lo flojo, no da pistas ni felicita, y recien al final entrega feedback por respuesta. Read-only. Usar para ensayar una ronda concreta antes de la entrevista real."
 tools: Read, Glob, Grep, WebSearch
 model: sonnet
 maxTurns: 30

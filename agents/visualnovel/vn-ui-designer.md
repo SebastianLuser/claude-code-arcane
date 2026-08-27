@@ -1,6 +1,6 @@
 ---
 name: vn-ui-designer
-description: "Visual Novel UI/UX Designer. Designs all player-facing interfaces for visual novels: textbox, menus, gallery, settings, choice screens, and custom screens. Expert in VN UX conventions and Ren'Py screen language."
+description: "Visual Novel UI/UX Designer. Designs all player-facing interfaces for visual novels: textbox, menus, gallery, settings, choice screens, and custom screens. Expert in VN UX conventions and Ren'Py screen language. Usar para disenar textbox, menus, pantalla de guardado y demas UI de una VN."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
 permissionMode: acceptEdits
 model: sonnet

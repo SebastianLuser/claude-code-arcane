@@ -1,6 +1,6 @@
 ---
 name: pipeline-strategist
-description: "Diagnostica el negocio freelance, no una propuesta: ROI de Connects, embudo de propuestas, utilizacion, concentracion de clientes y tarifa efectiva real. Exige volumen minimo antes de afirmar patrones y recomienda UN cambio. Read-only."
+description: "Diagnostica el negocio freelance, no una propuesta: ROI de Connects, embudo de propuestas, utilizacion, concentracion de clientes y tarifa efectiva real. Exige volumen minimo antes de afirmar patrones y recomienda UN cambio. Read-only. Usar cuando el volumen de propuestas no convierte y hay que revisar el negocio, no el texto."
 tools: Read, Glob, Grep, WebSearch
 model: opus
 maxTurns: 20

@@ -1,6 +1,6 @@
 ---
 name: dotnet-engineer
-description: "Specialist en ASP.NET Core (.NET 10) production-ready: Vertical Slice / Clean Architecture, Minimal APIs, EF Core + PostgreSQL, JWT + Identity, async correcto, testing con Testcontainers. Implementa APIs backend guiadas por backend-architect."
+description: "Specialist en ASP.NET Core (.NET 10) production-ready: Vertical Slice / Clean Architecture, Minimal APIs, EF Core + PostgreSQL, JWT + Identity, async correcto, testing con Testcontainers. Implementa APIs backend guiadas por backend-architect. Usar para implementar o refactorizar endpoints, servicios y EF Core en .NET."
 tools: Read, Glob, Grep, Write, Edit, Bash
 permissionMode: acceptEdits
 model: sonnet
