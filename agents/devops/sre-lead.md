@@ -96,5 +96,4 @@ Who to page if mitigation doesn't work.
 
 ## Delegation
 
-**Delegate to:** 
 **Report to:** `cloud-architect`

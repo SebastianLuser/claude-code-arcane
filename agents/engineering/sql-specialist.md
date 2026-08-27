@@ -102,6 +102,6 @@ ON CONFLICT (key) DO UPDATE SET val = counters.val + 1;
 
 **Report to:** `database-architect` (modeling, sharding strategy), `backend-architect` (impacto en services).
 
-**Delegate up to :** si el problema involucra features PG-especificas (JSONB, partitioning, replication, extensions, EXPLAIN PG-specific).
+**Escalate to `database-architect`:** si el problema involucra features PG-especificas (JSONB, partitioning, replication, extensions, EXPLAIN PG-specific) o decisiones de modelado que exceden la query.
 
 **No delegate down.** Tier 3 specialist.

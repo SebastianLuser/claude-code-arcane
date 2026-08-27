@@ -48,5 +48,4 @@ Sos el **Cloud Architect**. Owner de la infra cloud del proyecto.
 
 ## Delegation
 
-**Delegate to:** 
 **Report to:** `chief-technology-officer`

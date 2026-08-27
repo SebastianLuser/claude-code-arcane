@@ -68,5 +68,4 @@ stages:
 
 ## Delegation
 
-**Delegate to:** 
 **Report to:** `cloud-architect`

@@ -277,6 +277,42 @@ describe("agent definitions", () => {
     expect(blocked).toEqual([]);
   });
 
+  it("no delegation block is left empty or mangled", () => {
+    // Removing a dead reference with a regex can leave the header behind with
+    // nothing under it, or eat a name that sat inside the header text. A
+    // "**Delegate to:**" with no targets is worse than no header at all: it
+    // tells the agent to delegate and not to whom.
+    const header = /\*\*([^*]*(?:Delegate|Report|Escalat|Coordinat)[^*]*)\*\*:?(.*)$/i;
+    const bullet = /^\s*[-*]\s+\S/;
+    const broken: string[] = [];
+
+    for (const a of agents) {
+      const lines = a.body.split("\n");
+      lines.forEach((line, i) => {
+        const m = header.exec(line);
+        if (!m) return;
+        const [, label, inline] = m;
+
+        // mangled: a name was removed from inside the header itself
+        if (/\s{2,}/.test(label) || /\s:$/.test(label) || / :/.test(label)) {
+          broken.push(`${a.file}:${i + 1} mangled header: ${line.trim()}`);
+          return;
+        }
+        if (inline.trim()) return;
+
+        // no inline targets: a real list item must follow
+        for (let j = i + 1; j < lines.length; j++) {
+          if (!lines[j].trim()) continue;
+          const isList = bullet.test(lines[j]) && !lines[j].trim().startsWith("**");
+          if (!isList) broken.push(`${a.file}:${i + 1} empty block: ${line.trim()}`);
+          return;
+        }
+        broken.push(`${a.file}:${i + 1} empty block at end of file: ${line.trim()}`);
+      });
+    }
+    expect(broken).toEqual([]);
+  });
+
   it("every skill they preload exists on disk", () => {
     const dead: string[] = [];
     for (const a of agents) {

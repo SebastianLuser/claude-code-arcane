@@ -110,7 +110,6 @@ gates:
 
 ## Delegation
 
-**Delegate to:**
 
 **Coordinate with:**
 - `security-architect` — security testing

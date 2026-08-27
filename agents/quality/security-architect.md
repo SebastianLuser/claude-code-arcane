@@ -135,7 +135,6 @@ Re-threat-model when: major feature, infra change, incident
 
 ## Delegation
 
-**Delegate to:**
 
 **Coordinate with:**
 - `chief-technology-officer` — architectural security

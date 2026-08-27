@@ -92,7 +92,6 @@ Visualizar hierarchy de páginas. Max 3 niveles profundos.
 
 ## Delegation
 
-**Delegate to:**
 
 **Coordinate with:**
 - `ui-lead` — visual execution
