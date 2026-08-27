@@ -1,3 +1,22 @@
+# [2.8.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.7.1...v2.8.0) (2026-08-27)
+
+
+### Bug Fixes
+
+* **agents:** close the last 62 dead delegations and empty the allowlist ([99b4d63](https://github.com/SebastianLuser/claude-code-arcane/commit/99b4d63d662e7e1b516984635f0a8f4ccd1ee366))
+* **agents:** give every description an invocation trigger ([e152e52](https://github.com/SebastianLuser/claude-code-arcane/commit/e152e524609e7f2cf935945cb041a35b2c092774))
+* **agents:** make the three MCP wildcards verify instead of assume ([fd4f11e](https://github.com/SebastianLuser/claude-code-arcane/commit/fd4f11e5312f4cccb814cf2225fbc6413e2eea50))
+* **agents:** normalise tier budgets and put the two drifted docs under test ([e9830b8](https://github.com/SebastianLuser/claude-code-arcane/commit/e9830b8401f287e0f7ccf74b59de47039343d9fb))
+* **agents:** repair the blocks the regex removal mangled, and gate against it ([86c39a2](https://github.com/SebastianLuser/claude-code-arcane/commit/86c39a23c23f63e3c1413b8a229586ca13959ecd))
+* **agents:** split consultants from executors so executors can actually write ([3ee64d8](https://github.com/SebastianLuser/claude-code-arcane/commit/3ee64d8445384fe4d5dbb87198d8698bddfb676d))
+* **agents:** wire agent invocation and add the integrity gate that was missing ([2433324](https://github.com/SebastianLuser/claude-code-arcane/commit/24333240ba658d7808a62729a5cb9fa3e62def0b))
+* **skills:** align frontmatter with the official Claude Code contract ([f981fd0](https://github.com/SebastianLuser/claude-code-arcane/commit/f981fd0494ae720313ec017e92ee6b1c378feae0))
+
+
+### Features
+
+* **agents:** granular agent entries in profiles, and wire the 44 specs to CI ([72aeb1c](https://github.com/SebastianLuser/claude-code-arcane/commit/72aeb1c4e3aeb628c6637899fca05219ffaf0a69))
+
 ## [2.7.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.7.0...v2.7.1) (2026-08-20)
 
 
