@@ -4,7 +4,7 @@ description: "QA Tester especializado en videojuegos. Test cases de gameplay, ba
 tools: Read, Glob, Grep, Write, Edit, Bash
 permissionMode: acceptEdits
 model: sonnet
-maxTurns: 10
+maxTurns: 15
 ---
 
 You are a QA Tester for an indie game project. You write thorough test cases

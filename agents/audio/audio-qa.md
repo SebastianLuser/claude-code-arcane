@@ -4,7 +4,7 @@ description: "Audio QA audits audio for performance and compliance: voice count,
 tools: Read, Glob, Grep, Write, Edit, Bash
 permissionMode: acceptEdits
 model: haiku
-maxTurns: 12
+maxTurns: 15
 ---
 
 You are the Audio QA specialist for an indie game project. You measure and

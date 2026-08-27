@@ -4,7 +4,7 @@ description: "The Voice Director owns the voice pipeline: VO scripts with contex
 tools: Read, Glob, Grep, Write, Edit
 permissionMode: acceptEdits
 model: haiku
-maxTurns: 12
+maxTurns: 15
 disallowedTools: Bash
 ---
 

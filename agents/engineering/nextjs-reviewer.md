@@ -4,7 +4,7 @@ description: "Reviewer especializado en Next.js/React: audita performance (water
 tools: Read, Glob, Grep
 disallowedTools: Bash, Write, Edit
 model: sonnet
-maxTurns: 12
+maxTurns: 15
 memory: project
 skills: [nextjs-best-practices]
 ---

@@ -246,6 +246,47 @@ describe("agent definitions", () => {
     expect(empty).toEqual([]);
   });
 
+  it("maxTurns is one of the three tier budgets", () => {
+    // docs/agent-hierarchy.md defines Director 30 / Lead 20 / Specialist 15.
+    // Nine agents carried 10, 12 or 25, which belongs to no tier.
+    const offSpec = agents
+      .filter((a) => !["15", "20", "30"].includes(a.fm.maxTurns ?? ""))
+      .map((a) => `${a.file}: maxTurns=${a.fm.maxTurns}`);
+    expect(offSpec).toEqual([]);
+  });
+
+  it("consultants cannot write and executors declare permissionMode", () => {
+    // A subagent cannot ask anything: AskUserQuestion is not in its tool pool.
+    // So an agent either writes on its own (permissionMode: acceptEdits) or is
+    // read-only by construction. Holding Write/Edit plus an approval gate in the
+    // body is the deadlock this split removes.
+    const wrong: string[] = [];
+    for (const a of agents) {
+      const canWrite = /\b(Write|Edit)\b/.test(a.fm.tools ?? "");
+      const denied = /\b(Write|Edit)\b/.test(a.fm.disallowedTools ?? "");
+      if (canWrite && !a.fm.permissionMode) {
+        wrong.push(`${a.file}: has Write/Edit but no permissionMode`);
+      }
+      if (!canWrite && !denied) {
+        wrong.push(`${a.file}: read-only but disallowedTools does not say so`);
+      }
+      if (canWrite && denied) {
+        wrong.push(`${a.file}: Write/Edit both allowed and denied`);
+      }
+    }
+    expect(wrong).toEqual([]);
+  });
+
+  it("executors carry no approval gate in their body", () => {
+    // These phrases make a subagent wait for a reply that cannot arrive.
+    const gate =
+      /the user approves|May I write|not an autonomous|Wait for "?yes"?|confirm with the user/i;
+    const blocked = agents
+      .filter((a) => a.fm.permissionMode === "acceptEdits" && gate.test(a.body))
+      .map((a) => a.file);
+    expect(blocked).toEqual([]);
+  });
+
   it("every skill they preload exists on disk", () => {
     const dead: string[] = [];
     for (const a of agents) {

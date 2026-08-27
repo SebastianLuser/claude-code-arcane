@@ -4,7 +4,7 @@ description: "Ren'Py Developer. Expert in Ren'Py engine: screen language, ATL an
 tools: Read, Glob, Grep, Write, Edit, Bash
 permissionMode: acceptEdits
 model: sonnet
-maxTurns: 25
+maxTurns: 20
 memory: project
 skills: [vn-renpy-setup, vn-script, vn-testing]
 ---

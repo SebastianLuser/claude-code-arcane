@@ -4,7 +4,7 @@ description: "Program Director. Coordina múltiples proyectos, resource allocati
 tools: Read, Glob, Grep, Write, Edit
 permissionMode: acceptEdits
 model: opus
-maxTurns: 25
+maxTurns: 30
 memory: user
 disallowedTools: Bash
 ---

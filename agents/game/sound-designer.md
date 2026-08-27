@@ -4,7 +4,7 @@ description: "The Sound Designer creates detailed specifications for sound effec
 tools: Read, Glob, Grep, Write, Edit
 permissionMode: acceptEdits
 model: haiku
-maxTurns: 10
+maxTurns: 15
 disallowedTools: Bash
 ---
 

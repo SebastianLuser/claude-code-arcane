@@ -21,7 +21,14 @@ Cada división sigue una jerarquía de estudio real con 3 niveles de autoridad:
 
 ---
 
-## Roster Completo (143 Agentes)
+## Roster Completo (109 Agentes)
+
+> Los 109 agentes de abajo son los que existen en `agents/`. El roster
+> original de este documento listaba 143, de los cuales se implementaron
+> 109: los 34 restantes generaban delegaciones a agentes inexistentes.
+> `src/__tests__/agents-integrity.test.ts` verifica que cada delegacion
+> resuelva, asi que agregar un nombre aca sin crear el archivo rompe el
+> build.
 
 ### División 1 — Game Development Studio (44)
 

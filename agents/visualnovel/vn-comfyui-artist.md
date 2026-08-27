@@ -4,7 +4,7 @@ description: "ComfyUI Visual Novel Artist. Specialist in AI image generation for
 tools: Read, Glob, Grep, Write, Edit, Bash, WebSearch
 permissionMode: acceptEdits
 model: sonnet
-maxTurns: 25
+maxTurns: 20
 memory: project
 skills: [vn-comfyui-gen, vn-asset-pipeline]
 ---
