@@ -5,12 +5,16 @@ category: "workflow"
 argument-hint: "[optional: what you just finished, e.g. 'finished design-review' or 'stuck on ADRs']"
 user-invocable: true
 allowed-tools: Read, Glob, Grep
-context: |
-  !echo "=== Live Project State ===" && echo "Stage: $(cat production/stage.txt 2>/dev/null | tr -d '[:space:]' || echo 'not set')" && echo "Latest sprint: $(ls -t production/sprints/*.md 2>/dev/null | head -1 || echo 'none')" && echo "Session state: $(head -5 production/session-state/active.md 2>/dev/null || echo 'none')"
 model: haiku
 ---
 
 # Studio Help — What Do I Do Next?
+
+## Live Project State
+
+- Stage: !`cat production/stage.txt 2>/dev/null | tr -d '[:space:]' || echo 'not set'`
+- Latest sprint: !`ls -t production/sprints/*.md 2>/dev/null | head -1 || echo 'none'`
+- Session state: !`head -5 production/session-state/active.md 2>/dev/null || echo 'none'`
 
 Read-only skill — reports findings, writes no files. Lightweight orientation; for full gap analysis use `/project-stage-detect`.
 

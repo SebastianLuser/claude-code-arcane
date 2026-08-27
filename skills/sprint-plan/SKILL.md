@@ -5,9 +5,11 @@ category: "agile"
 argument-hint: "[new|update|status] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
-context: |
-  !ls production/sprints/ 2>/dev/null
 ---
+## Sprints existentes
+
+!`ls production/sprints/ 2>/dev/null || echo "sin sprints"`
+
 ## Phase 0: Parse Arguments
 
 Mode: `new`, `update`, or `status`. Resolve review mode: `--review` arg → `production/review-mode.txt` → default `lean`.

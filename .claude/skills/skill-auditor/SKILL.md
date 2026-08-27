@@ -38,7 +38,19 @@ Parse the YAML block between `---` markers. Check against our spec (see `referen
 | `user-invocable` | yes | present, boolean |
 | `allowed-tools` | yes | present, comma-separated list of valid tool names |
 
-Flag **alirezarezvani format** if frontmatter contains `license`, `metadata`, `version`, `author`, or `updated` fields -- these need conversion.
+Flag **legacy imported format** if frontmatter contains `version`, `author`, `updated`, `python-tools`, or `tech-stack` -- these need conversion.
+
+Do NOT flag `license` or `metadata`: both are official Claude Code fields. `metadata` is a free-form map that Claude Code deliberately ignores, and it is the correct home for repo-local keys.
+
+Also check the `agent:` / `context:` pair:
+
+| Check | Fail condition |
+|-------|----------------|
+| `agent:` needs `context: fork` | `agent:` present without `context: fork` -- the field is inert |
+| `context:` value | any value other than `fork` |
+| `agent:` target exists | the named agent has no file in `agents/` |
+| `agent:` reachable | a profile shipping this skill does not install the agent's division |
+| unknown field | any key outside the official list plus `category` |
 
 ### 1.2 Measure weight
 
@@ -77,7 +89,7 @@ Compute grade from checks:
 | **A** | All 5 frontmatter fields correct, <= 200 lines, 2+ sections, no hallucinations |
 | **B** | Frontmatter complete but minor issues (description too long, missing handoff) |
 | **C** | Frontmatter incomplete (1-2 missing fields) OR 201-400 lines |
-| **D** | Frontmatter uses alirezarezvani format OR 400+ lines OR hallucinations found |
+| **D** | Frontmatter uses legacy imported format OR `agent:` without `context: fork` OR 400+ lines OR hallucinations found |
 | **F** | No frontmatter at all OR file is empty/broken |
 
 ### 1.6 Output report
@@ -92,10 +104,10 @@ Given a path to a SKILL.md, apply fixes in order:
 
 ### 2.1 Convert frontmatter
 
-If alirezarezvani format detected (has `license`, `metadata`, `version`, `author`):
+If legacy imported format detected (has `version`, `author`, `updated`, `python-tools`, `tech-stack`):
 
 1. Keep `name` and `description` (trim description to under 200 chars if needed)
-2. Drop `license`, `metadata` block, `version`, `author`, `updated`, `python-tools`, `tech-stack`
+2. Drop `version`, `author`, `updated`, `python-tools`, `tech-stack`. Keep `license` and `metadata` -- both are official. Move any repo-local key into the `metadata:` map instead of deleting it.
 3. Add `category` -- infer from parent folder: `skills-backend` -> `"backend"`, `skills-ai` -> `"ai"`, etc.
 4. Add `user-invocable: true` (default; set `false` only for sub-skills under another skill's directory)
 5. Add `allowed-tools: Read, Glob, Grep, Bash` (default read-only set; upgrade to include `Write, Edit` if skill body contains authoring/generation instructions)
