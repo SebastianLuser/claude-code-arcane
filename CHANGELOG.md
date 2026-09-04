@@ -1,3 +1,10 @@
+## [2.9.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.0...v2.9.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* **deps:** patch the two vulnerabilities that reach users ([ec0e25c](https://github.com/SebastianLuser/claude-code-arcane/commit/ec0e25cfd57ce15bf13896bee91ca22d6c3a58cf))
+
 # [2.9.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.8.0...v2.9.0) (2026-09-04)
 
 
