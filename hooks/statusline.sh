@@ -15,12 +15,17 @@ fi
 # Skills/agents Claude can actually invoke = global (~/.claude) + project (.claude),
 # deduped by name (project overrides global). Follow -L so .claude/skills junctions count.
 # Top-level only (mindepth/maxdepth 2) so bundled sub-skills don't inflate the total.
+#
+# Names are extracted with a single awk, never `xargs -n1 dirname|basename`: that spawned one
+# process per file (~160 here), which cost ~1.7s of the ~2.5s total on Windows and made the
+# status line miss its execution window under load — Claude Code drops the output on a
+# non-zero exit or an abort, so the bar vanished at random.
 SKILLS=$( { find -L "$HOME/.claude/skills" -mindepth 2 -maxdepth 2 -name "SKILL.md" 2>/dev/null;
             find -L .claude/skills          -mindepth 2 -maxdepth 2 -name "SKILL.md" 2>/dev/null; } \
-          | xargs -n1 dirname 2>/dev/null | xargs -n1 basename 2>/dev/null | sort -u | wc -l | tr -d ' ')
+          | awk -F/ 'NF>1{print $(NF-1)}' | sort -u | wc -l | tr -d ' ')
 AGENTS=$( { find -L "$HOME/.claude/agents" -name "*.md" 2>/dev/null;
             find -L .claude/agents         -name "*.md" 2>/dev/null; } \
-          | xargs -n1 basename 2>/dev/null | sort -u | wc -l | tr -d ' ')
+          | awk -F/ '{print $NF}' | sort -u | wc -l | tr -d ' ')
 
 PYCMD=$(command -v python 2>/dev/null || command -v python3 2>/dev/null || command -v py 2>/dev/null)
 
@@ -117,8 +122,16 @@ PREFIX="🔮 ${PROJECT}"
 
 PARTS="${PREFIX}"
 [ -n "$BRANCH" ] && PARTS="${PARTS} | 🌿 ${BRANCH}"
-PARTS="${PARTS} | 🛠️ ${SKILLS} skills"
-[ "$AGENTS" -gt 0 ] 2>/dev/null && PARTS="${PARTS} | 🤖 ${AGENTS} agents"
+PARTS="${PARTS} | 🛠️ ${SKILLS:-0} skills"
+case "$AGENTS" in
+  ''|*[!0-9]*) ;;
+  0) ;;
+  *) PARTS="${PARTS} | 🤖 ${AGENTS} agents" ;;
+esac
 [ -n "$EXTRA" ] && PARTS="${PARTS} | ${EXTRA}"
 
 echo "$PARTS"
+
+# Claude Code discards the status line on a non-zero exit, so never inherit one from the
+# last conditional above.
+exit 0
