@@ -14,7 +14,6 @@ paths:
 - Voice budget is a hard limit: define max simultaneous voices per category and drop by priority, never let it grow unbounded
 - Audio must degrade silently — a missing bank or failed event NEVER throws into the gameplay frame
 - Keep the audio update off the render-critical path; audio work budget is 5-10% of frame time
-- Reference the audio bible section each event implements in code comments
 
 ## Examples
 

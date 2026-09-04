@@ -11,7 +11,6 @@ paths:
 - Every gameplay system must implement a clear interface
 - State machines must have explicit transition tables with documented states
 - Write unit tests for all gameplay logic — separate logic from presentation
-- Document which design doc each feature implements in code comments
 - No static singletons for game state — use dependency injection
 
 ## Examples
