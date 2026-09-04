@@ -450,17 +450,51 @@ describe("removeCommand", () => {
 
 describe("updateCommand", () => {
   let logSpy: ReturnType<typeof vi.spyOn>;
+  let homeDir: string;
+  let originalArcaneHome: string | undefined;
 
+  // updateCommand() with no --here is the REAL global update: it reads the registry and
+  // rewrites every installation listed there. Without ARCANE_HOME pointed at a throwaway
+  // home, `npm test` deployed the working tree into every project on the machine — 13 real
+  // repos, statuslines, manifests and all. The assertion here only needs "does not throw",
+  // so an empty isolated registry serves it exactly as well.
   beforeEach(() => {
     logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    originalArcaneHome = process.env.ARCANE_HOME;
+    homeDir = makeTmpDir();
+    process.env.ARCANE_HOME = homeDir;
   });
 
   afterEach(() => {
     logSpy.mockRestore();
+    if (originalArcaneHome === undefined) {
+      delete process.env.ARCANE_HOME;
+    } else {
+      process.env.ARCANE_HOME = originalArcaneHome;
+    }
+    if (fs.existsSync(homeDir)) {
+      fs.rmSync(homeDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+    }
   });
 
   it("should not throw in quiet mode even if npm is unavailable", async () => {
     const { updateCommand } = await import("../commands/update.js");
     await expect(updateCommand({ quiet: true })).resolves.not.toThrow();
+  });
+
+  it("should not touch installations outside the isolated ARCANE_HOME", async () => {
+    const outsider = makeTmpDir();
+    try {
+      installProfile(outsider);
+      const manifestPath = path.join(outsider, ".claude", "arcane-manifest.json");
+      const before = fs.readFileSync(manifestPath, "utf-8");
+
+      const { updateCommand } = await import("../commands/update.js");
+      await updateCommand({ quiet: true });
+
+      expect(fs.readFileSync(manifestPath, "utf-8")).toBe(before);
+    } finally {
+      fs.rmSync(outsider, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+    }
   });
 });
