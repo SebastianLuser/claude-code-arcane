@@ -9,6 +9,7 @@ export interface ProfileDefinition {
   };
   agents: string[];
   hooks: string[];
+  output_styles: string[];
   permissions: {
     allow: string[];
     deny: string[];
@@ -21,6 +22,7 @@ export interface MergedProfile {
   rules: { universal: string[]; gamedev: string[] };
   agents: string[];
   hooks: string[];
+  output_styles: string[];
   permissions: { allow: string[]; deny: string[] };
 }
 

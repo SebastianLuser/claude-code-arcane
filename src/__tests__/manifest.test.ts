@@ -16,6 +16,7 @@ const SAMPLE_MERGED: MergedProfile = {
   rules: { universal: ["data-files"], gamedev: [] },
   agents: ["quality"],
   hooks: ["session-start.sh"],
+  output_styles: ["arcane"],
   permissions: {
     allow: ["Bash(git status*)"],
     deny: ["Bash(rm -rf *)"],

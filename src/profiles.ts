@@ -22,6 +22,7 @@ export function parseProfile(filePath: string): ProfileDefinition {
     },
     agents: (raw.agents as string[]) ?? [],
     hooks: (raw.hooks as string[]) ?? [],
+    output_styles: (raw.output_styles as string[]) ?? [],
     permissions: {
       allow: perms.allow ?? [],
       deny: perms.deny ?? [],
@@ -79,6 +80,7 @@ export function mergeProfiles(
   const seenRulesGamedev = new Set<string>();
   const seenAgents = new Set<string>();
   const seenHooks = new Set<string>();
+  const seenOutputStyles = new Set<string>();
   const allPermAllow: string[] = [];
   const allPermDeny: string[] = [];
 
@@ -87,6 +89,7 @@ export function mergeProfiles(
   const rulesGamedev: string[] = [];
   const agents: string[] = [];
   const hooks: string[] = [];
+  const outputStyles: string[] = [];
 
   for (const name of namesToLoad) {
     const filePath = path.join(profilesDir, `${name}.yaml`);
@@ -127,6 +130,12 @@ export function mergeProfiles(
         hooks.push(h);
       }
     }
+    for (const o of profile.output_styles) {
+      if (!seenOutputStyles.has(o)) {
+        seenOutputStyles.add(o);
+        outputStyles.push(o);
+      }
+    }
     allPermAllow.push(...profile.permissions.allow);
     allPermDeny.push(...profile.permissions.deny);
   }
@@ -137,6 +146,7 @@ export function mergeProfiles(
     rules: { universal: rulesUniv, gamedev: rulesGamedev },
     agents,
     hooks,
+    output_styles: outputStyles,
     permissions: {
       allow: [...new Set(allPermAllow)],
       deny: [...new Set(allPermDeny)],

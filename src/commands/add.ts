@@ -149,6 +149,7 @@ export async function addCommand(items: string[] = []): Promise<void> {
     rules: { universal: manifest.installed_rules, gamedev: [] },
     agents: manifest.installed_agents,
     hooks: [],
+    output_styles: [],
     permissions: { allow: [], deny: [] },
   };
   writeManifest(target, merged, manifest.profile_command, root);
