@@ -1,3 +1,23 @@
+# [2.9.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.8.0...v2.9.0) (2026-09-04)
+
+
+### Bug Fixes
+
+* **settings:** point this repo's status line at its own hooks/statusline.sh ([3b180da](https://github.com/SebastianLuser/claude-code-arcane/commit/3b180daed519095f246b1db3d0038698efa28b80))
+* **tests:** pin ARCANE_HOME so npm test cannot write to real installs ([a3836cc](https://github.com/SebastianLuser/claude-code-arcane/commit/a3836cce4820b5651a92df9ad38d00510a74ec38))
+* **update:** refresh statusline.sh and output-styles, and honor --force ([9ebdb20](https://github.com/SebastianLuser/claude-code-arcane/commit/9ebdb2070501837607d7998fe426cd6578c1cbcd))
+* **update:** sync unhashed files past the version gate and activate the style ([0a998be](https://github.com/SebastianLuser/claude-code-arcane/commit/0a998be8ab6cc8848862c83ed547377ab0dd3a8d))
+
+
+### Features
+
+* **core:** ship the arcane output style and a code-comments rule ([2a981bf](https://github.com/SebastianLuser/claude-code-arcane/commit/2a981bf847d8c41143da1353dd230f98ca7f7e11))
+
+
+### Performance Improvements
+
+* **statusline:** cut ~2s of process spawns from the status line ([108afe4](https://github.com/SebastianLuser/claude-code-arcane/commit/108afe409f3a51e54e22587317bbebeba04f3e07))
+
 # [2.8.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.7.1...v2.8.0) (2026-08-27)
 
 
