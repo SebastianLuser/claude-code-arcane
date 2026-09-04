@@ -32,8 +32,12 @@ rules:
     - prototype-code
     - test-standards
     - implementation-workflow
+    - code-comments
   gamedev:
     []
+
+output_styles:
+  - arcane
 
 agents:
   - quality

@@ -28,6 +28,7 @@ function profile(name: string, category: string): ProfileDefinition {
     rules: { universal: [], gamedev: [] },
     agents: [],
     hooks: [],
+    output_styles: [],
     permissions: { allow: [], deny: [] },
   };
 }

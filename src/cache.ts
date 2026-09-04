@@ -37,7 +37,7 @@ export function storeInCache(version: string, contentDir: string): string {
   }
   fs.mkdirSync(versionDir, { recursive: true });
 
-  for (const dir of ["skills", "rules", "agents", "hooks", "profiles", "templates", "docs"]) {
+  for (const dir of ["skills", "rules", "agents", "hooks", "profiles", "templates", "docs", "output-styles"]) {
     const src = path.join(contentDir, dir);
     if (fs.existsSync(src)) {
       copyDirRecursive(src, path.join(versionDir, dir));

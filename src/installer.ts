@@ -204,6 +204,7 @@ export class Installer {
     this.copyHooks();
     this.copySkills();
     this.copyRules();
+    this.copyOutputStyles();
     this.copyAgents();
     this.copyDocs();
     this.generateSettings();
@@ -246,6 +247,9 @@ export class Installer {
     if (this.dryRun) return;
     for (const d of ["skills", "rules", "agents", "docs"]) {
       ensureDir(path.join(this.claudeDir, d));
+    }
+    if (this.merged.output_styles.length > 0) {
+      ensureDir(path.join(this.claudeDir, "output-styles"));
     }
   }
 
@@ -380,6 +384,27 @@ export class Installer {
     }
   }
 
+  private copyOutputStyles(): void {
+    if (this.merged.output_styles.length === 0) return;
+    this.log("\nOutput styles:");
+    for (const style of this.merged.output_styles) {
+      const src = path.join(this.root, "output-styles", `${style}.md`);
+      if (!fs.existsSync(src)) {
+        this.log(`  WARN: Output style '${style}.md' not found`);
+        continue;
+      }
+      if (this.dryRun) {
+        this.log(`  [dry-run] ${style}.md`);
+      } else {
+        fs.copyFileSync(
+          src,
+          path.join(this.claudeDir, "output-styles", `${style}.md`),
+        );
+        this.log(`  [ok] ${style}.md`);
+      }
+    }
+  }
+
   private copyAgents(): void {
     if (this.merged.agents.length === 0) return;
     this.log("\nAgents:");
@@ -440,6 +465,12 @@ export class Installer {
         type: "command",
         command: "bash .claude/statusline.sh",
       };
+    }
+    // First declared style wins — core's is listed first, so an addon profile
+    // can ship extra styles without silently hijacking the active one.
+    const activeStyle = this.merged.output_styles[0];
+    if (activeStyle) {
+      settings.outputStyle = activeStyle;
     }
 
     if (this.dryRun) {

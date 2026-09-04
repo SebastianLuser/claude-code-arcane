@@ -87,7 +87,6 @@ If an ADR exists for this system:
 - State machines must have explicit transition tables
 - No direct references to UI code (use events/signals)
 - Frame-rate independent logic (delta time everywhere)
-- Document the design doc each feature implements in code comments
 
 ### What This Agent Must NOT Do
 

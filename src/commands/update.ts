@@ -154,16 +154,41 @@ export async function updateTarget(
   const currentVersion = await contentSource.getVersion();
   const installedVersion = manifest.source_version ?? manifest.arcane_version;
 
+  const profileNamesForSync = manifest.profile_command.split("+").filter(Boolean);
+  const claudeDirForSync = path.join(target, ".claude");
+
+  // The unhashed files are checked before the version gate on purpose. That gate assumes
+  // equal versions imply equal content — the exact assumption that let .claude/statusline.sh
+  // sit months out of date while its manifest reported the current version. These two
+  // comparisons are cheap and make the assumption true instead of merely asserted.
+  const earlySync = syncUnhashedFiles(
+    root,
+    claudeDirForSync,
+    mergeProfiles(path.join(root, "profiles"), profileNamesForSync),
+    opts.dryRun ?? false,
+  );
+  if (earlySync.length > 0 && !opts.quiet) {
+    const prefix = opts.dryRun ? "[dry-run] " : "";
+    console.log(`\n${prefix}${chalk.cyan("Refreshed:")}`);
+    for (const label of earlySync) {
+      console.log(`  ~ ${label}`);
+    }
+  }
+
   if (installedVersion === currentVersion && !opts.force) {
     if (!opts.quiet) {
-      console.log(chalk.green(`Already up to date (v${currentVersion}).`));
+      console.log(
+        earlySync.length > 0
+          ? chalk.green(`Refreshed ${earlySync.length} file(s); otherwise up to date (v${currentVersion}).`)
+          : chalk.green(`Already up to date (v${currentVersion}).`),
+      );
     }
     return {
       target,
-      status: "up-to-date",
+      status: earlySync.length > 0 ? "updated" : "up-to-date",
       fromVersion: installedVersion,
       toVersion: currentVersion,
-      updated: 0,
+      updated: earlySync.length,
       skipped: 0,
       removed: 0,
     };
@@ -184,6 +209,10 @@ export async function updateTarget(
   const claudeDir = path.join(target, ".claude");
   const installedHashes = computeContentHashes(claudeDir);
 
+  // Already handled above the version gate; reusing the result keeps the reporting honest
+  // without comparing the same files twice.
+  const unhashed = earlySync;
+
   const items = computeUpdatePlan(
     manifest.content_hashes ?? null,
     installedHashes,
@@ -193,12 +222,18 @@ export async function updateTarget(
   const updates = items.filter((i) => i.action === "update" || i.action === "add" || i.action === "conflict");
   const skipped = items.filter((i) => i.action === "skip-customized" || i.action === "skip-unchanged");
   const removed = items.filter((i) => i.action === "remove");
+  // --force exists to overwrite locally modified files, and those land as skip-customized —
+  // an action the `updates` filter deliberately excludes. Counting them as work under
+  // --force is what keeps the early return below from swallowing the whole point of the flag.
+  const forcible = opts.force
+    ? items.filter((i) => i.action === "skip-customized")
+    : [];
 
   if (!opts.quiet) {
     printUpdateSummary(items, opts.dryRun ?? false);
   }
 
-  if (updates.length === 0 && removed.length === 0) {
+  if (updates.length === 0 && removed.length === 0 && forcible.length === 0) {
     // Nothing was copied, but the content already matches the source, so this
     // install *is* on the new version. Recording that is what ends the update.
     //
@@ -222,7 +257,11 @@ export async function updateTarget(
       });
     }
     if (!opts.quiet) {
-      console.log(chalk.green("\nNo changes to apply."));
+      console.log(
+        unhashed.length > 0
+          ? chalk.green(`\nRefreshed ${unhashed.length} file(s); no other changes to apply.`)
+          : chalk.green("\nNo changes to apply."),
+      );
     }
     return {
       target,
@@ -424,6 +463,90 @@ function applyUpdates(
       removeItem(item, claudeDir);
     }
   }
+}
+
+/**
+ * Refresh the installed files that live outside the four hashed categories.
+ *
+ * `.claude/statusline.sh` and `.claude/output-styles/*.md` are not under
+ * .claude/{skills,rules,agents,hooks}, so computeContentHashes() never sees them and
+ * computeUpdatePlan() can never schedule them. They were written once at install and then
+ * drifted forever — a project could report the current version while running a months-old
+ * statusline.
+ *
+ * Runs before the update plan so it also covers the "no hashed changes" early return, which
+ * is precisely when a stale statusline would otherwise never be touched.
+ */
+function syncUnhashedFiles(
+  root: string,
+  claudeDir: string,
+  merged: ReturnType<typeof mergeProfiles>,
+  dryRun: boolean,
+): string[] {
+  const targets: Array<{ src: string; dst: string; label: string }> = [];
+
+  // Keyed on the installed file too, not just the profile: settings.json can wire
+  // .claude/statusline.sh in an install whose profile_command never listed "statusline"
+  // (older installs did exactly that), and skipping those left an active status line
+  // running the slow version forever.
+  const statuslineDst = path.join(claudeDir, "statusline.sh");
+  if (merged.loaded.includes("statusline") || fs.existsSync(statuslineDst)) {
+    targets.push({
+      src: path.join(root, "hooks", "statusline.sh"),
+      dst: statuslineDst,
+      label: "statusline.sh",
+    });
+  }
+  for (const style of merged.output_styles) {
+    targets.push({
+      src: path.join(root, "output-styles", `${style}.md`),
+      dst: path.join(claudeDir, "output-styles", `${style}.md`),
+      label: `output-styles/${style}.md`,
+    });
+  }
+
+  const changed: string[] = [];
+  for (const t of targets) {
+    if (!fs.existsSync(t.src)) continue;
+    const src = fs.readFileSync(t.src);
+    if (fs.existsSync(t.dst) && src.equals(fs.readFileSync(t.dst))) continue;
+
+    changed.push(t.label);
+    if (dryRun) continue;
+
+    if (fs.existsSync(t.dst)) {
+      // Same contract as a hashed conflict: never overwrite without a backup.
+      const bak = `${t.dst}.bak`;
+      if (fs.existsSync(bak)) fs.rmSync(bak, { force: true });
+      fs.renameSync(t.dst, bak);
+    }
+    fs.mkdirSync(path.dirname(t.dst), { recursive: true });
+    fs.copyFileSync(t.src, t.dst);
+  }
+
+  // generateSettings() only runs at install, so a style shipped to an existing install
+  // stayed inert: the file was there and nothing referenced it. Patch the single key
+  // rather than regenerating, so hooks and permissions the user edited survive.
+  const activeStyle = merged.output_styles[0];
+  if (activeStyle) {
+    const settingsPath = path.join(claudeDir, "settings.json");
+    if (fs.existsSync(settingsPath)) {
+      try {
+        const settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
+        if (settings.outputStyle !== activeStyle) {
+          changed.push(`settings.json (outputStyle: ${activeStyle})`);
+          if (!dryRun) {
+            settings.outputStyle = activeStyle;
+            fs.writeFileSync(settingsPath, `${JSON.stringify(settings, null, 2)}\n`, "utf-8");
+          }
+        }
+      } catch {
+        // Unparseable settings.json is the user's to fix; never clobber it here.
+      }
+    }
+  }
+
+  return changed;
 }
 
 function applyItem(item: UpdateItem, root: string, claudeDir: string): void {

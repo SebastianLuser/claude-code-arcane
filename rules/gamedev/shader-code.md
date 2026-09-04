@@ -20,7 +20,6 @@ visual quality, performance, and cross-platform compatibility.
 - Group related parameters (Unity: `[Header]`, Unreal: Category)
 - Comment non-obvious calculations (especially math-heavy sections)
 - No magic numbers — use named constants or documented uniform values
-- Include authorship and purpose comment at the top of each shader file
 
 ## Performance Requirements
 - Document the target platform and complexity budget for each shader
