@@ -181,6 +181,12 @@ export function computeSourceHashes(
   const hooksDir = path.join(packageRoot, "hooks");
   if (fs.existsSync(hooksDir)) {
     for (const entry of fs.readdirSync(hooksDir, { withFileTypes: true })) {
+      // statusline.sh ships in hooks/ but installs to .claude/statusline.sh, which is
+      // where settings.json points. Hashing it as a hook made the update plan see a hook
+      // missing from .claude/hooks/ and "restore" it there — a file nothing ever reads,
+      // while the real one drifted. Excluding it here also lets the plan remove the stray
+      // copies earlier versions left behind. syncUnhashedFiles() owns the real one.
+      if (entry.name === "statusline.sh") continue;
       if (!entry.isDirectory()) {
         hashes.hooks[entry.name] = hashFile(path.join(hooksDir, entry.name));
       }

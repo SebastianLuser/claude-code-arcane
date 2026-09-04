@@ -181,9 +181,20 @@ describe("updateTarget", () => {
   });
 
   it("should force update even when version matches", async () => {
-    // Arrange
+    // Arrange — a locally customized skill is what --force exists to overwrite. Without
+    // one there is genuinely nothing to apply, and the run correctly reports no-changes;
+    // asserting "updated" on a pristine install only ever passed because a phantom
+    // statusline.sh item kept the plan non-empty.
     tmpDir = makeTmpDir();
     installTestingProfile(tmpDir);
+
+    const skillsDir = path.join(tmpDir, ".claude", "skills");
+    const customized = fs
+      .readdirSync(skillsDir)
+      .find((d) => fs.existsSync(path.join(skillsDir, d, "SKILL.md")));
+    expect(customized, "fixture needs at least one installed skill").toBeTruthy();
+    const skillMd = path.join(skillsDir, customized!, "SKILL.md");
+    fs.writeFileSync(skillMd, "# Customized by user\n");
 
     // Act
     const { updateTarget } = await import("../commands/update.js");
@@ -193,6 +204,7 @@ describe("updateTarget", () => {
     const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
     expect(output).toContain("Updated to");
     expect(result.status).toBe("updated");
+    expect(fs.readFileSync(skillMd, "utf-8")).not.toContain("Customized by user");
   });
 
   it("should detect locally modified skills and skip them", async () => {
