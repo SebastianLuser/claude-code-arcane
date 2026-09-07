@@ -280,7 +280,12 @@ export async function updateTarget(
         arcane_version: currentVersion,
         source_version: currentVersion,
         updated_at: new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
-        content_hashes: stripForeign(installedHashes, items),
+        content_hashes: hashesToRecord(
+          installedHashes,
+          manifest.content_hashes ?? null,
+          items,
+          opts.force ?? false,
+        ),
         installed_skills: merged.skills,
         installed_rules: allRules,
         installed_agents: merged.agents,
@@ -325,7 +330,12 @@ export async function updateTarget(
     arcane_version: currentVersion,
     source_version: currentVersion,
     updated_at: new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
-    content_hashes: stripForeign(newHashes, items),
+    content_hashes: hashesToRecord(
+      newHashes,
+      manifest.content_hashes ?? null,
+      items,
+      opts.force ?? false,
+    ),
     installed_skills: merged.skills,
     installed_rules: allRules,
     installed_agents: merged.agents,
@@ -427,28 +437,55 @@ function granularAgentDivisions(entries: string[]): Set<string> {
 }
 
 /**
- * Drop the foreign content from the hashes about to be written to the manifest.
+ * The hashes this run should record, which are not the ones on disk.
  *
- * computeContentHashes() reads the whole `.claude/` tree, so recording it verbatim
- * makes the manifest claim every hand-written skill sitting there - and the next run
- * reads that claim as "Arcane installed this" and deletes it. The protection has to
- * survive its own bookkeeping.
+ * The manifest hash answers one question: what did Arcane put there? A snapshot of
+ * `.claude/` answers a different one - what is there now - and the two differ in exactly
+ * the two places where the protection lives.
+ *
+ * Foreign content is dropped. computeContentHashes() reads the whole tree, so recording
+ * it verbatim makes the manifest claim every hand-written skill sitting there, and the
+ * next run reads that claim as "Arcane installed this" and removes it.
+ *
+ * Customized content keeps the hash it was installed with. A file skipped as
+ * `skip-customized` was skipped *because* it no longer matches what shipped; storing its
+ * current bytes tells the next run that your edit is what Arcane installed, and the
+ * comparison flips from "you changed this" to "the source changed, overwrite it" - with
+ * no backup, since only conflicts get one. The protection lasted exactly one update.
+ * Keeping the prior hash holds `skip-customized` for as long as the source stays put,
+ * and turns a genuine upstream change into a `conflict`, which quarantines first.
+ *
+ * Under `--force` the customized files really were overwritten from the source, so their
+ * fresh hashes are the honest record.
  */
-function stripForeign(hashes: ContentHashes, items: UpdateItem[]): ContentHashes {
-  const stripped: ContentHashes = {
-    skills: { ...hashes.skills },
-    rules: { ...hashes.rules },
-    agents: { ...hashes.agents },
-    hooks: { ...hashes.hooks },
+function hashesToRecord(
+  fresh: ContentHashes,
+  previous: ContentHashes | null,
+  items: UpdateItem[],
+  force: boolean,
+): ContentHashes {
+  const recorded: ContentHashes = {
+    skills: { ...fresh.skills },
+    rules: { ...fresh.rules },
+    agents: { ...fresh.agents },
+    hooks: { ...fresh.hooks },
   };
 
   for (const item of items) {
-    if (item.action !== "keep-foreign") continue;
     const bucket = `${item.type}s` as ContentType;
-    delete stripped[bucket][item.name];
+
+    if (item.action === "keep-foreign") {
+      delete recorded[bucket][item.name];
+      continue;
+    }
+
+    if (item.action === "skip-customized" && !force) {
+      const asInstalled = previous?.[bucket]?.[item.name];
+      if (asInstalled) recorded[bucket][item.name] = asInstalled;
+    }
   }
 
-  return stripped;
+  return recorded;
 }
 
 function computeUpdatePlan(

@@ -250,3 +250,66 @@ describe("update quarantines what it does remove", () => {
     expect(skillDirs.filter((d) => d.startsWith("dropped-skill"))).toEqual([]);
   });
 });
+
+describe("a customization stays customized", () => {
+  let tmpDir: string;
+  let logSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    logSpy.mockRestore();
+    if (tmpDir && fs.existsSync(tmpDir)) {
+      fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+    }
+  });
+
+  /**
+   * skip-customized protected an edited file for exactly one update. The run that
+   * skipped it then recorded its current bytes as the manifest hash - saying "this is
+   * what Arcane installed" about the user's own edit - so the next run compared a
+   * manifest that matched the disk against a source that did not, read that as "the
+   * source moved on", and overwrote it. Without a backup: only conflicts get one.
+   */
+  it("should still be skipped on the update after the one that skipped it", async () => {
+    // Arrange: settle the hashes the way a released install has them, then edit a rule.
+    tmpDir = makeTmpDir();
+    install(tmpDir, "testing");
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, { source: "bundled", force: true, quiet: true });
+
+    const rule = path.join(tmpDir, ".claude", "rules", "test-standards.md");
+    const mine = "# my own test standards\n";
+    fs.writeFileSync(rule, mine);
+
+    // Act: two updates in a row, each seeing a version it does not have.
+    stampOldVersion(tmpDir);
+    await updateTarget(tmpDir, {});
+    const afterFirst = fs.readFileSync(rule, "utf-8");
+    stampOldVersion(tmpDir);
+    await updateTarget(tmpDir, {});
+
+    // Assert
+    expect(afterFirst).toBe(mine);
+    expect(fs.readFileSync(rule, "utf-8")).toBe(mine);
+  });
+
+  it("should record the hash it shipped, not the one on disk", async () => {
+    // Arrange
+    tmpDir = makeTmpDir();
+    install(tmpDir, "testing");
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, { source: "bundled", force: true, quiet: true });
+    const shipped = readManifest(tmpDir).content_hashes!.rules["test-standards.md"];
+
+    // Act
+    fs.writeFileSync(path.join(tmpDir, ".claude", "rules", "test-standards.md"), "# mine\n");
+    stampOldVersion(tmpDir);
+    await updateTarget(tmpDir, {});
+
+    // Assert
+    expect(readManifest(tmpDir).content_hashes!.rules["test-standards.md"]).toBe(shipped);
+  });
+});
