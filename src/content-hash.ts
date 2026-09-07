@@ -86,6 +86,12 @@ export function computeContentHashes(claudeDir: string): ContentHashes {
   const skillsDir = path.join(claudeDir, "skills");
   if (fs.existsSync(skillsDir)) {
     for (const entry of fs.readdirSync(skillsDir, { withFileTypes: true })) {
+      // `_`-prefixed directories are not skills - same convention listSkills() uses.
+      // The installer writes templates/gamedev/ to skills/_templates/, which no profile
+      // lists and computeSourceHashes() never sees, so hashing it made every update plan
+      // read the gamedev templates as an orphaned skill and schedule their deletion.
+      // syncUnhashedFiles() keeps them current instead, like statusline.sh.
+      if (entry.name.startsWith("_")) continue;
       if (entry.isDirectory()) {
         const dirHash = hashDirectory(path.join(skillsDir, entry.name));
         const combined = createHash("sha256")

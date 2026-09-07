@@ -3,8 +3,10 @@ import path from "node:path";
 import os from "node:os";
 import chalk from "chalk";
 import { readManifest, updateManifestFields, manifestPath } from "../manifest.js";
-import { copyDirSync } from "../utils.js";
+import { copyDirSync, ensureDir } from "../utils.js";
 import { mergeProfiles } from "../profiles.js";
+import { parseAgentEntry } from "../agent-entries.js";
+import type { ArcaneManifest } from "../types.js";
 import {
   computeContentHashes,
   computeSourceHashes,
@@ -25,9 +27,19 @@ interface UpdateOpts {
   selfUpdate?: boolean;
 }
 
-type UpdateAction = "update" | "skip-customized" | "skip-unchanged" | "conflict" | "add" | "remove";
+type UpdateAction =
+  | "update"
+  | "skip-customized"
+  | "skip-unchanged"
+  | "conflict"
+  | "add"
+  | "remove"
+  | "keep-foreign";
 
 type UpdateStatus = "no-manifest" | "up-to-date" | "no-changes" | "updated" | "dry-run";
+
+/** Where removed content is parked, relative to `.claude/`. */
+const TRASH_DIR = ".arcane-trash";
 
 interface UpdateResult {
   target: string;
@@ -217,6 +229,8 @@ export async function updateTarget(
     manifest.content_hashes ?? null,
     installedHashes,
     sourceHashes,
+    makeOwnershipCheck(manifest),
+    granularAgentDivisions(merged.agents),
   );
 
   const updates = items.filter((i) => i.action === "update" || i.action === "add" || i.action === "conflict");
@@ -248,7 +262,7 @@ export async function updateTarget(
         arcane_version: currentVersion,
         source_version: currentVersion,
         updated_at: new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
-        content_hashes: installedHashes,
+        content_hashes: stripForeign(installedHashes, items),
         installed_skills: merged.skills,
         installed_rules: allRules,
         installed_agents: merged.agents,
@@ -293,7 +307,7 @@ export async function updateTarget(
     arcane_version: currentVersion,
     source_version: currentVersion,
     updated_at: new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
-    content_hashes: newHashes,
+    content_hashes: stripForeign(newHashes, items),
     installed_skills: merged.skills,
     installed_rules: allRules,
     installed_agents: merged.agents,
@@ -326,10 +340,105 @@ function printGeneralSummary(results: UpdateResult[], isDryRun: boolean): void {
   console.log(`  ${chalk.green(updated)} ${isDryRun ? "would change" : "updated"}, ${chalk.dim(unchanged + " unchanged")}`);
 }
 
+type ContentType = "skills" | "rules" | "agents" | "hooks";
+
+type OwnershipCheck = (type: ContentType, name: string) => boolean;
+
+/**
+ * Did Arcane put this file there?
+ *
+ * The update plan used to answer "is it in the source?" instead, and deleted
+ * everything that was not - including skills and agents the user wrote by hand,
+ * which no manifest ever claimed. Verified loss: a 1.4.0 -> 2.8.0 update wiped two
+ * hand-written skills (~20 KB each) out of `.claude/skills/`. What the source
+ * knows says whether a file is *current*; only the manifest says whether it is
+ * *ours*, and deleting is the one decision that needs the second question.
+ */
+function makeOwnershipCheck(manifest: ArcaneManifest): OwnershipCheck {
+  const hashes = manifest.content_hashes;
+  if (hashes) {
+    return (type, name) => name in (hashes[type] ?? {});
+  }
+
+  // Installs written before content_hashes existed - the same old ones most likely to
+  // have accumulated local content. The name lists have been in the manifest all along.
+  const skills = new Set(manifest.installed_skills ?? []);
+  const rules = new Set(
+    (manifest.installed_rules ?? []).map((r) => (r.endsWith(".md") ? r : `${r}.md`)),
+  );
+  const agents = new Set(
+    (manifest.installed_agents ?? []).map((a) => parseAgentEntry(a).division),
+  );
+
+  return (type, name) => {
+    switch (type) {
+      case "skills":
+        return skills.has(name);
+      case "rules":
+        return rules.has(name);
+      case "agents":
+        return agents.has(name);
+      case "hooks":
+        // No manifest ever listed hooks by name, and the installer writes
+        // .claude/hooks/ wholesale, so there is nothing else they could be.
+        return true;
+    }
+  };
+}
+
+/**
+ * Divisions a profile populates one agent at a time (`agents: [product/ux-lead]`).
+ *
+ * `computeSourceHashes` resolves an entry as `agents/<entry>`, which is a directory
+ * only for a whole division: a granular entry produced no source hash at all, so the
+ * plan read the installed division as an orphan and deleted an agent the active
+ * profile had explicitly asked for - and never re-added it, since `add` needs the
+ * same missing hash. They are exempt from the hashed plan and refreshed file by file
+ * in syncUnhashedFiles() instead. A division named both ways (core ships `quality`
+ * whole, backend-go adds `quality/security-architect`) installs whole and stays hashed.
+ */
+function granularAgentDivisions(entries: string[]): Set<string> {
+  const whole = new Set<string>();
+  const partial = new Set<string>();
+  for (const raw of entries) {
+    const { division, agent } = parseAgentEntry(raw);
+    (agent ? partial : whole).add(division);
+  }
+  for (const division of whole) partial.delete(division);
+  return partial;
+}
+
+/**
+ * Drop the foreign content from the hashes about to be written to the manifest.
+ *
+ * computeContentHashes() reads the whole `.claude/` tree, so recording it verbatim
+ * makes the manifest claim every hand-written skill sitting there - and the next run
+ * reads that claim as "Arcane installed this" and deletes it. The protection has to
+ * survive its own bookkeeping.
+ */
+function stripForeign(hashes: ContentHashes, items: UpdateItem[]): ContentHashes {
+  const stripped: ContentHashes = {
+    skills: { ...hashes.skills },
+    rules: { ...hashes.rules },
+    agents: { ...hashes.agents },
+    hooks: { ...hashes.hooks },
+  };
+
+  for (const item of items) {
+    if (item.action !== "keep-foreign") continue;
+    const bucket = `${item.type}s` as ContentType;
+    delete stripped[bucket][item.name];
+  }
+
+  return stripped;
+}
+
 function computeUpdatePlan(
   manifestHashes: ContentHashes | null,
   installedHashes: ContentHashes,
   sourceHashes: ContentHashes,
+  owned: OwnershipCheck,
+  exemptAgentDivisions: ReadonlySet<string> = new Set(),
 ): UpdateItem[] {
   const items: UpdateItem[] = [];
 
@@ -350,11 +459,13 @@ function computeUpdatePlan(
     ]);
 
     for (const key of allKeys) {
+      if (contentType === "agents" && exemptAgentDivisions.has(key)) continue;
+
       const mHash = manifest[key] ?? null;
       const iHash = installed[key] ?? null;
       const sHash = source[key] ?? null;
 
-      const action = resolveAction(mHash, iHash, sHash);
+      const action = resolveAction(mHash, iHash, sHash, owned(contentType, key));
       if (action) {
         items.push({ type: itemType, name: key, action });
       }
@@ -368,15 +479,19 @@ function resolveAction(
   manifestHash: string | null,
   installedHash: string | null,
   sourceHash: string | null,
+  owned: boolean,
 ): UpdateAction | null {
   if (!sourceHash && !installedHash) return null;
 
   if (sourceHash && !installedHash) return "add";
 
-  if (!sourceHash && installedHash) return "remove";
+  if (!sourceHash && installedHash) return owned ? "remove" : "keep-foreign";
 
   if (!manifestHash) {
     if (installedHash === sourceHash) return "skip-unchanged";
+    // A name the user owns that the source also ships: overwriting it is right (the
+    // profile asks for it) but doing so unannounced is how the local copy vanished.
+    if (!owned) return "conflict";
     return "update";
   }
 
@@ -396,6 +511,7 @@ function printUpdateSummary(items: UpdateItem[], isDryRun: boolean): void {
   const conflicts = items.filter((i) => i.action === "conflict");
   const customized = items.filter((i) => i.action === "skip-customized");
   const removed = items.filter((i) => i.action === "remove");
+  const foreign = items.filter((i) => i.action === "keep-foreign");
 
   if (updates.length > 0) {
     console.log(`\n${prefix}${chalk.cyan("Will update:")}`);
@@ -412,14 +528,23 @@ function printUpdateSummary(items: UpdateItem[], isDryRun: boolean): void {
   }
 
   if (removed.length > 0) {
-    console.log(`\n${prefix}${chalk.cyan("Will remove:")}`);
+    console.log(`\n${prefix}${chalk.cyan("Will remove")} ${chalk.dim(`(moved to .claude/${TRASH_DIR}/)`)}:`);
     for (const item of removed) {
       console.log(`  ${chalk.red("-")} ${item.type}: ${item.name}`);
     }
   }
 
+  if (foreign.length > 0) {
+    console.log(`\n${chalk.cyan("Left alone")} ${chalk.dim("(not installed by Arcane)")}:`);
+    for (const item of foreign) {
+      console.log(`  ${chalk.dim("=")} ${item.type}: ${item.name}`);
+    }
+  }
+
   if (conflicts.length > 0) {
-    console.log(`\n${prefix}${chalk.yellow("Conflicts (will backup + update):")}`);
+    console.log(
+      `\n${prefix}${chalk.yellow("Conflicts (will update)")} ${chalk.dim(`(old copy to .claude/${TRASH_DIR}/)`)}:`,
+    );
     for (const item of conflicts) {
       console.log(`  ${chalk.yellow("!")} ${item.type}: ${item.name}`);
     }
@@ -441,6 +566,10 @@ function applyUpdates(
   force: boolean,
 ): void {
   for (const item of items) {
+    // Not ours and not in the source: there is nothing to update it to, so even
+    // --force ("overwrite locally modified files") has no business here.
+    if (item.action === "keep-foreign") continue;
+
     if (item.action === "skip-unchanged" || item.action === "skip-customized") {
       if (item.action === "skip-customized" && force) {
         applyItem(item, root, claudeDir);
@@ -449,7 +578,7 @@ function applyUpdates(
     }
 
     if (item.action === "conflict") {
-      backupItem(item, claudeDir);
+      quarantineItem(item, claudeDir);
       applyItem(item, root, claudeDir);
       continue;
     }
@@ -460,7 +589,7 @@ function applyUpdates(
     }
 
     if (item.action === "remove") {
-      removeItem(item, claudeDir);
+      quarantineItem(item, claudeDir);
     }
   }
 }
@@ -503,6 +632,38 @@ function syncUnhashedFiles(
       dst: path.join(claudeDir, "output-styles", `${style}.md`),
       label: `output-styles/${style}.md`,
     });
+  }
+
+  // A granular agent entry installs one file into a division directory, which is not
+  // what computeSourceHashes() models (it resolves `agents/<entry>` as a directory).
+  // The hashed plan therefore read the division as an orphan and deleted it. Syncing
+  // per file is also closer to what the entry means than a division-wide hash was.
+  for (const raw of merged.agents) {
+    const { division, agent } = parseAgentEntry(raw);
+    if (!agent) continue;
+    targets.push({
+      src: path.join(root, "agents", division, `${agent}.md`),
+      dst: path.join(claudeDir, "agents", division, `${agent}.md`),
+      label: `agents/${division}/${agent}.md`,
+    });
+  }
+
+  // Same story for the gamedev templates: the installer writes templates/gamedev/ to
+  // .claude/skills/_templates/, a path no profile lists and no source hash covers, so
+  // every update scheduled them for deletion.
+  if (merged.rules.gamedev.length > 0) {
+    const templatesSrc = path.join(root, "templates", "gamedev");
+    if (fs.existsSync(templatesSrc)) {
+      for (const rel of fs.readdirSync(templatesSrc, { recursive: true }) as string[]) {
+        const src = path.join(templatesSrc, rel);
+        if (!fs.statSync(src).isFile()) continue;
+        targets.push({
+          src,
+          dst: path.join(claudeDir, "skills", "_templates", rel),
+          label: `skills/_templates/${String(rel).split(path.sep).join("/")}`,
+        });
+      }
+    }
   }
 
   const changed: string[] = [];
@@ -569,22 +730,26 @@ function applyItem(item: UpdateItem, root: string, claudeDir: string): void {
   }
 }
 
-function backupItem(item: UpdateItem, claudeDir: string): void {
+/**
+ * Move the installed copy into `.claude/.arcane-trash/`, out of the way but recoverable.
+ *
+ * Never in place. A `<name>.bak` next to the original is invisible for a rule or a hook,
+ * but `.claude/skills/foo.bak/` still holds a SKILL.md and `.claude/agents/game.bak/`
+ * still holds agent definitions - so the copy Arcane just replaced or removed keeps
+ * loading, under the same `name:` as the real one. The trash sits outside
+ * `.claude/{skills,rules,agents,hooks}`, where neither Claude Code nor
+ * computeContentHashes() looks.
+ */
+function quarantineItem(item: UpdateItem, claudeDir: string): void {
   const installed = getInstalledPath(item, claudeDir);
   if (!fs.existsSync(installed)) return;
 
-  const backupPath = installed + ".bak";
-  if (fs.existsSync(backupPath)) {
-    fs.rmSync(backupPath, { recursive: true, force: true });
+  const quarantine = path.join(claudeDir, TRASH_DIR, `${item.type}s`, item.name);
+  ensureDir(path.dirname(quarantine));
+  if (fs.existsSync(quarantine)) {
+    fs.rmSync(quarantine, { recursive: true, force: true });
   }
-  fs.renameSync(installed, backupPath);
-}
-
-function removeItem(item: UpdateItem, claudeDir: string): void {
-  const installed = getInstalledPath(item, claudeDir);
-  if (fs.existsSync(installed)) {
-    fs.rmSync(installed, { recursive: true, force: true });
-  }
+  fs.renameSync(installed, quarantine);
 }
 
 function getSourcePath(item: UpdateItem, root: string): string | null {

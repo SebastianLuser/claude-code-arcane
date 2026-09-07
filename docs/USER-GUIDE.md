@@ -146,9 +146,25 @@ Shows installed profiles, skill count, rules, agents, installation date, and wor
 ```bash
 npx claude-code-arcane update
 
+# Only this repo, instead of every registered installation
+npx claude-code-arcane update --here
+
+# Preview
+npx claude-code-arcane update --dry-run
+
 # Quiet mode (for hooks — fails silently)
 npx claude-code-arcane update --quiet
 ```
+
+**What it will and will not touch.** Arcane only updates or removes content its own
+manifest records having installed. A skill or agent you wrote by hand in `.claude/`
+is reported as `Left alone (not installed by Arcane)` and never modified — including
+under `--force`, which only exists to overwrite *Arcane's* files that you edited
+locally. Files you edited that Arcane does own are skipped as `customized`.
+
+When a skill really does leave the profile, it is moved to `.claude/.arcane-trash/`
+rather than deleted, so a wrong call is recoverable. The trash sits outside
+`.claude/skills/`, so a removed skill stops loading immediately.
 
 ### `npx claude-code-arcane clean` — Remove Arcane from a project
 
