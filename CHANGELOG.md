@@ -1,3 +1,10 @@
+## [2.9.3](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.2...v2.9.3) (2026-09-07)
+
+
+### Bug Fixes
+
+* **update:** resolve the content version once per run, never fabricate it ([ef78ecf](https://github.com/SebastianLuser/claude-code-arcane/commit/ef78ecf6c5ab17f1a51ea6ae27ef9fa161594798))
+
 ## [2.9.2](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.1...v2.9.2) (2026-09-07)
 
 
