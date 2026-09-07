@@ -15,7 +15,7 @@ paths:
 - All JSON / YAML / TOML files must parse cleanly — malformed config blocks the build
 - File naming: lowercase with hyphens or underscores, following `[domain]-[name].[ext]` pattern
 - Every schema-bearing file must have a documented schema (JSON Schema, OpenAPI, Zod, Pydantic — whatever the stack uses)
-- Numeric values with business meaning must include a comment or companion doc explaining unit and intent (`timeout_ms`, not bare `timeout`)
+- Numeric values with business meaning carry the unit in the key (`timeout_ms`, not bare `timeout`)
 - Use consistent key naming within a file: camelCase for JSON, snake_case for YAML if that's the project convention — don't mix
 - No orphaned entries — every record must be referenced by code, another config, or explicitly marked as a default/example
 - Version config files when making breaking schema changes (`v1/`, `v2/` or explicit `schema_version` field)

@@ -50,12 +50,18 @@ Comments are written in **English**, whatever language the conversation is in.
 
 ## Write
 
-- **The WHY that the code cannot show.** A constant that looks arbitrary, an ordering that
-  matters, a deliberate break from the surrounding pattern.
+**The default is no comment.** The code says what it does and the commit says why it changed.
+A new comment has to earn its place; it is never the neutral choice.
+
+The whole list of exceptions:
+
+- **Doc comments on public APIs** consumed from outside the module, one line. Private ones
+  need none.
 - **Workarounds**, with a link to the upstream bug.
-- **Non-obvious invariants or preconditions** a caller has to respect.
-- **Doc comments on public APIs** consumed from outside the module. Private ones need none.
 - **`TODO(@owner, YYYY-MM-DD): description`.** Never a bare `TODO`.
+
+A comment shaped as a comparison with what used to be there — "X and not Y", "no longer X",
+"now uses X" — is session narration wearing a technical disguise. It belongs in the commit.
 
 ## Shape
 
