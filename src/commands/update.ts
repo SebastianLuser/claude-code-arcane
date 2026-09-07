@@ -12,7 +12,11 @@ import {
   computeSourceHashes,
   type ContentHashes,
 } from "../content-hash.js";
-import { resolveContentSource, type SourcePreference } from "../content-source.js";
+import {
+  resolveContentSource,
+  type ContentSource,
+  type SourcePreference,
+} from "../content-source.js";
 import { registerInstallation, pruneRegistry } from "../registry.js";
 import { selfUpdateNpm } from "../self-update.js";
 
@@ -115,13 +119,20 @@ export async function updateCommand(opts: UpdateOpts): Promise<void> {
     );
   }
 
+  // Resolved once, after the empty-target check so an install-less machine makes no
+  // network request at all, and shared by every target below.
+  const sharedSource = await resolveContentSource({
+    source: opts.source ?? "auto",
+    quiet: opts.quiet,
+  });
+
   const results: UpdateResult[] = [];
   for (const target of targets) {
     if (!opts.quiet) {
       console.log(chalk.bold.cyan(`\n• ${target}`));
     }
     try {
-      results.push(await updateTarget(target, opts));
+      results.push(await updateTarget(target, opts, sharedSource));
     } catch (err) {
       if (!opts.quiet) {
         console.log(chalk.red(`  Update failed: ${(err as Error).message}`));
@@ -148,6 +159,7 @@ export async function updateCommand(opts: UpdateOpts): Promise<void> {
 export async function updateTarget(
   target: string,
   opts: UpdateOpts,
+  sharedSource?: ContentSource,
 ): Promise<UpdateResult> {
   const manifest = readManifest(target);
 
@@ -158,10 +170,16 @@ export async function updateTarget(
     return { target, status: "no-manifest", updated: 0, skipped: 0, removed: 0 };
   }
 
-  const contentSource = await resolveContentSource({
-    source: opts.source ?? "auto",
-    quiet: opts.quiet,
-  });
+  // The whole run reads one source. Resolving per target cost a GitHub API request each,
+  // so updating 13 installations spent 13 of the 60 an unauthenticated hour allows - and a
+  // dry-run followed by the real thing spent 26. The limit is not the bug; asking 13 times
+  // for an answer that cannot differ between targets is.
+  const contentSource =
+    sharedSource ??
+    (await resolveContentSource({
+      source: opts.source ?? "auto",
+      quiet: opts.quiet,
+    }));
   const root = await contentSource.getContentRoot();
   const currentVersion = await contentSource.getVersion();
   const installedVersion = manifest.source_version ?? manifest.arcane_version;
