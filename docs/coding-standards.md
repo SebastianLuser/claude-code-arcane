@@ -55,10 +55,9 @@ Si podés hacerlo con la stdlib de Python, la escotilla no aplica.
 
 ## Comentarios
 
-- **Escribí el porqué, no el qué.** El código ya dice qué hace.
-- **Doc comments para APIs públicas.** Las privadas no los necesitan.
-- **TODOs con owner y fecha:** `// TODO(@alice, 2026-05-01): descripción`
-- **Anti-pattern:** comentarios que explican el obvio (`// increment counter` sobre `counter++`)
+La regla vive en `.claude/rules/code-comments.md` y es la única autoridad.
+No dupliques criterios acá: dos listas sobre comentarios siempre terminan
+contradiciéndose, y gana la permisiva.
 
 ---
 
@@ -145,17 +144,6 @@ Antes de marcar trabajo como completo:
 
 ---
 
-## Comments / Docs Anti-Patterns
+## Comments / Docs
 
-**NO escribir:**
-- Comentarios que describen WHAT (el código ya dice)
-- Comentarios referenciando el task/PR actual ("added for JIRA-123")
-- Docstrings multi-párrafo en funciones simples
-- Comentarios `// removed X` para código borrado
-- `// used by Y` (el tooling lo dice mejor)
-
-**SÍ escribir comentarios cuando:**
-- Explican el WHY que no es obvio
-- Documentan workaround de un bug específico (con link al bug)
-- Marcan invariantes o preconditions no-obvios
-- APIs públicas consumidas por terceros
+Ver `.claude/rules/code-comments.md`.

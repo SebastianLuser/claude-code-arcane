@@ -18,7 +18,7 @@ visual quality, performance, and cross-platform compatibility.
 ## Code Quality
 - All uniforms/parameters must have descriptive names and appropriate hints
 - Group related parameters (Unity: `[Header]`, Unreal: Category)
-- Comment non-obvious calculations (especially math-heavy sections)
+- Name non-obvious calculations rather than commenting them; comments follow `code-comments`
 - No magic numbers — use named constants or documented uniform values
 
 ## Performance Requirements

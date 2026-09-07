@@ -9,7 +9,7 @@ paths:
 - All engine APIs must be thread-safe OR explicitly documented as single-thread-only
 - Profile before AND after every optimization — document the measured numbers
 - Engine code must NEVER depend on gameplay code (strict dependency direction: engine <- gameplay)
-- Every public API must have usage examples in its doc comment
+- Public API doc comments stay to one line (see `code-comments`); usage examples belong in the docs, not the source
 - Changes to public interfaces require a deprecation period and migration guide
 - Use RAII / deterministic cleanup for all resources
 - All engine systems must support graceful degradation
