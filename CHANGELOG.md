@@ -1,3 +1,10 @@
+## [2.9.5](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.4...v2.9.5) (2026-09-07)
+
+
+### Bug Fixes
+
+* **update:** record the hash Arcane shipped, not the customized one on disk ([921c89d](https://github.com/SebastianLuser/claude-code-arcane/commit/921c89d25eb8167e1efbcd27ae233faf3beb85c8))
+
 ## [2.9.4](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.3...v2.9.4) (2026-09-07)
 
 
