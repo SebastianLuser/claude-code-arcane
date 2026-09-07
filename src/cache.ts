@@ -1,9 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
-import os from "node:os";
+import { arcaneHome } from "./utils.js";
 
-const ARCANE_DIR = path.join(os.homedir(), ".arcane");
-const CACHE_DIR = path.join(ARCANE_DIR, "cache");
+/** Resolved per call, never cached in a const: see arcaneHome(). */
+function cacheDir(): string {
+  return path.join(arcaneHome(), "cache");
+}
 
 export interface CacheMeta {
   version: string;
@@ -12,16 +14,36 @@ export interface CacheMeta {
 }
 
 export function getCacheDir(): string {
-  return CACHE_DIR;
+  return cacheDir();
 }
 
 export function getCachePath(version: string): string {
-  return path.join(CACHE_DIR, version);
+  return path.join(cacheDir(), version);
+}
+
+/**
+ * Whether a directory can actually serve as a content root.
+ *
+ * A cache entry used to count as valid on the strength of its metadata file alone, so
+ * any directory under `cache/` qualified - including a test fixture holding nothing but
+ * `skills/`. `findLatestCache()` picked it as the newest entry, `mergeProfiles()` found
+ * no profiles in it and returned an empty profile rather than failing, and the update
+ * plan read every installed skill as an orphan. Content the installer needs is the only
+ * honest test of whether an entry is usable.
+ */
+export function isUsableContentRoot(dir: string): boolean {
+  return (
+    fs.existsSync(path.join(dir, "profiles")) && fs.existsSync(path.join(dir, "skills"))
+  );
 }
 
 export function isCached(version: string): boolean {
   const versionDir = getCachePath(version);
-  return fs.existsSync(versionDir) && fs.existsSync(path.join(versionDir, ".cache-meta.json"));
+  return (
+    fs.existsSync(versionDir) &&
+    fs.existsSync(path.join(versionDir, ".cache-meta.json")) &&
+    isUsableContentRoot(versionDir)
+  );
 }
 
 export function getCachedContentRoot(version: string): string | null {
@@ -57,12 +79,12 @@ export function storeInCache(version: string, contentDir: string): string {
 }
 
 export function pruneCache(keepCount: number = 3): void {
-  if (!fs.existsSync(CACHE_DIR)) return;
+  if (!fs.existsSync(cacheDir())) return;
 
-  const entries = fs.readdirSync(CACHE_DIR, { withFileTypes: true })
+  const entries = fs.readdirSync(cacheDir(), { withFileTypes: true })
     .filter((e) => e.isDirectory())
     .map((e) => {
-      const metaPath = path.join(CACHE_DIR, e.name, ".cache-meta.json");
+      const metaPath = path.join(cacheDir(), e.name, ".cache-meta.json");
       let cachedAt = 0;
       if (fs.existsSync(metaPath)) {
         try {
@@ -77,17 +99,17 @@ export function pruneCache(keepCount: number = 3): void {
     .sort((a, b) => b.cachedAt - a.cachedAt);
 
   for (const entry of entries.slice(keepCount)) {
-    fs.rmSync(path.join(CACHE_DIR, entry.name), { recursive: true, force: true });
+    fs.rmSync(path.join(cacheDir(), entry.name), { recursive: true, force: true });
   }
 }
 
 export function listCachedVersions(): Array<{ version: string; cachedAt: string }> {
-  if (!fs.existsSync(CACHE_DIR)) return [];
+  if (!fs.existsSync(cacheDir())) return [];
 
-  return fs.readdirSync(CACHE_DIR, { withFileTypes: true })
+  return fs.readdirSync(cacheDir(), { withFileTypes: true })
     .filter((e) => e.isDirectory())
     .map((e) => {
-      const metaPath = path.join(CACHE_DIR, e.name, ".cache-meta.json");
+      const metaPath = path.join(cacheDir(), e.name, ".cache-meta.json");
       let cachedAt = "unknown";
       if (fs.existsSync(metaPath)) {
         try {

@@ -1,6 +1,27 @@
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import fs from "node:fs";
+import os from "node:os";
+
+/**
+ * Root of Arcane's machine-global state: the installation registry, the content
+ * cache and the update-check stamp. `ARCANE_HOME` redirects all of it, which is how
+ * the test suite stays off the real `~/.arcane`.
+ *
+ * The single definition is the point. This path used to be rebuilt in four places and
+ * only one of them read the variable, so `vitest.config.ts` isolated the registry while
+ * `cache.ts` kept writing to the developer's real cache. A fixture named `v2` landed
+ * there during `npm test`, `findLatestCache()` picked it as the newest entry, no profile
+ * in it resolved, and the next `arcane update` read every installed skill as an orphan:
+ * 1038 removals proposed across 13 projects.
+ *
+ * Lazy on purpose. As a module-level constant it would freeze at import time, and a test
+ * that sets the variable in `beforeEach` would have no effect - which is exactly how the
+ * broken copies were written.
+ */
+export function arcaneHome(): string {
+  return process.env.ARCANE_HOME ?? path.join(os.homedir(), ".arcane");
+}
 
 export function getPackageRoot(): string {
   const thisFile = fileURLToPath(import.meta.url);

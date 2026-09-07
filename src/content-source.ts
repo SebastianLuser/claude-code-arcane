@@ -4,7 +4,13 @@ import os from "node:os";
 import { pipeline } from "node:stream/promises";
 import { createGunzip } from "node:zlib";
 import { getPackageRoot, getPackageVersion } from "./utils.js";
-import { getCachedContentRoot, isCached, storeInCache, pruneCache } from "./cache.js";
+import {
+  getCachedContentRoot,
+  isCached,
+  storeInCache,
+  pruneCache,
+  listCachedVersions,
+} from "./cache.js";
 
 const GITHUB_OWNER = "SebastianLuser";
 const GITHUB_REPO = "Claude-Code-Arcane";
@@ -305,26 +311,22 @@ export async function resolveContentSourceForVersion(
   return source;
 }
 
+/**
+ * Newest cache entry that can actually serve as a content root, or null.
+ *
+ * It used to rebuild the cache path itself and trust every directory it found. That is
+ * how a `skills/`-only test fixture became the offline fallback for 13 installations.
+ * Reading the entries through cache.ts keeps one definition of where they live, and
+ * `isCached()` keeps one definition of what makes one usable.
+ */
 function findLatestCache(): string | null {
-  const cacheDir = path.join(os.homedir(), ".arcane", "cache");
-  if (!fs.existsSync(cacheDir)) return null;
-
-  const entries = fs.readdirSync(cacheDir, { withFileTypes: true })
-    .filter((e) => e.isDirectory())
-    .map((e) => {
-      const metaPath = path.join(cacheDir, e.name, ".cache-meta.json");
-      let cachedAt = 0;
-      if (fs.existsSync(metaPath)) {
-        try {
-          const meta = JSON.parse(fs.readFileSync(metaPath, "utf-8"));
-          cachedAt = new Date(meta.cached_at).getTime();
-        } catch {
-          cachedAt = 0;
-        }
-      }
-      return { name: e.name, cachedAt };
-    })
+  const usable = listCachedVersions()
+    .filter((entry) => isCached(entry.version))
+    .map((entry) => ({
+      version: entry.version,
+      cachedAt: new Date(entry.cachedAt).getTime() || 0,
+    }))
     .sort((a, b) => b.cachedAt - a.cachedAt);
 
-  return entries.length > 0 ? entries[0].name : null;
+  return usable.length > 0 ? usable[0].version : null;
 }
