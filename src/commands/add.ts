@@ -4,7 +4,7 @@ import chalk from "chalk";
 import { parseProfile, listProfiles, groupByCategory } from "../profiles.js";
 import { listSkills } from "../skills-catalog.js";
 import { runAddWizard } from "../wizard.js";
-import { readManifest, writeManifest } from "../manifest.js";
+import { readManifest, updateManifestFields } from "../manifest.js";
 import {
   agentEntryLabel,
   copyAgentEntry,
@@ -13,7 +13,8 @@ import {
 } from "../agent-entries.js";
 import { copyDirSync, ensureDir, readJsonSync, writeJsonSync } from "../utils.js";
 import { resolveContentSource } from "../content-source.js";
-import type { MergedProfile } from "../types.js";
+import { computeContentHashes } from "../content-hash.js";
+import type { ArcaneManifest } from "../types.js";
 
 type AddResult = "added" | "skipped" | "not-found";
 
@@ -143,16 +144,11 @@ export async function addCommand(items: string[] = []): Promise<void> {
   manifest.total_skills = manifest.installed_skills.length;
   manifest.total_rules = manifest.installed_rules.length;
 
-  const merged: MergedProfile = {
-    loaded: manifest.profiles,
-    skills: manifest.installed_skills,
-    rules: { universal: manifest.installed_rules, gamedev: [] },
-    agents: manifest.installed_agents,
-    hooks: [],
-    output_styles: [],
-    permissions: { allow: [], deny: [] },
-  };
-  writeManifest(target, merged, manifest.profile_command, root);
+  persistAdditions(target, claudeDir, manifest, {
+    skills: added,
+    rules: addedRules,
+    agents: addedAgents,
+  });
 
   const totalAdded =
     added.length + addedRules.length + addedAgents.length + (statuslineAdded ? 1 : 0);
@@ -177,6 +173,60 @@ export async function addCommand(items: string[] = []): Promise<void> {
       ),
     );
   }
+}
+
+/**
+ * Persist what `add` just installed, touching only the fields it changed.
+ *
+ * It used to call writeManifest(), which rebuilds the file from a MergedProfile and keeps
+ * nothing that is not in one - `content_hashes` included. So a single `arcane add` erased
+ * the update plan's memory of what Arcane had installed: locally edited skills lost the
+ * skip-customized protection that needs a manifest hash to detect, and `installed_at`,
+ * `source_version` and the worktree block were rewritten as a side effect of adding one
+ * skill.
+ *
+ * The hashes are extended, never recomputed wholesale. computeContentHashes() reads the
+ * entire `.claude/` tree, so storing all of it would have the manifest claim hand-written
+ * skills sitting next to the installed ones - and `update` deletes what the manifest
+ * claims. An install with no hashes at all stays that way: ownership then falls back to
+ * the installed_* lists, which this does update, and inventing a partial hash map would
+ * make everything absent from it look foreign.
+ */
+function persistAdditions(
+  target: string,
+  claudeDir: string,
+  manifest: ArcaneManifest,
+  addedItems: { skills: string[]; rules: string[]; agents: string[] },
+): void {
+  const updates: Partial<ArcaneManifest> = {
+    profiles: manifest.profiles,
+    profile_command: manifest.profile_command,
+    installed_skills: manifest.installed_skills,
+    installed_rules: manifest.installed_rules,
+    installed_agents: manifest.installed_agents,
+    total_skills: manifest.total_skills,
+    total_rules: manifest.total_rules,
+    updated_at: new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
+  };
+
+  const hashes = manifest.content_hashes;
+  if (hashes) {
+    const fresh = computeContentHashes(claudeDir);
+    for (const skill of addedItems.skills) {
+      if (fresh.skills[skill]) hashes.skills[skill] = fresh.skills[skill];
+    }
+    for (const rule of addedItems.rules) {
+      const key = rule.endsWith(".md") ? rule : `${rule}.md`;
+      if (fresh.rules[key]) hashes.rules[key] = fresh.rules[key];
+    }
+    for (const entry of addedItems.agents) {
+      const { division } = parseAgentEntry(entry);
+      if (fresh.agents[division]) hashes.agents[division] = fresh.agents[division];
+    }
+    updates.content_hashes = hashes;
+  }
+
+  updateManifestFields(target, updates);
 }
 
 /**
