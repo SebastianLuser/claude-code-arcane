@@ -1,12 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
-import os from "node:os";
 import chalk from "chalk";
 import { readManifest } from "./manifest.js";
-import { getPackageVersion } from "./utils.js";
+import { arcaneHome, getPackageVersion } from "./utils.js";
 import { isGloballyInstalled } from "./self-update.js";
 
-const CHECK_FILE = path.join(os.homedir(), ".arcane", "last-check.json");
+/** Resolved per call, never cached in a const: see arcaneHome(). */
+function checkFile(): string {
+  return path.join(arcaneHome(), "last-check.json");
+}
 const CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours
 
 const GITHUB_OWNER = "SebastianLuser";
@@ -218,8 +220,9 @@ async function getLatestNpmVersion(): Promise<string | null> {
 
 function readCachedCheck(): CheckResult | null {
   try {
-    if (!fs.existsSync(CHECK_FILE)) return null;
-    return JSON.parse(fs.readFileSync(CHECK_FILE, "utf-8")) as CheckResult;
+    const file = checkFile();
+    if (!fs.existsSync(file)) return null;
+    return JSON.parse(fs.readFileSync(file, "utf-8")) as CheckResult;
   } catch {
     return null;
   }
@@ -227,11 +230,12 @@ function readCachedCheck(): CheckResult | null {
 
 function writeCachedCheck(result: CheckResult): void {
   try {
-    const dir = path.dirname(CHECK_FILE);
+    const file = checkFile();
+    const dir = path.dirname(file);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-    fs.writeFileSync(CHECK_FILE, JSON.stringify(result, null, 2) + "\n");
+    fs.writeFileSync(file, JSON.stringify(result, null, 2) + "\n");
   } catch {
     // ignore write failures
   }

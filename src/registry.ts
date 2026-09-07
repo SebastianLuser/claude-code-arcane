@@ -1,6 +1,5 @@
 import path from "node:path";
-import os from "node:os";
-import { ensureDir, fileExists, readJsonSync, writeJsonSync } from "./utils.js";
+import { arcaneHome, ensureDir, fileExists, readJsonSync, writeJsonSync } from "./utils.js";
 import { manifestPath } from "./manifest.js";
 
 const REGISTRY_VERSION = 1 as const;
@@ -15,13 +14,8 @@ interface Registry {
   installations: RegistryEntry[];
 }
 
-/**
- * Root directory for Arcane's machine-global state (registry, cache, update
- * check). Overridable via ARCANE_HOME so tests never touch the real ~/.arcane.
- */
-export function arcaneHome(): string {
-  return process.env.ARCANE_HOME ?? path.join(os.homedir(), ".arcane");
-}
+// Re-exported so the existing importers keep working; utils.ts owns the definition.
+export { arcaneHome };
 
 function registryPath(): string {
   return path.join(arcaneHome(), "installations.json");
