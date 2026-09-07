@@ -1,3 +1,10 @@
+## [2.9.2](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.1...v2.9.2) (2026-09-07)
+
+
+### Bug Fixes
+
+* **update:** only remove content the manifest owns ([d6eec05](https://github.com/SebastianLuser/claude-code-arcane/commit/d6eec05475bb491c8853078d9920c7dc4544e7b3))
+
 ## [2.9.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.0...v2.9.1) (2026-09-04)
 
 
