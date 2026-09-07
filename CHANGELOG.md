@@ -1,3 +1,11 @@
+## [2.9.4](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.3...v2.9.4) (2026-09-07)
+
+
+### Bug Fixes
+
+* **add:** keep content_hashes instead of rebuilding the manifest ([1ecce98](https://github.com/SebastianLuser/claude-code-arcane/commit/1ecce98ebcb8a480dd4b748f41606badec9fb0fd))
+* **cache:** resolve the arcane home in one place, honouring ARCANE_HOME ([4a7a24d](https://github.com/SebastianLuser/claude-code-arcane/commit/4a7a24d6a28df1abfe94be75f590c79d8428dca5))
+
 ## [2.9.3](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.2...v2.9.3) (2026-09-07)
 
 
