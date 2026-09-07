@@ -1,3 +1,10 @@
+## [2.9.6](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.5...v2.9.6) (2026-09-07)
+
+
+### Bug Fixes
+
+* **rules:** make code-comments the only authority on comments ([99bb84e](https://github.com/SebastianLuser/claude-code-arcane/commit/99bb84e7612630ae67d4942b378ccd1881d4cf64))
+
 ## [2.9.5](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.4...v2.9.5) (2026-09-07)
 
 
