@@ -3,7 +3,7 @@ import path from "node:path";
 import chalk from "chalk";
 import { readManifest } from "./manifest.js";
 import { arcaneHome, getPackageVersion } from "./utils.js";
-import { isGloballyInstalled } from "./self-update.js";
+import { isGloballyInstalled, cliInvocation } from "./self-update.js";
 
 /** Resolved per call, never cached in a const: see arcaneHome(). */
 function checkFile(): string {
@@ -139,7 +139,9 @@ export async function checkForUpdatesHook(): Promise<string> {
     }
     // Caches predating the CLI check have no content flag; treat them as content-only.
     if (cached.content_update_available ?? true) {
-      notices.push("Arcane content update available. Run: arcane update");
+      notices.push(
+        `Arcane content update available. Run: ${cliInvocation()} update`,
+      );
     }
     return notices.join(" ");
   } catch {
@@ -166,7 +168,9 @@ function printUpdateNotice(result: CheckResult): void {
         `\n  Arcane content update: ${result.local_version} → ${result.remote_sha}`,
       ),
     );
-    console.log(chalk.dim("  Run: arcane update (--dry-run to preview)"));
+    console.log(
+      chalk.dim(`  Run: ${cliInvocation()} update (--dry-run to preview)`),
+    );
   }
 
   console.log("");

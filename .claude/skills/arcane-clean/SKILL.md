@@ -36,7 +36,7 @@ This will remove:
    - Delete `.claude/docs/` directory
    - Delete `.claude/statusline.sh`
    - Delete `.claude/arcane-manifest.json`
-6. Report: "Arcane removed from project. Run `arcane install` to reinstall."
+6. Report: "Arcane removed from project. Run `npx claude-code-arcane install` to reinstall."
 
 ## Safety
 
