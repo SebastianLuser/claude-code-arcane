@@ -18,7 +18,7 @@ import {
   type SourcePreference,
 } from "../content-source.js";
 import { registerInstallation, pruneRegistry } from "../registry.js";
-import { selfUpdateNpm } from "../self-update.js";
+import { selfUpdateNpm, cliInvocation } from "../self-update.js";
 
 interface UpdateOpts {
   quiet?: boolean;
@@ -107,7 +107,11 @@ export async function updateCommand(opts: UpdateOpts): Promise<void> {
 
   if (targets.length === 0) {
     if (!opts.quiet) {
-      console.log(chalk.red("\nNo Arcane installations found. Run 'arcane install' first."));
+      console.log(
+        chalk.red(
+          `\nNo Arcane installations found. Run \`${cliInvocation()} install\` first.`,
+        ),
+      );
     }
     return;
   }
@@ -165,7 +169,11 @@ export async function updateTarget(
 
   if (!manifest) {
     if (!opts.quiet) {
-      console.log(chalk.red("No Arcane installation found. Run 'arcane install' first."));
+      console.log(
+        chalk.red(
+          `No Arcane installation found. Run \`${cliInvocation()} install\` first.`,
+        ),
+      );
     }
     return { target, status: "no-manifest", updated: 0, skipped: 0, removed: 0 };
   }

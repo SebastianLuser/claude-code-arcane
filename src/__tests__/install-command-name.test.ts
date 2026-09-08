@@ -75,3 +75,51 @@ describe("documented install command names the published package", () => {
     expect(Object.keys(pkg.bin)).toEqual(["arcane"]);
   });
 });
+
+/**
+ * The mirror image of the bug above, and the one a global install hides.
+ *
+ * `arcane` is the bin name, so it only exists on PATH after `npm i -g`. The
+ * README installs with npx, so most users never have it — and every update
+ * notice hardcoded "Run: arcane update". On the maintainer's machine that reads
+ * fine; a first-time user who copies it gets `'arcane' is not recognized` and
+ * gives up on the update. `printUpdateNotice` already guarded the CLI line with
+ * isGloballyInstalled() and left the content line bare, which is exactly how
+ * this survived review.
+ *
+ * Runtime messages now go through cliInvocation(); `self-update.ts` owns the
+ * literal and is the only file allowed to spell it.
+ */
+describe("runtime messages do not tell users to run a bin they may not have", () => {
+  // Prose that merely names the command ("the `arcane install` picker") is fine —
+  // only text the user is expected to type back is a problem.
+  const TYPE_THIS_BACK =
+    /[Rr]un:?\s*[`'"]?arcane\s+(install|update|add|remove|status|list|clean|global|worktree)/;
+  // self-update.ts defines cliInvocation(); the test file quotes the bad form to
+  // explain it. CHANGELOG quotes old commit messages and gets regenerated.
+  const OWNS_THE_LITERAL = new Set([
+    "self-update.ts",
+    "install-command-name.test.ts",
+    "CHANGELOG.md",
+  ]);
+
+  it("no shipped message hardcodes bare `arcane <command>`", () => {
+    // Arrange
+    const files: string[] = [];
+    for (const entry of ["src", "hooks", "skills", "profiles", "output-styles"]) {
+      walk(entry, files);
+    }
+
+    // Act
+    const offenders = files
+      .filter((f) => !OWNS_THE_LITERAL.has(path.basename(f)))
+      .filter((f) => /\.(md|ts|json|py|sh|ya?ml)$/.test(f))
+      .filter((f) => TYPE_THIS_BACK.test(fs.readFileSync(path.join(repoRoot, f), "utf-8")));
+
+    // Assert
+    expect(
+      offenders,
+      `these tell the user to run bare \`arcane\`, which npx users do not have: ${offenders.join(", ")}`,
+    ).toEqual([]);
+  });
+});

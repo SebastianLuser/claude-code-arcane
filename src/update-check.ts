@@ -3,7 +3,7 @@ import path from "node:path";
 import chalk from "chalk";
 import { readManifest } from "./manifest.js";
 import { arcaneHome, getPackageVersion } from "./utils.js";
-import { isGloballyInstalled } from "./self-update.js";
+import { isGloballyInstalled, cliInvocation } from "./self-update.js";
 
 /** Resolved per call, never cached in a const: see arcaneHome(). */
 function checkFile(): string {
@@ -126,27 +126,6 @@ export async function checkForUpdates(opts: {
   }
 }
 
-export async function checkForUpdatesHook(): Promise<string> {
-  try {
-    const cached = (await checkForUpdates({ quiet: true })) ? readCachedCheck() : null;
-    if (!cached) return "";
-
-    const notices: string[] = [];
-    if (cached.cli_update_available) {
-      notices.push(
-        `Arcane CLI ${cached.cli_version} → ${cached.latest_cli_version}. Run: npm install -g ${PACKAGE_NAME}@latest`,
-      );
-    }
-    // Caches predating the CLI check have no content flag; treat them as content-only.
-    if (cached.content_update_available ?? true) {
-      notices.push("Arcane content update available. Run: arcane update");
-    }
-    return notices.join(" ");
-  } catch {
-    return "";
-  }
-}
-
 function printUpdateNotice(result: CheckResult): void {
   if (result.cli_update_available) {
     console.log(
@@ -166,7 +145,9 @@ function printUpdateNotice(result: CheckResult): void {
         `\n  Arcane content update: ${result.local_version} → ${result.remote_sha}`,
       ),
     );
-    console.log(chalk.dim("  Run: arcane update (--dry-run to preview)"));
+    console.log(
+      chalk.dim(`  Run: ${cliInvocation()} update (--dry-run to preview)`),
+    );
   }
 
   console.log("");

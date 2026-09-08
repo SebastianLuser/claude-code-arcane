@@ -40,7 +40,7 @@ The CLI does the same thing interactively: `arcane add` with no args opens the w
 ## Steps
 
 1. Read `.claude/arcane-manifest.json` to find the `source` path
-2. If no manifest, error: "Run `arcane install` first"
+2. If no manifest, error: "Run `npx claude-code-arcane install` first"
 3. For each argument:
    - If it starts with `+`, it's a profile name:
      - Read `profiles/<name>.yaml` from source

@@ -34,6 +34,20 @@ export function isGloballyInstalled(): boolean {
 }
 
 /**
+ * How to spell the CLI in a message the user is meant to type back.
+ *
+ * `arcane` is the bin name, so it is only on PATH after `npm i -g`. Every notice
+ * used to hardcode it, which is fine on the machine that wrote them and useless
+ * everywhere else: the README installs with `npx`, so a first-time user who
+ * copies "Run: arcane update" gets `'arcane' is not recognized` and no update.
+ * The npx form works for global installs too — npx resolves the bin to the
+ * global one — but showing it to someone who already has it is noise.
+ */
+export function cliInvocation(): string {
+  return isGloballyInstalled() ? "arcane" : `npx ${PACKAGE_NAME}`;
+}
+
+/**
  * Update the globally-installed Arcane npm package to the latest version.
  *
  * Skips automatically (returning a reason) when: explicitly disabled, running
