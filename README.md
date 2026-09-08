@@ -6,6 +6,13 @@ A configuration harness installable via `npx`. Pick a **profile** that matches y
 
 ---
 
+## Requirements
+
+- **Node 20+** and **npm 7+** — `npx` needs npm 7 to resolve the package name to its `arcane` bin.
+- **Nothing to clone or download.** `npx` fetches what it needs. Run it inside **your own project**.
+
+---
+
 ## Quick Start
 
 ```bash
@@ -20,6 +27,19 @@ claude
 ```
 
 That's it. Your project now has skills, agents, hooks, rules, and permissions tailored for your stack.
+
+> **Do not install from a downloaded copy of this repo.** `install` targets the current directory, so
+> running it inside a `claude-code-arcane-*` folder from the Releases page deploys the whole profile
+> into that throwaway folder instead of your project.
+
+Every command in this README uses the `npx` form, which always works. Bare `arcane` is the *bin* name
+and only reaches your `PATH` after a global install — so if you prefer the shorter form, ask for it
+explicitly first:
+
+```bash
+npm install -g claude-code-arcane
+arcane install backend-ts+agile      # same as the npx line above
+```
 
 ---
 
