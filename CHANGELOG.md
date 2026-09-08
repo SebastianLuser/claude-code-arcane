@@ -1,3 +1,10 @@
+## [2.9.7](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.6...v2.9.7) (2026-09-08)
+
+
+### Bug Fixes
+
+* make a first-time npx install survivable ([964ef8e](https://github.com/SebastianLuser/claude-code-arcane/commit/964ef8eef9d4ea6a1e593eac189bceb79650174d))
+
 ## [2.9.6](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.5...v2.9.6) (2026-09-07)
 
 
