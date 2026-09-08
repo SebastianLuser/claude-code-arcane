@@ -126,29 +126,6 @@ export async function checkForUpdates(opts: {
   }
 }
 
-export async function checkForUpdatesHook(): Promise<string> {
-  try {
-    const cached = (await checkForUpdates({ quiet: true })) ? readCachedCheck() : null;
-    if (!cached) return "";
-
-    const notices: string[] = [];
-    if (cached.cli_update_available) {
-      notices.push(
-        `Arcane CLI ${cached.cli_version} → ${cached.latest_cli_version}. Run: npm install -g ${PACKAGE_NAME}@latest`,
-      );
-    }
-    // Caches predating the CLI check have no content flag; treat them as content-only.
-    if (cached.content_update_available ?? true) {
-      notices.push(
-        `Arcane content update available. Run: ${cliInvocation()} update`,
-      );
-    }
-    return notices.join(" ");
-  } catch {
-    return "";
-  }
-}
-
 function printUpdateNotice(result: CheckResult): void {
   if (result.cli_update_available) {
     console.log(
