@@ -11,7 +11,13 @@ import {
   isGranular,
   parseAgentEntry,
 } from "../agent-entries.js";
-import { copyDirSync, ensureDir, readJsonSync, writeJsonSync } from "../utils.js";
+import {
+  copyDirSync,
+  ensureDir,
+  readJsonSync,
+  statuslineCommand,
+  writeJsonSync,
+} from "../utils.js";
 import { resolveContentSource } from "../content-source.js";
 import { computeContentHashes } from "../content-hash.js";
 import type { ArcaneManifest } from "../types.js";
@@ -130,7 +136,7 @@ export async function addCommand(items: string[] = []): Promise<void> {
       }
 
       if (statuslineAdded) {
-        addStatuslineToSettings(claudeDir);
+        addStatuslineToSettings(target, claudeDir);
       }
     } else {
       const result = addSkill(root, target, item, manifest.installed_skills);
@@ -307,7 +313,7 @@ function mergePermissions(
   writeJsonSync(settingsPath, settings);
 }
 
-function addStatuslineToSettings(claudeDir: string): void {
+function addStatuslineToSettings(target: string, claudeDir: string): void {
   const settingsPath = path.join(claudeDir, "settings.json");
   if (!fs.existsSync(settingsPath)) return;
 
@@ -316,7 +322,7 @@ function addStatuslineToSettings(claudeDir: string): void {
 
   settings.statusLine = {
     type: "command",
-    command: "bash .claude/statusline.sh",
+    command: statuslineCommand(target),
   };
   writeJsonSync(settingsPath, settings);
 }

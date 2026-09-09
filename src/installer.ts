@@ -7,6 +7,7 @@ import {
   getPackageRoot,
   isSymlinkOrJunction,
   safeRemove,
+  statuslineCommand,
 } from "./utils.js";
 import {
   agentEntryLabel,
@@ -463,7 +464,7 @@ export class Installer {
     if (this.hasStatusline) {
       settings.statusLine = {
         type: "command",
-        command: "bash .claude/statusline.sh",
+        command: statuslineCommand(this.target),
       };
     }
     // First declared style wins — core's is listed first, so an addon profile
