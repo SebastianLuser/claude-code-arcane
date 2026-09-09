@@ -57,7 +57,6 @@ hooks:
   - session-stop.sh
   - log-agent.sh
   - log-agent-stop.sh
-  - statusline.sh
 
 permissions:
   allow:

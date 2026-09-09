@@ -3,7 +3,12 @@ import path from "node:path";
 import os from "node:os";
 import chalk from "chalk";
 import { readManifest, updateManifestFields, manifestPath } from "../manifest.js";
-import { copyDirSync, ensureDir } from "../utils.js";
+import {
+  copyDirSync,
+  ensureDir,
+  RELATIVE_STATUSLINE_COMMAND,
+  statuslineCommand,
+} from "../utils.js";
 import { mergeProfiles } from "../profiles.js";
 import { parseAgentEntry } from "../agent-entries.js";
 import type { ArcaneManifest } from "../types.js";
@@ -748,25 +753,46 @@ function syncUnhashedFiles(
     fs.copyFileSync(t.src, t.dst);
   }
 
-  // generateSettings() only runs at install, so a style shipped to an existing install
-  // stayed inert: the file was there and nothing referenced it. Patch the single key
-  // rather than regenerating, so hooks and permissions the user edited survive.
-  const activeStyle = merged.output_styles[0];
-  if (activeStyle) {
-    const settingsPath = path.join(claudeDir, "settings.json");
-    if (fs.existsSync(settingsPath)) {
-      try {
-        const settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
-        if (settings.outputStyle !== activeStyle) {
-          changed.push(`settings.json (outputStyle: ${activeStyle})`);
-          if (!dryRun) {
-            settings.outputStyle = activeStyle;
-            fs.writeFileSync(settingsPath, `${JSON.stringify(settings, null, 2)}\n`, "utf-8");
-          }
-        }
-      } catch {
-        // Unparseable settings.json is the user's to fix; never clobber it here.
+  // generateSettings() only runs at install, so anything it wires stayed inert on an
+  // install that already existed. Patch the individual keys rather than regenerating,
+  // so hooks and permissions the user edited survive.
+  const settingsPath = path.join(claudeDir, "settings.json");
+  if (fs.existsSync(settingsPath)) {
+    try {
+      const settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
+      let dirty = false;
+
+      // A style shipped to an existing install stayed inert: the file was there and
+      // nothing referenced it.
+      const activeStyle = merged.output_styles[0];
+      if (activeStyle && settings.outputStyle !== activeStyle) {
+        changed.push(`settings.json (outputStyle: ${activeStyle})`);
+        settings.outputStyle = activeStyle;
+        dirty = true;
       }
+
+      // Only the global install rewrites here: its settings.json is inherited by every
+      // project that declares no statusLine, and the relative command it used to get
+      // resolves against whichever project is open. In one without
+      // .claude/statusline.sh that exits 127 and Claude Code drops the bar silently.
+      // A project install keeps the relative form, so this is a no-op for it.
+      const wanted = statuslineCommand(path.dirname(claudeDir));
+      const current = settings.statusLine as { command?: string } | undefined;
+      if (
+        wanted !== RELATIVE_STATUSLINE_COMMAND &&
+        current &&
+        current.command !== wanted
+      ) {
+        changed.push("settings.json (statusLine path)");
+        settings.statusLine = { ...current, command: wanted };
+        dirty = true;
+      }
+
+      if (dirty && !dryRun) {
+        fs.writeFileSync(settingsPath, `${JSON.stringify(settings, null, 2)}\n`, "utf-8");
+      }
+    } catch {
+      // Unparseable settings.json is the user's to fix; never clobber it here.
     }
   }
 

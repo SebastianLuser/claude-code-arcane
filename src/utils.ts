@@ -23,6 +23,38 @@ export function arcaneHome(): string {
   return process.env.ARCANE_HOME ?? path.join(os.homedir(), ".arcane");
 }
 
+/**
+ * The command a project install wires into `settings.json`. Relative on purpose: Claude
+ * Code runs it with the project as cwd, so it names the file that install owns, and the
+ * settings.json stays portable across machines and checkouts.
+ */
+export const RELATIVE_STATUSLINE_COMMAND = "bash .claude/statusline.sh";
+
+/**
+ * The `statusLine` command for an install rooted at `target`.
+ *
+ * The global install at `~/.claude` is the one case the relative form gets wrong. Its
+ * settings.json is inherited by every project that declares no `statusLine` of its own,
+ * and `.claude/statusline.sh` then resolves against *that* project rather than the home
+ * directory. A project installed without the `statusline` profile has no such file, so
+ * bash exits 127, Claude Code discards the output, and the bar is simply absent with
+ * nothing on screen to explain it.
+ *
+ * Pointing the global install at the file it actually owns keeps the inherited fallback
+ * working in every project, including ones Arcane never touched. The script takes the
+ * project name, branch and skill counts from the cwd, so moving the script does not
+ * change what it reports.
+ */
+export function statuslineCommand(target: string): string {
+  if (path.resolve(target) !== path.resolve(os.homedir())) {
+    return RELATIVE_STATUSLINE_COMMAND;
+  }
+  // Forward slashes and quotes: bash reads backslashes as escapes, and a home directory
+  // containing a space would otherwise split into two arguments.
+  const script = path.join(target, ".claude", "statusline.sh").replace(/\\/g, "/");
+  return `bash "${script}"`;
+}
+
 export function getPackageRoot(): string {
   const thisFile = fileURLToPath(import.meta.url);
   // dist/cli.js → repo root (go up from dist/)
