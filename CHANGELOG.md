@@ -1,3 +1,10 @@
+## [2.9.8](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.7...v2.9.8) (2026-09-09)
+
+
+### Bug Fixes
+
+* **statusline:** point the global install at the script it owns ([1a8aada](https://github.com/SebastianLuser/claude-code-arcane/commit/1a8aada612e7f2bad2d60450306c0d51887f6b65))
+
 ## [2.9.7](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.6...v2.9.7) (2026-09-08)
 
 
