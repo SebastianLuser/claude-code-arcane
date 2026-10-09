@@ -9,7 +9,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task
 
 ## Phase 1: Define the Question
 
-Resolve review mode: `--review` arg > `production/review-mode.txt` > default `lean`. See `.claude/docs/director-gates.md`.
+Resolve review mode: `--review` arg > `production/review-mode.txt` > default `lean`.
 
 Read concept description. Identify core question the prototype must answer. If vague, state question explicitly before proceeding.
 

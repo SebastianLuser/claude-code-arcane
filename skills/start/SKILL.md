@@ -35,7 +35,7 @@ AskUserQuestion multi-tab:
 
 | Tipo | Rol | División | Skills clave |
 |------|-----|----------|-------------|
-| Juego | Dev | Game Dev | `/brainstorm`, `/scaffold-unity`, `/design-system` |
+| Juego | Dev | Game Dev | `/brainstorm`, `/scaffold-unity` (Unity) o `/ue-project-context` (Unreal), `/design-system` |
 | Web app | Dev | Software Eng | `/nextjs-scaffold`, `/architecture-decision` |
 | API | Dev | Software Eng | `/scaffold-go`, `/scaffold-fastify-ts` |
 | Móvil | Dev | Software Eng | `/scaffold-react-native` |
@@ -53,7 +53,7 @@ AskUserQuestion: primary recommendation (Recommended), secondary option, "Ver to
 
 ## Routing Cheatsheet
 
-- Game from scratch: `/start` → `/brainstorm` → `/scaffold-unity` → `/art-bible` → `/design-system`
+- Game from scratch: `/start` → `/brainstorm` → `/scaffold-unity` (Unity) o `/ue-project-context` (Unreal) → `/art-bible` → `/design-system`
 - Web app: `/start` → `/nextjs-scaffold` → `/architecture-decision` → `/api-design`
 - Sprint en curso: `/start` → `/clickup status` → `/standup-report`
 

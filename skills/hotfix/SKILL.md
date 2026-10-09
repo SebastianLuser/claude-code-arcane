@@ -50,8 +50,8 @@ Spawn `qa-director` (or `qa-engineer` if that is what is installed) with hotfix 
 | QA Verdict | Action |
 |------------|--------|
 | Smoke check sufficient | `/smoke-check` → if PASS, proceed |
-| Targeted QA pass | `/team-qa [affected-system]` → if APPROVED, proceed |
-| Full QA required | `/team-qa sprint` — delays deploy but prevents bad patch |
+| Targeted QA pass | Manual pass on the affected system with the plan from `/qa-plan [affected-system]` → if PASS, proceed |
+| Full QA required | Full manual pass with the plan from `/qa-plan sprint` — delays deploy but prevents bad patch |
 
 Do not skip this gate.
 

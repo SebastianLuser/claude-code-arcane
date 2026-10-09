@@ -142,7 +142,7 @@ Claude-Code-Arcane/
 ## Rules Split Policy
 
 - **`.claude/rules/`** — reglas universales que aplican a cualquier stack software (backend APIs, frontends web/mobile, DBs, infra, LLM apps). Usan paths genéricos (`src/api/**`, `src/components/**`, `migrations/**`).
-- **`.claude/skills-gamedev/_rules/`** — reglas exclusivas de gamedev (frame budgets, shaders, NPC AI, GDDs, lore). Usan paths gamedev (`src/gameplay/**`, `assets/shaders/**`, `design/gdd/**`, `design/narrative/**`).
+- **`.claude/rules/gamedev/`** — reglas exclusivas de gamedev (frame budgets, shaders, NPC AI, GDDs, lore). Usan paths gamedev (`src/gameplay/**`, `assets/shaders/**`, `design/gdd/**`, `design/narrative/**`).
 
 Cuando un proyecto es dual (ej. web + game), ambos sets de rules aplican por sus paths scoped.
 

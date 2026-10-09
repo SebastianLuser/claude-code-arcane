@@ -9,7 +9,7 @@ allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 
 ## Phase 1: Parse Arguments
 
-Resolve review mode: `--review` arg > `production/review-mode.txt` > default `lean`. See `.claude/docs/director-gates.md`.
+Resolve review mode: `--review` arg > `production/review-mode.txt` > default `lean`.
 
 Modes: `new` → blank template, `analyze [path]` → structured findings from raw notes.
 
@@ -25,7 +25,7 @@ Read raw notes. Cross-reference with design documents. Fill template with struct
 
 | Bucket | Route |
 |--------|-------|
-| Design changes | `/propagate-design-change [path]` for downstream impacts |
+| Design changes | Update the GDD, then `/consistency-check` for downstream impacts |
 | Balance adjustments | `/balance-check [system]` before tuning |
 | Bugs | `/bug-report` to formally track |
 | Polish items | Add to `production/` polish backlog |
@@ -41,5 +41,4 @@ Ask to write to `production/qa/playtests/playtest-[date]-[tester].md`.
 ## Phase 5: Next Steps
 
 - Act on highest-priority finding category first
-- Design changes → `/design-review` on updated GDD
 - Bugs → `/bug-triage` to update priorities

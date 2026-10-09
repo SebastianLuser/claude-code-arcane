@@ -44,4 +44,4 @@ Present draft → ask write approval → `design/quick-specs/[kebab-case]-[YYYY-
 
 Report: file written, type, system, GDD update status. Next: `/story-readiness` (reference spec in story's GDD Reference field).
 
-Bypasses `/design-review` by design. Redirect to full pipeline if: new system belongs in index, significantly alters cross-system behavior, introduces new player-facing mechanics affecting MDA balance, or >1 week implementation.
+Skips the full GDD pipeline (`/design-system`) by design. Redirect to full pipeline if: new system belongs in index, significantly alters cross-system behavior, introduces new player-facing mechanics affecting MDA balance, or >1 week implementation.

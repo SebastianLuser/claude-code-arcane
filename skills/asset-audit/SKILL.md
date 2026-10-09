@@ -92,4 +92,3 @@ This skill is read-only — it produces a report but does not write files.
 
 - Fix naming violations using the patterns defined in CLAUDE.md.
 - Delete confirmed orphaned assets after manual review.
-- Run `/content-audit` to cross-check asset counts against GDD-specified requirements.

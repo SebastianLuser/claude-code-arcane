@@ -11,7 +11,7 @@ allowed-tools: Read, Glob, Grep, Write, WebSearch, Task, AskUserQuestion
 
 ## Setup
 
-1. Parse argument for genre/theme hint (`roguelike`, `space survival`, `open`). Resolve review mode: `--review` flag → `production/review-mode.txt` → default `lean`. See `.claude/docs/director-gates.md`.
+1. Parse argument for genre/theme hint (`roguelike`, `space survival`, `open`). Resolve review mode: `--review` flag → `production/review-mode.txt` → default `lean`.
 2. Check existing work: `design/gdd/game-concept.md` (resume), `design/gdd/game-pillars.md` (build on).
 3. Run phases **interactively** — collaborative exploration, not silent generation. Use `AskUserQuestion` at key decision points.
 
@@ -74,12 +74,12 @@ Using Bartle taxonomy + Quantic Foundry: primary player type, secondary appeal, 
 ### Phase 6: Scope and Feasibility
 
 - **Platform**: AskUserQuestion (PC / Mobile / Console / Web / Multiple)
-- **Engine**: AskUserQuestion (Unity / Unreal / No preference → suggest `/setup-engine` later). Don't second-guess if they pick one.
+- **Engine**: AskUserQuestion (Unity / Unreal / No preference → once decided, `/scaffold-unity` for Unity or `/ue-project-context` for Unreal). Don't second-guess if they pick one.
 - **Art pipeline, content scope, MVP definition, biggest risks, scope tiers**
 
 ## Document Generation
 
-Generate game concept using template at `.claude/docs/templates/game-concept.md`. Include Visual Identity Anchor section. Scope consistency rule: Estimated Scope must match full-vision timeline.
+Generate game concept using template at `.claude/skills/_templates/game-concept.md`. Include Visual Identity Anchor section. Scope consistency rule: Estimated Scope must match full-vision timeline.
 
 AskUserQuestion for write approval → if "revise" → iterate until approved → write to `design/gdd/game-concept.md`.
 

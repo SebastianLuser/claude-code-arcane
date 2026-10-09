@@ -65,7 +65,7 @@ Report: completeness (X/Y sections), quality issues (BLOCKING/ADVISORY with fix)
 ## Protocol
 
 - Read-only — never edits files
-- APPROVED → suggest `/team-ui`
+- APPROVED → the spec is ready for implementation
 - NEEDS REVISION → offer to help draft missing sections
 - MAJOR REVISION → redirect to `/ux-design`
 - Verdict is advisory — user decides whether to proceed
