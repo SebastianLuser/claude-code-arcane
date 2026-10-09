@@ -13,23 +13,23 @@ const source = document.getElementById('fs').textContent.trim();
 // ...
 ```
 
-### IMPORTANT: Float Texture Compatibility (Most Critical Issue for Fluid Simulation)
+### Float Texture Compatibility (Most Critical Issue for Fluid Simulation)
 
 Fluid simulation requires float textures to store velocity (can be negative), pressure, and ink concentration (can exceed 1.0).
 
-**IMPORTANT: Must use RGBA16F instead of RGBA32F**: Many environments (headless Chrome, SwiftShader, mobile) do not support `RGBA32F` render targets. Even when the `EXT_color_buffer_float` extension claims to be available, `RGBA32F` FBOs may silently fail (framebuffer reports complete but renders all zeros or all ones). `RGBA16F + HALF_FLOAT` has far better compatibility than `RGBA32F`, and its precision is more than sufficient for fluid simulation.
+**Must use RGBA16F instead of RGBA32F**: Many environments (headless Chrome, SwiftShader, mobile) do not support `RGBA32F` render targets. Even when the `EXT_color_buffer_float` extension claims to be available, `RGBA32F` FBOs may silently fail (framebuffer reports complete but renders all zeros or all ones). `RGBA16F + HALF_FLOAT` has far better compatibility than `RGBA32F`, and its precision is more than sufficient for fluid simulation.
 
 ```javascript
 const gl = canvas.getContext("webgl2");
 if (!gl) { /* error handling */ }
 
 const ext = gl.getExtension("EXT_color_buffer_float");
-// IMPORTANT: Continue even if ext is null — some environments support RGBA16F without this extension
+// Continue even if ext is null — some environments support RGBA16F without this extension
 
 function createFloatTexture(w, h) {
     const tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    // IMPORTANT: Must use RGBA16F + HALF_FLOAT, do NOT use RGBA32F + FLOAT
+    // Must use RGBA16F + HALF_FLOAT, do NOT use RGBA32F + FLOAT
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -57,7 +57,7 @@ function createFBO(w, h) {
 Fluid simulation requires tracking mouse position and drag direction. iMouse uniform convention: **xy=current mouse position, z=mouse down flag (>0 means pressed), w=unused**. Mouse velocity is calculated from the position difference between current and previous frames:
 
 ```javascript
-// IMPORTANT: iMouse convention: xy=current position, z=pressed flag (1.0=down, 0.0=up), w=0
+// iMouse convention: xy=current position, z=pressed flag (1.0=down, 0.0=up), w=0
 // Mouse velocity is computed via prevMouse on the JS side, passed through a separate uniform
 let iMouse = [0, 0, 0, 0]; // [x, y, pressed, 0]
 let prevMouse = [0, 0];
@@ -93,7 +93,7 @@ canvas.addEventListener('mouseup', () => {
 // Pass uniforms in render loop
 // iMouse: xy=position, z=pressed flag, w=0
 gl.uniform4f(uMouse, iMouse[0], iMouse[1], iMouse[2], 0.0);
-// IMPORTANT: Mouse velocity must be clamped, otherwise fast dragging produces huge velocity deltas causing NaN explosion
+// Mouse velocity must be clamped, otherwise fast dragging produces huge velocity deltas causing NaN explosion
 const mvx = Math.max(-50, Math.min(50, iMouse[0] - prevMouse[0]));
 const mvy = Math.max(-50, Math.min(50, iMouse[1] - prevMouse[1]));
 gl.uniform2f(uMouseVel, mvx, mvy);
@@ -211,9 +211,9 @@ c.z -= DT * (dx.z * c.x + dy.z * c.y + div * c.z);
 
 ### Step 6: Mouse Interaction
 ```glsl
-// IMPORTANT: iMouse.z is the mouse-down flag (>0=pressed), not a position coordinate
+// iMouse.z is the mouse-down flag (>0=pressed), not a position coordinate
 // iMouseVel is mouse movement velocity, passed via a separate uniform
-// IMPORTANT: Must clamp mouseVel to prevent NaN explosion
+// Must clamp mouseVel to prevent NaN explosion
 if (iMouse.z > 0.0) {
     vec2 mouseVel = clamp(iMouseVel, vec2(-50.0), vec2(50.0));
     float dist2 = dot(p - iMouse.xy, p - iMouse.xy);
@@ -225,7 +225,7 @@ if (iMouse.z > 0.0) {
 
 ### Step 6b: Vorticity Confinement (Required for Ink Curling Effects)
 ```glsl
-// IMPORTANT: Ink diffusion/swirl effects require vorticity confinement, otherwise small vortices dissipate quickly leaving only smooth flow
+// Ink diffusion/swirl effects require vorticity confinement, otherwise small vortices dissipate quickly leaving only smooth flow
 // Vorticity confinement re-injects energy into small-scale vortices, producing characteristic curling textures
 #define VORT_STR 0.035  // [0.01=subtle, 0.05=noticeable, 0.1=strong]
 float curl_c = dx.y - dy.x;
@@ -243,9 +243,9 @@ c.xy += DT * VORT_STR * vec2(eta.y, -eta.x) * curl_c;
 
 ### Step 7: Automatic Ink Sources (Critical: Ensures Visible Output Without Interaction)
 ```glsl
-// IMPORTANT: Must have automatic ink sources! Otherwise the screen is completely black without mouse interaction
-// IMPORTANT: Ink injection and decay must be balanced! Too-strong injection or too-weak decay causes ink saturation across the entire screen → solid color with no features
-// IMPORTANT: Gaussian denominator controls emitter radius — larger denominator means larger emitter!
+// Must have automatic ink sources! Otherwise the screen is completely black without mouse interaction
+// Ink injection and decay must be balanced! Too-strong injection or too-weak decay causes ink saturation across the entire screen → solid color with no features
+// Gaussian denominator controls emitter radius — larger denominator means larger emitter!
 //     Denominator > 300 makes emitter cover most of the screen, ink saturates quickly
 //     Recommended 100~200, keeping it locally concentrated with visible gradient falloff at distance
 float t = iTime;
@@ -277,7 +277,7 @@ if (p.x < 1.0 || p.y < 1.0 ||
     c.xyw *= 0.0;
 }
 
-// IMPORTANT: Ink decay — must use multiplicative decay (e.g., *= 0.99), NOT subtractive decay (-= constant)
+// Ink decay — must use multiplicative decay (e.g., *= 0.99), NOT subtractive decay (-= constant)
 // Subtractive decay zeros out quickly at small ink values and decays too slowly at large values, causing saturation
 // Multiplicative decay scales proportionally, maintaining contrast at any concentration
 c.w *= 0.99;  // 1% decay per frame, adjustable [0.98=fast dissipation, 0.995=persistent]
@@ -291,19 +291,19 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord / iResolution.xy;
     vec4 c = texture(iChannel0, uv);
 
-    // IMPORTANT: Color base must be bright enough! 0.5+0.5*cos produces [0,1] range bright colors
+    // Color base must be bright enough! 0.5+0.5*cos produces [0,1] range bright colors
     // Never use vec3(0.02, 0.01, 0.08) or similar near-zero base colors — they become invisible when multiplied by ink
     float angle = atan(c.y, c.x);
     vec3 col = 0.5 + 0.5 * cos(angle + vec3(0.0, 2.1, 4.2));
 
-    // IMPORTANT: Use smoothstep to map ink concentration; upper limit should exceed actual ink range to preserve gradients
+    // Use smoothstep to map ink concentration; upper limit should exceed actual ink range to preserve gradients
     float ink = smoothstep(0.0, 2.0, c.w);
     col *= ink;
 
     // Pressure highlights
     col += vec3(0.05) * clamp(c.z - 1.0, 0.0, 1.0);
 
-    // IMPORTANT: Background color must be visible (RGB at least > 5/255 ≈ 0.02), otherwise users think the page is all black
+    // Background color must be visible (RGB at least > 5/255 ≈ 0.02), otherwise users think the page is all black
     col = max(col, vec3(0.02, 0.012, 0.035));
 
     fragColor = vec4(col, 1.0);
@@ -315,7 +315,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 Lava/fire requires FBM noise for turbulent textures + temperature color band mapping. **Key: Must use FBM noise to distort UV coordinates and temperature values, otherwise the image is too smooth and looks like a plain gradient rather than lava.**
 
 ```glsl
-// IMPORTANT: FBM noise is the core of lava/fire visualization! Without it the image is a smooth gradient with no lava texture
+// FBM noise is the core of lava/fire visualization! Without it the image is a smooth gradient with no lava texture
 // These noise functions must be defined in the Image Pass
 
 float hash(vec2 p) {
@@ -333,7 +333,7 @@ float noise(vec2 p) {
     return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
 }
 
-// IMPORTANT: octaves=4~6 produces sufficient detail; fewer than 3 gives too-coarse textures
+// octaves=4~6 produces sufficient detail; fewer than 3 gives too-coarse textures
 float fbm(vec2 p, int octaves) {
     float val = 0.0;
     float amp = 0.5;
@@ -360,7 +360,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float speed = length(c.xy);
 
     // Temperature = ink concentration + noise perturbation + speed contribution
-    // IMPORTANT: Noise perturbation amplitude of 0.2~0.4 produces visible texture without becoming noisy
+    // Noise perturbation amplitude of 0.2~0.4 produces visible texture without becoming noisy
     float temp = ink * 0.7 + n1 * 0.25 + speed * 0.1;
     // Second noise layer for cracks/dark veins
     temp -= (1.0 - n2) * 0.15 * ink;
@@ -399,14 +399,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord / iResolution.xy;
     vec2 texel = 1.0 / iResolution.xy;
 
-    // IMPORTANT: Sample from wave height field: .g channel stores current frame height
+    // Sample from wave height field: .g channel stores current frame height
     float h = texture(iChannel0, uv).g;
     float hn = texture(iChannel0, uv + vec2(0.0, texel.y)).g;
     float hs = texture(iChannel0, uv - vec2(0.0, texel.y)).g;
     float he = texture(iChannel0, uv + vec2(texel.x, 0.0)).g;
     float hw = texture(iChannel0, uv - vec2(texel.x, 0.0)).g;
 
-    // IMPORTANT: Normal perturbation factor must be large enough (50~100), otherwise ripples are invisible
+    // Normal perturbation factor must be large enough (50~100), otherwise ripples are invisible
     // If drop strength is 1.0 and radius is 8~15px, using 80.0 produces clearly visible ripples
     vec3 normal = normalize(vec3((hw - he) * 80.0, (hs - hn) * 80.0, 1.0));
 
@@ -417,7 +417,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float diffuse = max(dot(normal, lightDir), 0.0);
     float specular = pow(max(dot(normal, halfVec), 0.0), 64.0);
 
-    // IMPORTANT: Water base color must be bright enough! Deep color no darker than vec3(0.02, 0.08, 0.2), shallow color use vec3(0.1, 0.3, 0.6)
+    // Water base color must be bright enough! Deep color no darker than vec3(0.02, 0.08, 0.2), shallow color use vec3(0.1, 0.3, 0.6)
     vec3 deepColor = vec3(0.02, 0.08, 0.22);
     vec3 shallowColor = vec3(0.1, 0.35, 0.65);
     vec3 waterColor = mix(deepColor, shallowColor, 0.5 + h * 5.0);
@@ -439,7 +439,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 }
 ```
 
-## IMPORTANT: Common Fatal Errors
+## Common Fatal Errors
 
 1. **RGBA32F silently fails in headless/SwiftShader environments**: Must use `RGBA16F + HALF_FLOAT`
 2. **Ink saturates entire screen**: Gaussian denominator too large (>300) or decay too weak (>0.995). Fix: denominator 100~200, decay `*= 0.99`
@@ -464,7 +464,7 @@ Fluid simulation requires framebuffer self-feedback + float textures. The follow
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Fluid Simulation</title>
 <style>
-/* IMPORTANT: Critical: canvas must fill the viewport, otherwise it may be invisible or clipped */
+/* canvas must fill the viewport, otherwise it may be invisible or clipped */
 *{margin:0;padding:0}
 html,body{width:100%;height:100%;overflow:hidden;background:#000}
 canvas{display:block;width:100%;height:100%}
@@ -474,7 +474,7 @@ canvas{display:block;width:100%;height:100%}
 <canvas id="c"></canvas>
 <script>
 let frameCount = 0;
-// IMPORTANT: iMouse convention: [x, y, pressedFlag, 0] — z is the pressed flag (1 or 0), not a coordinate
+// iMouse convention: [x, y, pressedFlag, 0] — z is the pressed flag (1 or 0), not a coordinate
 let mouse = [0, 0, 0, 0];
 let prevMouse = [0, 0];
 let mouseDown = false;
@@ -510,7 +510,7 @@ in vec2 pos;
 void main(){ gl_Position=vec4(pos,0,1); }`;
 
 // fsBuffer / fsImage: adapt from the Buffer A / Image templates below
-// IMPORTANT: Fragment shaders must declare these uniforms:
+// Fragment shaders must declare these uniforms:
 //   uniform sampler2D iChannel0;
 //   uniform vec2 iResolution;
 //   uniform float iTime;
@@ -521,7 +521,7 @@ void main(){ gl_Position=vec4(pos,0,1); }`;
 const progBuf = createProgram(vsSource, fsBuffer);
 const progImg = createProgram(vsSource, fsImage);
 
-// IMPORTANT: Must use RGBA16F + HALF_FLOAT, do NOT use RGBA32F + FLOAT
+// Must use RGBA16F + HALF_FLOAT, do NOT use RGBA32F + FLOAT
 // RGBA32F may render all zeros in headless Chrome / SwiftShader even when framebuffer reports complete
 function createFBO(w, h) {
     const tex = gl.createTexture();
@@ -573,12 +573,12 @@ canvas.addEventListener('mousedown', e => {
     const dpr = Math.min(devicePixelRatio, 1.5);
     mouse[0] = e.clientX * dpr;
     mouse[1] = H - e.clientY * dpr;
-    mouse[2] = 1.0; // IMPORTANT: Pressed flag, not a coordinate
+    mouse[2] = 1.0; // Pressed flag, not a coordinate
     prevMouse[0] = mouse[0]; prevMouse[1] = mouse[1];
 });
 canvas.addEventListener('mouseup', () => {
     mouseDown = false;
-    mouse[2] = 0.0; // IMPORTANT: Released flag
+    mouse[2] = 0.0; // Released flag
 });
 
 // Touch events (mobile)
@@ -628,7 +628,7 @@ function render(t) {
     gl.uniform1f(uBuf.time, t);
     gl.uniform1i(uBuf.frame, frameCount);
     gl.uniform4f(uBuf.mouse, mouse[0], mouse[1], mouse[2], 0.0);
-    // IMPORTANT: Must clamp mouse velocity! Fast movement or first-frame clicks can produce huge velocity values,
+    // Must clamp mouse velocity! Fast movement or first-frame clicks can produce huge velocity values,
     // causing shader velocity explosion → NaN propagation → page crash
     const mvx = Math.max(-50, Math.min(50, mouse[0] - prevMouse[0]));
     const mvy = Math.max(-50, Math.min(50, mouse[1] - prevMouse[1]));
@@ -699,7 +699,7 @@ void mainImage(out vec4 fragColor, in vec2 p) {
     c.xy -= K * vec2(dx.z, dy.z);
 
     // Mouse interaction: iMouse.z is the pressed flag (>0), velocity obtained via iMouseVel uniform
-    // IMPORTANT: mouseVel must be clamped to prevent NaN explosion (JS side should also clamp — double safety)
+    // mouseVel must be clamped to prevent NaN explosion (JS side should also clamp — double safety)
     if (iMouse.z > 0.0) {
         vec2 mouseVel = clamp(iMouseVel, vec2(-50.0), vec2(50.0));
         float dist2 = dot(p - iMouse.xy, p - iMouse.xy);
@@ -709,7 +709,7 @@ void mainImage(out vec4 fragColor, in vec2 p) {
     }
 
     // Vorticity confinement: prevents small vortices from dissipating too quickly, producing curling textures
-    // IMPORTANT: Ink diffusion/swirl effects (e.g., ink diffusing in water) require vorticity confinement, otherwise curl dissipates quickly leaving only smooth flow
+    // Ink diffusion/swirl effects (e.g., ink diffusing in water) require vorticity confinement, otherwise curl dissipates quickly leaving only smooth flow
     float curl_c = dx.y - dy.x;
     float curl_n = (T(p + vec2(1,1)).y - T(p + vec2(-1,1)).y) / 2.0
                  - (T(p + vec2(0,2)).x - T(p).x) / 2.0;
@@ -723,7 +723,7 @@ void mainImage(out vec4 fragColor, in vec2 p) {
     eta = normalize(eta + vec2(1e-5));
     c.xy += DT * 0.035 * vec2(eta.y, -eta.x) * curl_c;
 
-    // IMPORTANT: Automatic ink sources: ensure visible fluid motion without mouse interaction
+    // Automatic ink sources: ensure visible fluid motion without mouse interaction
     // Emitter positions must move over time, and Gaussian radius must be small enough to maintain locality
     float t = iTime;
     vec2 em1 = iResolution.xy * vec2(0.25, 0.5 + 0.2 * sin(t * 0.7));
@@ -739,7 +739,7 @@ void mainImage(out vec4 fragColor, in vec2 p) {
     c.xy += DT * r3 * vec2(sin(t * 1.1), -cos(t)) * 2.0;
     c.w += DT * (r1 + r2 + r3) * 2.0;
 
-    // IMPORTANT: Ink decay: must use multiplicative decay, do NOT use subtractive (subtractive causes saturation)
+    // Ink decay: must use multiplicative decay, do NOT use subtractive (subtractive causes saturation)
     c.w *= 0.99;
 
     c = clamp(c, vec4(-5, -5, 0.5, 0), vec4(5, 5, 3, 5));
@@ -762,19 +762,19 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord / iResolution.xy;
     vec4 c = texture(iChannel0, uv);
 
-    // IMPORTANT: Color base must be bright enough! 0.5+0.5*cos produces [0,1] range bright colors
+    // Color base must be bright enough! 0.5+0.5*cos produces [0,1] range bright colors
     // Never use vec3(0.02, 0.01, 0.08) or similar extremely dark base colors — they become invisible when multiplied by ink
     float angle = atan(c.y, c.x);
     vec3 col = 0.5 + 0.5 * cos(angle + vec3(0.0, 2.1, 4.2));
 
-    // IMPORTANT: smoothstep upper limit should cover actual ink range to preserve gradient variation
+    // smoothstep upper limit should cover actual ink range to preserve gradient variation
     float ink = smoothstep(0.0, 2.0, c.w);
     col *= ink;
 
     // Pressure highlights
     col += vec3(0.05) * clamp(c.z - 1.0, 0.0, 1.0);
 
-    // IMPORTANT: Background color must be visible (RGB at least > 5/255 ≈ 0.02), otherwise users think the page is all black
+    // Background color must be visible (RGB at least > 5/255 ≈ 0.02), otherwise users think the page is all black
     col = max(col, vec3(0.02, 0.012, 0.035));
 
     fragColor = vec4(col, 1.0);
@@ -785,7 +785,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
 Water surface ripples use the wave equation rather than Navier-Stokes. Clicks/touches generate concentric ripples that interfere with each other and gradually decay.
 
-**IMPORTANT: Water ripple drop injection must be implemented directly in the shader using iMouse**, do not use custom uniform arrays to pass click positions — that adds complexity on both JS/GLSL sides and is error-prone (uniform location not found, array length mismatch, etc.).
+**Water ripple drop injection must be implemented directly in the shader using iMouse**, do not use custom uniform arrays to pass click positions — that adds complexity on both JS/GLSL sides and is error-prone (uniform location not found, array length mismatch, etc.).
 
 ### Water Ripple Buffer Pass (Wave Equation Solver)
 
@@ -793,7 +793,7 @@ Water surface ripples use the wave equation rather than Navier-Stokes. Clicks/to
 // Water Ripple — Buffer Pass (Wave Equation Solver)
 // Data encoding: .r = previous frame height (prev), .g = current frame height (curr)
 // iChannel0 = self-feedback (ping-pong)
-// IMPORTANT: Drop injection is done directly in the shader via iMouse, no custom uniforms needed
+// Drop injection is done directly in the shader via iMouse, no custom uniforms needed
 
 void main() {
     vec2 p = gl_FragCoord.xy;
@@ -823,7 +823,7 @@ void main() {
     float damping = 0.996;
     next *= damping;
 
-    // IMPORTANT: Mouse click drop injection — directly using iMouse, simple and reliable
+    // Mouse click drop injection — directly using iMouse, simple and reliable
     // iMouse.z > 0 indicates mouse is pressed
     if (iMouse.z > 0.0) {
         float dist = length(p - iMouse.xy);
@@ -832,7 +832,7 @@ void main() {
         next += strength * exp(-dist * dist / (2.0 * radius * radius));
     }
 
-    // IMPORTANT: Automatic ripples: ensure visible ripples even without interaction
+    // Automatic ripples: ensure visible ripples even without interaction
     // Use periodic functions of iTime to control auto-drop position and timing
     float autoPhase = iTime * 0.5;
     float autoPeriod = fract(autoPhase);
@@ -854,7 +854,7 @@ void main() {
         next *= 0.0;
     }
 
-    // IMPORTANT: Output: .r = current frame (becomes next frame's prev), .g = newly computed (becomes next frame's curr)
+    // Output: .r = current frame (becomes next frame's prev), .g = newly computed (becomes next frame's curr)
     fragColor = vec4(curr, next, 0.0, 1.0);
 }
 ```
@@ -877,7 +877,7 @@ See Step 9c above.
 
 When multiple ink colors need to interpenetrate and blend, a single scalar `c.w` is insufficient. You need **two Buffers**: Buffer A stores velocity/pressure (same as above), Buffer B stores RGB three-channel ink concentration, sharing the same velocity field for advection.
 
-**IMPORTANT: Key for multi-color ink: Buffer B's RGB channels independently store the concentration of each ink color, using Buffer A's velocity field for semi-Lagrangian advection. Different ink colors naturally blend during advection and diffusion.**
+**Key for multi-color ink: Buffer B's RGB channels independently store the concentration of each ink color, using Buffer A's velocity field for semi-Lagrangian advection. Different ink colors naturally blend during advection and diffusion.**
 
 ### JS Side Changes (Three Buffer Ping-Pong)
 
@@ -1020,7 +1020,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec3 mapped = smoothstep(vec3(0.0), vec3(2.5), ink);
 
     // Color mapping: map RGB concentrations to actual visible colors
-    // IMPORTANT: Base colors must be bright, do not use extremely dark values
+    // Base colors must be bright, do not use extremely dark values
     vec3 col1 = vec3(0.9, 0.15, 0.2);  // red ink
     vec3 col2 = vec3(0.1, 0.8, 0.3);   // green ink
     vec3 col3 = vec3(0.15, 0.3, 0.95); // blue ink
@@ -1040,7 +1040,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 }
 ```
 
-**IMPORTANT: The multi-color ink Buffer A velocity field template is identical to the single-color version**, except `c.w` is no longer used for ink (ink is in Buffer B). Buffer A only handles velocity + pressure.
+**The multi-color ink Buffer A velocity field template is identical to the single-color version**, except `c.w` is no longer used for ink (ink is in Buffer B). Buffer A only handles velocity + pressure.
 
 ## Common Variants
 

@@ -9,7 +9,7 @@ Code templates in this document use ShaderToy GLSL style. When generating standa
 - Fragment shader: `varying` → `in`, `gl_FragColor` → custom `out vec4 fragColor`, `texture2D()` → `texture()`
 - ShaderToy's `void mainImage(out vec4 fragColor, in vec2 fragCoord)` must be adapted to standard `void main()` entry
 
-**IMPORTANT: GLSL Type Strictness Warning**:
+**GLSL Type Strictness Warning**:
 - `vec2 = float` is illegal: types must match exactly, e.g., `float r = length(uv)` not `vec2 r = length(uv)`
 - Function return types must match: commonly used `fbm()` / `noise()` return `float`, cannot be assigned to `vec2`
 - If you need a vec2 type, use `vec2(fbm(...), fbm(...))` or `vec2(value)` constructor

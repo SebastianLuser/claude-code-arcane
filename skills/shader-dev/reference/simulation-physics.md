@@ -50,12 +50,12 @@ Numerical viscosity over-smooths small-scale vortices. Vorticity confinement com
 
 **Why**: GPU shaders cannot simultaneously read and write the same buffer. The ping-pong strategy reads from one buffer (previous frame's data) and writes to the other each frame, then swaps on the next frame.
 
-**IMPORTANT: Key Difference Between ShaderToy and WebGL2**: In ShaderToy, Buffer A/B are two independent passes with separate write targets, so `iChannel0=self, iChannel1=other` doesn't conflict. However, in WebGL2 there's only one shader program doing ping-pong, and the write target texture cannot be simultaneously read. The solution is **dual-channel encoding** (R=current height, G=previous frame height).
+**Key Difference Between ShaderToy and WebGL2**: In ShaderToy, Buffer A/B are two independent passes with separate write targets, so `iChannel0=self, iChannel1=other` doesn't conflict. However, in WebGL2 there's only one shader program doing ping-pong, and the write target texture cannot be simultaneously read. The solution is **dual-channel encoding** (R=current height, G=previous frame height).
 
 **Code** (WebGL2-safe version, reads only from iChannel0, with RGBA8-compatible encoding):
 ```glsl
-// IMPORTANT: Only use iChannel0 (read currentBuf), write to nextBuf (must be different!)
-// IMPORTANT: encode/decode ensure signed values aren't clipped on RGBA8 (no float textures/SwiftShader)
+// Only use iChannel0 (read currentBuf), write to nextBuf (must be different!)
+// encode/decode ensure signed values aren't clipped on RGBA8 (no float textures/SwiftShader)
 uniform int useFloatTex;
 float decode(float v) { return useFloatTex == 1 ? v : v * 2.0 - 1.0; }
 float encode(float v) { return useFloatTex == 1 ? v : v * 0.5 + 0.5; }
@@ -244,7 +244,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 #define SIZY 64.0   // adjustable: cloth height (particle count)
 
 // Left half [0, SIZX) stores positions, right half [SIZX, 2*SIZX) stores velocities
-// IMPORTANT: In WebGL2, getpos/getvel both read from iChannel0 (currentBuf, read-only),
+// In WebGL2, getpos/getvel both read from iChannel0 (currentBuf, read-only),
 //    write target is nextBuf (separate buffer), avoiding read-write conflict
 vec3 getpos(vec2 id)
 {
@@ -298,7 +298,7 @@ void edge(vec2 dif)
     vec3 posdif = getpos(dif + c) - pos;
     vec3 veldif = getvel(dif + c) - ovel;
 
-    // IMPORTANT: Must check for zero length, otherwise normalize(vec3(0)) produces NaN
+    // Must check for zero length, otherwise normalize(vec3(0)) produces NaN
     float plen = length(posdif);
     if (plen < 0.0001) return;
     vec3 dir = posdif / plen;
@@ -498,7 +498,7 @@ if (length(pos - ballPos) < ballRadius) {
 }
 ```
 
-> **IMPORTANT: Common Pitfalls**:
+> **Common Pitfalls**:
 > - **Cloth Image Pass must project world coordinates to screen**: You cannot use `uv * vec2(SIZX, SIZY)` to map screen UV to grid ID, because particles have moved from their initial positions, producing scattered fragments. You must iterate over mesh faces, projecting vertex world coordinates to screen space for triangle rasterization
 > - GLSL is strictly typed; you cannot write `float / vec2`. Wrong example: `length(dif) / vec2(SIZX, SIZY).x` will first execute float/vec2 causing a compile error; use `length(dif) / SIZX` instead
 > - `normalize(vec3(0))` produces NaN; all `normalize()` calls must include a length check beforehand

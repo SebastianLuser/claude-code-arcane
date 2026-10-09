@@ -117,8 +117,8 @@ float fbm(vec2 p) {
 
 ```glsl
 // Map scalar field (0~1) to color using a mix chain
-// IMPORTANT: Note: GLSL is strictly typed. Variable declarations must be complete, e.g. vec3 col = vec3(0.2, 0.1, 0.4)
-// IMPORTANT: Decimals must be written as 0.x, not .x (division by zero errors)
+// GLSL is strictly typed. Variable declarations must be complete, e.g. vec3 col = vec3(0.2, 0.1, 0.4)
+// Decimals must be written as 0.x, not .x (division by zero errors)
 vec3 palette(float t) {
     vec3 col = vec3(0.2, 0.1, 0.4);                               // deep purple base
     col = mix(col, vec3(0.3, 0.05, 0.05), t);                     // dark red

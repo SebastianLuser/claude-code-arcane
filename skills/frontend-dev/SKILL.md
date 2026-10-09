@@ -159,7 +159,7 @@ project/
 2. Plan motion sequences following performance guardrails
 
 ### Phase 3: Asset Generation
-Generate all image/video/audio assets using `scripts/`. NEVER use placeholder URLs (unsplash, picsum, placeholder.com, via.placeholder, placehold.co, etc.) or external URLs.
+Generate all image/video/audio assets using `scripts/`. Don't use placeholder URLs (unsplash, picsum, placeholder.com, via.placeholder, placehold.co, etc.) or external URLs: they break offline and in production.
 
 1. Parse asset requirements (type, style, spec, usage)
 2. Craft optimized prompts, show to user, confirm before generating
@@ -169,7 +169,7 @@ Generate all image/video/audio assets using `scripts/`. NEVER use placeholder UR
 Follow copywriting frameworks (AIDA, PAS, FAB) to craft all text content. Do NOT use "Lorem ipsum" — write real copy.
 
 ### Phase 5: Build UI
-Scaffold the project and build each section following Design and Motion rules. Integrate generated assets and copy. All `<img>`, `<video>`, `<source>`, and CSS `background-image` MUST reference local assets from Phase 3.
+Scaffold the project and build each section following Design and Motion rules. Integrate generated assets and copy. All `<img>`, `<video>`, `<source>`, and CSS `background-image` reference local assets from Phase 3.
 
 ### Phase 6: Quality Gates
 Run final checklist (see Quality Gates section).
@@ -191,19 +191,19 @@ Adapt dynamically based on user requests.
 ## 1.2 Architecture Conventions
 - **DEPENDENCY VERIFICATION:** Check `package.json` before importing any library. Output install command if missing.
 - **Framework:** React/Next.js. Default to Server Components. Interactive components must be isolated `"use client"` leaf components.
-- **Styling:** Tailwind CSS. Check version in `package.json` — NEVER mix v3/v4 syntax.
-- **ANTI-EMOJI POLICY:** NEVER use emojis anywhere. Use Phosphor or Radix icons only.
+- **Styling:** Tailwind CSS. Check the version in `package.json` and use only that version's syntax; v3 and v4 don't mix.
+- **Icons:** No emojis anywhere. Use Phosphor or Radix icons.
 - **Viewport:** Use `min-h-[100dvh]` not `h-screen`. Use CSS Grid not flex percentage math.
 - **Layout:** `max-w-[1400px] mx-auto` or `max-w-7xl`.
 
 ## 1.3 Design Rules
 | Rule | Directive |
 |------|-----------|
-| Typography | Headlines: `text-4xl md:text-6xl tracking-tighter`. Body: `text-base leading-relaxed max-w-[65ch]`. **NEVER** use Inter — use Geist/Outfit/Satoshi. **NEVER** use Serif on dashboards. |
-| Color | Max 1 accent, saturation < 80%. **NEVER** use AI purple/blue. Stick to one palette. |
-| Layout | **NEVER** use centered heroes when VARIANCE > 4. Force split-screen or asymmetric layouts. |
-| Cards | **NEVER** use generic cards when DENSITY > 7. Use `border-t`, `divide-y`, or spacing. |
-| States | **ALWAYS** implement: Loading (skeleton), Empty, Error, Tactile feedback (`scale-[0.98]`). |
+| Typography | Headlines: `text-4xl md:text-6xl tracking-tighter`. Body: `text-base leading-relaxed max-w-[65ch]`. No Inter: use Geist/Outfit/Satoshi. No serif on dashboards. |
+| Color | Max 1 accent, saturation < 80%. No AI purple/blue. Stick to one palette. |
+| Layout | No centered heroes when VARIANCE > 4: use split-screen or asymmetric layouts. |
+| Cards | No generic cards when DENSITY > 7: use `border-t`, `divide-y`, or spacing. |
+| States | Implement Loading (skeleton), Empty, Error and Tactile feedback (`scale-[0.98]`). |
 | Forms | Label above input. Error below. `gap-2` for input blocks. |
 
 ## 1.4 Anti-Slop Techniques
@@ -271,10 +271,10 @@ When brand styling is active:
 | Hover/focus states | **CSS only** — zero JS cost |
 | Native scroll-driven | **CSS** — `animation-timeline: scroll()` |
 
-**Conflict Rules [MANDATORY]:**
-- NEVER mix GSAP + Framer Motion in same component
-- R3F MUST live in isolated Canvas wrapper
-- ALWAYS lazy-load Lottie, GSAP, Three.js
+**Conflict rules:**
+- Don't mix GSAP and Framer Motion in the same component: both drive the same transforms and fight
+- R3F lives in an isolated Canvas wrapper
+- Lazy-load Lottie, GSAP and Three.js
 
 ## 2.2 Intensity Scale
 
@@ -304,22 +304,22 @@ See `references/motion-recipes.md` for full code. Summary:
 | Layout Morph | Framer | Card-to-modal expansion |
 
 ## 2.4 Performance Rules
-**GPU-only properties (ONLY animate these):** `transform`, `opacity`, `filter`, `clip-path`
+**GPU-only properties (animate only these):** `transform`, `opacity`, `filter`, `clip-path`
 
-**NEVER animate:** `width`, `height`, `top`, `left`, `margin`, `padding`, `font-size` — if you need these effects, use `transform: scale()` or `clip-path` instead.
+**Don't animate** `width`, `height`, `top`, `left`, `margin`, `padding`, `font-size`: they trigger layout on every frame. If you need these effects, use `transform: scale()` or `clip-path` instead.
 
 **Isolation:**
-- Perpetual animations MUST be in `React.memo` leaf components
-- `will-change: transform` ONLY during animation
+- Perpetual animations go in `React.memo` leaf components
+- `will-change: transform` only during animation
 - `contain: layout style paint` on heavy containers
 
 **Mobile:**
-- ALWAYS respect `prefers-reduced-motion`
-- ALWAYS disable parallax/3D on `pointer: coarse`
+- Respect `prefers-reduced-motion`
+- Disable parallax/3D on `pointer: coarse`
 - Cap particles: desktop 800, tablet 300, mobile 100
 - Disable GSAP pin on mobile < 768px
 
-**Cleanup:** Every `useEffect` with GSAP/observers MUST `return () => ctx.revert()`
+**Cleanup:** Every `useEffect` with GSAP/observers returns `() => ctx.revert()`
 
 ## 2.5 Springs & Easings
 
@@ -337,10 +337,10 @@ See `references/motion-recipes.md` for full code. Summary:
 | Elastic | `cubic-bezier(0.34, 1.56, 0.64, 1)` |
 
 ## 2.6 Accessibility
-- NEVER flash content > 3 times/second (seizure risk)
-- ALWAYS provide visible focus rings (use `outline` not `box-shadow`)
-- ALWAYS add `aria-live="polite"` for dynamically revealed content
-- ALWAYS include pause button for auto-playing animations
+- Never flash content more than 3 times per second (seizure risk)
+- Visible focus rings (`outline`, not `box-shadow`)
+- `aria-live="polite"` on dynamically revealed content
+- A pause button on auto-playing animations
 
 ## 2.7 Dependencies
 
@@ -370,9 +370,9 @@ Env: `MINIMAX_API_KEY` (required).
 
 ## 3.2 Workflow
 1. **Parse:** type, quantity, style, spec, usage
-2. **Craft prompt:** Be specific (composition, lighting, style). **NEVER** include text in image prompts.
-3. **Execute:** Show prompt to user, **MUST confirm before generating**, then run script
-4. **Save:** `<project>/public/assets/{images,videos,audio}/` as `{type}-{descriptor}-{timestamp}.{ext}` — **MUST save locally**
+2. **Craft prompt:** Be specific (composition, lighting, style). Leave text out of image prompts: generators render it garbled.
+3. **Execute:** Show the prompt to the user and wait for confirmation before generating, then run the script
+4. **Save:** `<project>/public/assets/{images,videos,audio}/` as `{type}-{descriptor}-{timestamp}.{ext}` — save locally
 5. **Post-process:** Images → WebP, Videos → ffmpeg compress, Audio → normalize
 6. **Deliver:** File path + code snippet + CSS suggestion
 

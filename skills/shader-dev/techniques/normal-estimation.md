@@ -1,6 +1,6 @@
 ## WebGL2 Adaptation Requirements
 
-**IMPORTANT: GLSL Type Strictness Warning**:
+**GLSL Type Strictness Warning**:
 - GLSL is a strongly typed language with **no `string` type**; using string types is forbidden
 - Common illegal types: `string`, `int` (can only use `int` literals, cannot declare variable types as `int`)
 - vec2/vec3/vec4 cannot be implicitly converted between each other; explicit construction is required

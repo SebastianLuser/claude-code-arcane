@@ -157,7 +157,7 @@ const float NOTES[16] = float[16](
 
 float melody_array(float time, float bpm) {
     float beat = time * bpm / 60.0;
-    int idx = int(mod(beat, 16.0));  // IMPORTANT: Must use int() conversion
+    int idx = int(mod(beat, 16.0));  // Must use int() conversion
     float noteTime = fract(beat);
     float freq = noteFreq(NOTES[idx]);
     return instrument_additive(freq, noteTime * 60.0 / bpm);
@@ -241,7 +241,7 @@ vec2 mainSound(int samp, float time) {
     // Arrangement: smoothstep controls intro/outro
     audio *= smoothstep(0.0, 4.0, bar);              // Fade in over first 4 bars
     audio *= 0.35 * smoothstep(0.0, 0.5, time);
-    // IMPORTANT: Array indices must be int type
+    // Array indices must be int type
     // float idx = mod(beat, 16.0);        // WRONG: float cannot be used as index
     int idx = int(mod(beat, 16.0));       // CORRECT: int(mod(...)) conversion
     return clamp(audio, -1.0, 1.0);

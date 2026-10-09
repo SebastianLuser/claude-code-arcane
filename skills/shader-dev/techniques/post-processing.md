@@ -1,11 +1,11 @@
 ## WebGL2 Adaptation Requirements
 
-**IMPORTANT: Critical Warning for Standalone HTML Deployment**: Post-processing effects require an input texture to work. When generating standalone HTML, you must:
+**Critical Warning for Standalone HTML Deployment**: Post-processing effects require an input texture to work. When generating standalone HTML, you must:
 1. Set `#define USE_DEMO_SCENE 1` to use the built-in demo scene (recommended), or
 2. Pass a valid input texture to the `iChannel0` channel, otherwise the screen will be completely black
 3. **Critical**: When USE_DEMO_SCENE=1, ensure the #else branch code does not reference non-existent uniforms (e.g., iChannel0)
 
-**IMPORTANT: GLSL Type Strictness Rules**:
+**GLSL Type Strictness Rules**:
 - `vec2 = float` is illegal — must use `vec2(x, x)` or `vec2(x)`
 - Function parameters must be defined before use; using a variable name in its own initializer is forbidden (e.g., `float w = filmicCurve(w, w)` is an error)
 - Variables must be declared before use
@@ -203,7 +203,7 @@ const progPost = createProgram(vsSource, fsPost);
 function createFBO(w, h) {
     const tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    // IMPORTANT: Critical: Check for float texture extension, fall back to RGBA8 if unsupported
+    // Check for float texture extension, fall back to RGBA8 if unsupported
     const fmt = ext ? gl.RGBA16F : gl.RGBA;
     const typ = ext ? gl.FLOAT : gl.UNSIGNED_BYTE;
     gl.texImage2D(gl.TEXTURE_2D, 0, fmt, w, h, 0, gl.RGBA, typ, null);
@@ -293,7 +293,7 @@ The essence of post-processing is **per-pixel transformation of an already-rende
 vec3 reinhard(vec3 color) { return color / (1.0 + color); }
 
 // Filmic Reinhard (W=white point, T2=shoulder parameter)
-// IMPORTANT: GLSL critical rule: function parameters must be defined before use; using a variable name in its own initializer is forbidden
+// GLSL critical rule: function parameters must be defined before use; using a variable name in its own initializer is forbidden
 const float W = 1.2, T2 = 7.5; // adjustable
 float filmic_reinhard_curve(float x) {
     float q = (T2 * T2 + 1.0) * x * x;
@@ -440,7 +440,7 @@ color += (orderedDither(fragCoord) - 0.5) * 4.0 / 255.0;
 
 ### Step 10: Demo Scene (Required for Standalone HTML!)
 
-**IMPORTANT: Critical Warning**: Standalone HTML deployment must provide an input texture, otherwise post-processing effects will output solid black.
+**Critical Warning**: Standalone HTML deployment must provide an input texture, otherwise post-processing effects will output solid black.
 
 ```glsl
 // Demo scene fallback: used when no valid input texture is available
@@ -541,7 +541,7 @@ vec3 fxaa(sampler2D tex, vec2 fragCoord, vec2 resolution) {
 
 Can be run directly in ShaderToy. `iChannel0` is the scene texture.
 
-**IMPORTANT: Important Warning**: For standalone HTML deployment, you must:
+**Important Warning**: For standalone HTML deployment, you must:
 1. Pass a valid input texture to iChannel0 (or uChannel0)
 2. Or set `#define USE_DEMO_SCENE 1` to use the built-in demo scene
 
@@ -589,7 +589,7 @@ vec3 demoScene(vec2 uv, float time) {
 }
 
 vec3 tonemapReinhard(vec3 c) { return c / (1.0 + c); }
-// IMPORTANT: Critical: filmicCurve takes only one parameter x; w is computed externally via WHITE_POINT
+// filmicCurve takes only one parameter x; w is computed externally via WHITE_POINT
 float filmicCurve(float x) {
     float q = (SHOULDER*SHOULDER+1.0)*x*x; return q/(q+x+SHOULDER*SHOULDER);
 }

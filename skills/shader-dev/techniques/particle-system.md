@@ -1,14 +1,14 @@
 # Particle System
 
-**IMPORTANT: GLSL ES 3.0 return values**: All code paths in non-void functions must return a value. Every branch of an if statement must have a return.
+**GLSL ES 3.0 return values**: All code paths in non-void functions must return a value. Every branch of an if statement must have a return.
 
-**IMPORTANT: Particle system time cycling**: Must use `mod(time - offset, period)` for cycle computation. **Never use `floor(time / period) * period`**! The latter causes all particles to have negative time initially, resulting in startup delay or blank rendering.
+**Particle system time cycling**: Must use `mod(time - offset, period)` for cycle computation. **Never use `floor(time / period) * period`**! The latter causes all particles to have negative time initially, resulting in startup delay or blank rendering.
 
-**IMPORTANT: Brightness budget (most common failure cause!)**: Each particle's `numerator / (dist² + epsilon)` peak = `numerator / epsilon`. **Total peak = N_particles x (numerator / epsilon) must be < 5.0** (single pass). Exceeding this budget causes washout even with Reinhard. See specific reference values in the comments of each template below. Multi-pass ping-pong systems have a stricter budget, see below.
+**Brightness budget (most common failure cause!)**: Each particle's `numerator / (dist² + epsilon)` peak = `numerator / epsilon`. **Total peak = N_particles x (numerator / epsilon) must be < 5.0** (single pass). Exceeding this budget causes washout even with Reinhard. See specific reference values in the comments of each template below. Multi-pass ping-pong systems have a stricter budget, see below.
 
-**IMPORTANT: Particle color vs background contrast**: When particle color is close to the background (sand dust/snow/fog), visibility must be enhanced through at least one method: (1) brightness significantly higher than background (2) different hue (3) visible motion trail.
+**Particle color vs background contrast**: When particle color is close to the background (sand dust/snow/fog), visibility must be enhanced through at least one method: (1) brightness significantly higher than background (2) different hue (3) visible motion trail.
 
-**IMPORTANT: Elongated glow (meteor/trail lines)**: Do not use `1/(distPerp² + tiny_epsilon)` for line glow — too-small epsilon makes the line center extremely bright. Correct approach: use `smoothstep` or `exp(-dist)` for lines, see meteor template below.
+**Elongated glow (meteor/trail lines)**: Do not use `1/(distPerp² + tiny_epsilon)` for line glow — too-small epsilon makes the line center extremely bright. Correct approach: use `smoothstep` or `exp(-dist)` for lines, see meteor template below.
 
 ### Correct Pattern
 ```glsl
@@ -133,7 +133,7 @@ void main() {
                 float fade = smoothstep(1.0, 0.0, burstPhase);
                 fade *= fade;
 
-                // IMPORTANT: Brightness budget: peak = 0.015/0.03 = 0.5, x 40 particles x fade ≈ total peak < 5.0
+                // Brightness budget: peak = 0.015/0.03 = 0.5, x 40 particles x fade ≈ total peak < 5.0
                 float intensity = fade * 0.015 / (dist * dist + 0.03);
 
                 float hueOffset = (hash11(pId * 3.7 + fwId * 11.0) - 0.5) * 0.15;
@@ -330,7 +330,7 @@ requestAnimationFrame(render);
 
 ### Star Field Function Template (For Meteors, Fireworks, and Other Night Sky Scenes)
 
-**IMPORTANT: Star visibility**: Stars must be clearly visible in screenshots as individual light points. Use `exp(-dist*dist*k)` for sharp Gaussian dots rather than `1/(dist²+eps)` broad glow. Each star's peak brightness should be at least 0.3 to be visible against a dark background.
+**Star visibility**: Stars must be clearly visible in screenshots as individual light points. Use `exp(-dist*dist*k)` for sharp Gaussian dots rather than `1/(dist²+eps)` broad glow. Each star's peak brightness should be at least 0.3 to be visible against a dark background.
 
 ```glsl
 #define NUM_STARS 200
@@ -484,7 +484,7 @@ vec2 particlePosition(int id, float time) {
 ### Step 4: Buffer-Stored Particle State (Stateful System)
 ```glsl
 // === Buffer A: Particle Physics Update ===
-// IMPORTANT: Multi-pass system warning: each fragment shader is compiled independently, helper functions must be redefined in each shader!
+// Multi-pass system warning: each fragment shader is compiled independently, helper functions must be redefined in each shader!
 #define NUM_PARTICLES 40
 #define MAX_VEL 0.5
 #define MAX_ACC 3.0
@@ -547,7 +547,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 ```
 
 ### Step 5: Particle Rendering — Metaball Style
-// IMPORTANT: Multi-pass system warning: Image shader must define all the following helper functions (compiled independently)!
+// Multi-pass system warning: Image shader must define all the following helper functions (compiled independently)!
 ```glsl
 #define BRIGHTNESS 0.002
 #define COLOR_START vec3(0.0, 0.64, 0.2)
@@ -595,7 +595,7 @@ vec3 renderParticles(vec2 uv) {
 
 ### Step 6: Frame Feedback Motion Blur
 ```glsl
-// IMPORTANT: Ping-pong brightness budget (most common washout cause!):
+// Ping-pong brightness budget (most common washout cause!):
 // Steady-state brightness = singleFrameContribution / (1 - TRAIL_DECAY)
 // decay=0.88 → 8.3x amplification, decay=0.95 → 20x amplification
 // Budget formula: N_particles x (numerator/epsilon) x 1/(1-decay) < 10.0
@@ -834,8 +834,8 @@ if (particle.z > particle.a) {
 Uses stateless single pass. Key: spiral trajectory + high-visibility particles + vortex eye dark zone + separated background fog layer.
 
 ```glsl
-// IMPORTANT: Particle color must be 2-3x brighter than background to be visible (sand-colored particles on sand-colored background easily disappear)
-// IMPORTANT: Brightness budget: 150 particles x peak(0.005/0.003=1.67) x fade(avg~0.3) ≈ 75, overexposed!
+// Particle color must be 2-3x brighter than background to be visible (sand-colored particles on sand-colored background easily disappear)
+// Brightness budget: 150 particles x peak(0.005/0.003=1.67) x fade(avg~0.3) ≈ 75, overexposed!
 //    Must increase epsilon or decrease numerator. Safe values: numerator=0.002, epsilon=0.008 → peak=0.25, total=11 → OK after Reinhard
 #define NUM_DUST 150
 #define VORTEX_CENTER vec2(0.0)
@@ -886,7 +886,7 @@ void main() {
 
 Meteors, magic projectiles, etc. need elongated glow (stretched luminous lines). **Do not use `1/(distPerp² + tiny_epsilon)` for lines** — too-small epsilon makes line centers extremely bright and washed out. Use `exp(-dist)` or `smoothstep` for safe line glow.
 
-**IMPORTANT: Common meteor failures**: (1) Star background too dark to see — must call `starField()` above and ensure stars use Gaussian dots `exp(-dist²*k)` for rendering (2) Meteor trail too faint — `core` multiplier should be at least 0.15, each step after dividing by `NUM_TRAIL_STEPS` still needs >= 0.005 contribution
+**Common meteor failures**: (1) Star background too dark to see — must call `starField()` above and ensure stars use Gaussian dots `exp(-dist²*k)` for rendering (2) Meteor trail too faint — `core` multiplier should be at least 0.15, each step after dividing by `NUM_TRAIL_STEPS` still needs >= 0.005 contribution
 
 ```glsl
 #define NUM_METEORS 6
@@ -959,7 +959,7 @@ void main() {
 
 Water/sparks jetting upward from a point, parabolic descent. Key: **Particles must be sharp, individually visible points** (small epsilon), not just a diffuse glow blob. Must include: (1) main water column particles (upward jet + parabola) (2) splash particles (spread sideways after hitting water) (3) water surface/pool visuals.
 
-**IMPORTANT: Most common fountain failure**: Only produces blurry glow without visible individual water droplet trajectories! Must use small epsilon (<=0.002) so each particle is clearly visible as an individual light point. Numerator must also be proportionally reduced to control total brightness.
+**Most common fountain failure**: Only produces blurry glow without visible individual water droplet trajectories! Must use small epsilon (<=0.002) so each particle is clearly visible as an individual light point. Numerator must also be proportionally reduced to control total brightness.
 
 ```glsl
 #define NUM_WATER 60
@@ -1042,7 +1042,7 @@ void main() {
 
 Flame effects must include **two layers**: (1) smooth flame body at the base (noise-driven cone gradient) (2) many **discrete ember/spark particles** above, drifting upward and gradually extinguishing. Using only a smooth gradient will be judged as "no particle system."
 
-**IMPORTANT: Most common flame failure**: Only draws a smooth gradient without discrete particles! Must have NUM_SPARKS individual point-like particles drifting out from the flame top.
+**Most common flame failure**: Only draws a smooth gradient without discrete particles! Must have NUM_SPARKS individual point-like particles drifting out from the flame top.
 
 ```glsl
 #define NUM_SPARKS 60
@@ -1112,7 +1112,7 @@ void main() {
 
 Magic effects, spiral ascent, magic circles, etc. require particles arranged in **geometric arrays** with **iridescent shimmer**. Key: particles must be individually visible glowing points (not a blurry glow blob), and the spiral structure must be clearly discernible.
 
-**IMPORTANT: Most common magic failure**: Only produces a blob of blurry light (diffuse glow blob) without visible individual particles or geometric structure! Ensure each particle is an independently visible small light point, and the overall arrangement forms spiral/ring/other geometric shapes. Reduce epsilon to make each particle sharper (small light dot) rather than a large blurry halo.
+**Most common magic failure**: Only produces a blob of blurry light (diffuse glow blob) without visible individual particles or geometric structure! Ensure each particle is an independently visible small light point, and the overall arrangement forms spiral/ring/other geometric shapes. Reduce epsilon to make each particle sharper (small light dot) rather than a large blurry halo.
 
 ```glsl
 #define NUM_SPIRAL 80
