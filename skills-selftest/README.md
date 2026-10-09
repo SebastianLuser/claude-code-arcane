@@ -16,8 +16,8 @@ Tests the skills and agents themselves — not any code (software or game) built
 | Skills behave per their contract (`/gate-check` blocks when it should) | Your application code |
 | Skills that promise read-only don't write files | Your game logic or balance |
 | Agents emit required verdict keywords (APPROVE/CONCERNS/REJECT) | Your API endpoints |
-| `team-*` skills spawn the right set of sub-agents | Your test suite passes |
 | Agent frontmatter is valid (model tier, maxTurns, tools) | Your deployments work |
+|  | Your test suite passes |
 
 For code testing use Jest, pytest, Go test, etc. This framework tests
 **the framework itself** — the 147 universal skills, 20 gamedev skills, and 73 agents
@@ -35,15 +35,14 @@ skills-selftest/
 ├── quality-rubric.md      ← category-specific pass/fail metrics
 │
 ├── skills/                ← behavioral specs (one file per skill)
-│   ├── gate/              ← gate-check, director-gates
-│   ├── review/            ← design-review, architecture-review, review-all-gdds, code-review
-│   ├── authoring/         ← design-system, art-bible, create-architecture, ux-design
+│   ├── gate/              ← gate-check
+│   ├── review/            ← architecture-review, code-review
+│   ├── authoring/         ← design-system, art-bible, ux-design
 │   ├── readiness/         ← story-readiness, story-done
-│   ├── pipeline/          ← create-epics, create-stories, dev-story, map-systems
+│   ├── pipeline/          ← create-epics, create-stories, map-systems
 │   ├── analysis/          ← consistency-check, balance-check, tech-debt, audit-*
-│   ├── team/              ← team-combat, team-narrative, team-audio, team-qa
-│   ├── sprint/            ← sprint-plan, sprint-status, changelog, patch-notes
-│   ├── utility/           ← start, adopt, hotfix, onboard, localize
+│   ├── sprint/            ← sprint-plan, changelog, patch-notes
+│   ├── utility/           ← start, hotfix, onboard
 │   │
 │   ├── software/          ← [Arcane-only] backend/frontend/API skill specs
 │   ├── devops/            ← [Arcane-only] docker, k8s, terraform, CI/CD specs
@@ -96,14 +95,13 @@ All driven by skills already shipped in `skills/`:
 | Category | Sample skills | Key metrics |
 |----------|---------------|-------------|
 | `gate` | gate-check | Director panel modes, no auto-advance, verdict keyword |
-| `review` | design-review, architecture-review, code-review | Read-only, correct verdicts |
-| `authoring` | design-system, art-bible, create-architecture | Skeleton-first, May-I-write protocol |
+| `review` | architecture-review, code-review | Read-only, correct verdicts |
+| `authoring` | design-system, art-bible, architecture-decision | Skeleton-first, May-I-write protocol |
 | `readiness` | story-readiness, story-done | Blockers surfaced, gate in full mode |
-| `pipeline` | create-epics, create-stories, dev-story | Upstream dep check, handoff clear |
+| `pipeline` | create-epics, create-stories, map-systems | Upstream dep check, handoff clear |
 | `analysis` | consistency-check, balance-check, audit-dev | Read-only, verdict keyword present |
-| `team` | team-combat, team-narrative, team-qa | All required agents spawned |
-| `sprint` | sprint-plan, sprint-status, changelog | Reads sprint data, status keywords |
-| `utility` | start, adopt, hotfix | Passes static checks |
+| `sprint` | sprint-plan, milestone-review, changelog | Reads sprint data, status keywords |
+| `utility` | start, hotfix, onboard | Passes static checks |
 | **`software`** *(Arcane)* | backend skills, frontend skills, API skills | Contract-first, schema validation, security |
 | **`devops`** *(Arcane)* | docker, k8s, terraform, ci/cd | Pinned versions, idempotent, reviewed |
 | **`integrations`** *(Arcane)* | clickup, jira, postman, figma | Auth handling, rate limits, error surfacing |
