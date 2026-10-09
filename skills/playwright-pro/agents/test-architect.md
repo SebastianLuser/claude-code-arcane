@@ -1,8 +1,7 @@
 ---
 name: test-architect
 description: >-
-  Plans test strategy for complex applications. Invoked by /pw:generate and
-  /pw:coverage when the app has multiple routes, complex state, or requires
+  Plans test strategy for complex applications. Invoked by /playwright-pro generate when the app has multiple routes, complex state, or requires
   a structured test plan before writing tests.
 allowed-tools:
   - Read
