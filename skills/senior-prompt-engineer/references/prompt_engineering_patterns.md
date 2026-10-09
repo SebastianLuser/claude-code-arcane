@@ -164,7 +164,7 @@ The 7 apples cost $11.20
 | Reasoning chain | "Explain your reasoning" | Justification needed |
 
 **Zero-shot CoT:**
-Simply append "Let's think step by step." to any prompt.
+Append "Let's think step by step." only on models without built-in thinking. On models with adaptive thinking, control depth with `effort`; asking for the reasoning in the output can be declined as reasoning extraction.
 
 ---
 

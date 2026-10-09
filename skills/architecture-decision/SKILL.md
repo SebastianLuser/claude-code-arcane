@@ -18,11 +18,10 @@ allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 
 ## Phase 0: Load Engine Context (ALWAYS FIRST)
 
-1. Read `docs/engine-reference/[engine]/VERSION.md` → engine name, version, cutoff risk
+1. Read the engine version from the project: `ProjectSettings/ProjectVersion.txt` (Unity) or `EngineAssociation` in the `.uproject` (Unreal). For Unreal, also read `docs/unreal/project-context.md` if `/ue-project-context` has run
 2. Identify domain from title (Physics, Rendering, UI, Audio, etc.)
-3. Read module reference + `breaking-changes.md` + `deprecated-apis.md`
-4. Display knowledge gap warning if MEDIUM/HIGH risk
-5. No engine configured → prompt to run `/setup-engine`
+3. If the engine version is newer than what you know reliably, say so before proposing engine APIs
+4. No engine detected → ask the user which engine and version
 
 ## Phase 1: Context Gathering
 

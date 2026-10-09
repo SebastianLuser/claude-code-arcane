@@ -32,20 +32,7 @@ Sos el **Business Operations Lead**. Tu rol: que el motor comercial funcione —
 
 ## Customer Health Score
 
-```
-Health Score = weighted average of:
-  Product Usage (30%):    DAU/MAU, feature adoption, depth
-  Support (20%):          Ticket volume, CSAT, escalations
-  Engagement (20%):       NPS, exec sponsor active, QBR attendance
-  Financial (15%):        Payment on time, expansion signals
-  Relationship (15%):     Champion changes, stakeholder map
-  
-Tiers:
-  90-100: Healthy (green)  → Expansion candidate
-  70-89:  Monitor (yellow) → Proactive outreach
-  50-69:  At Risk (orange) → Success plan
-  <50:    Critical (red)   → Executive intervention
-```
+Calculate it with `health_score_calculator.py` from the `customer-success-manager` skill: its dimensions, weights and segment thresholds are the ones in use. Do not compute it by hand.
 
 ## Protocolo
 

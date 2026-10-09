@@ -41,7 +41,7 @@ ARCANE_SOURCE=bundled ARCANE_HOME=/tmp/arcane-test node dist/cli.js install back
 
 **Worktrees** (`worktree.ts`): `hooks/` y `docs/` se comparten por symlink desde el worktree principal; `skills/ agents/ rules/` se copian para que puedan divergir por rama.
 
-**Agentes** (`agent-entries.ts`): una entrada `agents:` de un profile nombra una división entera (`game`, 30 agentes) o uno solo (`game/qa-lead`). La forma granular existe para no arrastrar 30 agentes por querer uno.
+**Agentes** (`agent-entries.ts`): una entrada `agents:` de un profile nombra una división entera (`game`, 32 agentes) o uno solo (`game/qa-lead`). La forma granular existe para no arrastrar 32 agentes por querer uno.
 
 ## Invariantes que hacen fallar los tests
 

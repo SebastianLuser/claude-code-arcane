@@ -1,6 +1,7 @@
 ---
-name: vn-code
-description: "Coding rules for Ren'Py visual novel development"
+paths:
+  - "game/**"
+  - "**/*.rpy"
 ---
 
 # Visual Novel Code Rules

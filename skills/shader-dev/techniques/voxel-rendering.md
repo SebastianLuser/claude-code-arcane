@@ -26,7 +26,7 @@ precision highp float;
 uniform float iTime;
 uniform vec2 iResolution;
 
-// IMPORTANT: Important: WebGL2 must declare the output variable!
+// WebGL2 must declare the output variable.
 out vec4 fragColor;
 
 // ... other functions ...

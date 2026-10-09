@@ -13,7 +13,7 @@ paths:
 - Changes to public interfaces require a deprecation period and migration guide
 - Use RAII / deterministic cleanup for all resources
 - All engine systems must support graceful degradation
-- Before writing engine API code, consult `docs/engine-reference/` for the current engine version and verify APIs against the reference docs
+- Before writing engine API code, read the project's engine version (`ProjectSettings/ProjectVersion.txt` or the `.uproject`) and verify APIs against that version's docs
 
 ## Examples
 

@@ -103,6 +103,6 @@ python scripts/agent_orchestrator.py agent.yaml --estimate-cost  # Token estimat
 |---------|-------------|---------|
 | **Zero-shot** | Simple, well-defined tasks | "Classify this email as spam or not spam" |
 | **Few-shot** | Complex tasks, consistent format | Provide 3-5 examples before task |
-| **Chain-of-Thought** | Reasoning, math, multi-step | "Think step by step..." |
+| **Reasoning depth** | Reasoning, math, multi-step | Models with adaptive thinking: raise `effort`. Models without it: "Think step by step..." |
 | **Role Prompting** | Expertise, specific perspective | "You are an expert tax accountant..." |
 | **Structured Output** | Need parseable JSON/XML | Include schema + format enforcement |

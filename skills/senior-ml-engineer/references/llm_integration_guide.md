@@ -47,13 +47,14 @@ class OpenAIProvider(LLMProvider):
         return response.choices[0].text
 
 class AnthropicProvider(LLMProvider):
-    def __init__(self, api_key: str, model: str = "claude-3-opus"):
+    def __init__(self, api_key: str, model: str = "claude-opus-5-5"):
         self.client = Anthropic(api_key=api_key)
         self.model = model
 
     def chat(self, messages: List[Dict], **kwargs) -> str:
         response = self.client.messages.create(
             model=self.model,
+            max_tokens=kwargs.pop("max_tokens", 16000),
             messages=messages,
             **kwargs
         )
@@ -97,7 +98,7 @@ def call_with_fallback(
 |---------|----------|-----------|
 | Zero-shot | Simple tasks | Task description + input |
 | Few-shot | Complex tasks | Examples + task + input |
-| Chain-of-thought | Reasoning | "Think step by step" + task |
+| Reasoning | Multi-step problems | On models with adaptive thinking, raise `effort` instead of asking for step-by-step text |
 | Role-based | Specialized output | System role + task |
 
 ### Few-Shot Template
@@ -178,10 +179,8 @@ def truncate_to_token_limit(text: str, max_tokens: int, model: str = "gpt-4") ->
 
 | Model | Context Window | Effective Limit |
 |-------|----------------|-----------------|
-| GPT-4 | 8,192 | ~6,000 (leave room for response) |
-| GPT-4-32k | 32,768 | ~28,000 |
-| Claude 3 | 200,000 | ~180,000 |
-| Llama 3 | 8,192 | ~6,000 |
+| Claude Opus 5.5 / Sonnet 5.5 / Haiku 5.5 | 1,000,000 | leave room for `max_tokens` |
+| Other providers | check the provider's model docs | context windows change every release |
 
 ### Chunking Strategy
 

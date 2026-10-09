@@ -337,7 +337,6 @@ See `references/motion-recipes.md` for full code. Summary:
 | Elastic | `cubic-bezier(0.34, 1.56, 0.64, 1)` |
 
 ## 2.6 Accessibility
-- ALWAYS wrap motion in `prefers-reduced-motion` check
 - NEVER flash content > 3 times/second (seizure risk)
 - ALWAYS provide visible focus rings (use `outline` not `box-shadow`)
 - ALWAYS add `aria-live="polite"` for dynamically revealed content
