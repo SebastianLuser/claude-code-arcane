@@ -29,7 +29,9 @@ from dataclasses import dataclass, asdict
 TOKEN_RATIOS = {
     'gpt-4': 4.0,
     'gpt-3.5': 4.0,
-    'claude': 3.5,
+    'claude-opus-5-5': 3.5,
+    'claude-sonnet-5-5': 3.5,
+    'claude-haiku-5-5': 3.5,
     'default': 4.0
 }
 
@@ -38,9 +40,9 @@ COST_PER_1K = {
     'gpt-4': 0.03,
     'gpt-4-turbo': 0.01,
     'gpt-3.5-turbo': 0.0005,
-    'claude-3-opus': 0.015,
-    'claude-3-sonnet': 0.003,
-    'claude-3-haiku': 0.00025,
+    'claude-opus-5-5': 0.004,
+    'claude-sonnet-5-5': 0.002,
+    'claude-haiku-5-5': 0.0001,
     'default': 0.01
 }
 
@@ -417,7 +419,7 @@ def main():
         epilog="""
 Examples:
   %(prog)s prompt.txt --analyze
-  %(prog)s prompt.txt --tokens --model claude-3-sonnet
+  %(prog)s prompt.txt --tokens --model claude-sonnet-5-5
   %(prog)s prompt.txt --optimize --output optimized.txt
   %(prog)s prompt.txt --extract-examples --output examples.json
         """
@@ -429,7 +431,7 @@ Examples:
     parser.add_argument('--optimize', '-O', action='store_true', help='Generate optimized version')
     parser.add_argument('--extract-examples', '-e', action='store_true', help='Extract few-shot examples')
     parser.add_argument('--model', '-m', default='gpt-4',
-                       choices=['gpt-4', 'gpt-4-turbo', 'gpt-3.5-turbo', 'claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku'],
+                       choices=['gpt-4', 'gpt-4-turbo', 'gpt-3.5-turbo', 'claude-opus-5-5', 'claude-sonnet-5-5', 'claude-haiku-5-5'],
                        help='Model for token/cost estimation')
     parser.add_argument('--output', '-o', help='Output file path')
     parser.add_argument('--json', '-j', action='store_true', help='Output as JSON')

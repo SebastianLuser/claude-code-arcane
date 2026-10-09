@@ -234,7 +234,7 @@ def calculate_cost(
     PRICING = {
         "gpt-4": {"input": 0.03, "output": 0.06},
         "gpt-3.5-turbo": {"input": 0.0005, "output": 0.0015},
-        "claude-3-opus": {"input": 0.015, "output": 0.075},
+        "claude-opus-5-5": {"input": 0.004, "output": 0.020},
     }
 
     prices = PRICING.get(model, {"input": 0.01, "output": 0.03})
