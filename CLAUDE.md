@@ -33,7 +33,7 @@ ARCANE_SOURCE=bundled ARCANE_HOME=/tmp/arcane-test node dist/cli.js install back
 
 **Content source** (`content-source.ts`, `cache.ts`): el contenido no sale necesariamente del working tree. `resolveContentSource()` elige entre `bundled` (paquete npm local), `github` (tarball de la rama main, cacheado en `~/.arcane/cache/<version>`) y `cache`, en ese orden de fallback. `remove` y `update` usan `resolveContentSourceForVersion()` para leer las definiciones de la **versión instalada**: si un profile creció desde entonces, resolver "auto" borraría el set equivocado.
 
-**Profiles** (`profiles/*.yaml` → `profiles.ts`): declarativos, todos iguales (no hay base/addon), se combinan con `+`, `core.yaml` siempre se carga primero. `mergeProfiles()` deduplica skills, rules, agentes y permisos. **Nada se instala si no está listado en algún profile.**
+**Profiles** (`profiles/*.yaml` → `profiles.ts`): declarativos, todos iguales (no hay base/addon), se combinan con `+`, `core.yaml` siempre se carga primero. `mergeProfiles()` deduplica skills, rules, agentes y permisos. **Nada se instala si no está listado en algún profile.** Renombrar un profile exige una entrada en `PROFILE_RENAMES` y un archivo puente con el nombre viejo (`renamed_to:`): `arcane update` baja el contenido de `main` pero corre con el código del CLI ya instalado, y un CLI anterior al renombre solo encuentra el nombre viejo; sin el puente manda a la papelera las skills de ese profile.
 
 **Installer** (`installer.ts`): copia `skills/ rules/ agents/ docs/ hooks/ output-styles/` al `.claude/` del target (previo backup a `.claude.bak/`), genera `settings.json` (permisos + hooks + statusline) y `arcane-manifest.json` con los `content_hashes` de lo instalado.
 
@@ -48,6 +48,7 @@ ARCANE_SOURCE=bundled ARCANE_HOME=/tmp/arcane-test node dist/cli.js install back
 Estos son los que cuesta descubrir a mano — todos viven en `src/__tests__/`:
 
 - **`doc-counts.test.ts`**: agregar o borrar un skill, agente, rule o hook rompe los conteos escritos en `README.md` (headline + árbol), `docs/USER-GUIDE.md`, `docs/agent-hierarchy.md`, `docs/directory-structure.md` (total **y** por división) y `docs/SKILLS-CATALOG.md` (intro, cobertura declarada y cada header `## X (N skills)`). Se arregla el doc, no el test.
+- **`profiles.test.ts`**: cada nombre viejo de `PROFILE_RENAMES` tiene su archivo puente idéntico al profile nuevo. Editar un profile renombrado obliga a editar también su puente.
 - **`agents-integrity.test.ts`**: el frontmatter solo puede declarar campos que Claude Code realmente lee; `agent:` exige `context: fork`, que el agente exista y que sea alcanzable desde todo profile que shippea ese skill; los `skills:` y las delegaciones de cada agente tienen que resolver a archivos en disco. El allowlist `KNOWN_DEAD_REFS` **solo se achica**: una referencia muerta nueva es un test que falla, no una línea más.
 - **`agent-specs.test.ts`**: los specs de `skills-selftest/` tienen que coincidir con el model tier y la división del agente, y la cobertura no puede bajar.
 - **`tests/repo/test_python_floor.py`**: el piso de Python es 3.9, así que un script de skill con anotaciones `X | Y` necesita `from __future__ import annotations` (compila en 3.9 pero explota al importar).

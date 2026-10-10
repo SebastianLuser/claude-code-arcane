@@ -157,10 +157,42 @@ describe("mergeProfiles", () => {
  * reads them back, so a renamed profile has to keep answering to its old name.
  */
 describe("profile renames", () => {
-  it("every rename points at a profile that exists, and no old name is still a file", () => {
-    for (const [oldName, newName] of Object.entries(PROFILE_RENAMES)) {
+  it("every rename points at a profile that exists", () => {
+    for (const newName of Object.values(PROFILE_RENAMES)) {
       expect(fs.existsSync(path.join(PROFILES_DIR, `${newName}.yaml`)), newName).toBe(true);
-      expect(fs.existsSync(path.join(PROFILES_DIR, `${oldName}.yaml`)), oldName).toBe(false);
+    }
+  });
+
+  it("every old name keeps a bridge file identical to the current profile", () => {
+    // A pre-rename CLI reads profiles/<old>.yaml during `arcane update`. If the
+    // bridge drifts, that CLI installs a different set than the current one, and
+    // if it is missing, the CLI moves the whole profile's skills to the trash.
+    for (const [oldName, newName] of Object.entries(PROFILE_RENAMES)) {
+      const bridgeFile = path.join(PROFILES_DIR, `${oldName}.yaml`);
+      expect(fs.existsSync(bridgeFile), `profiles/${oldName}.yaml is missing`).toBe(true);
+      const { name: bridgeName, renamed_to, ...bridge } = parseProfile(bridgeFile);
+      const { name: _name, ...current } = parseProfile(path.join(PROFILES_DIR, `${newName}.yaml`));
+      expect(bridgeName).toBe(oldName);
+      expect(renamed_to).toBe(newName);
+      expect(bridge, `profiles/${oldName}.yaml differs from ${newName}.yaml`).toEqual(current);
+    }
+  });
+
+  it("only real bridge files carry renamed_to", () => {
+    const bridges = fs
+      .readdirSync(PROFILES_DIR)
+      .filter((f) => f.endsWith(".yaml") && parseProfile(path.join(PROFILES_DIR, f)).renamed_to)
+      .map((f) => f.slice(0, -".yaml".length))
+      .sort();
+    expect(bridges).toEqual(Object.keys(PROFILE_RENAMES).sort());
+  });
+
+  it("hides bridge files from listings and never loads them", () => {
+    const listed = listProfiles(PROFILES_DIR).map((p) => p.name);
+    for (const [oldName, newName] of Object.entries(PROFILE_RENAMES)) {
+      expect(listed).not.toContain(oldName);
+      expect(listed).toContain(newName);
+      expect(resolveProfile(PROFILES_DIR, oldName)?.name).toBe(newName);
     }
   });
 

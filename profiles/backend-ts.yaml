@@ -1,0 +1,53 @@
+# Bridge for CLIs released before this profile was renamed: they look it up as 'backend-ts'. Keep identical to backend-typescript.yaml.
+name: backend-ts
+renamed_to: backend-typescript
+description: "Backend TypeScript — Fastify, Prisma, Zod, API design, CI"
+category: backend
+
+skills:
+  - testing
+  - deps-audit
+  - env-sync
+  - observability
+  - scaffold-fastify-ts
+  - database
+  - api-design
+  - api-docs
+  - api-versioning
+  - auth-strategy
+  - jwt-strategy
+  - mfa-setup
+  - oauth-setup
+  - rbac-abac
+  - performance
+  - async-ops
+  - audit-log
+  - monorepo-setup
+  - data-migrations
+  - caching-strategy
+  - webhooks
+  - rate-limiting
+  - websocket-realtime-rooms
+  - search-setup
+  - ci-cd-setup
+
+rules:
+  universal:
+    - backend-code
+    - api-code
+    - migration-code
+  gamedev:
+    []
+
+agents:
+  - engineering
+
+permissions:
+  allow:
+    - "Bash(npm *)"
+    - "Bash(yarn *)"
+    - "Bash(pnpm *)"
+    - "Bash(docker ps*)"
+    - "Bash(docker images*)"
+  deny:
+    []

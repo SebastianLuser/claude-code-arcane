@@ -1,0 +1,39 @@
+# Bridge for CLIs released before this profile was renamed: they look it up as 'flutter'. Keep identical to mobile-flutter.yaml.
+name: flutter
+renamed_to: mobile-flutter
+description: "Flutter + Dart cross-platform development"
+category: mobile
+
+skills:
+  - testing
+  - i18n-setup
+  - deps-audit
+  - env-sync
+  - observability
+  - release
+  - onboard
+  - perf-profile
+  - flutter-dev
+  - state-management
+  - form-validation
+  - accessibility
+  - auth-strategy
+  - ci-cd-setup
+  - deploy-check
+
+rules:
+  universal:
+    - frontend-code
+  gamedev:
+    []
+
+agents:
+  - engineering
+
+permissions:
+  allow:
+    - "Bash(flutter *)"
+    - "Bash(dart *)"
+    - "Bash(pub *)"
+  deny:
+    []

@@ -1,0 +1,41 @@
+# Bridge for CLIs released before this profile was renamed: they look it up as 'frontend'. Keep identical to frontend-react-vite.yaml.
+name: frontend
+renamed_to: frontend-react-vite
+description: "Frontend React + Vite + TypeScript"
+category: frontend
+
+skills:
+  - testing
+  - i18n-setup
+  - deps-audit
+  - env-sync
+  - observability
+  - release
+  - onboard
+  - scaffold-react-vite
+  - state-management
+  - form-validation
+  - accessibility
+  - web-security
+  - ci-cd-setup
+  - cdn-setup
+  - file-uploads
+  - frontend-dev
+  - csp-headers
+
+rules:
+  universal:
+    - frontend-code
+  gamedev:
+    []
+
+agents:
+  - engineering
+
+permissions:
+  allow:
+    - "Bash(npm *)"
+    - "Bash(yarn *)"
+    - "Bash(pnpm *)"
+  deny:
+    []

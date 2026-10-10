@@ -13,6 +13,7 @@ export function parseProfile(filePath: string): ProfileDefinition {
 
   return {
     name: String(raw.name ?? path.basename(filePath, ".yaml")),
+    ...(raw.renamed_to ? { renamed_to: String(raw.renamed_to) } : {}),
     description: String(raw.description ?? ""),
     category: String(raw.category ?? "other"),
     skills: (raw.skills as string[]) ?? [],
@@ -63,6 +64,13 @@ export function groupByCategory(
  * Old profile name -> current name. A project installed before a rename keeps
  * the old name in arcane-manifest.json, and `arcane update` reads it back from
  * there, so dropping an entry breaks every install made before that rename.
+ *
+ * Each old name also keeps a bridge file, `profiles/<old>.yaml`, that mirrors the
+ * current profile and carries `renamed_to`. It is for CLIs released before the
+ * rename: `arcane update` downloads the latest content but keeps running the old
+ * code for that run, and the old code only knows the old file name. Without the
+ * bridge it would treat the profile as gone and move its skills to the trash.
+ * Bridges stay until no pre-rename CLI can still be running an update.
  */
 export const PROFILE_RENAMES: Readonly<Record<string, string>> = {
   "backend-ts": "backend-typescript",
@@ -83,10 +91,10 @@ export function sameProfile(a: string, b: string): boolean {
 }
 
 /**
- * Finds the YAML for `name` in `profilesDir`. The name as given wins; then its
- * current name; then any old name for it. The last case matters for `remove`,
- * which reads the definitions of the installed version, where a profile may
- * still live under its old name.
+ * Finds the YAML for `name` in `profilesDir`. The current name wins, so a bridge
+ * file is never what gets loaded; then the name as given; then any old name for
+ * it. The last case matters for `remove`, which reads the definitions of the
+ * installed version, where a profile may still live under its old name.
  */
 export function resolveProfile(
   profilesDir: string,
@@ -94,7 +102,7 @@ export function resolveProfile(
 ): { name: string; file: string } | null {
   const canonical = canonicalProfileName(name);
   const oldNames = Object.keys(PROFILE_RENAMES).filter((o) => PROFILE_RENAMES[o] === canonical);
-  for (const candidate of [name, canonical, ...oldNames]) {
+  for (const candidate of [canonical, name, ...oldNames]) {
     const file = path.join(profilesDir, `${candidate}.yaml`);
     if (fs.existsSync(file)) return { name: candidate, file };
   }
@@ -107,6 +115,7 @@ export function listProfiles(profilesDir: string): ProfileDefinition[] {
     .readdirSync(profilesDir)
     .filter((f) => f.endsWith(".yaml") && f !== "core.yaml")
     .map((f) => parseProfile(path.join(profilesDir, f)))
+    .filter((p) => !p.renamed_to)
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
