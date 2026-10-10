@@ -25,7 +25,7 @@ Read: `production/releases/[version]/changelog.md`, `docs/CHANGELOG.md` entry, `
 
 Check for tone/voice guidance in: `.claude/docs/technical-preferences.md`, `docs/PATCH-NOTES-STYLE.md`, `design/community/tone-guide.md`. Default: player-friendly, non-technical, enthusiastic not hyperbolic, focus on player experience.
 
-Check for template at `docs/patch-notes-template.md` or `.claude/docs/templates/patch-notes-template.md`. If found → use as structure instead of built-in styles.
+Use the project's own template at `docs/patch-notes-template.md` if it exists; otherwise `.claude/docs/templates/release-notes.md` (player-facing: headline, what's new, gameplay changes, fixes). Either one replaces the built-in styles.
 
 ## Phase 3: Categorize and Translate
 

@@ -25,7 +25,7 @@ model: opus
 ## Phase 1: Load
 
 1. **L0 Summary Scan**: Grep `## Summary` from all GDDs and ADRs (fast, low tokens)
-2. **L1/L2 Full Load** (per mode): GDDs, ADRs, engine reference docs, `technical-preferences.md`, `consistency-failures.md`
+2. **L1/L2 Full Load** (per mode): GDDs, ADRs, engine and version from `ProjectSettings/ProjectVersion.txt` (Unity) or the `.uproject` (Unreal), `consistency-failures.md`
 3. Report: "Loaded [N] GDDs, [M] ADRs, engine: [name+version]"
 
 ## Phase 2: Extract Technical Requirements
