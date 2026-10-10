@@ -1,3 +1,17 @@
+## [2.9.9](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.8...v2.9.9) (2026-10-10)
+
+
+### Bug Fixes
+
+* **content:** remove stale facts and dated prompting found by a prompt audit ([f6d0cf0](https://github.com/SebastianLuser/claude-code-arcane/commit/f6d0cf0abef40682a5ea7b5546c740787267c2bb))
+* **rules:** install the LLM rule with backend-go as llm-code ([8fbac31](https://github.com/SebastianLuser/claude-code-arcane/commit/8fbac317376dd0243878db501ce996df705e3478))
+* **skills:** price current Claude models in the cost estimators ([352e062](https://github.com/SebastianLuser/claude-code-arcane/commit/352e0623123de5833e6734fa785e71c06c004429))
+* **skills:** reach playwright-pro and self-improving-agent sub-skills through their parent ([4cc9dff](https://github.com/SebastianLuser/claude-code-arcane/commit/4cc9dffe71c406d1e12ccdb041587b3607a301b2))
+* **skills:** read the engine from the project in the last four skills ([120c8eb](https://github.com/SebastianLuser/claude-code-arcane/commit/120c8eb0ddee200acea6e2f29b0f04e3118b6b5a))
+* **skills:** route the remaining skills to skills and files that exist ([eb2eea0](https://github.com/SebastianLuser/claude-code-arcane/commit/eb2eea0eed4e1ba8964a1944548cb9ae9b386a4e))
+* **skills:** stop pricing and advising prompts from 2023 in the prompt tools ([429247d](https://github.com/SebastianLuser/claude-code-arcane/commit/429247db70689e3df86fc1bfdf7b78cab3e10195))
+* **update:** keep .claude/docs/ current like the other installed content ([f753c03](https://github.com/SebastianLuser/claude-code-arcane/commit/f753c030b73c89d5f3d035f0460954ba8d8c69a4))
+
 ## [2.9.8](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.7...v2.9.8) (2026-09-09)
 
 
