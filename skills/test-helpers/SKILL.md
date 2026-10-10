@@ -21,8 +21,8 @@ Output: `tests/helpers/` with engine-specific helpers. Run after `/test-setup`, 
 
 ## Detection
 
-- Read `.claude/docs/technical-preferences.md` → Engine, Language, Framework
-- No engine → stop: "Run `/setup-engine` first"
+- Detect the engine from the project: `ProjectSettings/ProjectVersion.txt` (Unity) or a `*.uproject` file (Unreal); language and test framework from the project files
+- No engine detected → ask the user which engine the project uses
 - Scan `tests/**/*_test.*` (up to 5 files): extract setup, assertion, factory, mock patterns
 - Read `design/gdd/systems-index.md`, in-scope GDDs, `docs/architecture/tr-registry.yaml`
 
@@ -48,3 +48,8 @@ Present summary of files to create → ask approval → write. **Never overwrite
 - Helpers reflect GDD bounds and constants, not invented values
 - Generated code is a starting point — adapt to actual class structure
 - Ask before writing to `tests/`
+
+## Next Steps
+
+- `/regression-suite` — map the new helpers onto critical paths that still lack regression tests
+- `/smoke-check` — run the suite before QA hand-off

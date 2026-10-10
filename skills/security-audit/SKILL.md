@@ -28,7 +28,7 @@ Output: `production/security/security-audit-[date].md`
 | `quick` | High-severity checks only (fastest) |
 | No arg | `full` |
 
-Read `.claude/docs/technical-preferences.md` for engine, language, platforms, multiplayer scope.
+Detect language, platforms and, for a game, the engine (`ProjectSettings/ProjectVersion.txt` (Unity) or the `.uproject` (Unreal)) from the project files. Take multiplayer scope from the GDD, or ask.
 
 ## Phase 2: Spawn Security Engineer
 

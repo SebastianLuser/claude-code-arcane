@@ -7,7 +7,7 @@
 - Include style modifiers: "editorial photography", "3D render", "flat vector illustration"
 - Add technical specs: "4K resolution, sharp focus, shallow depth of field"
 - For web assets: always mention "clean background", "web-optimized", "high contrast for readability"
-- **NEVER** include text in image prompts unless explicitly requested — AI text rendering is unreliable
+- Leave text out of image prompts unless explicitly requested — AI text rendering is unreliable
 
 ## Video Prompts
 

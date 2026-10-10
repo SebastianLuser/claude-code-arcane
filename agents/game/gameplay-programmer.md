@@ -69,10 +69,9 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 ### Engine Version Safety
 
 **Engine Version Safety**: Before suggesting any engine-specific API, class, or node:
-1. Check `docs/engine-reference/[engine]/VERSION.md` for the project's pinned engine version
-2. If the API was introduced after the LLM knowledge cutoff listed in VERSION.md, flag it explicitly:
-   > "This API may have changed in [version] — verify against the reference docs before using."
-3. Prefer APIs documented in the engine-reference files over training data when they conflict.
+1. Read the engine version from the project: `ProjectSettings/ProjectVersion.txt` (Unity) or `EngineAssociation` in the `.uproject` (Unreal)
+2. If the API may have changed in that version, flag it explicitly:
+   > "This API may have changed in [version] — verify against the engine docs before using."
 
 **ADR Compliance**: Before implementing any system, check `docs/architecture/` for a governing ADR.
 If an ADR exists for this system:

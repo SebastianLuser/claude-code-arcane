@@ -4,7 +4,7 @@ This folder is the QA layer for the Claude Code Arcane skill/agent framework.
 Self-contained and separate from any project the user is building.
 
 **This is not about testing user code.** It's about verifying that the skills
-(`/commit`, `/gate-check`, `/design-review`, etc.) and agents (creative-director,
+(`/commit`, `/gate-check`, `/code-review`, etc.) and agents (creative-director,
 backend-architect, etc.) themselves behave per their documented contract.
 
 ---
@@ -35,81 +35,9 @@ rather than guessing.
 
 ---
 
-## Skill categories
+## Categories and tiers
 
-### Inherited from CCGS (gamedev + universal)
-
-```
-gate        → gate-check
-review      → design-review, architecture-review, review-all-gdds
-authoring   → design-system, quick-design, architecture-decision, art-bible,
-              create-architecture, ux-design, ux-review
-readiness   → story-readiness, story-done
-pipeline    → create-epics, create-stories, dev-story, create-control-manifest,
-              propagate-design-change, map-systems
-analysis    → consistency-check, balance-check, content-audit, code-review,
-              tech-debt, scope-check, estimate, perf-profile, asset-audit,
-              security-audit, test-evidence-review, test-flakiness
-team        → team-combat, team-narrative, team-audio, team-level, team-ui,
-              team-qa, team-release, team-polish, team-live-ops
-sprint      → sprint-plan, sprint-status, milestone-review, retrospective,
-              changelog, patch-notes
-utility     → start, adopt, hotfix, localize, setup-engine, onboard
-```
-
-### Arcane-specific categories
-
-```
-software    → scaffold-go, api-docs, db-diagram, deps-audit, deploy-check
-devops      → (docker/k8s/terraform/ci-cd skill specs — to be authored)
-integrations → clickup-*, jira-*, postman, figma-*, notion, coda, slack, discord
-product     → (PM/UX/research skill specs — to be authored)
-educabot    → (edtech skill specs — to be authored)
-```
-
----
-
-## Agent tiers
-
-### Inherited from CCGS
-
-```
-directors   → creative-director, technical-director, producer, art-director
-leads       → lead-programmer, narrative-director, audio-director, ux-designer,
-              qa-lead, release-manager, localization-lead, game-designer
-specialists → gameplay-programmer, engine-programmer, ui-programmer,
-              tools-programmer, network-programmer, ai-programmer,
-              level-designer, sound-designer, technical-artist
-engine      → unity-*, unreal-*
-operations  → devops-engineer, security-engineer, performance-analyst,
-              analytics-engineer, community-manager
-qa          → qa-tester, accessibility-specialist, live-ops-designer
-```
-
-### Arcane-specific tiers
-
-```
-software    → chief-technology-officer, vp-engineering, backend-architect,
-              frontend-architect, api-architect, database-architect,
-              go/node/python/rust engineers, react/vue/angular engineers,
-              flutter / react-native, sql / nosql / graphql / websocket
-devops      → cloud-architect, platform-lead, sre-lead, docker, kubernetes,
-              ci-cd, terraform, aws, gcp, monitoring, security-ops
-product     → chief-product-officer, product-manager, ux-lead, ui-lead,
-              design-system-lead, ux-researcher, ui-designer, ux-writer,
-              interaction-designer, accessibility-expert, data-analyst,
-              market-researcher
-management  → program-director, project-manager, scrum-master, delivery-manager,
-              agile-coach, business-analyst, technical-writer, stakeholder-manager
-quality     → qa-director, security-architect, test-automation-engineer,
-              performance-tester, manual-qa-tester, penetration-tester,
-              compliance-specialist
-integrations → integrations-architect, project/docs/design/comms/api tools
-              specialists
-educabot    → edtech-architect, curriculum-director, learning-experience-designer,
-              content-developer, robotics-specialist, ai-tutor-designer,
-              assessment-designer
-```
+`catalog.yaml` is the only list of what exists: each entry carries its `category:` (skills) or tier (agents). Read it instead of keeping a copy here.
 
 ---
 

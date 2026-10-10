@@ -44,6 +44,5 @@ Glob for `production/qa/qa-plan-sprint-[N].md`. Found → note in output. Not fo
 
 - `/qa-plan sprint` — required before implementation
 - `/story-readiness [story-file]` — validate before starting
-- `/dev-story [story-file]` — begin implementing
-- `/sprint-status` — check progress mid-sprint
+- `/sprint-report` — check progress mid-sprint
 - `/scope-check [epic]` — verify no scope creep

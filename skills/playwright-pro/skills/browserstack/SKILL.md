@@ -24,7 +24,7 @@ If not set, inform the user how to get them from [browserstack.com/accounts/sett
 ### 1. Configure for BrowserStack
 
 ```
-/pw:browserstack setup
+/playwright-pro browserstack setup
 ```
 
 Steps:
@@ -96,7 +96,7 @@ export default defineConfig({
 ### 2. Run Tests on BrowserStack
 
 ```
-/pw:browserstack run
+/playwright-pro browserstack run
 ```
 
 Steps:
@@ -113,7 +113,7 @@ Steps:
 ### 3. Get Build Results
 
 ```
-/pw:browserstack results
+/playwright-pro browserstack results
 ```
 
 Steps:
@@ -130,7 +130,7 @@ Steps:
 ### 4. Check Available Browsers
 
 ```
-/pw:browserstack browsers
+/playwright-pro browserstack browsers
 ```
 
 Steps:
@@ -141,7 +141,7 @@ Steps:
 ### 5. Local Testing
 
 ```
-/pw:browserstack local
+/playwright-pro browserstack local
 ```
 
 For testing localhost or staging behind firewall:

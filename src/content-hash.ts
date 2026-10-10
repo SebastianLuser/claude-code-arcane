@@ -73,6 +73,8 @@ export interface ContentHashes {
   rules: Record<string, string>;
   agents: Record<string, string>;
   hooks: Record<string, string>;
+  /** One entry per file under docs/, keyed by its path relative to docs/. */
+  docs: Record<string, string>;
 }
 
 export function computeContentHashes(claudeDir: string): ContentHashes {
@@ -81,6 +83,7 @@ export function computeContentHashes(claudeDir: string): ContentHashes {
     rules: {},
     agents: {},
     hooks: {},
+    docs: {},
   };
 
   const skillsDir = path.join(claudeDir, "skills");
@@ -133,6 +136,9 @@ export function computeContentHashes(claudeDir: string): ContentHashes {
     }
   }
 
+  const docsDir = path.join(claudeDir, "docs");
+  if (fs.existsSync(docsDir)) hashes.docs = hashDirectory(docsDir);
+
   return hashes;
 }
 
@@ -147,6 +153,7 @@ export function computeSourceHashes(
     rules: {},
     agents: {},
     hooks: {},
+    docs: {},
   };
 
   for (const skill of skills) {
@@ -198,6 +205,10 @@ export function computeSourceHashes(
       }
     }
   }
+
+  // The installer copies docs/ wholesale, so every file in it is part of an install.
+  const docsDir = path.join(packageRoot, "docs");
+  if (fs.existsSync(docsDir)) hashes.docs = hashDirectory(docsDir);
 
   return hashes;
 }

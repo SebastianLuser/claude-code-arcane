@@ -414,7 +414,7 @@ La lista `agents:` de un profile acepta dos formas:
 
 ```yaml
 agents:
-  - game                        # la división entera: 30 agentes
+  - game                        # la división entera: 32 agentes
   - quality/security-architect  # solo ese agente
 ```
 

@@ -1,9 +1,9 @@
 ---
 paths:
-  - "src/ai/**"
+  - "src/**/ai/**"
+  - "src/**/llm/**"
+  - "src/**/agents/**"
   - "src/ml/**"
-  - "src/llm/**"
-  - "src/agents/**"
   - "src/inference/**"
   - "prompts/**"
   - "models/**"
@@ -12,7 +12,7 @@ paths:
 # AI / LLM / ML Code Rules
 
 Applies to software integrations with LLMs, ML inference, and AI agents — not NPC behavior in games
-(that rule lives in `skills-gamedev/_rules/ai-code.md`).
+(the gamedev profiles ship their own `ai-code` rule for that).
 
 ## Prompts & Templates
 
@@ -28,7 +28,7 @@ Applies to software integrations with LLMs, ML inference, and AI agents — not 
 - **Cost budget per request is measured and logged**: token counts in + out, model, cost in $. Track P50/P95 cost per feature.
 - **Timeouts and retries are bounded**: max retries ≤ 2, exponential backoff, circuit breaker on the provider. A hung LLM call must not hang a user request.
 - **Streaming for user-facing generation**; batch / async for back-office work.
-- **Cache deterministic calls** (same system + same user + temperature 0 → cache the response). Document TTL and invalidation.
+- **Cache deterministic calls** (same model + same system + same user → cache the response). Document TTL and invalidation.
 
 ## Safety & PII
 

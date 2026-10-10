@@ -23,7 +23,7 @@ Read all before asking anything:
 4. `design/registry/entities.yaml` — known cross-system facts (locked values)
 5. `docs/consistency-failures.md` — past conflict patterns for this domain
 6. `design/gdd/game-pillars.md`, related GDDs (optional)
-7. `.claude/docs/technical-preferences.md` → engine + version → engine reference docs → feasibility brief
+7. Engine and version from `ProjectSettings/ProjectVersion.txt` (Unity) or the `.uproject` (Unreal) → feasibility brief
 
 Present context summary with dependencies, registry facts, engine constraints. Warn if upstream deps undesigned.
 

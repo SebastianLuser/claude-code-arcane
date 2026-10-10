@@ -111,7 +111,7 @@ If yes:
 - Guide the user to update the relevant data file in `assets/data/` or formula in `design/balance/`
 - After each fix, offer to re-run the relevant balance checks to verify no new outliers were introduced
 - If the fix changes a tuning knob defined in a GDD or referenced by an ADR, remind the user:
-  > "This value is defined in a design document. Run `/propagate-design-change [path]` on the affected GDD to find downstream impacts before committing."
+  > "This value is defined in a design document. Run `/consistency-check` after updating the GDD to find the documents that depend on it before committing."
 
 If no:
 - Summarize open issues and suggest saving the report to `design/balance/balance-check-[system]-[date].md` for later

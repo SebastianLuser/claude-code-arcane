@@ -36,7 +36,7 @@ Key math:
 
 Runs directly in ShaderToy. Includes multi-primitive scene, smooth blending, soft shadows, AO, and material system.
 
-**IMPORTANT:** When using the `vec2(distance, materialID)` material system, `smin` needs to handle `vec2` types. The template includes a `vec2 smin(vec2 a, vec2 b, float k)` overload that ensures the material ID is correctly passed through during smooth blending (taking the material of the closer distance).
+**** When using the `vec2(distance, materialID)` material system, `smin` needs to handle `vec2` types. The template includes a `vec2 smin(vec2 a, vec2 b, float k)` overload that ensures the material ID is correctly passed through during smooth blending (taking the material of the closer distance).
 
 ```glsl
 // 3D SDF Full Rendering Pipeline Template - Runs in ShaderToy

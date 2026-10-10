@@ -2,7 +2,7 @@
 name: migration-planner
 description: >-
   Analyzes Cypress or Selenium test suites and creates a file-by-file
-  migration plan. Invoked by /pw:migrate before conversion starts.
+  migration plan. Invoked by /playwright-pro migrate before conversion starts.
 allowed-tools:
   - Read
   - Grep
@@ -118,4 +118,4 @@ Flag tests that may need manual intervention:
 
 ### Step 7: Return Plan
 
-Return the complete migration plan to `/pw:migrate` for execution.
+Return the complete migration plan to `/playwright-pro migrate` for execution.

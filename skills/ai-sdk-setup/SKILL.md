@@ -15,7 +15,7 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ### Step 0: Gather Requirements
 1. **Caso:** chat / generación one-shot / extracción structured / agente con tools / RAG
 2. **Streaming** al cliente o respuesta completa
-3. **Modelo:** Opus 4.8 (`claude-opus-4-8`, razonamiento) / Sonnet 4.6 (`claude-sonnet-4-6`, balance) / Haiku 4.5 (`claude-haiku-4-5-20251001`, rápido/barato)
+3. **Modelo:** Opus 5.5 (`claude-opus-5-5`, razonamiento) / Sonnet 5.5 (`claude-sonnet-5-5`, balance) / Haiku 5.5 (`claude-haiku-5-5`, rápido/barato)
 4. ¿Necesita tool calling / structured output / RAG (ver skill `pgvector-search`)?
 
 ### Step 1: Instalar
@@ -33,7 +33,7 @@ import { streamText, convertToModelMessages } from 'ai';
 export async function POST(req: Request) {
   const { messages } = await req.json();
   const result = streamText({
-    model: anthropic('claude-sonnet-4-6'),
+    model: anthropic('claude-sonnet-5-5'),
     messages: convertToModelMessages(messages),
   });
   return result.toUIMessageStreamResponse();
@@ -44,7 +44,7 @@ Cliente: `useChat()` de `@ai-sdk/react`.
 ### Step 3: Structured output (Zod)
 ```ts
 const { object } = await generateObject({
-  model: anthropic('claude-sonnet-4-6'),
+  model: anthropic('claude-sonnet-5-5'),
   schema: z.object({ sentiment: z.enum(['pos','neg','neutral']), score: z.number() }),
   prompt: text,
 });
@@ -53,7 +53,7 @@ const { object } = await generateObject({
 ### Step 4: Tool calling / agente
 ```ts
 const result = await generateText({
-  model: anthropic('claude-opus-4-8'),
+  model: anthropic('claude-opus-5-5'),
   tools: {
     search: tool({
       description: 'Buscar docs', inputSchema: z.object({ q: z.string() }),

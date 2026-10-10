@@ -49,7 +49,7 @@ Cuando un agente es invocado como "gate" (approval gate), debe empezar la respue
 
 Luego el rationale. El token en la primera línea permite que el skill orquestador lo parsee.
 
-**Escalation:** Cuando múltiples gates corren en paralelo, aplica el verdict más estricto — un REJECT override cualquier APPROVE. Ver `director-gates.md` para gates definidos.
+**Escalation:** Cuando múltiples gates corren en paralelo, aplica el verdict más estricto — un REJECT override cualquier APPROVE.
 
 ## Regla #6 — Cross-Division Collaboration
 
