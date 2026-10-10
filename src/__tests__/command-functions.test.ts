@@ -501,7 +501,7 @@ describe("updateCommand", () => {
 
 /**
  * A first-time user downloaded the source zip from the Releases page and ran
- * `npx claude-code-arcane install backend-ts+agile` inside the extracted folder.
+ * `npx claude-code-arcane install backend-typescript+agile` inside the extracted folder.
  * `install` targets the current directory, so that deploys 94 skills and four
  * agent divisions into a download they were about to delete — and prints
  * "Installation complete." Nothing said the target was wrong, because as far as
@@ -566,11 +566,11 @@ describe("installCommand refuses to install into Arcane's own source tree", () =
     makeSourceTreeCopy();
 
     // Act
-    await installCommand("backend-ts+agile", { target: tmpDir });
+    await installCommand("backend-typescript+agile", { target: tmpDir });
 
     // Assert
     const output = logSpy.mock.calls.map((c: unknown[]) => c[0]).join("\n");
-    expect(output).toContain("npx claude-code-arcane install backend-ts+agile");
+    expect(output).toContain("npx claude-code-arcane install backend-typescript+agile");
   });
 
   it("installs anyway under --force, which is how the repo dogfoods itself", async () => {

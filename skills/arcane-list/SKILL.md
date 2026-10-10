@@ -25,8 +25,8 @@ List all profiles and skills available in the Arcane source repo, so you can see
 ```
 === Available Profiles ===
 Backend:
-  backend-ts     Backend TypeScript — Fastify, Prisma, Zod
-  backend-go     Backend Go — scaffold, DB, auth, API design
+  backend-typescript  Backend TypeScript — Fastify, Prisma, Zod
+  backend-go          Backend Go — scaffold, DB, auth, API design
   ...
 
 Project Management:

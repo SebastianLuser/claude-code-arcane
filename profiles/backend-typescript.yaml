@@ -1,4 +1,4 @@
-name: backend-ts
+name: backend-typescript
 description: "Backend TypeScript — Fastify, Prisma, Zod, API design, CI"
 category: backend
 

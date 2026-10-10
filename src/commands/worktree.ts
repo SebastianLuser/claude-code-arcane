@@ -65,7 +65,7 @@ export async function worktreeCommand(
     console.error(
       chalk.red(
         "No profile specified and no existing installation to inherit from.\n" +
-          "Use --profile to specify one: npx claude-code-arcane worktree feat/api --profile backend-ts+agile",
+          "Use --profile to specify one: npx claude-code-arcane worktree feat/api --profile backend-typescript+agile",
       ),
     );
     process.exit(1);

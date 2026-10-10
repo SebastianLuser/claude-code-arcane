@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -7,7 +8,10 @@ import {
   listProfiles,
   mergeProfiles,
   groupByCategory,
+  resolveProfile,
+  sameProfile,
   CATEGORY_ORDER,
+  PROFILE_RENAMES,
 } from "../profiles.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -145,6 +149,39 @@ describe("mergeProfiles", () => {
 
     expect(merged.loaded).toContain("core");
     expect(merged.loaded).not.toContain("nonexistent-profile");
+  });
+});
+
+/**
+ * Installs record profile names in arcane-manifest.json and `arcane update`
+ * reads them back, so a renamed profile has to keep answering to its old name.
+ */
+describe("profile renames", () => {
+  it("every rename points at a profile that exists, and no old name is still a file", () => {
+    for (const [oldName, newName] of Object.entries(PROFILE_RENAMES)) {
+      expect(fs.existsSync(path.join(PROFILES_DIR, `${newName}.yaml`)), newName).toBe(true);
+      expect(fs.existsSync(path.join(PROFILES_DIR, `${oldName}.yaml`)), oldName).toBe(false);
+    }
+  });
+
+  it("loads an old name as the current profile, once", () => {
+    const merged = mergeProfiles(PROFILES_DIR, ["backend-ts", "backend-typescript"]);
+    expect(merged.loaded).toEqual(["core", "backend-typescript"]);
+    expect(merged.skills).toContain("scaffold-fastify-ts");
+  });
+
+  it("finds a current name in content that still uses the old file name", () => {
+    // `remove` reads the installed version's definitions, which predate the rename.
+    const oldDir = fs.mkdtempSync(path.join(os.tmpdir(), "arcane-profiles-"));
+    fs.writeFileSync(path.join(oldDir, "frontend.yaml"), "name: frontend\nskills: [testing]\n");
+    expect(resolveProfile(oldDir, "frontend-react-vite")?.name).toBe("frontend");
+    expect(resolveProfile(oldDir, "frontend")?.name).toBe("frontend");
+    fs.rmSync(oldDir, { recursive: true, force: true });
+  });
+
+  it("treats an old and a current name as the same profile", () => {
+    expect(sameProfile("ios-native", "mobile-ios-swift")).toBe(true);
+    expect(sameProfile("mobile-ios-swift", "mobile-android-kotlin")).toBe(false);
   });
 });
 

@@ -53,7 +53,7 @@ export function detectStack(dir: string): StackDetection[] {
 
   const isFlutter = hasFile(dir, "pubspec.yaml");
   if (isFlutter) {
-    out.push({ profile: "flutter", reason: "pubspec.yaml" });
+    out.push({ profile: "mobile-flutter", reason: "pubspec.yaml" });
   }
 
   if (hasFile(dir, "go.mod")) {
@@ -69,13 +69,13 @@ export function detectStack(dir: string): StackDetection[] {
       out.push({ profile: "backend-nextjs", reason: "package.json: next" });
     } else if (deps["react-native"] || deps["expo"]) {
       isReactNative = true;
-      out.push({ profile: "mobile", reason: "package.json: react-native/expo" });
+      out.push({ profile: "mobile-react-native", reason: "package.json: react-native/expo" });
     } else if (deps["react"] || deps["vue"] || deps["svelte"]) {
-      out.push({ profile: "frontend", reason: "package.json: react/vue/svelte" });
+      out.push({ profile: "frontend-react-vite", reason: "package.json: react/vue/svelte" });
     } else if (deps["fastify"] || deps["express"] || deps["koa"] || deps["hono"]) {
-      out.push({ profile: "backend-ts", reason: "package.json: server framework" });
+      out.push({ profile: "backend-typescript", reason: "package.json: server framework" });
     } else if (deps["typescript"]) {
-      out.push({ profile: "backend-ts", reason: "package.json: typescript" });
+      out.push({ profile: "backend-typescript", reason: "package.json: typescript" });
     }
   }
 
@@ -94,14 +94,14 @@ export function detectStack(dir: string): StackDetection[] {
       (hasFile(dir, "settings.gradle") || hasFile(dir, "settings.gradle.kts")) &&
       hasFile(dir, "app")
     ) {
-      out.push({ profile: "android-native", reason: "settings.gradle + app/" });
+      out.push({ profile: "mobile-android-kotlin", reason: "settings.gradle + app/" });
     }
     const ios =
       topLevelMatch(dir, ".xcodeproj") ??
       topLevelMatch(dir, ".xcworkspace") ??
       (hasFile(dir, "Podfile") ? "Podfile" : undefined);
     if (ios) {
-      out.push({ profile: "ios-native", reason: ios });
+      out.push({ profile: "mobile-ios-swift", reason: ios });
     }
   }
 

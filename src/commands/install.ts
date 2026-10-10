@@ -48,7 +48,7 @@ export function isArcaneSourceTree(dir: string): boolean {
  * A first-time user downloaded the source zip from the Releases page and ran the
  * install inside the extracted folder. `install` targets the current directory, so
  * that deploys the whole profile — 94 skills and four agent divisions for
- * backend-ts+agile — into a download they were about to delete, and reports success.
+ * backend-typescript+agile — into a download they were about to delete, and reports success.
  * Nothing in the output said the target was wrong, because as far as the installer
  * knew it wasn't.
  *
@@ -123,7 +123,7 @@ export async function installCommand(
         console.log();
       }
       console.log(
-        chalk.dim("  Usage: npx claude-code-arcane install backend-ts+agile+testing\n"),
+        chalk.dim("  Usage: npx claude-code-arcane install backend-typescript+agile+testing\n"),
       );
       return;
     }

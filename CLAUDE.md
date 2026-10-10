@@ -24,7 +24,7 @@ for f in hooks/*.sh skills/*/hooks/*.sh; do bash -n "$f"; done   # lint de hooks
 Probar el CLI a mano **siempre aislado**:
 
 ```bash
-ARCANE_SOURCE=bundled ARCANE_HOME=/tmp/arcane-test node dist/cli.js install backend-ts --target /tmp/proj --dry-run
+ARCANE_SOURCE=bundled ARCANE_HOME=/tmp/arcane-test node dist/cli.js install backend-typescript --target /tmp/proj --dry-run
 ```
 
 `ARCANE_SOURCE=bundled` usa el working tree en vez de bajar contenido de GitHub. `ARCANE_HOME` desvía `~/.arcane`: ahí vive el **registry** (`installations.json`) y `arcane update` sin `--here` reescribe **todas** las instalaciones registradas de la máquina. Sin aislar, un test o una prueba manual despliega el working tree sobre repos reales. `vitest.config.ts` ya fija ambas para la suite — no lo saques.

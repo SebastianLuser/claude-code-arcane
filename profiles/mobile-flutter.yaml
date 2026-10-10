@@ -1,6 +1,6 @@
-name: frontend
-description: "Frontend React + Vite + TypeScript"
-category: frontend
+name: mobile-flutter
+description: "Flutter + Dart cross-platform development"
+category: mobile
 
 skills:
   - testing
@@ -10,16 +10,14 @@ skills:
   - observability
   - release
   - onboard
-  - scaffold-react-vite
+  - perf-profile
+  - flutter-dev
   - state-management
   - form-validation
   - accessibility
-  - web-security
+  - auth-strategy
   - ci-cd-setup
-  - cdn-setup
-  - file-uploads
-  - frontend-dev
-  - csp-headers
+  - deploy-check
 
 rules:
   universal:
@@ -32,8 +30,8 @@ agents:
 
 permissions:
   allow:
-    - "Bash(npm *)"
-    - "Bash(yarn *)"
-    - "Bash(pnpm *)"
+    - "Bash(flutter *)"
+    - "Bash(dart *)"
+    - "Bash(pub *)"
   deny:
     []

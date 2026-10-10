@@ -1,5 +1,5 @@
-name: flutter
-description: "Flutter + Dart cross-platform development"
+name: mobile-react-native
+description: "Mobile React Native + Expo + TypeScript"
 category: mobile
 
 skills:
@@ -11,11 +11,13 @@ skills:
   - release
   - onboard
   - perf-profile
-  - flutter-dev
+  - scaffold-react-native
+  - react-native-dev
   - state-management
   - form-validation
   - accessibility
   - auth-strategy
+  - file-uploads
   - ci-cd-setup
   - deploy-check
 
@@ -30,8 +32,8 @@ agents:
 
 permissions:
   allow:
-    - "Bash(flutter *)"
-    - "Bash(dart *)"
-    - "Bash(pub *)"
+    - "Bash(npm *)"
+    - "Bash(yarn *)"
+    - "Bash(pnpm *)"
   deny:
     []

@@ -1,6 +1,6 @@
-name: mobile
-description: "Mobile React Native + Expo + TypeScript"
-category: mobile
+name: frontend-react-vite
+description: "Frontend React + Vite + TypeScript"
+category: frontend
 
 skills:
   - testing
@@ -10,16 +10,16 @@ skills:
   - observability
   - release
   - onboard
-  - perf-profile
-  - scaffold-react-native
-  - react-native-dev
+  - scaffold-react-vite
   - state-management
   - form-validation
   - accessibility
-  - auth-strategy
-  - file-uploads
+  - web-security
   - ci-cd-setup
-  - deploy-check
+  - cdn-setup
+  - file-uploads
+  - frontend-dev
+  - csp-headers
 
 rules:
   universal:

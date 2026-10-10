@@ -1,5 +1,5 @@
-name: android-native
-description: "Android native — Kotlin + Jetpack Compose + Material Design 3"
+name: mobile-ios-swift
+description: "iOS native — Swift + UIKit/SwiftUI + Apple HIG"
 category: mobile
 
 skills:
@@ -10,7 +10,7 @@ skills:
   - release
   - onboard
   - perf-profile
-  - android-native-dev
+  - ios-application-dev
   - state-management
   - form-validation
   - accessibility
@@ -29,8 +29,9 @@ agents:
 
 permissions:
   allow:
-    - "Bash(./gradlew *)"
-    - "Bash(gradle *)"
-    - "Bash(adb *)"
+    - "Bash(xcodebuild *)"
+    - "Bash(swift *)"
+    - "Bash(pod *)"
+    - "Bash(xcrun *)"
   deny:
     []

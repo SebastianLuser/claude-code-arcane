@@ -59,6 +59,48 @@ export function groupByCategory(
   return groups.filter((g) => g.profiles.length > 0);
 }
 
+/**
+ * Old profile name -> current name. A project installed before a rename keeps
+ * the old name in arcane-manifest.json, and `arcane update` reads it back from
+ * there, so dropping an entry breaks every install made before that rename.
+ */
+export const PROFILE_RENAMES: Readonly<Record<string, string>> = {
+  "backend-ts": "backend-typescript",
+  frontend: "frontend-react-vite",
+  mobile: "mobile-react-native",
+  flutter: "mobile-flutter",
+  "ios-native": "mobile-ios-swift",
+  "android-native": "mobile-android-kotlin",
+};
+
+export function canonicalProfileName(name: string): string {
+  return PROFILE_RENAMES[name] ?? name;
+}
+
+/** True when both names refer to the same profile, across a rename. */
+export function sameProfile(a: string, b: string): boolean {
+  return canonicalProfileName(a) === canonicalProfileName(b);
+}
+
+/**
+ * Finds the YAML for `name` in `profilesDir`. The name as given wins; then its
+ * current name; then any old name for it. The last case matters for `remove`,
+ * which reads the definitions of the installed version, where a profile may
+ * still live under its old name.
+ */
+export function resolveProfile(
+  profilesDir: string,
+  name: string,
+): { name: string; file: string } | null {
+  const canonical = canonicalProfileName(name);
+  const oldNames = Object.keys(PROFILE_RENAMES).filter((o) => PROFILE_RENAMES[o] === canonical);
+  for (const candidate of [name, canonical, ...oldNames]) {
+    const file = path.join(profilesDir, `${candidate}.yaml`);
+    if (fs.existsSync(file)) return { name: candidate, file };
+  }
+  return null;
+}
+
 export function listProfiles(profilesDir: string): ProfileDefinition[] {
   if (!fs.existsSync(profilesDir)) return [];
   return fs
@@ -92,13 +134,17 @@ export function mergeProfiles(
   const outputStyles: string[] = [];
 
   for (const name of namesToLoad) {
-    const filePath = path.join(profilesDir, `${name}.yaml`);
-    if (!fs.existsSync(filePath)) {
+    const resolved = resolveProfile(profilesDir, name);
+    if (!resolved) {
       console.warn(`  WARN: Profile '${name}.yaml' not found, skipping`);
       continue;
     }
-    const profile = parseProfile(filePath);
-    loaded.push(name);
+    if (resolved.name !== name && resolved.name === canonicalProfileName(name)) {
+      console.warn(`  NOTE: Profile '${name}' is now '${resolved.name}'`);
+    }
+    if (loaded.includes(resolved.name)) continue;
+    const profile = parseProfile(resolved.file);
+    loaded.push(resolved.name);
 
     for (const s of profile.skills) {
       if (!seenSkills.has(s)) {

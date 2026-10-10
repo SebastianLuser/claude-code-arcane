@@ -45,7 +45,7 @@ describe("detectStack", () => {
     write("settings.gradle");
     write("app/build.gradle");
     write("Podfile");
-    expect(detected()).toEqual(["flutter"]);
+    expect(detected()).toEqual(["mobile-flutter"]);
   });
 
   it("detects Go", () => {
@@ -74,17 +74,17 @@ describe("detectStack", () => {
     write("settings.gradle");
     write("app/build.gradle");
     write("Podfile");
-    expect(detected()).toEqual(["mobile"]);
+    expect(detected()).toEqual(["mobile-react-native"]);
   });
 
-  it("detects frontend for plain React", () => {
+  it("detects frontend-react-vite for plain React", () => {
     write("package.json", JSON.stringify({ dependencies: { react: "^18" } }));
-    expect(detected()).toEqual(["frontend"]);
+    expect(detected()).toEqual(["frontend-react-vite"]);
   });
 
-  it("detects backend-ts for server frameworks", () => {
+  it("detects backend-typescript for server frameworks", () => {
     write("package.json", JSON.stringify({ dependencies: { fastify: "^5" } }));
-    expect(detected()).toEqual(["backend-ts"]);
+    expect(detected()).toEqual(["backend-typescript"]);
   });
 
   it("detects .NET via .sln outside Unity", () => {
@@ -95,12 +95,12 @@ describe("detectStack", () => {
   it("detects native Android via gradle + app dir", () => {
     write("settings.gradle.kts");
     write("app/build.gradle.kts");
-    expect(detected()).toEqual(["android-native"]);
+    expect(detected()).toEqual(["mobile-android-kotlin"]);
   });
 
   it("detects iOS via Podfile", () => {
     write("Podfile");
-    expect(detected()).toEqual(["ios-native"]);
+    expect(detected()).toEqual(["mobile-ios-swift"]);
   });
 
   it("ignores malformed package.json", () => {
@@ -111,6 +111,6 @@ describe("detectStack", () => {
   it("can return multiple suggestions for a mixed repo", () => {
     write("go.mod", "module example.com/app");
     write("package.json", JSON.stringify({ dependencies: { react: "^18" } }));
-    expect(detected()).toEqual(expect.arrayContaining(["backend-go", "frontend"]));
+    expect(detected()).toEqual(expect.arrayContaining(["backend-go", "frontend-react-vite"]));
   });
 });
