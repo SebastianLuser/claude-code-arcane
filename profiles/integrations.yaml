@@ -1,11 +1,16 @@
 name: integrations
-description: "Integraciones externas — GitHub Projects, Slack, Postman"
+description: "Integraciones externas — GitHub Projects, Slack, Postman, Stripe, email templates, Microsoft 365, Snowflake, evaluación de stack"
 category: management
 
 skills:
   - gh-projects
   - slack
   - postman
+  - stripe-integration-expert
+  - email-template-builder
+  - ms365-tenant-manager
+  - snowflake-development
+  - tech-stack-evaluator
 
 rules:
   universal:

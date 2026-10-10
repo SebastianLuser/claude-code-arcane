@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
 import { readManifest } from "../manifest.js";
-import { parseProfile } from "../profiles.js";
+import { parseProfile, resolveProfile, sameProfile } from "../profiles.js";
 import {
   isGranular,
   parseAgentEntry,
@@ -149,34 +149,36 @@ function removeProfile(
     return { removed: false, skills: [], agents: [] };
   }
 
-  if (!manifest.profiles.includes(profileName)) {
+  // The manifest may hold a profile under the name it had when it was installed.
+  const installedName = manifest.profiles.find((p) => sameProfile(p, profileName));
+  if (!installedName) {
     console.warn(
       chalk.yellow(`  WARNING: Profile '${profileName}' is not installed.`),
     );
     return { removed: false, skills: [], agents: [] };
   }
 
-  const profilePath = path.join(root, "profiles", `${profileName}.yaml`);
-  if (!fs.existsSync(profilePath)) {
+  const resolved = resolveProfile(path.join(root, "profiles"), installedName);
+  if (!resolved) {
     console.warn(
-      chalk.yellow(`  WARNING: Profile '${profileName}.yaml' not found.`),
+      chalk.yellow(`  WARNING: Profile '${installedName}.yaml' not found.`),
     );
     return { removed: false, skills: [], agents: [] };
   }
 
-  const profile = parseProfile(profilePath);
+  const profile = parseProfile(resolved.file);
 
   const remainingProfiles = manifest.profiles.filter(
-    (p) => p !== profileName,
+    (p) => p !== installedName,
   );
   const sharedSkills = new Set<string>();
   const sharedAgents = new Set<string>();
   const sharedRules = new Set<string>();
 
   for (const rp of remainingProfiles) {
-    const rpPath = path.join(root, "profiles", `${rp}.yaml`);
-    if (!fs.existsSync(rpPath)) continue;
-    const rpDef = parseProfile(rpPath);
+    const rpResolved = resolveProfile(path.join(root, "profiles"), rp);
+    if (!rpResolved) continue;
+    const rpDef = parseProfile(rpResolved.file);
     rpDef.skills.forEach((s) => sharedSkills.add(s));
     rpDef.agents.forEach((a) => sharedAgents.add(a));
     rpDef.rules.universal.forEach((r) => sharedRules.add(r));

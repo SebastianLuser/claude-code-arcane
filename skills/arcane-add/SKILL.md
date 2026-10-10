@@ -27,7 +27,7 @@ Mismo criterio que el picker de `arcane install`: mostrar solo lo que **no** est
 elegir. No listar los 400 skills.
 
 1. Read `.claude/arcane-manifest.json` (`profiles`, `installed_skills`)
-2. List `profiles/*.yaml` from the source, skip `core.yaml` and the ones already in `profiles`
+2. List `profiles/*.yaml` from the source, skip `core.yaml`, the ones already in `profiles`, and bridge files (those with a `renamed_to` field: an old name kept for older CLIs). An installed old name counts as its `renamed_to` profile
 3. Print the remaining profiles grouped by their `category` field, in the order of
    `CATEGORY_ORDER` (Backend, Frontend & Design, Mobile, Gamedev, Platform & Quality,
    Project Management, Business, Personal, Utilities), each with its description

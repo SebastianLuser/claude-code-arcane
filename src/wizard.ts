@@ -62,7 +62,7 @@ export async function runInstallWizard(
   if (names.length === 0) {
     p.outro(
       chalk.dim(
-        "Nothing selected. Run again, or install directly: npx claude-code-arcane install backend-ts+testing",
+        "Nothing selected. Run again, or install directly: npx claude-code-arcane install backend-typescript+testing",
       ),
     );
     return null;

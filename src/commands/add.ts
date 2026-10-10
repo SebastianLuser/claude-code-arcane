@@ -1,7 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
-import { parseProfile, listProfiles, groupByCategory } from "../profiles.js";
+import {
+  parseProfile,
+  listProfiles,
+  groupByCategory,
+  resolveProfile,
+  sameProfile,
+  canonicalProfileName,
+} from "../profiles.js";
 import { listSkills } from "../skills-catalog.js";
 import { runAddWizard } from "../wizard.js";
 import { readManifest, updateManifestFields } from "../manifest.js";
@@ -40,14 +47,15 @@ export async function addCommand(items: string[] = []): Promise<void> {
   }
 
   if (items.length === 0) {
+    const installedProfiles = manifest.profiles.map(canonicalProfileName);
     if (!(process.stdin.isTTY && process.stdout.isTTY)) {
-      printCatalog(root, manifest.profiles, manifest.installed_skills);
+      printCatalog(root, installedProfiles, manifest.installed_skills);
       return;
     }
     const selected = await runAddWizard({
       profiles: listProfiles(path.join(root, "profiles")),
       skills: listSkills(path.join(root, "skills")),
-      installedProfiles: manifest.profiles,
+      installedProfiles,
       installedSkills: manifest.installed_skills,
     });
     if (!selected) return;
@@ -64,13 +72,14 @@ export async function addCommand(items: string[] = []): Promise<void> {
 
   for (const item of items) {
     if (item.startsWith("+")) {
-      const profileName = item.slice(1);
-      const profilePath = path.join(root, "profiles", `${profileName}.yaml`);
-      if (!fs.existsSync(profilePath)) {
-        console.error(chalk.red(`  Profile '${profileName}' not found`));
+      const requested = item.slice(1);
+      const resolved = resolveProfile(path.join(root, "profiles"), requested);
+      if (!resolved) {
+        console.error(chalk.red(`  Profile '${requested}' not found`));
         continue;
       }
-      const profile = parseProfile(profilePath);
+      const profileName = resolved.name;
+      const profile = parseProfile(resolved.file);
 
       for (const skill of profile.skills) {
         const result = addSkill(root, target, skill, manifest.installed_skills);
@@ -128,7 +137,7 @@ export async function addCommand(items: string[] = []): Promise<void> {
         mergePermissions(claudeDir, profile.permissions);
       }
 
-      if (!manifest.profiles.includes(profileName)) {
+      if (!manifest.profiles.some((p) => sameProfile(p, profileName))) {
         manifest.profiles.push(profileName);
         manifest.profile_command = manifest.profiles
           .filter((p) => p !== "core")

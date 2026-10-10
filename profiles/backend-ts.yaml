@@ -1,4 +1,6 @@
+# Bridge for CLIs released before this profile was renamed: they look it up as 'backend-ts'. Keep identical to backend-typescript.yaml.
 name: backend-ts
+renamed_to: backend-typescript
 description: "Backend TypeScript — Fastify, Prisma, Zod, API design, CI"
 category: backend
 
@@ -28,14 +30,6 @@ skills:
   - websocket-realtime-rooms
   - search-setup
   - ci-cd-setup
-  - agent-designer
-  - agent-workflow-designer
-  - email-template-builder
-  - mcp-server-builder
-  - ms365-tenant-manager
-  - snowflake-development
-  - stripe-integration-expert
-  - tech-stack-evaluator
 
 rules:
   universal:

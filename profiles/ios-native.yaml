@@ -1,4 +1,6 @@
+# Bridge for CLIs released before this profile was renamed: they look it up as 'ios-native'. Keep identical to mobile-ios-swift.yaml.
 name: ios-native
+renamed_to: mobile-ios-swift
 description: "iOS native — Swift + UIKit/SwiftUI + Apple HIG"
 category: mobile
 

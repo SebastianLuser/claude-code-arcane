@@ -1,5 +1,7 @@
 export interface ProfileDefinition {
   name: string;
+  /** Set on a bridge file kept under an old name: the profile it mirrors. */
+  renamed_to?: string;
   description: string;
   category: string;
   skills: string[];

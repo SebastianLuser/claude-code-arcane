@@ -1,4 +1,6 @@
+# Bridge for CLIs released before this profile was renamed: they look it up as 'mobile'. Keep identical to mobile-react-native.yaml.
 name: mobile
+renamed_to: mobile-react-native
 description: "Mobile React Native + Expo + TypeScript"
 category: mobile
 

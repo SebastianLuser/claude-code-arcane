@@ -1,4 +1,6 @@
+# Bridge for CLIs released before this profile was renamed: they look it up as 'frontend'. Keep identical to frontend-react-vite.yaml.
 name: frontend
+renamed_to: frontend-react-vite
 description: "Frontend React + Vite + TypeScript"
 category: frontend
 

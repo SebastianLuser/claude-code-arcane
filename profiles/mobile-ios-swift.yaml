@@ -1,0 +1,37 @@
+name: mobile-ios-swift
+description: "iOS native — Swift + UIKit/SwiftUI + Apple HIG"
+category: mobile
+
+skills:
+  - testing
+  - deps-audit
+  - env-sync
+  - observability
+  - release
+  - onboard
+  - perf-profile
+  - ios-application-dev
+  - state-management
+  - form-validation
+  - accessibility
+  - auth-strategy
+  - ci-cd-setup
+  - deploy-check
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  - engineering
+
+permissions:
+  allow:
+    - "Bash(xcodebuild *)"
+    - "Bash(swift *)"
+    - "Bash(pod *)"
+    - "Bash(xcrun *)"
+  deny:
+    []

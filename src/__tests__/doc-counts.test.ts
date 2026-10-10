@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { listProfiles } from "../profiles.js";
 
 /**
  * The counts printed in the docs drifted three times before this test existed:
@@ -139,5 +140,27 @@ describe("SKILLS-CATALOG section headers", () => {
     }
 
     expect(mismatches).toEqual([]);
+  });
+});
+
+describe("README profile table", () => {
+  // Twelve of these rows had drifted (agile claimed 10 skills and shipped 39)
+  // because nothing compared them with the YAML.
+  const rows = [...read("README.md").matchAll(/^\| `([a-z0-9-]+)` \|[^|]*\| (\d+) \|/gm)].map(
+    (m) => ({ name: m[1], count: Number(m[2]) }),
+  );
+  const profiles = listProfiles(path.join(repoRoot, "profiles"));
+
+  it("states each profile's real skill count", () => {
+    const wrong = rows
+      .map((row) => ({ row, profile: profiles.find((p) => p.name === row.name) }))
+      .filter(({ row, profile }) => profile && profile.skills.length !== row.count)
+      .map(({ row, profile }) => `${row.name}: README ${row.count}, profile ${profile!.skills.length}`);
+    expect(wrong).toEqual([]);
+  });
+
+  it("lists every installable profile", () => {
+    const listed = new Set(rows.map((r) => r.name));
+    expect(profiles.map((p) => p.name).filter((n) => !listed.has(n))).toEqual([]);
   });
 });

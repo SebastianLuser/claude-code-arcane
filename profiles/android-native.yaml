@@ -1,4 +1,6 @@
+# Bridge for CLIs released before this profile was renamed: they look it up as 'android-native'. Keep identical to mobile-android-kotlin.yaml.
 name: android-native
+renamed_to: mobile-android-kotlin
 description: "Android native — Kotlin + Jetpack Compose + Material Design 3"
 category: mobile
 

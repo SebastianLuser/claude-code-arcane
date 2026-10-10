@@ -20,7 +20,7 @@ A configuration harness installable via `npx`. Pick a **profile** that matches y
 cd ~/projects/my-app
 
 # Install a profile (no clone needed)
-npx claude-code-arcane install backend-ts+agile
+npx claude-code-arcane install backend-typescript+agile
 
 # Open Claude Code
 claude
@@ -38,7 +38,7 @@ explicitly first:
 
 ```bash
 npm install -g claude-code-arcane
-arcane install backend-ts+agile      # same as the npx line above
+arcane install backend-typescript+agile      # same as the npx line above
 ```
 
 ---
@@ -50,8 +50,8 @@ arcane install backend-ts+agile      # same as the npx line above
 Each profile is a YAML file that bundles skills, agents, rules, and permissions:
 
 ```yaml
-# profiles/backend-ts.yaml
-name: backend-ts
+# profiles/backend-typescript.yaml
+name: backend-typescript
 category: backend
 skills: [api-design, auth-strategy, jwt-strategy, ...]
 rules:
@@ -66,7 +66,7 @@ permissions:
 All profiles are equal — there is no "base vs addon" distinction. Combine as many as you need:
 
 ```bash
-npx claude-code-arcane install backend-ts+agile+testing
+npx claude-code-arcane install backend-typescript+agile+testing
 ```
 
 The installer merges all profiles, deduplicates skills, and installs only what's needed.
@@ -104,7 +104,7 @@ my-project/.claude/
 ### Install a profile
 
 ```bash
-npx claude-code-arcane install backend-ts+agile     # Install profile combination
+npx claude-code-arcane install backend-typescript+agile     # Install profile combination
 npx claude-code-arcane install                       # Show available profiles (interactive)
 npx claude-code-arcane install unity-dev --dry-run   # Preview without installing
 ```
@@ -184,12 +184,14 @@ Once installed, manage the installation from within a Claude Code session:
 
 All profiles combine freely with `+` — there is no required "base". Grouped by category:
 
+Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutter`, `ios-native` and `android-native` resolve to `backend-typescript`, `frontend-react-vite`, `mobile-react-native`, `mobile-flutter`, `mobile-ios-swift` and `mobile-android-kotlin`.
+
 ### Backend
 
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
-| `backend-ts` | Backend TypeScript — Fastify, Prisma, Zod, API design | 33 | engineering |
-| `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 19 | engineering |
+| `backend-typescript` | Backend TypeScript — Fastify, Prisma, Zod, API design | 25 | engineering |
+| `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 24 | engineering |
 | `backend-dotnet` | Backend .NET — ASP.NET Core, Vertical Slice/Clean, EF Core, JWT | 25 | engineering |
 | `backend-nestjs` | Backend NestJS — feature modules, DI, Prisma, JWT, microservices | 25 | engineering |
 | `backend-nextjs` | Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK | 22 | engineering |
@@ -198,48 +200,48 @@ All profiles combine freely with `+` — there is no required "base". Grouped by
 
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
-| `frontend` | React + Vite + TypeScript | 14 | engineering |
-| `design` | Figma, UX review, design system, handoff | 6 | product |
+| `frontend-react-vite` | React + Vite + TypeScript | 17 | engineering |
+| `design` | Figma, UX review, design system, handoff | 10 | product |
 
 ### Mobile
 
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
-| `mobile` | React Native + Expo + TypeScript | 12 | engineering |
-| `flutter` | Flutter + Dart cross-platform | 8 | engineering |
-| `android-native` | Kotlin + Jetpack Compose + Material Design 3 | 8 | engineering |
-| `ios-native` | Swift + UIKit/SwiftUI + Apple HIG | 8 | engineering |
+| `mobile-react-native` | React Native + Expo + TypeScript | 17 | engineering |
+| `mobile-flutter` | Flutter + Dart cross-platform | 15 | engineering |
+| `mobile-android-kotlin` | Kotlin + Jetpack Compose + Material Design 3 | 14 | engineering |
+| `mobile-ios-swift` | Swift + UIKit/SwiftUI + Apple HIG | 14 | engineering |
 
 ### Gamedev
 
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
-| `unity-dev` | Unity programmer — C#, architecture, performance, builds | 25 | game |
-| `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 17 | game |
+| `unity-dev` | Unity programmer — C#, architecture, performance, builds | 21 | game |
+| `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 18 | game |
 | `meshy` | 3D asset production with Meshy AI — credit-gated generation, single master + cheap derivatives, printability | 5 | — |
 | `blender` | Blender for game assets — tri budget and topology, materials with bake and color space, baked animation, validated export | 6 | — |
-| `unreal-dev` | Unreal Engine 5 programmer — C++, Blueprints, GAS, replication, rendering, packaging | 49 | game |
-| `visual-novel` | Visual novel developer — Ren'Py, narrative, branching | 17 | visualnovel, game |
+| `unreal-dev` | Unreal Engine 5 programmer — C++, Blueprints, GAS, replication, rendering, packaging | 50 | game |
+| `visual-novel` | Visual novel developer — Ren'Py, narrative, branching | 18 | visualnovel, game |
 | `audio` | Game audio — direction, composition, sound design, middleware, VO, QA | 13 | audio |
 
 ### Platform & Quality
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `infra` | Terraform, observability, secrets, rollback, K8s | 17 | devops |
+| `infra` | Terraform, observability, secrets, rollback, K8s | 24 | devops |
 | `database` | Indexing, migrations, seeding, replicas, optimization | 8 | — |
-| `security` | Audits, OWASP, secrets, backups | 5 | — |
+| `security` | Audits, OWASP, secrets, backups | 10 | — |
 | `testing` | Contract, performance, regression, flakiness | 11 | quality |
-| `ai` | LLM cost optimization, RAG, ML, data engineering | 7 | ai |
+| `ai` | LLM cost optimization, RAG, ML, data engineering, agent and MCP design | 10 | ai |
 
 ### Project Management
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `agile` | Sprints, standups, retros, estimates | 10 | management, product |
-| `jira` | Jira via REST API — issues, sprints, boards | 3 | — |
-| `clickup` | ClickUp via MCP — tasks, docs, time tracking | 3 | — |
-| `integrations` | GitHub Projects, Slack, Postman | 3 | integrations |
+| `agile` | Sprints, standups, retros, estimates | 39 | management, product |
+| `jira` | Jira via REST API — issues, sprints, boards | 1 | — |
+| `clickup` | ClickUp via MCP — tasks, docs, time tracking | 1 | — |
+| `integrations` | GitHub Projects, Slack, Postman, Stripe, email templates, Microsoft 365, Snowflake, stack evaluation | 8 | integrations |
 
 ### Business
 
@@ -249,7 +251,7 @@ All profiles combine freely with `+` — there is no required "base". Grouped by
 | `clevel` | C-suite advisors, board prep, strategic ops | 28 | clevel |
 | `finance` | Investment analysis, financial modeling, SaaS metrics | 3 | business |
 | `marketing` | Content, growth, SEO/CRO, strategy, analytics | 44 | marketing |
-| `ecommerce` | Commerce end-to-end agnóstico de lenguaje — data model, checkout, inventario, órdenes, pagos, promociones, shipping/tax, listings, analytics, feeds, storefront, suscripciones | 12 | ecommerce |
+| `ecommerce` | Commerce end-to-end agnóstico de lenguaje — data model, checkout, inventario, órdenes, pagos, promociones, shipping/tax, listings, analytics, feeds, storefront, suscripciones | 21 | ecommerce |
 | `regulatory` | ISO 13485, GDPR, FDA, SOC 2, ISMS, QMS, MDR | 13 | regulatory |
 
 ### Personal
@@ -264,7 +266,7 @@ All profiles combine freely with `+` — there is no required "base". Grouped by
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `docs` | PDF, PPTX, XLSX, DOCX, architecture decisions | 8 | — |
+| `docs` | PDF, PPTX, XLSX, DOCX, architecture decisions | 5 | — |
 | `self-improving` | Agent self-improvement and skill extraction | 2 | — |
 | `statusline` | Claude Code status bar (branch, division, session info) | 0 | — |
 
@@ -323,28 +325,28 @@ npx claude-code-arcane install unity-dev+unity-design+agile+clickup
 npx claude-code-arcane install backend-go+infra+agile+jira
 
 # Full-stack monorepo
-npx claude-code-arcane install backend-ts+frontend+testing+database
+npx claude-code-arcane install backend-typescript+frontend-react-vite+testing+database
 
 # Mobile app with CI/CD
-npx claude-code-arcane install mobile+agile+clickup+testing
+npx claude-code-arcane install mobile-react-native+agile+clickup+testing
 
 # Secure backend with docs
-npx claude-code-arcane install backend-ts+security+docs+database
+npx claude-code-arcane install backend-typescript+security+docs+database
 
 # AI/ML project with data pipelines
 npx claude-code-arcane install backend-go+ai+infra
 
 # SaaS with full marketing stack
-npx claude-code-arcane install backend-ts+marketing+business+finance
+npx claude-code-arcane install backend-typescript+marketing+business+finance
 
 # Regulated medical device
-npx claude-code-arcane install backend-ts+regulatory+security+testing
+npx claude-code-arcane install backend-typescript+regulatory+security+testing
 
 # Founder advisory setup
 npx claude-code-arcane install clevel+business+finance+marketing
 
 # With status bar
-npx claude-code-arcane install backend-ts+agile+statusline
+npx claude-code-arcane install backend-typescript+agile+statusline
 ```
 
 ---
@@ -353,7 +355,7 @@ npx claude-code-arcane install backend-ts+agile+statusline
 
 ```bash
 # Start with a profile
-npx claude-code-arcane install backend-ts
+npx claude-code-arcane install backend-typescript
 
 # Later, add testing and security
 npx claude-code-arcane add +testing +security
@@ -372,7 +374,7 @@ npx claude-code-arcane status
 
 # Start over
 npx claude-code-arcane clean --force
-npx claude-code-arcane install backend-ts+agile
+npx claude-code-arcane install backend-typescript+agile
 ```
 
 ---
@@ -385,7 +387,7 @@ Work on multiple features in parallel using git worktrees, each with its own Arc
 
 ```bash
 # Create worktree + install Arcane in one step
-npx claude-code-arcane worktree feat/new-api --profile backend-ts+agile
+npx claude-code-arcane worktree feat/new-api --profile backend-typescript+agile
 
 # Inherits profile from current installation
 npx claude-code-arcane worktree feat/new-api
@@ -410,7 +412,7 @@ When you run `npx claude-code-arcane install` inside a git worktree, Arcane auto
 
 ```bash
 # Manual: share from a specific installation
-npx claude-code-arcane install backend-ts --share-from /path/to/main/worktree
+npx claude-code-arcane install backend-typescript --share-from /path/to/main/worktree
 
 # Disable sharing
 npx claude-code-arcane worktree feat/api --no-share
@@ -433,7 +435,7 @@ npx claude-code-arcane worktree feat/api --no-share
 ```bash
 npx claude-code-arcane status
 # === Arcane Status ===
-#   Profiles:  backend-ts + agile
+#   Profiles:  backend-typescript + agile
 #   Worktree:  yes (main: /path/to/main/checkout)
 #   Shared:    hooks, docs (symlinked)
 #   ...

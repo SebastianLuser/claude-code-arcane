@@ -77,7 +77,7 @@ Después **rutear al trabajo técnico**, que ya existe en el repo:
 | Si el proyecto es | Seguí con |
 |---|---|
 | Historias y tickets | `/create-stories`, `/create-epics` |
-| Backend, frontend, mobile | El perfil técnico que corresponda (`+backend-ts`, `+frontend`, ...) |
+| Backend, frontend, mobile | El perfil técnico que corresponda (`+backend-typescript`, `+frontend-react-vite`, ...) |
 | Algo sin especificar del lado del cliente | `/product-discovery` antes de codear |
 | Documentar lo que ya existe | `/reverse-document` |
 
