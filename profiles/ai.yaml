@@ -10,6 +10,9 @@ skills:
   - senior-data-scientist
   - senior-ml-engineer
   - senior-prompt-engineer
+  - agent-designer
+  - agent-workflow-designer
+  - mcp-server-builder
 
 rules:
   universal:
