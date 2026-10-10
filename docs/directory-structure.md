@@ -111,7 +111,7 @@ En un git worktree, `hooks/` y `docs/` son symlinks al worktree principal; `skil
 - **`rules/`**: reglas para cualquier stack de software (backend, frontend, APIs, DBs, infra, apps LLM). Paths genéricos como `src/api/**` o `src/components/**`.
 - **`rules/gamedev/`**: reglas exclusivas de gamedev (frame budgets, shaders, IA de NPCs, GDDs, lore). Paths como `src/gameplay/**`, `assets/shaders/**` o `design/gdd/**`.
 
-El installer copia las dos al mismo `.claude/rules/`, sin subcarpeta. Por eso un nombre no puede repetirse entre las dos carpetas: el segundo archivo pisaría al primero. Hoy `ai-code.md` existe en las dos, y no choca solo porque ningún profile instala la versión universal.
+El installer copia las dos al mismo `.claude/rules/`, sin subcarpeta. Por eso un nombre no puede repetirse entre las dos carpetas: el segundo archivo pisaría al primero. La rule de apps LLM se llama `llm-code.md` justamente para no chocar con `gamedev/ai-code.md`, que es la de IA de NPCs.
 
 Cuando un proyecto es dual (por ejemplo web + juego), las dos familias aplican cada una por sus paths.
 

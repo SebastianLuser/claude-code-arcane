@@ -1,9 +1,9 @@
 ---
 paths:
-  - "src/ai/**"
+  - "src/**/ai/**"
+  - "src/**/llm/**"
+  - "src/**/agents/**"
   - "src/ml/**"
-  - "src/llm/**"
-  - "src/agents/**"
   - "src/inference/**"
   - "prompts/**"
   - "models/**"
@@ -12,7 +12,7 @@ paths:
 # AI / LLM / ML Code Rules
 
 Applies to software integrations with LLMs, ML inference, and AI agents — not NPC behavior in games
-(that rule lives in `rules/gamedev/ai-code.md`).
+(the gamedev profiles ship their own `ai-code` rule for that).
 
 ## Prompts & Templates
 
