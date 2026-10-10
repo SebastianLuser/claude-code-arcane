@@ -1,6 +1,9 @@
 ---
 name: worktree-isolation
 description: On-demand worktree isolation for the current directory. Regenerates per-worktree docker-compose overrides + .env.worktree so multiple Claude Code worktrees can run their stacks in parallel without port or container-name collisions, and inspects the current allocation. Use when (1) the SessionStart hook didn't fire (new project, hook not installed, fresh clone), (2) docker-compose.yml changed mid-session and overrides need regenerating, (3) the user wants to inspect which host ports this worktree is mapped to. Trigger phrases include "isolate worktree", "regenerate worktree ports", "show worktree ports", "what ports is this worktree using", "worktree didn't isolate", "fix port collision", "aislar worktree".
+argument-hint: "[apply | status]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash
 ---
 
 # Worktree Isolation — On-Demand

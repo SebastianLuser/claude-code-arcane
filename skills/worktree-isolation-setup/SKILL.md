@@ -1,6 +1,9 @@
 ---
 name: worktree-isolation-setup
 description: One-time per-repo setup that makes a project natively friendly to the worktree-isolation runtime. Refactors docker-compose port mappings + container_name to use ${VAR-default} substitutions, updates .gitignore, amends CLAUDE.md test commands, and ensures the global SessionStart hook + scripts are installed on the user's machine. Run once per repo. Trigger phrases include "setup worktree isolation in this project", "prepare repo for worktree isolation", "make this repo isolation-aware", "preparar repo para worktrees paralelos". DO NOT use mid-session for routine port regeneration — that is the `worktree-isolation` skill.
+argument-hint: ""
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, Edit
 ---
 
 # Worktree Isolation — Setup (one-time)
