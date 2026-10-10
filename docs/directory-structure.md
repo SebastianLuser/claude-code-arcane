@@ -1,31 +1,40 @@
 # Estructura de Directorios
 
+Hay dos layouts distintos y conviene no mezclarlos:
+
+- **El repo** (`claude-code-arcane/`): la fuente. Acá se edita el contenido y el instalador.
+- **Un proyecto instalado** (`<proyecto>/.claude/`): lo que `npx claude-code-arcane install <profile>` copia. Solo llega lo que algún profile lista.
+
+## El repo
+
 ```
-Claude-Code-Arcane/
-├── CLAUDE.md                          # Configuración maestra
-├── README.md                          # Documentación del repo
-├── pyproject.toml                     # Python package config
+claude-code-arcane/
+├── CLAUDE.md                          # Guía para trabajar en este repo
+├── README.md                          # Documentación pública
+├── CHANGELOG.md                       # Generado por semantic-release, no se edita a mano
+├── ATTRIBUTION.md                     # Origen del contenido adaptado de terceros
 ├── LICENSE
-├── .gitignore
+├── package.json                       # CLI npm: build (tsup), test (vitest), test:skills (Python)
+├── tsconfig.json
+├── vitest.config.ts                   # Aísla ARCANE_SOURCE y ARCANE_HOME para la suite
+├── .releaserc.json                    # semantic-release
 │
-├── arcane/                            # Python CLI (installer, profiles parser)
-│   ├── cli.py                         # Entry point: arcane install/list/clean
-│   ├── installer.py                   # Profile installer logic
-│   └── profiles.py                    # Profile parser & merger
+├── src/                               # Instalador TypeScript (único código con build y typecheck)
+│   ├── cli.ts                         # Entry point: arcane install/add/remove/update/...
+│   ├── commands/                      # Un archivo por subcomando
+│   ├── installer.ts                   # Copia contenido a .claude/ y genera settings.json
+│   ├── profiles.ts                    # Parser y merge de profiles/*.yaml
+│   ├── agent-entries.ts               # Entradas de agentes: división entera o agente suelto
+│   ├── content-source.ts, cache.ts    # Fuente del contenido: bundled / github / cache
+│   ├── manifest.ts, content-hash.ts   # arcane-manifest.json y hashes para update
+│   ├── registry.ts                    # ~/.arcane/installations.json
+│   ├── worktree.ts                    # Instalación en git worktrees
+│   ├── wizard.ts, detect.ts           # Wizard interactivo y auto-detección de stack
+│   └── __tests__/                     # Suite vitest, incluidos los invariantes de docs
 │
-├── profiles/                          # 27 profile definitions (.profile)
-│   ├── core.profile                   # Always included (21 skills, hooks, rules)
-│   ├── backend-go.profile             # Base: Go backend
-│   ├── backend-ts.profile             # Base: TypeScript backend
-│   ├── frontend.profile               # Base: React frontend
-│   ├── unity-dev.profile              # Base: Unity programmer
-│   ├── ai.profile                     # Add-on: AI/ML
-│   ├── clevel.profile                 # Add-on: C-suite advisory
-│   ├── business.profile               # Add-on: Business ops
-│   ├── marketing.profile              # Add-on: Marketing
-│   ├── finance.profile                # Add-on: Finance
-│   ├── regulatory.profile             # Add-on: Regulatory & compliance
-│   └── ...                            # agile, testing, infra, security, etc.
+├── profiles/                          # Profiles declarativos (.yaml); core.yaml siempre se carga
+│
+├── skills/                            # Un directorio por skill: SKILL.md + references/ + scripts/
 │
 ├── agents/                            # 115 agent definitions (root level)
 │   ├── ai/                            # 4 agents
@@ -46,116 +55,78 @@ Claude-Code-Arcane/
 │   ├── regulatory/                    # 3 agents
 │   └── visualnovel/                   # 6 agents
 │
-├── .claude/                           # Claude Code configuration
-│   ├── settings.json                  # Hooks, permissions, safety
-│   ├── settings.local.json            # User-specific overrides (gitignored)
-│   ├── statusline.sh                  # Status line bash script
-│   ├── setup-skill-junctions.bat      # Windows: create skill junctions
-│   ├── remove-skill-junctions.bat     # Windows: remove skill junctions
-│   │
-│   ├── skills-agile/                  # 35 agile/PM skills
-│   ├── skills-ai/                     # 7 AI/ML skills
-│   ├── skills-arcane/                 # 7 Arcane self-management skills
-│   ├── skills-backend/                # 45 backend skills
-│   ├── skills-business/               # 4 business skills
-│   ├── skills-clevel-advisors/        # 10 C-suite advisor skills
-│   ├── skills-clevel-operations/      # 18 C-suite operations skills
-│   ├── skills-design/                 # 9 design skills
-│   ├── skills-devops/                 # 17 DevOps/infra skills
-│   ├── skills-docs/                   # 13 documentation skills
-│   ├── skills-finance/                # 3 finance skills
-│   ├── skills-frontend/               # 9 frontend skills
-│   ├── skills-gamedev/                # 19 gamedev skills + _rules/ + _templates/
-│   ├── skills-git/                    # 21 git workflow skills
-│   ├── skills-integrations/           # 3 integration skills
-│   ├── skills-marketing-content/      # 8 content marketing skills
-│   ├── skills-marketing-growth/       # 10 growth marketing skills
-│   ├── skills-marketing-seo/          # 11 SEO/CRO skills
-│   ├── skills-marketing-strategy/     # 15 marketing strategy skills
-│   ├── skills-mobile/                 # 5 mobile skills
-│   ├── skills-regulatory/             # 13 regulatory/compliance skills
-│   ├── skills-release/                # 5 release skills
-│   ├── skills-security/               # 9 security skills
-│   ├── skills-testing/                # 13 testing skills
-│   │
-│   ├── hooks/                         # 14 lifecycle hooks
-│   │   ├── session-start.sh
-│   │   ├── session-stop.sh
-│   │   ├── detect-division.sh
-│   │   ├── detect-gaps.sh
-│   │   ├── validate-commit.sh
-│   │   ├── validate-push.sh
-│   │   ├── validate-secrets.sh
-│   │   ├── validate-assets.sh
-│   │   ├── validate-skill-change.sh
-│   │   ├── notify.sh
-│   │   ├── pre-compact.sh
-│   │   ├── post-compact.sh
-│   │   ├── log-agent.sh
-│   │   └── log-agent-stop.sh
-│   │
-│   ├── rules/                         # 9 path-scoped rules
-│   │   ├── backend-code.md
-│   │   ├── frontend-code.md
-│   │   ├── api-code.md
-│   │   ├── migration-code.md
-│   │   ├── infra-code.md
-│   │   ├── ai-code.md
-│   │   ├── data-files.md
-│   │   ├── test-standards.md
-│   │   └── prototype-code.md
-│   │
-│   └── docs/                          # Internal documentation
-│       ├── division-structure.md
-│       ├── agent-hierarchy.md
-│       ├── directory-structure.md      # This file
-│       ├── coding-standards.md
-│       ├── technical-preferences.md
-│       ├── coordination-rules.md
-│       ├── context-management.md
-│       ├── workflow-catalog.yaml
-│       ├── stack-registry.md
-│       └── templates/
+├── rules/                             # Rules universales (rules.universal en los profiles)
+│   └── gamedev/                       # Rules de gamedev (rules.gamedev en los profiles)
 │
-├── docs/                              # Public documentation
-│   ├── SKILLS-CATALOG.md              # Complete skill catalog
-│   └── USER-GUIDE.md                  # User guide
+├── hooks/                             # Scripts bash de lifecycle; statusline.sh incluido
+├── output-styles/                     # Output styles (arcane.md)
+├── templates/
+│   └── gamedev/                       # Plantillas de GDD y docs de juego
+├── docs/                              # Documentación; se copia entera a .claude/docs/
+│   ├── templates/                     # Plantillas de ADR, PRD, RFC, test plan, etc.
+│   ├── gates/                         # Gates de fase (software y gamedev)
+│   ├── gamedev/, software/            # coding-standards por dominio
+│   └── presentations/                 # Deck de Arcane y su script generador
 │
-├── tools/                             # Migration & wrapper scripts
-│   ├── arcane.sh                      # Legacy bash installer
-│   ├── arcane.bat                     # Windows wrapper
-│   └── migrate-*.sh                   # Migration tools
-│
-├── skills-selftest/                   # QA framework for skills/agents
+├── skills-selftest/                   # QA de skills y agentes (no se instala)
 │   ├── CLAUDE.md
-│   ├── catalog.yaml                   # Registry: 305 skills + 94 agents
-│   ├── quality-rubric.md
-│   ├── skills/[category]/             # Behavioral specs per skill
-│   ├── agents/[tier]/                 # Behavioral specs per agent
-│   ├── templates/
-│   └── results/                       # Test outputs (gitignored)
+│   ├── catalog.yaml                   # Registro de skills y agentes con su spec
+│   ├── quality-rubric.md              # Métricas por categoría
+│   ├── skills/<categoria>/            # Specs de comportamiento por skill
+│   ├── agents/<tier>/                 # Specs de comportamiento por agente
+│   └── templates/                     # Plantillas para specs nuevos
 │
-└── production/                        # Runtime state
-    └── session-state/
+├── tests/                             # Specs Python de los scripts de skills (npm run test:skills)
+├── scripts/                           # Utilidades de mantenimiento del repo
+├── .github/workflows/                 # ci.yml (vitest, typecheck, specs Python) y release.yml (semantic-release)
+└── .claude/                           # La instalación de Arcane que usa este mismo repo
 ```
 
-## Rules Split Policy
+## Un proyecto instalado
 
-- **`.claude/rules/`** — reglas universales que aplican a cualquier stack software (backend APIs, frontends web/mobile, DBs, infra, LLM apps). Usan paths genéricos (`src/api/**`, `src/components/**`, `migrations/**`).
-- **`.claude/rules/gamedev/`** — reglas exclusivas de gamedev (frame budgets, shaders, NPC AI, GDDs, lore). Usan paths gamedev (`src/gameplay/**`, `assets/shaders/**`, `design/gdd/**`, `design/narrative/**`).
+```
+<proyecto>/
+├── .claude/
+│   ├── settings.json                  # Generado: permisos, hooks y statusline
+│   ├── arcane-manifest.json           # Profiles instalados y content_hashes de cada archivo
+│   ├── skills/<skill>/                # Los skills de los profiles elegidos, con sus references/ y scripts/
+│   │   └── _templates/                # templates/gamedev/, solo si algún profile trae rules de gamedev
+│   ├── agents/<division>/             # Divisiones enteras o agentes sueltos, según el profile
+│   ├── rules/                         # Universales y de gamedev juntas, en un solo nivel
+│   ├── hooks/                         # Todos los hooks de hooks/ salvo statusline.sh
+│   ├── statusline.sh                  # Solo con el profile statusline
+│   ├── output-styles/                 # Solo si algún profile declara output_styles
+│   ├── docs/                          # Copia de docs/
+│   └── .arcane-trash/                 # Lo que arcane update saca; nunca se borra con rm
+├── .claude.bak/                       # Backup de .claude/ antes de instalar
+└── production/session-state/          # Estado de sesión que escriben los hooks
+```
 
-Cuando un proyecto es dual (ej. web + game), ambos sets de rules aplican por sus paths scoped.
+Fuera del proyecto, `~/.arcane/` guarda el registro de instalaciones (`installations.json`) y el contenido descargado de GitHub (`cache/<version>/`). `ARCANE_HOME` lo desvía.
 
-## Hook Events Wiring
+En un git worktree, `hooks/` y `docs/` son symlinks al worktree principal; `skills/`, `agents/` y `rules/` se copian para que puedan divergir por rama.
 
-Ver `settings.json`. Los eventos wireados:
+## Rules: dos carpetas en el repo, una en el proyecto
+
+- **`rules/`**: reglas para cualquier stack de software (backend, frontend, APIs, DBs, infra, apps LLM). Paths genéricos como `src/api/**` o `src/components/**`.
+- **`rules/gamedev/`**: reglas exclusivas de gamedev (frame budgets, shaders, IA de NPCs, GDDs, lore). Paths como `src/gameplay/**`, `assets/shaders/**` o `design/gdd/**`.
+
+El installer copia las dos al mismo `.claude/rules/`, sin subcarpeta. Por eso un nombre no puede repetirse entre las dos carpetas: el segundo archivo pisaría al primero. Hoy `ai-code.md` existe en las dos, y no choca solo porque ningún profile instala la versión universal.
+
+Cuando un proyecto es dual (por ejemplo web + juego), las dos familias aplican cada una por sus paths.
+
+## Hooks: cómo se cablean
+
+Los eventos los define `src/installer.ts` al generar `settings.json`, no los profiles. Todo proyecto instalado recibe estos:
 
 | Evento | Hooks |
 |--------|-------|
-| SessionStart | session-start.sh → detect-division.sh → detect-gaps.sh |
-| PreToolUse (Bash) | validate-commit.sh, validate-push.sh, validate-secrets.sh |
-| PostToolUse (Write/Edit) | validate-assets.sh, validate-skill-change.sh |
-| Notification | notify.sh |
-| PreCompact / PostCompact | pre-compact.sh / post-compact.sh |
-| Stop | session-stop.sh |
-| SubagentStart / SubagentStop | log-agent.sh / log-agent-stop.sh |
+| SessionStart | `session-start.sh` → `detect-division.sh` → `detect-unreal.sh` → `detect-gaps.sh` → `check-update.sh` |
+| PreToolUse (`Bash`) | `validate-commit.sh`, `validate-push.sh`, `validate-secrets.sh` |
+| PostToolUse (`Write\|Edit`) | `validate-assets.sh`, `validate-skill-change.sh` |
+| Notification | `notify.sh` |
+| PreCompact / PostCompact | `pre-compact.sh` / `post-compact.sh` |
+| Stop | `session-stop.sh` |
+| SubagentStart / SubagentStop | `log-agent.sh` / `log-agent-stop.sh` |
+
+La statusline (`statusline.sh`) se configura aparte, solo con el profile `statusline`.
