@@ -1,6 +1,6 @@
 ### Standalone HTML Complete Shader Template (Must Be Strictly Followed)
 
-**IMPORTANT: The following template can be copied directly; every line must be strictly followed**:
+**The following template can be copied directly; every line must be strictly followed**:
 
 **Vertex Shader** (common to all shaders):
 ```glsl
@@ -16,13 +16,13 @@ void main() {
 #version 300 es
 precision highp float;
 
-// IMPORTANT: Critical: uniforms must be declared; ShaderToy's iTime/iResolution etc. are global variables
+// uniforms must be declared; ShaderToy's iTime/iResolution etc. are global variables
 uniform float iTime;
 uniform vec2 iResolution;
 uniform int iFrame;
 uniform vec4 iMouse;
 
-// IMPORTANT: Critical: mainImage parameters need manual extraction
+// mainImage parameters need manual extraction
 // ShaderToy: void mainImage(out vec4 fragColor, in vec2 fragCoord)
 // Adapted to:
 out vec4 fragColor;
@@ -30,7 +30,7 @@ void main() {
     vec2 fragCoord = gl_FragCoord.xy;
     vec2 uv = fragCoord / iResolution;
 
-    // IMPORTANT: Critical: texture2D → texture
+    // texture2D → texture
     vec4 prev = texture(iChannel0, uv);
 
     // ... particle physics logic ...
@@ -56,7 +56,7 @@ void main() {
     vec2 fragCoord = gl_FragCoord.xy;
     vec2 uv = fragCoord / iResolution;
 
-    // IMPORTANT: Critical: texture2D → texture, mainImage → standard main
+    // texture2D → texture, mainImage → standard main
     vec4 col = texture(iChannel0, uv);
 
     // Rendering logic
@@ -66,7 +66,7 @@ void main() {
 }
 ```
 
-**IMPORTANT: Common GLSL ES 3.00 Errors** (must be avoided):
+**Common GLSL ES 3.00 Errors** (must be avoided):
 1. **#version must be on the first line** - Any comments/blank lines will cause "version directive must occur on the first line" error
 2. **in/out qualifiers** - WebGL1's attribute/varying must be changed to in/out in ES3
 3. **texture function** - ES3 uses `texture(sampler, uv)`, not `texture2D(sampler, uv)`
@@ -74,7 +74,7 @@ void main() {
 
 ## Standalone HTML Multi-Channel Framebuffer Implementation
 
-**IMPORTANT: Multi-Channel Rendering Pipeline Core Pitfalls**: ShaderToy code requires manual Framebuffer rendering pipeline implementation. The following template demonstrates the correct approach:
+**Multi-Channel Rendering Pipeline Core Pitfalls**: ShaderToy code requires manual Framebuffer rendering pipeline implementation. The following template demonstrates the correct approach:
 
 ```javascript
 // Correct multi-channel Framebuffer creation
@@ -91,7 +91,7 @@ for (let i = 0; i < NUM_BUFFERS; i++) {
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
 
-    // IMPORTANT: Critical: Must use UNSIGNED_BYTE format without EXT_color_buffer_float extension!
+    // Must use UNSIGNED_BYTE format without EXT_color_buffer_float extension!
     // RGBA16F/RGBA32F require the extension, otherwise GL_INVALID_OPERATION
     // Float textures need EXT_color_buffer_float; RGBA16F supports HDR data
     if (ext) {
@@ -100,14 +100,14 @@ for (let i = 0; i < NUM_BUFFERS; i++) {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     }
 
-    // IMPORTANT: Critical: Texture parameters must be set, otherwise GL_INVALID_FRAMEBUFFER
-    // IMPORTANT: Float textures use NEAREST, or require OES_texture_float_linear extension for LINEAR
-    // IMPORTANT: Critical: Float textures must use CLAMP_TO_EDGE wrap mode; REPEAT is not supported for float textures
-    // IMPORTANT: Critical: Must fall back to UNSIGNED_BYTE format without EXT_color_buffer_float extension
+    // Texture parameters must be set, otherwise GL_INVALID_FRAMEBUFFER
+    // Float textures use NEAREST, or require OES_texture_float_linear extension for LINEAR
+    // Float textures must use CLAMP_TO_EDGE wrap mode; REPEAT is not supported for float textures
+    // Must fall back to UNSIGNED_BYTE format without EXT_color_buffer_float extension
     const filterMode = (ext && floatLinear) ? gl.LINEAR : gl.NEAREST;
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filterMode);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filterMode);
-    // IMPORTANT: Must use CLAMP_TO_EDGE: float textures do not support REPEAT
+    // Must use CLAMP_TO_EDGE: float textures do not support REPEAT
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
@@ -115,7 +115,7 @@ for (let i = 0; i < NUM_BUFFERS; i++) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
 
-    // IMPORTANT: Critical: Check Framebuffer completeness
+    // Check Framebuffer completeness
     const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
     if (status !== gl.FRAMEBUFFER_COMPLETE) {
         console.error("Framebuffer incomplete:", status);
@@ -138,7 +138,7 @@ function render() {
     // Execute shader rendering
 
     // 2. Swap Buffers (simulate self-feedback)
-    // IMPORTANT: Critical: Must swap textures for next frame reading; FBO handles remain unchanged
+    // Must swap textures for next frame reading; FBO handles remain unchanged
     [textures[0], textures[1]] = [textures[1], textures[0]];
 
     // 3. Render to screen
@@ -150,7 +150,7 @@ function render() {
 }
 ```
 
-**IMPORTANT: Common Errors** (JavaScript/WebGL side):
+**Common Errors** (JavaScript/WebGL side):
 1. **Missing texture parameters** - Must set `TEXTURE_MIN_FILTER`, `TEXTURE_MAG_FILTER`, `TEXTURE_WRAP_S/T`
 2. **Missing Framebuffer completeness check** - `gl.checkFramebufferStatus()` must return `FRAMEBUFFER_COMPLETE` before use
 3. **Float texture extension** - `gl.RGBA16F` requires `EXT_color_buffer_float` extension, otherwise fall back to `gl.UNSIGNED_BYTE`
@@ -620,13 +620,13 @@ for (int i = 0; i < NUM_SCALES; i++) {
 
 ### Variant 6: Particle System (Position-Velocity Storage)
 
-**IMPORTANT: Particle System Implementation Key**: Particle state is stored in texture pixels, one particle per pixel. Rendering must iterate over the particle texture for sampling.
+**Particle System Implementation Key**: Particle state is stored in texture pixels, one particle per pixel. Rendering must iterate over the particle texture for sampling.
 
 **Buffer A (Particle Physics Simulation)**:
 ```glsl
 // Each texture pixel stores one particle: xy=position, zw=velocity
 
-// IMPORTANT: Critical: hash function must return vec2! Returning float causes type mismatch errors
+// hash function must return vec2! Returning float causes type mismatch errors
 vec2 hash2(vec2 p) {
     return fract(sin(mat2(127.1, 311.7, 269.5, 183.3) * p) * 43758.5453);
 }
@@ -638,10 +638,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 pos = prev.xy;
     vec2 vel = prev.zw;
 
-    // IMPORTANT: Initialization guard: use integer comparison + pixel-coordinate-based random (avoids particle overlap when time is too small)
+    // Initialization guard: use integer comparison + pixel-coordinate-based random (avoids particle overlap when time is too small)
     if (iFrame < 3) {
         // Use fragCoord (pixel coordinates) to ensure each particle has a unique position, independent of time
-        // IMPORTANT: Critical: hash2 returns vec2, assign directly to pos/vel
+        // hash2 returns vec2, assign directly to pos/vel
         pos = hash2(fragCoord * 0.01 + vec2(1.7, 9.3));
         vel = (hash2(fragCoord * 0.01 + vec2(5.3, 2.8)) - 0.5) * 0.02;
         fragColor = vec4(pos, vel);
@@ -676,7 +676,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     // Iterate over particle texture for sampling (performance-sensitive, balance sample count)
     float glow = 0.0;
-    for (float y = 0.0; y < 1.0; y += 0.02) {  // IMPORTANT: Step size determines sampling density
+    for (float y = 0.0; y < 1.0; y += 0.02) {  // Step size determines sampling density
         for (float x = 0.0; x < 1.0; x += 0.02) {
             vec4 particle = texture(iChannel0, vec2(x, y));
             vec2 pPos = particle.xy;
@@ -712,7 +712,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 // Buffer B: Density accumulation (reads Buffer A) - uses FBO 2/3 ping-pong
 // Image: Final rendering (reads Buffer A + Buffer B)
 
-// IMPORTANT: Critical: Must use 2 FBOs for ping-pong! Single FBO + texture swap causes
+// Must use 2 FBOs for ping-pong! Single FBO + texture swap causes
 // "Feedback loop formed between Framebuffer and active Texture" error
 const buffers = [null, null, null, null];  // [A_FBO0, A_FBO1, B_FBO0, B_FBO1]
 const textures = [null, null, null, null];  // [A_tex0, A_tex1, B_tex0, B_tex1]
@@ -741,7 +741,7 @@ function createBuffers() {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 }
 
-// IMPORTANT: Critical: Initialization pre-rendering - must execute before the first frame!
+// Initialization pre-rendering - must execute before the first frame!
 // Empty textures cause particle initialization failure (reading 0,0,0,0 makes all particles overlap)
 let aReadIdx = 0;  // Current read FBO index (0 or 1)
 let bReadIdx = 0;  // Buffer B current read FBO index (0 or 1)
@@ -893,7 +893,7 @@ function render() {
 }
 ```
 
-**IMPORTANT: Key Points**:
+**Key Points**:
 - **Must use 2 FBOs for ping-pong**: Each Buffer needs two independent FBOs (read FBO + write FBO); a single FBO + texture swap causes "Feedback loop" error
 - Use FBO index switching (not texture swapping): bind target FBO when writing, bind source texture when reading
 - Image pass binds the latest Buffer results (obtained via read index)

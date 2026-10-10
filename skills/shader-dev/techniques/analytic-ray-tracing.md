@@ -193,7 +193,7 @@ vec3 shade(vec3 pos, vec3 normal, vec3 rd, vec3 albedo) {
 }
 ```
 
-> **IMPORTANT: Critical pitfall**: `d.xy` must be passed as distBound, and `d.y` must be updated each time a closer intersection is found! If the deployed code passes the original `dist` directly without updating, the intersection logic will fail (all object distance tests become invalid), resulting in a completely black screen.
+> **Critical pitfall**: `d.xy` must be passed as distBound, and `d.y` must be updated each time a closer intersection is found! If the deployed code passes the original `dist` directly without updating, the intersection logic will fail (all object distance tests become invalid), resulting in a completely black screen.
 
 ```glsl
 #define MAX_BOUNCES 4
@@ -229,7 +229,7 @@ vec3 radiance(vec3 ro, vec3 rd) {
 
 Runs directly on ShaderToy, includes sphere, plane, and box primitives with reflection and Blinn-Phong shading.
 
-> **IMPORTANT: Must follow**: All intersection function calls must use `d.xy` as the `distBound` parameter, and update `d.y` after each closer intersection is found. Incorrect usage: `iSphere(ro, rd, dist, ...)` (always using the original dist). Correct usage: `iSphere(ro, rd, d.xy, ...)` followed by `if (t < d.y) { d.y = t; ... }` to update.
+> **Must follow**: All intersection function calls must use `d.xy` as the `distBound` parameter, and update `d.y` after each closer intersection is found. Incorrect usage: `iSphere(ro, rd, dist, ...)` (always using the original dist). Correct usage: `iSphere(ro, rd, d.xy, ...)` followed by `if (t < d.y) { d.y = t; ... }` to update.
 
 ```glsl
 // Analytic Ray Tracing - Complete ShaderToy Template

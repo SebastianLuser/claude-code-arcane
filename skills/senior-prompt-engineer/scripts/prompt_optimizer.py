@@ -3,7 +3,7 @@
 Prompt Optimizer - Static analysis tool for prompt engineering
 
 Features:
-- Token estimation (GPT-4/Claude approximation)
+- Approximate token count (characters / 4, not a real tokenizer)
 - Prompt structure analysis
 - Clarity scoring
 - Few-shot example extraction and management
@@ -11,7 +11,7 @@ Features:
 
 Usage:
     python prompt_optimizer.py prompt.txt --analyze
-    python prompt_optimizer.py prompt.txt --tokens --model gpt-4
+    python prompt_optimizer.py prompt.txt --tokens
     python prompt_optimizer.py prompt.txt --optimize --output optimized.txt
     python prompt_optimizer.py prompt.txt --extract-examples --output examples.json
 """
@@ -25,32 +25,15 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, asdict
 
 
-# Token estimation ratios (chars per token approximation)
-TOKEN_RATIOS = {
-    'gpt-4': 4.0,
-    'gpt-3.5': 4.0,
-    'claude': 3.5,
-    'default': 4.0
-}
-
-# Cost per 1K tokens (input)
-COST_PER_1K = {
-    'gpt-4': 0.03,
-    'gpt-4-turbo': 0.01,
-    'gpt-3.5-turbo': 0.0005,
-    'claude-3-opus': 0.015,
-    'claude-3-sonnet': 0.003,
-    'claude-3-haiku': 0.00025,
-    'default': 0.01
-}
+# Rough characters-per-token ratio. Real tokenizers differ by model and by text, so
+# every count here is an estimate; use the provider's token-counting API for exact numbers.
+CHARS_PER_TOKEN = 4.0
 
 
 @dataclass
 class PromptAnalysis:
     """Results of prompt analysis"""
     token_count: int
-    estimated_cost: float
-    model: str
     clarity_score: int
     structure_score: int
     issues: List[Dict[str, str]]
@@ -71,16 +54,9 @@ class FewShotExample:
     index: int
 
 
-def estimate_tokens(text: str, model: str = 'default') -> int:
-    """Estimate token count based on character ratio"""
-    ratio = TOKEN_RATIOS.get(model, TOKEN_RATIOS['default'])
-    return int(len(text) / ratio)
-
-
-def estimate_cost(token_count: int, model: str = 'default') -> float:
-    """Estimate cost based on token count"""
-    cost_per_1k = COST_PER_1K.get(model, COST_PER_1K['default'])
-    return round((token_count / 1000) * cost_per_1k, 6)
+def estimate_tokens(text: str) -> int:
+    """Approximate token count from the character count"""
+    return int(len(text) / CHARS_PER_TOKEN)
 
 
 def find_ambiguous_instructions(text: str) -> List[Dict[str, str]]:
@@ -89,11 +65,9 @@ def find_ambiguous_instructions(text: str) -> List[Dict[str, str]]:
 
     # Vague verbs that need specificity
     vague_patterns = [
-        (r'\b(analyze|process|handle|deal with)\b', 'Vague verb - specify the exact action'),
         (r'\b(good|nice|appropriate|suitable)\b', 'Subjective term - define specific criteria'),
         (r'\b(etc\.|and so on|and more)\b', 'Open-ended list - enumerate all items explicitly'),
         (r'\b(if needed|as necessary|when appropriate)\b', 'Conditional without criteria - specify when'),
-        (r'\b(some|several|many|few|various)\b', 'Vague quantity - use specific numbers'),
     ]
 
     lines = text.split('\n')
@@ -155,7 +129,7 @@ def check_output_format(text: str) -> Tuple[bool, List[str]]:
     has_format = any(re.search(p, text, re.IGNORECASE) for p in format_indicators)
 
     if not has_format:
-        suggestions.append('Add explicit output format specification (e.g., "Respond in JSON with keys: ...")')
+        suggestions.append('State the expected output format (structure, length, what to include)')
 
     return has_format, suggestions
 
@@ -277,7 +251,7 @@ def generate_suggestions(analysis: PromptAnalysis) -> List[str]:
     suggestions = []
 
     if not analysis.has_output_format:
-        suggestions.append('Add explicit output format: "Respond in JSON with keys: ..."')
+        suggestions.append('State the output format. If code will parse the response as JSON, enforce it with structured outputs instead of describing it in the prompt')
 
     if analysis.example_count == 0:
         suggestions.append('Consider adding 2-3 few-shot examples for consistent outputs')
@@ -289,22 +263,14 @@ def generate_suggestions(analysis: PromptAnalysis) -> List[str]:
     if analysis.clarity_score < 70:
         suggestions.append('Improve clarity: replace vague terms with specific instructions')
 
-    if analysis.token_count > 2000:
-        suggestions.append(f'Prompt is {analysis.token_count} tokens - consider condensing for cost efficiency')
-
-    # Check for role prompting
-    if not re.search(r'you are|act as|as a\s+\w+', analysis.sections[0].get('content', [''])[0] if analysis.sections else '', re.IGNORECASE):
-        suggestions.append('Consider adding role context: "You are an expert..."')
-
     return suggestions
 
 
-def analyze_prompt(text: str, model: str = 'gpt-4') -> PromptAnalysis:
+def analyze_prompt(text: str) -> PromptAnalysis:
     """Perform comprehensive prompt analysis"""
 
     # Basic metrics
-    token_count = estimate_tokens(text, model)
-    cost = estimate_cost(token_count, model)
+    token_count = estimate_tokens(text)
     word_count = len(text.split())
     line_count = len(text.split('\n'))
 
@@ -324,8 +290,6 @@ def analyze_prompt(text: str, model: str = 'gpt-4') -> PromptAnalysis:
 
     analysis = PromptAnalysis(
         token_count=token_count,
-        estimated_cost=cost,
-        model=model,
         clarity_score=clarity_score,
         structure_score=structure_score,
         issues=all_issues,
@@ -367,8 +331,7 @@ def format_report(analysis: PromptAnalysis) -> str:
     report.append("")
 
     report.append("📊 METRICS")
-    report.append(f"  Token count:     {analysis.token_count:,}")
-    report.append(f"  Estimated cost:  ${analysis.estimated_cost:.4f} ({analysis.model})")
+    report.append(f"  Tokens (approx): {analysis.token_count:,}")
     report.append(f"  Word count:      {analysis.word_count:,}")
     report.append(f"  Line count:      {analysis.line_count}")
     report.append("")
@@ -411,13 +374,16 @@ def format_report(analysis: PromptAnalysis) -> str:
 
 
 def main():
+    # The report uses emoji; a Windows console defaults to cp1252 and cannot print them.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(
         description="Prompt Optimizer - Analyze and optimize prompts",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   %(prog)s prompt.txt --analyze
-  %(prog)s prompt.txt --tokens --model claude-3-sonnet
+  %(prog)s prompt.txt --tokens
   %(prog)s prompt.txt --optimize --output optimized.txt
   %(prog)s prompt.txt --extract-examples --output examples.json
         """
@@ -428,9 +394,6 @@ Examples:
     parser.add_argument('--tokens', '-t', action='store_true', help='Count tokens only')
     parser.add_argument('--optimize', '-O', action='store_true', help='Generate optimized version')
     parser.add_argument('--extract-examples', '-e', action='store_true', help='Extract few-shot examples')
-    parser.add_argument('--model', '-m', default='gpt-4',
-                       choices=['gpt-4', 'gpt-4-turbo', 'gpt-3.5-turbo', 'claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku'],
-                       help='Model for token/cost estimation')
     parser.add_argument('--output', '-o', help='Output file path')
     parser.add_argument('--json', '-j', action='store_true', help='Output as JSON')
     parser.add_argument('--compare', '-c', help='Compare with baseline analysis JSON')
@@ -447,17 +410,11 @@ Examples:
 
     # Tokens only
     if args.tokens:
-        token_count = estimate_tokens(text, args.model)
-        cost = estimate_cost(token_count, args.model)
+        token_count = estimate_tokens(text)
         if args.json:
-            print(json.dumps({
-                'tokens': token_count,
-                'cost': cost,
-                'model': args.model
-            }, indent=2))
+            print(json.dumps({'tokens_approx': token_count}, indent=2))
         else:
-            print(f"Tokens: {token_count:,}")
-            print(f"Estimated cost: ${cost:.4f} ({args.model})")
+            print(f"Tokens (approx): {token_count:,}")
         sys.exit(0)
 
     # Extract examples
@@ -481,8 +438,8 @@ Examples:
             print(f"Optimized prompt written to {args.output}")
 
             # Show comparison
-            orig_tokens = estimate_tokens(text, args.model)
-            new_tokens = estimate_tokens(optimized, args.model)
+            orig_tokens = estimate_tokens(text)
+            new_tokens = estimate_tokens(optimized)
             saved = orig_tokens - new_tokens
             print(f"Tokens: {orig_tokens:,} -> {new_tokens:,} (saved {saved:,})")
         else:
@@ -490,7 +447,7 @@ Examples:
         sys.exit(0)
 
     # Default: full analysis
-    analysis = analyze_prompt(text, args.model)
+    analysis = analyze_prompt(text)
 
     # Compare with baseline
     if args.compare:

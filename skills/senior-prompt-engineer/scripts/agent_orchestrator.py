@@ -55,7 +55,7 @@ class AgentConfig:
     max_iterations: int = 10
     system_prompt: str = ""
     temperature: float = 0.7
-    model: str = "gpt-4"
+    model: str = ""
 
 
 @dataclass
@@ -177,7 +177,7 @@ def load_config(path: Path) -> AgentConfig:
         max_iterations=int(data.get('max_iterations', 10)),
         system_prompt=data.get('system_prompt', ''),
         temperature=float(data.get('temperature', 0.7)),
-        model=data.get('model', 'gpt-4')
+        model=data.get('model', '')
     )
 
 
@@ -369,44 +369,39 @@ def generate_mermaid_diagram(config: AgentConfig) -> str:
     return '\n'.join(lines)
 
 
-def estimate_cost(config: AgentConfig, runs: int = 100) -> Dict[str, Any]:
-    """Estimate token costs for agent runs"""
+def estimate_cost(config: AgentConfig, runs: int = 100,
+                  price_in: Optional[float] = None, price_out: Optional[float] = None) -> Dict[str, Any]:
+    """Estimate tokens per run; dollars only when the caller supplies current prices.
+
+    Prices are USD per million tokens. They are not built in because provider prices
+    change and a stale table gives confidently wrong numbers.
+    """
     validation = validate_agent(config)
     min_tokens, max_tokens = validation.estimated_tokens_per_run
 
-    # Cost per 1K tokens
-    costs = {
-        'gpt-4': {'input': 0.03, 'output': 0.06},
-        'gpt-4-turbo': {'input': 0.01, 'output': 0.03},
-        'gpt-3.5-turbo': {'input': 0.0005, 'output': 0.0015},
-        'claude-3-opus': {'input': 0.015, 'output': 0.075},
-        'claude-3-sonnet': {'input': 0.003, 'output': 0.015},
-    }
+    def dollars(tokens: float) -> Optional[float]:
+        if price_in is None or price_out is None:
+            return None
+        # Assume 60% input, 40% output
+        return (tokens * 0.6 * price_in + tokens * 0.4 * price_out) / 1_000_000
 
-    model_cost = costs.get(config.model, costs['gpt-4'])
+    per_run_min, per_run_max = dollars(min_tokens), dollars(max_tokens)
+    monthly_runs = runs * 30
 
-    # Assume 60% input, 40% output
-    input_tokens = min_tokens * 0.6
-    output_tokens = min_tokens * 0.4
-
-    cost_per_run_min = (input_tokens / 1000 * model_cost['input'] +
-                        output_tokens / 1000 * model_cost['output'])
-
-    input_tokens_max = max_tokens * 0.6
-    output_tokens_max = max_tokens * 0.4
-    cost_per_run_max = (input_tokens_max / 1000 * model_cost['input'] +
-                        output_tokens_max / 1000 * model_cost['output'])
-
-    return {
-        'model': config.model,
+    result = {
+        'model': config.model or None,
         'tokens_per_run': {'min': min_tokens, 'max': max_tokens},
-        'cost_per_run': {'min': round(cost_per_run_min, 4), 'max': round(cost_per_run_max, 4)},
         'estimated_monthly': {
-            'runs': runs * 30,
-            'cost_min': round(cost_per_run_min * runs * 30, 2),
-            'cost_max': round(cost_per_run_max * runs * 30, 2)
-        }
+            'runs': monthly_runs,
+            'tokens_min': min_tokens * monthly_runs,
+            'tokens_max': max_tokens * monthly_runs,
+        },
     }
+    if per_run_min is not None:
+        result['cost_per_run'] = {'min': round(per_run_min, 4), 'max': round(per_run_max, 4)}
+        result['estimated_monthly']['cost_min'] = round(per_run_min * monthly_runs, 2)
+        result['estimated_monthly']['cost_max'] = round(per_run_max * monthly_runs, 2)
+    return result
 
 
 def format_validation_report(config: AgentConfig, result: ValidationResult) -> str:
@@ -461,6 +456,9 @@ def format_validation_report(config: AgentConfig, result: ValidationResult) -> s
 
 
 def main():
+    # The report uses emoji; a Windows console defaults to cp1252 and cannot print them.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(
         description="Agent Orchestrator - Design and validate agent workflows",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -469,13 +467,13 @@ Examples:
   %(prog)s agent.yaml --validate
   %(prog)s agent.yaml --visualize
   %(prog)s agent.yaml --visualize --format mermaid
-  %(prog)s agent.yaml --estimate-cost --runs 100
+  %(prog)s agent.yaml --estimate-cost --runs 100 --price-in 4 --price-out 20
 
 Agent config format (YAML):
 
 name: research_assistant
 pattern: react
-model: gpt-4
+model: claude-opus-5-5
 max_iterations: 10
 tools:
   - name: web_search
@@ -493,6 +491,8 @@ tools:
                        help='Visualization format (default: ascii)')
     parser.add_argument('--estimate-cost', '-e', action='store_true', help='Estimate token costs')
     parser.add_argument('--runs', '-r', type=int, default=100, help='Daily runs for cost estimation')
+    parser.add_argument('--price-in', type=float, help='Current input price, USD per million tokens')
+    parser.add_argument('--price-out', type=float, help='Current output price, USD per million tokens')
     parser.add_argument('--output', '-o', help='Output file path')
     parser.add_argument('--json', '-j', action='store_true', help='Output as JSON')
 
@@ -534,18 +534,21 @@ tools:
 
     # Cost estimation
     if args.estimate_cost:
-        costs = estimate_cost(config, args.runs)
+        costs = estimate_cost(config, args.runs, args.price_in, args.price_out)
         if args.json:
             output_parts.append(json.dumps(costs, indent=2))
         else:
             output_parts.append("")
             output_parts.append("💰 COST ESTIMATION")
-            output_parts.append(f"  Model: {costs['model']}")
+            output_parts.append(f"  Model: {costs['model'] or '(not set)'}")
             output_parts.append(f"  Tokens per run: {costs['tokens_per_run']['min']:,} - {costs['tokens_per_run']['max']:,}")
-            output_parts.append(f"  Cost per run: ${costs['cost_per_run']['min']:.4f} - ${costs['cost_per_run']['max']:.4f}")
-            output_parts.append(f"  Monthly ({costs['estimated_monthly']['runs']:,} runs):")
-            output_parts.append(f"    Min: ${costs['estimated_monthly']['cost_min']:.2f}")
-            output_parts.append(f"    Max: ${costs['estimated_monthly']['cost_max']:.2f}")
+            monthly = costs['estimated_monthly']
+            output_parts.append(f"  Monthly ({monthly['runs']:,} runs): {monthly['tokens_min']:,} - {monthly['tokens_max']:,} tokens")
+            if 'cost_per_run' in costs:
+                output_parts.append(f"  Cost per run: ${costs['cost_per_run']['min']:.4f} - ${costs['cost_per_run']['max']:.4f}")
+                output_parts.append(f"  Monthly cost: ${monthly['cost_min']:.2f} - ${monthly['cost_max']:.2f}")
+            else:
+                output_parts.append("  Cost: pass --price-in and --price-out (USD per million tokens) to get dollars")
 
     # Output
     output = '\n'.join(output_parts)

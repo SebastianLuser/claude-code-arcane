@@ -1,4 +1,4 @@
-- **IMPORTANT:** All declared `uniform` variables must be used in the shader code, otherwise the compiler will optimize them away. After optimization, `gl.getUniformLocation()` returns `null`, and setting that uniform triggers a WebGL `INVALID_OPERATION` error, which may cause rendering failure. Ensure uniforms like `iTime` are actually used in `main()` (e.g., `float t = iTime * 1.0;`)
+- **** All declared `uniform` variables must be used in the shader code, otherwise the compiler will optimize them away. After optimization, `gl.getUniformLocation()` returns `null`, and setting that uniform triggers a WebGL `INVALID_OPERATION` error, which may cause rendering failure. Ensure uniforms like `iTime` are actually used in `main()` (e.g., `float t = iTime * 1.0;`)
 
 # Voronoi & Cellular Noise
 

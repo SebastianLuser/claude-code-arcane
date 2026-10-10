@@ -9,7 +9,7 @@ allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 
 ## Phase 0: Parse Arguments
 
-Extract milestone name (`current` = most recent). Resolve review mode: `--review` arg > `production/review-mode.txt` > default `lean`. See `.claude/docs/director-gates.md`.
+Extract milestone name (`current` = most recent). Resolve review mode: `--review` arg > `production/review-mode.txt` > default `lean`.
 
 ## Phase 1: Load Milestone Data
 

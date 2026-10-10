@@ -220,6 +220,6 @@ describe("computeContentHashes", () => {
     fs.mkdirSync(claudeDir, { recursive: true });
 
     const hashes = computeContentHashes(claudeDir);
-    expect(hashes).toEqual({ skills: {}, rules: {}, agents: {}, hooks: {} });
+    expect(hashes).toEqual({ skills: {}, rules: {}, agents: {}, hooks: {}, docs: {} });
   });
 });

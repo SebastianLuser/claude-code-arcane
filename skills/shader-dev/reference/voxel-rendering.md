@@ -619,7 +619,7 @@ A complete voxel water scene with surface wave reflections, underwater refractio
 float waterY = 0.0;
 
 // Underwater voxel scene (sand + seaweed)
-// IMPORTANT: c.xz returns vec2, which only has .x/.y components — never use .z!
+// c.xz returns vec2, which only has .x/.y components — never use .z!
 int getVoxel(vec3 c) {
     float sandHeight = -3.0 + 0.5 * sin(c.x * 0.3) * cos(c.z * 0.4);
     if (c.y < sandHeight) return 1;      // Sand interior

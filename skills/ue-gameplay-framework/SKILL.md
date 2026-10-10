@@ -455,7 +455,6 @@ Validate before considering the work done:
 - [ ] Nothing authoritative lives on the Pawn, which can be destroyed and respawned
 - [ ] Server and client paths were both considered for every piece of state
 - [ ] Conventions in `docs/unreal/project-context.md` were read and followed
-- [ ] The Common Mistakes section of this skill was reviewed against the change
 
 **PASS** — every item holds. **CONCERNS** — the work stands but at least one item is unresolved and worth flagging to the user. **FAIL** — an item is violated in a way that breaks correctness, replication or the frame budget; fix it before handing the work over.
 

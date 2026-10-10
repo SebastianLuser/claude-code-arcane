@@ -12,7 +12,7 @@ Scaffold automated testing infrastructure. Run once during Technical Setup phase
 
 ## Phase 1: Detect Engine & State
 
-1. Read `.claude/docs/technical-preferences.md` → Engine. Not configured → stop: "Run `/setup-engine` first"
+1. Detect the engine from the project: `ProjectSettings/ProjectVersion.txt` (Unity) or a `*.uproject` file (Unreal). None found → ask the user which engine the project uses
 2. Check existing: `tests/`, `tests/unit/`, `tests/integration/`, `.github/workflows/`, engine-specific dirs
 3. Report findings. If everything exists and no `force` arg → "Already in place. Re-run with `force` to regenerate"
 4. `force` skips early-exit but never overwrites existing files

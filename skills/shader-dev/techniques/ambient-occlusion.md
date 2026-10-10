@@ -1,6 +1,6 @@
 ## WebGL2 Adaptation Requirements
 
-**IMPORTANT: GLSL Type Strictness**: float and vec types cannot be implicitly converted. `vec3 v = 1.0;` is illegal; you must use the vector form (e.g., `vec3(1.0)`, `vec3(1.0) * x`, `value * vec3(1.0)`).
+**GLSL Type Strictness**: float and vec types cannot be implicitly converted. `vec3 v = 1.0;` is illegal; you must use the vector form (e.g., `vec3(1.0)`, `vec3(1.0) * x`, `value * vec3(1.0)`).
 
 The code templates in this document use ShaderToy GLSL style. When generating standalone HTML pages, you must adapt for WebGL2:
 

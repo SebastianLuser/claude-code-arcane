@@ -180,7 +180,7 @@ if (p.x < 1.0 || p.y < 1.0 ||
     c.xyw *= 0.0;
 }
 
-// IMPORTANT: Ink decay: must use multiplicative decay; subtractive decay causes saturation in high-concentration areas and overly fast decay in low-concentration areas
+// Ink decay: must use multiplicative decay; subtractive decay causes saturation in high-concentration areas and overly fast decay in low-concentration areas
 c.w *= 0.995;  // 0.5% decay per frame, adjustable [0.99=fast dissipation, 0.999=persistent]
 
 // Numerical clamping (prevent explosion)
@@ -199,14 +199,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord / iResolution.xy;
     vec4 c = texture(iChannel0, uv);
 
-    // IMPORTANT: Color base must be bright enough! 0.5+0.5*cos produces bright colors in [0,1] range
+    // Color base must be bright enough! 0.5+0.5*cos produces bright colors in [0,1] range
     // Never use extremely dark base colors like vec3(0.02, 0.01, 0.08) — multiplied by ink, they become invisible
     vec3 col = 0.5 + 0.5 * cos(atan(c.y, c.x) + vec3(0.0, 2.1, 4.2));
-    // IMPORTANT: Use smoothstep instead of linear division to preserve gradient variation
+    // Use smoothstep instead of linear division to preserve gradient variation
     float ink = smoothstep(0.0, 2.0, c.w);
     col *= ink;
 
-    // IMPORTANT: Background color must be visible to the eye (RGB at least > 5/255 ≈ 0.02), otherwise users think the page is all black
+    // Background color must be visible to the eye (RGB at least > 5/255 ≈ 0.02), otherwise users think the page is all black
     col = max(col, vec3(0.02, 0.012, 0.035));
 
     fragColor = vec4(col, 1.0);

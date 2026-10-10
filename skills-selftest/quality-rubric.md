@@ -30,7 +30,7 @@ auto-advancing stage and must respect the three review modes.
 
 ### `review`
 
-**Skills**: design-review, architecture-review, review-all-gdds
+**Skills**: architecture-review
 
 Review skills read documents and produce structured verdicts. They are primarily
 read-only and must not trigger director gates during the analysis phase.
@@ -44,14 +44,13 @@ read-only and must not trigger director gates during the analysis phase.
 | **R5 — Structured findings** | Output contains a per-section status table or checklist before the final verdict |
 
 > **Exceptions:**
-> - `design-review`: Has `Write, Edit` in allowed-tools to support an optional "Revise now" path (all writes gated behind user approval) and to write review logs. R1 is satisfied because the reviewed document is never silently modified.
 > - `architecture-review`: Spawns TD-ARCHITECTURE and LP-FEASIBILITY gates after its analysis is complete. This is intentional — architecture review is high-stakes and benefits from director sign-off. R4 is satisfied because the gates run post-analysis, not during it.
 
 ---
 
 ### `authoring`
 
-**Skills**: design-system, quick-design, architecture-decision, ux-design, ux-review, art-bible, create-architecture
+**Skills**: design-system, quick-design, architecture-decision, ux-design, ux-review, art-bible
 
 Authoring skills create or update design documents collaboratively. Full GDD/UX
 authoring skills use a section-by-section cycle; lightweight authoring skills use
@@ -59,14 +58,14 @@ a single-draft pattern appropriate to their smaller scope.
 
 | Metric | PASS criteria |
 |---|---|
-| **A1 — Section-by-section cycle** | Full authoring skills (design-system, ux-design, art-bible) author one section at a time, presenting content for approval before proceeding to the next. Lightweight skills (quick-design, architecture-decision, create-architecture) may draft the complete document then ask for approval — single-draft is acceptable for documents under ~4 hours of implementation scope. |
+| **A1 — Section-by-section cycle** | Full authoring skills (design-system, ux-design, art-bible) author one section at a time, presenting content for approval before proceeding to the next. Lightweight skills (quick-design, architecture-decision) may draft the complete document then ask for approval — single-draft is acceptable for documents under ~4 hours of implementation scope. |
 | **A2 — May-I-write per section** | Full authoring skills ask "May I write this to [filepath]?" before each section write. Lightweight skills ask once for the complete document. |
 | **A3 — Retrofit mode** | Skill detects if the target file already exists and offers to update specific sections rather than overwriting the whole document. Lightweight skills (quick-design) that always create new files are exempt. |
 | **A4 — Director gate at correct tier** | If a director gate is defined for this skill (e.g., CD-GDD-ALIGN, TD-ADR), it runs at the correct mode threshold (full/lean) — NOT in solo |
 | **A5 — Skeleton-first** | Full authoring skills create a file skeleton with all section headers before filling content, to preserve progress on session interruption. Lightweight skills are exempt. |
 
 > **Full authoring skills** (must pass all 5 metrics): `design-system`, `ux-design`, `art-bible`
-> **Lightweight authoring skills** (A1, A2, A5 use single-draft pattern; A3 exempt for new-file-only skills): `quick-design`, `architecture-decision`, `create-architecture`
+> **Lightweight authoring skills** (A1, A2, A5 use single-draft pattern; A3 exempt for new-file-only skills): `quick-design`, `architecture-decision`
 > **Review-mode skill** (evaluated against review metrics): `ux-review`
 
 ---
@@ -122,27 +121,9 @@ analysis and must ask before recommending any file writes.
 
 ---
 
-### `team`
-
-**Skills**: team-combat, team-narrative, team-audio, team-level, team-ui, team-qa,
-team-release, team-polish, team-live-ops
-
-Team skills orchestrate multiple specialist agents for a department. They must
-spawn the right agents, run independent ones in parallel, and surface blocks immediately.
-
-| Metric | PASS criteria |
-|---|---|
-| **T1 — Named agent list** | Skill explicitly names which agents it spawns and in what order |
-| **T2 — Parallel where independent** | Agents whose inputs don't depend on each other are spawned in parallel (single message, multiple Task calls) |
-| **T3 — BLOCKED surfacing** | If any spawned agent returns BLOCKED or fails, skill surfaces it immediately and halts dependent work — never silently skips |
-| **T4 — Collect all verdicts before proceeding** | Dependent phases wait for all parallel agents to complete before proceeding |
-| **T5 — Usage error on no argument** | If required argument (e.g., feature name) is missing, skill outputs usage hint and stops without spawning agents |
-
----
-
 ### `sprint`
 
-**Skills**: sprint-plan, sprint-status, milestone-review, retrospective, changelog, patch-notes
+**Skills**: sprint-plan, milestone-review, retrospective, changelog, patch-notes
 
 Sprint skills read production state and produce reports or planning artifacts.
 They have a PR-SPRINT or PR-MILESTONE gate at specific mode thresholds.
@@ -158,11 +139,10 @@ They have a PR-SPRINT or PR-MILESTONE gate at specific mode thresholds.
 
 ### `utility`
 
-**Skills**: start, help, brainstorm, onboard, adopt, hotfix, prototype, localize,
-launch-checklist, release-checklist, smoke-check, soak-test, test-setup, test-helpers,
+**Skills**: start, help, brainstorm, onboard, hotfix, prototype,
+release-checklist, smoke-check, test-setup, test-helpers,
 regression-suite, qa-plan, bug-triage, bug-report, playtest-report, asset-spec,
-reverse-document, project-stage-detect, setup-engine, skill-test, skill-improve,
-day-one-patch, and any other skills not in categories above
+reverse-document, skill-test, skill-improve, and any other skills not in categories above
 
 Utility skills pass the 7 standard static checks. If they happen to spawn director
 gates, the gate mode logic must also be correct.

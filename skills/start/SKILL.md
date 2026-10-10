@@ -35,13 +35,13 @@ AskUserQuestion multi-tab:
 
 | Tipo | Rol | División | Skills clave |
 |------|-----|----------|-------------|
-| Juego | Dev | Game Dev | `/brainstorm`, `/setup-engine`, `/design-system` |
-| Web app | Dev | Software Eng | `/scaffold-nextjs`, `/create-architecture` |
-| API | Dev | Software Eng | `/scaffold-go`, `/scaffold-fastapi` |
-| Móvil | Dev | Software Eng | `/scaffold-flutter`, `/scaffold-react-native` |
+| Juego | Dev | Game Dev | `/brainstorm`, `/scaffold-unity` (Unity) o `/ue-project-context` (Unreal), `/design-system` |
+| Web app | Dev | Software Eng | `/nextjs-scaffold`, `/architecture-decision` |
+| API | Dev | Software Eng | `/scaffold-go`, `/scaffold-fastify-ts` |
+| Móvil | Dev | Software Eng | `/scaffold-react-native` |
 | Juego | Designer | Game Dev | `/brainstorm`, `/quick-design`, `/doc-gdd` |
 | Web | Designer | Product | `/ux-design`, `/design-handoff` |
-| Any | PM | PMO | `/sprint-planning`, `/clickup`, `/jira-tickets` |
+| Any | PM | PMO | `/sprint-plan`, `/clickup`, `/jira-tickets` |
 
 ## Paso 5: Set session state
 
@@ -53,8 +53,8 @@ AskUserQuestion: primary recommendation (Recommended), secondary option, "Ver to
 
 ## Routing Cheatsheet
 
-- Game from scratch: `/start` → `/brainstorm` → `/setup-engine` → `/art-bible` → `/design-system`
-- Web app: `/start` → `/scaffold-nextjs` → `/create-architecture` → `/design-api`
+- Game from scratch: `/start` → `/brainstorm` → `/scaffold-unity` (Unity) o `/ue-project-context` (Unreal) → `/art-bible` → `/design-system`
+- Web app: `/start` → `/nextjs-scaffold` → `/architecture-decision` → `/api-design`
 - Sprint en curso: `/start` → `/clickup status` → `/standup-report`
 
 ## Reglas

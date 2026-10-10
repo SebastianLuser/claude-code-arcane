@@ -10,7 +10,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 
 Detects cross-document inconsistencies by comparing GDDs against entity registry (`design/registry/entities.yaml`). Grep-first: read registry once, then grep only matching names — no full document reads.
 
-Run: after each new GDD, before `/review-all-gdds`, before `/create-architecture`. Output: conflict report + optional registry corrections.
+Run: after each new GDD, and before `/architecture-decision`. Output: conflict report + optional registry corrections.
 
 ## Arguments
 
@@ -62,7 +62,7 @@ If 🔴 conflicts found → append to `docs/consistency-failures.md` (if exists)
 
 ## Protocol
 
-- PASS → proceed to `/review-all-gdds` or `/create-architecture`
+- PASS → proceed to `/architecture-decision`
 - CONFLICTS FOUND → fix GDDs, re-run to confirm
 - Source GDD (per `source:` field) is authoritative owner
 - Run after each new GDD to catch issues early

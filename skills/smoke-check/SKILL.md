@@ -22,7 +22,7 @@ Output: `production/qa/smoke-[date].md`
 
 1. Verify `tests/` exists (else stop → `/test-setup`)
 2. Check CI workflow for test refs
-3. Read engine from `.claude/docs/technical-preferences.md`
+3. Detect the engine from `ProjectSettings/ProjectVersion.txt` (Unity) or the `.uproject` (Unreal)
 4. Load smoke test list from `production/qa/smoke-tests.md` or `tests/smoke/`
 5. Load QA plan from `production/qa/qa-plan-*.md` (most recent)
 

@@ -1,7 +1,7 @@
 ---
 name: playwright-pro
 description: "Production-grade Playwright testing toolkit. Generate tests, fix flaky failures, migrate from Cypress/Selenium, sync with TestRail, run on BrowserStack. 55 templates, 3 agents, smart reporting."
-argument-hint: ""
+argument-hint: "[browserstack|fix|generate|init|migrate|report|review|testrail] [args]"
 category: "testing"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
@@ -13,21 +13,25 @@ Production-grade Playwright testing toolkit for AI coding agents.
 
 > **Note:** This skill may create or modify files in your project. It will ask before writing.
 
+## Sub-commands
+
+`/playwright-pro` with no argument shows this overview. With a sub-command as its first argument, read `skills/<sub-command>/SKILL.md` from this skill's directory and follow it, passing the remaining arguments. Sub-commands: `browserstack`, `fix`, `generate`, `init`, `migrate`, `report`, `review`, `testrail`.
+
 ## Quick Start Workflow
 
 The recommended sequence for most projects:
 
 ```
-1. /pw:init          -> scaffolds config, CI pipeline, and a first smoke test
-2. /pw:generate      -> generates tests from your spec or URL
-3. /pw:review        -> validates quality and flags anti-patterns      <- always run after generate
-4. /pw:fix <test>    -> diagnoses and repairs any failing/flaky tests  <- run when CI turns red
+1. /playwright-pro init          -> scaffolds config, CI pipeline, and a first smoke test
+2. /playwright-pro generate      -> generates tests from your spec or URL
+3. /playwright-pro review        -> validates quality and flags anti-patterns      <- always run after generate
+4. /playwright-pro fix <test>    -> diagnoses and repairs any failing/flaky tests  <- run when CI turns red
 ```
 
 **Validation checkpoints:**
-- After `/pw:generate` -- always run `/pw:review` before committing
-- After `/pw:fix` -- re-run the full suite locally (`npx playwright test`)
-- After `/pw:migrate` -- run `/pw:coverage` to confirm parity before decommissioning old tests
+- After `/playwright-pro generate` -- always run `/playwright-pro review` before committing
+- After `/playwright-pro fix` -- re-run the full suite locally (`npx playwright test`)
+- After `/playwright-pro migrate` -- run both suites and compare test counts and results before decommissioning old tests
 
 ## Golden Rules
 
@@ -55,7 +59,7 @@ The recommended sequence for most projects:
 
 ## What's Included
 
-- **9 skills** with detailed step-by-step instructions
+- **8 skills** with detailed step-by-step instructions
 - **3 specialized agents**: test-architect, test-debugger, migration-planner
 - **55 test templates**: auth, CRUD, checkout, search, forms, dashboard, settings, onboarding, notifications, API, accessibility
 - **2 MCP servers** (TypeScript): TestRail and BrowserStack integrations

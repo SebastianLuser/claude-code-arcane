@@ -16,7 +16,7 @@ model: haiku
 - Latest sprint: !`ls -t production/sprints/*.md 2>/dev/null | head -1 || echo 'none'`
 - Session state: !`head -5 production/session-state/active.md 2>/dev/null || echo 'none'`
 
-Read-only skill — reports findings, writes no files. Lightweight orientation; for full gap analysis use `/project-stage-detect`.
+Read-only skill — reports findings, writes no files. Lightweight orientation; for a formal readiness check use `/gate-check`.
 
 ## Step 1: Read Catalog + Find Uncataloged Skills
 
@@ -65,7 +65,6 @@ All required steps complete → "Close to [Current]→[Next] gate. Run `/gate-ch
 
 ## Step 9: Escalation (only if user seems stuck)
 
-- `/project-stage-detect` — full gap analysis
 - `/gate-check` — formal readiness check
 - `/start` — re-orient from scratch
 

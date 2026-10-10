@@ -47,13 +47,14 @@ class OpenAIProvider(LLMProvider):
         return response.choices[0].text
 
 class AnthropicProvider(LLMProvider):
-    def __init__(self, api_key: str, model: str = "claude-3-opus"):
+    def __init__(self, api_key: str, model: str = "claude-opus-5-5"):
         self.client = Anthropic(api_key=api_key)
         self.model = model
 
     def chat(self, messages: List[Dict], **kwargs) -> str:
         response = self.client.messages.create(
             model=self.model,
+            max_tokens=kwargs.pop("max_tokens", 16000),
             messages=messages,
             **kwargs
         )
@@ -97,7 +98,7 @@ def call_with_fallback(
 |---------|----------|-----------|
 | Zero-shot | Simple tasks | Task description + input |
 | Few-shot | Complex tasks | Examples + task + input |
-| Chain-of-thought | Reasoning | "Think step by step" + task |
+| Reasoning | Multi-step problems | On models with adaptive thinking, raise `effort` instead of asking for step-by-step text |
 | Role-based | Specialized output | System role + task |
 
 ### Few-Shot Template
@@ -178,10 +179,8 @@ def truncate_to_token_limit(text: str, max_tokens: int, model: str = "gpt-4") ->
 
 | Model | Context Window | Effective Limit |
 |-------|----------------|-----------------|
-| GPT-4 | 8,192 | ~6,000 (leave room for response) |
-| GPT-4-32k | 32,768 | ~28,000 |
-| Claude 3 | 200,000 | ~180,000 |
-| Llama 3 | 8,192 | ~6,000 |
+| Claude Opus 5.5 / Sonnet 5.5 / Haiku 5.5 | 1,000,000 | leave room for `max_tokens` |
+| Other providers | check the provider's model docs | context windows change every release |
 
 ### Chunking Strategy
 
@@ -206,12 +205,7 @@ def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 100) -> List[st
 
 ### Cost Calculation
 
-| Provider | Input Cost | Output Cost | Example (1K tokens) |
-|----------|------------|-------------|---------------------|
-| GPT-4 | $0.03/1K | $0.06/1K | $0.09 |
-| GPT-3.5 | $0.0005/1K | $0.0015/1K | $0.002 |
-| Claude 3 Opus | $0.015/1K | $0.075/1K | $0.09 |
-| Claude 3 Haiku | $0.00025/1K | $0.00125/1K | $0.0015 |
+Prices change with every model release, so keep them out of code: read them from config, and take the numbers from each provider's pricing page. Count tokens with the provider's response metadata (`usage`), not with a character estimate.
 
 ### Cost Tracking
 
@@ -229,30 +223,19 @@ class LLMUsage:
 def calculate_cost(
     input_tokens: int,
     output_tokens: int,
-    model: str
+    prices: dict,
 ) -> float:
-    """Calculate cost based on token usage."""
-    PRICING = {
-        "gpt-4": {"input": 0.03, "output": 0.06},
-        "gpt-3.5-turbo": {"input": 0.0005, "output": 0.0015},
-        "claude-3-opus": {"input": 0.015, "output": 0.075},
-    }
-
-    prices = PRICING.get(model, {"input": 0.01, "output": 0.03})
-
-    input_cost = (input_tokens / 1000) * prices["input"]
-    output_cost = (output_tokens / 1000) * prices["output"]
-
-    return input_cost + output_cost
+    """Cost in USD. `prices` comes from config: {"input": usd_per_mtok, "output": usd_per_mtok}."""
+    return (input_tokens * prices["input"] + output_tokens * prices["output"]) / 1_000_000
 ```
 
 ### Cost Optimization Strategies
 
-1. **Use smaller models for simple tasks** - GPT-3.5 for classification, GPT-4 for reasoning
-2. **Cache common responses** - Store results for repeated queries
-3. **Batch requests** - Combine multiple items in single prompt
-4. **Truncate context** - Only include relevant information
-5. **Set max_tokens limit** - Prevent runaway responses
+1. **Use a smaller model where it holds quality** - measure on real requests before routing a task to it
+2. **Cache repeated context** - provider prompt caching makes a stable system prompt or document far cheaper on repeat calls
+3. **Batch non-urgent work** - batch APIs trade latency for a lower price
+4. **Cache common responses** - store results for repeated queries
+5. **Set max_tokens deliberately** - high enough not to cut answers off, as a ceiling on runaway output
 
 ---
 

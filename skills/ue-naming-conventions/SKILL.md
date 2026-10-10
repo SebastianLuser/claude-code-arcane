@@ -130,7 +130,6 @@ Validate before considering the work done:
 - [ ] Any rename ran with clean source control and a Fix Up Redirectors pass afterwards
 - [ ] The agreed convention is written into `docs/unreal/project-context.md`
 - [ ] Conventions in `docs/unreal/project-context.md` were read and followed
-- [ ] The Common Mistakes section of this skill was reviewed against the change
 
 **PASS** — every item holds. **CONCERNS** — the work stands but at least one item is unresolved and worth flagging to the user. **FAIL** — an item is violated in a way that breaks asset references or leaves the project inconsistent; fix it before handing the work over.
 

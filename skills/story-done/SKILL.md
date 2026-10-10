@@ -59,7 +59,7 @@ Ask approval → edit story: `Status: Complete` + `## Completion Notes` (date, c
 
 ## Phase 8: Surface Next Story
 
-Read sprint plan → find READY/NOT STARTED stories (not blocked, Must/Should Have). Present up to 3 options. If all Must Have complete → sprint close-out sequence: `/smoke-check sprint` → `/team-qa sprint` → `/gate-check`.
+Read sprint plan → find READY/NOT STARTED stories (not blocked, Must/Should Have). Present up to 3 options. If all Must Have complete → sprint close-out sequence: `/smoke-check sprint` → `/gate-check`.
 
 ## Protocol
 

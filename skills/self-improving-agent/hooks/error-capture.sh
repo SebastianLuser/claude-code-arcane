@@ -103,8 +103,8 @@ cat << EOF
 <error-detected>
 Command error detected (pattern: "$matched_pattern").
 If this was unexpected or required investigation to fix, save the solution:
-  /si:remember "explanation of what went wrong and the fix"
-Or if this is a known pattern, check: /si:review
+  /self-improving-agent remember "explanation of what went wrong and the fix"
+Or if this is a known pattern, check: /self-improving-agent review
 Context: $(echo "$error_context" | head -2 | tr '\n' ' ' | cut -c1-200)
 </error-detected>
 EOF

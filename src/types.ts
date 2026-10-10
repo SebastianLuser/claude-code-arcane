@@ -50,6 +50,8 @@ export interface ArcaneManifest {
     rules: Record<string, string>;
     agents: Record<string, string>;
     hooks: Record<string, string>;
+    /** Absent in manifests written before docs were tracked. */
+    docs?: Record<string, string>;
   };
   updated_at?: string;
   source_version?: string;

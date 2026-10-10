@@ -46,7 +46,7 @@ Check what's configured and route automatically:
 
 | Check | If found | Action |
 |---|---|---|
-| `TESTRAIL_URL` env var | TestRail configured | Push results via `/pw:testrail push` |
+| `TESTRAIL_URL` env var | TestRail configured | Push results via `/playwright-pro testrail push` |
 | `SLACK_WEBHOOK_URL` env var | Slack configured | Post summary to Slack |
 | `.github/workflows/` | GitHub Actions | Results go to PR comment via artifacts |
 | `playwright-report/` | HTML reporter | Open or serve the report |
@@ -98,7 +98,7 @@ curl -X POST "$SLACK_WEBHOOK_URL" \
 
 #### TestRail Push (If Configured)
 
-Invoke `/pw:testrail push` with the JSON results.
+Invoke `/playwright-pro testrail push` with the JSON results.
 
 #### HTML Report
 

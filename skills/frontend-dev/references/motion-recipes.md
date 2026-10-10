@@ -106,7 +106,7 @@ export function PinnedTimeline() {
       });
     }, containerRef);
 
-    return () => ctx.revert(); // CRITICAL: full cleanup
+    return () => ctx.revert(); // full cleanup, or GSAP keeps running after unmount
   }, []);
 
   return (

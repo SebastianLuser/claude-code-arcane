@@ -4,7 +4,7 @@
 
 Below is a complete standalone HTML template demonstrating how to set up WebGL2 double buffering (ping-pong) for physics simulation:
 
-**IMPORTANT: WebGL2 ping-pong core rule: The texture bound to the write-target framebuffer must never simultaneously serve as input for any iChannel.** Violating this rule causes undefined behavior (typically all-black/all-zero output).
+**WebGL2 ping-pong core rule: The texture bound to the write-target framebuffer must never simultaneously serve as input for any iChannel.** Violating this rule causes undefined behavior (typically all-black/all-zero output).
 
 For simulations requiring "current frame" and "previous frame" two time steps (such as the wave equation), use **dual-channel encoding**: R channel stores current height, G channel stores previous frame height. This way only one buffer is read from (iChannel0 = currentBuf), writing to another buffer (nextBuf), avoiding read-write conflicts.
 
@@ -62,9 +62,9 @@ void main() {
 }`;
 
 // === Buffer Pass Shader (physics simulation) ===
-// IMPORTANT: Only uses iChannel0 (reads currentBuf), writes to nextBuf
+// Only uses iChannel0 (reads currentBuf), writes to nextBuf
 // R channel = current height, G channel = previous frame height (dual-channel encoding avoids read-write conflict)
-// IMPORTANT: RGBA8 compatible: use encode/decode to map signed values to [0,1], ensuring SwiftShader/no-float-texture environments work correctly
+// RGBA8 compatible: use encode/decode to map signed values to [0,1], ensuring SwiftShader/no-float-texture environments work correctly
 const fsBuffer = `#version 300 es
 precision highp float;
 uniform sampler2D iChannel0;
@@ -161,7 +161,7 @@ gl.enableVertexAttribArray(posLoc);
 gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
 // === Render loop ===
-// IMPORTANT: Key: currentBuf (read-only) and nextBuf (write-only) must be different buffers
+// currentBuf (read-only) and nextBuf (write-only) must be different buffers
 let frame = 0;
 function render(time) {
     time *= 0.001;
@@ -207,7 +207,7 @@ requestAnimationFrame(render);
 </script></body></html>
 ```
 
-**IMPORTANT: Common errors**:
+**Common errors**:
 1. **RGBA8 signed value truncation (fatal)**: Environments like SwiftShader that don't support `EXT_color_buffer_float` fall back to RGBA8 where values are clamped to [0,1]. Simulations requiring negative values (like the wave equation) will all zero out and produce a static image. **Must** use encode/decode functions: store as `v * 0.5 + 0.5`, read as `v * 2.0 - 1.0`, switching at runtime via `uniform int useFloatTex`. See the `encode()`/`decode()` functions in the template above
 2. **Ping-pong read-write conflict (fatal)**: When rendering to a framebuffer, the texture bound to that framebuffer cannot simultaneously serve as input. The wave equation uses dual-channel encoding (R=current, G=previous) requiring only one input buffer; cloth/particle systems read getpos/getvel both from iChannel0
 3. **Cloth rendering must use world coordinate projection (fatal)**: The cloth Image Pass cannot use `uv * vec2(SIZX, SIZY)` to map screen UV directly to grid ID. It must iterate over mesh faces, project vertex world coordinates to screen space via `worldToScreen()`, and perform triangle rasterization
@@ -253,14 +253,14 @@ Vorticity confinement:     curl = ∂v_x/∂y - ∂v_y/∂x
 
 ### Step 1: Ping-Pong Double Buffering (Correct WebGL2 Implementation)
 
-**IMPORTANT: Key difference between ShaderToy and WebGL2**: In ShaderToy, Buffer A/B are two independent passes with separate write targets, so `iChannel0=self, iChannel1=other` doesn't conflict. But in WebGL2 with a single shader program doing ping-pong, the write-target texture cannot be read simultaneously.
+**Key difference between ShaderToy and WebGL2**: In ShaderToy, Buffer A/B are two independent passes with separate write targets, so `iChannel0=self, iChannel1=other` doesn't conflict. But in WebGL2 with a single shader program doing ping-pong, the write-target texture cannot be read simultaneously.
 
 **Solution: Dual-channel encoding** — R channel stores current height, G channel stores previous frame height, requiring only one input buffer:
 
 ```glsl
 // WebGL2 Wave Equation Buffer Pass
-// IMPORTANT: Only iChannel0 (reads currentBuf), writes to nextBuf (must be different!)
-// IMPORTANT: encode/decode ensures signed values aren't truncated under RGBA8 (no float textures)
+// Only iChannel0 (reads currentBuf), writes to nextBuf (must be different!)
+// encode/decode ensures signed values aren't truncated under RGBA8 (no float textures)
 
 uniform int useFloatTex;
 float decode(float v) { return useFloatTex == 1 ? v : v * 2.0 - 1.0; }
@@ -298,7 +298,7 @@ gl.activeTexture(gl.TEXTURE0);
 gl.bindTexture(gl.TEXTURE_2D, currentBuf.tex);    // read from currentBuf
 gl.uniform1i(gl.getUniformLocation(progBuffer, 'iChannel0'), 0);
 gl.uniform1i(gl.getUniformLocation(progBuffer, 'useFloatTex'), useFloat ? 1 : 0);
-// IMPORTANT: Do NOT bind iChannel1 to nextBuf/otherBuf!
+// Do NOT bind iChannel1 to nextBuf/otherBuf!
 ```
 
 ### Step 2: Interaction-Driven (External Force Injection)
@@ -328,7 +328,7 @@ next += force;
 ### Step 3: Height Field Rendering (Image Pass)
 
 ```glsl
-// IMPORTANT: Image Pass also needs decode
+// Image Pass also needs decode
 uniform int useFloatTex;
 float decode(float v) { return useFloatTex == 1 ? v : v * 2.0 - 1.0; }
 
@@ -429,9 +429,9 @@ Texture regions are partitioned to store different attributes:
 #define SIZX 128.0
 #define SIZY 64.0
 
-// IMPORTANT: Cloth/particle systems: getpos/getvel both read from iChannel0 (not iChannel1)
+// Cloth/particle systems: getpos/getvel both read from iChannel0 (not iChannel1)
 // Because iChannel0 = currentBuf (read-only), write target is nextBuf (separate buffer)
-// IMPORTANT: Use +0.5 to sample texel centers (not +0.01)
+// Use +0.5 to sample texel centers (not +0.01)
 vec3 getpos(vec2 id) {
     return texture(iChannel0, (id + 0.5) / iResolution.xy).xyz;
 }
@@ -566,8 +566,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 ```glsl
 // === Buffer Pass (Wave Equation) ===
-// IMPORTANT: Only uses iChannel0 = currentBuf (read-only), writes to nextBuf
-// IMPORTANT: encode/decode ensures signed values aren't truncated under RGBA8 (SwiftShader compatible)
+// Only uses iChannel0 = currentBuf (read-only), writes to nextBuf
+// encode/decode ensures signed values aren't truncated under RGBA8 (SwiftShader compatible)
 
 uniform int useFloatTex;
 float decode(float v) { return useFloatTex == 1 ? v : v * 2.0 - 1.0; }
@@ -611,7 +611,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 ```glsl
 // === Image Pass ===
-// IMPORTANT: Also needs decode to correctly read signed height values
+// Also needs decode to correctly read signed height values
 
 uniform int useFloatTex;
 float decode(float v) { return useFloatTex == 1 ? v : v * 2.0 - 1.0; }
@@ -744,7 +744,7 @@ void main() {
 ```glsl
 // === Image Pass (Smoke Rendering) ===
 // Reads density (z channel) and velocity (xy channels) from buffer, renders dense layered smoke + light scattering
-// IMPORTANT: Smoke brightness key: absorption coefficient must be large enough (>=3.0), background not too dark, lightTransmit must not over-attenuate
+// Smoke brightness key: absorption coefficient must be large enough (>=3.0), background not too dark, lightTransmit must not over-attenuate
 
 void main() {
     vec2 uv = vUv;
@@ -812,7 +812,7 @@ Cloth simulation requires 2 buffers for ping-pong alternating read/write, with a
 
 ```glsl
 // WebGL2-adapted cloth simulation Buffer Pass
-// IMPORTANT: getpos/getvel both read from iChannel0! iChannel0 = currentBuf (read-only), writes to nextBuf
+// getpos/getvel both read from iChannel0! iChannel0 = currentBuf (read-only), writes to nextBuf
 
 #define SIZX 128.0
 #define SIZY 64.0
@@ -889,12 +889,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
 #### Cloth Rendering Pass (Image Pass) Complete Template
 
-**IMPORTANT: Cloth rendering core principle**: After physics simulation, cloth particle world positions (pos.xy) will deviate from their initial grid positions (due to gravity, collisions, etc.). The Image Pass must render based on particles' **actual world positions** projected to the screen — you cannot use `uv * vec2(SIZX, SIZY)` to directly map screen UV to grid ID (that would produce scattered dots/fragments rather than a continuous cloth surface).
+**Cloth rendering core principle**: After physics simulation, cloth particle world positions (pos.xy) will deviate from their initial grid positions (due to gravity, collisions, etc.). The Image Pass must render based on particles' **actual world positions** projected to the screen — you cannot use `uv * vec2(SIZX, SIZY)` to directly map screen UV to grid ID (that would produce scattered dots/fragments rather than a continuous cloth surface).
 
 Correct approach: iterate over all cloth mesh cells, project each cell's 4 vertex world coordinates to screen space, determine if the current pixel falls within that quad, then interpolate shading.
 
 ```glsl
-// IMPORTANT: Key: must pass additional uniform vec2 iSimResolution (simulation resolution)
+// must pass additional uniform vec2 iSimResolution (simulation resolution)
 //    getpos/getvel use iSimResolution, not iResolution
 //    Rendering method: iterate cloth mesh, project world coordinates to screen coordinates
 
@@ -1035,11 +1035,11 @@ void main() {
 }
 ```
 
-**IMPORTANT: Cloth rendering performance note**: The above template uses a double loop to iterate all mesh faces for triangle rasterization. For a 128x64 mesh this is about 8000 quads per frame. If GPU performance is insufficient, reduce mesh resolution (e.g., SIZX=64, SIZY=32) or use `texelFetch` instead of `texture` for speed. Another approach is to partition the cloth into blocks (e.g., 4x4), each with an independent bounding box for early culling.
+**Cloth rendering performance note**: The above template uses a double loop to iterate all mesh faces for triangle rasterization. For a 128x64 mesh this is about 8000 quads per frame. If GPU performance is insufficient, reduce mesh resolution (e.g., SIZX=64, SIZY=32) or use `texelFetch` instead of `texture` for speed. Another approach is to partition the cloth into blocks (e.g., 4x4), each with an independent bounding box for early culling.
 
 #### Cloth Simulation Complete HTML Template (Multi-Substep Iteration)
 
-**IMPORTANT: Key notes (must-read for cloth template)**:
+**Key notes (must-read for cloth template)**:
 1. **No read-write conflict**: In the Buffer Pass, iChannel0 is bound to currentBuf (read-only), the write target is nextBuf (separate buffer). getpos/getvel both read from iChannel0
 2. **iSimResolution uniform**: Image Pass must have `uniform vec2 iSimResolution` passing `(SIM_W, SIM_H)`, and `getpos`/`getvel` internally use `iSimResolution` for UV calculation
 3. **iFrame value passing**: In substep loops, iFrame should pass `frame * SUBSTEPS + substep`, ensuring the initialization condition `iFrame < SUBSTEPS` only triggers on the first frame
@@ -1130,7 +1130,7 @@ float getBallRadius() { return 0.12; }
 vec3 pos, vel, ovel;
 vec2 c;
 
-// IMPORTANT: Both read from iChannel0 (currentBuf), not iChannel1
+// Both read from iChannel0 (currentBuf), not iChannel1
 vec3 getpos(vec2 id) {
     return texture(iChannel0, (id + 0.5) / iResolution.xy).xyz;
 }
@@ -1414,7 +1414,7 @@ function render(time) {
     time *= 0.001;
 
     for (let substep = 0; substep < SUBSTEPS; substep++) {
-        // IMPORTANT: ping-pong: read from currentBuf (iChannel0), write to nextBuf
+        // ping-pong: read from currentBuf (iChannel0), write to nextBuf
         let currentBuf = (globalStep % 2 === 0) ? bufA : bufB;
         let nextBuf = (globalStep % 2 === 0) ? bufB : bufA;
 
@@ -1422,7 +1422,7 @@ function render(time) {
         gl.viewport(0, 0, SIM_W, SIM_H);
         gl.useProgram(progBuffer);
 
-        // IMPORTANT: Only bind iChannel0 = currentBuf (read-only)
+        // Only bind iChannel0 = currentBuf (read-only)
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, currentBuf.tex);
         gl.uniform1i(gl.getUniformLocation(progBuffer, 'iChannel0'), 0);

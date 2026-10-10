@@ -25,7 +25,7 @@ If not set, inform the user how to configure them and stop.
 ### 1. Import Test Cases → Generate Playwright Tests
 
 ```
-/pw:testrail import --project <id> --suite <id>
+/playwright-pro testrail import --project <id> --suite <id>
 ```
 
 Steps:
@@ -40,7 +40,7 @@ Steps:
 ### 2. Push Test Results → TestRail
 
 ```
-/pw:testrail push --run <id>
+/playwright-pro testrail push --run <id>
 ```
 
 Steps:
@@ -58,7 +58,7 @@ Steps:
 ### 3. Create Test Run
 
 ```
-/pw:testrail run --project <id> --name "Sprint 42 Regression"
+/playwright-pro testrail run --project <id> --name "Sprint 42 Regression"
 ```
 
 Steps:
@@ -69,7 +69,7 @@ Steps:
 ### 4. Sync Status
 
 ```
-/pw:testrail status --project <id>
+/playwright-pro testrail status --project <id>
 ```
 
 Steps:
@@ -86,7 +86,7 @@ Steps:
 ### 5. Update Test Cases in TestRail
 
 ```
-/pw:testrail update --case <id>
+/playwright-pro testrail update --case <id>
 ```
 
 Steps:

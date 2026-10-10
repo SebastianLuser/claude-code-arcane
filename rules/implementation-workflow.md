@@ -1,6 +1,6 @@
 # Implementation Workflow Rule
 
-Before starting any non-trivial implementation task, you MUST present the user with work mode options using AskUserQuestion. This is mandatory — do not skip it and jump to coding.
+Before starting a non-trivial implementation task, present the user with work mode options using AskUserQuestion, so they choose how much planning the task gets before any code is written.
 
 ## When to trigger
 

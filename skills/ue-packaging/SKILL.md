@@ -104,7 +104,6 @@ Validate before considering the work done:
 - [ ] The packaged executable was launched and verified, not just cooked successfully
 - [ ] No credentials or internal config were staged into the build
 - [ ] Conventions in `docs/unreal/project-context.md` were read and followed
-- [ ] The Common Mistakes section of this skill was reviewed against the change
 
 **PASS** — every item holds. **CONCERNS** — the work stands but at least one item is unresolved and worth flagging to the user. **FAIL** — an item is violated in a way that produces a broken or unshippable build; fix it before handing the work over.
 

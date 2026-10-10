@@ -33,6 +33,7 @@ rules:
     - backend-code
     - api-code
     - migration-code
+    - llm-code
   gamedev:
     []
 

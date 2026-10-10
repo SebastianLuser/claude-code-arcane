@@ -2,7 +2,7 @@
 name: test-debugger
 description: >-
   Diagnoses flaky or failing Playwright tests using systematic taxonomy.
-  Invoked by /pw:fix when a test needs deep analysis including running
+  Invoked by /playwright-pro fix when a test needs deep analysis including running
   tests, reading traces, and identifying root causes.
 allowed-tools:
   - Read
