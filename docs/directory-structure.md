@@ -96,7 +96,7 @@ claude-code-arcane/
 │   ├── hooks/                         # Todos los hooks de hooks/ salvo statusline.sh
 │   ├── statusline.sh                  # Solo con el profile statusline
 │   ├── output-styles/                 # Solo si algún profile declara output_styles
-│   ├── docs/                          # Copia de docs/
+│   ├── docs/                          # Copia de docs/; arcane update la mantiene al día
 │   └── .arcane-trash/                 # Lo que arcane update saca; nunca se borra con rm
 ├── .claude.bak/                       # Backup de .claude/ antes de instalar
 └── production/session-state/          # Estado de sesión que escriben los hooks

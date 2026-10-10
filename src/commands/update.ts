@@ -61,7 +61,7 @@ interface UpdateResult {
 }
 
 interface UpdateItem {
-  type: "skill" | "rule" | "agent" | "hook";
+  type: "skill" | "rule" | "agent" | "hook" | "doc";
   name: string;
   action: UpdateAction;
 }
@@ -252,6 +252,13 @@ export async function updateTarget(
   const claudeDir = path.join(target, ".claude");
   const installedHashes = computeContentHashes(claudeDir);
 
+  // In a worktree, .claude/docs/ is a symlink to the main worktree's copy. Writing or
+  // quarantining through it would edit the main install; that one updates itself.
+  if (isSymlink(path.join(claudeDir, "docs"))) {
+    sourceHashes.docs = {};
+    installedHashes.docs = {};
+  }
+
   // Already handled above the version gate; reusing the result keeps the reporting honest
   // without comparing the same files twice.
   const unhashed = earlySync;
@@ -381,7 +388,27 @@ function printGeneralSummary(results: UpdateResult[], isDryRun: boolean): void {
   console.log(`  ${chalk.green(updated)} ${isDryRun ? "would change" : "updated"}, ${chalk.dim(unchanged + " unchanged")}`);
 }
 
-type ContentType = "skills" | "rules" | "agents" | "hooks";
+/** Hashes as a manifest stores them: older manifests predate some categories. */
+type ManifestHashes = NonNullable<ArcaneManifest["content_hashes"]>;
+
+type ContentType = "skills" | "rules" | "agents" | "hooks" | "docs";
+
+/**
+ * Files Arcane shipped under docs/ in an earlier version and no longer does.
+ *
+ * docs/ was copied at install and never revisited, so manifests written before it was
+ * tracked hold no record of which docs are Arcane's. Ownership there falls back to this
+ * list: these few are removed, and every other unrecorded file in .claude/docs/ is
+ * treated as the user's own. Taken from `git log --diff-filter=DR -- docs/`.
+ */
+const RETIRED_DOCS: ReadonlySet<string> = new Set([
+  "RELEASE-SETUP.md",
+  "trusted-publishing-setup.md",
+  "presentations/arcane-overview.pptx",
+  "presentations/arcane-overview-12.pptx",
+  "presentations/build_arcane_deck.py",
+  "presentations/build_arcane_deck_12.py",
+]);
 
 type OwnershipCheck = (type: ContentType, name: string) => boolean;
 
@@ -398,7 +425,10 @@ type OwnershipCheck = (type: ContentType, name: string) => boolean;
 function makeOwnershipCheck(manifest: ArcaneManifest): OwnershipCheck {
   const hashes = manifest.content_hashes;
   if (hashes) {
-    return (type, name) => name in (hashes[type] ?? {});
+    return (type, name) => {
+      if (type === "docs" && !hashes.docs) return RETIRED_DOCS.has(name);
+      return name in (hashes[type] ?? {});
+    };
   }
 
   // Installs written before content_hashes existed - the same old ones most likely to
@@ -423,6 +453,8 @@ function makeOwnershipCheck(manifest: ArcaneManifest): OwnershipCheck {
         // No manifest ever listed hooks by name, and the installer writes
         // .claude/hooks/ wholesale, so there is nothing else they could be.
         return true;
+      case "docs":
+        return RETIRED_DOCS.has(name);
     }
   };
 }
@@ -473,7 +505,7 @@ function granularAgentDivisions(entries: string[]): Set<string> {
  */
 function hashesToRecord(
   fresh: ContentHashes,
-  previous: ContentHashes | null,
+  previous: ManifestHashes | null,
   items: UpdateItem[],
   force: boolean,
 ): ContentHashes {
@@ -482,6 +514,7 @@ function hashesToRecord(
     rules: { ...fresh.rules },
     agents: { ...fresh.agents },
     hooks: { ...fresh.hooks },
+    docs: { ...fresh.docs },
   };
 
   for (const item of items) {
@@ -502,7 +535,7 @@ function hashesToRecord(
 }
 
 function computeUpdatePlan(
-  manifestHashes: ContentHashes | null,
+  manifestHashes: ManifestHashes | null,
   installedHashes: ContentHashes,
   sourceHashes: ContentHashes,
   owned: OwnershipCheck,
@@ -510,11 +543,12 @@ function computeUpdatePlan(
 ): UpdateItem[] {
   const items: UpdateItem[] = [];
 
-  for (const contentType of ["skills", "rules", "agents", "hooks"] as const) {
+  for (const contentType of ["skills", "rules", "agents", "hooks", "docs"] as const) {
     const itemType = contentType === "skills" ? "skill"
       : contentType === "rules" ? "rule"
       : contentType === "agents" ? "agent"
-      : "hook";
+      : contentType === "hooks" ? "hook"
+      : "doc";
 
     const manifest = manifestHashes?.[contentType] ?? {};
     const installed = installedHashes[contentType];
@@ -663,7 +697,7 @@ function applyUpdates(
 }
 
 /**
- * Refresh the installed files that live outside the four hashed categories.
+ * Refresh the installed files that live outside the hashed categories.
  *
  * `.claude/statusline.sh` and `.claude/output-styles/*.md` are not under
  * .claude/{skills,rules,agents,hooks}, so computeContentHashes() never sees them and
@@ -854,6 +888,8 @@ function getSourcePath(item: UpdateItem, root: string): string | null {
       return path.join(root, "agents", item.name);
     case "hook":
       return path.join(root, "hooks", item.name);
+    case "doc":
+      return path.join(root, "docs", item.name);
     default:
       return null;
   }
@@ -869,5 +905,15 @@ function getInstalledPath(item: UpdateItem, claudeDir: string): string {
       return path.join(claudeDir, "agents", item.name);
     case "hook":
       return path.join(claudeDir, "hooks", item.name);
+    case "doc":
+      return path.join(claudeDir, "docs", item.name);
+  }
+}
+
+function isSymlink(p: string): boolean {
+  try {
+    return fs.lstatSync(p).isSymbolicLink();
+  } catch {
+    return false;
   }
 }
