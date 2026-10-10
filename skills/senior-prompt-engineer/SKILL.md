@@ -23,12 +23,12 @@ python scripts/agent_orchestrator.py agent_config.yaml --visualize       # Visua
 
 ### 1. Prompt Optimizer
 
-Analyzes prompts for token efficiency, clarity, and structure. Generates optimized versions.
+Static checks for clarity and structure, with an approximate token count (characters / 4). `--optimize` only normalizes whitespace; the real rewrite is yours.
 
 ```bash
 python scripts/prompt_optimizer.py prompt.txt --analyze          # Full analysis
-python scripts/prompt_optimizer.py prompt.txt --optimize         # Generate optimized version
-python scripts/prompt_optimizer.py prompt.txt --tokens --model gpt-4  # Token count
+python scripts/prompt_optimizer.py prompt.txt --optimize         # Normalize whitespace
+python scripts/prompt_optimizer.py prompt.txt --tokens           # Approximate token count
 python scripts/prompt_optimizer.py prompt.txt --extract-examples --output examples.json
 ```
 
@@ -50,7 +50,7 @@ Parses agent definitions and visualizes execution flows. Validates tool configur
 python scripts/agent_orchestrator.py agent.yaml --validate       # Validate config
 python scripts/agent_orchestrator.py agent.yaml --visualize      # Show workflow (ASCII)
 python scripts/agent_orchestrator.py agent.yaml --visualize --format mermaid  # Mermaid
-python scripts/agent_orchestrator.py agent.yaml --estimate-cost  # Token estimation
+python scripts/agent_orchestrator.py agent.yaml --estimate-cost --price-in 4 --price-out 20  # Tokens; dollars with your current prices (USD/Mtok)
 ```
 
 ## Prompt Engineering Workflows
@@ -65,7 +65,7 @@ python scripts/agent_orchestrator.py agent.yaml --estimate-cost  # Token estimat
 |-------|---------|
 | Ambiguous output | Add explicit format specification |
 | Too verbose | Extract to few-shot examples |
-| Inconsistent results | Add role/persona framing |
+| Inconsistent results | Add 2-3 varied examples and state the success criteria |
 | Missing edge cases | Add constraint boundaries |
 
 4. **Optimize**: `python scripts/prompt_optimizer.py current_prompt.txt --optimize --output optimized.txt`
@@ -77,15 +77,15 @@ python scripts/agent_orchestrator.py agent.yaml --estimate-cost  # Token estimat
 1. Define task clearly (input format, output format)
 2. Select 3-5 diverse examples: simple case, edge case, complex case, negative case
 3. Format consistently
-4. Validate: `python scripts/prompt_optimizer.py prompt_with_examples.txt --validate-examples`
+4. Check what the prompt contains: `python scripts/prompt_optimizer.py prompt_with_examples.txt --extract-examples`
 5. Test with held-out cases
 
 ### Structured Output Design
 
 1. Define JSON/XML schema with types, constraints, enums
-2. Include schema description in prompt
-3. Add format enforcement: "Respond ONLY with valid JSON. Start with { and end with }"
-4. Validate: `python scripts/prompt_optimizer.py structured_prompt.txt --validate-schema schema.json`
+2. Pass the schema through the API's structured outputs (`output_config.format` on Claude) so the response is guaranteed to match it; do not rely on "respond ONLY with valid JSON" in the prompt
+3. Describe in the prompt what each field means, not the JSON syntax
+4. Validate the parsed result against the schema in code before using it
 
 ## Reference Documentation
 

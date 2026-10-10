@@ -205,12 +205,7 @@ def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 100) -> List[st
 
 ### Cost Calculation
 
-| Provider | Input Cost | Output Cost | Example (1K tokens) |
-|----------|------------|-------------|---------------------|
-| GPT-4 | $0.03/1K | $0.06/1K | $0.09 |
-| GPT-3.5 | $0.0005/1K | $0.0015/1K | $0.002 |
-| Claude 3 Opus | $0.015/1K | $0.075/1K | $0.09 |
-| Claude 3 Haiku | $0.00025/1K | $0.00125/1K | $0.0015 |
+Prices change with every model release, so keep them out of code: read them from config, and take the numbers from each provider's pricing page. Count tokens with the provider's response metadata (`usage`), not with a character estimate.
 
 ### Cost Tracking
 
@@ -228,30 +223,19 @@ class LLMUsage:
 def calculate_cost(
     input_tokens: int,
     output_tokens: int,
-    model: str
+    prices: dict,
 ) -> float:
-    """Calculate cost based on token usage."""
-    PRICING = {
-        "gpt-4": {"input": 0.03, "output": 0.06},
-        "gpt-3.5-turbo": {"input": 0.0005, "output": 0.0015},
-        "claude-opus-5-5": {"input": 0.004, "output": 0.020},
-    }
-
-    prices = PRICING.get(model, {"input": 0.01, "output": 0.03})
-
-    input_cost = (input_tokens / 1000) * prices["input"]
-    output_cost = (output_tokens / 1000) * prices["output"]
-
-    return input_cost + output_cost
+    """Cost in USD. `prices` comes from config: {"input": usd_per_mtok, "output": usd_per_mtok}."""
+    return (input_tokens * prices["input"] + output_tokens * prices["output"]) / 1_000_000
 ```
 
 ### Cost Optimization Strategies
 
-1. **Use smaller models for simple tasks** - GPT-3.5 for classification, GPT-4 for reasoning
-2. **Cache common responses** - Store results for repeated queries
-3. **Batch requests** - Combine multiple items in single prompt
-4. **Truncate context** - Only include relevant information
-5. **Set max_tokens limit** - Prevent runaway responses
+1. **Use a smaller model where it holds quality** - measure on real requests before routing a task to it
+2. **Cache repeated context** - provider prompt caching makes a stable system prompt or document far cheaper on repeat calls
+3. **Batch non-urgent work** - batch APIs trade latency for a lower price
+4. **Cache common responses** - store results for repeated queries
+5. **Set max_tokens deliberately** - high enough not to cut answers off, as a ceiling on runaway output
 
 ---
 

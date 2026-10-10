@@ -220,11 +220,6 @@ class AgentEvaluator:
     def _define_cost_benchmarks(self) -> Dict[str, Any]:
         """Define cost benchmarks for different operations"""
         return {
-            "token_costs": {
-                "gpt-4": {"input": 0.00003, "output": 0.00006},
-                "gpt-3.5-turbo": {"input": 0.000002, "output": 0.000002},
-                "claude-opus-5-5": {"input": 0.000004, "output": 0.00002}
-            },
             "operation_costs": {
                 "simple_task": 0.005,
                 "complex_task": 0.050,
