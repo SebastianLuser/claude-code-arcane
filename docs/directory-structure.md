@@ -65,8 +65,7 @@ claude-code-arcane/
 ├── docs/                              # Documentación; se copia entera a .claude/docs/
 │   ├── templates/                     # Plantillas de ADR, PRD, RFC, test plan, etc.
 │   ├── gates/                         # Gates de fase (software y gamedev)
-│   ├── gamedev/, software/            # coding-standards por dominio
-│   └── presentations/                 # Deck de Arcane y su script generador
+│   └── gamedev/, software/            # coding-standards por dominio
 │
 ├── skills-selftest/                   # QA de skills y agentes (no se instala)
 │   ├── CLAUDE.md
@@ -77,6 +76,7 @@ claude-code-arcane/
 │   └── templates/                     # Plantillas para specs nuevos
 │
 ├── tests/                             # Specs Python de los scripts de skills (npm run test:skills)
+├── maintainers/                       # Cómo publicar Arcane (release, npm). No se instala ni se publica
 ├── scripts/                           # Utilidades de mantenimiento del repo
 ├── .github/workflows/                 # ci.yml (vitest, typecheck, specs Python) y release.yml (semantic-release)
 └── .claude/                           # La instalación de Arcane que usa este mismo repo
