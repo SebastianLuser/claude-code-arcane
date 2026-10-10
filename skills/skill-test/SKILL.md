@@ -22,7 +22,7 @@ Validates `skills/*/SKILL.md` for structural compliance and behavioral correctne
 
 ## Phase 1: Parse Arguments
 
-`static [name]` → 7 checks on one skill. `static all` → all skills (Glob `skills/*/SKILL.md`). `spec [name]` → read skill + test spec, evaluate assertions. `category [name|all]` → category rubric from `CCGS Skill Testing Framework/quality-rubric.md`. `audit` (or no arg) → read catalog, list all, show coverage. Missing/unrecognized → output usage and stop.
+`static [name]` → 7 checks on one skill. `static all` → all skills (Glob `skills/*/SKILL.md`). `spec [name]` → read skill + test spec, evaluate assertions. `category [name|all]` → category rubric from `skills-selftest/quality-rubric.md`. `audit` (or no arg) → read catalog, list all, show coverage. Missing/unrecognized → output usage and stop.
 
 ## Phase 2A: Static Mode
 
