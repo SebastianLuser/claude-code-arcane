@@ -86,7 +86,7 @@ Auditoría contra OWASP Top 10 2021. Go backend + TS/React frontend. Datos de me
 
 ## Reporte Output
 
-Formato: Resumen ejecutivo (hallazgos por severidad) → Hallazgos por categoría (archivo:línea, descripción, PoC, remediación, ticket Jira) → Plan priorizado → Herramientas ejecutadas.
+Formato: Resumen ejecutivo (hallazgos por severidad y veredicto: **FAIL** si hay algún hallazgo Critical o High, **CONCERNS** si quedan solo Medium o Low, **PASS** si no hay nada accionable) → Hallazgos por categoría (archivo:línea, descripción, PoC, remediación, ticket Jira) → Plan priorizado → Herramientas ejecutadas.
 
 ## Educabot Specifics
 

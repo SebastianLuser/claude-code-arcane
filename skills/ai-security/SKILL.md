@@ -72,6 +72,10 @@ Injection score (0.0-1.0) measures proportion of matched signatures. Score above
 
 Full ATLAS technique coverage and guardrail patterns: `references/atlas-coverage.md`
 
+### Step 5: Verdict
+
+**Verdict:** **FAIL** if any finding is Critical or High; **CONCERNS** if only Medium or Low findings remain; **PASS** if nothing actionable turned up. A prompt-injection score above 0.5 counts as High.
+
 ---
 
 ## Tool Reference

@@ -82,6 +82,10 @@ HSTS rollout: start with short `max-age` (300s), escalate to 2 years, then submi
 - **Threat modeling**: complex trust boundaries need STRIDE before implementation
 - **CSP breaks prod**: revert to report-only immediately; analyze before re-enforcing
 
+## Verdict
+
+**Verdict:** **FAIL** if any finding is Critical or High; **CONCERNS** if only Medium or Low findings remain; **PASS** if nothing actionable turned up.
+
 ## Checklist
 
 - [ ] All required security headers present and returning correct values (target A+ on securityheaders.com)

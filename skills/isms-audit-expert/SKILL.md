@@ -54,6 +54,8 @@ For detailed control testing procedures by Annex A control, see [references/secu
 | Minor Nonconformity | Isolated deviation with limited impact | 90 days |
 | Observation | Improvement opportunity | Next audit cycle |
 
+**Audit conclusion:** **CONFORMING** (observations at most), **MINOR NONCONFORMITIES** (minor only), or **MAJOR NONCONFORMITY** (at least one major, which blocks a certification recommendation until it is corrected).
+
 ### Corrective Action Workflow
 
 1. Auditee acknowledges finding

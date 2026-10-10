@@ -73,6 +73,10 @@ Full escalation combos, severity guide, and least privilege recommendations: `re
 
 Catch misconfigurations at definition time in Terraform, CloudFormation, Kubernetes manifests, and Helm charts. Integrate into CI/CD as a pre-apply gate.
 
+### Step 6: Verdict
+
+**Verdict:** **FAIL** if any finding is Critical or High; **CONCERNS** if only Medium or Low findings remain; **PASS** if nothing actionable turned up. Apply the severity modifier first: an internet-facing or regulated-data resource raises the finding's severity before the verdict is taken.
+
 ---
 
 ## Cloud Provider Coverage

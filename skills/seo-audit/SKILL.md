@@ -43,7 +43,7 @@ Before auditing, understand:
 ### Audit Report Structure
 
 **Executive Summary**
-- Overall health assessment
+- Overall health: **HEALTHY** (no critical or high-impact issues), **NEEDS WORK** (high-impact issues, nothing blocking), or **CRITICAL** (something blocks indexation or ranking)
 - Top 3-5 priority issues
 - Quick wins identified
 

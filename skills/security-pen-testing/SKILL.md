@@ -74,7 +74,7 @@ Key tests: XSS (reflected, stored, DOM-based), CSRF (token replay, SameSite), SQ
 python scripts/pentest_report_generator.py --findings findings.json --format md --output report.md
 ```
 
-Report structure: executive summary, scope, methodology, findings table (by severity/CVSS), detailed findings with evidence and remediation, priority matrix.
+Report structure: executive summary with a verdict (**FAIL** if any finding is Critical or High, **CONCERNS** if only Medium or Low remain, **PASS** if nothing actionable turned up), scope, methodology, findings table (by severity/CVSS), detailed findings with evidence and remediation, priority matrix.
 
 Responsible disclosure timeline and templates: `references/responsible_disclosure.md`
 
