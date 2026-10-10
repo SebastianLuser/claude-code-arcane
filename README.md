@@ -201,7 +201,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
 | `frontend-react-vite` | React + Vite + TypeScript | 17 | engineering |
-| `design` | Figma, UX review, design system, handoff | 6 | product |
+| `design` | Figma, UX review, design system, handoff | 10 | product |
 
 ### Mobile
 
@@ -216,21 +216,21 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
-| `unity-dev` | Unity programmer — C#, architecture, performance, builds | 25 | game |
-| `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 17 | game |
+| `unity-dev` | Unity programmer — C#, architecture, performance, builds | 21 | game |
+| `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 18 | game |
 | `meshy` | 3D asset production with Meshy AI — credit-gated generation, single master + cheap derivatives, printability | 5 | — |
 | `blender` | Blender for game assets — tri budget and topology, materials with bake and color space, baked animation, validated export | 6 | — |
-| `unreal-dev` | Unreal Engine 5 programmer — C++, Blueprints, GAS, replication, rendering, packaging | 49 | game |
-| `visual-novel` | Visual novel developer — Ren'Py, narrative, branching | 17 | visualnovel, game |
+| `unreal-dev` | Unreal Engine 5 programmer — C++, Blueprints, GAS, replication, rendering, packaging | 50 | game |
+| `visual-novel` | Visual novel developer — Ren'Py, narrative, branching | 18 | visualnovel, game |
 | `audio` | Game audio — direction, composition, sound design, middleware, VO, QA | 13 | audio |
 
 ### Platform & Quality
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `infra` | Terraform, observability, secrets, rollback, K8s | 17 | devops |
+| `infra` | Terraform, observability, secrets, rollback, K8s | 24 | devops |
 | `database` | Indexing, migrations, seeding, replicas, optimization | 8 | — |
-| `security` | Audits, OWASP, secrets, backups | 5 | — |
+| `security` | Audits, OWASP, secrets, backups | 10 | — |
 | `testing` | Contract, performance, regression, flakiness | 11 | quality |
 | `ai` | LLM cost optimization, RAG, ML, data engineering, agent and MCP design | 10 | ai |
 
@@ -238,9 +238,9 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `agile` | Sprints, standups, retros, estimates | 10 | management, product |
-| `jira` | Jira via REST API — issues, sprints, boards | 3 | — |
-| `clickup` | ClickUp via MCP — tasks, docs, time tracking | 3 | — |
+| `agile` | Sprints, standups, retros, estimates | 39 | management, product |
+| `jira` | Jira via REST API — issues, sprints, boards | 1 | — |
+| `clickup` | ClickUp via MCP — tasks, docs, time tracking | 1 | — |
 | `integrations` | GitHub Projects, Slack, Postman, Stripe, email templates, Microsoft 365, Snowflake, stack evaluation | 8 | integrations |
 
 ### Business
@@ -251,7 +251,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 | `clevel` | C-suite advisors, board prep, strategic ops | 28 | clevel |
 | `finance` | Investment analysis, financial modeling, SaaS metrics | 3 | business |
 | `marketing` | Content, growth, SEO/CRO, strategy, analytics | 44 | marketing |
-| `ecommerce` | Commerce end-to-end agnóstico de lenguaje — data model, checkout, inventario, órdenes, pagos, promociones, shipping/tax, listings, analytics, feeds, storefront, suscripciones | 12 | ecommerce |
+| `ecommerce` | Commerce end-to-end agnóstico de lenguaje — data model, checkout, inventario, órdenes, pagos, promociones, shipping/tax, listings, analytics, feeds, storefront, suscripciones | 21 | ecommerce |
 | `regulatory` | ISO 13485, GDPR, FDA, SOC 2, ISMS, QMS, MDR | 13 | regulatory |
 
 ### Personal
@@ -266,7 +266,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `docs` | PDF, PPTX, XLSX, DOCX, architecture decisions | 8 | — |
+| `docs` | PDF, PPTX, XLSX, DOCX, architecture decisions | 5 | — |
 | `self-improving` | Agent self-improvement and skill extraction | 2 | — |
 | `statusline` | Claude Code status bar (branch, division, session info) | 0 | — |
 
