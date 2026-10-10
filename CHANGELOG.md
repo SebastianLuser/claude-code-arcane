@@ -1,3 +1,15 @@
+# [2.10.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.9...v2.10.0) (2026-10-10)
+
+
+### Bug Fixes
+
+* **profiles:** keep bridge files under the old names for pre-rename CLIs ([921c351](https://github.com/SebastianLuser/claude-code-arcane/commit/921c35119ea3b4bf5a25bbdabe369bc922e71a3f))
+
+
+### Features
+
+* **profiles:** name stack profiles by platform and technology ([ce89d4a](https://github.com/SebastianLuser/claude-code-arcane/commit/ce89d4a25b1f6ba28d6efe7e84a27343b1e734f5))
+
 ## [2.9.9](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.8...v2.9.9) (2026-10-10)
 
 
