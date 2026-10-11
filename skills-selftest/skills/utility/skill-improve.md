@@ -40,26 +40,26 @@ None. `/skill-improve` is a meta-utility skill. No director gates apply.
 
 **Fixture:**
 - `skills/some-skill/SKILL.md` has 2 static failures:
-  - Check 4: no "May I write" language despite having Write in allowed-tools
-  - Check 5: no next-step handoff at the end
+  - Check 3: a verdict value from its catalog `verdict:` list is missing
+  - Check 4: no next-step handoff at the end
 
 **Input:** `/skill-improve some-skill`
 
 **Expected behavior:**
-1. Skill runs `/skill-test static some-skill` — baseline: 5/7 checks pass
-2. Skill diagnoses the 2 failing checks (4 and 5)
+1. Skill runs `/skill-test static some-skill` — baseline: 4/6 checks pass
+2. Skill diagnoses the 2 failing checks (3 and 4)
 3. Skill proposes fixes:
-   - Add "May I write" language to the appropriate phase
+   - Define the missing verdict value
    - Add a next-step handoff section at the end
 4. Skill asks "May I write improvements to `skills/some-skill/SKILL.md`?"
-5. Fixes applied; `/skill-test static some-skill` re-run — now 7/7 checks pass
-6. Verdict is IMPROVED (5→7)
+5. Fixes applied; `/skill-test static some-skill` re-run — now 6/6 checks pass
+6. Verdict is IMPROVED (4→6)
 
 **Assertions:**
-- [ ] Baseline score is established before any changes (5/7)
+- [ ] Baseline score is established before any changes (4/6)
 - [ ] Both failing checks are diagnosed and addressed in the proposed fix
 - [ ] "May I write" is asked before applying the fix
-- [ ] Re-test confirms improvement (7/7)
+- [ ] Re-test confirms improvement (6/6)
 - [ ] Verdict is IMPROVED with before/after score shown
 
 ---
@@ -74,12 +74,12 @@ None. `/skill-improve` is a meta-utility skill. No director gates apply.
 **Input:** `/skill-improve some-skill`
 
 **Expected behavior:**
-1. Baseline: 6/7 checks pass (1 failure: missing handoff)
+1. Baseline: 5/6 checks pass (1 failure: missing handoff)
 2. Skill proposes fix and asks "May I write improvements?"
 3. Fix is applied; re-test runs
-4. Re-test result: 5/7 (fixed the handoff but broke verdict keywords)
+4. Re-test result: 4/6 (fixed the handoff but broke verdict keywords)
 5. Skill detects regression: score went DOWN
-6. Skill asks user: "Fix caused a regression (6→5). May I revert the changes?"
+6. Skill asks user: "Fix caused a regression (5→4). May I revert the changes?"
 7. User confirms; changes are reverted; verdict is REVERTED
 
 **Assertions:**
@@ -102,14 +102,14 @@ None. `/skill-improve` is a meta-utility skill. No director gates apply.
 
 **Expected behavior:**
 1. Skill runs both static and category tests for the baseline:
-   - Static: 6/7 checks pass
+   - Static: 5/6 checks pass
    - Category: 3/5 G-criteria pass
-2. Combined baseline: 9/12
+2. Combined baseline: 8/11
 3. Skill diagnoses all 3 failures and proposes fixes
 4. "May I write improvements to `skills/gate-check/SKILL.md`?"
 5. Fixes applied; both test types re-run
-6. Re-test: static 7/7, category 5/5 = 12/12
-7. Verdict is IMPROVED (9→12)
+6. Re-test: static 6/6, category 5/5 = 11/11
+7. Verdict is IMPROVED (8→11)
 
 **Assertions:**
 - [ ] Both static and category scores are captured in the baseline
@@ -129,7 +129,7 @@ None. `/skill-improve` is a meta-utility skill. No director gates apply.
 **Input:** `/skill-improve brainstorm`
 
 **Expected behavior:**
-1. Skill runs `/skill-test static brainstorm` — 7/7 checks pass
+1. Skill runs `/skill-test static brainstorm` — 6/6 checks pass
 2. If category applies: 5/5 criteria pass
 3. Skill outputs: "No improvements needed — brainstorm is fully compliant"
 4. Skill exits without proposing any changes

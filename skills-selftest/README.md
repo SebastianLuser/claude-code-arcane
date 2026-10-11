@@ -80,7 +80,7 @@ All driven by skills already shipped in `skills/`:
 
 | Command | What it does |
 |---------|--------------|
-| `/skill-test static [name]` | 7 structural checks (frontmatter, paths, allowed tools) |
+| `/skill-test static [name]` | 6 structural checks (frontmatter, sections, verdict, handoff, fork, argument hint) |
 | `/skill-test static all` | Run static checks across all registered skills |
 | `/skill-test spec [name]` | Evaluate skill against its written behavioral spec |
 | `/skill-test category [name]` | Evaluate against category rubric |

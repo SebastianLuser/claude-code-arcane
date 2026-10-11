@@ -149,7 +149,7 @@ gates, the gate mode logic must also be correct.
 
 | Metric | PASS criteria |
 |---|---|
-| **U1 — Passes all 7 static checks** | `/skill-test static [name]` returns COMPLIANT with 0 FAILs |
+| **U1 — Passes all 6 static checks** | `/skill-test static [name]` returns COMPLIANT with 0 FAILs |
 | **U2 — Gate mode correct (if applicable)** | If the skill spawns any director gate, it reads review-mode and applies full/lean/solo logic correctly |
 
 ---
