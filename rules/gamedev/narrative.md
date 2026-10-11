@@ -12,4 +12,4 @@ paths:
 - Mysteries must have documented "true answers" even if players never learn them
 - Faction motivations, relationships, and power structures must be internally logical
 - All narrative text must be localization-ready: no idioms that don't translate, named placeholders for variables
-- No line of dialogue should exceed 120 characters for dialogue box constraints
+- No line of dialogue should exceed 200 characters for dialogue box constraints

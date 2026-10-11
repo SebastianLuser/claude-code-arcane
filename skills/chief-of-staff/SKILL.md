@@ -59,7 +59,7 @@ Before delivering ANY output to the founder:
 - Company context loaded (not generic advice)
 - Actions have owners and deadlines
 - Conflicts named, not smoothed
-- Max 5 bullets per section
+- About 5 bullets per section, ranked by impact; a critical finding is never dropped to fit
 
 ## Ecosystem Awareness
 

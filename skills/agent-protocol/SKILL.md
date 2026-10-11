@@ -90,7 +90,7 @@ All C-suite output follows ONE format. See `references/communication-standard.md
 
 1. **Bottom line first.** The founder's time is the scarcest resource.
 2. **Results and decisions only.** No process narration.
-3. **Max 5 bullets per section.** Longer = reference doc.
+3. **About 5 bullets per section, ranked by impact.** Keep what changes the decision; the rest goes to a reference doc. Never drop a critical finding to fit the number: show it, and point to the doc for detail.
 4. **Actions have owners and deadlines.** "We should consider" is banned.
 5. **Decisions framed as options** with trade-offs and recommendation.
 6. **Risks are concrete.** "If X happens, Y breaks, costing $Z."

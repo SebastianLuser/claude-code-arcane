@@ -1,6 +1,6 @@
 # Meshy Assets
 
-Reglas para produccion de assets 3D con Meshy. Aplican a cualquier operacion que toque `assets/3d/`.
+Reglas que tienen que estar presentes antes de cualquier llamada a Meshy, aunque no se toque ningun archivo: cada llamada gasta creditos. Estructura en disco, ledger, ejes, rigging y Git estan en `.claude/rules/meshy-files.md`, que se carga al tocar `assets/3d/`.
 
 ## Creditos — cada llamada cuesta plata real
 
@@ -29,83 +29,14 @@ Reglas para produccion de assets 3D con Meshy. Aplican a cualquier operacion que
 
 Ante cualquier duda sobre si una operacion gasta, correr `meshy_check_balance` antes y despues y reportar el delta real.
 
-## Master unico, derivados baratos
+## Antes de gastar
 
-El GLB refined es la fuente de verdad y es **inmutable**. Ningun target se genera desde el prompt: todos salen del master.
+- Ningun target se genera desde el prompt: todos salen del master con `meshy_convert` (1).
+- Nunca usar `remesh` (5) cuando `convert` (1) alcanza, ni para LODs de web: `gltf-transform` los hace gratis.
+- `meshy_rig` (5) es solo para humanoides: con otro modelo se gastan los creditos y no sirve.
+- Si existe un art bible en el proyecto, el prompt de generacion se deriva de ahi, no se inventa.
+- `meshy_analyze_printability` (gratis) **siempre** antes de `meshy_repair_printability` (10). Print (20 white / 40 multicolor): doble confirmacion.
 
-| Target | Como | Creditos |
-|---|---|---|
-| Unity y UE5 | `meshy_convert` -> `fbx` (un solo archivo sirve para los dos) | 1 |
-| Blender | `meshy_convert` -> `blend` | 1 |
-| Impresion | `meshy_convert` -> `stl` (`3mf` si es multicolor) | 1 |
-| Web / three.js | `npx gltf-transform optimize --simplify` | **0** |
+## Secretos
 
-- Nunca usar `remesh` (5) cuando `convert` (1) alcanza. `remesh` es para cambiar topologia de verdad, no para cambiar de formato.
-- Nunca usar `remesh` para LODs de web: `gltf-transform` hace decimation, meshopt y KTX2 en local y gratis.
-
-## Estructura en disco
-
-```
-assets/3d/<slug>/
-  meshy.json           # ledger, ver abajo
-  master.glb           # refined, inmutable
-  thumb.png
-  targets/
-    web.glb            # <=15k tris, texturas 1024, KTX2 + draco
-    game.fbx           # Unity + UE5
-    edit.blend
-    print.stl
-```
-
-Slugs en kebab-case, sin fechas ni task_ids en el path.
-
-## Ledger: `meshy.json`
-
-Obligatorio por asset. Sin esto cada sesion nueva arranca ciega y se paga dos veces el mismo modelo.
-
-```json
-{
-  "slug": "rune-pedestal",
-  "prompt": "...",
-  "ai_model": "meshy-5",
-  "tasks": [
-    { "id": "...", "op": "text_to_3d_preview", "credits": 5, "at": "2026-08-18T14:02:00Z" },
-    { "id": "...", "op": "text_to_3d_refine", "credits": 25, "at": "2026-08-18T14:11:00Z" }
-  ],
-  "credits_total": 30,
-  "derived": ["targets/web.glb", "targets/game.fbx"]
-}
-```
-
-Actualizar `meshy.json` **en el mismo turno** en que se genera. No dejarlo para despues.
-
-## Ejes y escala
-
-Verificar una vez, anotar en el ledger, no volver a pensarlo.
-
-| Destino | Convencion |
-|---|---|
-| GLB | Y-up, metros |
-| Unity | Y-up, 1 unidad = 1 m |
-| UE5 | Z-up, 1 unidad = 1 cm (rotacion + factor 100) |
-| Blender | Z-up, metros |
-
-## Impresion 3D
-
-Correr `meshy_analyze_printability` (gratis) **siempre** antes de `meshy_repair_printability` (10). `meshy_resize` a milimetros reales antes de exportar STL. Las operaciones de print (20 white / 40 multicolor) son las mas caras del catalogo: doble confirmacion.
-
-## Rigging
-
-`meshy_rig` es solo humanoides. El esqueleto que devuelve **no** es el mannequin de UE5: el retargeting es manual. En UE5 los static meshes van a Nanite y no necesitan decimation; los skeletal meshes si necesitan LODs propios.
-
-## Git y secretos
-
-- `*.glb *.fbx *.blend *.stl *.3mf` por **Git LFS**.
-- `meshy.json` y `thumb.png` van como archivos normales — son chicos y son lo que hace grepeable el catalogo.
-- `MESHY_API_KEY` (formato `msy_...`) va en `.env`, **nunca** en el repo ni en un SKILL.md.
-
-## Integracion con el resto del stack
-
-`asset-spec` define que asset hace falta -> Meshy lo genera -> `asset-audit` valida el resultado. Meshy no reemplaza a ninguno de los dos.
-
-Si existe un art bible en el proyecto, el prompt de generacion se deriva de ahi, no se inventa.
+`MESHY_API_KEY` (formato `msy_...`) va en `.env`, **nunca** en el repo ni en un SKILL.md.

@@ -162,4 +162,4 @@ que se bakeo, y convencion de normal map elegida.
 ---
 
 > → Color space, convenciones de normal map y presupuesto de materiales estan en
-> `.claude/rules/blender-pipeline.md`.
+> `.claude/rules/blender-files.md`.

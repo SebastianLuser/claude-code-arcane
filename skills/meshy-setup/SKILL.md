@@ -113,4 +113,4 @@ Reportar:
 
 ---
 
-> Las reglas de gasto, estructura de `assets/3d/`, ledger `meshy.json` y tabla de derivados estan en `.claude/rules/meshy-assets.md`. Leerlas antes de cualquier operacion que gaste creditos.
+> Las reglas de gasto, estructura de `assets/3d/`, ledger `meshy.json` y tabla de derivados estan en `.claude/rules/meshy-assets.md` y `.claude/rules/meshy-files.md`. Leerlas antes de cualquier operacion que gaste creditos.

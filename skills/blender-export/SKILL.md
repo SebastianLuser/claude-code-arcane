@@ -140,4 +140,4 @@ verdict.
 
 ---
 
-> → Formatos, ejes, escala y reglas de Git LFS estan en `.claude/rules/blender-pipeline.md`.
+> → Formatos, ejes, escala y reglas de Git LFS estan en `.claude/rules/blender-files.md`.

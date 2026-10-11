@@ -116,4 +116,4 @@ Reportar: targets generados, creditos gastados reales (delta de `check_balance`)
 
 ---
 
-> Presupuestos, estructura de `targets/`, formato del ledger y la tabla de creditos completa: `.claude/rules/meshy-assets.md`.
+> Presupuestos, estructura de `targets/` y formato del ledger: `.claude/rules/meshy-files.md`. Tabla de creditos completa: `.claude/rules/meshy-assets.md`.

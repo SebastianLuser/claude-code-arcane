@@ -17,6 +17,7 @@ skills:
 rules:
   universal:
     - blender-pipeline
+    - blender-files
   gamedev:
     []
 
