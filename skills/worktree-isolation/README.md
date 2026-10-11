@@ -8,22 +8,22 @@ This README explains **how worktree isolation works under the hood**. For usage,
 
 ## Install
 
+Ships with the `infra` and backend profiles. Elsewhere:
+
 ```bash
-npx skills add https://github.com/educabot/team-ai-skills --skill worktree-isolation
+npx claude-code-arcane add worktree-isolation
 ```
 
-> The host repo is private — `npx skills add` clones via Git, so the machine needs GitHub credentials with read access (e.g. `gh auth login` or an SSH key on the account).
-
-After install, invoke with phrases like:
+Then invoke with phrases like:
 
 - `isolate worktree`
 - `regenerate worktree ports`
 - `which ports is this worktree using?`
 
-If you also want a SessionStart hook that runs this automatically on every Claude Code session start, install the companion skill:
+If you also want it to run automatically on every Claude Code session start, install the SessionStart hook once per machine:
 
 ```bash
-npx skills add https://github.com/educabot/team-ai-skills --skill worktree-isolation-setup
+npx claude-code-arcane global
 ```
 
 ---

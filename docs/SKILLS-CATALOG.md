@@ -2,7 +2,7 @@
 
 Los 437 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 395: hay 42 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 397: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -376,7 +376,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 ---
 
-## DevOps (6 skills)
+## DevOps (8 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -386,6 +386,8 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 | `/helm-chart-builder` | Build production-grade Helm charts: scaffolding, values design, template patterns, dependency management, and security hardening | `[scaffold\|lint\|test]` |
 | `/incident-commander` | Manage technology incidents end-to-end: severity classification, timeline reconstruction, stakeholder communication, and RCA | `[classify\|timeline\|communicate]` |
 | `/incident-response` | Classify and triage security incidents through the full NIST SP 800-61 lifecycle: SEV1-4 scoring and forensic evidence collection | `[classify\|triage\|forensics]` |
+| `/worktree-isolation` | Regenera o muestra los puertos de Docker de este worktree para que varios worktrees corran en paralelo sin chocar | `[apply\|status]` |
+| `/worktree-isolation-setup` | Prepara el repo una vez: parametriza puertos y container_name del docker-compose, `.gitignore`, CLAUDE.md y el hook global | |
 
 ---
 

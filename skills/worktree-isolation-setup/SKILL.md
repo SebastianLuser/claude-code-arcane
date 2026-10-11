@@ -1,6 +1,6 @@
 ---
 name: worktree-isolation-setup
-description: One-time per-repo setup that makes a project natively friendly to the worktree-isolation runtime. Refactors docker-compose port mappings + container_name to use ${VAR-default} substitutions, updates .gitignore, amends CLAUDE.md test commands, and ensures the global SessionStart hook + scripts are installed on the user's machine. Run once per repo. Trigger phrases include "setup worktree isolation in this project", "prepare repo for worktree isolation", "make this repo isolation-aware", "preparar repo para worktrees paralelos". DO NOT use mid-session for routine port regeneration — that is the `worktree-isolation` skill.
+description: "Prepare a repo once for parallel worktrees: parameterize docker-compose ports and container names, update .gitignore and CLAUDE.md, install the SessionStart hook. Edits repo files; to regenerate or show ports, use worktree-isolation."
 argument-hint: ""
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Edit
@@ -23,17 +23,23 @@ For an in-depth explanation of how isolation works (hook lifecycle, override gen
 
 ## Step 1 — Ensure the global hook is installed
 
-Run the bundled installer. It is idempotent — safe to re-run.
+The hook is per machine, so check first:
 
 ```bash
-python3 scripts/install_hook.py
+npx claude-code-arcane global --status
+```
+
+If the SessionStart hook is not active, install it. It is idempotent — safe to re-run:
+
+```bash
+npx claude-code-arcane global
 ```
 
 What it does:
-1. Copies `scripts/apply.py` + `scripts/lib.py` into `~/.claude/scripts/worktree-isolation/`
-2. Adds (or confirms) a `SessionStart` hook in `~/.claude/settings.json` that invokes `~/.claude/scripts/worktree-isolation/apply.py --quiet`
+1. Copies `apply.py` + `lib.py` into `~/.claude/scripts/worktree-isolation/`
+2. Adds a `SessionStart` hook in `~/.claude/settings.json` that invokes `~/.claude/scripts/worktree-isolation/apply.py --quiet`
 
-If the hook is already present, it reports "already present" and exits 0.
+It refuses to touch a malformed `settings.json`; if it stops there, tell the user and continue with Step 2 — the repo changes do not depend on the hook.
 
 ---
 

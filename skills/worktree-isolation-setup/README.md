@@ -8,13 +8,13 @@ This README explains **what setup does and why**. For step-by-step instructions,
 
 ## Install
 
+Ships with the `infra` and backend profiles, next to `worktree-isolation`. Elsewhere:
+
 ```bash
-npx skills add https://github.com/educabot/team-ai-skills --skill worktree-isolation-setup
+npx claude-code-arcane add worktree-isolation-setup
 ```
 
-> The host repo is private — `npx skills add` clones via Git, so the machine needs GitHub credentials with read access (e.g. `gh auth login` or an SSH key on the account).
-
-After install, run the skill once per repo:
+Then run the skill once per repo:
 
 ```
 setup worktree isolation in this project
@@ -80,7 +80,7 @@ After setup, both work in parallel.
 │                                                                     │
 │    user → "setup worktree isolation in this project"                │
 │      → this skill runs                                              │
-│        ├─ install_hook.py        (one-time per machine; idempotent) │
+│        ├─ arcane global          (one-time per machine; idempotent) │
 │        ├─ rewrites compose files (port + container_name params)     │
 │        ├─ updates .gitignore                                        │
 │        └─ amends CLAUDE.md                                          │
@@ -127,11 +127,7 @@ For deep-dive details on how the runtime script works (port allocation, override
 ```
 skills/worktree-isolation-setup/
 ├── SKILL.md             # entry point — step-by-step setup procedure
-├── README.md            # this file
-└── scripts/
-    ├── install_hook.py  # idempotent installer for the hook + scripts
-    ├── apply.py         # copied into ~/.claude/scripts/ by install_hook.py
-    └── lib.py           # ditto
+└── README.md            # this file
 ```
 
-`apply.py` and `lib.py` are duplicated from the [`worktree-isolation`](../worktree-isolation/) skill so this skill is self-contained. The runtime skill bundles its own copies for direct invocation.
+This skill has no scripts of its own. The runtime scripts live in [`worktree-isolation`](../worktree-isolation/scripts/), and `npx claude-code-arcane global` copies them from there into `~/.claude/scripts/`.

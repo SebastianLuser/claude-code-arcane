@@ -190,11 +190,11 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
-| `backend-typescript` | Backend TypeScript — Fastify, Prisma, Zod, API design | 25 | engineering |
-| `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 24 | engineering |
-| `backend-dotnet` | Backend .NET — ASP.NET Core, Vertical Slice/Clean, EF Core, JWT | 25 | engineering |
-| `backend-nestjs` | Backend NestJS — feature modules, DI, Prisma, JWT, microservices | 25 | engineering |
-| `backend-nextjs` | Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK | 22 | engineering |
+| `backend-typescript` | Backend TypeScript — Fastify, Prisma, Zod, API design | 27 | engineering |
+| `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 26 | engineering |
+| `backend-dotnet` | Backend .NET — ASP.NET Core, Vertical Slice/Clean, EF Core, JWT | 27 | engineering |
+| `backend-nestjs` | Backend NestJS — feature modules, DI, Prisma, JWT, microservices | 27 | engineering |
+| `backend-nextjs` | Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK | 24 | engineering |
 
 ### Frontend & Design
 
@@ -228,7 +228,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `infra` | Terraform, observability, secrets, rollback, K8s | 24 | devops |
+| `infra` | Terraform, observability, secrets, rollback, K8s | 26 | devops |
 | `database` | Indexing, migrations, seeding, replicas, optimization | 8 | — |
 | `security` | Audits, OWASP, secrets, backups | 10 | — |
 | `testing` | Contract, performance, regression, flakiness | 11 | quality |

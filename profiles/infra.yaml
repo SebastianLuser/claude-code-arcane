@@ -27,6 +27,8 @@ skills:
   - incident-commander
   - incident-response
   - git-worktree-manager
+  - worktree-isolation
+  - worktree-isolation-setup
 
 rules:
   universal:

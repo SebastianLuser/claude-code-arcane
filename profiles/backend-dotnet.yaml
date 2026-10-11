@@ -32,6 +32,8 @@ skills:
   - performance
   - async-ops
   - ci-cd-setup
+  - worktree-isolation
+  - worktree-isolation-setup
 
 rules:
   universal:

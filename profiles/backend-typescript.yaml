@@ -28,6 +28,8 @@ skills:
   - websocket-realtime-rooms
   - search-setup
   - ci-cd-setup
+  - worktree-isolation
+  - worktree-isolation-setup
 
 rules:
   universal:
