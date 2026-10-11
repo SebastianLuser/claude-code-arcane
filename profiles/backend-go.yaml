@@ -27,6 +27,8 @@ skills:
   - audit-log
   - slo-sli
   - ci-cd-setup
+  - worktree-isolation
+  - worktree-isolation-setup
 
 rules:
   universal:

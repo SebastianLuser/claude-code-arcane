@@ -7,6 +7,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, AskUserQuestion
 ---
 
+## Process
+
 When this skill is invoked:
 
 1. **Check for existing work**:

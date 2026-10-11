@@ -1,5 +1,8 @@
-version: 6
+version: 7
 last_updated: "2026-08-12"
+# v7: backfilled the skills added after v6 (career, freelance, second-brain, ecommerce,
+#     .NET/NestJS/Next.js, Blender) and added `verdict:` to every evaluator skill: the
+#     values its SKILL.md must keep defining. skill-static.test.ts enforces both.
 # v6: added the unreal stack (30 ue-* skills) and the three ue-* sub-specialists
 #     that unreal-specialist already delegated to. Specs for the agents already
 #     existed under agents/engine/unreal/; the skills have no specs yet.
@@ -94,6 +97,7 @@ skills:
     last_category_result: ""
     priority: critical
     category: utility
+    verdict: ["PASS", "CONCERNS", "FAIL"]
 
   - name: atlassian-admin
     spec: null
@@ -130,6 +134,7 @@ skills:
     last_category_result: ""
     priority: critical
     category: utility
+    verdict: ["SALUDABLE", "NECESITA ATENCIÓN", "CRÍTICO"]
 
   - name: audit-log
     spec: null
@@ -214,6 +219,7 @@ skills:
     last_category_result: ""
     priority: critical
     category: utility
+    verdict: ["PASS", "CONCERNS", "FAIL"]
 
   - name: code-review
     spec: skills-selftest/skills/analysis/code-review.md
@@ -226,6 +232,7 @@ skills:
     last_category_result: ""
     priority: high
     category: utility
+    verdict: ["APPROVED", "APPROVED WITH SUGGESTIONS", "CHANGES REQUIRED"]
 
   - name: commit
     spec: null
@@ -358,6 +365,7 @@ skills:
     last_category_result: ""
     priority: critical
     category: utility
+    verdict: ["READY TO DEPLOY", "BLOCKERS FOUND"]
 
   - name: deploy-staging
     spec: null
@@ -382,6 +390,7 @@ skills:
     last_category_result: ""
     priority: medium
     category: utility
+    verdict: ["CLEAN", "WARNINGS", "CRITICAL"]
 
   - name: doc-rfc
     spec: null
@@ -478,6 +487,7 @@ skills:
     last_category_result: ""
     priority: critical
     category: utility
+    verdict: ["PASS", "CONCERNS", "FAIL"]
 
   - name: git-worktree-manager
     spec: null
@@ -562,6 +572,7 @@ skills:
     last_category_result: ""
     priority: high
     category: sprint
+    verdict: ["GO", "CONDITIONAL GO", "NO-GO"]
 
   - name: onboard
     spec: skills-selftest/skills/utility/onboard.md
@@ -862,6 +873,7 @@ skills:
     last_category_result: ""
     priority: medium
     category: utility
+    verdict: ["PASS", "CONCERNS", "FAIL"]
 
   - name: scrum-master
     spec: null
@@ -934,6 +946,7 @@ skills:
     last_category_result: ""
     priority: high
     category: analysis
+    verdict: ["COMPLIANT", "WARNINGS", "NON-COMPLIANT"]
 
   - name: smoke-check
     spec: skills-selftest/skills/utility/smoke-check.md
@@ -946,6 +959,7 @@ skills:
     last_category_result: ""
     priority: high
     category: analysis
+    verdict: ["PASS", "PASS WITH WARNINGS", "FAIL"]
 
   - name: sprint-ceremony
     spec: null
@@ -1030,6 +1044,7 @@ skills:
     last_category_result: ""
     priority: critical
     category: sprint
+    verdict: ["COMPLETE", "COMPLETE WITH NOTES", "BLOCKED"]
 
   - name: story-readiness
     spec: skills-selftest/skills/readiness/story-readiness.md
@@ -1042,6 +1057,7 @@ skills:
     last_category_result: ""
     priority: critical
     category: sprint
+    verdict: ["READY", "NEEDS WORK", "BLOCKED"]
 
   - name: tdd-guide
     spec: null
@@ -1237,6 +1253,7 @@ skills:
     last_category_result: ""
     priority: medium
     category: software
+    verdict: ["PASS", "CONCERNS", "FAIL"]
 
   - name: android-native-dev
     spec: null
@@ -1333,6 +1350,7 @@ skills:
     last_category_result: ""
     priority: high
     category: software
+    verdict: ["PASS", "CONCERNS", "FAIL"]
 
   - name: csp-headers
     spec: null
@@ -1693,6 +1711,7 @@ skills:
     last_category_result: ""
     priority: critical
     category: software
+    verdict: ["PASS", "CONCERNS", "FAIL"]
 
   - name: performance
     spec: null
@@ -1873,6 +1892,7 @@ skills:
     last_category_result: ""
     priority: critical
     category: software
+    verdict: ["CLEAR TO SHIP", "FIX CRITICALS", "DO NOT SHIP"]
 
   - name: security-pen-testing
     spec: null
@@ -1885,6 +1905,7 @@ skills:
     last_category_result: ""
     priority: medium
     category: software
+    verdict: ["PASS", "CONCERNS", "FAIL"]
 
   - name: slo-sli
     spec: null
@@ -1969,6 +1990,7 @@ skills:
     last_category_result: ""
     priority: high
     category: software
+    verdict: ["PASS", "CONCERNS", "FAIL"]
 
   - name: webhooks
     spec: null
@@ -2153,6 +2175,9 @@ skills:
     last_spec_result: ""
     last_category: ""
     last_category_result: ""
+    priority: medium
+    category: analysis
+    verdict: ["COMPLIANT", "WARNINGS", "NON-COMPLIANT"]
   - name: meshy-derive
     spec: null
     stack: gamedev
@@ -2162,6 +2187,8 @@ skills:
     last_spec_result: ""
     last_category: ""
     last_category_result: ""
+    priority: medium
+    category: authoring
   - name: meshy-generate
     spec: null
     stack: gamedev
@@ -2171,6 +2198,8 @@ skills:
     last_spec_result: ""
     last_category: ""
     last_category_result: ""
+    priority: medium
+    category: authoring
   - name: meshy-print
     spec: null
     stack: gamedev
@@ -2180,6 +2209,8 @@ skills:
     last_spec_result: ""
     last_category: ""
     last_category_result: ""
+    priority: medium
+    category: authoring
   - name: meshy-setup
     spec: null
     stack: gamedev
@@ -2215,6 +2246,7 @@ skills:
     last_category_result: ""
     priority: critical
     category: authoring
+    verdict: ["SALUDABLE", "NECESITA ATENCIÓN", "CRÍTICO"]
 
   - name: balance-check
     spec: skills-selftest/skills/analysis/balance-check.md
@@ -2227,6 +2259,7 @@ skills:
     last_category_result: ""
     priority: medium
     category: authoring
+    verdict: ["HEALTHY", "CONCERNS", "CRITICAL ISSUES"]
 
   - name: consistency-check
     spec: skills-selftest/skills/analysis/consistency-check.md
@@ -2239,6 +2272,7 @@ skills:
     last_category_result: ""
     priority: high
     category: authoring
+    verdict: ["PASS", "CONFLICTS FOUND"]
 
   - name: doc-gdd
     spec: null
@@ -2287,6 +2321,7 @@ skills:
     last_category_result: ""
     priority: medium
     category: authoring
+    verdict: ["SALUDABLE", "NECESITA ATENCIÓN", "CRÍTICO"]
 
   - name: game-docs
     spec: null
@@ -2662,6 +2697,7 @@ skills:
     last_category_result: ""
     priority: critical
     category: audio
+    verdict: ["COMPLIANT", "NON-COMPLIANT"]
 
   # =====================================================
   # Stack: design (9 skills --- UX, UI, Figma, design systems)
@@ -2773,6 +2809,7 @@ skills:
     last_category_result: ""
     priority: medium
     category: authoring
+    verdict: ["APPROVED", "NEEDS REVISION", "MAJOR REVISION NEEDED"]
 
   # =====================================================
   # Stack: integrations (8 skills --- Jira, ClickUp, Slack, Postman, Atlassian, Google Workspace)
@@ -3844,6 +3881,7 @@ skills:
     last_category_result: ""
     priority: medium
     category: product
+    verdict: ["HEALTHY", "NEEDS WORK", "CRITICAL"]
 
   - name: signup-flow-cro
     spec: null
@@ -3991,6 +4029,7 @@ skills:
     last_category_result: ""
     priority: medium
     category: analysis
+    verdict: ["CONFORMING", "MINOR NONCONFORMITIES", "MAJOR NONCONFORMITY"]
 
   - name: mdr-745-specialist
     spec: null
@@ -4015,6 +4054,7 @@ skills:
     last_category_result: ""
     priority: medium
     category: analysis
+    verdict: ["CONFORMING", "MINOR NONCONFORMITIES", "MAJOR NONCONFORMITY"]
 
   - name: quality-documentation-manager
     spec: null
@@ -4449,6 +4489,861 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: high
+    category: utility
+
+  # =====================================================
+  # Backfill v7 - stack: personal (40 skills --- career, freelance and second-brain workflows)
+  # =====================================================
+  - name: career-registry
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: client-screen
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: cold-outreach
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: cover-letter
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: cv-ats-export
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: cv-tailor
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: fiverr-gig
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: freelance-deliver
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: freelance-hunt
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: freelance-kickoff
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: freelance-pipeline
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: freelance-profile
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: freelance-proposal
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: freelance-scan
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: interview-prep
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: job-aplicar
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: job-hunt
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: job-outcome
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: job-scrape
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: job-search
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: job-upskill
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: linkedin-optimize
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: master-profile
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: network-map
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: personal-brand
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: portfolio-site
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: brain-dump
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: hub-note
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: obsidian-bases
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: obsidian-canvas
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: obsidian-markdown
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: review-dump
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: review-monthly
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: review-weekly
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: second-brain
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: vault-audit
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: vault-clip
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: vault-recall
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: vault-tidy
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: zettel
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+
+  # =====================================================
+  # Backfill v7 - stack: ecommerce (12 skills --- language-agnostic commerce domain)
+  # =====================================================
+  - name: cart-checkout
+    spec: null
+    stack: ecommerce
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: commerce-analytics
+    spec: null
+    stack: ecommerce
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: commerce-data-model
+    spec: null
+    stack: ecommerce
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: inventory-stock
+    spec: null
+    stack: ecommerce
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: merchant-feed
+    spec: null
+    stack: ecommerce
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: order-lifecycle
+    spec: null
+    stack: ecommerce
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: payments-architecture
+    spec: null
+    stack: ecommerce
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: product-listing
+    spec: null
+    stack: ecommerce
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: promotions-discounts
+    spec: null
+    stack: ecommerce
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: shipping-tax
+    spec: null
+    stack: ecommerce
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: storefront-architecture
+    spec: null
+    stack: ecommerce
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: subscription-billing
+    spec: null
+    stack: ecommerce
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+
+  # =====================================================
+  # Backfill v7 - stack: software (9 skills --- .NET, NestJS and Next.js stacks added after v6)
+  # =====================================================
+  - name: dotnet-architecture
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: dotnet-best-practices
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: dotnet-scaffold
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: nestjs-best-practices
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: nestjs-scaffold
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: pgvector-search
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: nextjs-best-practices
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: nextjs-scaffold
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+  - name: seo-nextjs
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+
+  # =====================================================
+  # Backfill v7 - stack: gamedev (5 skills --- Blender asset pipeline)
+  # =====================================================
+  - name: blender-animation
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: blender-context
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: blender-export
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: blender-materials
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+  - name: blender-modeling
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: authoring
+
+
+  # =====================================================
+  # Backfill v7 - stack: gamedev (1 skills --- editor tooling)
+  # =====================================================
+  - name: install-mcp
+    spec: null
+    stack: gamedev
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+
+  # =====================================================
+  # Backfill v7 - stack: ai (1 skills --- AI SDK)
+  # =====================================================
+  - name: ai-sdk-setup
+    spec: null
+    stack: ai
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: software
+
+
+  # =====================================================
+  # Backfill v7 - stack: general (1 skills --- project kickoff)
+  # =====================================================
+  - name: kickoff
+    spec: null
+    stack: general
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
     category: utility
 
 agents:

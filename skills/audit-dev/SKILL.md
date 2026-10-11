@@ -30,7 +30,7 @@ Identificar lenguajes/frameworks/package manager. Leer configs raíz. Mapear car
 
 ## Phase 3 — Producir reporte
 
-Guardar como `AUDIT.md` en raíz. Secciones: fecha/stack/estado general, resumen ejecutivo (3-5 oraciones), scorecard (tabla dimensión/estado OK-WARN-CRIT/nota), hallazgos críticos, hallazgos importantes, observaciones, lo que está bien, plan de acción recomendado, detalles por dimensión con evidencia (paths, líneas).
+Guardar como `AUDIT.md` en raíz. Secciones: fecha/stack/estado general (**SALUDABLE** si todas las dimensiones del scorecard están en OK, **NECESITA ATENCIÓN** si alguna quedó en WARN, **CRÍTICO** si alguna quedó en CRIT), resumen ejecutivo (3-5 oraciones), scorecard (tabla dimensión/estado OK-WARN-CRIT/nota), hallazgos críticos, hallazgos importantes, observaciones, lo que está bien, plan de acción recomendado, detalles por dimensión con evidencia (paths, líneas).
 
 ## Rules
 

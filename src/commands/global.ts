@@ -19,12 +19,31 @@ export async function globalCommand(opts: GlobalOpts): Promise<void> {
     return;
   }
 
+  // Both paths below rewrite settings.json, and readSettings() reads a malformed file
+  // as empty: writing back would wipe the user's global settings.
+  if (!settingsParseable()) {
+    console.error(
+      chalk.red(`  Refusing to modify malformed ${SETTINGS_PATH}. Fix it and re-run.`),
+    );
+    process.exit(1);
+  }
+
   if (opts.remove) {
     removeGlobal();
     return;
   }
 
   installGlobal();
+}
+
+function settingsParseable(): boolean {
+  if (!fs.existsSync(SETTINGS_PATH)) return true;
+  try {
+    JSON.parse(fs.readFileSync(SETTINGS_PATH, "utf-8"));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function showStatus(): void {

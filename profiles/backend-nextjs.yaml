@@ -30,6 +30,8 @@ skills:
   - observability
   - ci-cd-setup
   - cdn-setup
+  - worktree-isolation
+  - worktree-isolation-setup
 
 rules:
   universal:

@@ -231,6 +231,26 @@ describe("globalCommand", () => {
     expect(output).toContain("not configured");
   });
 
+  it.each([[{}], [{ remove: true }]])(
+    "leaves a malformed settings.json untouched (%o)",
+    async (opts) => {
+      const claudeDir = path.join(tmpDir, ".claude");
+      fs.mkdirSync(claudeDir, { recursive: true });
+      const settingsPath = path.join(claudeDir, "settings.json");
+      fs.writeFileSync(settingsPath, '{"permissions": {"allow": ["Bash(git *)"]},');
+
+      const { globalCommand } = await import("../commands/global.js");
+      await expect(globalCommand(opts)).rejects.toThrow("process.exit called");
+
+      expect(fs.readFileSync(settingsPath, "utf-8")).toBe(
+        '{"permissions": {"allow": ["Bash(git *)"]},',
+      );
+      expect(
+        fs.existsSync(path.join(claudeDir, "scripts", "worktree-isolation")),
+      ).toBe(false);
+    },
+  );
+
   it("should append to existing SessionStart hooks when installing", async () => {
     const claudeDir = path.join(tmpDir, ".claude");
     fs.mkdirSync(claudeDir, { recursive: true });

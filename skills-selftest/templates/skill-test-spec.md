@@ -15,9 +15,8 @@
 These should pass before any behavioral testing:
 
 - [ ] Frontmatter has all required fields (`name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`)
-- [ ] 2+ phase headings found
-- [ ] At least one verdict keyword present (`PASS`, `FAIL`, `CONCERNS`, `APPROVED`, `BLOCKED`, `COMPLETE`, `READY`)
-- [ ] If `allowed-tools` includes Write/Edit: `"May I write"` language present
+- [ ] 2+ `##` sections, if the skill is longer than 40 lines
+- [ ] If the skill judges something: every value in its catalog `verdict:` list is present
 - [ ] Next-step handoff section present at end
 
 ---
@@ -129,10 +128,8 @@ These should pass before any behavioral testing:
 
 ## Protocol Compliance
 
-- [ ] Uses `"May I write"` before any file writes (or is read-only and skips this)
 - [ ] Presents findings/draft to user before requesting approval
 - [ ] Ends with a recommended next step or follow-up action
-- [ ] Does not auto-create files without user approval
 
 ---
 

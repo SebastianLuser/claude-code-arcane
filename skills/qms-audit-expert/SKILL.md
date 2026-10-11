@@ -63,6 +63,8 @@ Gap: [How evidence fails to meet requirement]
 | Minor | Isolated lapse or partial implementation | Recommended | 60 days |
 | Observation | Improvement opportunity | Optional | As appropriate |
 
+**Audit conclusion:** **CONFORMING** (observations at most), **MINOR NONCONFORMITIES** (minor only), or **MAJOR NONCONFORMITY** (at least one major, which blocks a certification recommendation until it is corrected).
+
 ### Corrective Action Integration
 
 | Severity | CAPA Depth | Verification |

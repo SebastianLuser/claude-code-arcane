@@ -6,8 +6,8 @@
 compliance, and category-rubric scoring. It operates in three modes:
 
 - **static**: Checks a single skill file for structural requirements
-  (frontmatter fields, phase headings, verdict keywords, "May I write" language,
-  next-step handoff) without needing a fixture. Produces a per-check PASS/FAIL
+  (frontmatter fields, sections, verdict values, next-step handoff, fork
+  complexity, argument hint) without needing a fixture. Produces a per-check PASS/FAIL
   table.
 - **spec**: Reads a test spec file from `tests/skills/` and evaluates the skill
   against each test case assertion, producing a case-by-case verdict.
@@ -40,14 +40,13 @@ None. `/skill-test` is a meta-utility skill. No director gates apply.
 
 ## Test Cases
 
-### Case 1: Static Mode — Well-formed skill, all 7 checks pass, COMPLIANT
+### Case 1: Static Mode — Well-formed skill, all 6 checks pass, COMPLIANT
 
 **Fixture:**
 - `skills/brainstorm/SKILL.md` exists and is well-formed:
   - Has all required frontmatter fields
   - Has ≥2 phase headings
   - Has verdict keywords
-  - Has "May I write" language
   - Has a next-step handoff
   - Documents director gates
   - Documents gate mode behavior (lean/solo skips)
@@ -56,40 +55,38 @@ None. `/skill-test` is a meta-utility skill. No director gates apply.
 
 **Expected behavior:**
 1. Skill reads `skills/brainstorm/SKILL.md`
-2. Skill runs all 7 structural checks
-3. All 7 checks pass
-4. Skill outputs a PASS/FAIL table with all 7 checks marked PASS
+2. Skill runs all 6 structural checks
+3. All 6 checks pass
+4. Skill outputs a PASS/FAIL table with all 6 checks marked PASS
 5. Verdict is COMPLIANT
 
 **Assertions:**
-- [ ] Exactly 7 structural checks are reported
-- [ ] All 7 are marked PASS
+- [ ] Exactly 6 structural checks are reported
+- [ ] All 6 are marked PASS
 - [ ] Verdict is COMPLIANT
 - [ ] No files are written
 
 ---
 
-### Case 2: Static Mode — Skill Missing "May I Write" Despite Write Tool in allowed-tools
+### Case 2: Static Mode — Skill With Write Tool and No "May I Write" Is Not Penalized
 
 **Fixture:**
 - `skills/some-skill/SKILL.md` has `Write` in `allowed-tools` frontmatter
 - The skill body has no "May I write" or "May I update" language
+- Every other check passes
 
 **Input:** `/skill-test static some-skill`
 
 **Expected behavior:**
 1. Skill reads `some-skill/SKILL.md`
-2. Check 4 (collaborative write protocol) fails: `Write` in allowed-tools but no
-   "May I write" language found
-3. All other checks may pass
-4. Verdict is NON-COMPLIANT with Check 4 as the failing assertion
-5. Output lists Check 4 as FAIL with explanation
+2. No check looks for ask-before-write language: whether Claude asks before
+   writing is set by the session's permission mode, not by the skill
+3. Verdict is COMPLIANT
 
 **Assertions:**
-- [ ] Check 4 is marked FAIL
-- [ ] Explanation identifies the specific mismatch (Write tool without "May I write" language)
-- [ ] Verdict is NON-COMPLIANT
-- [ ] Other passing checks are shown (not only the failure)
+- [ ] No FAIL or WARN mentions "May I write" or an approval gate
+- [ ] Verdict is COMPLIANT
+- [ ] All 6 checks are shown
 
 ---
 
@@ -168,7 +165,7 @@ None. `/skill-test` is a meta-utility skill. No director gates apply.
 
 ## Protocol Compliance
 
-- [ ] Static mode checks exactly 7 structural assertions
+- [ ] Static mode checks exactly 6 structural assertions
 - [ ] Spec mode evaluates each test case from the spec file individually
 - [ ] Audit mode covers all skills AND agents (not just one category)
 - [ ] Category mode reads quality-rubric.md to get criteria (not hardcoded)
@@ -182,7 +179,8 @@ None. `/skill-test` is a meta-utility skill. No director gates apply.
 - The skill-test skill is self-referential (it can test itself). The static
   mode case for skill-test's own SKILL.md is not separately fixture-tested to
   avoid infinite recursion in test design.
-- The specific 7 structural checks are defined in the skill body; only Check 4
-  (May I write) is individually tested here because it has the most nuanced logic.
+- The 6 structural checks are defined in `references/static-checks.md`; checks 1-3
+  are also enforced by `skill-static.test.ts`. Case 2 pins that the removed
+  ask-before-write check stays removed.
 - Audit mode counts are approximate — the exact number of skills and agents will
   change as the system grows; assertions use "all" rather than fixed counts.
