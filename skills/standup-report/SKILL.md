@@ -48,4 +48,4 @@ Flujo: detectar team/proyecto → pull data en paralelo (git, ClickUp, Jira, Git
 - NO incluir contenido sensible (PII, passwords, secrets)
 - Grouping lógico: mergear commits del mismo ticket
 - Sugerencias "hoy" basadas en tickets In Progress + priorities
-- Max 5 bullets per section, collapsar el resto
+- Unos 5 bullets por sección, ordenados por impacto, y el resto colapsado. Un blocker nunca se colapsa para respetar el número

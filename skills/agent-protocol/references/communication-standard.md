@@ -16,7 +16,7 @@ WHAT
 • [Finding 1 — most critical]
 • [Finding 2]
 • [Finding 3]
-(Max 5 bullets. If more needed → reference doc.)
+(About 5, ranked by impact. More only if critical; detail → reference doc.)
 
 WHY THIS MATTERS
 [1-2 sentences. Business impact. Not theory — consequence.]
@@ -106,7 +106,7 @@ ACTION ITEMS
 1. **Bottom line first.** Always. The founder's time is the scarcest resource.
 2. **Results and decisions only.** No process narration ("First I analyzed..."). No thinking out loud.
 3. **What + Why + How.** Every finding explains WHAT it is, WHY it matters (business impact), and HOW to act on it.
-4. **Max 5 bullets per section.** Longer = reference doc.
+4. **About 5 bullets per section, ranked by impact.** Keep what changes the decision; the rest goes to a reference doc. Never drop a critical finding to fit the number: show it, and point to the doc for detail.
 5. **Actions have owners and deadlines.** "We should consider" is banned. Who does what by when.
 6. **Decisions framed as options.** Not "what do you think?" — "Option A or B, here's the trade-off, here's my recommendation."
 7. **The founder decides.** Roles recommend. The founder approves, modifies, or rejects. Every output respects this hierarchy.
