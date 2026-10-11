@@ -1,3 +1,20 @@
+# [2.11.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.10.0...v2.11.0) (2026-10-11)
+
+
+### Bug Fixes
+
+* **global:** refuse to rewrite a malformed settings.json ([fa1a15b](https://github.com/SebastianLuser/claude-code-arcane/commit/fa1a15be969fe56fd865319df30b4e3bd985285e))
+* **rules:** align the narrative dialogue limit with the VN rule at 200 ([3cc5f60](https://github.com/SebastianLuser/claude-code-arcane/commit/3cc5f60b0836c6a817018ca8af3b9ebf981499dc))
+* **skill-test:** drop the ask-before-write static check ([28e504f](https://github.com/SebastianLuser/claude-code-arcane/commit/28e504f29ab2114d8f27f732d3fd148ccd3dc2be))
+* **skills:** complete the skill catalog and the frontmatter it relies on ([5665fdf](https://github.com/SebastianLuser/claude-code-arcane/commit/5665fdfd60766ce663c26060d8f042d873f12ac1))
+* **skills:** make the five-bullet limit a guide that never drops a critical finding ([466bf55](https://github.com/SebastianLuser/claude-code-arcane/commit/466bf554d862d55350c0d1cfb86caea4520779e6))
+* **worktree:** ship the isolation skills with the profiles that run Docker ([f0a1589](https://github.com/SebastianLuser/claude-code-arcane/commit/f0a15894c6c064088c1fe55150f7145e04f5848a))
+
+
+### Features
+
+* **skills:** give the ten evaluator skills that lacked one a verdict ([26e9682](https://github.com/SebastianLuser/claude-code-arcane/commit/26e968235dbaf4babd7c93aa15c348639f7e6b8d))
+
 # [2.10.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.9.9...v2.10.0) (2026-10-10)
 
 
