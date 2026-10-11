@@ -157,4 +157,4 @@ Reportar por objeto: verts, tris, n-gons, materiales, escala, y tris contra el p
 ---
 
 > → Topologia, presupuestos, ejes y las reglas de scripts destructivos estan en
-> `.claude/rules/blender-pipeline.md`.
+> `.claude/rules/blender-files.md`.

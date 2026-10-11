@@ -15,6 +15,7 @@ skills:
 rules:
   universal:
     - meshy-assets
+    - meshy-files
   gamedev:
     []
 

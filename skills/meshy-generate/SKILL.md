@@ -115,4 +115,4 @@ Reportar:
 
 ---
 
-> Tabla de creditos completa, reglas de gasto, formato del ledger y convenciones de ejes/escala: `.claude/rules/meshy-assets.md`. Leerla antes de la Phase 3.
+> Tabla de creditos completa, reglas de gasto, formato del ledger y convenciones de ejes/escala: `.claude/rules/meshy-assets.md` y `.claude/rules/meshy-files.md`. Leerlas antes de la Phase 3.

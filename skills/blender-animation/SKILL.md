@@ -164,4 +164,4 @@ influencias maximas por vertice, que se bakeo, y decision de root motion por cli
 
 ---
 
-> → Bake de constraints, frame rate y ejes estan en `.claude/rules/blender-pipeline.md`.
+> → Bake de constraints, frame rate y ejes estan en `.claude/rules/blender-files.md`.
