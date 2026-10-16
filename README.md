@@ -194,13 +194,13 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 | `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 26 | engineering |
 | `backend-dotnet` | Backend .NET — ASP.NET Core, Vertical Slice/Clean, EF Core, JWT | 27 | engineering |
 | `backend-nestjs` | Backend NestJS — feature modules, DI, Prisma, JWT, microservices | 27 | engineering |
-| `backend-nextjs` | Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK | 24 | engineering |
+| `backend-nextjs` | Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK | 25 | engineering |
 
 ### Frontend & Design
 
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
-| `frontend-react-vite` | React + Vite + TypeScript | 17 | engineering |
+| `frontend-react-vite` | React + Vite + TypeScript | 18 | engineering |
 | `design` | Figma, UX review, design system, handoff | 10 | product |
 
 ### Mobile
@@ -304,7 +304,7 @@ It ships the in-editor skills that operate and extend the MCP (`unreal-mcp`, `cr
 | ClickUp | `/clickup` | `+clickup` |
 | Figma | `/figma`, `/figma-to-code`, `/figma-tokens` | `+design` |
 | Atlassian (Confluence) | `/confluence-expert`, `/atlassian-templates` | `+agile` |
-| TestRail + BrowserStack | `/playwright-pro` (ships its own `.mcp.json`) | `+testing` |
+| TestRail + BrowserStack | `/playwright-pro` (ships its own `.mcp.json`) | `+testing`, `frontend-react-vite`, `backend-nextjs` |
 
 `/jira-tickets` is the exception: it talks to the Jira REST API v3 over `curl`, not MCP.
 
