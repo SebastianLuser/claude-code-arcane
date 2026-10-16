@@ -16,7 +16,7 @@ Claude Code tiene una ventana de contexto limitada. Sesiones largas llegan al l�
 
 ### Session State File
 
-Mantené `production/session-state/active.md` como checkpoint vivo. Update después de cada milestone significativo:
+Mantené `.claude/session-state/active.md` como checkpoint vivo. Update después de cada milestone significativo:
 
 - Sección de diseño / ADR aprobada y escrita
 - Decisión arquitectónica tomada
@@ -24,23 +24,6 @@ Mantené `production/session-state/active.md` como checkpoint vivo. Update despu
 - Resultados de tests obtenidos
 
 El state file debe contener: tarea actual, checklist de progreso, decisiones clave tomadas, archivos en trabajo, preguntas abiertas.
-
-### Status Line Block (opcional, para proyectos activos)
-
-Para proyectos en fase de ejecución, incluir en `active.md` un bloque estructurado que el status line script puede parsear:
-
-```markdown
-<!-- STATUS -->
-Epic: Auth refactor
-Feature: JWT rotation
-Task: Implementar refresh endpoint
-<!-- /STATUS -->
-```
-
-- Los tres campos (Epic, Feature, Task) son opcionales — incluí solo lo aplicable
-- Update cuando cambiás de foco
-- El status line lo muestra como breadcrumb: `Auth refactor > JWT rotation > Refresh endpoint`
-- Remove o vaciá cuando no hay work focus activo
 
 Después de cualquier disrupción (compaction, crash, `/clear`), leé el state file primero.
 
@@ -71,8 +54,8 @@ Esto mantiene el context window con ~3-5k tokens (solo la sección actual) en ve
 
 ### Compaction Hooks
 
-- `pre-compact.sh`: Guarda summary del estado antes de compaction
-- `post-compact.sh`: Carga summary después de compaction
+- `pre-compact.sh` y `post-compact.sh` solo anotan la hora en `.claude/session-state/sessions.log`. No guardan ni cargan estado.
+- Lo que sobrevive a la compactación es el archivo: `session-start.sh` corre también después de cada compactación (SessionStart con matcher vacío) y muestra el inicio de `active.md`. Por eso `active.md` tiene que estar al día **antes** de compactar.
 
 ---
 
@@ -111,7 +94,7 @@ Los subagents no heredan historia de conversación — dales contexto completo e
 
 Cuando el contexto se compacta, preservá en el summary:
 
-- Referencia a `production/session-state/active.md` (leer para recover state)
+- Referencia a `.claude/session-state/active.md` (leer para recover state)
 - Lista de archivos modificados en la sesión y su propósito
 - Decisiones arquitectónicas hechas y su rationale
 - Tasks activas del sprint y estado actual
@@ -163,7 +146,7 @@ Cuando el status line muestra >= 70%:
 ```
 Tarea: "Implementá auth JWT completo"
 
-1. Crear production/session-state/active.md con:
+1. Crear .claude/session-state/active.md con:
    - Feature: JWT auth
    - Files to create: src/auth/{tokens.ts, middleware.ts, login.ts}
    - Tests: tests/auth.test.ts

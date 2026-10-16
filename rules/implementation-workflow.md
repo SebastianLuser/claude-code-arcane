@@ -39,6 +39,30 @@ Use AskUserQuestion exactly like this:
 - **Goal-driven:** Help the user define a verifiable goal statement and 2-4 checkpoints, create tasks, implement toward each checkpoint. No formal plan.
 - **Directo:** Proceed immediately without ceremony.
 
+## Progress file
+
+In **Plan + Goal** and **Goal-driven** mode, keep `.claude/session-state/active.md` up to date. A compaction or a new session loses the conversation, not this file: `session-start.sh` shows its first lines when a session starts and after every compaction.
+
+- **Create it** when the goal is set. If `.claude/session-state/` does not exist yet, create it with a `.gitignore` containing `*`, so the file never lands in a commit.
+- **Update it** at every checkpoint, and always before a compaction.
+- **Close it** when the task ends: set `Status: closed` and record the final verification result.
+- Keep it under 30 lines:
+
+```markdown
+# <task>
+Status: in progress | closed
+Goal: <verifiable outcome>
+Criteria: <how we know it is done>
+Plan:
+- [x] <step done>
+- [ ] <step pending>
+Decisions: <decision> — <why>
+Next: <the next concrete step>
+Not verified: <what has not been checked yet>
+```
+
+Directo and Action Plan tasks do not need it.
+
 ## Before writing new code
 
 In every mode, search in this order and take the first option that fully works:

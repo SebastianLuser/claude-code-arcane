@@ -123,8 +123,8 @@ Después de que un gate resuelve, registrar el verdict en el header de status de
 ```
 
 Para phase gates, registrar en:
-- Software: `docs/architecture/architecture.md` o `production/session-state/active.md`
-- Gamedev: `docs/architecture/architecture.md` o `production/session-state/active.md`
+- Software: `docs/architecture/architecture.md` o `.claude/session-state/active.md`
+- Gamedev: `docs/architecture/architecture.md` o `.claude/session-state/active.md`
 
 ---
 

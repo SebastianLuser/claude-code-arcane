@@ -81,7 +81,7 @@ Know who to call for what:
 
 #### Progress Tracking
 
-Maintain `production/session-state/active.md` with:
+Maintain `.claude/session-state/active.md` with:
 
 ```markdown
 ## VN Production State
@@ -122,7 +122,7 @@ Maintain `production/session-state/active.md` with:
 | Audio asset gaps | Medium | Medium | Placeholder tracks, generate late |
 
 ### File Ownership
-- `production/session-state/active.md` — session state
+- `.claude/session-state/active.md` — session state
 - `production/milestones/` — milestone definitions and status
 - `design/assets/asset-manifest.md` — asset pipeline tracking (shared with vn-asset-pipeline)
 

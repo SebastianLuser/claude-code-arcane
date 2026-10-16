@@ -97,9 +97,9 @@ claude-code-arcane/
 │   ├── statusline.sh                  # Solo con el profile statusline
 │   ├── output-styles/                 # Solo si algún profile declara output_styles
 │   ├── docs/                          # Copia de docs/; arcane update la mantiene al día
+│   ├── session-state/                 # active.md y logs de sesión; se ignora solo (.gitignore con *)
 │   └── .arcane-trash/                 # Lo que arcane update saca; nunca se borra con rm
-├── .claude.bak/                       # Backup de .claude/ antes de instalar
-└── production/session-state/          # Estado de sesión que escriben los hooks
+└── .claude.bak/                       # Backup de .claude/ antes de instalar
 ```
 
 Fuera del proyecto, `~/.arcane/` guarda el registro de instalaciones (`installations.json`) y el contenido descargado de GitHub (`cache/<version>/`). `ARCANE_HOME` lo desvía.
@@ -127,7 +127,7 @@ Los eventos los define `src/installer.ts` al generar `settings.json`, no los pro
 | PostToolUse (`Write\|Edit`) | `validate-assets.sh`, `validate-skill-change.sh` |
 | Notification | `notify.sh` |
 | PreCompact / PostCompact | `pre-compact.sh` / `post-compact.sh` |
-| Stop | `session-stop.sh` |
+| Stop | `session-stop.sh`, `worktree-stop.sh` |
 | SubagentStart / SubagentStop | `log-agent.sh` / `log-agent-stop.sh` |
 
 Cada comando es `bash "$CLAUDE_PROJECT_DIR/.claude/hooks/<script>"`: dentro de un worktree los hooks corren parados en el worktree, que puede no tener `.claude/hooks/` commiteado, y la variable siempre apunta al proyecto donde arrancó la sesión. `arcane update` migra las instalaciones que tenían la ruta relativa.

@@ -22,7 +22,7 @@ main() {
     DIVISION="engineering (Python)"
   fi
 
-  [[ -d "production/session-state" ]] && echo "Division: $DIVISION" > production/session-state/division.txt
+  [[ -d ".claude/session-state" ]] && echo "Division: $DIVISION" > .claude/session-state/division.txt
 }
 main 2>/dev/null
 exit 0
