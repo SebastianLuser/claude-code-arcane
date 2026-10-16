@@ -22,6 +22,7 @@ skills:
   - file-uploads
   - frontend-dev
   - csp-headers
+  - playwright-pro
 
 rules:
   universal:

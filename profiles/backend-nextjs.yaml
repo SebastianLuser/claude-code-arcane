@@ -23,6 +23,7 @@ skills:
   # Frontend quality
   - accessibility
   - performance
+  - playwright-pro
   # Ops & quality
   - testing
   - deps-audit
