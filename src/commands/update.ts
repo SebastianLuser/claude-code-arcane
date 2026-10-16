@@ -833,6 +833,16 @@ function syncUnhashedFiles(
         }
       }
 
+      // Core allowed `Bash(gh *)` before 2.13, which also lets Claude delete repos,
+      // releases and secrets without asking. Swap it for the narrowed list core ships.
+      const allow = settings.permissions?.allow;
+      if (Array.isArray(allow) && allow.includes("Bash(gh *)")) {
+        const narrowed = merged.permissions.allow.filter((r) => r.startsWith("Bash(gh ") && !allow.includes(r));
+        settings.permissions.allow = allow.flatMap((r: unknown) => (r === "Bash(gh *)" ? narrowed : [r]));
+        changed.push("settings.json (Bash(gh *) narrowed)");
+        dirty = true;
+      }
+
       if (dirty && !dryRun) {
         fs.writeFileSync(settingsPath, `${JSON.stringify(settings, null, 2)}\n`, "utf-8");
       }

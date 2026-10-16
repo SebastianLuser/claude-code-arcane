@@ -252,3 +252,54 @@ describe("updateTarget", () => {
     expect(Object.keys(manifest.content_hashes!.skills).length).toBeGreaterThan(0);
   });
 });
+
+describe("updateTarget permissions", () => {
+  let tmpDir: string;
+
+  afterEach(() => {
+    if (tmpDir) fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+  });
+
+  function allowOf(dir: string): string[] {
+    return JSON.parse(fs.readFileSync(path.join(dir, ".claude", "settings.json"), "utf-8")).permissions.allow;
+  }
+
+  // Core allowed `Bash(gh *)` before 2.13 and update never touched permissions, so
+  // every install made before then kept it after the narrowing shipped.
+  it("narrows the old Bash(gh *) allow and keeps the user's own rules", async () => {
+    tmpDir = makeTmpDir();
+    installTestingProfile(tmpDir);
+    const settingsPath = path.join(tmpDir, ".claude", "settings.json");
+    const settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
+    settings.permissions.allow = [
+      ...settings.permissions.allow.filter((r: string) => !r.startsWith("Bash(gh ")),
+      "Bash(gh pr *)",
+      "Bash(gh *)",
+      "Bash(my-tool *)",
+    ];
+    fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, { source: "bundled", quiet: true });
+
+    const allow = allowOf(tmpDir);
+    expect(allow).not.toContain("Bash(gh *)");
+    expect(allow).toContain("Bash(gh issue *)");
+    expect(allow).toContain("Bash(my-tool *)");
+    expect(allow.filter((r) => r === "Bash(gh pr *)")).toHaveLength(1);
+  });
+
+  it("leaves permissions alone on a dry run", async () => {
+    tmpDir = makeTmpDir();
+    installTestingProfile(tmpDir);
+    const settingsPath = path.join(tmpDir, ".claude", "settings.json");
+    const settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
+    settings.permissions.allow.push("Bash(gh *)");
+    fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, { source: "bundled", quiet: true, dryRun: true });
+
+    expect(allowOf(tmpDir)).toContain("Bash(gh *)");
+  });
+});
