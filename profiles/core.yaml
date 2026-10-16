@@ -58,6 +58,7 @@ hooks:
   - post-compact.sh
   - session-stop.sh
   - worktree-stop.sh
+  - run-py.sh
   - log-agent.sh
   - log-agent-stop.sh
 

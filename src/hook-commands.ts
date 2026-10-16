@@ -43,17 +43,22 @@ const RETIRED_SCRIPTS = new Set(["validate-push.sh", "validate-secrets.sh"]);
  * The global install at `~/.claude` is the exception: there the variable names
  * whichever project is open, so it gets the absolute path of the file it owns.
  */
-export function hookCommand(target: string, script: string): string {
+export function hookCommand(target: string, script: string, args = ""): string {
+  const suffix = args ? ` ${args}` : "";
   if (path.resolve(target) === path.resolve(os.homedir())) {
     const absolute = path.join(target, ".claude", "hooks", script).replace(/\\/g, "/");
-    return `bash "${absolute}"`;
+    return `bash "${absolute}"${suffix}`;
   }
-  return `bash "$CLAUDE_PROJECT_DIR/.claude/hooks/${script}"`;
+  return `bash "$CLAUDE_PROJECT_DIR/.claude/hooks/${script}"${suffix}`;
 }
 
-function hook(target: string, script: string, timeout: number): HookEntry {
-  return { type: "command", command: hookCommand(target, script), timeout };
+function hook(target: string, script: string, timeout: number, args = ""): HookEntry {
+  return { type: "command", command: hookCommand(target, script, args), timeout };
 }
+
+/** session_watch.py runs through run-py.sh, which finds a working Python. */
+const WATCH_POST_TOOL = ["run-py.sh", "session_watch.py post-tool"] as const;
+const WATCH_STOP = ["run-py.sh", "session_watch.py stop"] as const;
 
 /** The hooks a fresh install wires into settings.json. */
 export function defaultHooks(target: string): HookMap {
@@ -88,12 +93,20 @@ export function defaultHooks(target: string): HookMap {
         matcher: "Write|Edit",
         hooks: [hook(target, "validate-assets.sh", 10), hook(target, "validate-skill-change.sh", 5)],
       },
+      { matcher: "", hooks: [hook(target, WATCH_POST_TOOL[0], 10, WATCH_POST_TOOL[1])] },
     ],
     Notification: one("notify.sh", 10),
     PreCompact: one("pre-compact.sh", 10),
     PostCompact: one("post-compact.sh", 10),
     Stop: [
-      { matcher: "", hooks: [hook(target, "session-stop.sh", 10), hook(target, "worktree-stop.sh", 10)] },
+      {
+        matcher: "",
+        hooks: [
+          hook(target, "session-stop.sh", 10),
+          hook(target, "worktree-stop.sh", 10),
+          hook(target, WATCH_STOP[0], 120, WATCH_STOP[1]),
+        ],
+      },
     ],
     SubagentStart: one("log-agent.sh", 5),
     SubagentStop: one("log-agent-stop.sh", 5),
@@ -106,7 +119,7 @@ export function defaultHooks(target: string): HookMap {
  *   - a command still in the exact legacy relative form moves to `hookCommand()`;
  *   - entries for retired scripts are dropped, and groups left empty with them;
  *   - the guard is added where it is missing, ahead of the other Bash hooks;
- *   - the worktree exit check is added to Stop where it is missing.
+ *   - the worktree exit check and the session watch are added where missing.
  * Returns a description of each change; empty when nothing changed.
  */
 export function healHooks(hooks: HookMap, target: string): string[] {
@@ -157,13 +170,24 @@ export function healHooks(hooks: HookMap, target: string): string[] {
     changes.push("guard for file edits");
   }
 
-  const stop = (hooks.Stop ??= []);
-  if (!stop.some((g) => g.hooks?.some((h) => h.command?.includes("worktree-stop.sh")))) {
-    const group = stop.find((g) => !g.matcher);
-    if (group) group.hooks = [...(group.hooks ?? []), hook(target, "worktree-stop.sh", 10)];
-    else stop.push({ matcher: "", hooks: [hook(target, "worktree-stop.sh", 10)] });
-    changes.push("worktree exit on stop");
-  }
+  ensureHook(hooks, "Stop", hook(target, "worktree-stop.sh", 10), "worktree exit on stop", changes);
+  ensureHook(hooks, "Stop", hook(target, WATCH_STOP[0], 120, WATCH_STOP[1]), "format and type check on stop", changes);
+  ensureHook(hooks, "PostToolUse", hook(target, WATCH_POST_TOOL[0], 10, WATCH_POST_TOOL[1]), "session watch", changes);
 
   return changes;
+}
+
+/**
+ * Adds `entry` to the matcher-less group of `event` unless a hook with the same
+ * script and arguments is already wired there.
+ */
+function ensureHook(hooks: HookMap, event: string, entry: HookEntry, label: string, changes: string[]): void {
+  const signature = entry.command.replace(/^bash "[^"]*\/hooks\//, "");
+  const groups = (hooks[event] ??= []);
+  const present = groups.some((g) => g.hooks?.some((h) => h.command?.endsWith(signature)));
+  if (present) return;
+  const group = groups.find((g) => !g.matcher);
+  if (group) group.hooks = [...(group.hooks ?? []), entry];
+  else groups.push({ matcher: "", hooks: [entry] });
+  changes.push(label);
 }

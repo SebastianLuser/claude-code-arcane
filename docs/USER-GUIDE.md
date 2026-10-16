@@ -2,7 +2,7 @@
 
 ## What is Arcane?
 
-Arcane is a configuration harness for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). It provides a curated library of **437 skills**, **115 agents**, **17 hooks**, and **36 rules** that you selectively deploy into any project. Instead of shipping everything to every project (wasting tokens and degrading performance), you pick a **profile** that matches your stack and only the relevant tools get installed.
+Arcane is a configuration harness for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). It provides a curated library of **437 skills**, **115 agents**, **18 hooks**, and **36 rules** that you selectively deploy into any project. Instead of shipping everything to every project (wasting tokens and degrading performance), you pick a **profile** that matches your stack and only the relevant tools get installed.
 
 ## Table of Contents
 
@@ -239,7 +239,7 @@ Every installation automatically loads `core.yaml` first:
 |----------|----------|
 | **Skills (21)** | commit, create-pr, changelog, check, code-review, context-prime, help, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, arcane-status, arcane-list, arcane-add, arcane-remove, arcane-clean |
 | **Rules (8)** | data-files, prototype-code, test-standards, implementation-workflow, code-comments, verification, agent-delegation, git-worktrees |
-| **Hooks (16)** | session-start, detect-division, detect-unreal, detect-gaps, check-update, guard, validate-commit, validate-assets, validate-skill-change, notify, pre-compact, post-compact, session-stop, worktree-stop, log-agent, log-agent-stop |
+| **Hooks (17)** | session-start, detect-division, detect-unreal, detect-gaps, check-update, guard, validate-commit, validate-assets, validate-skill-change, notify, pre-compact, post-compact, session-stop, worktree-stop, run-py (session_watch), log-agent, log-agent-stop |
 | **Agents (1 dir)** | quality |
 | **Permissions** | 15 allow (git, ls, gh pr/issue/run and read-only gh, curl) + 13 deny (force push, reset --hard, clean -f, sudo, .env, etc.) |
 

@@ -125,9 +125,10 @@ Los eventos los define `src/installer.ts` al generar `settings.json`, no los pro
 | PreToolUse (`Bash`) | `guard.sh` → `validate-commit.sh` |
 | PreToolUse (`Write\|Edit\|MultiEdit\|NotebookEdit`) | `guard.sh` |
 | PostToolUse (`Write\|Edit`) | `validate-assets.sh`, `validate-skill-change.sh` |
+| PostToolUse (todas) | `run-py.sh session_watch.py post-tool` (ediciones, loops, alcance, aviso de compactación) |
 | Notification | `notify.sh` |
 | PreCompact / PostCompact | `pre-compact.sh` / `post-compact.sh` |
-| Stop | `session-stop.sh`, `worktree-stop.sh` |
+| Stop | `session-stop.sh`, `worktree-stop.sh`, `run-py.sh session_watch.py stop` (format + type check de lo editado) |
 | SubagentStart / SubagentStop | `log-agent.sh` / `log-agent-stop.sh` |
 
 Cada comando es `bash "$CLAUDE_PROJECT_DIR/.claude/hooks/<script>"`: dentro de un worktree los hooks corren parados en el worktree, que puede no tener `.claude/hooks/` commiteado, y la variable siempre apunta al proyecto donde arrancó la sesión. `arcane update` migra las instalaciones que tenían la ruta relativa.
