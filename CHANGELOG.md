@@ -1,3 +1,11 @@
+# [2.15.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.14.0...v2.15.0) (2026-10-16)
+
+
+### Features
+
+* **hooks:** watch the session for loops, scope and unchecked edits ([84d7c3e](https://github.com/SebastianLuser/claude-code-arcane/commit/84d7c3eccc33380f27d7f8901affedb090ee21d5))
+* **installer:** wire the session watch and feed it the real context window ([615d212](https://github.com/SebastianLuser/claude-code-arcane/commit/615d212d96744c180fe9f84f7670382ec58d2772))
+
 # [2.14.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.13.0...v2.14.0) (2026-10-16)
 
 
