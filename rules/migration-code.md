@@ -39,3 +39,9 @@ paths:
 - `DELETE FROM users WHERE ...` in a migration without a backup and written-out rollback
 - Migration that depends on application code (calling service layer) — migrations run with DB access only, not app code
 - Migrations that only work if previous migration left specific data — be defensive, check before mutating
+
+## How to verify
+
+- On the local database, run the migration up, then down, then up again. All three must succeed.
+- After up, confirm the schema change landed: `\d <table>` in psql, `DESCRIBE <table>` in MySQL, or the ORM's status command.
+- For a backfill, run it twice: the second run must change nothing.

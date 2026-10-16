@@ -123,3 +123,9 @@ class AGate : public AActor
     }
 };
 ```
+
+## How to verify
+
+- The editor target compiles with no new errors or warnings (Build in the IDE, or `Build.bat <Project>Editor Win64 Development <path>.uproject`).
+- Run the automation tests that cover the change (`UnrealEditor-Cmd <project>.uproject -ExecCmds="Automation RunTests <Filter>;Quit" -unattended -nullrhi`).
+- You cannot play the game. Name what needs a human playtest (game feel, replication under latency, visuals) and list exactly what to try.

@@ -1,6 +1,9 @@
 ---
 paths:
   - "assets/shaders/**"
+  - "Assets/**/Shaders/**"
+  - "**/*.shader"
+  - "**/*.hlsl"
 ---
 
 # Shader Code Standards

@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/networking/**"
+  - "Assets/**/Scripts/**/Network*/**"
 ---
 
 # Network Code Rules

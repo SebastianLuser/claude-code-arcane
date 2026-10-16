@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/audio/**"
+  - "Assets/**/Scripts/**/Audio/**"
 ---
 
 # Audio Code Rules

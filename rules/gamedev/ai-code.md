@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/ai/**"
+  - "Assets/**/Scripts/**/AI/**"
 ---
 
 # AI Code Rules
