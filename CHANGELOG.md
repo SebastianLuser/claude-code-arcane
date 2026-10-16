@@ -1,3 +1,12 @@
+# [2.12.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.11.0...v2.12.0) (2026-10-16)
+
+
+### Features
+
+* **output-style:** shape answers for ADHD readers as well ([66351f7](https://github.com/SebastianLuser/claude-code-arcane/commit/66351f7fb9399eec97c650fb547826c4d7097152))
+* **rules:** add verification, agent-delegation and git-worktrees core rules ([2ffe8ef](https://github.com/SebastianLuser/claude-code-arcane/commit/2ffe8ef0a6b4093f0171ff28a327509b7e30cff0))
+* **rules:** say what counts as evidence in each domain rule ([81cec94](https://github.com/SebastianLuser/claude-code-arcane/commit/81cec94f21ae8cbe44c87e2aaa29d9aa4ba969b3))
+
 # [2.11.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.10.0...v2.11.0) (2026-10-11)
 
 
