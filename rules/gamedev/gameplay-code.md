@@ -1,6 +1,8 @@
 ---
 paths:
   - "src/gameplay/**"
+  - "Assets/**/Scripts/Gameplay/**"
+  - "Assets/**/Scripts/Systems/**"
 ---
 
 # Gameplay Code Rules
@@ -28,3 +30,9 @@ float speed = stats.MovementSpeed * Time.deltaTime;
 float damage = 25.0f;   // VIOLATION: hardcoded gameplay value
 float speed = 5.0f;     // VIOLATION: not from config, not using delta
 ```
+
+## How to verify
+
+- The project compiles with no new errors: the Unity console, or a batchmode compile (`Unity -batchmode -quit -projectPath . -logFile -`); for Unreal, see `unreal-code`.
+- Run the EditMode and PlayMode tests that cover the change (`-runTests -testPlatform EditMode` or `PlayMode`).
+- You cannot play the game. Name what needs a human playtest (game feel, timing, visuals, input) and list exactly what to try.

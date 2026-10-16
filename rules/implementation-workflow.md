@@ -39,6 +39,15 @@ Use AskUserQuestion exactly like this:
 - **Goal-driven:** Help the user define a verifiable goal statement and 2-4 checkpoints, create tasks, implement toward each checkpoint. No formal plan.
 - **Directo:** Proceed immediately without ceremony.
 
+## Before writing new code
+
+In every mode, search in this order and take the first option that fully works:
+
+1. **The codebase**: a helper, component or pattern that already does it.
+2. **The standard library** or a platform feature.
+3. **A dependency the project already has.**
+4. **A new dependency**, only when 1–3 cannot do it. Name the package and why before installing it.
+
 ## Key principles
 
 - One question, not a wall of text — present options and wait

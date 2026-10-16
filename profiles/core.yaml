@@ -33,6 +33,9 @@ rules:
     - test-standards
     - implementation-workflow
     - code-comments
+    - verification
+    - agent-delegation
+    - git-worktrees
   gamedev:
     []
 

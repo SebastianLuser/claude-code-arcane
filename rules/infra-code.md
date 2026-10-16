@@ -45,3 +45,9 @@ paths:
 - Inline shell scripts in CI that do complex logic — move to a versioned script with tests
 - Copying `production.tf` to `staging.tf` and diverging them by hand
 - Running DB migrations from a CI job that doesn't have transactional rollback if the deploy fails after
+
+## How to verify
+
+- Validate without applying: `terraform plan`, `helm lint` + `helm template`, `docker compose config`, `docker build`. Show the output.
+- Never run `apply`, a deploy or `kubectl apply` to verify a change.
+- For a CI workflow, run `actionlint` if it is installed, and say that the workflow itself only proves itself on the next push.

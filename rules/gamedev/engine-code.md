@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/core/**"
+  - "Assets/**/Scripts/Core/**"
 ---
 
 # Engine Code Rules
@@ -39,3 +40,9 @@ void FixedUpdate()
     nearby.AddRange(FindObjectsOfType<Enemy>());  // VIOLATION: scene scan every frame
 }
 ```
+
+## How to verify
+
+- The project compiles with no new errors: the Unity console, or a batchmode compile (`Unity -batchmode -quit -projectPath . -logFile -`); for Unreal, see `unreal-code`.
+- Run the EditMode and PlayMode tests that cover the change (`-runTests -testPlatform EditMode` or `PlayMode`).
+- You cannot play the game. Name what needs a human playtest (game feel, timing, visuals, input) and list exactly what to try.

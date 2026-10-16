@@ -59,6 +59,12 @@ Reglas production-ready para ASP.NET Core (.NET 10), ordenadas por impacto. Cat√
 - `Domain` referenciando `Infrastructure` / EF Core (dependencia hacia afuera)
 - Forzar Clean Architecture en un CRUD simple (sobre-ingenier√≠a)
 
+## How to verify
+
+- `dotnet build` with no new warnings, and `dotnet test` for the projects the change touches.
+- Run the API locally and call the changed endpoint with `curl`: show the status code and the body, plus one failure case (invalid input, missing auth).
+- Read the log for those requests: no exception, no unexpected warning.
+
 ---
 
 _Derivado de [github/awesome-copilot](https://github.com/github/awesome-copilot) (dotnet-best-practices), [dotnet/skills](https://github.com/dotnet/skills) y [ardalis/CleanArchitecture](https://github.com/ardalis/CleanArchitecture). Condensado al formato Arcane._

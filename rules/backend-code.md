@@ -33,3 +33,10 @@ paths:
 - Nested business logic in DB queries (computed columns that reimplement rules)
 - Silent retries with no backoff, no max attempts, no circuit breaker
 - Returning raw DB rows as HTTP responses — always go through a DTO / view model
+
+## How to verify
+
+- Run the tests that cover the change.
+- Start the service locally and call the changed endpoint with `curl` (or the project's HTTP client). Show the status code and the body.
+- Call one failure case too (invalid input, missing auth), not only the happy path.
+- Read the server log for those requests: no stack trace, no unexpected warning.

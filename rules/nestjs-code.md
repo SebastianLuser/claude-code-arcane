@@ -71,3 +71,9 @@ Reglas production-ready para NestJS, ordenadas por impacto. Catálogo completo (
 ---
 
 _Derivado de [kadajett/agent-nestjs-skills](https://github.com/kadajett/agent-nestjs-skills) (nestjs-best-practices). Condensado al formato Arcane._
+
+## How to verify
+
+- Run the tests that cover the change (`npm test`, or the project's script) and the type check.
+- Start the app locally and call the changed endpoint with `curl`: show the status code and the body, plus one failure case (invalid DTO, missing auth).
+- Read the app log for those requests: no stack trace, no unexpected warning.
