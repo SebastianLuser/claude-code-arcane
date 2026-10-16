@@ -1,3 +1,11 @@
+# [2.16.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.15.0...v2.16.0) (2026-10-16)
+
+
+### Features
+
+* **profiles:** ship playwright-pro with the web profiles ([a6d3785](https://github.com/SebastianLuser/claude-code-arcane/commit/a6d37851f1c6dd2384a96e7b3a00e797e178b10f))
+* **rules:** review a finished goal with a fresh subagent ([9aab70b](https://github.com/SebastianLuser/claude-code-arcane/commit/9aab70bf1a26af19d8bfe9ba9d7e75b7c651637b))
+
 # [2.15.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.14.0...v2.15.0) (2026-10-16)
 
 
