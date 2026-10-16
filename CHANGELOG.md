@@ -1,3 +1,11 @@
+# [2.14.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.13.0...v2.14.0) (2026-10-16)
+
+
+### Features
+
+* **hooks:** leave finished worktrees and tell a session where it is ([df0531f](https://github.com/SebastianLuser/claude-code-arcane/commit/df0531feef6801649682f8f21dfcf36de006851b))
+* **session:** keep the progress file in .claude/session-state ([0615ce5](https://github.com/SebastianLuser/claude-code-arcane/commit/0615ce5289751044a749a034b1ef99bcbfd7e058))
+
 # [2.13.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.12.0...v2.13.0) (2026-10-16)
 
 
