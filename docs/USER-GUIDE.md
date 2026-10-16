@@ -141,6 +141,23 @@ npx claude-code-arcane status
 
 Shows installed profiles, skill count, rules, agents, installation date, and worktree info.
 
+### `npx claude-code-arcane doctor` — Check that the install works
+
+```bash
+npx claude-code-arcane doctor
+npx claude-code-arcane doctor --target ../other-project
+```
+
+Read-only. Each check prints ✓, `!` (warning) or ✗ (failure) with a fix:
+
+- **Hooks:** every script `settings.json` runs exists and parses with bash; hooks still wired with a relative path, which fails inside a worktree.
+- **Settings:** `settings.json` is valid JSON.
+- **Content:** every skill and rule in the manifest is on disk.
+- **Python:** one starts, since the guard and the session watch need it.
+- **Permissions and secrets:** allow rules that skip every confirmation (`Bash(*)`, `Bash(gh *)`, `bypassPermissions`), and credentials in `settings.json`, `settings.local.json` or `.mcp.json`.
+
+It exits with code 1 when a check fails.
+
 ### `npx claude-code-arcane update` — Check for updates
 
 ```bash

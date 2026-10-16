@@ -10,6 +10,7 @@ import { updateCommand } from "./commands/update.js";
 import { cleanCommand } from "./commands/clean.js";
 import { worktreeCommand } from "./commands/worktree.js";
 import { globalCommand } from "./commands/global.js";
+import { doctorCommand } from "./commands/doctor.js";
 import { getPackageVersion } from "./utils.js";
 import { checkForUpdates } from "./update-check.js";
 
@@ -73,6 +74,14 @@ program
   .description("Show current Arcane installation status.")
   .action(async () => {
     await statusCommand();
+  });
+
+program
+  .command("doctor")
+  .description("Check that this project's Arcane install works: hooks, settings, content, permissions, secrets.")
+  .option("-t, --target <dir>", "Project directory", process.cwd())
+  .action(async (opts) => {
+    await doctorCommand(opts);
   });
 
 program

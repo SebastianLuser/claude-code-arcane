@@ -149,6 +149,7 @@ Installs worktree-isolation scripts into `~/.claude/scripts/` and adds a `Sessio
 ```bash
 npx claude-code-arcane list                          # List all profiles and skills
 npx claude-code-arcane status                        # Show current installation
+npx claude-code-arcane doctor                        # Check that hooks, settings and content work
 npx claude-code-arcane update                        # Check for updates
 npx claude-code-arcane clean --force                 # Remove Arcane entirely from project
 ```
