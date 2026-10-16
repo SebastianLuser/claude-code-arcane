@@ -86,6 +86,12 @@ describe("healHooks", () => {
     expect(changes).toEqual(expect.arrayContaining(["guard for Bash", "guard for file edits"]));
   });
 
+  it("adds the worktree exit check to Stop", () => {
+    const hooks = legacyHooks();
+    expect(healHooks(hooks, PROJECT)).toContain("worktree exit on stop");
+    expect(commands(hooks).some((c) => c.includes("worktree-stop.sh"))).toBe(true);
+  });
+
   it("drops the scripts the guard replaced, in any path form, and the groups they empty", () => {
     const hooks: HookMap = {
       PreToolUse: [
