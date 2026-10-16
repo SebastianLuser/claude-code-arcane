@@ -1,3 +1,11 @@
+# [2.13.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.12.0...v2.13.0) (2026-10-16)
+
+
+### Features
+
+* **hooks:** add a guard that parses commands before they run ([fb2369a](https://github.com/SebastianLuser/claude-code-arcane/commit/fb2369a49d305a08150d323dc5bdb38864af7044))
+* **installer:** anchor hook paths on $CLAUDE_PROJECT_DIR and wire the guard ([1155f43](https://github.com/SebastianLuser/claude-code-arcane/commit/1155f4309f6ce49380ea611605710cc013e130ad))
+
 # [2.12.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.11.0...v2.12.0) (2026-10-16)
 
 
