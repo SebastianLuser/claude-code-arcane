@@ -63,8 +63,10 @@ describe("defaultHooks", () => {
 
   it("names only scripts that ship in hooks/", () => {
     for (const command of commands(defaultHooks(PROJECT))) {
-      const script = command.match(/hooks\/([\w.-]+)"$/)![1];
+      const [, script, args] = command.match(/hooks\/([\w.-]+)"(.*)$/)!;
       expect(fs.existsSync(path.join(REPO_ROOT, "hooks", script)), script).toBe(true);
+      const pyScript = args.trim().split(" ")[0];
+      if (pyScript) expect(fs.existsSync(path.join(REPO_ROOT, "hooks", pyScript)), pyScript).toBe(true);
     }
   });
 });
@@ -84,6 +86,14 @@ describe("healHooks", () => {
     expect(bash.hooks.map((h) => h.command)[0]).toContain("guard.sh");
     expect(hooks.PreToolUse.some((g) => g.matcher === FILE_TOOLS_MATCHER)).toBe(true);
     expect(changes).toEqual(expect.arrayContaining(["guard for Bash", "guard for file edits"]));
+  });
+
+  it("adds the session watch after tools and on stop, once", () => {
+    const hooks = legacyHooks();
+    const changes = healHooks(hooks, PROJECT);
+    expect(changes).toEqual(expect.arrayContaining(["session watch", "format and type check on stop"]));
+    expect(commands(hooks)).toContain('bash "$CLAUDE_PROJECT_DIR/.claude/hooks/run-py.sh" session_watch.py stop');
+    expect(healHooks(hooks, PROJECT)).toEqual([]);
   });
 
   it("adds the worktree exit check to Stop", () => {

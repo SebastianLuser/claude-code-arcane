@@ -115,6 +115,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/run-py.sh\" session_watch.py post-tool",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "Notification": [
@@ -166,6 +176,11 @@
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/worktree-stop.sh\"",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/run-py.sh\" session_watch.py stop",
+            "timeout": 120
           }
         ]
       }

@@ -48,6 +48,7 @@ Esto mantiene el context window con ~3-5k tokens (solo la sección actual) en ve
 ## Proactive Compaction
 
 - **Compactá proactivamente** a ~60-70% de uso, no reactivamente al límite
+- **Aviso automático:** con el profile `statusline`, `session_watch.py` avisa a Claude al 70% y al 85% de la ventana real (la statusline anota el tamaño que reporta Claude Code en `.claude/session-state/context.json`). Sin statusline no avisa: adivinar la ventana haría saltar el aviso demasiado temprano en sesiones de 1M
 - **Usá `/clear`** entre tareas no relacionadas, o después de 2+ intentos de corrección fallidos
 - **Puntos naturales de compaction:** después de escribir una sección al archivo, después de un commit, después de completar una tarea, antes de empezar un tema nuevo
 - **Focused compaction:** `/compact Focus on [tarea actual] — secciones 1-3 ya escritas al archivo, working on sección 4`

@@ -75,6 +75,21 @@ if isinstance(cw, dict) and cw:
             pct = float(up)
         except Exception:
             pct = None
+    # Hooks never see the window size; session_watch.py reads it from here to warn
+    # before a compaction at a share of the real window instead of a guessed one.
+    project_dir = (data.get("workspace") or {}).get("project_dir") or data.get("cwd") or ""
+    if pct is not None and project_dir and os.path.isdir(os.path.join(project_dir, ".claude")):
+        try:
+            state = os.path.join(project_dir, ".claude", "session-state")
+            os.makedirs(state, exist_ok=True)
+            ignore = os.path.join(state, ".gitignore")
+            if not os.path.exists(ignore):
+                open(ignore, "w").write("*\n")
+            with open(os.path.join(state, "context.json"), "w") as f:
+                json.dump({"session_id": data.get("session_id"), "used_percentage": pct,
+                           "context_window_size": limit}, f)
+        except Exception:
+            pass
 
 # Fallback (older Claude Code without context_window): scan transcript usage.
 if total is None:
