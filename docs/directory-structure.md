@@ -122,11 +122,16 @@ Los eventos los define `src/installer.ts` al generar `settings.json`, no los pro
 | Evento | Hooks |
 |--------|-------|
 | SessionStart | `session-start.sh` → `detect-division.sh` → `detect-unreal.sh` → `detect-gaps.sh` → `check-update.sh` |
-| PreToolUse (`Bash`) | `validate-commit.sh`, `validate-push.sh`, `validate-secrets.sh` |
+| PreToolUse (`Bash`) | `guard.sh` → `validate-commit.sh` |
+| PreToolUse (`Write\|Edit\|MultiEdit\|NotebookEdit`) | `guard.sh` |
 | PostToolUse (`Write\|Edit`) | `validate-assets.sh`, `validate-skill-change.sh` |
 | Notification | `notify.sh` |
 | PreCompact / PostCompact | `pre-compact.sh` / `post-compact.sh` |
 | Stop | `session-stop.sh` |
 | SubagentStart / SubagentStop | `log-agent.sh` / `log-agent-stop.sh` |
+
+Cada comando es `bash "$CLAUDE_PROJECT_DIR/.claude/hooks/<script>"`: dentro de un worktree los hooks corren parados en el worktree, que puede no tener `.claude/hooks/` commiteado, y la variable siempre apunta al proyecto donde arrancó la sesión. `arcane update` migra las instalaciones que tenían la ruta relativa.
+
+`guard.sh` corre `guard.py` (Python stdlib): deniega lo que el usuario ejecuta a mano (force push, `--no-verify`, `sudo`, escribir `.env`), pregunta antes de lo destructivo (`rm -rf` fuera de carpetas regenerables, borrar datos, una dependencia nueva) y al editar CI, infra, migraciones existentes, manifests o configs de lint. Sin Python no hace nada y quedan solo los permisos estáticos.
 
 La statusline (`statusline.sh`) se configura aparte, solo con el profile `statusline`.

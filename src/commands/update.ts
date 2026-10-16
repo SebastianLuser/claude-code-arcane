@@ -11,6 +11,7 @@ import {
 } from "../utils.js";
 import { mergeProfiles } from "../profiles.js";
 import { parseAgentEntry } from "../agent-entries.js";
+import { healHooks, type HookMap } from "../hook-commands.js";
 import type { ArcaneManifest } from "../types.js";
 import {
   computeContentHashes,
@@ -820,6 +821,16 @@ function syncUnhashedFiles(
         changed.push("settings.json (statusLine path)");
         settings.statusLine = { ...current, command: wanted };
         dirty = true;
+      }
+
+      // Hooks were wired with paths relative to the session's directory, which miss
+      // inside a worktree without committed hooks, and the guard did not exist yet.
+      if (settings.hooks && typeof settings.hooks === "object") {
+        const healed = healHooks(settings.hooks as HookMap, path.dirname(claudeDir));
+        if (healed.length > 0) {
+          changed.push(`settings.json (${healed.join(", ")})`);
+          dirty = true;
+        }
       }
 
       if (dirty && !dryRun) {
