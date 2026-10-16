@@ -5,12 +5,20 @@ main() {
   local INPUT
   INPUT=$(cat 2>/dev/null) || true
 
-  local COMMAND
-  COMMAND=$(echo "$INPUT" | grep -oE '"command"\s*:\s*"[^"]*"' | head -1 | sed 's/.*"command"\s*:\s*"//;s/"$//') || true
+  local COMMAND GUARDED=1
+  # guard.sh parses the JSON properly; the regex is only a fallback without Python
+  # and stops at the first escaped quote.
+  COMMAND=$(printf '%s' "$INPUT" | bash "$(dirname "${BASH_SOURCE[0]}")/guard.sh" --command 2>/dev/null) || true
+  if [[ -z "$COMMAND" ]]; then
+    GUARDED=0
+    COMMAND=$(echo "$INPUT" | grep -oE '"command"\s*:\s*"[^"]*"' | head -1 | sed 's/.*"command"\s*:\s*"//;s/"$//') || true
+  fi
 
   [[ -z "$COMMAND" || "$COMMAND" != *"git commit"* ]] && return 0
 
-  if [[ "$COMMAND" == *"--no-verify"* ]]; then
+  # With Python the guard denies --no-verify on the parsed command; this substring
+  # check would also fire on a commit message that only mentions the flag.
+  if [[ "$GUARDED" == 0 && "$COMMAND" == *"--no-verify"* ]]; then
     echo "BLOCK: --no-verify is not allowed. Fix the underlying issue instead of bypassing hooks." >&2
     exit 2
   fi

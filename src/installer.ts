@@ -17,155 +17,11 @@ import {
 import { writeManifest } from "./manifest.js";
 import { linkOrCopyDir } from "./worktree.js";
 import { computeContentHashes } from "./content-hash.js";
+import { defaultHooks } from "./hook-commands.js";
 
 const SETTINGS_TEMPLATE = {
   $schema: "https://json.schemastore.org/claude-code-settings.json",
   permissions: { allow: [] as string[], deny: [] as string[] },
-  hooks: {
-    SessionStart: [
-      {
-        matcher: "",
-        hooks: [
-          {
-            type: "command",
-            command: "bash .claude/hooks/session-start.sh",
-            timeout: 10,
-          },
-          {
-            type: "command",
-            command: "bash .claude/hooks/detect-division.sh",
-            timeout: 10,
-          },
-          {
-            type: "command",
-            command: "bash .claude/hooks/detect-unreal.sh",
-            timeout: 10,
-          },
-          {
-            type: "command",
-            command: "bash .claude/hooks/detect-gaps.sh",
-            timeout: 10,
-          },
-          {
-            type: "command",
-            command: "bash .claude/hooks/check-update.sh",
-            timeout: 10,
-          },
-        ],
-      },
-    ],
-    PreToolUse: [
-      {
-        matcher: "Bash",
-        hooks: [
-          {
-            type: "command",
-            command: "bash .claude/hooks/validate-commit.sh",
-            timeout: 15,
-          },
-          {
-            type: "command",
-            command: "bash .claude/hooks/validate-push.sh",
-            timeout: 10,
-          },
-          {
-            type: "command",
-            command: "bash .claude/hooks/validate-secrets.sh",
-            timeout: 10,
-          },
-        ],
-      },
-    ],
-    PostToolUse: [
-      {
-        matcher: "Write|Edit",
-        hooks: [
-          {
-            type: "command",
-            command: "bash .claude/hooks/validate-assets.sh",
-            timeout: 10,
-          },
-          {
-            type: "command",
-            command: "bash .claude/hooks/validate-skill-change.sh",
-            timeout: 5,
-          },
-        ],
-      },
-    ],
-    Notification: [
-      {
-        matcher: "",
-        hooks: [
-          {
-            type: "command",
-            command: "bash .claude/hooks/notify.sh",
-            timeout: 10,
-          },
-        ],
-      },
-    ],
-    PreCompact: [
-      {
-        matcher: "",
-        hooks: [
-          {
-            type: "command",
-            command: "bash .claude/hooks/pre-compact.sh",
-            timeout: 10,
-          },
-        ],
-      },
-    ],
-    PostCompact: [
-      {
-        matcher: "",
-        hooks: [
-          {
-            type: "command",
-            command: "bash .claude/hooks/post-compact.sh",
-            timeout: 10,
-          },
-        ],
-      },
-    ],
-    Stop: [
-      {
-        matcher: "",
-        hooks: [
-          {
-            type: "command",
-            command: "bash .claude/hooks/session-stop.sh",
-            timeout: 10,
-          },
-        ],
-      },
-    ],
-    SubagentStart: [
-      {
-        matcher: "",
-        hooks: [
-          {
-            type: "command",
-            command: "bash .claude/hooks/log-agent.sh",
-            timeout: 5,
-          },
-        ],
-      },
-    ],
-    SubagentStop: [
-      {
-        matcher: "",
-        hooks: [
-          {
-            type: "command",
-            command: "bash .claude/hooks/log-agent-stop.sh",
-            timeout: 5,
-          },
-        ],
-      },
-    ],
-  },
 };
 
 export class Installer {
@@ -461,6 +317,7 @@ export class Installer {
     const settings = JSON.parse(JSON.stringify(SETTINGS_TEMPLATE));
     settings.permissions.allow = [...this.merged.permissions.allow];
     settings.permissions.deny = [...this.merged.permissions.deny];
+    settings.hooks = defaultHooks(this.target);
     if (this.hasStatusline) {
       settings.statusLine = {
         type: "command",

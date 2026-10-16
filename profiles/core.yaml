@@ -50,8 +50,7 @@ hooks:
   - detect-division.sh
   - detect-gaps.sh
   - validate-commit.sh
-  - validate-push.sh
-  - validate-secrets.sh
+  - guard.sh
   - validate-assets.sh
   - validate-skill-change.sh
   - notify.sh
@@ -70,10 +69,15 @@ permissions:
     - "Bash(git rev-parse*)"
     - "Bash(ls *)"
     - "Bash(dir *)"
-    - "Bash(gh *)"
+    - "Bash(gh pr *)"
+    - "Bash(gh issue *)"
+    - "Bash(gh run *)"
+    - "Bash(gh repo view*)"
+    - "Bash(gh release view*)"
+    - "Bash(gh search *)"
+    - "Bash(gh auth status*)"
     - "Bash(curl -s*)"
   deny:
-    - "Bash(rm -rf *)"
     - "Bash(git push --force*)"
     - "Bash(git push -f *)"
     - "Bash(git reset --hard*)"

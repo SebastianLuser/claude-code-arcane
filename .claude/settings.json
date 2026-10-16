@@ -17,7 +17,13 @@
       "Bash(python -m pytest*)",
       "Bash(py -m pytest*)",
       "Bash(curl -s*)",
-      "Bash(gh *)",
+      "Bash(gh pr *)",
+      "Bash(gh issue *)",
+      "Bash(gh run *)",
+      "Bash(gh repo view*)",
+      "Bash(gh release view*)",
+      "Bash(gh search *)",
+      "Bash(gh auth status*)",
       "Bash(npm *)",
       "Bash(yarn *)",
       "Bash(pnpm *)",
@@ -29,7 +35,6 @@
       "Bash(kubectl describe*)"
     ],
     "deny": [
-      "Bash(rm -rf *)",
       "Bash(git push --force*)",
       "Bash(git push -f *)",
       "Bash(git reset --hard*)",
@@ -52,17 +57,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/session-start.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/session-start.sh\"",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/detect-division.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/detect-division.sh\"",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/detect-gaps.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/detect-gaps.sh\"",
             "timeout": 10
           }
         ]
@@ -74,17 +79,22 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/validate-commit.sh",
-            "timeout": 15
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/validate-push.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/guard.sh\"",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/validate-secrets.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/validate-commit.sh\"",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/guard.sh\"",
             "timeout": 10
           }
         ]
@@ -96,12 +106,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/validate-assets.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/validate-assets.sh\"",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/validate-skill-change.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/validate-skill-change.sh\"",
             "timeout": 5
           }
         ]
@@ -113,7 +123,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/notify.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/notify.sh\"",
             "timeout": 10
           }
         ]
@@ -125,7 +135,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/pre-compact.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/pre-compact.sh\"",
             "timeout": 10
           }
         ]
@@ -137,7 +147,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/post-compact.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/post-compact.sh\"",
             "timeout": 10
           }
         ]
@@ -149,7 +159,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/session-stop.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/session-stop.sh\"",
             "timeout": 10
           }
         ]
@@ -161,7 +171,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/log-agent.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/log-agent.sh\"",
             "timeout": 5
           }
         ]
@@ -173,7 +183,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/log-agent-stop.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/log-agent-stop.sh\"",
             "timeout": 5
           }
         ]
