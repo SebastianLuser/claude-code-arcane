@@ -34,9 +34,9 @@ Use AskUserQuestion exactly like this:
 
 ## After selection
 
-- **Plan + Goal:** First define the verifiable session goal with validation criteria. Then EnterPlanMode and design the implementation plan linked to the goal. Plan includes explicit stop conditions (goal met, blocker, scope creep). After approval, create tasks and execute. After each significant step, check progress against the goal. When goal is met, STOP and run validation.
+- **Plan + Goal:** First define the verifiable session goal with validation criteria. Then EnterPlanMode and design the implementation plan linked to the goal. Plan includes explicit stop conditions (goal met, blocker, scope creep). After approval, create tasks and execute. After each significant step, check progress against the goal. When goal is met, STOP and run the goal review below.
 - **Action Plan:** Use EnterPlanMode, design the approach, get approval, create tasks, then implement step by step. No formal goal — implement until the plan is done.
-- **Goal-driven:** Help the user define a verifiable goal statement and 2-4 checkpoints, create tasks, implement toward each checkpoint. No formal plan.
+- **Goal-driven:** Help the user define a verifiable goal statement and 2-4 checkpoints, create tasks, implement toward each checkpoint. No formal plan. When the last checkpoint is met, run the goal review below.
 - **Directo:** Proceed immediately without ceremony.
 
 ## Progress file
@@ -62,6 +62,26 @@ Not verified: <what has not been checked yet>
 ```
 
 Directo and Action Plan tasks do not need it.
+
+## Goal review
+
+In **Plan + Goal** and **Goal-driven** mode, whoever did the work does not decide it is done. When the goal looks met, start one `general-purpose` subagent with a clean context. Its prompt carries only:
+
+- the goal and the criteria from `active.md`;
+- the diff against the base branch, untracked files included;
+- how to verify: test, build and type-check commands, and how to start the app;
+- if the task changed a web UI: the paths of the Playwright screenshots, or that the user declined Playwright;
+- the instructions below, verbatim.
+
+Never pass your reasoning or a summary of the conversation: the reviewer judges the work, not the story behind it.
+
+> You are reviewing finished work against its goal. Do not trust any reported result: run every verification yourself. Check each criterion against the code and your own runs. If the diff touches authentication, user input, database queries, file system paths, external APIs, cryptography or payments, also check that input is validated at the boundary, queries are parameterized, no secret is in code or logs, every new path checks authorization, and errors leak no internals. If the task changed a web UI, there are no Playwright screenshots and you cannot produce them, the verdict is FAIL, unless the user declined Playwright: then note "visual result not verified". Answer with `PASS` or `FAIL` on the first line, then one line per criterion with its evidence (the command and its result, or `file:line`), then what is missing.
+
+Then:
+
+1. Show the user the reviewer's verdict as it came, before your own comments.
+2. **FAIL:** fix what it found and review again with a new subagent. After a second FAIL, stop and bring both verdicts to the user.
+3. **PASS:** close `active.md` with the verdict.
 
 ## Before writing new code
 

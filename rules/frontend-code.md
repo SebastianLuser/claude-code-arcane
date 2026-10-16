@@ -55,6 +55,6 @@ paths:
   2. Screenshots at 320, 768, 1024 and 1440 px wide, in both themes if the app has a dark mode.
   3. Walk the flow you changed: clicks, forms, navigation.
   4. Keyboard: every control in the flow is reachable with Tab, usable with Enter or Space, and shows a visible focus.
-  5. Keep the screenshots and show them as evidence.
-- If Playwright is not installed, propose installing it once (`npm i -D @playwright/test`, then `npx playwright install chromium`). If the user declines, close the task with "visual result not verified".
+  5. Save the screenshots to files and show them as evidence; the goal review gets their paths.
+- If Playwright is not installed, propose setting it up once with `/playwright-pro init` (or `npm i -D @playwright/test`, then `npx playwright install chromium`). If the user declines, close the task with "visual result not verified".
 - In React Native or Flutter Playwright does not apply: say what was not verified visually.
