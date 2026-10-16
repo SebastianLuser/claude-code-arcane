@@ -1,3 +1,15 @@
+# [2.17.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.16.0...v2.17.0) (2026-10-16)
+
+
+### Bug Fixes
+
+* **update:** narrow the old Bash(gh *) allow in existing installs ([4b033be](https://github.com/SebastianLuser/claude-code-arcane/commit/4b033befa1c3f68e84855cbf9e430f21be836293))
+
+
+### Features
+
+* **cli:** add arcane doctor to check that an install works ([cd36de9](https://github.com/SebastianLuser/claude-code-arcane/commit/cd36de93baad06f6e5e47151eb2902fc6d6d1651))
+
 # [2.16.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.15.0...v2.16.0) (2026-10-16)
 
 
