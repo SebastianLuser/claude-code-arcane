@@ -12,7 +12,7 @@ Closes loop between design and implementation. Verifies acceptance criteria, che
 
 ## Phase 1: Find Story
 
-Resolve review mode: `--review` arg → `production/review-mode.txt` → default `lean`. Story source: arg path → `production/session-state/active.md` → most recent sprint file (IN PROGRESS stories) → AskUserQuestion.
+Resolve review mode: `--review` arg → `production/review-mode.txt` → default `lean`. Story source: arg path → `.claude/session-state/active.md` → most recent sprint file (IN PROGRESS stories) → AskUserQuestion.
 
 ## Phase 2: Read Story
 
@@ -55,7 +55,7 @@ BLOCKED → do not proceed, list fixes, offer help.
 
 ## Phase 7: Update Story
 
-Ask approval → edit story: `Status: Complete` + `## Completion Notes` (date, criteria, deviations, test evidence, code review status). Advisory deviations → offer to log in `docs/tech-debt-register.md`. Update `production/sprint-status.yaml` if exists. Append to `production/session-state/active.md`.
+Ask approval → edit story: `Status: Complete` + `## Completion Notes` (date, criteria, deviations, test evidence, code review status). Advisory deviations → offer to log in `docs/tech-debt-register.md`. Update `production/sprint-status.yaml` if exists. Append to `.claude/session-state/active.md`.
 
 ## Phase 8: Surface Next Story
 

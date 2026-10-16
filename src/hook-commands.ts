@@ -92,7 +92,9 @@ export function defaultHooks(target: string): HookMap {
     Notification: one("notify.sh", 10),
     PreCompact: one("pre-compact.sh", 10),
     PostCompact: one("post-compact.sh", 10),
-    Stop: one("session-stop.sh", 10),
+    Stop: [
+      { matcher: "", hooks: [hook(target, "session-stop.sh", 10), hook(target, "worktree-stop.sh", 10)] },
+    ],
     SubagentStart: one("log-agent.sh", 5),
     SubagentStop: one("log-agent-stop.sh", 5),
   };
@@ -103,7 +105,8 @@ export function defaultHooks(target: string): HookMap {
  * hooks the user added or edited survive:
  *   - a command still in the exact legacy relative form moves to `hookCommand()`;
  *   - entries for retired scripts are dropped, and groups left empty with them;
- *   - the guard is added where it is missing, ahead of the other Bash hooks.
+ *   - the guard is added where it is missing, ahead of the other Bash hooks;
+ *   - the worktree exit check is added to Stop where it is missing.
  * Returns a description of each change; empty when nothing changed.
  */
 export function healHooks(hooks: HookMap, target: string): string[] {
@@ -152,6 +155,14 @@ export function healHooks(hooks: HookMap, target: string): string[] {
   if (!pre.some((g) => g.matcher === FILE_TOOLS_MATCHER && hasGuard(g))) {
     pre.push({ matcher: FILE_TOOLS_MATCHER, hooks: [hook(target, "guard.sh", 10)] });
     changes.push("guard for file edits");
+  }
+
+  const stop = (hooks.Stop ??= []);
+  if (!stop.some((g) => g.hooks?.some((h) => h.command?.includes("worktree-stop.sh")))) {
+    const group = stop.find((g) => !g.matcher);
+    if (group) group.hooks = [...(group.hooks ?? []), hook(target, "worktree-stop.sh", 10)];
+    else stop.push({ matcher: "", hooks: [hook(target, "worktree-stop.sh", 10)] });
+    changes.push("worktree exit on stop");
   }
 
   return changes;

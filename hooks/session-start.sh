@@ -3,13 +3,49 @@
 # Graceful: wraps in main(), never blocks session
 set +e
 
-main() {
-  mkdir -p production/session-state 2>/dev/null
+STATE_DIR=".claude/session-state"
+LEGACY_STATE_DIR="production/session-state"
 
-  SESSION_LOG="production/session-state/sessions.log"
-  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Session started" >> "$SESSION_LOG" 2>/dev/null
+# The folder holds session notes, never project files: a .gitignore with `*` keeps it
+# out of every commit without touching the project's own .gitignore.
+ensure_state_dir() {
+  mkdir -p "$STATE_DIR" 2>/dev/null
+  [ -f "$STATE_DIR/.gitignore" ] || echo '*' > "$STATE_DIR/.gitignore" 2>/dev/null
+}
+
+# active.md used to live in production/session-state/. Move it once, so a task left
+# half done before the update still shows up here.
+migrate_legacy_state() {
+  [ -f "$LEGACY_STATE_DIR/active.md" ] || return 0
+  [ -f "$STATE_DIR/active.md" ] && return 0
+  ensure_state_dir
+  mv "$LEGACY_STATE_DIR/active.md" "$STATE_DIR/active.md" 2>/dev/null &&
+    echo "Moved $LEGACY_STATE_DIR/active.md to $STATE_DIR/active.md"
+}
+
+# A session started inside a worktree should know it, and where the main checkout is.
+worktree_notice() {
+  local DIRS GIT_DIR COMMON_DIR TOP BRANCH MAIN MAIN_BRANCH
+  DIRS=$(git rev-parse --path-format=absolute --git-dir --git-common-dir 2>/dev/null) || return 0
+  GIT_DIR=$(echo "$DIRS" | sed -n 1p)
+  COMMON_DIR=$(echo "$DIRS" | sed -n 2p)
+  [ -z "$COMMON_DIR" ] || [ "$GIT_DIR" = "$COMMON_DIR" ] && return 0
+  TOP=$(git rev-parse --show-toplevel 2>/dev/null)
+  BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+  MAIN=$(dirname "$COMMON_DIR")
+  MAIN_BRANCH=$(git -C "$MAIN" rev-parse --abbrev-ref HEAD 2>/dev/null)
+  echo "Worktree: you are in $TOP on branch $BRANCH."
+  echo "Main checkout: $MAIN on branch $MAIN_BRANCH. See the git-worktrees rule before pulling or switching branches."
+  echo ""
+}
+
+main() {
+  migrate_legacy_state
+  [ -d "$STATE_DIR" ] && ensure_state_dir
+  [ -d "$STATE_DIR" ] && echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Session started" >> "$STATE_DIR/sessions.log" 2>/dev/null
 
   echo "=== Claude Code Arcane — Session Context ==="
+  worktree_notice
 
   BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
   if [ -n "$BRANCH" ]; then
@@ -55,7 +91,7 @@ main() {
     fi
   fi
 
-  STATE_FILE="production/session-state/active.md"
+  STATE_FILE="$STATE_DIR/active.md"
   if [ -f "$STATE_FILE" ]; then
     echo ""
     echo "=== ACTIVE SESSION STATE DETECTED ==="
