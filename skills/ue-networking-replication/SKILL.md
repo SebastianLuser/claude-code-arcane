@@ -446,6 +446,6 @@ Validate before considering the work done:
 ## Next Steps
 
 - `/ue-testing-debugging` — test with multiple clients and simulated latency
-- `/security-audit` — review the client-to-server trust boundary
+- `/game-security-audit` — review the client-to-server trust boundary
 - `/code-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

@@ -1881,9 +1881,9 @@ skills:
     priority: high
     category: software
 
-  - name: security-audit
-    spec: skills-selftest/skills/analysis/security-audit.md
-    stack: software
+  - name: game-security-audit
+    spec: skills-selftest/skills/analysis/game-security-audit.md
+    stack: gamedev
     last_static: ""
     last_static_result: ""
     last_spec: ""
@@ -1891,7 +1891,7 @@ skills:
     last_category: ""
     last_category_result: ""
     priority: critical
-    category: software
+    category: analysis
     verdict: ["CLEAR TO SHIP", "FIX CRITICALS", "DO NOT SHIP"]
 
   - name: security-pen-testing

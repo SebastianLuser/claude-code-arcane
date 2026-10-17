@@ -72,7 +72,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 
 ---
 
-## Gamedev (25 skills)
+## Gamedev (26 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -84,6 +84,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/consistency-check` | Detecta inconsistencias cross-documento en stats/items | `[full \| since-last \| entity:<name>]` |
 | `/doc-gdd` | Genera Game Design Document completo | `[game-name]` |
 | `/doc-pas` | Documentacion PAS (Problem-Analysis-Solution) | `[problem o decision title]` |
+| `/game-security-audit` | Audit de seguridad para juegos Unity/Unreal: saves, red, cheats, input | `[full \| network \| save \| input \| quick]` |
 | `/install-mcp` | Conecta Claude con el MCP del engine: Unity (package UPM) o Unreal (plugins del engine) | `[unity\|unreal] [--secondary] [path]` |
 | `/meshy-derive` | Deriva targets (FBX, GLB web, blend, STL) desde el master GLB | `<slug> [game\|web\|edit\|print\|all]` |
 | `/meshy-generate` | Genera asset 3D con Meshy: preview -> refine, con gate de creditos | `<slug> [--from-image <path>] [--spec <path>]` |
@@ -178,7 +179,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 ---
 
-## General (54 skills)
+## General (53 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -224,7 +225,6 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 | `/runbooks` | Crea y gestiona runbooks operativos | `[create <name> \| list \| update <name>]` |
 | `/scope-check` | Analiza scope creep vs plan original | `[feature-name o sprint-N]` |
 | `/secret-management` | Gestion de secrets: GCP SM, Vault, SOPS | `[setup\|rotate\|audit]` |
-| `/security-audit` | Audit de seguridad para juegos | `[full \| network \| save \| input \| quick]` |
 | `/skill-improve` | Mejora un skill con loop test-fix-retest | `[skill-name]` |
 | `/skill-test` | Valida skills (estructura + comportamiento) | `static [name\|all] \| spec [name] \| audit` |
 | `/slack` | Gestiona Slack: mensajes, canales, archivos | `[send\|channel\|file\|search] <args>` |

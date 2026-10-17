@@ -3,7 +3,6 @@ description: "Security — audits, OWASP, secrets, backups"
 category: platform
 
 skills:
-  - security-audit
   - audit-dev
   - owasp-top10-check
   - secret-management

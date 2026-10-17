@@ -107,7 +107,7 @@ with correct schema, respect layer/priority ordering, and gate before writing.
 ### `analysis`
 
 **Skills**: consistency-check, balance-check, content-audit, code-review, tech-debt,
-scope-check, estimate, perf-profile, asset-audit, security-audit, test-evidence-review, test-flakiness
+scope-check, estimate, perf-profile, asset-audit, game-security-audit, test-evidence-review, test-flakiness
 
 Analysis skills scan the project and surface findings. They are read-only during
 analysis and must ask before recommending any file writes.

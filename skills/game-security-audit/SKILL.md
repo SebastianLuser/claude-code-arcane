@@ -1,17 +1,17 @@
 ---
-name: security-audit
-description: "Security audit: save tampering, cheat vectors, network exploits, data exposure, input validation. Prioritized report + fixes."
+name: game-security-audit
+description: "Game security audit (Unity/Unreal): save tampering, cheat vectors, network exploits, data exposure, input validation. Prioritized report + fixes."
 category: "security"
 argument-hint: "[full | network | save | input | quick]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash, Write, Task
+allowed-tools: Read, Glob, Grep, Bash, Write
 context: fork
 agent: security-architect
 ---
 
-# Security Audit
+# Game Security Audit
 
-Systematically audits codebase for common game security failures and produces prioritised remediation plan.
+Systematically audits a game codebase for common game security failures and produces prioritised remediation plan.
 
 **Run:** before public release (required for Polish→Release gate), before multiplayer features, after disk/network read systems, when security bug reported.
 
@@ -30,11 +30,7 @@ Output: `production/security/security-audit-[date].md`
 
 Detect language, platforms and, for a game, the engine (`ProjectSettings/ProjectVersion.txt` (Unity) or the `.uproject` (Unreal)) from the project files. Take multiplayer scope from the GDD, or ask.
 
-## Phase 2: Spawn Security Engineer
-
-Spawn `security-engineer` via Task with: audit mode, engine/language, manifest of source directories. Collect full findings.
-
-## Phase 3: Audit Categories
+## Phase 2: Audit Categories
 
 | Category | Key Checks |
 |----------|-----------|
@@ -47,7 +43,7 @@ Spawn `security-engineer` via Task with: audit mode, engine/language, manifest o
 
 Skip categories not applicable. Grep for relevant patterns per category.
 
-## Phase 4: Classify Findings
+## Phase 3: Classify Findings
 
 | Severity | Definition |
 |----------|-----------|
@@ -58,17 +54,17 @@ Skip categories not applicable. Grep for relevant patterns per category.
 
 Status: Open / Accepted Risk / Out of Scope.
 
-## Phase 5: Generate Report
+## Phase 4: Generate Report
 
-Executive summary (severity counts + release recommendation: CLEAR TO SHIP / FIX CRITICALS / DO NOT SHIP). Per finding: ID, category, file+line, description, attack scenario, remediation, effort. Dependency inventory (plugin/version/source/CVEs). Prioritised remediation order.
+Executive summary (severity counts + release recommendation: CLEAR TO SHIP / FIX CRITICALS / DO NOT SHIP, which read as PASS / CONCERNS / FAIL next to other audits). Per finding: ID, category, file+line, description, attack scenario, remediation, effort. Dependency inventory (plugin/version/source/CVEs). Prioritised remediation order.
 
-## Phase 6: Write Report
+## Phase 5: Write Report
 
 Present summary + CRITICAL/HIGH in conversation. "May I write full report to `production/security/security-audit-[date].md`?" Write after approval.
 
-## Phase 7: Gate Integration
+## Phase 6: Gate Integration
 
-Required for **Polish → Release gate**. After remediation: `/security-audit quick` to confirm. CRITICAL exists → "Must resolve before release." No CRITICAL/HIGH → "Clear for `/gate-check release`."
+Required for **Polish → Release gate**. After remediation: `/game-security-audit quick` to confirm. CRITICAL exists → "Must resolve before release." No CRITICAL/HIGH → "Clear for `/gate-check release`."
 
 ## Protocol
 

@@ -5,7 +5,6 @@ category: backend
 skills:
   - test-setup
   - deps-audit
-  - security-audit
   - env-sync
   - observability
   - scaffold-go
