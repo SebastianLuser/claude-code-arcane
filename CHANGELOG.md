@@ -1,3 +1,10 @@
+# [2.18.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.17.0...v2.18.0) (2026-10-17)
+
+
+### Features
+
+* **skills:** rename security-audit to game-security-audit, games only ([e01d48e](https://github.com/SebastianLuser/claude-code-arcane/commit/e01d48e8c17c5393c7b8fe5672b02b50dc732f16))
+
 # [2.17.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.16.0...v2.17.0) (2026-10-16)
 
 
