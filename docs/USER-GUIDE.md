@@ -93,7 +93,7 @@ If `.claude/` already exists, it gets backed up to `.claude.bak/` and replaced.
 npx claude-code-arcane add api-design
 
 # Add multiple skills
-npx claude-code-arcane add security-audit owasp
+npx claude-code-arcane add owasp-top10-check secret-management
 
 # Add an entire profile
 npx claude-code-arcane add +security

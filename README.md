@@ -114,7 +114,7 @@ npx claude-code-arcane install unity-dev --dry-run   # Preview without installin
 ```bash
 npx claude-code-arcane add                           # Interactive picker (same wizard as install)
 npx claude-code-arcane add api-design                # Add a single skill
-npx claude-code-arcane add security-audit owasp      # Add multiple skills
+npx claude-code-arcane add owasp-top10-check secret-management      # Add multiple skills
 npx claude-code-arcane add +security                 # Add an entire profile
 npx claude-code-arcane add +database +testing        # Add multiple profiles
 ```
@@ -192,7 +192,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
 | `backend-typescript` | Backend TypeScript — Fastify, Prisma, Zod, API design | 27 | engineering |
-| `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 26 | engineering |
+| `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 25 | engineering |
 | `backend-dotnet` | Backend .NET — ASP.NET Core, Vertical Slice/Clean, EF Core, JWT | 27 | engineering |
 | `backend-nestjs` | Backend NestJS — feature modules, DI, Prisma, JWT, microservices | 27 | engineering |
 | `backend-nextjs` | Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK | 25 | engineering |
@@ -231,7 +231,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 |---------|------|--------|--------|
 | `infra` | Terraform, observability, secrets, rollback, K8s | 26 | devops |
 | `database` | Indexing, migrations, seeding, replicas, optimization | 8 | — |
-| `security` | Audits, OWASP, secrets, backups | 10 | — |
+| `security` | Audits, OWASP, secrets, backups | 9 | — |
 | `testing` | Contract, performance, regression, flakiness | 11 | quality |
 | `ai` | LLM cost optimization, RAG, ML, data engineering, agent and MCP design | 10 | ai |
 
@@ -310,6 +310,17 @@ It ships the in-editor skills that operate and extend the MCP (`unreal-mcp`, `cr
 `/jira-tickets` is the exception: it talks to the Jira REST API v3 over `curl`, not MCP.
 
 Building your own server? `/mcp-server-builder` scaffolds one.
+
+### Recommended complements
+
+Arcane leaves out what these already do well. Install them once, at user level, next to any profile:
+
+| Complement | What it adds | Install |
+|------------|--------------|---------|
+| [Cloudflare `security-audit`](https://github.com/cloudflare/security-audit-skill) | Security audit for any codebase. Arcane's `/game-security-audit` only covers games (saves, cheats, netcode) | `npx skills add https://github.com/cloudflare/security-audit-skill --skill security-audit --global` |
+| [ponytail](https://github.com/DietrichGebert/ponytail) | Plugin that makes Claude write the least code that fully solves the task | `/plugin marketplace add DietrichGebert/ponytail`, then `/plugin install ponytail@ponytail` |
+
+Arcane used to ship its own `security-audit`, so a project installed before the rename would end up with two skills under that name. Run `npx claude-code-arcane update` there first: it moves the old one to `.claude/.arcane-trash/`.
 
 ---
 

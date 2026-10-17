@@ -16,7 +16,7 @@ Add individual skills or entire profiles to the current Arcane installation with
 
 Examples:
 - `/arcane-add docker-setup` — add a single skill
-- `/arcane-add security-audit owasp-top10-check` — add multiple skills
+- `/arcane-add owasp-top10-check secret-management` — add multiple skills
 - `/arcane-add +security` — add all skills from the +security profile
 - `/arcane-add +database` — add all skills from the +database profile
 
