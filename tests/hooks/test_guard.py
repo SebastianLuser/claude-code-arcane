@@ -122,6 +122,38 @@ class AskedCommands(unittest.TestCase):
         self.assertIsNone(bash(command))
 
 
+def powershell(command: str) -> str | None:
+    return guard.decide({"tool_name": "PowerShell", "tool_input": {"command": command}})[0]
+
+
+class PowerShellCommands(unittest.TestCase):
+    """On Windows Claude also runs commands through its PowerShell tool."""
+
+    def test_git_rules_apply(self):
+        self.assertEqual(powershell("git add .; git push --force origin main"), "deny")
+        self.assertEqual(powershell("git reset --hard HEAD~1"), "deny")
+        self.assertEqual(powershell("npm install left-pad"), "ask")
+        self.assertIsNone(powershell("npm test"))
+
+    def test_recursive_remove_item_asks_outside_build_output(self):
+        for command in ("Remove-Item -Recurse -Force src", "rm -r -fo src", "ri -Recurse C:\\Users\\me\\node_modules"):
+            self.assertEqual(powershell(command), "ask", command)
+        for command in ("Remove-Item -Recurse .\\node_modules", "Remove-Item -Recurse -Force .\\node_modules, .\\dist",
+                        "Remove-Item notes.txt"):
+            self.assertIsNone(powershell(command), command)
+
+    def test_env_files(self):
+        self.assertEqual(powershell("Set-Content .env 'A=1'"), "deny")
+        self.assertEqual(powershell("'A=1' | Out-File -FilePath .env"), "deny")
+        self.assertEqual(powershell("Get-Content .env"), "deny")
+
+    def test_nested_and_quoted(self):
+        self.assertEqual(powershell('pwsh -Command "git push --force"'), "deny")
+        self.assertEqual(powershell("Invoke-Expression 'git reset --hard'"), "deny")
+        self.assertIsNone(powershell("git commit -m @'\nfix: never git push --force\n'@"))
+        self.assertIsNone(powershell('Write-Host "a`nb"'))
+
+
 class FileEdits(unittest.TestCase):
     def setUp(self):
         self.root = tempfile.mkdtemp()
