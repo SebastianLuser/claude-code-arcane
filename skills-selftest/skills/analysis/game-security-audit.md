@@ -1,8 +1,8 @@
-# Skill Test Spec: /security-audit
+# Skill Test Spec: /game-security-audit
 
 ## Skill Summary
 
-`/security-audit` audits the game for security risks including save data
+`/game-security-audit` audits the game for security risks including save data
 integrity, network communication, anti-cheat exposure, and data privacy. It
 reads source files in `src/` for security patterns and checks whether sensitive
 data is handled correctly. No director gates are invoked. The skill does not
@@ -38,7 +38,7 @@ None. Security audit is a read-only advisory skill; no gates are invoked.
 - No hardcoded API keys, passwords, or credentials in any `src/` file
 - No version numbers or internal build IDs exposed in client-facing output
 
-**Input:** `/security-audit`
+**Input:** `/game-security-audit`
 
 **Expected behavior:**
 1. Skill scans `src/` for security patterns: encryption usage, hardcoded credentials, exposed internals
@@ -62,7 +62,7 @@ None. Security audit is a read-only advisory skill; no gates are invoked.
 - `src/ui/DebugOverlay.cs` contains: `label.text = "Build: " + Application.version;`
   (exposes internal build version to player)
 
-**Input:** `/security-audit`
+**Input:** `/game-security-audit`
 
 **Expected behavior:**
 1. Skill scans `src/` — finds unencrypted save write in `SaveSystem.cs`
@@ -87,7 +87,7 @@ None. Security audit is a read-only advisory skill; no gates are invoked.
 - No authentication check is found before `SendChat()` — players can call it without being verified
 - Game has online multiplayer features (inferred from file presence)
 
-**Input:** `/security-audit`
+**Input:** `/game-security-audit`
 
 **Expected behavior:**
 1. Skill scans `src/networking/` — detects online feature code
@@ -108,7 +108,7 @@ None. Security audit is a read-only advisory skill; no gates are invoked.
 **Fixture:**
 - `src/` directory does not exist or is completely empty
 
-**Input:** `/security-audit`
+**Input:** `/game-security-audit`
 
 **Expected behavior:**
 1. Skill attempts to scan `src/` — no files found
@@ -124,24 +124,24 @@ None. Security audit is a read-only advisory skill; no gates are invoked.
 
 ---
 
-### Case 5: Gate Compliance — No gate; security-engineer invoked separately
+### Case 5: Gate Compliance — No gate; human review suggested for multiplayer
 
 **Fixture:**
 - Source files exist; 1 CONCERNS-level finding detected (debug logging enabled in release build)
 - `review-mode.txt` contains `full`
 
-**Input:** `/security-audit`
+**Input:** `/game-security-audit`
 
 **Expected behavior:**
 1. Skill scans source; finds debug logging active in release path
 2. No director gate is invoked regardless of review mode
 3. Verdict is CONCERNS
-4. Output notes: "For formal security review, consider engaging a security-engineer agent"
+4. Output notes that this is not a pentest and recommends a human security professional for competitive or monetised multiplayer
 5. Findings are presented as a read-only report; no files written
 
 **Assertions:**
 - [ ] No director gate is invoked in any review mode
-- [ ] Security-engineer consultation is suggested (not mandated)
+- [ ] A human security review is suggested (not mandated)
 - [ ] No files are written
 - [ ] Verdict is CONCERNS for advisory-level security findings
 

@@ -8,7 +8,7 @@ skills:
   - optimize
   - deps-audit
   - env-sync
-  - security-audit
+  - game-security-audit
   - release-checklist
   - patch-notes
   - onboard
