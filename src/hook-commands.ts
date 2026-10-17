@@ -14,6 +14,9 @@ export interface HookGroup {
 
 export type HookMap = Record<string, HookGroup[]>;
 
+/** Matcher for the tools that run shell commands; on Windows Claude also uses PowerShell. */
+export const SHELL_TOOLS_MATCHER = "Bash|PowerShell";
+
 /** Matcher for the tools that write files; the guard reviews their target path. */
 export const FILE_TOOLS_MATCHER = "Write|Edit|MultiEdit|NotebookEdit";
 
@@ -80,7 +83,7 @@ export function defaultHooks(target: string): HookMap {
     ],
     PreToolUse: [
       {
-        matcher: "Bash",
+        matcher: SHELL_TOOLS_MATCHER,
         hooks: [
           hook(target, "guard.sh", 10),
           hook(target, "validate-commit.sh", 15),
@@ -118,7 +121,8 @@ export function defaultHooks(target: string): HookMap {
  * hooks the user added or edited survive:
  *   - a command still in the exact legacy relative form moves to `hookCommand()`;
  *   - entries for retired scripts are dropped, and groups left empty with them;
- *   - the guard is added where it is missing, ahead of the other Bash hooks;
+ *   - the guard is added where it is missing, ahead of the other Bash hooks, and the
+ *     group that runs it also matches PowerShell, which skipped every check before;
  *   - the worktree exit check and the session watch are added where missing.
  * Returns a description of each change; empty when nothing changed.
  */
@@ -156,13 +160,22 @@ export function healHooks(hooks: HookMap, target: string): string[] {
   const pre = (hooks.PreToolUse ??= []);
   const hasGuard = (group: HookGroup) => group.hooks?.some((h) => h.command?.includes("guard.sh"));
 
-  const bash = pre.find((g) => g.matcher === "Bash");
-  if (!bash) {
-    pre.unshift({ matcher: "Bash", hooks: [hook(target, "guard.sh", 10)] });
-    changes.push("guard for Bash");
-  } else if (!hasGuard(bash)) {
-    bash.hooks = [hook(target, "guard.sh", 10), ...(bash.hooks ?? [])];
-    changes.push("guard for Bash");
+  const shell =
+    pre.find((g) => g.matcher === SHELL_TOOLS_MATCHER) ??
+    pre.find((g) => g.matcher === "Bash" && hasGuard(g)) ??
+    pre.find((g) => g.matcher === "Bash");
+  if (!shell) {
+    pre.unshift({ matcher: SHELL_TOOLS_MATCHER, hooks: [hook(target, "guard.sh", 10)] });
+    changes.push("guard for Bash and PowerShell");
+  } else {
+    if (!hasGuard(shell)) {
+      shell.hooks = [hook(target, "guard.sh", 10), ...(shell.hooks ?? [])];
+      changes.push("guard for Bash");
+    }
+    if (shell.matcher === "Bash") {
+      shell.matcher = SHELL_TOOLS_MATCHER;
+      changes.push("guard for PowerShell");
+    }
   }
 
   if (!pre.some((g) => g.matcher === FILE_TOOLS_MATCHER && hasGuard(g))) {

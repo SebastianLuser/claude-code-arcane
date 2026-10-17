@@ -7,6 +7,7 @@ import { Installer } from "../installer.js";
 import { mergeProfiles } from "../profiles.js";
 import {
   FILE_TOOLS_MATCHER,
+  SHELL_TOOLS_MATCHER,
   defaultHooks,
   healHooks,
   hookCommand,
@@ -53,9 +54,9 @@ describe("hookCommand", () => {
 });
 
 describe("defaultHooks", () => {
-  it("runs the guard before the other Bash hooks and on file edits", () => {
+  it("runs the guard before the other shell hooks and on file edits", () => {
     const hooks = defaultHooks(PROJECT);
-    const bash = hooks.PreToolUse.find((g) => g.matcher === "Bash")!;
+    const bash = hooks.PreToolUse.find((g) => g.matcher === SHELL_TOOLS_MATCHER)!;
     const files = hooks.PreToolUse.find((g) => g.matcher === FILE_TOOLS_MATCHER)!;
     expect(bash.hooks[0].command).toContain("guard.sh");
     expect(files.hooks[0].command).toContain("guard.sh");
@@ -82,10 +83,27 @@ describe("healHooks", () => {
   it("adds the guard ahead of the existing Bash hooks and for file edits", () => {
     const hooks = legacyHooks();
     const changes = healHooks(hooks, PROJECT);
-    const bash = hooks.PreToolUse.find((g) => g.matcher === "Bash")!;
+    const bash = hooks.PreToolUse.find((g) => g.matcher === SHELL_TOOLS_MATCHER)!;
     expect(bash.hooks.map((h) => h.command)[0]).toContain("guard.sh");
     expect(hooks.PreToolUse.some((g) => g.matcher === FILE_TOOLS_MATCHER)).toBe(true);
     expect(changes).toEqual(expect.arrayContaining(["guard for Bash", "guard for file edits"]));
+  });
+
+  // Before 2.19 the guard listened only to Bash, so a command Claude ran through the
+  // PowerShell tool on Windows (a force push, a commit) skipped every check.
+  it("widens an installed Bash guard to PowerShell, once", () => {
+    const guard = { type: "command", command: 'bash "$CLAUDE_PROJECT_DIR/.claude/hooks/guard.sh"' };
+    const commit = { type: "command", command: 'bash "$CLAUDE_PROJECT_DIR/.claude/hooks/validate-commit.sh"' };
+    const hooks: HookMap = {
+      PreToolUse: [
+        { matcher: "Bash", hooks: [{ type: "command", command: "bash my-own-check.sh" }] },
+        { matcher: "Bash", hooks: [guard, commit] },
+      ],
+    };
+    expect(healHooks(hooks, PROJECT)).toContain("guard for PowerShell");
+    expect(hooks.PreToolUse.map((g) => g.matcher)).toEqual(["Bash", SHELL_TOOLS_MATCHER, FILE_TOOLS_MATCHER]);
+    expect(hooks.PreToolUse[1].hooks).toEqual([guard, commit]);
+    expect(healHooks(hooks, PROJECT)).not.toContain("guard for PowerShell");
   });
 
   it("adds the session watch after tools and on stop, once", () => {
