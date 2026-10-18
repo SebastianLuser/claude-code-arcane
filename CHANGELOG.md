@@ -1,3 +1,12 @@
+## [2.18.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.18.0...v2.18.1) (2026-10-18)
+
+
+### Bug Fixes
+
+* **hooks:** guard commands Claude runs through PowerShell ([79c7396](https://github.com/SebastianLuser/claude-code-arcane/commit/79c739662c4d9548b63fa775fbeb28f89a368649))
+* **hooks:** read backslash paths the same way on every OS ([ca8084a](https://github.com/SebastianLuser/claude-code-arcane/commit/ca8084a0b13c521e7a31da1bcea14caa8eb62e3b))
+* **installer:** run the guard on PowerShell in new and existing installs ([8471beb](https://github.com/SebastianLuser/claude-code-arcane/commit/8471beb1210c578bf3c4e2281f99fb0ce61f56e9))
+
 # [2.18.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.17.0...v2.18.0) (2026-10-17)
 
 
