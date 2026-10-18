@@ -41,6 +41,10 @@ const DANGEROUS_ALLOWS = new Set([
   "Bash(bash *)",
   "Bash(sh *)",
   "Bash(eval *)",
+  "PowerShell",
+  "PowerShell(*)",
+  "PowerShell(Remove-Item *)",
+  "PowerShell(git *)",
 ]);
 
 const SECRET_PATTERNS: Array<[string, RegExp]> = [

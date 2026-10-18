@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PreToolUse guard for Bash and file-writing tools.
+"""PreToolUse guard for Bash, PowerShell and file-writing tools.
 
 Reads the hook payload on stdin and answers with a permission decision:
   deny - actions the user runs by hand if they really want them (force push,
@@ -9,7 +9,9 @@ Reads the hook payload on stdin and answers with a permission decision:
   none - everything else; the normal permission rules decide.
 
 The command is parsed quote-aware and split on && || ; | so a chained or
-quoted command cannot hide a match the old grep-based hooks missed. This is a
+quoted command cannot hide a match the old grep-based hooks missed. On Windows
+Claude also runs commands through its PowerShell tool, so the same rules cover
+it, plus PowerShell's own spellings (Remove-Item -Recurse, Set-Content .env). This is a
 guard against mistakes, not a sandbox: a script or an interpreter one-liner
 can still do anything.
 
@@ -70,7 +72,11 @@ TEXT_RULES = [
 LAUNCHERS = {"npx", "pnpx", "bunx", "pnpm", "yarn", "npm", "bun", "uv", "uvx", "poetry"}
 
 ENV_FILE = re.compile(r"^\.env(\..+)?$")
-READERS = {"cat", "type", "less", "more", "head", "tail", "bat", "nl", "strings", "grep", "rg"}
+READERS = {"cat", "type", "less", "more", "head", "tail", "bat", "nl", "strings", "grep", "rg",
+           "get-content", "gc", "select-string", "sls"}
+# PowerShell's Remove-Item and its aliases; `rm` there is Remove-Item, not POSIX rm.
+PS_REMOVERS = {"remove-item", "rm", "ri", "del", "erase", "rd", "rmdir"}
+PS_WRITERS = {"set-content", "add-content", "out-file", "sc", "ac", "tee-object"}
 ENV_SAFE_SUFFIXES = (".example", ".sample", ".template", ".dist")
 
 # Write/Edit targets, matched against the path relative to the project root.
@@ -127,19 +133,21 @@ def newlines_to_separators(command: str) -> str:
     return "".join(out)
 
 
-def tokenize(command: str) -> list[str]:
+def tokenize(command: str, shell: str = "bash") -> list[str]:
     try:
         lexer = shlex.shlex(command, posix=True, punctuation_chars=True)
         lexer.whitespace_split = True
+        if shell == "powershell":
+            lexer.escape = ""  # PowerShell escapes with a backtick; `\` is a path separator
         return list(lexer)
     except ValueError:  # unbalanced quotes: fall back to a plain split
         return re.findall(r"&&|\|\||[;|&()]|[^\s;|&()]+", command)
 
 
-def segments(command: str) -> list[list[str]]:
+def segments(command: str, shell: str = "bash") -> list[list[str]]:
     command = newlines_to_separators(strip_heredoc_bodies(command))
     result, current = [], []
-    for token in tokenize(command):
+    for token in tokenize(command, shell):
         if token in SEPARATORS:
             if current:
                 result.append(current)
@@ -151,16 +159,23 @@ def segments(command: str) -> list[list[str]]:
     return result
 
 
-def nested_commands(tokens: list[str]) -> list[str]:
-    """Command strings run by this segment: bash -c "...", eval "...", $(...)."""
+def nested_commands(tokens: list[str], shell: str = "bash") -> list[tuple[str, str]]:
+    """(command, shell) run by this segment: bash -c "...", pwsh -c "...", eval, iex, $(...)."""
     found = []
     for i, token in enumerate(tokens):
-        if os.path.basename(token) in ("bash", "sh", "zsh") and i + 2 < len(tokens) and tokens[i + 1] == "-c":
-            found.append(tokens[i + 2])
+        name = os.path.basename(token).lower()
+        flag = tokens[i + 1].lower() if i + 1 < len(tokens) else ""
+        if name in ("bash", "sh", "zsh") and i + 2 < len(tokens) and flag == "-c":
+            found.append((tokens[i + 2], "bash"))
+        if name in ("pwsh", "pwsh.exe", "powershell", "powershell.exe") and i + 2 < len(tokens)                 and flag in ("-c", "-command"):
+            found.append((tokens[i + 2], "powershell"))
         if token == "eval" and i + 1 < len(tokens):
-            found.append(" ".join(tokens[i + 1:]))
-        found.extend(re.findall(r"\$\(([^()]*)\)", token))
-        found.extend(re.findall(r"`([^`]*)`", token))
+            found.append((" ".join(tokens[i + 1:]), "bash"))
+        if name in ("iex", "invoke-expression") and i + 1 < len(tokens):
+            found.append((" ".join(tokens[i + 1:]), "powershell"))
+        found.extend((inner, shell) for inner in re.findall(r"\$\(([^()]*)\)", token))
+        if shell == "bash":  # in PowerShell a backtick is an escape, not command substitution
+            found.extend((inner, shell) for inner in re.findall(r"`([^`]*)`", token))
     return found
 
 
@@ -268,11 +283,24 @@ def check_rm(args: list[str]) -> tuple[str | None, str]:
     force = "f" in flags or "--force" in args
     if not (recursive and force):
         return NONE, ""
-    targets = positional(args)
+    return delete_decision(positional(args))
+
+
+def check_remove_item(args: list[str]) -> tuple[str | None, str]:
+    """Remove-Item -Recurse deletes a whole tree without a prompt, -Force or not."""
+    params = [a.lower() if a.startswith("-") else a for a in args]  # parameters ignore case
+    if not any(len(a) >= 2 and "-recurse".startswith(a) for a in params):
+        return NONE, ""
+    paths = positional(params, {"-filter", "-include", "-exclude", "-stream"})
+    return delete_decision([t for p in paths for t in p.split(",") if t])  # `a, b` is an array
+
+
+def delete_decision(targets: list[str]) -> tuple[str | None, str]:
+    """Ask before a recursive delete, unless every target is regenerable build output."""
     safe = targets and all(
         not t.startswith(("/", "~")) and not re.match(r"^[A-Za-z]:", t)
         and ".." not in re.split(r"[/\\]", t) and "*" not in t
-        and os.path.basename(t.rstrip("/\\")) in REGENERABLE
+        and os.path.basename(t.replace("\\", "/").rstrip("/")) in REGENERABLE
         for t in targets
     )
     if safe:
@@ -327,7 +355,7 @@ def is_env_file(path: str) -> bool:
     return bool(ENV_FILE.match(base)) and not base.endswith(ENV_SAFE_SUFFIXES)
 
 
-def check_segment(tokens: list[str], depth: int = 0) -> tuple[str | None, str]:
+def check_segment(tokens: list[str], depth: int = 0, shell: str = "bash") -> tuple[str | None, str]:
     name, args = program(tokens)
     text = " ".join(tokens)
     decisions = []
@@ -336,13 +364,15 @@ def check_segment(tokens: list[str], depth: int = 0) -> tuple[str | None, str]:
         decisions.append((DENY, "sudo is blocked; the user runs privileged commands by hand"))
     if name == "chmod" and any(a in ("777", "0777") for a in args):
         decisions.append((DENY, "chmod 777 makes files writable by everyone"))
-    if writes_env_file(tokens):
+    if writes_env_file(tokens) or (name in PS_WRITERS and any(is_env_file(a) for a in positional(args))):
         decisions.append((DENY, "writing a .env file is blocked; the user edits secrets by hand"))
     if name in READERS and any(is_env_file(a) for a in positional(args)):
         decisions.append((DENY, "reading a .env file would put its secrets in the conversation"))
     if name == "git":
         decisions.append(check_git(args))
-    if name == "rm":
+    if shell == "powershell" and name in PS_REMOVERS:
+        decisions.append(check_remove_item(args))
+    elif name == "rm":
         decisions.append(check_rm(args))
     if name == "gh":
         if args[:2] in (["repo", "delete"], ["release", "delete"], ["secret", "delete"], ["secret", "remove"]):
@@ -361,13 +391,13 @@ def check_segment(tokens: list[str], depth: int = 0) -> tuple[str | None, str]:
         if runs & programs and re.search(pattern, text, re.I):
             decisions.append((ASK, reason))
     if depth < 3:
-        for inner in nested_commands(tokens):
-            decisions.append(check_command(inner, depth + 1))
+        for inner, inner_shell in nested_commands(tokens, shell):
+            decisions.append(check_command(inner, depth + 1, inner_shell))
     return worst(decisions)
 
 
-def check_command(command: str, depth: int = 0) -> tuple[str | None, str]:
-    return worst([check_segment(seg, depth) for seg in segments(command)])
+def check_command(command: str, depth: int = 0, shell: str = "bash") -> tuple[str | None, str]:
+    return worst([check_segment(seg, depth, shell) for seg in segments(command, shell)])
 
 
 def worst(decisions: list[tuple[str | None, str]]) -> tuple[str | None, str]:
@@ -412,6 +442,8 @@ def decide(payload: dict) -> tuple[str | None, str]:
     tool_input = payload.get("tool_input") or {}
     if tool == "Bash":
         return check_command(tool_input.get("command", ""))
+    if tool == "PowerShell":
+        return check_command(tool_input.get("command", ""), shell="powershell")
     if tool in ("Write", "Edit", "MultiEdit", "NotebookEdit"):
         root = os.environ.get("CLAUDE_PROJECT_DIR") or payload.get("cwd") or os.getcwd()
         return check_file(tool_input.get("file_path") or tool_input.get("notebook_path", ""), root)
