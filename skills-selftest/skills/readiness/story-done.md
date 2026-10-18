@@ -123,20 +123,20 @@ Verified automatically by `/skill-test static` — no fixture needed.
 ### Case 4: Edge Case — No argument, auto-detect current story
 
 **Fixture:**
-- `production/session-state/active.md` contains a reference to
+- `.arcane/session-state/active.md` contains a reference to
   `production/epics/core/story-oxygen-drain.md` as the active story
 - That story file exists with `Status: In Progress`
 
 **Input:** `/story-done` (no argument)
 
 **Expected behavior:**
-1. Skill reads `production/session-state/active.md`
+1. Skill reads `.arcane/session-state/active.md`
 2. Skill finds the active story reference
 3. Skill reads that story file and proceeds normally
 4. Output confirms which story was auto-detected
 
 **Assertions:**
-- [ ] Skill reads `production/session-state/active.md` when no argument is given
+- [ ] Skill reads `.arcane/session-state/active.md` when no argument is given
 - [ ] Skill identifies and confirms the auto-detected story before proceeding
 - [ ] If no story is found in session state, skill asks the user to provide a path
 

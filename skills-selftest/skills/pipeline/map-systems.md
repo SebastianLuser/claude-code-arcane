@@ -62,7 +62,7 @@ In `solo` mode: both gates are skipped with equivalent notes.
 4. CD-SYSTEMS and TD-SYSTEM-BOUNDARY spawn in parallel and return APPROVED
 5. Asks "May I write `design/systems-index.md`?"
 6. Writes systems-index.md after approval
-7. Updates `production/session-state/active.md`
+7. Updates `.arcane/session-state/active.md`
 
 **Assertions:**
 - [ ] Between 5 and 8 systems are identified (not fewer, not more without explanation)

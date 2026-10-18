@@ -97,8 +97,9 @@ claude-code-arcane/
 │   ├── statusline.sh                  # Solo con el profile statusline
 │   ├── output-styles/                 # Solo si algún profile declara output_styles
 │   ├── docs/                          # Copia de docs/; arcane update la mantiene al día
-│   ├── session-state/                 # active.md y logs de sesión; se ignora solo (.gitignore con *)
+│   ├── session-state/                 # Logs y estado de los hooks; se ignora solo (.gitignore con *)
 │   └── .arcane-trash/                 # Lo que arcane update saca; nunca se borra con rm
+├── .arcane/session-state/active.md    # Archivo de progreso que escribe Claude; se ignora solo. Fuera de .claude/ porque ahí cada edición pide permiso
 └── .claude.bak/                       # Backup de .claude/ antes de instalar
 ```
 

@@ -12,7 +12,7 @@ Entry point para sesiones nuevas. Detecta contexto, hace preguntas clave, rutea 
 
 ## Paso 1: Detectar contexto
 
-Escanear en paralelo: Unity (`ProjectSettings/ProjectVersion.txt`), Unreal (`*.uproject`), Web/Node (`package.json`), Go (`go.mod`), Python (`pyproject.toml`/`requirements.txt`), Flutter (`pubspec.yaml`), Rust (`Cargo.toml`), docs (`README.md`, `CLAUDE.md`, `design/`, `docs/`), session state (`.claude/session-state/active.md`).
+Escanear en paralelo: Unity (`ProjectSettings/ProjectVersion.txt`), Unreal (`*.uproject`), Web/Node (`package.json`), Go (`go.mod`), Python (`pyproject.toml`/`requirements.txt`), Flutter (`pubspec.yaml`), Rust (`Cargo.toml`), docs (`README.md`, `CLAUDE.md`, `design/`, `docs/`), session state (`.arcane/session-state/active.md`).
 
 ## Paso 2: Determinar etapa
 
@@ -45,7 +45,7 @@ AskUserQuestion multi-tab:
 
 ## Paso 5: Set session state
 
-Crear `.claude/session-state/active.md`: project name, division, stage, user role, next action, stack detected, existing artifacts, recommended flow (3 commands).
+Crear `.arcane/session-state/active.md`: project name, division, stage, user role, next action, stack detected, existing artifacts, recommended flow (3 commands).
 
 ## Paso 6: First action
 

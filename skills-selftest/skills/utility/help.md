@@ -39,7 +39,7 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 **Fixture:**
 - `production/stage.txt` contains `Production`
 - `production/sprints/sprint-004.md` exists with in-progress stories
-- `production/session-state/active.md` has a recent checkpoint
+- `.arcane/session-state/active.md` has a recent checkpoint
 
 **Input:** `/help`
 
