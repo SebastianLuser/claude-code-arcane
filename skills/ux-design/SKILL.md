@@ -38,7 +38,7 @@ If output file exists → read it, show section status table (Complete/Empty/Pla
 
 ## Skeleton Creation
 
-Create output file with `[To be designed]` placeholders for all sections. Update `.claude/session-state/active.md`.
+Create output file with `[To be designed]` placeholders for all sections. Update `.arcane/session-state/active.md`.
 
 > → Read references/spec-sections.md for [section inventories for UX spec, HUD, pattern library, and key section guidance]
 

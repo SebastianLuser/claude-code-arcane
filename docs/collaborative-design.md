@@ -311,7 +311,7 @@ Para documentos largos (ADRs, PRDs, GDDs, RFCs) escribí sección por sección a
    - Review con el usuario
    - Iterar hasta aprobación
    - Escribir ESA sección al archivo
-   - Update .claude/session-state/active.md
+   - Update .arcane/session-state/active.md
    - La conversación de esa sección puede compactarse — la decisión ya está en disco
 
 3. Si la sesión crashea mid-document:

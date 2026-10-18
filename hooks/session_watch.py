@@ -108,7 +108,7 @@ def post_tool(payload: dict, project: str) -> list[str]:
             if used >= level and state.get("context_warned", 0) < level:
                 state["context_warned"] = level
                 warnings.append(f"Context is at {used:.0f}% of the window. At the next logical point "
-                                "(a commit, a finished step), update .claude/session-state/active.md if this "
+                                "(a commit, a finished step), update .arcane/session-state/active.md if this "
                                 "task has one, then suggest the user run /compact.")
                 break
 

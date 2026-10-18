@@ -3,24 +3,33 @@
 # Graceful: wraps in main(), never blocks session
 set +e
 
+# Hook logs and state. Only hooks write here, so Claude Code's protection of .claude/
+# never gets in the way.
 STATE_DIR=".claude/session-state"
-LEGACY_STATE_DIR="production/session-state"
+# The progress file Claude itself writes. Claude Code asks before every edit under
+# .claude/, even in acceptEdits and with an allow rule, so it lives outside it.
+PROGRESS_DIR=".arcane/session-state"
+LEGACY_PROGRESS_DIRS="production/session-state .claude/session-state"
 
-# The folder holds session notes, never project files: a .gitignore with `*` keeps it
-# out of every commit without touching the project's own .gitignore.
-ensure_state_dir() {
-  mkdir -p "$STATE_DIR" 2>/dev/null
-  [ -f "$STATE_DIR/.gitignore" ] || echo '*' > "$STATE_DIR/.gitignore" 2>/dev/null
+# Both folders hold session notes, never project files: a .gitignore with `*` keeps
+# them out of every commit without touching the project's own .gitignore.
+ensure_ignored_dir() {
+  mkdir -p "$1" 2>/dev/null
+  [ -f "$1/.gitignore" ] || echo '*' > "$1/.gitignore" 2>/dev/null
 }
 
-# active.md used to live in production/session-state/. Move it once, so a task left
-# half done before the update still shows up here.
-migrate_legacy_state() {
-  [ -f "$LEGACY_STATE_DIR/active.md" ] || return 0
-  [ -f "$STATE_DIR/active.md" ] && return 0
-  ensure_state_dir
-  mv "$LEGACY_STATE_DIR/active.md" "$STATE_DIR/active.md" 2>/dev/null &&
-    echo "Moved $LEGACY_STATE_DIR/active.md to $STATE_DIR/active.md"
+# active.md used to live in production/session-state/ and then .claude/session-state/.
+# Move it once, so a task left half done before the update still shows up here.
+migrate_legacy_progress() {
+  local DIR
+  [ -f "$PROGRESS_DIR/active.md" ] && return 0
+  for DIR in $LEGACY_PROGRESS_DIRS; do
+    [ -f "$DIR/active.md" ] || continue
+    ensure_ignored_dir "$PROGRESS_DIR"
+    mv "$DIR/active.md" "$PROGRESS_DIR/active.md" 2>/dev/null &&
+      echo "Moved $DIR/active.md to $PROGRESS_DIR/active.md"
+    return 0
+  done
 }
 
 # A session started inside a worktree should know it, and where the main checkout is.
@@ -40,8 +49,9 @@ worktree_notice() {
 }
 
 main() {
-  migrate_legacy_state
-  [ -d "$STATE_DIR" ] && ensure_state_dir
+  migrate_legacy_progress
+  [ -d "$STATE_DIR" ] && ensure_ignored_dir "$STATE_DIR"
+  [ -d "$PROGRESS_DIR" ] && ensure_ignored_dir "$PROGRESS_DIR"
   [ -d "$STATE_DIR" ] && echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Session started" >> "$STATE_DIR/sessions.log" 2>/dev/null
 
   echo "=== Claude Code Arcane — Session Context ==="
@@ -91,7 +101,7 @@ main() {
     fi
   fi
 
-  STATE_FILE="$STATE_DIR/active.md"
+  STATE_FILE="$PROGRESS_DIR/active.md"
   if [ -f "$STATE_FILE" ]; then
     echo ""
     echo "=== ACTIVE SESSION STATE DETECTED ==="

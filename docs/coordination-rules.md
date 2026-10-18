@@ -71,7 +71,7 @@ Ningún agente hace commits sin instrucción explícita del user. Ni siquiera el
 
 ## Regla #9 — Session State
 
-Actualizar `.claude/session-state/active.md` cuando:
+Actualizar `.arcane/session-state/active.md` cuando:
 - Se completa un section/phase
 - Se toma una decisión significativa
 - Se cambia de división/agente

@@ -16,7 +16,7 @@ Claude Code tiene una ventana de contexto limitada. Sesiones largas llegan al l�
 
 ### Session State File
 
-Mantené `.claude/session-state/active.md` como checkpoint vivo. Update después de cada milestone significativo:
+Mantené `.arcane/session-state/active.md` como checkpoint vivo (va fuera de `.claude/` porque Claude Code pide permiso antes de cada edición ahí, aun en `acceptEdits`). Update después de cada milestone significativo:
 
 - Sección de diseño / ADR aprobada y escrita
 - Decisión arquitectónica tomada
@@ -95,7 +95,7 @@ Los subagents no heredan historia de conversación — dales contexto completo e
 
 Cuando el contexto se compacta, preservá en el summary:
 
-- Referencia a `.claude/session-state/active.md` (leer para recover state)
+- Referencia a `.arcane/session-state/active.md` (leer para recover state)
 - Lista de archivos modificados en la sesión y su propósito
 - Decisiones arquitectónicas hechas y su rationale
 - Tasks activas del sprint y estado actual
@@ -147,7 +147,7 @@ Cuando el status line muestra >= 70%:
 ```
 Tarea: "Implementá auth JWT completo"
 
-1. Crear .claude/session-state/active.md con:
+1. Crear .arcane/session-state/active.md con:
    - Feature: JWT auth
    - Files to create: src/auth/{tokens.ts, middleware.ts, login.ts}
    - Tests: tests/auth.test.ts

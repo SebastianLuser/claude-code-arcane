@@ -95,15 +95,37 @@ class SessionStart(HookTestCase):
         self.assertFalse((self.project / "production").exists())
 
     def test_moves_a_legacy_active_md_and_shows_it(self):
-        legacy = self.project / "production" / "session-state"
+        # production/ was the first home, .claude/ the second: Claude Code asks before
+        # every edit under .claude/, so the progress file now lives in .arcane/.
+        for legacy in (self.project / "production" / "session-state", self.project / ".claude" / "session-state"):
+            with self.subTest(legacy=legacy.relative_to(self.project).as_posix()):
+                legacy.mkdir(parents=True, exist_ok=True)
+                (legacy / "active.md").write_text("# Goal: ship the login\n")
+                out = run_hook("session-start.sh", self.project)
+                progress = self.project / ".arcane" / "session-state"
+                self.assertTrue((progress / "active.md").exists())
+                self.assertFalse((legacy / "active.md").exists())
+                self.assertIn("ship the login", out)
+                self.assertEqual((progress / ".gitignore").read_text().strip(), "*")
+                (progress / "active.md").unlink()
+
+    def test_never_overwrites_a_current_active_md(self):
+        progress = self.project / ".arcane" / "session-state"
+        progress.mkdir(parents=True)
+        (progress / "active.md").write_text("current\n")
+        legacy = self.project / ".claude" / "session-state"
         legacy.mkdir(parents=True)
-        (legacy / "active.md").write_text("# Goal: ship the login\n")
-        out = run_hook("session-start.sh", self.project)
-        state = self.project / ".claude" / "session-state"
-        self.assertTrue((state / "active.md").exists())
-        self.assertFalse((legacy / "active.md").exists())
-        self.assertIn("ship the login", out)
-        self.assertEqual((state / ".gitignore").read_text().strip(), "*")
+        (legacy / "active.md").write_text("old\n")
+        run_hook("session-start.sh", self.project)
+        self.assertEqual((progress / "active.md").read_text(), "current\n")
+        self.assertTrue((legacy / "active.md").exists())
+
+    def test_progress_folder_stays_out_of_git(self):
+        progress = self.project / ".arcane" / "session-state"
+        progress.mkdir(parents=True)
+        (progress / "active.md").write_text("goal\n")
+        run_hook("session-start.sh", self.project)
+        self.assertEqual(git(self.project, "status", "--porcelain", "--untracked-files=all", ".arcane"), "")
 
     def test_tells_a_session_started_in_a_worktree_where_it_is(self):
         worktree = self.add_worktree("feat")

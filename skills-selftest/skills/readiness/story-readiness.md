@@ -189,7 +189,7 @@ Verified automatically by `/skill-test static` — no fixture needed.
 - Case where TR-ID is missing from the registry entirely is not explicitly
   tested here; it follows the same NEEDS WORK pattern as Case 3.
 - The "no argument" path (skill auto-detecting the current story) is not
-  tested because it depends on `production/session-state/active.md` content,
+  tested because it depends on `.arcane/session-state/active.md` content,
   which is hard to fixture reliably.
 - Stories with multiple ADR references are not tested; behavior is assumed to
   be additive (all ADRs must be Accepted for READY verdict).
