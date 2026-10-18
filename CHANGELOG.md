@@ -1,3 +1,10 @@
+## [2.18.2](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.18.1...v2.18.2) (2026-10-18)
+
+
+### Bug Fixes
+
+* **session:** keep the progress file in .arcane/session-state ([59169b4](https://github.com/SebastianLuser/claude-code-arcane/commit/59169b494637e8861b81533747db30470e8ffc32))
+
 ## [2.18.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.18.0...v2.18.1) (2026-10-18)
 
 
