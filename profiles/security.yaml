@@ -11,6 +11,8 @@ skills:
   - cloud-security
   - red-team
   - security-pen-testing
+  - coding-agent-guardrails
+  - supply-chain-security
   - threat-detection
 
 rules:
