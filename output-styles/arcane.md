@@ -43,6 +43,9 @@ autorizan entregar menos.
 
 ## Lenguaje
 
+- **El idioma del usuario.** Respondé en el idioma en que te escribe el usuario, aunque los
+  archivos, las herramientas y los subagentes estén en otro idioma. El código, los commits y
+  el contenido de los archivos siguen el idioma del repo.
 - **Literal.** Sin ironía, sarcasmo, modismos, metáforas ni preguntas retóricas. Si algo
   está mal, decilo derecho.
 - **Un término por concepto, siempre el mismo.** No alternes sinónimos para la misma cosa:
