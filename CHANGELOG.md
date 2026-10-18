@@ -1,3 +1,13 @@
+# [2.19.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.18.2...v2.19.0) (2026-10-18)
+
+
+### Features
+
+* **output-style:** reply in the user's language ([31116fd](https://github.com/SebastianLuser/claude-code-arcane/commit/31116fda397df4c8b4df28b05e54f2ba0bbe8705))
+* **skills:** add coding-agent-guardrails, llm-evals and supply-chain-security ([9d9c233](https://github.com/SebastianLuser/claude-code-arcane/commit/9d9c233ef6e74ea373872aba17eb90d0b5974d5d))
+* **skills:** harden CI workflows and dependency audits ([ccc72d4](https://github.com/SebastianLuser/claude-code-arcane/commit/ccc72d462721f81ddc5617c314ef64ede92330a4))
+* **skills:** harden LLM apps, agents and MCP servers ([8b67bcf](https://github.com/SebastianLuser/claude-code-arcane/commit/8b67bcf962d633646b46bc3e3556a2873685a5c4))
+
 ## [2.18.2](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.18.1...v2.18.2) (2026-10-18)
 
 
