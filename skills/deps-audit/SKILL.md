@@ -50,6 +50,23 @@ npx depcheck 2>/dev/null
 - Está en git?
 - Está sincronizado con el manifest?
 
+#### E. Typosquatting
+Para cada dependencia **directa**, buscar nombres que imitan a un paquete conocido: una letra de más o de menos (`expresss`, `lodahs`), separador cambiado (`python-dateutil` vs `dateutil`), scope falso (`@types-node/x`). Ante la duda:
+```bash
+npm view <pkg> time.created maintainers repository   # creado hace días, 1 maintainer, sin repo → sospechoso
+npm view <pkg> scripts                               # postinstall en una librería que no compila nada → sospechoso
+```
+`npm audit signatures` verifica las firmas del registry y la provenance de lo instalado.
+
+#### F. Diff del lockfile
+Si el audit corre sobre una rama o un PR, comparar el lockfile contra la base:
+```bash
+git diff <base> -- package-lock.json pnpm-lock.yaml yarn.lock go.sum poetry.lock
+```
+Señales: paquetes nuevos que nadie agregó al manifest, `resolved` apuntando a otro host que el registry, `integrity` que cambia sin cambio de versión. En CI: `lockfile-lint --path package-lock.json --allowed-hosts npm --validate-https`.
+
+Para defensas de instalación (scripts, edad mínima de versión) y la respuesta ante un paquete comprometido: `/supply-chain-security`.
+
 ### 3. Reporte
 
 ```markdown
@@ -75,6 +92,10 @@ npx depcheck 2>/dev/null
 ## No usadas
 | Paquete | Evidencia |
 |---------|-----------|
+
+## Typosquatting y lockfile
+| Paquete | Señal | Acción |
+|---------|-------|--------|
 
 ## Lock file
 - Existe: [SI/NO]

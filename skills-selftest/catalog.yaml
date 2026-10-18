@@ -1869,6 +1869,32 @@ skills:
     priority: low
     category: software
 
+  - name: coding-agent-guardrails
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+    verdict: ["PASS", "CONCERNS", "FAIL"]
+
+  - name: supply-chain-security
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+    verdict: ["PASS", "CONCERNS", "FAIL"]
+
   - name: secret-management
     spec: null
     stack: software
@@ -2939,6 +2965,19 @@ skills:
     last_category_result: ""
     priority: medium
     category: software
+
+  - name: llm-evals
+    spec: null
+    stack: ai
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+    verdict: ["PASS", "CONCERNS", "FAIL"]
 
   - name: rag-architect
     spec: null

@@ -35,9 +35,21 @@ Parallelize lint + type-check + test; build waits for all.
 | **Caching** | Always — `setup-node`/`setup-go` built-in; `actions/cache` for custom |
 | **Artifacts** | Upload dist/ (7d retention); download in deploy job |
 | **Concurrency** | Group per workflow+ref; `cancel-in-progress: true` on PRs |
-| **Pinning** | SHA or major version; never `@master` |
+| **Pinning** | Third-party actions by full commit SHA with the version in a comment; a bot keeps them current |
 | **Reusable** | Shared logic → `org/shared-workflows` repo |
 | **Monorepo** | Path filters; run only affected packages |
+
+## Workflow Security
+
+| Rule | Why |
+|---|---|
+| `permissions: contents: read` at the top, widened per job | The token defaults to more than most jobs need |
+| No contributed code in `pull_request_target` / `workflow_run` | They run with secrets and a write token, even for forks |
+| Untrusted `${{ github.event.* }}` only through `env:` | Expressions expand before the shell: a PR title can run commands |
+| OIDC (`id-token: write`) instead of stored cloud keys | Short-lived credentials scoped to repo + branch |
+| `npm ci` / `--frozen-lockfile` in every install step | See `/supply-chain-security` |
+
+> → Read references/actions-hardening.md for examples of each rule, the repo settings to change, `persist-credentials`, and workflow linters (`actionlint`, `zizmor`)
 
 ## Environment Strategy
 
@@ -61,6 +73,8 @@ Promotion: CI green + staging smoke test + changelog reviewed. Use GitHub Enviro
 - [ ] CI on PR + main; concurrency + cancel-in-progress
 - [ ] Caching active; coverage published
 - [ ] Secrets in Environments (not repo-level for prod)
-- [ ] Dependabot for actions + deps; CODEOWNERS; actions pinned
+- [ ] Dependabot for actions + deps; CODEOWNERS; actions pinned by SHA
+- [ ] `permissions:` read-only by default; no `pull_request_target` running PR code; untrusted inputs via `env:`
+- [ ] Cloud deploys through OIDC, no long-lived keys in secrets
 - [ ] Staging auto-deploys; prod gated by tag + reviewers
 - [ ] Rollback procedure documented

@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 437 skills disponibles para proyectos consumidores, organizados por division.
+Los 440 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 397: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 400: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -294,11 +294,12 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 ---
 
-## AI (7 skills)
+## AI (8 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
 | `/llm-cost-optimizer` | Reduce LLM API spend by 40-80% through model routing, prompt caching, compression, and cost observability without degrading quality | `[audit\|optimize\|monitor]` |
+| `/llm-evals` | Evals for LLM features, agents and RAG: golden dataset, four eval layers, LLM-as-judge, RAG metrics and a CI gate against a baseline | `[design\|run\|review]` |
 | `/rag-architect` | Design, implement, and optimize production-grade RAG pipelines covering document chunking, embedding selection, vector DBs, and evaluation | `[design\|implement\|evaluate]` |
 | `/senior-computer-vision` | Computer vision engineering for object detection, image segmentation, and visual AI systems with YOLO, DETR, SAM, and ONNX/TensorRT | `[detect\|segment\|deploy]` |
 | `/senior-data-engineer` | Build scalable data pipelines, ETL/ELT systems, and data infrastructure with Python, SQL, Spark, Airflow, dbt, and Kafka | `[pipeline\|model\|quality]` |
@@ -493,14 +494,16 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 ---
 
-## Security (5 skills)
+## Security (7 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
 | `/ai-security` | Assess AI/ML systems for prompt injection, jailbreak vulnerabilities, model inversion, data poisoning, and agent tool abuse | `[assess\|audit\|mitigate]` |
 | `/cloud-security` | Assess cloud infrastructure for IAM privilege escalation, public storage exposure, open security groups, and IaC gaps | `[aws\|azure\|gcp] [audit]` |
+| `/coding-agent-guardrails` | Guardrails for repos where coding agents write code: permissions, managed settings, sandbox, hooks, branch rules, CODEOWNERS and agent tokens | `[setup\|audit] [solo\|team]` |
 | `/red-team` | Plan and execute authorized red team engagements: MITRE ATT&CK kill-chain planning, technique scoring, and choke points | `[plan\|execute\|report]` |
 | `/security-pen-testing` | Offensive security testing: OWASP Top 10 audits, static analysis, dependency scanning, secret detection, and API testing | `[owasp\|static\|deps\|secrets\|api]` |
+| `/supply-chain-security` | Lockfiles, install scripts, release-age gates, typosquatting, provenance, SBOM and the playbook for a compromised package | `[prevent\|audit\|respond <pkg>]` |
 | `/threat-detection` | Proactive threat hunting with hypothesis scoring, IOC sweep generation, z-score anomaly detection, and MITRE ATT&CK prioritization | `[hunt\|sweep\|anomaly]` |
 
 ---

@@ -59,6 +59,12 @@ Rules: JSON format, one line per event. `trace_id` in every line. Access logs in
 | Logs ERROR+ | 100% | 30d hot, 90d cold |
 | Metrics | — | 90d full-res, 1yr downsampled |
 
+## LLM Features and Agents
+
+LLM calls need cost, token, tool-call and quality signals on top of the three pillars.
+
+> → Read references/llm-observability.md for the fields to record per call, OTel GenAI traces, LLM backends (Langfuse, Helicone, Phoenix), metrics, alerts and SLOs
+
 ## PII Scrubbing
 
 Never log: passwords, tokens, API keys, identity docs, payment data, minor emails, message content. Redact at logger level: password, token, authorization, secret, cookie fields.

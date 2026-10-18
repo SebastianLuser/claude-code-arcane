@@ -9,8 +9,10 @@ Referencia detallada para el flujo manual y troubleshooting de `/install-mcp`.
 En `Packages/manifest.json`, dentro de `dependencies`:
 
 ```json
-"com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main"
+"com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#<tag>"
 ```
+
+`<tag>` es el último release (`gh api repos/CoplayDev/unity-mcp/releases/latest --jq .tag_name`). Nunca `#main`: es código de terceros que cambia sin aviso.
 
 Al abrir el proyecto, Unity descarga e importa el package desde el git URL.
 

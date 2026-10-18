@@ -13,10 +13,11 @@ skills:
   - agent-designer
   - agent-workflow-designer
   - mcp-server-builder
+  - llm-evals
 
 rules:
   universal:
-    []
+    - llm-code
   gamedev:
     []
 

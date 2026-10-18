@@ -38,6 +38,20 @@ Applies to software integrations with LLMs, ML inference, and AI agents — not 
 - **Tool calls require authorization checks**: if the agent can invoke a tool that reads/writes data, the calling user's permissions apply — not the service account.
 - **Prompt injection is a real threat**: sanitize tool outputs before feeding back into the context. Treat anything read from external URLs / emails / user docs as hostile.
 
+## Agents & Tools
+
+Defend in layers; no single one stops prompt injection:
+
+1. **Instruction hierarchy:** the system prompt states that text from users, tools and documents is data and never changes the task.
+2. **Untrusted text stays marked:** wrap it in delimiters, and never let it pick tools or arguments without a check in code.
+3. **Tools by allowlist:** the agent gets only the tools the task needs, each with a typed schema and the calling user's permissions.
+4. **Validate output before acting on it:** schema, allowed values, URLs and paths checked in code.
+5. **Human confirmation for destructive or external actions:** deleting, paying, sending email, writing outside a sandbox.
+
+- **Excessive agency is the common failure:** a read-only task gets read-only credentials. Credentials are short-lived and scoped per user or session, never a shared admin key.
+- **Budget per user and per request:** max tokens, max tool calls and max cost, enforced in code, so a loop or an attacker cannot run up the bill.
+- **Never load untrusted model files with `pickle`** (`torch.load` without `weights_only=True`, joblib): prefer `safetensors` and pin the file hash.
+
 ## ML Inference (non-LLM)
 
 - **Model versions are pinned** and logged with every prediction — `model_id`, `model_version`, feature hash.
@@ -47,7 +61,7 @@ Applies to software integrations with LLMs, ML inference, and AI agents — not 
 
 ## Evaluation
 
-- **Every AI feature has an eval suite** (golden examples, adversarial inputs, regression cases) that runs in CI.
+- **Every AI feature has an eval suite** (golden examples, adversarial inputs, regression cases) that runs in CI. `/llm-evals` builds one.
 - **Eval results are tracked over time** — prompt/model changes show deltas in pass rate, not a binary pass/fail.
 - **A/B on production prompts** when the stakes justify it — don't ship a prompt change to 100% of users on a hunch.
 
