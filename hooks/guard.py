@@ -300,7 +300,7 @@ def delete_decision(targets: list[str]) -> tuple[str | None, str]:
     safe = targets and all(
         not t.startswith(("/", "~")) and not re.match(r"^[A-Za-z]:", t)
         and ".." not in re.split(r"[/\\]", t) and "*" not in t
-        and os.path.basename(t.rstrip("/\\")) in REGENERABLE
+        and os.path.basename(t.replace("\\", "/").rstrip("/")) in REGENERABLE
         for t in targets
     )
     if safe:
