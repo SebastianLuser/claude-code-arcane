@@ -72,6 +72,8 @@ Injection score (0.0-1.0) measures proportion of matched signatures. Score above
 
 Full ATLAS technique coverage and guardrail patterns: `references/atlas-coverage.md`
 
+> → Read references/owasp-llm-2025.md for the OWASP LLM Top 10 (2025) with a defense per risk, canary tokens, RAG security and tenant isolation. Map each finding to its LLM ID in the report.
+
 ### Step 5: Verdict
 
 **Verdict:** **FAIL** if any finding is Critical or High; **CONCERNS** if only Medium or Low findings remain; **PASS** if nothing actionable turned up. A prompt-injection score above 0.5 counts as High.

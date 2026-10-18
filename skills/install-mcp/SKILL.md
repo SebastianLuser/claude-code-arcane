@@ -56,17 +56,26 @@ Solo con `--secondary`: `node --version`. Si falta, avisar (el server CoderGames
 
 ### 2. Agregar el package UPM
 
-Leer `Packages/manifest.json`. Dentro de `"dependencies"`, agregar **solo si la key no existe** (idempotente — nunca duplicar):
+Un MCP de terceros es **código ajeno que corre con acceso al editor y al proyecto**. Antes de agregarlo:
+
+- **Quién lo publica:** el repo de la URL es el oficial del proyecto (CoplayDev, CoderGamester), no un fork con nombre parecido.
+- **Versión fijada:** nunca `#main`. Resolver el último release y fijar ese tag:
+  `gh api repos/CoplayDev/unity-mcp/releases/latest --jq .tag_name` (con `--secondary`, también `repos/CoderGamester/mcp-unity`). Si `gh` no está, pedirle el tag al usuario.
+- **Qué puede hacer:** listar en el resumen las tools que expone el server una vez conectado, para que el usuario sepa qué le habilita.
+
+Leer `Packages/manifest.json`. Dentro de `"dependencies"`, agregar **solo si la key no existe** (idempotente — nunca duplicar), con el tag resuelto:
 
 ```json
-"com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main"
+"com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#<tag>"
 ```
 
 Con `--secondary`, agregar tambien:
 
 ```json
-"com.gamelovers.mcp-unity": "https://github.com/CoderGamester/mcp-unity.git"
+"com.gamelovers.mcp-unity": "https://github.com/CoderGamester/mcp-unity.git#<tag>"
 ```
+
+Si la key ya existe apuntando a `#main` o sin tag, avisarlo y proponer fijarla; no cambiarla sin aprobación.
 
 Usar `Edit` puntual sobre el bloque `dependencies` preservando el JSON valido (indentacion, comas). Si la key ya estaba, reportar "ya presente, sin cambios".
 

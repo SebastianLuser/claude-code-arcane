@@ -136,6 +136,14 @@ Build these controls in before launch:
 
 **Graceful Degradation** -- when budget exceeded: switch to smaller model, return cached response, queue for async processing.
 
+**LLM Gateway** -- once two or more apps or providers call LLMs, put a gateway between them and the providers (LiteLLM proxy self-hosted; Portkey, Helicone or Cloudflare AI Gateway hosted). It gives in one place:
+- **A key per app or team** with its own budget and rate limit (LiteLLM "virtual keys"), so one service cannot spend another's budget and a leaked key is revoked alone. Provider keys stay only in the gateway.
+- **Fallbacks** across models and providers on errors, timeouts or rate limits, with retries capped.
+- **Response caching** shared by all apps, keyed by tenant (a shared cache must never serve one tenant's answer to another).
+- **One cost log** with model, tokens, latency and cost per request, which the cost audit in Mode 1 reads.
+
+The gateway is a single point of failure and sees every prompt: run at least two instances, apply the same PII redaction as the app, and check the installed version's docs before writing its config.
+
 ---
 
 ## Proactive Triggers
