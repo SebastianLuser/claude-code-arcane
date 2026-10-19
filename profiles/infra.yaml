@@ -4,6 +4,7 @@ category: platform
 
 skills:
   - observability
+  - devcontainers
   - observability-ops
   - observability-setup
   - feature-flags

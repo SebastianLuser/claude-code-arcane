@@ -2,7 +2,7 @@
 
 ## What is Arcane?
 
-Arcane is a configuration harness for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). It provides a curated library of **440 skills**, **115 agents**, **18 hooks**, and **36 rules** that you selectively deploy into any project. Instead of shipping everything to every project (wasting tokens and degrading performance), you pick a **profile** that matches your stack and only the relevant tools get installed.
+Arcane is a configuration harness for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). It provides a curated library of **442 skills**, **115 agents**, **18 hooks**, and **36 rules** that you selectively deploy into any project. Instead of shipping everything to every project (wasting tokens and degrading performance), you pick a **profile** that matches your stack and only the relevant tools get installed.
 
 ## Table of Contents
 
@@ -575,7 +575,7 @@ Yes, and it's recommended. This way everyone on the team gets the same Claude Co
 
 ### How many tokens does a profile consume?
 
-Each skill adds ~30-100 tokens to the system prompt. A typical stack profile (20-30 skills) adds ~1-2k tokens. The core profile adds ~500 tokens. Compare that to loading all 440 skills, which is why selective deploy matters.
+Each skill adds ~30-100 tokens to the system prompt. A typical stack profile (20-30 skills) adds ~1-2k tokens. The core profile adds ~500 tokens. Compare that to loading all 442 skills, which is why selective deploy matters.
 
 ### Why replace instead of merge on install?
 

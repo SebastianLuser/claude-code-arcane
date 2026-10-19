@@ -22,6 +22,7 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 - [ ] `docker-compose.override.yml` para dev-only (volúmenes, puertos) — no commiteado a prod
 - [ ] Secrets nunca en `ENV` ni en build args — solo via env vars en runtime o mounts
 - [ ] `trivy image` o `docker scout` en CI antes de push al registry
+- [ ] Runtime endurecido: `read_only`, `cap_drop: [ALL]`, `no-new-privileges`, límites de memoria y PIDs (ver `references/checklists.md`)
 
 ---
 
@@ -55,7 +56,7 @@ Generate production-ready Dockerfiles and docker-compose for Go, TypeScript, and
 
 ## Dockerfile best practices checklist
 
-> → Read references/checklists.md for Dockerfile best practices (10 items), security checklist (8 items), and health check patterns
+> → Read references/checklists.md for Dockerfile best practices (10 items), security checklist (8 items), runtime hardening, and health check patterns
 
 ## Compose decisions
 

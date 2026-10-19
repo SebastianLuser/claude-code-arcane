@@ -58,6 +58,7 @@ Código N-1 debe funcionar con schema N, y código N con schema N-1, por al meno
 
 ## References
 
+> → Read references/blue-green.md for blue-green on Cloud Run, Vercel and ECS, cuándo conviene frente a canary o rolling, y las reglas de DB compartida y workers
 > → Read references/canary-auto-rollback.md for canary progression and auto-rollback triggers
 > → Read references/anti-patterns.md for common rollback anti-patterns
 > → Read references/pre-deploy-checklist.md for the pre-deploy validation checklist

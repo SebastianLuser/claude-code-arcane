@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 440 skills disponibles para proyectos consumidores, organizados por division.
+Los 442 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 400: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 402: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -377,12 +377,13 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 ---
 
-## DevOps (8 skills)
+## DevOps (9 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
 | `/aws-solution-architect` | Design AWS architectures with CloudFormation/CDK IaC, serverless patterns, cost optimization for Lambda, API Gateway, DynamoDB, ECS, Aurora | `[design\|review\|cost]` |
 | `/azure-cloud-architect` | Design Azure architectures with Bicep IaC templates, cost optimization for App Service, AKS, Functions, Cosmos DB, and Azure SQL | `[design\|review\|cost]` |
+| `/devcontainers` | Reproducible dev environments in `.devcontainer/` for VS Code, Codespaces and CI, plus an isolated container for coding agents | `[setup\|compose\|agent]` |
 | `/gcp-cloud-architect` | Design GCP architectures with Terraform IaC, Cloud Run, GKE, BigQuery pipelines, and Cloud Build CI/CD | `[design\|review\|cost]` |
 | `/helm-chart-builder` | Build production-grade Helm charts: scaffolding, values design, template patterns, dependency management, and security hardening | `[scaffold\|lint\|test]` |
 | `/incident-commander` | Manage technology incidents end-to-end: severity classification, timeline reconstruction, stakeholder communication, and RCA | `[classify\|timeline\|communicate]` |
@@ -494,7 +495,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 ---
 
-## Security (7 skills)
+## Security (8 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -504,6 +505,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 | `/red-team` | Plan and execute authorized red team engagements: MITRE ATT&CK kill-chain planning, technique scoring, and choke points | `[plan\|execute\|report]` |
 | `/security-pen-testing` | Offensive security testing: OWASP Top 10 audits, static analysis, dependency scanning, secret detection, and API testing | `[owasp\|static\|deps\|secrets\|api]` |
 | `/supply-chain-security` | Lockfiles, install scripts, release-age gates, typosquatting, provenance, SBOM and the playbook for a compromised package | `[prevent\|audit\|respond <pkg>]` |
+| `/threat-modeling` | Threat model a design before building it: data-flow diagram, trust boundaries, STRIDE per element, risk scoring and owners | `[model\|review]` |
 | `/threat-detection` | Proactive threat hunting with hypothesis scoring, IOC sweep generation, z-score anomaly detection, and MITRE ATT&CK prioritization | `[hunt\|sweep\|anomaly]` |
 
 ---

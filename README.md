@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **440 skills, 115 agents, 18 hooks and 36 rules for Claude Code — selective deploy by profile.**
+> **442 skills, 115 agents, 18 hooks and 36 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
@@ -229,9 +229,9 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `infra` | Terraform, observability, secrets, rollback, K8s | 26 | devops |
+| `infra` | Terraform, observability, secrets, rollback, K8s | 27 | devops |
 | `database` | Indexing, migrations, seeding, replicas, optimization | 8 | — |
-| `security` | Audits, OWASP, secrets, backups | 11 | — |
+| `security` | Audits, OWASP, secrets, backups | 12 | — |
 | `testing` | Contract, performance, regression, flakiness | 11 | quality |
 | `ai` | LLM cost optimization, RAG, ML, data engineering, agent and MCP design | 11 | ai |
 
@@ -469,7 +469,7 @@ claude-code-arcane/
 │   ├── manifest.ts            # Read/write arcane-manifest.json
 │   ├── types.ts               # TypeScript interfaces
 │   └── utils.ts               # Cross-platform helpers
-├── skills/                    # 440 skills (flat, one dir per skill)
+├── skills/                    # 442 skills (flat, one dir per skill)
 ├── profiles/                  # 38 profiles (YAML)
 ├── agents/                    # 17 dirs, 109 agents (Markdown)
 ├── hooks/                     # 17 lifecycle hooks (Bash)
