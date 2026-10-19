@@ -1,3 +1,10 @@
+# [2.25.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.24.0...v2.25.0) (2026-10-19)
+
+
+### Features
+
+* **skills:** add cloudflare, vercel-deploy and firebase ([43419ac](https://github.com/SebastianLuser/claude-code-arcane/commit/43419ac148dc2ee9d0b8e44c868d7b7e2c635600))
+
 # [2.24.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.23.0...v2.24.0) (2026-10-19)
 
 
