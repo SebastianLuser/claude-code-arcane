@@ -1,3 +1,10 @@
+# [2.23.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.22.0...v2.23.0) (2026-10-19)
+
+
+### Features
+
+* **skills:** day-2 operations references for AWS ([a95e6ac](https://github.com/SebastianLuser/claude-code-arcane/commit/a95e6ac0ed8bfdedf52637322993725da3fca7cf))
+
 # [2.22.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.21.0...v2.22.0) (2026-10-19)
 
 
