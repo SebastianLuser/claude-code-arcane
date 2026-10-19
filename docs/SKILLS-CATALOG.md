@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 443 skills disponibles para proyectos consumidores, organizados por division.
+Los 446 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 403: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 406: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -378,17 +378,20 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 ---
 
-## DevOps (9 skills)
+## DevOps (12 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
 | `/aws-solution-architect` | Design AWS architectures with CloudFormation/CDK IaC, serverless patterns, cost optimization for Lambda, API Gateway, DynamoDB, ECS, Aurora | `[design\|review\|cost]` |
 | `/azure-cloud-architect` | Design Azure architectures with Bicep IaC templates, cost optimization for App Service, AKS, Functions, Cosmos DB, and Azure SQL | `[design\|review\|cost]` |
+| `/cloudflare` | Cloudflare como plataforma: Workers y sitios estáticos, R2, Zero Trust (Tunnel y Access), WAF y DNS | `[workers\|r2\|zero-trust\|review]` |
 | `/devcontainers` | Reproducible dev environments in `.devcontainer/` for VS Code, Codespaces and CI, plus an isolated container for coding agents | `[setup\|compose\|agent]` |
+| `/firebase` | Firebase para web y mobile: proyectos por entorno, Auth, reglas de Firestore y Storage testeadas en el emulador, App Check, Functions y costos | `[setup\|rules\|functions\|review]` |
 | `/gcp-cloud-architect` | Design GCP architectures with Terraform IaC, Cloud Run, GKE, BigQuery pipelines, and Cloud Build CI/CD | `[design\|review\|cost]` |
 | `/helm-chart-builder` | Build production-grade Helm charts: scaffolding, values design, template patterns, dependency management, and security hardening | `[scaffold\|lint\|test]` |
 | `/incident-commander` | Manage technology incidents end-to-end: severity classification, timeline reconstruction, stakeholder communication, and RCA | `[classify\|timeline\|communicate]` |
 | `/incident-response` | Classify and triage security incidents through the full NIST SP 800-61 lifecycle: SEV1-4 scoring and forensic evidence collection | `[classify\|triage\|forensics]` |
+| `/vercel-deploy` | Deploy y operación en Vercel: entornos y variables, previews, promote y rollback, funciones, protección y firewall | `[setup\|env\|release\|review]` |
 | `/worktree-isolation` | Regenera o muestra los puertos de Docker de este worktree para que varios worktrees corran en paralelo sin chocar | `[apply\|status]` |
 | `/worktree-isolation-setup` | Prepara el repo una vez: parametriza puertos y container_name del docker-compose, `.gitignore`, CLAUDE.md y el hook global | |
 

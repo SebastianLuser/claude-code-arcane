@@ -24,6 +24,7 @@ skills:
   - accessibility
   - performance
   - playwright-pro
+  - vercel-deploy
   # Ops & quality
   - testing
   - deps-audit

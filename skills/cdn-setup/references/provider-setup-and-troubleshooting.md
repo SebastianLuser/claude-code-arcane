@@ -15,7 +15,7 @@
 2. SSL/TLS mode **Full (strict)** with a valid origin certificate (a Cloudflare Origin CA certificate is fine); never Flexible, which serves the origin over plain HTTP.
 3. **Cache Rules** (they replace Page Rules): by default Cloudflare caches static file extensions only, and HTML responses show `DYNAMIC`. To cache HTML or API responses, add an eligible-for-cache rule scoped to those paths, with a bypass when a session cookie is present.
 4. Purge: by URL from the dashboard or `POST /zones/<zone_id>/purge_cache` with `{"files": [...]}`; `purge_everything` is for emergencies.
-5. Lock the origin to Cloudflare (allow only Cloudflare IP ranges, or use a Tunnel) so the CDN and WAF cannot be bypassed. WAF, Workers and R2 are outside this skill: it covers caching only.
+5. Lock the origin to Cloudflare (allow only Cloudflare IP ranges, or use a Tunnel) so the CDN and WAF cannot be bypassed. WAF, Workers, R2 and Zero Trust are in `/cloudflare`.
 
 ## Cache headers on the origin
 

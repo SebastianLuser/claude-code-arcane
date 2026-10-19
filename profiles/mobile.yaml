@@ -22,6 +22,7 @@ skills:
   - file-uploads
   - ci-cd-setup
   - deploy-check
+  - firebase
 
 rules:
   universal:
