@@ -5,6 +5,7 @@ category: platform
 skills:
   - observability
   - devcontainers
+  - cloudflare
   - observability-ops
   - observability-setup
   - feature-flags

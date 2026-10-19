@@ -18,6 +18,7 @@ skills:
   - auth-strategy
   - ci-cd-setup
   - deploy-check
+  - firebase
 
 rules:
   universal:

@@ -23,6 +23,8 @@ skills:
   - frontend-dev
   - csp-headers
   - playwright-pro
+  - vercel-deploy
+  - firebase
 
 rules:
   universal:

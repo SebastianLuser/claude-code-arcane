@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **443 skills, 115 agents, 18 hooks and 36 rules for Claude Code — selective deploy by profile.**
+> **446 skills, 115 agents, 18 hooks and 36 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
@@ -195,23 +195,23 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 | `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 25 | engineering |
 | `backend-dotnet` | Backend .NET — ASP.NET Core, Vertical Slice/Clean, EF Core, JWT | 27 | engineering |
 | `backend-nestjs` | Backend NestJS — feature modules, DI, Prisma, JWT, microservices | 27 | engineering |
-| `backend-nextjs` | Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK | 25 | engineering |
+| `backend-nextjs` | Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK | 26 | engineering |
 
 ### Frontend & Design
 
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
-| `frontend-react-vite` | React + Vite + TypeScript | 18 | engineering |
+| `frontend-react-vite` | React + Vite + TypeScript | 20 | engineering |
 | `design` | Figma, UX review, design system, handoff | 10 | product |
 
 ### Mobile
 
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
-| `mobile-react-native` | React Native + Expo + TypeScript | 17 | engineering |
-| `mobile-flutter` | Flutter + Dart cross-platform | 15 | engineering |
-| `mobile-android-kotlin` | Kotlin + Jetpack Compose + Material Design 3 | 14 | engineering |
-| `mobile-ios-swift` | Swift + UIKit/SwiftUI + Apple HIG | 14 | engineering |
+| `mobile-react-native` | React Native + Expo + TypeScript | 18 | engineering |
+| `mobile-flutter` | Flutter + Dart cross-platform | 16 | engineering |
+| `mobile-android-kotlin` | Kotlin + Jetpack Compose + Material Design 3 | 15 | engineering |
+| `mobile-ios-swift` | Swift + UIKit/SwiftUI + Apple HIG | 15 | engineering |
 
 ### Gamedev
 
@@ -229,7 +229,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `infra` | Terraform, observability, secrets, rollback, K8s | 27 | devops |
+| `infra` | Terraform, observability, secrets, rollback, K8s | 28 | devops |
 | `database` | Indexing, migrations, seeding, replicas, optimization | 9 | — |
 | `security` | Audits, OWASP, secrets, backups | 12 | — |
 | `testing` | Contract, performance, regression, flakiness | 11 | quality |
@@ -469,7 +469,7 @@ claude-code-arcane/
 │   ├── manifest.ts            # Read/write arcane-manifest.json
 │   ├── types.ts               # TypeScript interfaces
 │   └── utils.ts               # Cross-platform helpers
-├── skills/                    # 443 skills (flat, one dir per skill)
+├── skills/                    # 446 skills (flat, one dir per skill)
 ├── profiles/                  # 38 profiles (YAML)
 ├── agents/                    # 17 dirs, 109 agents (Markdown)
 ├── hooks/                     # 17 lifecycle hooks (Bash)
