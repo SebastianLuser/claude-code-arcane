@@ -11,6 +11,7 @@ skills:
   - run-migrations
   - read-replicas
   - create-test-user
+  - database-ops
 
 rules:
   universal:

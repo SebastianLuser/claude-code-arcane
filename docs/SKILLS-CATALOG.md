@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 442 skills disponibles para proyectos consumidores, organizados por division.
+Los 443 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 402: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 403: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -239,7 +239,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 ---
 
-## Software (48 skills)
+## Software (49 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -256,6 +256,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 | `/data-migrations` | Migraciones de datos | `[create <name>\|run\|rollback]` |
 | `/data-seeding` | Seeding de DB por environment | `[dev\|staging\|demo\|test]` |
 | `/database-indexing` | Analisis y gestion de indices | `[analyze\|create\|drop] [table]` |
+| `/database-ops` | Operar Postgres, MySQL, MongoDB y Redis: health checks, queries lentas, locks, conexiones, mantenimiento y replicación | `[health\|incident\|tune] [engine]` |
 | `/db-diagram` | Genera diagramas ER en Mermaid | `[output-path]` |
 | `/deploy-check` | Checklist pre-deploy automatizado | `[staging\|prod]` |
 | `/deploy-staging` | Deploy a staging con status report | (sin args) |
