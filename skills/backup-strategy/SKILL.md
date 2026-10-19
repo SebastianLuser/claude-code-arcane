@@ -1,8 +1,8 @@
 ---
 name: backup-strategy
-description: "Estrategia backups Educabot: Postgres (pg_dump, PITR), Redis, object storage, retention, restore testing, 3-2-1, RTO/RPO, disaster recovery."
+description: "Estrategia backups Educabot: Postgres (pg_dump, PITR), MySQL, MongoDB, Redis, object storage, retention, restore testing, 3-2-1, RTO/RPO, disaster recovery."
 category: "operations"
-argument-hint: "[postgres|redis|object-storage|dr]"
+argument-hint: "[postgres|mysql|mongodb|redis|object-storage|dr]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
@@ -40,6 +40,12 @@ Bucket: versioning + object lock + multi-region + IAM write-only para job.
 3. Smoke test: row counts, últimas transacciones, integridad
 4. **Sin restore testing mensual → backup es teatro**
 
+## MySQL y MongoDB
+
+Mismas tres capas que Postgres: backups del proveedor con PITR (binlogs en MySQL, continuous backup en Atlas), una copia lógica fuera del proveedor y restore mensual. En MongoDB sharded, `mongodump` no es consistente entre shards.
+
+> → Read references/mysql-mongodb.md for `mysqldump --single-transaction`, MySQL Shell dump/load, PITR con binlogs, `mongodump --oplog`, Atlas y clusters sharded
+
 ## Redis
 
 - Cache puro: no backup (reconstruible)
@@ -65,6 +71,8 @@ Bucket: versioning + object lock + multi-region + IAM write-only para job.
 | Región caída | Failover réplica o bootstrap export off-region | 2-4h |
 | Account comprometido | Rebuild desde IaC + backups off-provider | 24-48h |
 | Ransomware/wipe | Object Lock inmutable + rotar creds + restore | Variable |
+
+> → Read references/dr-strategies-and-tests.md for backup/restore vs pilot light vs warm standby vs active/active por RTO y costo, y el calendario de pruebas de DR (tabletop, failover de componente, game day)
 
 ## Monitoring
 

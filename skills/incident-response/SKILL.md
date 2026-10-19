@@ -60,6 +60,8 @@ Regulatory notification deadlines (clock starts at incident declaration):
 
 Full deadline reference with penalties: `references/regulatory-deadlines.md`
 
+> → Read references/playbooks-and-comms.md for the compromised-credentials playbook (GitHub, npm, cloud, app secrets), AI incident classes with their first actions, and the internal, stakeholder and external notification templates
+
 ---
 
 ## Tool Reference

@@ -61,6 +61,14 @@ gh run list --limit 5
 - **Datos perdidos:** [si/no, detalle]
 - **SLA/SLO impactado:** [si aplica]
 
+<!-- Solo si el incidente involucra una feature con LLM -->
+## Feature de IA
+- **Clase:** [disponibilidad / calidad / seguridad / exposición de datos / costo]
+- **Versiones:** modelo [id], prompt [versión], índice de retrieval [fecha de build]
+- **Evals:** score antes vs. durante el incidente (`/llm-evals`)
+- **Costo extra:** [USD y tokens por encima del baseline]
+- **Por qué no lo frenó un guardrail:** [qué control faltó o falló]
+
 ## Root Cause
 [Explicación técnica de la causa raíz. Ser específico: archivo, línea, configuración, etc.]
 
@@ -98,6 +106,8 @@ Para cada action item, crear un ticket tipo "Tarea" usando la skill de jira-tick
 ### 4. Guardar
 
 Guardar en `docs/incidents/[fecha]-[titulo-slug].md`
+
+Para la respuesta en curso (contener, playbooks y avisos a usuarios o clientes), ver `/incident-response`.
 
 ## Rules
 - Sin culpas personales — el post-mortem es sobre el sistema, no las personas

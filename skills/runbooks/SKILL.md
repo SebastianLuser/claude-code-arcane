@@ -55,3 +55,4 @@ last_used_in_incident: 2026-03-28
 > → Read references/anti-patterns.md for common anti-patterns to avoid
 > → Read references/lifecycle.md for review cycle and automation progression
 > → Read references/checklist.md for the validation checklist
+> → Read references/verify-and-test.md for el resultado esperado de cada paso, la sección de verificación, el rollback por paso, cómo probar un runbook (lectura, staging, drill) y un ejemplo completo
