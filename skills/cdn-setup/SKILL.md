@@ -31,3 +31,5 @@ Goal: **cache hit >90% on assets, TTFB <100ms** in target regions.
 > → Read references/cache-strategy-and-invalidation.md for TTL table, invalidation approaches, and cache key hygiene
 
 > → Read references/security-and-anti-patterns.md for edge security, performance checklist, and anti-patterns
+
+> → Read references/provider-setup-and-troubleshooting.md for CloudFront (OAC, cache and origin request policies, Functions, invalidation) and Cloudflare (proxied DNS, Full strict, Cache Rules, purge, origin lock) step by step, origin cache headers per stack, and how to debug a cache miss from the response headers

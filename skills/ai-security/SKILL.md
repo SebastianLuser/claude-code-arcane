@@ -74,6 +74,8 @@ Full ATLAS technique coverage and guardrail patterns: `references/atlas-coverage
 
 > → Read references/owasp-llm-2025.md for the OWASP LLM Top 10 (2025) with a defense per risk, canary tokens, RAG security and tenant isolation. Map each finding to its LLM ID in the report.
 
+> → Read references/ai-red-team-program.md for a recurring AI red-team program: attack categories, a probe library run as eval safety cases, likelihood × impact × detectability scoring, and the cadence
+
 ### Step 5: Verdict
 
 **Verdict:** **FAIL** if any finding is Critical or High; **CONCERNS** if only Medium or Low findings remain; **PASS** if nothing actionable turned up. A prompt-injection score above 0.5 counts as High.
