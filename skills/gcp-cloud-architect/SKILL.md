@@ -1,6 +1,6 @@
 ---
 name: gcp-cloud-architect
-description: "Design GCP architectures with Terraform IaC, Cloud Run, GKE, BigQuery pipelines, cost optimization, and Cloud Build CI/CD for startups and enterprises."
+description: "Design and operate GCP: architectures with Terraform IaC, Cloud Run, BigQuery pipelines, cost optimization and Cloud Build CI/CD, plus day-2 operations for IAM and Secret Manager, Cloud Run, functions, Cloud SQL, Compute Engine, networking and audit logs."
 argument-hint: ""
 category: "devops"
 user-invocable: true
@@ -117,6 +117,20 @@ python scripts/deployment_manager.py --app-name my-app --pattern serverless_web 
 | Cloud Functions for long tasks (>60s) | Cloud Run for longer-running tasks |
 
 ---
+
+## Operate
+
+Once it runs, read only the file for the service at hand. Engine-level database work is in `/database-ops`, backups in `/backup-strategy`, rollback with revisions in `/rollback-strategy`, incidents in `/incident-response`.
+
+| Area | Reference | Covers |
+|---|---|---|
+| IAM and secrets | `references/ops-iam-secrets.md` | One service account per service, GitHub through Workload Identity Federation, Secret Manager access and rotation, auditing |
+| Cloud Run | `references/ops-cloud-run.md` | Concurrency, min/max instances, billing mode, probes, ingress and VPC egress, deploys, debugging |
+| Cloud Run functions | `references/ops-cloud-functions.md` | Deploys, Eventarc triggers and idempotency, retries and dead letters, scheduled calls, debugging |
+| Cloud SQL | `references/ops-cloud-sql.md` | Private IP and the Auth Proxy, IAM auth, HA, maintenance, restores, alerts |
+| Compute Engine | `references/ops-compute.md` | Regional MIGs with autohealing, OS Login and IAP SSH, snapshots, debugging |
+| Networking | `references/ops-networking.md` | Custom VPC, firewall by service account, Cloud NAT, private access, load balancer with Cloud Armor, Connectivity Tests |
+| Audit logs | `references/ops-audit-logs.md` | Log types and defaults, Data Access logs, sinks, investigation queries, alerts |
 
 ## Reference Documentation
 
