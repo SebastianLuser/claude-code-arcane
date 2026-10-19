@@ -58,6 +58,46 @@ allowed-tools: ["Read", "Bash", "Glob", "Grep", "Write"]
 
 Default to the **higher** bump when uncertain.
 
+## Automated Versioning
+
+When commits follow Conventional Commits, the bump can come from them instead of a person:
+
+| Commit | Bump |
+|---|---|
+| `fix:` | Patch |
+| `feat:` | Minor |
+| `feat!:` / `BREAKING CHANGE:` footer | Major |
+| `docs:`, `chore:`, `refactor:`, `test:` | No release |
+
+| Tool | Fits |
+|---|---|
+| **semantic-release** | One package, release on every merge to `main` |
+| **release-please** | A release PR you merge when ready, instead of releasing on every merge |
+| **Changesets** | Monorepos with several packages versioned independently |
+
+`standard-version` is deprecated; do not start new setups with it.
+
+A working semantic-release setup (`.releaserc.json`):
+
+```json
+{
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    ["@semantic-release/changelog", { "changelogFile": "CHANGELOG.md" }],
+    "@semantic-release/npm",
+    ["@semantic-release/git", {
+      "assets": ["CHANGELOG.md", "package.json"],
+      "message": "chore(release): ${nextRelease.version} [skip ci]"
+    }],
+    "@semantic-release/github"
+  ]
+}
+```
+
+In the workflow: `actions/checkout` with `fetch-depth: 0` (it needs the tags and history) and `persist-credentials: false`; `permissions: contents: write` plus `issues: write` and `pull-requests: write` for the release comments; `id-token: write` only when publishing to npm with provenance. Never edit `version` or `CHANGELOG.md` by hand once it runs: the next release would compute from a wrong base. Workflow hardening: `/ci-cd-setup`.
+
 ---
 
 ## Patch Notes Generation

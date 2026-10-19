@@ -90,6 +90,13 @@ Cache-eligible content: system prompts, static context, document chunks, few-sho
 
 Cache hit rates to target: >60% for document Q&A, >40% for chatbots with static system prompts.
 
+How it works on the Claude API (check the provider's docs for others):
+- **Prefix match:** order is tools → system → messages; any byte change invalidates everything after it. Stable content first, volatile content (timestamps, request IDs, the user's question) after the last breakpoint.
+- **Breakpoints:** `cache_control: {type: "ephemeral"}` on a block, or top-level automatic caching; up to 4 per request.
+- **Economics:** writes cost about 1.25× base input with the 5-minute TTL and 2× with `ttl: "1h"`; reads about 0.1× (less on the newest models). The 5-minute TTL pays off from the second request; the 1-hour TTL needs at least three, so use it only for traffic with gaps longer than 5 minutes.
+- **Minimum prefix** depends on the model (from 512 to 4096 tokens); shorter prefixes silently do not cache.
+- **Verify** with `usage.cache_read_input_tokens`: zero across repeated requests means a silent invalidator (a timestamp in the system prompt, unsorted JSON, a changing tool list).
+
 ### 3. Output Length Control (20-40% reduction)
 
 LLMs over-generate by default. Force conciseness:
@@ -116,11 +123,15 @@ Cache LLM responses keyed by embedding similarity, not exact match. Serve cached
 
 Tools: GPTCache, LangChain cache, custom Redis + embedding lookup.
 
-Threshold guidance: cosine similarity >0.95 = safe to serve cached response.
+Threshold guidance: start at cosine similarity >0.95 and tune it on real query pairs: a threshold that is too low serves a wrong answer that looks right.
 
-### 6. Request Batching (10-25% reduction via amortized overhead)
+Rules: key the cache by tenant and by the user's permission scope; never cache personalized or account-specific answers; invalidate entries when the source documents change; log hits so a bad cached answer can be traced and purged.
 
-Batch non-latency-sensitive requests. Process async queues off-peak.
+### 6. Batch APIs (50% on traffic nobody is waiting for)
+
+Provider batch endpoints run requests asynchronously at a discount: the Claude Message Batches API costs 50% of standard prices on every token, cache reads and writes included, and returns results within 24 hours (most batches finish within an hour). OpenAI and Google offer batch modes too; check their current pricing.
+
+Fits evals, backfills, nightly summaries, classification of a backlog. Results arrive in any order: key them by `custom_id`. Keep user-facing requests synchronous.
 
 ---
 

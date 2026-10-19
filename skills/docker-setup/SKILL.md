@@ -70,6 +70,8 @@ Generate production-ready Dockerfiles and docker-compose for Go, TypeScript, and
 
 Use `docker-compose.override.yml` for dev-only settings (auto-applied, not committed to prod).
 
+> → Read references/compose-and-debugging.md for multiple compose files and `config`, profiles, watch mode, multi-platform builds, and a debugging table (exit codes, healthchecks, networking, volumes, disk)
+
 ## Size optimization
 
 > → Read references/size-optimization.md for image size reduction techniques
