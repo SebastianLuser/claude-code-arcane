@@ -1,6 +1,6 @@
 ---
 name: observability-setup
-description: "Observability setup: OpenTelemetry + Prometheus + Grafana + Loki + Sentry. Go, TS, React, RN."
+description: "Observability setup: OpenTelemetry + Prometheus + Grafana + Loki + Sentry, alert rules and Alertmanager, or Datadog. Go, TS, React, RN."
 category: "observability"
 argument-hint: "[stack: go|ts|react|rn] [--full|--lite]"
 user-invocable: true
@@ -37,6 +37,12 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 | HighLatencyP95 | p95 > 1s por 10min | warning |
 | PodCrashLooping | restarts > 0 por 15min | critical |
 | PodMemoryNearLimit | memory > 90% limit por 10min | warning |
+
+Las reglas reales (YAML), alertas de bases de datos y el ruteo de Alertmanager:
+
+> → Read references/prometheus-alert-rules.md for rule files with `for:`, aggregation and runbook links, database alerts from the exporters, Alertmanager routing and inhibition, and `promtool`/`amtool` checks
+
+> → Read references/datadog.md for projects on Datadog instead: Agent per platform (Cloud Run, ECS, Kubernetes, OTLP), unified service tagging, APM and logs, monitors as code in Terraform, and cost control
 
 > → Read references/stack-setup-details.md for per-stack setup (Go, TS Fastify, React, React Native, OTel Collector)
 
