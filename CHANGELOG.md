@@ -1,3 +1,11 @@
+# [2.20.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.19.0...v2.20.0) (2026-10-19)
+
+
+### Features
+
+* **skills:** add threat-modeling and devcontainers ([3a25290](https://github.com/SebastianLuser/claude-code-arcane/commit/3a2529033fddde488eec78d019ee38a1e112757c))
+* **skills:** runtime hardening, blue-green, alerting and vector DB ops ([d420ad5](https://github.com/SebastianLuser/claude-code-arcane/commit/d420ad557c9e1dc00be0512ba23f4cf5e9b6c0ac))
+
 # [2.19.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.18.2...v2.19.0) (2026-10-18)
 
 
