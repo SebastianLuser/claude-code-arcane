@@ -76,6 +76,10 @@ Dos alertas por SLO: fast burn (page, 14.4x) + slow burn (ticket, 6x). Prometheu
 
 > → Read references/alerting-burn-rate.md for fórmulas, GCP Terraform, dashboard y review trimestral
 
+El resto de las alertas, el on-call y los dashboards por servicio:
+
+> → Read references/alerting-and-dashboards.md for diseño de alertas (síntoma vs causa, severidad y ruteo), rotación de on-call, revisión mensual de fatiga y el layout de dashboards SLO → RED → dependencias → USE
+
 ## Anti-patterns
 
 > → Read references/anti-patterns.md for lista completa (10 items)

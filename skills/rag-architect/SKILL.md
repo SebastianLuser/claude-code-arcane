@@ -47,6 +47,8 @@ Comprehensive tools and knowledge for designing, implementing, and optimizing pr
 | **Chroma** | Embedded | Development, prototyping | SQLite-based, easy setup |
 | **pgvector** | SQL extension | Existing PostgreSQL infra | ACID compliance, joins |
 
+> See references/vector-db-operations.md for operating it in production: HNSW/IVFFlat tuning, filtered queries in pgvector, measuring recall, changing the embedding model, deletes and backups.
+
 ### 4. Retrieval Strategies
 
 - **Dense Retrieval**: Semantic similarity via embedding cosine similarity. Good for paraphrasing.
