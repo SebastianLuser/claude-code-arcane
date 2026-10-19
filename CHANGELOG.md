@@ -1,3 +1,11 @@
+# [2.22.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.21.0...v2.22.0) (2026-10-19)
+
+
+### Features
+
+* **skills:** add database-ops for PostgreSQL, MySQL, MongoDB and Redis ([316997f](https://github.com/SebastianLuser/claude-code-arcane/commit/316997fc22129325b0c4e48cf26cb207a25ad0f1))
+* **skills:** Prometheus alert rules and Datadog in observability-setup ([c493cb8](https://github.com/SebastianLuser/claude-code-arcane/commit/c493cb88d845014a9b69e2b525683f9815137248))
+
 # [2.21.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.20.0...v2.21.0) (2026-10-19)
 
 
