@@ -1,3 +1,10 @@
+# [2.24.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.23.0...v2.24.0) (2026-10-19)
+
+
+### Features
+
+* **skills:** day-2 operations references for GCP ([2b42374](https://github.com/SebastianLuser/claude-code-arcane/commit/2b42374e00be7d019fb30cbe3a76f98be287e995))
+
 # [2.23.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.22.0...v2.23.0) (2026-10-19)
 
 
