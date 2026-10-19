@@ -1,6 +1,6 @@
 ---
 name: aws-solution-architect
-description: "Design AWS architectures with CloudFormation/CDK IaC, serverless patterns, cost optimization, and CI/CD for Lambda, API Gateway, DynamoDB, ECS, and Aurora."
+description: "Design and operate AWS: architectures with CloudFormation/CDK IaC, serverless patterns and cost optimization, plus day-2 operations for IAM, ECS Fargate, Lambda, RDS, S3, VPC, EC2, CloudTrail and Secrets Manager."
 argument-hint: ""
 category: "devops"
 user-invocable: true
@@ -37,13 +37,9 @@ See `references/architecture_patterns.md` for detailed pattern specifications wi
 
 **Validation checkpoint:** Confirm the recommended pattern matches the team's operational maturity and compliance requirements before proceeding.
 
-### Step 3: Generate IaC Templates
+### Step 3: Write the IaC Templates
 
-```bash
-python scripts/serverless_stack.py --app-name my-app --region us-east-1
-```
-
-Generates production-ready CloudFormation YAML (SAM), CDK TypeScript, or Terraform HCL. See `references/architecture_patterns.md` for full template examples including API Gateway, Cognito, IAM roles, and CloudWatch logging.
+Write CloudFormation YAML (SAM), CDK TypeScript or Terraform HCL for the chosen pattern, starting from the template examples in `references/architecture_patterns.md` (API Gateway, Cognito, IAM roles, CloudWatch logging). Validate before deploying: `aws cloudformation validate-template`, `cdk synth` or `terraform validate`.
 
 ### Step 4: Review Costs
 
@@ -89,13 +85,6 @@ Generates architecture patterns based on requirements.
 python scripts/architecture_designer.py --input requirements.json --output design.json
 ```
 
-### serverless_stack.py
-Creates serverless CloudFormation templates with API Gateway, Lambda, DynamoDB, Cognito, IAM, and CloudWatch.
-
-```bash
-python scripts/serverless_stack.py --app-name my-app --region us-east-1
-```
-
 ### cost_optimizer.py
 Analyzes costs and recommends optimizations: idle removal, right-sizing, reserved capacity, storage tier transitions.
 
@@ -115,6 +104,22 @@ python scripts/cost_optimizer.py --resources inventory.json --monthly-spend 5000
 | IaC Generation | VPC + ALB + ECS Fargate + Aurora + IAM | Full template |
 
 ---
+
+## Operate
+
+Once it runs, read only the file for the service at hand. Engine-level database work is in `/database-ops`, backups in `/backup-strategy`, incidents in `/incident-response`.
+
+| Service | Reference | Covers |
+|---|---|---|
+| IAM | `references/ops-iam.md` | Roles over users, GitHub Actions through OIDC, auditing keys and policies, debugging `AccessDenied` |
+| ECS on Fargate | `references/ops-ecs-fargate.md` | Task vs execution role, deploys with the circuit breaker, why tasks stop, scaling |
+| Lambda | `references/ops-lambda.md` | Memory, timeout and concurrency, versions and aliases, async retries and SQS, debugging |
+| RDS / Aurora | `references/ops-rds.md` | Production baseline, changes and Blue/Green, alarms, PITR and failover drills |
+| S3 | `references/ops-s3.md` | Secure defaults, presigned URLs, lifecycle and cost, debugging access |
+| VPC | `references/ops-vpc.md` | Subnet layout, NAT and endpoints, security groups, debugging connectivity |
+| EC2 | `references/ops-ec2.md` | Launch templates and ASGs, IMDSv2, Session Manager, status checks |
+| CloudTrail | `references/ops-cloudtrail.md` | Organization trail, alarms on sensitive events, investigating a principal |
+| Secrets Manager | `references/ops-secrets-manager.md` | Secrets Manager vs Parameter Store, reading secrets per platform, rotation |
 
 ## Reference Documentation
 
