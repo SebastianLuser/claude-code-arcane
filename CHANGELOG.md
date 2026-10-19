@@ -1,3 +1,11 @@
+# [2.21.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.20.0...v2.21.0) (2026-10-19)
+
+
+### Features
+
+* **skills:** CDN providers, compose debugging, batch pricing and AI red team ([ba70630](https://github.com/SebastianLuser/claude-code-arcane/commit/ba706306a131a1c0347efd07b79d7a71fb4daad0))
+* **skills:** incident playbooks, MySQL/MongoDB backups, DR tests and runbook checks ([a723ba0](https://github.com/SebastianLuser/claude-code-arcane/commit/a723ba005e6d0e6d4864c7f1974d5836bcbcbd7a))
+
 # [2.20.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.19.0...v2.20.0) (2026-10-19)
 
 
