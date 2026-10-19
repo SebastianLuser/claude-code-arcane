@@ -1725,6 +1725,19 @@ skills:
     priority: high
     category: software
 
+  - name: database-ops
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+    verdict: ["PASS", "CONCERNS", "FAIL"]
+
   - name: query-optimization
     spec: null
     stack: software
