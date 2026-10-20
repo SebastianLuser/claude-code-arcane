@@ -298,3 +298,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
+
+## LinkedIn skills from linkedin-agent-skill
+
+**[Jakeschincariol/linkedin-agent-skill](https://github.com/Jakeschincariol/linkedin-agent-skill)**,
+MIT License, Copyright (c) 2026 Jake Schincariol.
+New skills: `linkedin-post` (with its 21 hook formulas in `references/hooks.json`),
+`linkedin-comment`, `linkedin-reply`, `linkedin-inbox`. Merged: `li-human` into
+`content-humanizer` (`scripts/humanize.py`, `scripts/detect.py`, the English lexicon
+`slop.en.json`; the Spanish lexicon and language detection are Arcane's), the
+`li-profile` rubric into `linkedin-optimize`, `li-dm` into `cold-outreach`, `li-plan`
+into `personal-brand`, and the voice template into the Voice section of `master-profile`.
+Platform limits were re-checked against LinkedIn Help and corrected where they differed.
+The same MIT notice above applies.

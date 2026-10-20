@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **449 skills, 115 agents, 18 hooks and 36 rules for Claude Code — selective deploy by profile.**
+> **453 skills, 115 agents, 18 hooks and 36 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
@@ -260,8 +260,8 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
 | `second-brain` | Second brain en Obsidian — captura sin fricción, reviews diario/semanal/mensual, notas atómicas y hub files (PARA + Zettelkasten), búsqueda con ranking, caché de contexto entre sesiones, auditoría de salud del vault, sintaxis nativa (markdown, Bases, Canvas) | 14 | — |
-| `job-hunt` | Job search end-to-end — master profile, ATS CV with verification, job scraping with dedup, LinkedIn, portfolio, cover letters, outreach, interview prep, registry/CSV traceability, fresh-context review agents | 17 | career |
-| `freelance` | Freelance projects — keyless public-source scanning with dedup, market rate intel, client risk screening, proposals priced above your net floor rate, contracts/SOWs, registry/CSV traceability, kickoff scope validation, delivery and change orders, acquisition-cost pipeline, Fiverr gigs | 16 | freelance |
+| `job-hunt` | Job search end-to-end — master profile, ATS CV with verification, job scraping with dedup, LinkedIn, portfolio, cover letters, outreach, interview prep, LinkedIn posts/comments/replies/inbox with an en/es humanizer, registry/CSV traceability, fresh-context review agents | 22 | career |
+| `freelance` | Freelance projects — keyless public-source scanning with dedup, market rate intel, client risk screening, proposals priced above your net floor rate, contracts/SOWs, registry/CSV traceability, kickoff scope validation, delivery and change orders, acquisition-cost pipeline, Fiverr gigs | 17 | freelance |
 
 ### Utilities
 
@@ -469,7 +469,7 @@ claude-code-arcane/
 │   ├── manifest.ts            # Read/write arcane-manifest.json
 │   ├── types.ts               # TypeScript interfaces
 │   └── utils.ts               # Cross-platform helpers
-├── skills/                    # 449 skills (flat, one dir per skill)
+├── skills/                    # 453 skills (flat, one dir per skill)
 ├── profiles/                  # 38 profiles (YAML)
 ├── agents/                    # 17 dirs, 109 agents (Markdown)
 ├── hooks/                     # 17 lifecycle hooks (Bash)

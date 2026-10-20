@@ -15,7 +15,7 @@ Vive en `01-Perfiles/Perfil Maestro.md` dentro del career workspace. Los perfile
 
 ## Por qué existe
 
-Mantener N CVs sincronizados a mano es la causa #1 de errores (fechas que no coinciden, logros que faltan en una versión). Con un maestro: editás un lado, derivás el resto. `/cv-tailor`, `/linkedin-optimize` y `/portfolio-site` consumen este archivo.
+Mantener N CVs sincronizados a mano es la causa #1 de errores (fechas que no coinciden, logros que faltan en una versión). Con un maestro: editás un lado, derivás el resto. `/cv-tailor`, `/linkedin-optimize`, `/portfolio-site` y las skills de LinkedIn (sección Voice) consumen este archivo.
 
 ## Estructura del perfil maestro
 
@@ -31,6 +31,7 @@ Generá el archivo con estas secciones (todas las que apliquen):
 8. **Achievements / highlights** - premios, showcases, hitos.
 9. **Languages** - idioma + nivel.
 10. **References** - nombre, rol, relación, contacto.
+11. **Voice** - cómo escribe el usuario en LinkedIn y en mensajes: para quién escribe, idioma de la audiencia, palabras que usa y que nunca usaría, largo de oración, emoji (nunca / poco / libre), 3-5 posiciones que sostiene y parte de su audiencia no comparte, temas y nombres off-limits (NDA, empleador), y la prueba que puede firmar (números e historias reales). La leen `/linkedin-post`, `/linkedin-comment`, `/linkedin-reply`, `/linkedin-inbox` y `/cold-outreach`. Si el usuario prefiere no completarla a mano, pedile tres posts suyos y derivala de ahí.
 
 ## Modos
 

@@ -19,6 +19,7 @@ skills:
   - cold-outreach
   - job-outcome
   - career-registry
+  - content-humanizer
   # Compartidas con +business y +agile
   - contract-and-proposal-writer
   - estimate
@@ -38,6 +39,10 @@ permissions:
     - "Bash(python3 *import_history.py*)"
     - "Bash(python *career_registry.py*)"
     - "Bash(python3 *career_registry.py*)"
+    - "Bash(python *humanize.py*)"
+    - "Bash(python3 *humanize.py*)"
+    - "Bash(python *detect.py*)"
+    - "Bash(python3 *detect.py*)"
     - "Bash(python *freelance_search.py*)"
     - "Bash(python3 *freelance_search.py*)"
   deny:
