@@ -1,3 +1,10 @@
+# [2.26.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.25.0...v2.26.0) (2026-10-20)
+
+
+### Features
+
+* **skills:** add web-animation, ui-polish and click-path-audit ([4b242f7](https://github.com/SebastianLuser/claude-code-arcane/commit/4b242f7ced48dff4f55452f9b7a12ee325c553a3))
+
 # [2.25.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.24.0...v2.25.0) (2026-10-19)
 
 
