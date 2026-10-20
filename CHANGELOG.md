@@ -1,3 +1,10 @@
+# [2.27.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.26.0...v2.27.0) (2026-10-20)
+
+
+### Features
+
+* **skills:** add LinkedIn post, comment, reply and inbox skills to job-hunt ([312afc6](https://github.com/SebastianLuser/claude-code-arcane/commit/312afc641e26e7a055feb9cd1f173e02d5278a55))
+
 # [2.26.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.25.0...v2.26.0) (2026-10-20)
 
 
