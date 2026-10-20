@@ -1,3 +1,10 @@
+## [2.27.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.27.0...v2.27.1) (2026-10-20)
+
+
+### Bug Fixes
+
+* **skills:** rename skills that shadowed native Claude Code commands ([191d130](https://github.com/SebastianLuser/claude-code-arcane/commit/191d130906daa36eb08df35f36842eedfb7e25d0))
+
 # [2.27.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.26.0...v2.27.0) (2026-10-20)
 
 
