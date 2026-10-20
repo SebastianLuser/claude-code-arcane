@@ -197,7 +197,7 @@
 **Related Skills**:
 - `/balance-check` — Validate formulas and progression
 - `/architecture-decision` — Document technical decisions
-- `/code-review` — Ensure code matches clarified design
+- `/quality-review` — Ensure code matches clarified design
 
 ---
 

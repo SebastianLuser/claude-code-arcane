@@ -129,5 +129,5 @@ Validate before considering the work done:
 
 - `/ue-cpp-foundations` — migrate any graph that outgrew visual scripting
 - `/perf-profile` — measure Blueprint tick and load cost
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

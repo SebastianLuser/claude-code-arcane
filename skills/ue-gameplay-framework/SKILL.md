@@ -461,5 +461,5 @@ Validate before considering the work done:
 ## Next Steps
 
 - `/ue-networking-replication` — replicate the framework state
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

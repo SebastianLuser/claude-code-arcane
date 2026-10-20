@@ -137,5 +137,5 @@ Validate before considering the work done:
 
 - `/ue-project-context` — record the convention so the rest of the `ue-*` skills follow it
 - `/asset-audit` — sweep the existing project for violations
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

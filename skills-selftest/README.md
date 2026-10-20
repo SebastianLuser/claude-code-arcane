@@ -36,7 +36,7 @@ skills-selftest/
 │
 ├── skills/                ← behavioral specs (one file per skill)
 │   ├── gate/              ← gate-check
-│   ├── review/            ← architecture-review, code-review
+│   ├── review/            ← architecture-review, quality-review
 │   ├── authoring/         ← design-system, art-bible, ux-design
 │   ├── readiness/         ← story-readiness, story-done
 │   ├── pipeline/          ← create-epics, create-stories, map-systems
@@ -95,7 +95,7 @@ All driven by skills already shipped in `skills/`:
 | Category | Sample skills | Key metrics |
 |----------|---------------|-------------|
 | `gate` | gate-check | Director panel modes, no auto-advance, verdict keyword |
-| `review` | architecture-review, code-review | Read-only, correct verdicts |
+| `review` | architecture-review, quality-review | Read-only, correct verdicts |
 | `authoring` | design-system, art-bible, architecture-decision | Skeleton-first, May-I-write protocol |
 | `readiness` | story-readiness, story-done | Blockers surfaced, gate in full mode |
 | `pipeline` | create-epics, create-stories, map-systems | Upstream dep check, handoff clear |

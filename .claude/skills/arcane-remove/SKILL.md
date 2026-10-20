@@ -63,6 +63,6 @@ Updated arcane-manifest.json
 ## Safety
 
 - NEVER remove the `core` profile — it's always required
-- Core skills (21) cannot be removed: commit, create-pr, changelog, check, code-review, context-prime, help, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, arcane-status, arcane-list, arcane-add, arcane-remove, arcane-clean
+- Core skills (21) cannot be removed: commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, arcane-status, arcane-list, arcane-add, arcane-remove, arcane-clean
 - When removing a profile, only delete assets that are NOT shared with other active profiles
 - Always verify the profile is actually installed before attempting removal

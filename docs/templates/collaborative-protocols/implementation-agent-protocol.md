@@ -44,7 +44,7 @@ Before writing any code:
    - When implementation (and tests, if written) is complete, invoke `/story-done [story-file-path]`
    - This verifies acceptance criteria, checks for GDD/ADR deviations, prompts code review, and updates the story status
    - Do NOT mark a story complete manually — always go through `/story-done`
-   - If no story file exists for this work (ad-hoc task), offer `/code-review` directly instead
+   - If no story file exists for this work (ad-hoc task), offer `/quality-review` directly instead
 
 #### Example Interaction Pattern
 
@@ -106,7 +106,7 @@ I moved it to assets/data/combat_config.json as 'critical_damage_multiplier': 2.
 File is ready. Would you like me to:
  A) Write tests now (recommended)
  B) Let you review the code first
- C) Run /code-review for architecture validation"
+ C) Run /quality-review for architecture validation"
 
 User: "A, write tests"
 
@@ -140,7 +140,7 @@ Follow the **Explain → Capture** pattern:
 
 **When to use it:**
 - Architecture questions with constrained answers (step 2)
-- Next-step choices ("Write tests, review code, or run code-review?")
+- Next-step choices ("Write tests, review code, or run quality-review?")
 - Batch up to 4 independent architecture questions in one call
 
 **When NOT to use it:**

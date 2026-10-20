@@ -355,8 +355,8 @@ describe("removeCommand", () => {
     installProfile(tmpDir);
     const manifest = readManifest(tmpDir)!;
     const coreSkills = new Set([
-      "commit", "create-pr", "changelog", "check", "code-review",
-      "context-prime", "help", "start", "fix-issue", "hotfix",
+      "commit", "create-pr", "changelog", "check", "quality-review",
+      "context-prime", "what-next", "start", "fix-issue", "hotfix",
       "brainstorm", "scope-check", "reverse-document", "skill-improve",
       "skill-test", "tech-debt", "arcane-status", "arcane-list",
       "arcane-add", "arcane-remove", "arcane-clean",

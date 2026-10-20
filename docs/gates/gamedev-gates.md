@@ -412,7 +412,7 @@ Tier 2 leads usan Sonnet por default.
 
 ### LP-CODE-REVIEW — Lead Programmer Code Review
 
-**Trigger**: Después de que una dev story se implementa (`/dev-story`, `/story-done`), o como parte de `/code-review`.
+**Trigger**: Después de que una dev story se implementa (`/dev-story`, `/story-done`), o como parte de `/quality-review`.
 
 **Context to pass**:
 - Implementation file paths

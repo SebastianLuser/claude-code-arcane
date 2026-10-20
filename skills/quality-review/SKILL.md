@@ -1,6 +1,6 @@
 ---
-name: code-review
-description: "Architectural and quality code review: standards compliance, SOLID principles, testability, performance. Usar para revisar un archivo o directorio antes de mergear, o cuando se pide code review."
+name: quality-review
+description: "Architectural and quality code review: standards compliance, SOLID principles, testability, performance. Usar para revisar un archivo o directorio antes de mergear, o cuando se pide code review. Para bugs de correctness está el /code-review nativo de Claude Code; este revisa diseño y estándares."
 category: "workflow"
 argument-hint: "[path-to-file-or-directory]"
 user-invocable: true
@@ -95,5 +95,5 @@ This skill is read-only: it writes no files. The report is the deliverable.
 ## Phase 9: Next Steps
 
 - APPROVED → `/story-done [story-path]`
-- CHANGES REQUIRED → fix issues, re-run `/code-review`
+- CHANGES REQUIRED → fix issues, re-run `/quality-review`
 - ARCHITECTURAL VIOLATION → `/architecture-decision` to record correct approach

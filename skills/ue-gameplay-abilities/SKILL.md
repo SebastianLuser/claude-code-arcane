@@ -513,5 +513,5 @@ Validate before considering the work done:
 
 - `/ue-networking-replication` — verify ability replication and prediction
 - `/balance-check` — sanity-check the tuning values
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

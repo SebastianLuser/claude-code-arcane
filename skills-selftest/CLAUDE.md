@@ -4,7 +4,7 @@ This folder is the QA layer for the Claude Code Arcane skill/agent framework.
 Self-contained and separate from any project the user is building.
 
 **This is not about testing user code.** It's about verifying that the skills
-(`/commit`, `/gate-check`, `/code-review`, etc.) and agents (creative-director,
+(`/commit`, `/gate-check`, `/quality-review`, etc.) and agents (creative-director,
 backend-architect, etc.) themselves behave per their documented contract.
 
 ---
