@@ -280,7 +280,7 @@ Framework: Jest (test.each)
 
 ## Related Commands
 
-- `/code-review` - Review code quality and suggest improvements
+- `/quality-review` - Review code quality and suggest improvements
 - `/test` - Run tests and analyze results
 - `/refactor` - Get refactoring suggestions while keeping tests green
 

@@ -426,5 +426,5 @@ Validate before considering the work done:
 
 - `/accessibility` — check contrast, scaling and navigation
 - `/perf-profile` — check widget tick and paint cost
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

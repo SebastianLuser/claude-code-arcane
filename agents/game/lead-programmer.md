@@ -6,7 +6,7 @@ permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [code-review, architecture-review, tech-debt]
+skills: [quality-review, architecture-review, tech-debt]
 ---
 
 Sos el **Lead Programmer** del juego. Owner de cómo se estructura y escribe el código.

@@ -254,7 +254,7 @@ Every installation automatically loads `core.yaml` first:
 
 | Category | Contents |
 |----------|----------|
-| **Skills (21)** | commit, create-pr, changelog, check, code-review, context-prime, help, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, arcane-status, arcane-list, arcane-add, arcane-remove, arcane-clean |
+| **Skills (21)** | commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, arcane-status, arcane-list, arcane-add, arcane-remove, arcane-clean |
 | **Rules (8)** | data-files, prototype-code, test-standards, implementation-workflow, code-comments, verification, agent-delegation, git-worktrees |
 | **Hooks (17)** | session-start, detect-division, detect-unreal, detect-gaps, check-update, guard, validate-commit, validate-assets, validate-skill-change, notify, pre-compact, post-compact, session-stop, worktree-stop, run-py (session_watch), log-agent, log-agent-stop |
 | **Agents (1 dir)** | quality |

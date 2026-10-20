@@ -1,11 +1,11 @@
-# Skill Test Spec: /help
+# Skill Test Spec: /what-next
 
 ## Skill Summary
 
-`/help` analyzes what has been done and what comes next in the project workflow.
+`/what-next` analyzes what has been done and what comes next in the project workflow.
 It runs on the Haiku model (read-only, formatting task) and reads `production/stage.txt`,
 the active sprint file, and recent session state to produce a concise situational
-guidance summary. The skill optionally accepts a context query (e.g., `/help testing`)
+guidance summary. The skill optionally accepts a context query (e.g., `/what-next testing`)
 to surface relevant skills for a specific topic.
 
 The output is always informational — no files are written and no director gates
@@ -28,7 +28,7 @@ Verified automatically by `/skill-test static` — no fixture needed.
 
 ## Director Gate Checks
 
-None. `/help` is a read-only navigation skill. No director gates apply.
+None. `/what-next` is a read-only navigation skill. No director gates apply.
 
 ---
 
@@ -41,7 +41,7 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 - `production/sprints/sprint-004.md` exists with in-progress stories
 - `.arcane/session-state/active.md` has a recent checkpoint
 
-**Input:** `/help`
+**Input:** `/what-next`
 
 **Expected behavior:**
 1. Skill reads stage.txt and active sprint
@@ -68,7 +68,7 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 - No sprint files, no GDD files
 - `technical-preferences.md` is configured (engine selected)
 
-**Input:** `/help`
+**Input:** `/what-next`
 
 **Expected behavior:**
 1. Skill reads stage.txt — detects Concept stage
@@ -91,7 +91,7 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 - No sprint files
 - `technical-preferences.md` has placeholders
 
-**Input:** `/help`
+**Input:** `/what-next`
 
 **Expected behavior:**
 1. Skill cannot determine stage from stage.txt
@@ -114,7 +114,7 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 - `production/stage.txt` contains `Production`
 - Active sprint has a story with `Status: In Review`
 
-**Input:** `/help testing`
+**Input:** `/what-next testing`
 
 **Expected behavior:**
 1. Skill reads context query: "testing"
@@ -136,7 +136,7 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 **Fixture:**
 - Any project state
 
-**Input:** `/help`
+**Input:** `/what-next`
 
 **Expected behavior:**
 1. Skill produces workflow guidance summary
@@ -166,7 +166,7 @@ None. `/help` is a read-only navigation skill. No director gates apply.
 
 - The case where the active sprint is complete (all stories Done) is not
   separately tested; the skill would suggest `/sprint-plan` for the next sprint.
-- The `/help` skill does not validate whether suggested skills are available —
+- The `/what-next` skill does not validate whether suggested skills are available —
   it assumes standard skill catalog availability.
 - Stage detection fallback (when stage.txt is absent) delegates to the same
   logic as `/project-stage-detect` and is not re-tested here in detail.

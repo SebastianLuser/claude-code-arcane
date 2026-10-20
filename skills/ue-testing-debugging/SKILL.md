@@ -515,5 +515,5 @@ Validate before considering the work done:
 
 - `/test-setup` — wire the tests into the project test runner
 - `/check` — run the full quality gate
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

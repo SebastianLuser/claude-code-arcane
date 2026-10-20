@@ -518,5 +518,5 @@ Validate before considering the work done:
 ## Next Steps
 
 - `/ue-module-build-system` — confirm the editor module is wired correctly
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

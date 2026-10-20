@@ -78,7 +78,7 @@ Not sure what to pick? Run `install` with no arguments to get an interactive pic
 ### 3. Core is always included
 
 Every installation automatically loads `core.yaml` first:
-- 21 essential skills (commit, create-pr, code-review, help, etc.)
+- 21 essential skills (commit, create-pr, quality-review, what-next, etc.)
 - 15 lifecycle hooks (session start/stop, commit validation, secret scanning, etc.)
 - 3 base rules (data-files, prototype-code, test-standards)
 - 1 agent dir (quality)
@@ -275,7 +275,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 ### Core (always included)
 
-21 universal skills (commit, create-pr, changelog, check, code-review, context-prime, help, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, + 5 arcane self-management), 15 hooks, 3 base rules, 1 agent dir (quality), and security permissions.
+21 universal skills (commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, + 5 arcane self-management), 15 hooks, 3 base rules, 1 agent dir (quality), and security permissions.
 
 ---
 

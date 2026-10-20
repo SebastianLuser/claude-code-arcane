@@ -501,5 +501,5 @@ Validate before considering the work done:
 ## Next Steps
 
 - `/ue-world-level-streaming` — ensure required levels are loaded for the shot
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

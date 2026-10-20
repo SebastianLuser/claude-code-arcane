@@ -190,7 +190,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 | `/brainstorm` | Ideacion guiada de concepto de juego | `[genre/theme o open] [--review]` |
 | `/changelog` | Genera changelog desde git log | `[vX..vY \| vX \| last-week \| N]` |
 | `/check` | Audit rapido: lint, types, tests, secrets, deps | (sin args) |
-| `/code-review` | Code review arquitectural y de calidad | `[path]` |
+| `/quality-review` | Code review arquitectural y de calidad | `[path]` |
 | `/commit` | Commit con conventional commit format | (sin args) |
 | `/context-prime` | Carga contexto completo del proyecto | (sin args) |
 | `/contract-testing` | Contract testing con Pact (consumer/provider) | `[consumer\|provider\|setup]` |
@@ -205,7 +205,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 | `/gdrive` | Gestiona Google Drive via API | `[search\|upload\|move\|share] [query]` |
 | `/gh-projects` | Gestiona GitHub Projects v2 | `[list\|create\|add\|update] [project/item]` |
 | `/gsheets` | Gestiona Google Sheets via API | `[read\|write\|create] [sheet-id o range]` |
-| `/help` | Orientacion y siguiente paso sugerido | `[que acabas de terminar]` |
+| `/what-next` | Orientacion y siguiente paso sugerido | `[que acabas de terminar]` |
 | `/hotfix` | Workflow de fix de emergencia con audit trail | `[bug-id o description]` |
 | `/i18n-setup` | Internacionalizacion: i18next, ICU, lazy-loading | `[react\|rn\|go\|ts]` |
 | `/logging-setup` | Logging estructurado: slog, pino, correlation IDs | `[go\|ts\|react\|rn]` |
@@ -627,7 +627,7 @@ Estos skills son para mantener y desarrollar el propio repo Arcane:
 | `/skill-test` | Valida skills (estructura + comportamiento) | `static [name\|all] \| spec [name] \| audit` |
 | `/skill-improve` | Mejora un skill con loop test-fix-retest | `[skill-name]` |
 | `/start` | Onboarding adaptivo | `[project hint]` |
-| `/help` | Orientacion contextual | `[que terminaste]` |
+| `/what-next` | Orientacion contextual | `[que terminaste]` |
 
 ---
 

@@ -513,5 +513,5 @@ Validate before considering the work done:
 ## Next Steps
 
 - `/perf-profile` — measure hitches at streaming boundaries
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

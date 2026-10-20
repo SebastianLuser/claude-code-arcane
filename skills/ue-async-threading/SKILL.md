@@ -428,5 +428,5 @@ Validate before considering the work done:
 ## Next Steps
 
 - `/perf-profile` — confirm the work actually moved off the critical path
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

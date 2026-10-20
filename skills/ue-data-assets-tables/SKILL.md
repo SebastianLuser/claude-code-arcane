@@ -522,5 +522,5 @@ Validate before considering the work done:
 ## Next Steps
 
 - `/asset-audit` — check naming, size and orphaned assets
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

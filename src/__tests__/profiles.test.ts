@@ -24,7 +24,7 @@ describe("parseProfile", () => {
     expect(profile.name).toBe("core");
     expect(profile.category).toBe("core");
     expect(profile.skills).toContain("commit");
-    expect(profile.skills).toContain("help");
+    expect(profile.skills).toContain("what-next");
     expect(profile.rules.universal).toContain("data-files");
     expect(profile.agents).toContain("quality");
     expect(profile.hooks.length).toBeGreaterThan(0);

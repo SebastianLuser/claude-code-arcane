@@ -79,7 +79,7 @@ describe("Installer", () => {
     const skillsDir = path.join(tmpDir, ".claude", "skills");
     // "commit" comes from core, should be installed
     expect(fs.existsSync(path.join(skillsDir, "commit"))).toBe(true);
-    expect(fs.existsSync(path.join(skillsDir, "help"))).toBe(true);
+    expect(fs.existsSync(path.join(skillsDir, "what-next"))).toBe(true);
   });
 
   it("generates settings.json with permissions", () => {

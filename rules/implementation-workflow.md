@@ -17,7 +17,7 @@ Skip the work mode selection when:
 - The task is a small fix (typo, 1-3 line change, obvious bug)
 - The user explicitly says "directo", "sin plan", "ya sé qué hacer", "just do it"
 - A plan or goal is already active in the current conversation
-- The user is running a specific skill (/commit, /check, /code-review, etc.)
+- The user is running a specific skill (/commit, /check, /quality-review, etc.)
 - It's an emergency or hotfix scenario
 
 ## The question

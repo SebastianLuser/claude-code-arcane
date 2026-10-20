@@ -522,5 +522,5 @@ Validate before considering the work done:
 
 - `/audio-mix` — place the new sounds in the bus hierarchy (install the `audio` profile: `arcane add +audio`)
 - `/audio-audit` — check voice count, memory and loudness (same profile)
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

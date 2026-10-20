@@ -300,5 +300,5 @@ Validate before considering the work done:
 
 - `/ue-naming-conventions` — settle the asset naming and Content layout this document records
 - `/context-prime` — load full project context into the session
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

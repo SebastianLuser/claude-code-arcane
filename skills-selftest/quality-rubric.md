@@ -106,7 +106,7 @@ with correct schema, respect layer/priority ordering, and gate before writing.
 
 ### `analysis`
 
-**Skills**: consistency-check, balance-check, content-audit, code-review, tech-debt,
+**Skills**: consistency-check, balance-check, content-audit, quality-review, tech-debt,
 scope-check, estimate, perf-profile, asset-audit, game-security-audit, test-evidence-review, test-flakiness
 
 Analysis skills scan the project and surface findings. They are read-only during
@@ -139,7 +139,7 @@ They have a PR-SPRINT or PR-MILESTONE gate at specific mode thresholds.
 
 ### `utility`
 
-**Skills**: start, help, brainstorm, onboard, hotfix, prototype,
+**Skills**: start, what-next, brainstorm, onboard, hotfix, prototype,
 release-checklist, smoke-check, test-setup, test-helpers,
 regression-suite, qa-plan, bug-triage, bug-report, playtest-report, asset-spec,
 reverse-document, skill-test, skill-improve, and any other skills not in categories above

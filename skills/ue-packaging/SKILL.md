@@ -111,5 +111,5 @@ Validate before considering the work done:
 
 - `/release-checklist` — full release gate before distribution
 - `/patch-notes` — user-facing notes for the packaged build
-- `/code-review` — architectural and quality review of the change
+- `/quality-review` — architectural and quality review of the change
 - `/commit` — conventional commit once the change is verified

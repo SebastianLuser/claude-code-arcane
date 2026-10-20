@@ -109,7 +109,7 @@ Skills y agentes se asignan a model tiers según complejidad:
 - **Sonnet** — default para el resto
 
 Ejemplos actuales:
-- Haiku: `/sprint-status`, `/changelog`, `/patch-notes`, `/onboard`, `/help`
+- Haiku: `/sprint-status`, `/changelog`, `/patch-notes`, `/onboard`, `/what-next`
 - Opus: `/architecture-review`, `/gate-check`, `/audit-game`, `/audit-dev`, `/review-all-gdds`
 - Sonnet: todo el resto
 

@@ -114,7 +114,7 @@ A story is DONE when ALL of the following are true:
 - [ ] Manual evidence document exists for all UI and Manual stories
 - [ ] Smoke check passes before deploy
 - [ ] No regressions introduced — previous sprint's features still pass
-- [ ] Code reviewed (via `/code-review` or peer PR review)
+- [ ] Code reviewed (via `/quality-review` or peer PR review)
 - [ ] Story / ticket updated to `Status: Complete`
 
 **Stories requiring security / performance sign-off before close**: [list, or "None"]

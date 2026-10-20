@@ -1,5 +1,5 @@
 ---
-name: code-review
+name: quality-review
 description: "Architectural and quality code review: standards compliance, SOLID principles, testability, performance."
 category: "workflow"
 argument-hint: "[path-to-file-or-directory]"
@@ -62,5 +62,5 @@ This skill is read-only.
 ## Phase 9: Next Steps
 
 - APPROVED → `/story-done [story-path]`
-- CHANGES REQUIRED → fix issues, re-run `/code-review`
+- CHANGES REQUIRED → fix issues, re-run `/quality-review`
 - ARCHITECTURAL VIOLATION → `/architecture-decision` to record correct approach

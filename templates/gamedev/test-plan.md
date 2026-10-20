@@ -107,7 +107,7 @@ A story is DONE when ALL of the following are true:
 - [ ] Manual evidence document exists for all Visual/Feel and UI stories
 - [ ] Smoke check passes (run `/smoke-check sprint` before QA hand-off)
 - [ ] No regressions introduced — previous sprint's features still pass
-- [ ] Code reviewed (via `/code-review` or documented peer review)
+- [ ] Code reviewed (via `/quality-review` or documented peer review)
 - [ ] Story file updated to `Status: Complete` via `/story-done`
 
 **Stories requiring playtest sign-off before close**: [list, or "None"]

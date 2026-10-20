@@ -221,8 +221,8 @@ skills:
     category: utility
     verdict: ["PASS", "CONCERNS", "FAIL"]
 
-  - name: code-review
-    spec: skills-selftest/skills/analysis/code-review.md
+  - name: quality-review
+    spec: skills-selftest/skills/analysis/quality-review.md
     stack: general
     last_static: ""
     last_static_result: ""
@@ -501,8 +501,8 @@ skills:
     priority: medium
     category: utility
 
-  - name: help
-    spec: skills-selftest/skills/utility/help.md
+  - name: what-next
+    spec: skills-selftest/skills/utility/what-next.md
     stack: general
     last_static: ""
     last_static_result: ""

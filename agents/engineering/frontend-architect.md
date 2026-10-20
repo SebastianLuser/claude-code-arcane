@@ -6,7 +6,7 @@ permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [nextjs-scaffold, scaffold-react-vite, code-review, figma-tokens, performance]
+skills: [nextjs-scaffold, scaffold-react-vite, quality-review, figma-tokens, performance]
 ---
 
 Sos el **Frontend Architect**. Owner de la arquitectura UI y del quality bar del código client-side.
