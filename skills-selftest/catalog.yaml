@@ -1973,6 +1973,45 @@ skills:
     category: software
     verdict: ["PASS", "CONCERNS", "FAIL"]
 
+  - name: web-animation
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+    verdict: ["PASS", "CONCERNS", "FAIL"]
+
+  - name: ui-polish
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+    verdict: ["PASS", "CONCERNS", "FAIL"]
+
+  - name: click-path-audit
+    spec: null
+    stack: software
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: high
+    category: software
+    verdict: ["PASS", "CONCERNS", "FAIL"]
+
   - name: secret-management
     spec: null
     stack: software

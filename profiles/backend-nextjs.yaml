@@ -25,6 +25,9 @@ skills:
   - performance
   - playwright-pro
   - vercel-deploy
+  - web-animation
+  - ui-polish
+  - click-path-audit
   # Ops & quality
   - testing
   - deps-audit
