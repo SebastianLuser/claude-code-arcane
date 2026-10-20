@@ -4902,7 +4902,55 @@ skills:
     priority: medium
     category: utility
 
+  - name: linkedin-comment
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: linkedin-inbox
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
   - name: linkedin-optimize
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: linkedin-post
+    spec: null
+    stack: personal
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: utility
+
+  - name: linkedin-reply
     spec: null
     stack: personal
     last_static: ""

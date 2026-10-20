@@ -74,6 +74,12 @@ Según el estado del workspace, recomendar el skill siguiente (ver routing).
 | Escribir cover letter / mensaje de aplicación | `/cover-letter` |
 | Mensaje en frío a recruiter/hiring manager | `/cold-outreach` |
 | Optimizar perfil de LinkedIn | `/linkedin-optimize` |
+| Plan de contenido o de la semana en LinkedIn | `/personal-brand` |
+| Escribir un post de LinkedIn | `/linkedin-post` |
+| Comentar posts ajenos / ronda de engagement | `/linkedin-comment` |
+| Responder los comentarios de un post propio | `/linkedin-reply` |
+| Ordenar DMs e invitaciones (recruiters, spam) | `/linkedin-inbox` |
+| Que un texto no suene a IA (en/es) | `/content-humanizer` |
 | Crear/actualizar portfolio web | `/portfolio-site` |
 | Preparar una entrevista | `/interview-prep` |
 | Diagnosticar por qué se frena la búsqueda | agente `career-strategist` (vía `/job-upskill`) |

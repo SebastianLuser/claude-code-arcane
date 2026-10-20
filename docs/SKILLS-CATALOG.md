@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 449 skills disponibles para proyectos consumidores, organizados por division.
+Los 453 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 409: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 413: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -415,7 +415,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
 | `/content-creator` | Deprecated redirect skill — routes legacy requests to content-production or content-strategy | `[topic]` |
-| `/content-humanizer` | Transform AI-generated content into authentic human writing — detect AI patterns, fix rhythm, inject brand voice | `[path-to-content]` |
+| `/content-humanizer` | Transform AI-generated content into authentic human writing — detect AI patterns, fix rhythm, inject brand voice; `humanize.py` + `detect.py` with en/es lexicons | `[path-to-content]` |
 | `/content-production` | Full content production pipeline — research, brief, draft, optimize, and publish blog posts, articles, and guides | `[brief\|draft\|optimize] [topic]` |
 | `/content-strategy` | Plan content strategy, topic clusters, content calendars, and decide what to write | `[strategy\|clusters\|calendar]` |
 | `/copy-editing` | Systematic copy editing via seven focused sweeps — clarity, voice, so-what, proof, specificity, emotion, zero-risk | `[path-to-copy]` |
@@ -526,7 +526,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 ---
 
-## Job Hunt (17 skills)
+## Job Hunt (21 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -546,7 +546,11 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 | `/cold-outreach` | Mensajes en frio a recruiters/hiring managers + follow-ups post-aplicacion | `[contact\|recruiter + company]` |
 | `/interview-prep` | Prep de entrevista: research, banco de preguntas, respuestas STAR, red flags | `[application\|company + role + round]` |
 | `/network-map` | Convierte el export de conexiones de LinkedIn en contactos por empresa + warm intros + mensajes | `[company] \| import <Connections.csv>` |
-| `/personal-brand` | Backlog secuenciado de posts de LinkedIn (4 pilares) para construir autoridad antes del outreach | `[plan\|ideas <N>\|draft <idea>]` |
+| `/personal-brand` | Backlog secuenciado de posts de LinkedIn (4 pilares) + plan semanal (qué postear, cuándo, con quién interactuar) para construir autoridad antes del outreach | `[plan\|week\|ideas <N>\|draft <idea>]` |
+| `/linkedin-post` | Post de LinkedIn desde una idea: 3 hooks de 21 fórmulas, borrador con tu voz, humanizado y puntuado; nunca publica | `<idea>\|write <día>` |
+| `/linkedin-comment` | Comentarios en posts ajenos: 9 tipos según el post, 2 opciones, ronda de engagement | `<post>\|batch` |
+| `/linkedin-reply` | Respuestas bajo tu post: triage lead/substance/peer/support/noise y respuestas en ese orden | `<comentarios>` |
+| `/linkedin-inbox` | Triage de DMs e invitaciones (recruiter/lead/peer/ask/spam), detecta secuencias automáticas | `<mensajes>` |
 
 ---
 
@@ -592,7 +596,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 ## Freelance (9 skills)
 
-Perfil `+freelance`. Reutiliza ademas 6 skills ya catalogados: `/master-profile`, `/portfolio-site`, `/cold-outreach`, `/job-outcome` (Job Hunt), `/contract-and-proposal-writer` (Business) y `/estimate` (Agile). Comparte el career workspace con `+job-hunt`: una propuesta es una aplicacion con `tipo: freelance`.
+Perfil `+freelance`. Reutiliza ademas 7 skills ya catalogados: `/master-profile`, `/portfolio-site`, `/cold-outreach`, `/job-outcome` (Job Hunt), `/content-humanizer` (Marketing — Content), `/contract-and-proposal-writer` (Business) y `/estimate` (Agile). Comparte el career workspace con `+job-hunt`: una propuesta es una aplicacion con `tipo: freelance`.
 
 Las fuentes automaticas son publicas y **sin API key**, para que funcionen apenas se instala el perfil: una fuente con credenciales por usuario dejaria el skill roto para todos menos uno.
 
