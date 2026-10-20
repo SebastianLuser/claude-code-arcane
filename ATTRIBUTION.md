@@ -250,3 +250,51 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
+
+---
+
+## Skills rewritten from DevOps-Security-Agent-Skills and Everything Claude Code
+
+These were not copied: the upstream skills were read, their ideas checked against current
+vendor documentation, and the content rewritten in Arcane's format (many upstream facts were
+outdated, such as an OWASP LLM list labelled 2025 that was the 2023 one). The ideas and
+structure still come from them.
+
+**[bagelhole/DevOps-Security-Agent-Skills](https://github.com/bagelhole/DevOps-Security-Agent-Skills)**,
+MIT License, Copyright (c) 2026 Toby Miller.
+New skills: `coding-agent-guardrails`, `llm-evals`, `supply-chain-security`, `threat-modeling`,
+`devcontainers`, `database-ops`, `cloudflare`, `vercel-deploy`, `firebase`. Merged into
+existing skills: `ai-security`, `mcp-server-builder`, `install-mcp`, `llm-cost-optimizer`,
+`observability`, `observability-setup`, `ci-cd-setup`, `deps-audit`, `docker-setup`,
+`rollback-strategy`, `slo-sli`, `rag-architect`, `incident-response`, `incident`,
+`backup-strategy`, `cdn-setup`, `runbooks`, `release`, and the `ops-*` references of
+`aws-solution-architect`, `azure-cloud-architect` and `gcp-cloud-architect`.
+
+**[affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code)**,
+MIT License, Copyright (c) 2026 Affaan Mustafa.
+New skills: `web-animation` (from `motion-foundations`, `motion-patterns`, `motion-advanced`),
+`ui-polish` (from `make-interfaces-feel-better`, `frontend-design-direction`),
+`click-path-audit`. Ideas for the harness hooks and rules (the session watch, the
+format/typecheck stop check, agent delegation) also came from this repository.
+
+Both licenses require keeping this notice:
+
+```text
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+```

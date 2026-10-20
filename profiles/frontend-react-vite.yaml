@@ -23,6 +23,9 @@ skills:
   - playwright-pro
   - vercel-deploy
   - firebase
+  - web-animation
+  - ui-polish
+  - click-path-audit
 
 rules:
   universal:

@@ -21,6 +21,7 @@ skills:
   - ci-cd-setup
   - deploy-check
   - firebase
+  - click-path-audit
 
 rules:
   universal:

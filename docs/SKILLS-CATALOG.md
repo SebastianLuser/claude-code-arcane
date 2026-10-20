@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 446 skills disponibles para proyectos consumidores, organizados por division.
+Los 449 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 406: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 409: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -239,11 +239,14 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 ---
 
-## Software (49 skills)
+## Software (52 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
 | `/accessibility` | Accesibilidad WCAG 2.2 AA para web/mobile | `[audit\|fix] [path]` |
+| `/click-path-audit` | Sigue cada botón por los cambios de estado que dispara para encontrar controles que no hacen lo que dicen | `[page <path>\|store <name>\|app]` |
+| `/ui-polish` | Pasada de terminación: dirección visual con contenido real, todos los estados y detalles (radios, alineación óptica, foco, hit areas) | `[polish <screen>\|review]` |
+| `/web-animation` | Animación web con propósito: tokens, reduced motion, transform/opacity, CSS vs Motion y patrones | `[add <component>\|review]` |
 | `/api-design` | Diseno de API REST/GraphQL con OpenAPI | `[rest\|graphql\|contract] [resource]` |
 | `/api-docs` | Genera docs de API desde codigo fuente | `[path, default .]` |
 | `/api-versioning` | Estrategias de versionado de API | `[deprecate v1\|introduce v2\|audit]` |
