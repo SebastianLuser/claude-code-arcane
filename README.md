@@ -45,6 +45,8 @@ arcane install backend-typescript+agile      # same as the npx line above
 
 ## How It Works
 
+For the map of the whole harness (layers, hooks by event, who makes and who checks, the life of a task) see [docs/harness.md](docs/harness.md).
+
 ### 1. Profiles define what gets installed
 
 Each profile is a YAML file that bundles skills, agents, rules, and permissions:
