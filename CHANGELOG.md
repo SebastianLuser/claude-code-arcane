@@ -1,3 +1,10 @@
+## [2.27.3](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.27.2...v2.27.3) (2026-10-21)
+
+
+### Bug Fixes
+
+* **hooks:** catch go vet type errors in the stop check ([8c302cd](https://github.com/SebastianLuser/claude-code-arcane/commit/8c302cde9226474a864eb00f1df50f5180e94b2f))
+
 ## [2.27.2](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.27.1...v2.27.2) (2026-10-21)
 
 
