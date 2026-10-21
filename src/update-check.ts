@@ -73,25 +73,41 @@ export function isContentUpdateAvailable(
   return !remoteSha.startsWith(localVersion) && !localVersion.startsWith(remoteSha);
 }
 
+/**
+ * The cache is one file for the whole machine, but its answer depends on the
+ * project it was computed in and on the CLI that wrote it. Reusing it for
+ * another project, after `arcane update` changed this one, or after the CLI was
+ * upgraded showed a stale "content update" notice for up to four hours.
+ */
+export function isCacheFresh(
+  cached: Pick<CheckResult, "checked_at" | "local_version" | "cli_version">,
+  localVersion: string,
+  cliVersion: string,
+  now = Date.now(),
+): boolean {
+  return (
+    now - new Date(cached.checked_at).getTime() < CHECK_INTERVAL_MS &&
+    cached.local_version === localVersion &&
+    cached.cli_version === cliVersion
+  );
+}
+
 export async function checkForUpdates(opts: {
   quiet?: boolean;
   force?: boolean;
 } = {}): Promise<boolean> {
   try {
-    const cached = readCachedCheck();
-    if (cached && !opts.force) {
-      const age = Date.now() - new Date(cached.checked_at).getTime();
-      if (age < CHECK_INTERVAL_MS) {
-        if (cached.update_available && !opts.quiet) {
-          printUpdateNotice(cached);
-        }
-        return cached.update_available;
-      }
-    }
-
     const manifest = readManifest(process.cwd());
     const localVersion = manifest?.source_version ?? manifest?.arcane_version ?? "unknown";
     const cliVersion = getPackageVersion();
+
+    const cached = readCachedCheck();
+    if (cached && !opts.force && isCacheFresh(cached, localVersion, cliVersion)) {
+      if (cached.update_available && !opts.quiet) {
+        printUpdateNotice(cached);
+      }
+      return cached.update_available;
+    }
 
     const [remoteSha, latestCli] = await Promise.all([
       getLatestCommitSha(),
