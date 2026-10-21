@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { compareSemver, isContentUpdateAvailable } from "../update-check.js";
+import { compareSemver, isCacheFresh, isContentUpdateAvailable } from "../update-check.js";
 
 /**
  * The notice used to compare the manifest version against a git SHA. A semver
@@ -56,5 +56,36 @@ describe("compareSemver", () => {
 
   it("offers an update for the 2.1.0 install that missed the category wizard", () => {
     expect(compareSemver("2.6.0", "2.1.0") > 0).toBe(true);
+  });
+});
+
+/**
+ * One cache file serves every project on the machine. After `arcane update`
+ * moved a project to the latest SHA, the cache written before the update (or in
+ * another project) kept printing "content update: 2.5.0 → <sha>" for 4 hours.
+ */
+describe("isCacheFresh", () => {
+  const now = Date.parse("2026-10-20T12:00:00Z");
+  const cached = { checked_at: "2026-10-20T11:00:00Z", local_version: "7deca91884a0", cli_version: "2.27.1" };
+
+  it("reuses a recent cache from the same project and CLI", () => {
+    expect(isCacheFresh(cached, "7deca91884a0", "2.27.1", now)).toBe(true);
+  });
+
+  it("drops it when the project's content version differs (another project, or just updated)", () => {
+    expect(isCacheFresh(cached, "2.5.0", "2.27.1", now)).toBe(false);
+  });
+
+  it("drops it when the CLI was upgraded", () => {
+    expect(isCacheFresh(cached, "7deca91884a0", "2.28.0", now)).toBe(false);
+  });
+
+  it("drops a cache written before the CLI version was recorded", () => {
+    const legacy = { checked_at: cached.checked_at, local_version: "7deca91884a0" };
+    expect(isCacheFresh(legacy, "7deca91884a0", "2.27.1", now)).toBe(false);
+  });
+
+  it("drops it after four hours", () => {
+    expect(isCacheFresh({ ...cached, checked_at: "2026-10-20T07:59:00Z" }, "7deca91884a0", "2.27.1", now)).toBe(false);
   });
 });
