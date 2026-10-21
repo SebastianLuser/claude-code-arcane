@@ -121,6 +121,13 @@ class StopCheck(WatchTestCase):
         found = watch.errors_in(output, [os.path.join(self.project, "pkg", "x.go")], self.project)
         self.assertEqual(len(found), 1)
 
+    def test_go_vet_type_errors_carry_a_vet_prefix(self):
+        # Real go vet output for a compile error; the prefix hid every Go error before.
+        for prefix in ("vet: ", "vet.exe: "):
+            output = f"# smoke\n{prefix}./main.go:4:2: declared and not used: x\n"
+            found = watch.errors_in(output, [os.path.join(self.project, "main.go")], self.project)
+            self.assertEqual(found, ["./main.go:4:2: declared and not used: x"])
+
     def test_blocks_with_the_errors_once_and_clears_the_pending_list(self):
         root = self.node_project()
         self.edit("src/a.ts")
