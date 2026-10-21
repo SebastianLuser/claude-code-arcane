@@ -1,3 +1,10 @@
+## [2.27.2](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.27.1...v2.27.2) (2026-10-21)
+
+
+### Bug Fixes
+
+* **update-check:** drop the cached check when the project or CLI changed ([ba60abb](https://github.com/SebastianLuser/claude-code-arcane/commit/ba60abbafacff98c087649d655540123cc098f55))
+
 ## [2.27.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.27.0...v2.27.1) (2026-10-20)
 
 
