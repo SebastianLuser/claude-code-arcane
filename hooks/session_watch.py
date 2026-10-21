@@ -212,7 +212,9 @@ def errors_in(output: str, files: list[str], cwd: str) -> list[str]:
     wanted = {os.path.normcase(os.path.abspath(f)) for f in files}
     lines = []
     for line in output.splitlines():
-        match = re.match(r"^(.+?)(?:\(\d+,\d+\)|:\d+:\d+)", line.strip())
+        # go vet prefixes type errors with "vet: " ("vet.exe: " on Windows).
+        line = re.sub(r"^vet(?:\.exe)?:\s+", "", line.strip())
+        match = re.match(r"^(.+?)(?:\(\d+,\d+\)|:\d+:\d+)", line)
         if not match:
             continue
         candidate = os.path.normcase(os.path.abspath(os.path.join(cwd, match.group(1).strip())))
