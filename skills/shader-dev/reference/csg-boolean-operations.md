@@ -1,6 +1,6 @@
 # CSG Boolean Operations — Detailed Reference
 
-This document is a complete reference manual for [SKILL.md](SKILL.md), including step-by-step tutorials, mathematical derivations, variant details, and advanced usage.
+This document is a complete reference manual for [techniques/csg-boolean-operations.md](../techniques/csg-boolean-operations.md), including step-by-step tutorials, mathematical derivations, variant details, and advanced usage.
 
 ## Use Cases
 

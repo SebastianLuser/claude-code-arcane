@@ -1,6 +1,6 @@
 # SDF Normal Estimation — Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), containing prerequisite knowledge, step-by-step explanations, mathematical derivations, variant analysis, and complete combination code examples.
+This document is a detailed supplement to [techniques/normal-estimation.md](../techniques/normal-estimation.md), containing prerequisite knowledge, step-by-step explanations, mathematical derivations, variant analysis, and complete combination code examples.
 
 ---
 

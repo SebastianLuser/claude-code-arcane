@@ -1,6 +1,6 @@
 # Fluid Simulation — Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), containing prerequisite knowledge, step-by-step tutorials, mathematical derivations, and advanced usage.
+This document is a detailed supplement to [techniques/fluid-simulation.md](../techniques/fluid-simulation.md), containing prerequisite knowledge, step-by-step tutorials, mathematical derivations, and advanced usage.
 
 ## Prerequisites
 

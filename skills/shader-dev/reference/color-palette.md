@@ -1,6 +1,6 @@
 # Color Palette & Color Space Techniques - Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), containing step-by-step tutorials, mathematical derivations, and advanced usage.
+This document is a detailed supplement to [techniques/color-palette.md](../techniques/color-palette.md), containing step-by-step tutorials, mathematical derivations, and advanced usage.
 
 ## Prerequisites
 

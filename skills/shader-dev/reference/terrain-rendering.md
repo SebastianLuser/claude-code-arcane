@@ -1,6 +1,6 @@
 # Heightfield Ray Marching Terrain Rendering — Detailed Reference
 
-> This document is a detailed supplement to [SKILL.md](SKILL.md), covering prerequisites, complete explanations for each step (what/why), variant details, in-depth performance optimization analysis, and complete code examples for combination suggestions.
+> This document is a detailed supplement to [techniques/terrain-rendering.md](../techniques/terrain-rendering.md), covering prerequisites, complete explanations for each step (what/why), variant details, in-depth performance optimization analysis, and complete code examples for combination suggestions.
 
 ## Prerequisites
 

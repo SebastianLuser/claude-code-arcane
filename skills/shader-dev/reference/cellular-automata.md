@@ -1,6 +1,6 @@
 # Cellular Automata & Reaction-Diffusion — Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), containing prerequisites, step-by-step explanations, variant details, performance analysis, and complete code examples for combination suggestions.
+This document is a detailed supplement to [techniques/cellular-automata.md](../techniques/cellular-automata.md), containing prerequisites, step-by-step explanations, variant details, performance analysis, and complete code examples for combination suggestions.
 
 ---
 

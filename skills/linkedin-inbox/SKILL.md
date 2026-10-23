@@ -39,7 +39,7 @@ Automated outreach has a shape: an invite with no specifics, a message minutes a
 - **ASK:** under ten minutes and specific: do it. "Can I pick your brain": decline in one warm sentence and give the one answer you would have given on the call.
 - **Declines** are short, warm and final. No "let's revisit in Q3" if there is no Q3.
 
-Run every draft through `/content-humanizer` (`scripts/humanize.py`, then `scripts/detect.py`).
+Run every draft through `/content-humanizer` (`.claude/skills/content-humanizer/scripts/humanize.py`, then `detect.py` from the same folder).
 
 ## Phase 5: Output
 

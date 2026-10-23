@@ -1,6 +1,6 @@
 # 3D Signed Distance Fields (3D SDF) — Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), covering prerequisites, step-by-step explanations, mathematical derivations, and advanced usage.
+This document is a detailed supplement to [techniques/sdf-3d.md](../techniques/sdf-3d.md), covering prerequisites, step-by-step explanations, mathematical derivations, and advanced usage.
 
 ## Prerequisites
 

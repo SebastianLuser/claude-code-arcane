@@ -1,6 +1,6 @@
 # Texture Sampling Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), covering prerequisites, step-by-step explanations, mathematical derivations, variant details, and complete combination code examples.
+This document is a detailed supplement to [techniques/texture-sampling.md](../techniques/texture-sampling.md), covering prerequisites, step-by-step explanations, mathematical derivations, variant details, and complete combination code examples.
 
 ## Prerequisites
 

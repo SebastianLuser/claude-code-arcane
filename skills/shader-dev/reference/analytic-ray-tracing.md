@@ -1,6 +1,6 @@
 # Analytic Ray Tracing - Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), covering prerequisite knowledge, step-by-step tutorial, mathematical derivations, and advanced usage.
+This document is a detailed supplement to [techniques/analytic-ray-tracing.md](../techniques/analytic-ray-tracing.md), covering prerequisite knowledge, step-by-step tutorial, mathematical derivations, and advanced usage.
 
 ## Prerequisites
 
@@ -357,7 +357,7 @@ vec3 radiance(vec3 ro, vec3 rd) {
 
 ## Complete Code Template
 
-For a complete runnable ShaderToy template, see the "Complete Code Template" section in [SKILL.md](SKILL.md), which includes sphere, plane, and box primitives with support for reflections and Blinn-Phong shading.
+For a complete runnable ShaderToy template, see the "Complete Code Template" section in [techniques/analytic-ray-tracing.md](../techniques/analytic-ray-tracing.md), which includes sphere, plane, and box primitives with support for reflections and Blinn-Phong shading.
 
 The following table describes the adjustable parameters in the template:
 

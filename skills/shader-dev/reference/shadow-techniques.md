@@ -1,6 +1,6 @@
 # SDF Soft Shadow Techniques - Detailed Reference
 
-This document is a complete supplement to [SKILL.md](SKILL.md), covering prerequisite knowledge, step-by-step detailed explanations, mathematical derivations, variant descriptions, and full code examples for combinations.
+This document is a complete supplement to [techniques/shadow-techniques.md](../techniques/shadow-techniques.md), covering prerequisite knowledge, step-by-step detailed explanations, mathematical derivations, variant descriptions, and full code examples for combinations.
 
 ## Use Cases
 

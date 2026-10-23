@@ -1,6 +1,6 @@
 # Domain Warping — Detailed Reference
 
-This document contains the complete step-by-step tutorial, mathematical derivations, and advanced usage for domain warping techniques. See [SKILL.md](SKILL.md) for the condensed version.
+This document contains the complete step-by-step tutorial, mathematical derivations, and advanced usage for domain warping techniques. See [techniques/domain-warping.md](../techniques/domain-warping.md) for the condensed version.
 
 ## Prerequisites
 

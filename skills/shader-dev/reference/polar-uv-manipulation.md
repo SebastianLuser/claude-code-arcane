@@ -1,6 +1,6 @@
 # Polar Coordinates & UV Manipulation — Detailed Reference
 
-> This document is a detailed supplement to [SKILL.md](SKILL.md), covering prerequisites, step-by-step explanations, variant details, in-depth performance analysis, and complete combination code examples.
+> This document is a detailed supplement to [techniques/polar-uv-manipulation.md](../techniques/polar-uv-manipulation.md), covering prerequisites, step-by-step explanations, variant details, in-depth performance analysis, and complete combination code examples.
 
 ## Prerequisites
 
