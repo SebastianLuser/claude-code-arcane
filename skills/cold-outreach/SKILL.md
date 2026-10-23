@@ -63,7 +63,7 @@ Cada follow-up debe tener un **gancho propio** y leerse solo, sin depender de lo
 - Inventar una conexión en común, una escuela compartida o haber leído algo que el usuario no leyó.
 - Abrir con "Espero que este mensaje te encuentre bien" / "I hope this message finds you well".
 
-Todo mensaje pasa por `/content-humanizer` (`scripts/humanize.py` + `scripts/detect.py`) antes de mostrarlo. Nota de invitación, primer mensaje y follow-ups adaptados de linkedin-agent-skill de Jake Schincariol (MIT).
+Todo mensaje pasa por `/content-humanizer` (`.claude/skills/content-humanizer/scripts/humanize.py` + `detect.py` de la misma carpeta) antes de mostrarlo. Nota de invitación, primer mensaje y follow-ups adaptados de linkedin-agent-skill de Jake Schincariol (MIT).
 
 ## Proceso
 

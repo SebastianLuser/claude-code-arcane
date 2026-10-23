@@ -1,6 +1,6 @@
 # Procedural Noise — Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), containing step-by-step tutorials, mathematical derivations, and advanced usage.
+This document is a detailed supplement to [techniques/procedural-noise.md](../techniques/procedural-noise.md), containing step-by-step tutorials, mathematical derivations, and advanced usage.
 
 ## Prerequisites
 

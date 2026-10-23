@@ -1,6 +1,6 @@
 # 2D Procedural Patterns — Detailed Reference
 
-This document is a complete supplement to [SKILL.md](SKILL.md), containing prerequisites, detailed explanations for each step, variant descriptions, in-depth performance analysis, and combination example code.
+This document is a complete supplement to [techniques/procedural-2d-pattern.md](../techniques/procedural-2d-pattern.md), containing prerequisites, detailed explanations for each step, variant descriptions, in-depth performance analysis, and combination example code.
 
 ---
 

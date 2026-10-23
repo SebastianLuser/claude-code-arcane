@@ -1,6 +1,6 @@
 # Domain Repetition and Spatial Folding — Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), covering prerequisites, step-by-step explanations, mathematical derivations, and advanced usage.
+This document is a detailed supplement to [techniques/domain-repetition.md](../techniques/domain-repetition.md), covering prerequisites, step-by-step explanations, mathematical derivations, and advanced usage.
 
 ## Prerequisites
 

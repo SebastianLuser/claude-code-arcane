@@ -40,7 +40,7 @@ Choose by what the post actually is. Never default to the one-liner.
 
 ## Phase 4: Output
 
-Two options of **different types**, labelled, with one line on which you would post. Run both through `/content-humanizer` (`scripts/humanize.py` and `scripts/detect.py`): in a short comment an em dash or a stock word stands out more than in a post.
+Two options of **different types**, labelled, with one line on which you would post. Run both through `/content-humanizer` (`.claude/skills/content-humanizer/scripts/humanize.py`, then `detect.py` from the same folder): in a short comment an em dash or a stock word stands out more than in a post.
 
 ```text
 COMMENT OPTIONS  (on @author's post about hiring)

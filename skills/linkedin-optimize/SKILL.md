@@ -83,7 +83,7 @@ Reescribí en orden de **puntos perdidos**, no todo junto: el usuario tiene que 
 1. Leer el perfil maestro + lo que el usuario pega de su LinkedIn actual.
 2. Definir el/los **rol(es) objetivo** y sus keywords (reusá `cv-tailor/references/ats-keywords.md` para el método).
 3. En `full`: score de 100 puntos.
-4. Generar el contenido optimizado por sección (la/s que pida), pasado por `/content-humanizer` (`scripts/humanize.py` + `scripts/detect.py`) antes de mostrarlo.
+4. Generar el contenido optimizado por sección (la/s que pida), pasado por `/content-humanizer` (`.claude/skills/content-humanizer/scripts/humanize.py` + `detect.py` de la misma carpeta) antes de mostrarlo.
 5. Entregar listo para copiar/pegar + un checklist de la review (área 7) + el re-score.
 6. Opcional: guardar el output en `01-Perfiles/LinkedIn.md` para versionarlo.
 

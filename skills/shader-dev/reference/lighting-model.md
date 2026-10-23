@@ -1,6 +1,6 @@
 # Lighting Models Detailed Reference
 
-This document is a detailed supplementary reference to [SKILL.md](SKILL.md), covering prerequisite knowledge, in-depth explanations for each step, complete descriptions of variants, performance optimization analysis, and full code examples for combination suggestions.
+This document is a detailed supplementary reference to [techniques/lighting-model.md](../techniques/lighting-model.md), covering prerequisite knowledge, in-depth explanations for each step, complete descriptions of variants, performance optimization analysis, and full code examples for combination suggestions.
 
 ---
 

@@ -66,7 +66,7 @@ A complete reference for how Claude Code's memory systems work together.
 - Saves what was discussed and decided in specific sessions
 - "What did we do yesterday?" context
 - Loaded contextually (relevant past sessions, not all)
-- Use `/remember` to turn session memory into permanent project knowledge
+- Use `/self-improving-agent remember` to turn session memory into permanent project knowledge
 
 ### 4. Rules Directory (You → Claude, scoped)
 

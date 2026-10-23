@@ -1,6 +1,6 @@
 # Volumetric Rendering — Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), covering prerequisites, step-by-step explanations, mathematical derivations, and advanced usage.
+This document is a detailed supplement to [techniques/volumetric-rendering.md](../techniques/volumetric-rendering.md), covering prerequisites, step-by-step explanations, mathematical derivations, and advanced usage.
 
 ## Prerequisites
 

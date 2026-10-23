@@ -37,7 +37,7 @@ Write in that order and stop when the value stops.
 - **A lead:** answer fully in public; the open door is one sentence at the end, an offer of help, not a pitch. For a recruiter, a reply in public and the details in a DM is fine.
 - **A pitch in the comments:** ignore it. Replying gives it reach.
 
-Run every reply through `/content-humanizer` (`scripts/humanize.py`, then `scripts/detect.py`).
+Run every reply through `/content-humanizer` (`.claude/skills/content-humanizer/scripts/humanize.py`, then `detect.py` from the same folder).
 
 ## Phase 4: Output
 

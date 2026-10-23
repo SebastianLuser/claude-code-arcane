@@ -1,6 +1,6 @@
 # Path Tracing & Global Illumination - Detailed Reference
 
-This document is a complete reference for [SKILL.md](SKILL.md), covering prerequisite knowledge, step-by-step detailed explanations, mathematical derivations, and advanced usage.
+This document is a complete reference for [techniques/path-tracing-gi.md](../techniques/path-tracing-gi.md), covering prerequisite knowledge, step-by-step detailed explanations, mathematical derivations, and advanced usage.
 
 ## Prerequisites
 
