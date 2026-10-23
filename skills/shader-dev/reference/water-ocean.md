@@ -1,6 +1,6 @@
 # Water & Ocean Rendering — Detailed Reference
 
-This document is the complete reference for [SKILL.md](SKILL.md), covering prerequisites, detailed explanations for each step, variant descriptions, in-depth performance optimization analysis, and complete code examples for combination suggestions.
+This document is the complete reference for [techniques/water-ocean.md](../techniques/water-ocean.md), covering prerequisites, detailed explanations for each step, variant descriptions, in-depth performance optimization analysis, and complete code examples for combination suggestions.
 
 ## Prerequisites
 

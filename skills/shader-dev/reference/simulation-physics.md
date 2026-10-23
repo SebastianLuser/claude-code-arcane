@@ -1,6 +1,6 @@
 # GPU Physics Simulation — Detailed Reference
 
-This document is the complete reference material for [SKILL.md](SKILL.md), containing step-by-step tutorials, mathematical derivations, and advanced usage.
+This document is the complete reference material for [techniques/simulation-physics.md](../techniques/simulation-physics.md), containing step-by-step tutorials, mathematical derivations, and advanced usage.
 
 ## Prerequisites
 

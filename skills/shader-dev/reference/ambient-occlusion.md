@@ -1,6 +1,6 @@
 # SDF Ambient Occlusion — Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), containing a complete step-by-step tutorial, mathematical derivations, variant analysis, and advanced usage.
+This document is a detailed supplement to [techniques/ambient-occlusion.md](../techniques/ambient-occlusion.md), containing a complete step-by-step tutorial, mathematical derivations, variant analysis, and advanced usage.
 
 ## Prerequisites
 

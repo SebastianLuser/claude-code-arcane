@@ -1,6 +1,6 @@
 # Voxel Rendering — Detailed Reference
 
-> This document is a detailed supplement to [SKILL.md](SKILL.md), covering prerequisites, step-by-step tutorials, mathematical derivations, and advanced usage.
+> This document is a detailed supplement to [techniques/voxel-rendering.md](../techniques/voxel-rendering.md), covering prerequisites, step-by-step tutorials, mathematical derivations, and advanced usage.
 
 ## Prerequisites
 

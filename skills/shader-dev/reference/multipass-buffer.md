@@ -1,6 +1,6 @@
 # Multi-Pass Buffer Techniques — Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), covering prerequisites, in-depth explanations of each step, complete variant descriptions, performance optimization analysis, and full combination code examples.
+This document is a detailed supplement to [techniques/multipass-buffer.md](../techniques/multipass-buffer.md), covering prerequisites, in-depth explanations of each step, complete variant descriptions, performance optimization analysis, and full combination code examples.
 
 ## Prerequisites
 

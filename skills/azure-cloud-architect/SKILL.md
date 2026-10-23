@@ -1,6 +1,6 @@
 ---
 name: azure-cloud-architect
-description: "Design Azure architectures with Bicep IaC templates, cost optimization, and CI/CD pipelines for App Service, AKS, Functions, Cosmos DB, and Azure SQL."
+description: "Design and operate Azure: architectures with Bicep IaC, cost optimization and CI/CD, plus day-2 operations for identity and Key Vault, Functions, Azure SQL, networking, VMs, Monitor/audit and Azure Pipelines."
 argument-hint: ""
 category: "devops"
 user-invocable: true
@@ -118,6 +118,20 @@ python scripts/bicep_generator.py --arch-type microservices --output main.bicep
 | No tagging strategy | Tag: environment, owner, cost-center |
 
 ---
+
+## Operate
+
+Once it runs, read only the file for the service at hand. Engine-level database work is in `/database-ops`, backups in `/backup-strategy`, incidents in `/incident-response`.
+
+| Area | Reference | Covers |
+|---|---|---|
+| Identity and Key Vault | `references/ops-key-vault-identity.md` | Managed identities, RBAC, GitHub OIDC with federated credentials, vault settings, Key Vault references, debugging `403` |
+| Functions | `references/ops-functions.md` | Plans and settings, slots and swap, queue/timer/HTTP triggers, debugging |
+| Azure SQL | `references/ops-sql.md` | Entra auth and private access, PITR and failover groups, Query Store, Cosmos DB notes |
+| Networking | `references/ops-networking.md` | VNets, NSGs, private endpoints and DNS zones, NAT, Bastion, Network Watcher |
+| VMs | `references/ops-vms.md` | Scale sets and zones, Bastion and Entra login, boot repair, deallocation |
+| Monitor and audit | `references/ops-monitor-audit.md` | Activity Log, resource and Entra logs, Policy-enforced diagnostics, KQL queries, alerts |
+| Azure Pipelines | `references/ops-pipelines.md` | Stages and environments, workload identity service connections, Key Vault variable groups |
 
 ## Reference Documentation
 

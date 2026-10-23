@@ -1,6 +1,6 @@
 # Post-Processing Effects Detailed Reference
 
-This file is a complete supplement to [SKILL.md](SKILL.md), covering prerequisites, detailed explanations of each step (what and why), variant details, in-depth performance optimization analysis, and complete combination suggestions.
+This file is a complete supplement to [techniques/post-processing.md](../techniques/post-processing.md), covering prerequisites, detailed explanations of each step (what and why), variant details, in-depth performance optimization analysis, and complete combination suggestions.
 
 ## Prerequisites
 

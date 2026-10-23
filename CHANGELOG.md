@@ -1,3 +1,17 @@
+## [2.28.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.28.0...v2.28.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* **skills:** repair dead references and add a link check ([c8728bd](https://github.com/SebastianLuser/claude-code-arcane/commit/c8728bd5993a390ead29a03c61884d3c712189ee))
+
+# [2.28.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.27.3...v2.28.0) (2026-10-23)
+
+
+### Features
+
+* **skills:** day-2 operations references for Azure ([9d624ad](https://github.com/SebastianLuser/claude-code-arcane/commit/9d624ada5033e3e1788f6dca0657de9a8b082f99))
+
 ## [2.27.3](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.27.2...v2.27.3) (2026-10-21)
 
 

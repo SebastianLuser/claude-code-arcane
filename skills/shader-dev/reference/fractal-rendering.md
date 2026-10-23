@@ -1,6 +1,6 @@
 # Fractal Rendering — Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), containing prerequisites, step-by-step explanations, mathematical derivations, variant descriptions, in-depth performance analysis, and complete combination example code.
+This document is a detailed supplement to [techniques/fractal-rendering.md](../techniques/fractal-rendering.md), containing prerequisites, step-by-step explanations, mathematical derivations, variant descriptions, in-depth performance analysis, and complete combination example code.
 
 ## Prerequisites
 

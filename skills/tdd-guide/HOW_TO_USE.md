@@ -281,8 +281,8 @@ Framework: Jest (test.each)
 ## Related Commands
 
 - `/quality-review` - Review code quality and suggest improvements
-- `/test` - Run tests and analyze results
-- `/refactor` - Get refactoring suggestions while keeping tests green
+- `/test-setup` - Set up the test framework and runner
+- `/simplify` - Clean up the changed code once the tests are green (native Claude Code command)
 
 ## Troubleshooting
 

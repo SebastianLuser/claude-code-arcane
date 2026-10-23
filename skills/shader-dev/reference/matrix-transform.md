@@ -1,6 +1,6 @@
 # Matrix Transforms & Camera — Detailed Reference
 
-This document is the complete detailed version of [SKILL.md](SKILL.md), covering step-by-step tutorials, mathematical derivations, detailed explanations, and advanced usage.
+This document is the complete detailed version of [techniques/matrix-transform.md](../techniques/matrix-transform.md), covering step-by-step tutorials, mathematical derivations, detailed explanations, and advanced usage.
 
 ## Prerequisites
 

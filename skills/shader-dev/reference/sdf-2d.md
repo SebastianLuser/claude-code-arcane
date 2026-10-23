@@ -1,6 +1,6 @@
 # 2D SDF Detailed Reference
 
-This file contains the complete step-by-step tutorial, mathematical derivations, detailed explanations, and advanced usage for [SKILL.md](SKILL.md).
+This file contains the complete step-by-step tutorial, mathematical derivations, detailed explanations, and advanced usage for [techniques/sdf-2d.md](../techniques/sdf-2d.md).
 
 ## Prerequisites
 

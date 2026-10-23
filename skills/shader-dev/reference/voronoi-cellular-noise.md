@@ -1,6 +1,6 @@
 # Voronoi & Cellular Noise — Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), containing prerequisites, step-by-step explanations, variant descriptions, performance analysis, and complete combination code.
+This document is a detailed supplement to [techniques/voronoi-cellular-noise.md](../techniques/voronoi-cellular-noise.md), containing prerequisites, step-by-step explanations, variant descriptions, performance analysis, and complete combination code.
 
 ## Prerequisites
 

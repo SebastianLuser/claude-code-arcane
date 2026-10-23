@@ -1,6 +1,6 @@
 # Atmospheric & Subsurface Scattering — Detailed Reference
 
-This document is a detailed supplement to [SKILL.md](SKILL.md), covering prerequisites, step-by-step explanations, mathematical derivations, variant details, and complete combination code examples.
+This document is a detailed supplement to [techniques/atmospheric-scattering.md](../techniques/atmospheric-scattering.md), covering prerequisites, step-by-step explanations, mathematical derivations, variant details, and complete combination code examples.
 
 ## Prerequisites
 
