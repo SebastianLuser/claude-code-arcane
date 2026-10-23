@@ -59,8 +59,11 @@ jobs:
   # every shipped script; the specs cover the job-scrape parsers and run on the
   # oldest and newest Python we support.
   skill-scripts:
-    runs-on: ubuntu-latest
+    # Pinned: setup-python has no Python 3.9 build for Ubuntu 26.04 (ubuntu-latest
+    # since 2026-10), and 3.9 is the floor the specs must keep testing.
+    runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
         python-version: ['3.9', '3.12']
     steps:
