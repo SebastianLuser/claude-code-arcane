@@ -19,8 +19,16 @@ import { linkOrCopyDir } from "./worktree.js";
 import { computeContentHashes } from "./content-hash.js";
 import { defaultHooks } from "./hook-commands.js";
 
+/**
+ * Skill scripts print arrows, emoji and accents. On Windows a piped stdout (how
+ * Claude runs them) is cp1252, so they died with UnicodeEncodeError. UTF-8 mode
+ * fixes stdio and open() for every Python that Claude Code starts.
+ */
+export const SETTINGS_ENV = { PYTHONUTF8: "1" };
+
 const SETTINGS_TEMPLATE = {
   $schema: "https://json.schemastore.org/claude-code-settings.json",
+  env: SETTINGS_ENV,
   permissions: { allow: [] as string[], deny: [] as string[] },
 };
 
