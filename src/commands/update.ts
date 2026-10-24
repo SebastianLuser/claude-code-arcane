@@ -12,6 +12,7 @@ import {
 import { mergeProfiles } from "../profiles.js";
 import { parseAgentEntry } from "../agent-entries.js";
 import { healHooks, type HookMap } from "../hook-commands.js";
+import { SETTINGS_ENV } from "../installer.js";
 import type { ArcaneManifest } from "../types.js";
 import {
   computeContentHashes,
@@ -841,6 +842,17 @@ function syncUnhashedFiles(
         settings.permissions.allow = allow.flatMap((r: unknown) => (r === "Bash(gh *)" ? narrowed : [r]));
         changed.push("settings.json (Bash(gh *) narrowed)");
         dirty = true;
+      }
+
+      // Older installs have no env, so skill scripts crashed on Windows. A value
+      // the user set (even PYTHONUTF8=0) is theirs to keep.
+      const env = (settings.env ??= {});
+      for (const [key, value] of Object.entries(SETTINGS_ENV)) {
+        if (env[key] === undefined) {
+          env[key] = value;
+          changed.push(`settings.json (env: ${key}=${value})`);
+          dirty = true;
+        }
       }
 
       if (dirty && !dryRun) {

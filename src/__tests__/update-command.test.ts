@@ -303,3 +303,53 @@ describe("updateTarget permissions", () => {
     expect(allowOf(tmpDir)).toContain("Bash(gh *)");
   });
 });
+
+// Skill scripts print non-ASCII; on Windows a piped stdout is cp1252 and they died
+// with UnicodeEncodeError. settings.json env PYTHONUTF8=1 reaches every Python
+// that Claude Code starts.
+describe("settings env PYTHONUTF8", () => {
+  let tmpDir: string;
+
+  afterEach(() => {
+    if (tmpDir) fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+  });
+
+  function readSettings(dir: string) {
+    return JSON.parse(fs.readFileSync(path.join(dir, ".claude", "settings.json"), "utf-8"));
+  }
+
+  function editSettings(dir: string, edit: (s: Record<string, any>) => void) {
+    const file = path.join(dir, ".claude", "settings.json");
+    const s = JSON.parse(fs.readFileSync(file, "utf-8"));
+    edit(s);
+    fs.writeFileSync(file, JSON.stringify(s, null, 2));
+  }
+
+  it("a fresh install sets it", () => {
+    tmpDir = makeTmpDir();
+    installTestingProfile(tmpDir);
+    expect(readSettings(tmpDir).env).toEqual({ PYTHONUTF8: "1" });
+  });
+
+  it("update adds it to an install that has none, keeping other variables", async () => {
+    tmpDir = makeTmpDir();
+    installTestingProfile(tmpDir);
+    editSettings(tmpDir, (s) => { s.env = { MY_VAR: "x" }; });
+
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, { source: "bundled", quiet: true });
+
+    expect(readSettings(tmpDir).env).toEqual({ MY_VAR: "x", PYTHONUTF8: "1" });
+  });
+
+  it("update keeps a value the user chose", async () => {
+    tmpDir = makeTmpDir();
+    installTestingProfile(tmpDir);
+    editSettings(tmpDir, (s) => { s.env = { PYTHONUTF8: "0" }; });
+
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, { source: "bundled", quiet: true });
+
+    expect(readSettings(tmpDir).env.PYTHONUTF8).toBe("0");
+  });
+});
