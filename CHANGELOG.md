@@ -1,3 +1,10 @@
+## [2.28.2](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.28.1...v2.28.2) (2026-10-24)
+
+
+### Bug Fixes
+
+* **installer:** run skill scripts in Python UTF-8 mode ([3f9e64d](https://github.com/SebastianLuser/claude-code-arcane/commit/3f9e64d6a74b66ef2669083c20fb5f5f0b132d32))
+
 ## [2.28.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.28.0...v2.28.1) (2026-10-23)
 
 
