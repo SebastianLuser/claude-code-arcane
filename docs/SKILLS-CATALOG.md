@@ -1,8 +1,8 @@
 # Skills Catalog — Claude Code Arcane
 
-Los 453 skills disponibles para proyectos consumidores, organizados por division.
+Los 454 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 413: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 414: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -526,7 +526,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 ---
 
-## Job Hunt (21 skills)
+## Job Hunt (22 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -548,6 +548,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 | `/network-map` | Convierte el export de conexiones de LinkedIn en contactos por empresa + warm intros + mensajes | `[company] \| import <Connections.csv>` |
 | `/personal-brand` | Backlog secuenciado de posts de LinkedIn (4 pilares) + plan semanal (qué postear, cuándo, con quién interactuar) para construir autoridad antes del outreach | `[plan\|week\|ideas <N>\|draft <idea>]` |
 | `/linkedin-post` | Post de LinkedIn desde una idea: 3 hooks de 21 fórmulas, borrador con tu voz, humanizado y puntuado; nunca publica | `<idea>\|write <día>` |
+| `/linkedin-carousel` | Carrusel (document post) para un tema con pasos: slides con tu voz, texto del post y PDF 4:5 chequeado; nunca publica | `<tema>` |
 | `/linkedin-comment` | Comentarios en posts ajenos: 9 tipos según el post, 2 opciones, ronda de engagement | `<post>\|batch` |
 | `/linkedin-reply` | Respuestas bajo tu post: triage lead/substance/peer/support/noise y respuestas en ese orden | `<comentarios>` |
 | `/linkedin-inbox` | Triage de DMs e invitaciones (recruiter/lead/peer/ask/spam), detecta secuencias automáticas | `<mensajes>` |

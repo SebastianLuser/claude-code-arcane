@@ -6,7 +6,7 @@ Guía para generar ideas con sustancia por cada uno de los 4 pilares. Cada idea 
 
 - **Text post corto** - 1 idea, 3-6 líneas, hook fuerte.
 - **Lista / "X things"** - escaneable, alto guardado.
-- **Carrusel** - paso a paso o framework (si el usuario hace slides).
+- **Carrusel** - paso a paso o framework: `/linkedin-carousel` arma las slides y el PDF.
 - **Hot take / POV** - opinión con tensión, invita a debate.
 - **Story / mini-caso** - situación → acción → resultado (mini-STAR público).
 - **Pregunta** - abre conversación, sube engagement.

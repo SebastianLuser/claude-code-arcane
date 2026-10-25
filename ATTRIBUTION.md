@@ -304,7 +304,8 @@ THE SOFTWARE.
 **[Jakeschincariol/linkedin-agent-skill](https://github.com/Jakeschincariol/linkedin-agent-skill)**,
 MIT License, Copyright (c) 2026 Jake Schincariol.
 New skills: `linkedin-post` (with its 21 hook formulas in `references/hooks.json`),
-`linkedin-comment`, `linkedin-reply`, `linkedin-inbox`. Merged: `li-human` into
+`linkedin-comment`, `linkedin-reply`, `linkedin-inbox`, and later `linkedin-carousel`
+(from `li-carousel`, with its own `scripts/carousel_pdf.py`). Merged: `li-human` into
 `content-humanizer` (`scripts/humanize.py`, `scripts/detect.py`, the English lexicon
 `slop.en.json`; the Spanish lexicon and language detection are Arcane's), the
 `li-profile` rubric into `linkedin-optimize`, `li-dm` into `cold-outreach`, `li-plan`

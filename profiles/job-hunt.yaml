@@ -21,6 +21,7 @@ skills:
   - network-map
   - personal-brand
   - linkedin-post
+  - linkedin-carousel
   - linkedin-comment
   - linkedin-reply
   - linkedin-inbox
@@ -53,5 +54,7 @@ permissions:
     - "Bash(python3 *humanize.py*)"
     - "Bash(python *detect.py*)"
     - "Bash(python3 *detect.py*)"
+    - "Bash(python *carousel_pdf.py*)"
+    - "Bash(python3 *carousel_pdf.py*)"
   deny:
     []
