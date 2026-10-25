@@ -109,8 +109,8 @@ Skills y agentes se asignan a model tiers según complejidad:
 - **Sonnet** — default para el resto
 
 Ejemplos actuales:
-- Haiku: `/sprint-status`, `/changelog`, `/patch-notes`, `/onboard`, `/what-next`
-- Opus: `/architecture-review`, `/gate-check`, `/audit-game`, `/audit-dev`, `/review-all-gdds`
+- Haiku: `/changelog`, `/patch-notes`, `/onboard`, `/what-next`
+- Opus: `/architecture-review`, `/gate-check`, `/audit-game`, `/audit-dev`
 - Sonnet: todo el resto
 
 ---
@@ -123,7 +123,7 @@ Dos patrones distintos de multi-agente:
 
 Spawned vía `Task` dentro de una sola sesión de Claude Code. Los `team-*` skills y orchestrators usan esto. Los subagents comparten el permission context de la sesión, corren secuenciales o en paralelo dentro de la sesión, y devuelven resultados al parent.
 
-**Cuándo spawn en paralelo:** si dos subagents tienen inputs independientes (ninguno necesita el output del otro para arrancar), spawneá ambos `Task` simultáneamente en vez de esperar. Ejemplo: `/review-all-gdds` Phase 1 (consistency) y Phase 2 (design theory) son independientes.
+**Cuándo spawn en paralelo:** si dos subagents tienen inputs independientes (ninguno necesita el output del otro para arrancar), spawneá ambos `Task` simultáneamente en vez de esperar. Ejemplo: revisar dos GDDs que no dependen entre sí.
 
 ### Agent Teams (experimental — opt-in)
 

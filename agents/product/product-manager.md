@@ -127,6 +127,5 @@ Reach × Impact × Confidence / Effort
 - `ux-lead` — research y UX design
 - `ui-lead` — visual design
 - Backend/frontend leads — feasibility
-- `data-analyst` — métricas
 
 **Report to:** `chief-product-officer`

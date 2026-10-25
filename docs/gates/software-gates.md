@@ -23,7 +23,7 @@ Agent: `cto` | Model: Opus | Dominio: Arquitectura, tech strategy
 
 ### CTO-ARCHITECTURE — Architecture Sign-Off
 
-**Trigger**: Después del documento maestro de architecture (`/create-architecture` final phase), o después de revisiones mayores.
+**Trigger**: Después del documento maestro de architecture, o después de revisiones mayores.
 
 **Context to pass**:
 - Architecture document path (`docs/architecture/architecture.md`)

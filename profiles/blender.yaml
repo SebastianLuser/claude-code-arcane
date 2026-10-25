@@ -11,7 +11,8 @@ skills:
   - blender-animation
   # Salida: cierra el pipeline hacia el engine
   - blender-export
-  # Reusada de la libreria compartida
+  # Reusadas de la libreria compartida: asset-spec abre el pipeline, asset-audit lo cierra
+  - asset-spec
   - asset-audit
 
 rules:

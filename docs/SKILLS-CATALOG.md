@@ -2,7 +2,7 @@
 
 Los 454 skills disponibles para proyectos consumidores, organizados por division.
 
-La tabla cubre 414: hay 40 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
+La tabla cubre 402: hay 52 skills instalables que todavia no estan catalogados aca. Un test de CI (`src/__tests__/doc-counts.test.ts`) verifica que estos numeros coincidan con el filesystem y que el header de cada seccion coincida con sus filas.
 
 ## Como ejecutar un skill
 
@@ -72,7 +72,7 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 
 ---
 
-## Gamedev (26 skills)
+## Gamedev (18 skills)
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
@@ -93,14 +93,6 @@ Desde cualquier proyecto que tenga Arcane configurado, escribi `/` seguido del n
 | `/map-systems` | Descompone concepto en sistemas, mapea dependencias | `[next \| system-name] [--review]` |
 | `/playtest-report` | Genera o analiza reporte de playtest | `[new\|analyze path] [--review]` |
 | `/scaffold-unity` | Scaffoldea proyecto Unity estilo Project_T | `[project-name]` |
-| `/team-audio` | Orquesta equipo de audio end-to-end | `[feature o area]` |
-| `/team-combat` | Orquesta equipo de combate | `[combat feature]` |
-| `/team-level` | Orquesta equipo de level design | `[level o area]` |
-| `/team-narrative` | Orquesta equipo narrativo | `[narrative content]` |
-| `/team-polish` | Orquesta equipo de polish y optimizacion | `[feature o area]` |
-| `/team-qa` | Orquesta ciclo QA completo | `[sprint \| feature: name]` |
-| `/team-release` | Orquesta equipo de release | `[version o next]` |
-| `/team-ui` | Orquesta equipo UI end-to-end | `[UI feature]` |
 | `/unity-game-architecture` | Arquitectura Unity 6 moderna | `[system o module]` |
 
 ---
@@ -621,14 +613,7 @@ Quien consiga una API key propia la activa poniendo una variable de entorno: `ke
 
 ## Skills internos de Arcane
 
-Estos skills son para mantener y desarrollar el propio repo Arcane:
-
-| Skill | Descripcion | Uso |
-|-------|-------------|-----|
-| `/skill-test` | Valida skills (estructura + comportamiento) | `static [name\|all] \| spec [name] \| audit` |
-| `/skill-improve` | Mejora un skill con loop test-fix-retest | `[skill-name]` |
-| `/start` | Onboarding adaptivo | `[project hint]` |
-| `/what-next` | Orientacion contextual | `[que terminaste]` |
+`/skill-test` y `/skill-improve` (en General) también sirven para mantener el propio repo Arcane.
 
 ---
 

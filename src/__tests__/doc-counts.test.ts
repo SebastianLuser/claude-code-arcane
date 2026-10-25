@@ -141,6 +141,16 @@ describe("SKILLS-CATALOG section headers", () => {
 
     expect(mismatches).toEqual([]);
   });
+
+  it("every row is a real skill, listed once", () => {
+    // Eight /team-* rows outlived their skills and four skills were listed twice,
+    // so the stated coverage counted 414 rows for 402 skills.
+    const catalog = read("docs/SKILLS-CATALOG.md");
+    const names = [...catalog.matchAll(/^\| `\/([a-z0-9-]+)`/gm)].map((m) => m[1]);
+    const missing = names.filter((n) => !fs.existsSync(path.join(repoRoot, "skills", n, "SKILL.md")));
+    const repeated = names.filter((n, i) => names.indexOf(n) !== i);
+    expect({ missing, repeated }).toEqual({ missing: [], repeated: [] });
+  });
 });
 
 describe("README profile table", () => {

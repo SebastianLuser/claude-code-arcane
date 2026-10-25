@@ -154,7 +154,7 @@ Needed → Spec Written → Prompt Ready → Generated → Reviewed → Approved
 | Stage | Owner | Action |
 |-------|-------|--------|
 | Needed | /vn-narrative-design | Identified in story outline |
-| Spec Written | /vn-character-design or /vn-asset-spec | Visual spec document |
+| Spec Written | /vn-character-design or /asset-spec | Visual spec document |
 | Prompt Ready | /vn-character-design | ComfyUI prompts written |
 | Generated | /vn-comfyui-gen | Image generated via ComfyUI |
 | Reviewed | User | Visual quality check |

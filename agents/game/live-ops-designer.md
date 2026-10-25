@@ -159,6 +159,5 @@ independently. Present both positions and let the creative-director adjudicate.
 - Work with **narrative-director** for seasonal narrative themes
 - Work with **producer** for content pipeline scheduling and capacity
 - Work with **analytics-engineer** for engagement dashboards and metrics
-- Work with **community-manager** for player communication and feedback
 - Work with **release-manager** for content deployment pipeline
 - Work with **writer** for event descriptions and seasonal lore
