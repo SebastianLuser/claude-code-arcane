@@ -1,7 +1,7 @@
 ---
 name: playwright-pro
-description: "Production-grade Playwright testing toolkit. Generate tests, fix flaky failures, migrate from Cypress/Selenium, sync with TestRail, run on BrowserStack. 55 templates, 3 agents, smart reporting."
-argument-hint: "[browserstack|fix|generate|init|migrate|report|review|testrail] [args]"
+description: "Production-grade Playwright testing toolkit. Generate tests, review them, fix flaky failures, migrate from Cypress/Selenium, report results. 55 templates."
+argument-hint: "[fix|generate|init|migrate|report|review] [args]"
 category: "testing"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
@@ -15,7 +15,7 @@ Production-grade Playwright testing toolkit for AI coding agents.
 
 ## Sub-commands
 
-`/playwright-pro` with no argument shows this overview. With a sub-command as its first argument, read `skills/<sub-command>/SKILL.md` from this skill's directory and follow it, passing the remaining arguments. Sub-commands: `browserstack`, `fix`, `generate`, `init`, `migrate`, `report`, `review`, `testrail`.
+`/playwright-pro` with no argument shows this overview. With a sub-command as its first argument, read `skills/<sub-command>/SKILL.md` from this skill's directory and follow it, passing the remaining arguments. Sub-commands: `fix`, `generate`, `init`, `migrate`, `report`, `review`.
 
 ## Quick Start Workflow
 
@@ -59,28 +59,10 @@ The recommended sequence for most projects:
 
 ## What's Included
 
-- **8 skills** with detailed step-by-step instructions
-- **3 specialized agents**: test-architect, test-debugger, migration-planner
+- **6 sub-commands** with detailed step-by-step instructions
 - **55 test templates**: auth, CRUD, checkout, search, forms, dashboard, settings, onboarding, notifications, API, accessibility
-- **2 MCP servers** (TypeScript): TestRail and BrowserStack integrations
-- **Smart hooks**: auto-validate test quality, auto-detect Playwright projects
 - **6 reference docs**: golden rules, locators, assertions, fixtures, pitfalls, flaky tests
 - **Migration guides**: Cypress and Selenium mapping tables
-
-## Integration Setup
-
-### TestRail (Optional)
-```bash
-export TESTRAIL_URL="https://your-instance.testrail.io"
-export TESTRAIL_USER="your@email.com"
-export TESTRAIL_API_KEY="your-api-key"
-```
-
-### BrowserStack (Optional)
-```bash
-export BROWSERSTACK_USERNAME="your-username"
-export BROWSERSTACK_ACCESS_KEY="your-access-key"
-```
 
 ## Quick Reference
 

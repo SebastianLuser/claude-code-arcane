@@ -17,6 +17,8 @@ Systematically finds weaknesses in any plan before reality does. Not to kill the
 
 Most plans fail for predictable reasons. Not bad luck — bad assumptions. The pre-mortem technique: **imagine it's 12 months from now and this plan failed spectacularly. Now work backwards. Why?**
 
+For the adversarial pass, follow `references/devils-advocate.md` in the parent skill's directory.
+
 ## The Challenge Framework
 
 ### Step 1: Extract Core Assumptions

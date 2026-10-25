@@ -307,7 +307,6 @@ It ships the in-editor skills that operate and extend the MCP (`unreal-mcp`, `cr
 | ClickUp | `/clickup` | `+clickup` |
 | Figma | `/figma`, `/figma-to-code`, `/figma-tokens` | `+design` |
 | Atlassian (Confluence) | `/confluence-expert`, `/atlassian-templates` | `+agile` |
-| TestRail + BrowserStack | `/playwright-pro` (ships its own `.mcp.json`) | `+testing`, `frontend-react-vite`, `backend-nextjs` |
 
 `/jira-tickets` is the exception: it talks to the Jira REST API v3 over `curl`, not MCP.
 
