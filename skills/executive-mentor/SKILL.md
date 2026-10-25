@@ -85,6 +85,7 @@ All output passes the Internal Quality Loop before reaching the founder (see `ag
 - Every finding tagged: verified, medium confidence, or assumed.
 
 ## Resources
+- `references/devils-advocate.md` — The adversarial pass: exactly three concrete concerns, each with a severity
 - `references/hard_things.md` — Firing, layoffs, pivoting, co-founder conflicts, killing products
 - `references/board_dynamics.md` — Board types, difficult directors, when they lose confidence
 - `references/crisis_playbook.md` — Cash crisis, key departure, PR disaster, legal threat

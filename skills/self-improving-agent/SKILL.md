@@ -104,13 +104,3 @@ paths:
 - Mock external services with msw
 - Always test error responses, not just happy paths
 ```
-
-## Agents
-
-- **memory-analyst**: Analyzes MEMORY.md and topic files for recurring entries, stale entries, consolidation opportunities, and gaps between memory and CLAUDE.md.
-- **skill-extractor**: Takes a proven pattern and generates a complete skill with SKILL.md, reference documentation, examples, and edge cases.
-
-## Hooks
-
-### error-capture (PostToolUse -> Bash)
-Monitors command output for errors. When detected, appends structured entry to auto-memory. Zero overhead on success, ~30 tokens on error detection.

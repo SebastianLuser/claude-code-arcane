@@ -60,7 +60,7 @@ Rules for naming:
 
 ### Step 4: Create the skill files
 
-**Spawn the `skill-extractor` agent** for the actual file generation.
+**Start one `general-purpose` subagent** for the actual file generation. Its prompt is `reference/skill-extractor.md` from this skill's directory, verbatim, followed by the pattern and the skill name from the steps above.
 
 The agent creates:
 

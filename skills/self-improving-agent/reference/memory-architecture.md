@@ -101,7 +101,7 @@ When entries conflict:
 ## The Self-Improving Agent's Role
 
 ```
-Auto-memory captures → This plugin curates → CLAUDE.md enforces
+Auto-memory captures → This skill curates → CLAUDE.md enforces
 
 MEMORY.md (raw notes)  →  /self-improving-agent review (analyze)  →  /self-improving-agent promote (graduate)
                                                           ↓

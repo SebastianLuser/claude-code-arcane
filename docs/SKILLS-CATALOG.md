@@ -513,7 +513,7 @@ Instalables con el perfil `unreal-dev`. Procedencia y licencias en `ATTRIBUTION.
 
 | Skill | Descripcion | Uso |
 |-------|-------------|-----|
-| `/playwright-pro` | Production-grade Playwright testing: generate tests, fix flaky failures, migrate from Cypress/Selenium, sync with TestRail | `[generate\|fix\|migrate\|review]` |
+| `/playwright-pro` | Production-grade Playwright testing: generate tests, fix flaky failures, migrate from Cypress/Selenium | `[generate\|fix\|migrate\|review]` |
 | `/tdd-guide` | Test-driven development: writing unit tests, generating fixtures and mocks, analyzing coverage gaps, and red-green-refactor workflows | `[write\|fixture\|coverage\|refactor]` |
 
 ---
