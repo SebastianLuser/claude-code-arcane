@@ -163,7 +163,7 @@ Agent: `technical-director` | Model: Opus | Dominio: Architecture, engine risk, 
 
 ### TD-ARCHITECTURE — Architecture Sign-Off
 
-**Trigger**: Después del master architecture document (`/create-architecture` final phase), y después de major revisions.
+**Trigger**: Después del master architecture document, y después de major revisions.
 
 **Context to pass**:
 - Architecture document path (`docs/architecture/architecture.md`)
@@ -396,7 +396,7 @@ Tier 2 leads usan Sonnet por default.
 
 ### LP-FEASIBILITY — Lead Programmer Implementation Feasibility
 
-**Trigger**: Después del master architecture document (`/create-architecture` Phase 7b), o cuando un architectural pattern nuevo se propone.
+**Trigger**: Después del master architecture document, o cuando un architectural pattern nuevo se propone.
 
 **Context to pass**:
 - Architecture document path
@@ -412,7 +412,7 @@ Tier 2 leads usan Sonnet por default.
 
 ### LP-CODE-REVIEW — Lead Programmer Code Review
 
-**Trigger**: Después de que una dev story se implementa (`/dev-story`, `/story-done`), o como parte de `/quality-review`.
+**Trigger**: Después de que una dev story se implementa (`/story-done`), o como parte de `/quality-review`.
 
 **Context to pass**:
 - Implementation file paths

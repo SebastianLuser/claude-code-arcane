@@ -40,7 +40,7 @@ Ejemplos:
 ```
 /gate-check concept                       → usa modo global
 /gate-check concept --review full         → fuerza full para este run
-/create-architecture --review solo        → skippea todos los gates
+/design-system combat --review solo       → skippea todos los gates
 ```
 
 ### Modos

@@ -128,4 +128,4 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 - Work with **network-programmer** for transport-layer networking
 - Work with **ue-gas-specialist** for ability replication and prediction
 - Work with **gameplay-programmer** for replicated gameplay systems
-- Work with **security-engineer** for network security validation
+- Work with **security-architect** for network security validation

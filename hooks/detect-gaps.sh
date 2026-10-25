@@ -223,7 +223,7 @@ if [ -d "src" ]; then
 fi
 
 echo ""
-echo "Run /project-stage-detect for full analysis"
+echo "Run /what-next for the next step"
 echo "==================================="
 }
 main 2>/dev/null

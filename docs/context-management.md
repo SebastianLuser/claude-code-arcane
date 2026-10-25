@@ -31,7 +31,7 @@ Después de cualquier disrupción (compaction, crash, `/clear`), leé el state f
 
 ## Incremental Writing
 
-Los skills largos (como `/design-system`, `/doc-rfc`, `/create-architecture`) escriben al disco incrementalmente después de cada sección aprobada. Si la sesión se corta, el progreso está guardado.
+Los skills largos (como `/design-system`, `/doc-rfc`, `/architecture-decision`) escriben al disco incrementalmente después de cada sección aprobada. Si la sesión se corta, el progreso está guardado.
 
 **Flujo para documentos multi-sección** (ADRs, PRDs, GDDs, RFCs, specs largos):
 
@@ -125,7 +125,7 @@ Si una sesión muere ("prompt too long") o empezás una nueva para continuar:
 Cuando el status line muestra >= 70%:
 - Skills largos pausan y sugieren nueva sesión
 - Se escribe progreso a disco
-- Se recomienda correr `/resume-work` en nueva sesión
+- En la sesión nueva, `session-start.sh` muestra `.arcane/session-state/active.md` para retomar
 
 ---
 

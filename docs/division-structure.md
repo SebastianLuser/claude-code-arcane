@@ -110,13 +110,7 @@ El repo está organizado en 13 divisiones. Cada división tiene su propia jerarq
 
 ## Cómo Elegir la División
 
-El comando `/start` detecta automáticamente qué división(es) necesitas. Pero si quieres invocar manualmente:
-
-```
-/detect-division "quiero hacer X"
-```
-
-O invocar directamente un agente específico:
+El comando `/start` detecta automáticamente qué división(es) necesitas. También podés invocar directamente un agente específico:
 ```
 Task tool con subagent_type: "<agent-name>"
 ```

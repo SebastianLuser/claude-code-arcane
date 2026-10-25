@@ -47,6 +47,8 @@ agents:
 
 hooks:
   - session-start.sh
+  - detect-unreal.sh
+  - check-update.sh
   - detect-division.sh
   - detect-gaps.sh
   - validate-commit.sh

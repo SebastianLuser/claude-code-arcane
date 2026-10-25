@@ -353,6 +353,26 @@ describe("agent definitions", () => {
     }
     expect([...new Set(dead)]).toEqual([]);
   });
+
+  it("every agent named anywhere in their body exists", () => {
+    // The block check above missed `### Coordinates with:`, "Work with **x**",
+    // "(defer to x)" and `subagent_type: x`: unity-specialist delegated to three
+    // sub-specialists that were never written. A role-shaped name is the signal.
+    const role =
+      /(?<![\w-])([a-z]+(?:-[a-z]+)*-(?:director|lead|engineer|designer|specialist|architect|manager|programmer|artist|writer|analyst|producer|reviewer|screener|tester|officer|advisor|strategist))(?![\w-])/g;
+    const prose = new Set(["sub-specialist"]);
+    const dead: string[] = [];
+    for (const a of agents) {
+      const names = [...a.body.matchAll(role)].map((m) => m[1]);
+      names.push(...[...a.body.matchAll(/subagent_type:\s*"?([a-z0-9-]+)/g)].map((m) => m[1]));
+      for (const ref of new Set(names)) {
+        if (agentNames.has(ref) || skillNames.has(ref) || prose.has(ref)) continue;
+        if (fs.existsSync(path.join(repoRoot, "rules", `${ref}.md`))) continue;
+        dead.push(`${a.file}: ${ref}`);
+      }
+    }
+    expect(dead).toEqual([]);
+  });
 });
 
 describe("skill definitions", () => {

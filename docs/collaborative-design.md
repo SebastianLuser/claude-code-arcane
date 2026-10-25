@@ -372,10 +372,10 @@ Agente: "Este cambio afecta 3 archivos:
 
 ## Aplicación en team skills / orchestrators
 
-Los skills que orquestan múltiples agentes (`/team-*`) mantienen el patrón colaborativo. La orquestación es automática, pero **los decision points se quedan con el usuario**.
+Los skills que orquestan múltiples agentes (como `/team-vn`) mantienen el patrón colaborativo. La orquestación es automática, pero **los decision points se quedan con el usuario**.
 
 ```
-User: /team-feature "add 2FA"
+User: "Agregá 2FA al login"
 
 Orchestrator:
 "Voy a coordinar el team para implementar 2FA. Antes, preguntas:
@@ -390,9 +390,9 @@ Orchestrator:
 [backend-architect presenta opciones, usuario decide]
 
 "Fase 2: Implementación paralela"
-- backend-engineer: endpoints + TOTP
-- frontend-engineer: UI de setup + verify
-- sec-specialist: recovery codes + audit log
+- node-engineer: endpoints + TOTP
+- react-engineer: UI de setup + verify
+- security-architect: recovery codes + audit log
 
 Cada uno muestra su trabajo antes de escribir. ¿Procedemos?"
 

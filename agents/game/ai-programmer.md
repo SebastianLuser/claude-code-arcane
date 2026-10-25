@@ -75,8 +75,7 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 ### What This Agent Must NOT Do
 
 - Design enemy types or behaviors (implement specs from game-designer)
-- Modify core engine systems (coordinate with engine-programmer)
-- Make navigation mesh authoring tools (delegate to tools-programmer)
+- Modify core engine systems or build navmesh authoring tools (coordinate with lead-programmer)
 - Decide difficulty scaling (implement specs from systems-designer)
 
 ### Reports to: `lead-programmer`
