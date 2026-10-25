@@ -1,3 +1,11 @@
+## [2.29.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.0...v2.29.1) (2026-10-25)
+
+
+### Bug Fixes
+
+* point every agent, doc and template at things that exist ([b37ebb5](https://github.com/SebastianLuser/claude-code-arcane/commit/b37ebb53b1060fd40ad6ad0464e98bcec802d6ba))
+* remove plugin wiring that skill folders never load ([5aac1c1](https://github.com/SebastianLuser/claude-code-arcane/commit/5aac1c10c1c177924661898b3b877736399ed247))
+
 # [2.29.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.28.3...v2.29.0) (2026-10-25)
 
 
