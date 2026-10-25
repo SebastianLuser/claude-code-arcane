@@ -4,7 +4,10 @@ Specs for content-humanizer's humanize.py and detect.py, in English and Spanish.
 Run from the repo root: python -m unittest discover -s tests -p "test_*.py"
 """
 
+import os
+import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -74,6 +77,20 @@ class DetectTest(unittest.TestCase):
         results, overall, verdict = detect.run(ES * 3, load_lexicon("es"))
         self.assertNotIn("contractions", results["VOICE"][1])
         self.assertIn(verdict, ("PASS", "REVIEW", "FLAGGED"))
+
+
+class IsolatedModeTest(unittest.TestCase):
+    def test_detect_runs_under_python_isolated_mode(self):
+        # -I drops the script's folder from sys.path; detect.py imports humanize.py from it.
+        with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, encoding="utf-8") as fh:
+            fh.write(EN)
+        script = REPO_ROOT / "skills" / "content-humanizer" / "scripts" / "detect.py"
+        env = dict(os.environ, PYTHONUTF8="1")
+        r = subprocess.run([sys.executable, "-I", str(script), fh.name, "--json"],
+                           capture_output=True, text=True, env=env, cwd=tempfile.gettempdir())
+        os.unlink(fh.name)
+        self.assertNotIn("ModuleNotFoundError", r.stderr)
+        self.assertIn("human_score", r.stdout)
 
 
 if __name__ == "__main__":

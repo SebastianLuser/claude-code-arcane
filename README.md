@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **453 skills, 115 agents, 18 hooks and 36 rules for Claude Code — selective deploy by profile.**
+> **453 skills, 115 agents, 17 hooks and 36 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
@@ -275,7 +275,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 ### Core (always included)
 
-21 universal skills (commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, + 5 arcane self-management), 15 hooks, 3 base rules, 1 agent dir (quality), and security permissions.
+21 universal skills (commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, + 5 arcane self-management), 14 hooks, 3 base rules, 1 agent dir (quality), and security permissions.
 
 ---
 

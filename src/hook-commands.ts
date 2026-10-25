@@ -27,11 +27,13 @@ const LEGACY_COMMAND = /^bash \.claude\/hooks\/([\w.-]+\.sh)$/;
 const ARCANE_COMMAND = /^bash "?(?:\$CLAUDE_PROJECT_DIR\/|[^"]*\/)?\.claude\/hooks\/([\w.-]+\.sh)"?$/;
 
 /**
- * Scripts the guard replaced. Their substring checks fired on text inside arguments
- * (a prompt or a commit message that mentions `git push --force ... main`). The
- * update removes the files, so their settings.json entries must go with them.
+ * Scripts no longer shipped. The guard replaced validate-push and validate-secrets,
+ * whose substring checks fired on text inside arguments (a prompt or a commit
+ * message that mentions `git push --force ... main`); validate-assets was a
+ * placeholder that never checked anything. The update removes the files, so their
+ * settings.json entries must go with them.
  */
-const RETIRED_SCRIPTS = new Set(["validate-push.sh", "validate-secrets.sh"]);
+const RETIRED_SCRIPTS = new Set(["validate-push.sh", "validate-secrets.sh", "validate-assets.sh"]);
 
 /**
  * The command settings.json runs for an installed hook script.
@@ -94,7 +96,7 @@ export function defaultHooks(target: string): HookMap {
     PostToolUse: [
       {
         matcher: "Write|Edit",
-        hooks: [hook(target, "validate-assets.sh", 10), hook(target, "validate-skill-change.sh", 5)],
+        hooks: [hook(target, "validate-skill-change.sh", 5)],
       },
       { matcher: "", hooks: [hook(target, WATCH_POST_TOOL[0], 10, WATCH_POST_TOOL[1])] },
     ],

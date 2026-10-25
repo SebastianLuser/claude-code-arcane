@@ -342,6 +342,24 @@ describe("settings env PYTHONUTF8", () => {
     expect(readSettings(tmpDir).env).toEqual({ MY_VAR: "x", PYTHONUTF8: "1" });
   });
 
+  it("counts an install whose only change was settings.json as updated", async () => {
+    tmpDir = makeTmpDir();
+    installTestingProfile(tmpDir);
+    editSettings(tmpDir, (s) => { delete s.env; });
+    // A different recorded version takes the full path, where no hashed file changes.
+    const manifestFile = path.join(tmpDir, ".claude", "arcane-manifest.json");
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, "utf-8"));
+    manifest.source_version = "0000000000aa";
+    fs.writeFileSync(manifestFile, JSON.stringify(manifest, null, 2));
+
+    const { updateTarget } = await import("../commands/update.js");
+    const result = await updateTarget(tmpDir, { source: "bundled", quiet: true });
+
+    expect(result.status).toBe("updated");
+    expect(result.updated).toBeGreaterThan(0);
+    expect(readSettings(tmpDir).env.PYTHONUTF8).toBe("1");
+  });
+
   it("update keeps a value the user chose", async () => {
     tmpDir = makeTmpDir();
     installTestingProfile(tmpDir);
@@ -351,5 +369,31 @@ describe("settings env PYTHONUTF8", () => {
     await updateTarget(tmpDir, { source: "bundled", quiet: true });
 
     expect(readSettings(tmpDir).env.PYTHONUTF8).toBe("0");
+  });
+});
+
+// CLIs before profile dedup wrote manifests like core+statusline+core+audio.
+describe("updateTarget manifest profiles", () => {
+  let tmpDir: string;
+
+  afterEach(() => {
+    if (tmpDir) fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+  });
+
+  it("drops duplicated profiles, even when the content is already current", async () => {
+    tmpDir = makeTmpDir();
+    installTestingProfile(tmpDir);
+    const file = path.join(tmpDir, ".claude", "arcane-manifest.json");
+    const manifest = JSON.parse(fs.readFileSync(file, "utf-8"));
+    manifest.profiles = ["core", "testing", "core"];
+    manifest.profile_command = "testing+testing";
+    fs.writeFileSync(file, JSON.stringify(manifest, null, 2));
+
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, { source: "bundled", quiet: true });
+
+    const after = JSON.parse(fs.readFileSync(file, "utf-8"));
+    expect(after.profiles).toEqual(["core", "testing"]);
+    expect(after.profile_command).toBe("testing");
   });
 });

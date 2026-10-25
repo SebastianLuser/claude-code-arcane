@@ -38,6 +38,7 @@ Automated outreach has a shape: an invite with no specifics, a message minutes a
 - **LEAD:** answer the actual question in full; if it fits, the offer is one sentence at the end.
 - **ASK:** under ten minutes and specific: do it. "Can I pick your brain": decline in one warm sentence and give the one answer you would have given on the call.
 - **Declines** are short, warm and final. No "let's revisit in Q3" if there is no Q3.
+- **Never invent facts about the user's work.** Stack, numbers, timelines and how something was built come from `01-Perfiles/Perfil Maestro.md` or from the user. When a reply needs one that is missing, write `{{...}}` in its place and ask; a made-up detail in public is worse than a shorter reply.
 
 Run every draft through `/content-humanizer` (`.claude/skills/content-humanizer/scripts/humanize.py`, then `detect.py` from the same folder).
 

@@ -15,7 +15,9 @@ import os
 import sys
 import json
 import argparse
-import requests
+# python -I (3.11+) leaves the script's folder off sys.path; the sibling module lives there.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _http import get_bytes, post_json
 
 API_KEY = os.getenv("MINIMAX_API_KEY")
 # China Mainland: https://api.minimaxi.com/v1
@@ -57,14 +59,7 @@ def generate_image(
     if seed is not None:
         payload["seed"] = seed
 
-    resp = requests.post(
-        f"{API_BASE}/image_generation",
-        headers=_headers(),
-        json=payload,
-        timeout=120,
-    )
-    resp.raise_for_status()
-    data = resp.json()
+    data = post_json(f"{API_BASE}/image_generation", _headers(), payload, timeout=120)
 
     base_resp = data.get("base_resp", {})
     if base_resp.get("status_code", 0) != 0:
@@ -75,11 +70,10 @@ def generate_image(
 
 def download_and_save(url: str, output_path: str):
     """Download image from URL and save."""
-    resp = requests.get(url, timeout=60)
-    resp.raise_for_status()
+    content = get_bytes(url, timeout=60)
     with open(output_path, "wb") as f:
-        f.write(resp.content)
-    return len(resp.content)
+        f.write(content)
+    return len(content)
 
 
 def main():

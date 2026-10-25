@@ -8,9 +8,9 @@ export MINIMAX_API_KEY="<paste-your-key-here>"
 
 ## 2. Install dependencies
 
-```bash
-pip install requests
+The scripts use only the Python standard library.
 
+```bash
 # FFmpeg (optional, for audio post-processing)
 # macOS:
 brew install ffmpeg

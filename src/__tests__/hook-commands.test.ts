@@ -126,10 +126,13 @@ describe("healHooks", () => {
         { matcher: "Bash", hooks: [{ type: "command", command: 'bash "$CLAUDE_PROJECT_DIR/.claude/hooks/validate-push.sh"' }] },
         { matcher: "Bash", hooks: [{ type: "command", command: "bash .claude/hooks/validate-secrets.sh" }] },
       ],
+      PostToolUse: [
+        { matcher: "Write|Edit", hooks: [{ type: "command", command: 'bash "$CLAUDE_PROJECT_DIR/.claude/hooks/validate-assets.sh"' }] },
+      ],
     };
     const changes = healHooks(hooks, PROJECT);
-    expect(commands(hooks).some((c) => /validate-(push|secrets)/.test(c))).toBe(false);
-    expect(changes).toEqual(expect.arrayContaining(["retired hook: validate-push.sh", "retired hook: validate-secrets.sh"]));
+    expect(commands(hooks).some((c) => /validate-(push|secrets|assets)/.test(c))).toBe(false);
+    expect(changes).toEqual(expect.arrayContaining(["retired hook: validate-push.sh", "retired hook: validate-secrets.sh", "retired hook: validate-assets.sh"]));
     expect(hooks.PreToolUse.every((g) => g.hooks.length > 0)).toBe(true);
   });
 
