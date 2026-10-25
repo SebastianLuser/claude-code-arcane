@@ -1,7 +1,7 @@
 ---
 name: linkedin-post
-description: "Write a LinkedIn post from one raw idea, in the user's own voice: three hook options from 21 formulas, one full draft, humanized and scored before the user sees it, never published. Triggers: post de LinkedIn, escribir un post, hook LinkedIn, turn this into a LinkedIn post, draft for the feed."
-argument-hint: "<idea> | write <day from the plan>"
+description: "Write a LinkedIn post from one raw idea or a topic to explain (games, software, LLMs), in the user's own voice: three hook options from 21 formulas, one full draft with technical claims checked against primary sources, humanized and scored before the user sees it, never published. Triggers: post de LinkedIn, escribir un post, hook LinkedIn, post explicando un tema, post educativo, turn this into a LinkedIn post, draft for the feed."
+argument-hint: "<idea> | explain <topic> | write <day from the plan>"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
@@ -16,6 +16,20 @@ Turns one idea into a post that sounds like the person who will publish it. The 
 1. Read the **Voice** section of `01-Perfiles/Perfil Maestro.md` in the career workspace (`/master-profile`). No voice yet: ask for three of the user's own past posts, infer it from them and offer to save it there. Never invent a voice.
 2. Read `01-Perfiles/Personal Brand.md` if `/personal-brand` wrote a plan: the slot gives the type, the angle and the hook number.
 3. A thin idea ("post about AI") gets one batched question, not padding: what happened, to whom, and what did it cost or return. A post needs one specific true thing.
+4. A topic to explain rather than something that happened ("explain the KV cache", "why physics goes in FixedUpdate") goes through **Explain mode** below before Phase 2.
+
+## Explain mode
+
+For a post that teaches one concept from games, software or LLMs. The specific true thing is the example, not an anecdote.
+
+1. **One concept, one reader.** Narrow the topic until it fits 1,300 characters ("how LLMs work" → "why the model forgets the start of a long chat"). Name the reader from the Voice section (devs who never used it, or people outside the field); unclear → ask.
+2. **Check every technical claim before drafting** against the primary source: official docs, the spec, the source code or the paper. A version-dependent fact names the version (Unity 6, UE 5.6, the model name). A claim no source backs gets cut or asked about, never written from memory. Training data goes stale fastest on exactly these topics.
+3. **Build it around one concrete example:** a number, a code fragment of three lines or fewer, or a moment in a game or tool the reader knows. An analogy comes after the precise statement, never instead of it.
+4. **Shape:** the hook, the mechanism in plain words, the example, what the reader can do with it today, the close. Myth Bust (#11), The Comparison (#12), Curiosity Gap (#19) and The Direct Value (#21) fit teaching best.
+5. **The user's own use beats theory.** One line on where they used it ("we hit this in our VR build") does more than a paragraph of background, and it comes from `01-Perfiles/Perfil Maestro.md` or the user, never invented.
+6. **Four or more steps or parts** are a carousel, not a post: hand over to `/linkedin-carousel`.
+
+The receipt adds a `sources:` line with what each claim was checked against. The links go in the first comment, and each one is the primary page (the docs, arXiv, the repo), never a mirror or a summary site.
 
 ## Phase 2: Hooks
 
@@ -62,6 +76,7 @@ POST READY
 hook:      #17 Time Anchor
 length:    1,140 characters
 humanizer: 6 artefacts stripped, human score 84 PASS
+sources:   (explain mode) Unity Manual "Time and frame rate management"
 post at:   Tuesday 8:15 (from the plan)
 link:      goes in the first comment
 
@@ -79,4 +94,5 @@ On "yes", ask "May I append it to `01-Perfiles/LinkedIn Log.md`?" and log the da
 
 - `/linkedin-reply` once comments arrive (the first hour matters most).
 - `/linkedin-comment` for the engagement round before posting.
+- `/linkedin-carousel` for a topic with steps.
 - `/personal-brand` to plan the next week.
