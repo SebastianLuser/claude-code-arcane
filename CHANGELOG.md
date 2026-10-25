@@ -1,3 +1,10 @@
+## [2.28.3](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.28.2...v2.28.3) (2026-10-25)
+
+
+### Bug Fixes
+
+* clear the pending cleanups from the quality pass ([36fdf2e](https://github.com/SebastianLuser/claude-code-arcane/commit/36fdf2e1f9f2b4c6c63652875ffd23bad5b27f5e))
+
 ## [2.28.2](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.28.1...v2.28.2) (2026-10-24)
 
 
