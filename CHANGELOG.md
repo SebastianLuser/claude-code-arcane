@@ -1,3 +1,10 @@
+# [2.29.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.28.3...v2.29.0) (2026-10-25)
+
+
+### Features
+
+* **linkedin:** explain mode for linkedin-post and a linkedin-carousel skill ([d9a6110](https://github.com/SebastianLuser/claude-code-arcane/commit/d9a611065e39f3295e3c894c9d354f587bd8cbec))
+
 ## [2.28.3](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.28.2...v2.28.3) (2026-10-25)
 
 
