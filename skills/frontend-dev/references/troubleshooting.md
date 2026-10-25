@@ -35,12 +35,6 @@ sudo apt install ffmpeg
 ffmpeg -version
 ```
 
-### Missing Python packages
-
-```bash
-pip install requests
-```
-
 ## API errors
 
 ### Authentication (401)

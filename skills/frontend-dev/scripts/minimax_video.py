@@ -16,7 +16,9 @@ import sys
 import json
 import time
 import argparse
-import requests
+# python -I (3.11+) leaves the script's folder off sys.path; the sibling module lives there.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _http import get_bytes, get_json, post_json
 
 API_KEY = os.getenv("MINIMAX_API_KEY")
 # China Mainland: https://api.minimaxi.com/v1
@@ -59,14 +61,7 @@ def create_task(
         "prompt_optimizer": prompt_optimizer,
     }
 
-    resp = requests.post(
-        f"{API_BASE}/video_generation",
-        headers=_headers(),
-        json=payload,
-        timeout=30,
-    )
-    resp.raise_for_status()
-    data = resp.json()
+    data = post_json(f"{API_BASE}/video_generation", _headers(), payload, timeout=30)
     _check_resp(data)
 
     task_id = data.get("task_id")
@@ -79,14 +74,7 @@ def poll_task(task_id: str, interval: int = 10, max_wait: int = 600) -> str:
     """Poll task status until Success. Returns file_id."""
     elapsed = 0
     while elapsed < max_wait:
-        resp = requests.get(
-            f"{API_BASE}/query/video_generation",
-            headers=_headers(),
-            params={"task_id": task_id},
-            timeout=30,
-        )
-        resp.raise_for_status()
-        data = resp.json()
+        data = get_json(f"{API_BASE}/query/video_generation", _headers(), {"task_id": task_id}, timeout=30)
         _check_resp(data)
 
         status = data.get("status", "")
@@ -109,14 +97,7 @@ def poll_task(task_id: str, interval: int = 10, max_wait: int = 600) -> str:
 
 def download_video(file_id: str, output_path: str):
     """Retrieve download URL via file_id and save the video."""
-    resp = requests.get(
-        f"{API_BASE}/files/retrieve",
-        headers=_headers(),
-        params={"file_id": file_id},
-        timeout=30,
-    )
-    resp.raise_for_status()
-    data = resp.json()
+    data = get_json(f"{API_BASE}/files/retrieve", _headers(), {"file_id": file_id}, timeout=30)
     _check_resp(data)
 
     download_url = data.get("file", {}).get("download_url", "")
@@ -124,14 +105,13 @@ def download_video(file_id: str, output_path: str):
         raise SystemExit(f"No download_url in response: {json.dumps(data, indent=2)}")
 
     print(f"  Downloading from {download_url[:80]}...")
-    video_resp = requests.get(download_url, timeout=300)
-    video_resp.raise_for_status()
+    content = get_bytes(download_url, timeout=300)
 
     os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
     with open(output_path, "wb") as f:
-        f.write(video_resp.content)
+        f.write(content)
 
-    print(f"OK: {len(video_resp.content)} bytes -> {output_path}")
+    print(f"OK: {len(content)} bytes -> {output_path}")
 
 
 def generate(

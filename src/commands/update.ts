@@ -185,6 +185,15 @@ export async function updateTarget(
     return { target, status: "no-manifest", updated: 0, skipped: 0, removed: 0 };
   }
 
+  // Manifests written by older CLIs could list a profile twice (core+statusline+core+audio).
+  const profiles = [...new Set(manifest.profiles)];
+  const profileCommand = [...new Set(manifest.profile_command.split("+"))].join("+");
+  if (profiles.length !== manifest.profiles.length || profileCommand !== manifest.profile_command) {
+    manifest.profiles = profiles;
+    manifest.profile_command = profileCommand;
+    if (!opts.dryRun) updateManifestFields(target, { profiles, profile_command: profileCommand });
+  }
+
   // The whole run reads one source. Resolving per target cost a GitHub API request each,
   // so updating 13 installations spent 13 of the 60 an unauthenticated hour allows - and a
   // dry-run followed by the real thing spent 26. The limit is not the bug; asking 13 times
@@ -322,12 +331,15 @@ export async function updateTarget(
           : chalk.green("\nNo changes to apply."),
       );
     }
+    // Settings and unhashed files may still have changed here: the summary has to count
+    // them, or a run that edited settings.json reports the install as unchanged.
+    const refreshed = opts.dryRun ? "dry-run" : "updated";
     return {
       target,
-      status: "no-changes",
+      status: unhashed.length > 0 ? refreshed : "no-changes",
       fromVersion: installedVersion,
       toVersion: currentVersion,
-      updated: 0,
+      updated: unhashed.length,
       skipped: skipped.length,
       removed: 0,
     };

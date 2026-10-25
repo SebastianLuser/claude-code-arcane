@@ -34,6 +34,8 @@ import statistics
 import sys
 import unicodedata
 
+# python -I (3.11+) leaves the script's folder off sys.path; the sibling module lives there.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from humanize import LANGS, detect_lang, load_lexicon, term_pattern
 
 SENT_RE = re.compile(r"[^.!?\n]+[.!?]*")

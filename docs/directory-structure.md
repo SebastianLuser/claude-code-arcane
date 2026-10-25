@@ -125,7 +125,7 @@ Los eventos los define `src/installer.ts` al generar `settings.json`, no los pro
 | SessionStart | `session-start.sh` → `detect-division.sh` → `detect-unreal.sh` → `detect-gaps.sh` → `check-update.sh` |
 | PreToolUse (`Bash\|PowerShell`) | `guard.sh` → `validate-commit.sh` |
 | PreToolUse (`Write\|Edit\|MultiEdit\|NotebookEdit`) | `guard.sh` |
-| PostToolUse (`Write\|Edit`) | `validate-assets.sh`, `validate-skill-change.sh` |
+| PostToolUse (`Write\|Edit`) | `validate-skill-change.sh` |
 | PostToolUse (todas) | `run-py.sh session_watch.py post-tool` (ediciones, loops, alcance, aviso de compactación) |
 | Notification | `notify.sh` |
 | PreCompact / PostCompact | `pre-compact.sh` / `post-compact.sh` |

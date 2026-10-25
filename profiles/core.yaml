@@ -51,7 +51,6 @@ hooks:
   - detect-gaps.sh
   - validate-commit.sh
   - guard.sh
-  - validate-assets.sh
   - validate-skill-change.sh
   - notify.sh
   - pre-compact.sh

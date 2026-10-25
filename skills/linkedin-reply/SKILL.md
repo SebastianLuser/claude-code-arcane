@@ -36,6 +36,7 @@ Write in that order and stop when the value stops.
 - **A critic:** concede the true part first, in their words, then hold the line on the rest. Never delete, never get defensive, never reply twice in the same thread.
 - **A lead:** answer fully in public; the open door is one sentence at the end, an offer of help, not a pitch. For a recruiter, a reply in public and the details in a DM is fine.
 - **A pitch in the comments:** ignore it. Replying gives it reach.
+- **Never invent facts about the user's work.** Stack, numbers, timelines and how something was built come from `01-Perfiles/Perfil Maestro.md` or from the user. When a reply needs one that is missing, write `{{...}}` in its place and ask; a made-up detail in public is worse than a shorter reply.
 
 Run every reply through `/content-humanizer` (`.claude/skills/content-humanizer/scripts/humanize.py`, then `detect.py` from the same folder).
 

@@ -35,7 +35,7 @@ The installer writes these into `settings.json` (`src/hook-commands.ts`); `core.
 | | `session-stop.sh` | Logs the stop |
 | `PreCompact`, `PostCompact`, `Notification`, `SubagentStart`, `SubagentStop` | `pre-compact.sh`, `post-compact.sh`, `notify.sh`, `log-agent*.sh` | Log only, to `.claude/session-state/` |
 
-`validate-assets.sh` is wired but is still a placeholder that checks nothing. Python hooks run through `run-py.sh`, which finds a Python that actually starts; with none, they do nothing instead of failing.
+Python hooks run through `run-py.sh`, which finds a Python that actually starts; with none, they do nothing instead of failing.
 
 ## Roles
 
