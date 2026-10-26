@@ -25,7 +25,7 @@ El lenguaje lo dicta **el contexto de ejecución**, no la preferencia. Hay cuatr
 | Contexto | Lenguaje | Por qué | Garantía en CI |
 |---|---|---|---|
 | Installer (`src/`) | **TypeScript** | Es el paquete npm publicado: el único código con build (`tsup`) y typechecker | `npm run build`, `tsc --noEmit`, `vitest` |
-| Hooks de lifecycle (`hooks/`, `skills/*/hooks/`) | **Bash** | Claude Code los invoca por path, sin intérprete de por medio | `bash -n` sobre todos |
+| Hooks de lifecycle (`hooks/`, `skills/*/hooks/`) | **Bash**; la lógica que no entra en Bash, en **JavaScript `.mjs`** detrás de un wrapper `.sh` | Claude Code los invoca por path. Node está garantizado porque Arcane se instala con npx; Python no, y sin él el guard no hacía nada | `bash -n` y `node --check` sobre todos; specs en `src/__tests__/hook-*.test.ts` |
 | Scripts de skill (`skills/*/scripts/`) | **Python 3, solo stdlib** | Se copian al proyecto del usuario y corren ahí: sin build, sin `package.json`, sin `node_modules` | Specs en `tests/` (ver Testing) |
 | Templates (`*/templates/`) | **El del proyecto destino** | Son contenido que se emite al proyecto del usuario; el repo nunca los ejecuta | N/A |
 

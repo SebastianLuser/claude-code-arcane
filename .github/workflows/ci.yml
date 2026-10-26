@@ -53,6 +53,8 @@ jobs:
             echo "Checking $f..."
             bash -n "$f"
           done
+      - name: Syntax check the Node hooks
+        run: for f in hooks/*.mjs; do node --check "$f"; done
 
   # Skill scripts are Python stdlib-only (docs/coding-standards.md), so they are
   # tested here rather than in the Node matrix. compileall is a syntax gate over

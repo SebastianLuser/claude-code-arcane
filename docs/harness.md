@@ -26,16 +26,16 @@ The installer writes these into `settings.json` (`src/hook-commands.ts`); `core.
 | `SessionStart` (startup, resume, clear, compact) | `session-start.sh` | Shows branch, recent commits and the first lines of `.arcane/session-state/active.md`; moves a legacy progress file |
 | | `detect-division.sh`, `detect-unreal.sh`, `detect-gaps.sh` | Name the project's stack, flag an Unreal project, point out missing docs |
 | | `check-update.sh` | Says when a newer Arcane exists (cached for 4 hours) |
-| `PreToolUse` (`Bash\|PowerShell`, file tools) | `guard.sh` → `guard.py` | **deny** what the user should run by hand (force push, `--no-verify`, `sudo`, writing `.env`); **ask** before destructive or supply-chain actions (`rm -rf` outside build output, dropping data, a new dependency, editing CI or lint configs) |
+| `PreToolUse` (`Bash\|PowerShell`, file tools) | `guard.sh` → `guard.mjs` | **deny** what the user should run by hand (force push, `--no-verify`, `sudo`, writing `.env`); **ask** before destructive or supply-chain actions (`rm -rf` outside build output, dropping data, a new dependency, editing CI or lint configs) |
 | | `validate-commit.sh` | Blocks `--no-verify` and empty commit messages |
-| `PostToolUse` | `session_watch.py post-tool` | Records edited files; warns on a tool loop (same call 5 times), on scope drift (15 files) and at 70% / 85% of the context window |
+| `PostToolUse` | `session-watch.sh post-tool` | Records edited files; warns on a tool loop (same call 5 times), on scope drift (15 files) and at 70% / 85% of the context window |
 | | `validate-skill-change.sh` | Warns when an edited `SKILL.md` looks like it lost its frontmatter |
-| `Stop` | `session_watch.py stop` | Formats and type-checks the files edited this turn with the project's own tools; new errors block the stop once |
+| `Stop` | `session-watch.sh stop` | Formats and type-checks the files edited this turn with the project's own tools; new errors block the stop once |
 | | `worktree-stop.sh` | A finished task inside an `EnterWorktree` worktree is asked to leave it before stopping |
 | | `session-stop.sh` | Logs the stop |
 | `PreCompact`, `PostCompact`, `Notification`, `SubagentStart`, `SubagentStop` | `pre-compact.sh`, `post-compact.sh`, `notify.sh`, `log-agent*.sh` | Log only, to `.claude/session-state/` |
 
-Python hooks run through `run-py.sh`, which finds a Python that actually starts; with none, they do nothing instead of failing.
+The guard and the session watch are Node scripts (`guard.mjs`, `session-watch.mjs`) behind bash wrappers. Arcane is installed with npx, so Node is on the machine; without it they do nothing instead of failing.
 
 ## Roles
 
@@ -55,11 +55,11 @@ The maker-checker split is the core of it: whoever did the work does not grade i
 1. **Session start.** `session-start.sh` prints the state, including an open `active.md`, so a new session or a compaction resumes from the file, not from memory.
 2. **Work mode.** For non-trivial work the maker asks once: Plan + Goal, Action Plan, Goal-driven or Directo (`rules/implementation-workflow.md`).
 3. **Goal and progress file.** In Plan + Goal and Goal-driven, the goal and its criteria go into `.arcane/session-state/active.md`, updated at every checkpoint.
-4. **Before writing code.** Search the codebase, then the standard library, then installed dependencies; a new dependency is the last option, and `guard.py` asks before adding one.
-5. **Every tool call.** `guard.py` screens shell commands and file writes; `session_watch.py` watches for loops, scope drift and context use.
+4. **Before writing code.** Search the codebase, then the standard library, then installed dependencies; a new dependency is the last option, and the guard asks before adding one.
+5. **Every tool call.** the guard screens shell commands and file writes; the session watch watches for loops, scope drift and context use.
 6. **Evidence.** `rules/verification.md`: no "it works" without a command run in this session; domain rules say what counts as evidence (a `curl`, a migration up and down, Playwright screenshots at four widths).
 7. **Goal review.** When the goal looks met, a fresh reviewer runs the checks and answers `PASS` or `FAIL`. The user sees the verdict first. Two `FAIL`s in a row go back to the user.
-8. **Stop.** `session_watch.py stop` formats and type-checks what changed; `worktree-stop.sh` gets the session out of a finished worktree.
+8. **Stop.** The session watch formats and type-checks what changed; `worktree-stop.sh` gets the session out of a finished worktree.
 9. **Long sessions.** At 70% of the window the maker updates `active.md` and suggests `/compact` at a logical point; after the compaction, step 1 runs again.
 
 ## State on disk
@@ -79,16 +79,16 @@ Both session-state folders carry a `.gitignore` with `*`, so they never land in 
 |---|---|
 | Ship or drop a skill, rule or agent for a stack | The profile in `profiles/` (and its bridge file if it was renamed) |
 | Change how the model works everywhere | A universal rule in `rules/` (listed in `core.yaml`) |
-| Block or ask before a command | `hooks/guard.py`, with a spec in `tests/hooks/test_guard.py` |
-| Change what the session watch warns about | The constants at the top of `hooks/session_watch.py` |
+| Block or ask before a command | `hooks/guard.mjs`, with a spec in `src/__tests__/hook-guard.test.ts` |
+| Change what the session watch warns about | The constants at the top of `hooks/session-watch.mjs` |
 | Change how answers look | `output-styles/arcane.md` |
 | Add a hook to an event | The script in `hooks/`, its wiring in `src/hook-commands.ts`, and `core.yaml` |
-| Check an installed project | `arcane doctor`: hook scripts and paths, bash and Python, installed content, broad or destructive allow rules, secrets in config |
+| Check an installed project | `arcane doctor`: hook scripts and paths, bash, installed content, broad or destructive allow rules, secrets in config |
 
 ## Limits
 
 - **The guard is not a sandbox.** It catches mistakes in commands it can parse; a script or an interpreter one-liner can still do anything.
-- **Hooks need bash, and the Python hooks need Python.** Without Python, the guard and the session watch do nothing; `arcane doctor` reports it.
+- **Hooks need bash, and the guard and the session watch need Node.** Without Node they do nothing.
 - **The context warnings need the status line**, which reports the real window size; without it there is no warning, rather than a wrong one.
 - **Subagents cannot start subagents**, so the goal reviewer and the document reviewers are always started by the main session.
 - **Rules are followed, not enforced.** The work mode, the search order and the verification rule rely on the model; the goal review is what catches the misses.

@@ -61,9 +61,15 @@ function hook(target: string, script: string, timeout: number, args = ""): HookE
   return { type: "command", command: hookCommand(target, script, args), timeout };
 }
 
-/** session_watch.py runs through run-py.sh, which finds a working Python. */
-const WATCH_POST_TOOL = ["run-py.sh", "session_watch.py post-tool"] as const;
-const WATCH_STOP = ["run-py.sh", "session_watch.py stop"] as const;
+/** session-watch.sh runs session-watch.mjs with Node. */
+const WATCH_POST_TOOL = ["session-watch.sh", "post-tool"] as const;
+const WATCH_STOP = ["session-watch.sh", "stop"] as const;
+
+/**
+ * How installs before the Node hooks ran the session watch: Python, through run-py.sh, which
+ * did nothing on a machine without a working Python. Rewritten in place.
+ */
+const PYTHON_WATCH = /run-py\.sh"?\s+session_watch\.py\s+(post-tool|stop)\s*$/;
 
 /** The hooks a fresh install wires into settings.json. */
 export function defaultHooks(target: string): HookMap {
@@ -123,6 +129,7 @@ export function defaultHooks(target: string): HookMap {
  * hooks the user added or edited survive:
  *   - a command still in the exact legacy relative form moves to `hookCommand()`;
  *   - entries for retired scripts are dropped, and groups left empty with them;
+ *   - the Python session watch moves to the Node one;
  *   - the guard is added where it is missing, ahead of the other Bash hooks, and the
  *     group that runs it also matches PowerShell, which skipped every check before;
  *   - the worktree exit check and the session watch are added where missing.
@@ -154,6 +161,18 @@ export function healHooks(hooks: HookMap, target: string): string[] {
         if (legacy) {
           entry.command = hookCommand(target, legacy[1]);
           changes.push(`hook path: ${legacy[1]}`);
+        }
+      }
+    }
+  }
+
+  for (const groups of Object.values(hooks)) {
+    for (const group of groups ?? []) {
+      for (const entry of group.hooks ?? []) {
+        const watch = typeof entry.command === "string" && entry.command.match(PYTHON_WATCH);
+        if (watch) {
+          entry.command = hookCommand(target, "session-watch.sh", watch[1]);
+          changes.push(`session watch on Node: ${watch[1]}`);
         }
       }
     }

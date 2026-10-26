@@ -19,6 +19,7 @@ npx tsc --noEmit                  # typecheck (job aparte en CI)
 npm run test:skills               # specs Python de scripts de skill (tests/)
 python -m compileall -q skills    # gate de sintaxis sobre todo script shippeado
 for f in hooks/*.sh skills/*/hooks/*.sh; do bash -n "$f"; done   # lint de hooks
+for f in hooks/*.mjs; do node --check "$f"; done                 # lint de los hooks en Node
 ```
 
 Probar el CLI a mano **siempre aislado**:
@@ -68,7 +69,7 @@ Estos son los que cuesta descubrir a mano — todos viven en `src/__tests__/`:
 
 TypeScript (CLI installer) + Markdown (skills, agents, rules, docs) + Bash (hooks) + Python (skill scripts/helpers). QA: `skills-selftest/`. Skills: `skills/`. Profiles: `profiles/*.yaml`.
 
-El lenguaje lo dicta el contexto de ejecución: **TS solo en `src/`** (tiene build y typecheck), **Bash en hooks**, **Python stdlib-only en `skills/*/scripts/`** (se copian al proyecto del usuario y corren sin build). Otro lenguaje solo si una dependencia obligatoria lo impone, justificado en el SKILL.md. Detalle y casos vigentes: `docs/coding-standards.md`.
+El lenguaje lo dicta el contexto de ejecución: **TS solo en `src/`** (tiene build y typecheck), **Bash en hooks** (y `.mjs` sin build para la lógica que no entra en Bash), **Python stdlib-only en `skills/*/scripts/`** (se copian al proyecto del usuario y corren sin build). Otro lenguaje solo si una dependencia obligatoria lo impone, justificado en el SKILL.md. Detalle y casos vigentes: `docs/coding-standards.md`.
 
 ## Reglas
 

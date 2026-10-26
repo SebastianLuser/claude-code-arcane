@@ -64,10 +64,13 @@ describe("defaultHooks", () => {
 
   it("names only scripts that ship in hooks/", () => {
     for (const command of commands(defaultHooks(PROJECT))) {
-      const [, script, args] = command.match(/hooks\/([\w.-]+)"(.*)$/)!;
+      const [, script] = command.match(/hooks\/([\w.-]+)"/)!;
       expect(fs.existsSync(path.join(REPO_ROOT, "hooks", script)), script).toBe(true);
-      const pyScript = args.trim().split(" ")[0];
-      if (pyScript) expect(fs.existsSync(path.join(REPO_ROOT, "hooks", pyScript)), pyScript).toBe(true);
+      // A wrapper that only starts Node needs the script it starts.
+      const node = script.replace(/\.sh$/, ".mjs");
+      if (fs.readFileSync(path.join(REPO_ROOT, "hooks", script), "utf-8").includes(node)) {
+        expect(fs.existsSync(path.join(REPO_ROOT, "hooks", node)), node).toBe(true);
+      }
     }
   });
 });
@@ -110,8 +113,30 @@ describe("healHooks", () => {
     const hooks = legacyHooks();
     const changes = healHooks(hooks, PROJECT);
     expect(changes).toEqual(expect.arrayContaining(["session watch", "format and type check on stop"]));
-    expect(commands(hooks)).toContain('bash "$CLAUDE_PROJECT_DIR/.claude/hooks/run-py.sh" session_watch.py stop');
+    expect(commands(hooks)).toContain('bash "$CLAUDE_PROJECT_DIR/.claude/hooks/session-watch.sh" stop');
     expect(healHooks(hooks, PROJECT)).toEqual([]);
+  });
+
+  it("moves the Python session watch to the Node one instead of adding a second", () => {
+    // Installs before the Node hooks ran it through run-py.sh, which did nothing without Python.
+    const hooks = legacyHooks();
+    const python = (mode: string) => ({
+      type: "command",
+      command: `bash "$CLAUDE_PROJECT_DIR/.claude/hooks/run-py.sh" session_watch.py ${mode}`,
+      timeout: 10,
+    });
+    hooks.PostToolUse = [{ matcher: "", hooks: [python("post-tool")] }];
+    hooks.Stop = [{ matcher: "", hooks: [python("stop")] }];
+
+    const changes = healHooks(hooks, PROJECT);
+
+    expect(changes).toEqual(expect.arrayContaining(["session watch on Node: post-tool", "session watch on Node: stop"]));
+    expect(changes).not.toContain("session watch");
+    expect(commands(hooks).filter((c) => c.includes("session-watch.sh"))).toEqual([
+      'bash "$CLAUDE_PROJECT_DIR/.claude/hooks/session-watch.sh" post-tool',
+      'bash "$CLAUDE_PROJECT_DIR/.claude/hooks/session-watch.sh" stop',
+    ]);
+    expect(commands(hooks).some((c) => c.includes("run-py"))).toBe(false);
   });
 
   it("adds the worktree exit check to Stop", () => {
@@ -168,13 +193,13 @@ describe("an install and its update", () => {
     return JSON.parse(fs.readFileSync(path.join(target, ".claude", "settings.json"), "utf-8"));
   }
 
-  it("ships guard.py next to guard.sh", () => {
+  it("ships the Node scripts next to their wrappers", () => {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "arcane-hooks-test-"));
     logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
     new Installer(mergeProfiles(PROFILES_DIR, ["testing"]), { target: tmpDir, dryRun: false, force: false }).run(
       "testing",
     );
-    for (const file of ["guard.sh", "guard.py"]) {
+    for (const file of ["guard.sh", "guard.mjs", "session-watch.sh", "session-watch.mjs"]) {
       expect(fs.existsSync(path.join(tmpDir, ".claude", "hooks", file)), file).toBe(true);
     }
     expect(JSON.stringify(settingsOf(tmpDir).hooks)).toContain("$CLAUDE_PROJECT_DIR");
