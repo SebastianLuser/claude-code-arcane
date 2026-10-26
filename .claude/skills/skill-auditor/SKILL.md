@@ -68,7 +68,6 @@ Scan the body for required elements:
 
 - **Sections**: At least 2 phase headings (`## Phase`, `## Step`, `## Workflow`, or `###` subsections)
 - **Verdict keywords**: For review/analysis skills: APPROVED, PASS, FAIL, NEEDS REVISION (or equivalent)
-- **Collaborative protocol**: For file-modifying skills (Write/Edit in allowed-tools): must contain "May I write" or equivalent approval gate
 - **Next-step handoff**: Last section should guide what to do after the skill completes
 
 ### 1.4 Detect hallucinations

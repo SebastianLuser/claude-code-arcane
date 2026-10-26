@@ -7,17 +7,17 @@ user-invocable: false
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 
-# /si:promote — Graduate Learnings to Rules
+# /self-improving-agent promote — Graduate Learnings to Rules
 
 Moves a proven pattern from Claude's auto-memory into the project's rule system, where it becomes an enforced instruction rather than a background note.
 
 ## Usage
 
 ```
-/si:promote <pattern description>                    # Auto-detect best target
-/si:promote <pattern> --target claude.md             # Promote to CLAUDE.md
-/si:promote <pattern> --target rules/testing.md      # Promote to scoped rule
-/si:promote <pattern> --target rules/api.md --paths "src/api/**/*.ts"  # Scoped with paths
+/self-improving-agent promote <pattern description>                    # Auto-detect best target
+/self-improving-agent promote <pattern> --target claude.md             # Promote to CLAUDE.md
+/self-improving-agent promote <pattern> --target rules/testing.md      # Promote to scoped rule
+/self-improving-agent promote <pattern> --target rules/api.md --paths "src/api/**/*.ts"  # Scoped with paths
 ```
 
 ## Workflow

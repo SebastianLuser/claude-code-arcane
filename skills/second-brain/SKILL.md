@@ -155,7 +155,7 @@ Y si el vault se comparte con otras personas: **un escritor por nota**. Ningún 
 
 ## Hook de validación (opcional)
 
-El profile trae un `PostToolUse` que revisa cada nota escrita en el vault: frontmatter presente, `created` y `type` declarados, y al menos un `[[wikilink]]` salvo en los dumps. Avisa por stderr y **nunca bloquea la escritura**.
+El skill trae un `PostToolUse` que revisa cada nota escrita en el vault: frontmatter presente, `created` y `type` declarados, y al menos un `[[wikilink]]` salvo en los dumps. Avisa por stderr y **nunca bloquea la escritura**.
 
 Sirve para lo que los skills no cubren: las notas que escribís a mano o desde otra sesión. Para activarlo, agregar a `.claude/settings.json` **del vault** el contenido de `.claude/skills/second-brain/hooks/hooks.json`:
 

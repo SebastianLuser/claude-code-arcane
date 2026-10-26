@@ -41,6 +41,7 @@ production/review-mode.txt
 production/division.txt
 .claude/cache/
 .claude/sessions/
+.claude/settings.local.json
 
 # Unity
 Library/

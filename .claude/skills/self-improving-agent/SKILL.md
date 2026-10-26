@@ -1,7 +1,7 @@
 ---
 name: self-improving-agent
 description: "Curate Claude Code's auto-memory into durable project knowledge. Analyze MEMORY.md for patterns, promote proven learnings to CLAUDE.md and .claude/rules/, extract recurring solutions into reusable skills."
-argument-hint: ""
+argument-hint: "[extract|promote|remember|review|status] [args]"
 category: "arcane"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
@@ -11,15 +11,19 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 
 Claude Code's auto-memory (v2.1.32+) automatically records project patterns, debugging insights, and your preferences in `MEMORY.md`. This skill adds the intelligence layer: it analyzes what Claude has learned, promotes proven patterns into project rules, and extracts recurring solutions into reusable skills. May write or edit CLAUDE.md, .claude/rules/ files, and new skill files during promotion and extraction.
 
+## Sub-commands
+
+`/self-improving-agent` with no argument shows this overview. With a sub-command as its first argument, read `skills/<sub-command>/SKILL.md` from this skill's directory and follow it, passing the remaining arguments. Sub-commands: `extract`, `promote`, `remember`, `review`, `status`.
+
 ## Quick Reference
 
 | Command | What it does |
 |---------|-------------|
-| `/si:review` | Analyze MEMORY.md -- find promotion candidates, stale entries, consolidation opportunities |
-| `/si:promote` | Graduate a pattern from MEMORY.md to CLAUDE.md or `.claude/rules/` |
-| `/si:extract` | Turn a proven pattern into a standalone skill |
-| `/si:status` | Memory health dashboard -- line counts, topic files, recommendations |
-| `/si:remember` | Explicitly save important knowledge to auto-memory |
+| `/self-improving-agent review` | Analyze MEMORY.md -- find promotion candidates, stale entries, consolidation opportunities |
+| `/self-improving-agent promote` | Graduate a pattern from MEMORY.md to CLAUDE.md or `.claude/rules/` |
+| `/self-improving-agent extract` | Turn a proven pattern into a standalone skill |
+| `/self-improving-agent status` | Memory health dashboard -- line counts, topic files, recommendations |
+| `/self-improving-agent remember` | Explicitly save important knowledge to auto-memory |
 
 ## How It Fits Together
 
@@ -33,9 +37,9 @@ Claude Code's auto-memory (v2.1.32+) automatically records project patterns, deb
 │  standards  │   + topic files  │   + continuity         │
 │  Full load  │   First 200 lines│   Contextual load      │
 ├─────────────┴──────────────────┴────────────────────────┤
-│              /si:promote          /si:review             │
+│              /self-improving-agent promote          /self-improving-agent review             │
 │         Self-Improving Agent (this skill)                │
-│              /si:extract      /si:remember              │
+│              /self-improving-agent extract      /self-improving-agent remember              │
 ├─────────────────────────────────────────────────────────┤
 │  .claude/rules/    │    New Skills    │   Error Logs     │
 │  (scoped rules)    │    (extracted)   │   (auto-captured)│
@@ -48,18 +52,18 @@ Claude Code's auto-memory (v2.1.32+) automatically records project patterns, deb
 
 | File | Who writes | Scope | Loaded |
 |------|-----------|-------|--------|
-| `./CLAUDE.md` | You (+ `/si:promote`) | Project rules | Full file, every session |
+| `./CLAUDE.md` | You (+ `/self-improving-agent promote`) | Project rules | Full file, every session |
 | `~/.claude/CLAUDE.md` | You | Global preferences | Full file, every session |
 | `~/.claude/projects/<path>/memory/MEMORY.md` | Claude (auto) | Project learnings | First 200 lines |
 | `~/.claude/projects/<path>/memory/*.md` | Claude (overflow) | Topic-specific notes | On demand |
-| `.claude/rules/*.md` | You (+ `/si:promote`) | Scoped rules | When matching files open |
+| `.claude/rules/*.md` | You (+ `/self-improving-agent promote`) | Scoped rules | When matching files open |
 
 ### The promotion lifecycle
 
 ```
 1. Claude discovers pattern -> auto-memory (MEMORY.md)
-2. Pattern recurs 2-3x -> /si:review flags it as promotion candidate
-3. You approve -> /si:promote graduates it to CLAUDE.md or rules/
+2. Pattern recurs 2-3x -> /self-improving-agent review flags it as promotion candidate
+3. You approve -> /self-improving-agent promote graduates it to CLAUDE.md or rules/
 4. Pattern becomes an enforced rule, not just a note
 5. MEMORY.md entry removed -> frees space for new learnings
 ```
@@ -100,13 +104,3 @@ paths:
 - Mock external services with msw
 - Always test error responses, not just happy paths
 ```
-
-## Agents
-
-- **memory-analyst**: Analyzes MEMORY.md and topic files for recurring entries, stale entries, consolidation opportunities, and gaps between memory and CLAUDE.md.
-- **skill-extractor**: Takes a proven pattern and generates a complete skill with SKILL.md, reference documentation, examples, and edge cases.
-
-## Hooks
-
-### error-capture (PostToolUse -> Bash)
-Monitors command output for errors. When detected, appends structured entry to auto-memory. Zero overhead on success, ~30 tokens on error detection.

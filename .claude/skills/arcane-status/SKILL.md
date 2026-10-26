@@ -27,7 +27,7 @@ Show what profiles, skills, rules, and agents are installed in the current proje
 
 ```
 === Arcane Status ===
-Profiles:  backend-ts + agile + testing
+Profiles:  backend-typescript + agile + testing
 Installed: 2026-05-01T12:00:00Z
 Source:    /path/to/Claude-Code-Arcane
 

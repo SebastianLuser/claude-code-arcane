@@ -41,3 +41,25 @@ describe("skill folders", () => {
     expect(found).toEqual([]);
   });
 });
+
+describe("this repo's own .claude/skills", () => {
+  // A hand-kept copy that drifted: 11 of its 19 skills were older than skills/,
+  // self-improving-agent still with the plugin parts removed from the real one.
+  it("mirrors skills/ exactly", () => {
+    const own = path.join(skillsDir, "..", ".claude", "skills");
+    const files = (dir: string) =>
+      walk(dir)
+        .filter((f) => fs.statSync(f).isFile())
+        .map((f) => path.relative(dir, f))
+        .sort();
+    const drifted = fs.readdirSync(own).filter((s) => {
+      if (!fs.existsSync(path.join(skillsDir, s))) return true;
+      const mine = files(path.join(own, s));
+      return (
+        mine.join() !== files(path.join(skillsDir, s)).join() ||
+        mine.some((f) => !fs.readFileSync(path.join(own, s, f)).equals(fs.readFileSync(path.join(skillsDir, s, f))))
+      );
+    });
+    expect(drifted).toEqual([]);
+  });
+});

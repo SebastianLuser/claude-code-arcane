@@ -17,7 +17,7 @@ Read skill name from first arg. Verify `skills/[name]/SKILL.md` exists. If missi
 
 ## Phase 2: Baseline Test
 
-Run `/skill-test static [name]`. Record FAILs, WARNs, which checks failed (1-7).
+Run `/skill-test static [name]`. Record FAILs, WARNs, which checks failed (1-6).
 
 ### Phase 2b: Category Baseline
 
@@ -30,12 +30,11 @@ Read full skill file. For each failing/warning check, identify exact gap:
 | Check | Gap if failing |
 |-------|---------------|
 | 1 | Missing frontmatter field |
-| 2 | Fewer phases than minimum |
-| 3 | No verdict keywords in body |
-| 4 | Write/Edit in tools but no ask-before-write language |
-| 5 (warn) | No follow-up/next-step section |
-| 6 (warn) | `context: fork` with <5 phases |
-| 7 (warn) | argument-hint empty or mismatched with modes |
+| 2 | Over 40 lines with fewer than two `##` sections |
+| 3 | A value from the catalog's `verdict:` list missing from the skill |
+| 4 (warn) | No follow-up/next-step section |
+| 5 (warn) | `context: fork` with <5 phases |
+| 6 (warn) | argument-hint mismatched with modes |
 
 For category checks: identify text gaps (e.g., G2: missing director prompts, A2: no per-section May-I-write, T3: BLOCKED not surfaced). Show full diagnosis before proposing changes.
 

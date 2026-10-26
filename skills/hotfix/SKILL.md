@@ -45,7 +45,9 @@ Every agent that ran must APPROVE before proceeding. If none is installed, do th
 
 ## Phase 5b: QA Re-Entry Gate
 
-Spawn `qa-director` (or `qa-engineer` if that is what is installed) with hotfix description, affected system, regression results, caller list (grep).
+Spawn `qa-director` (or `qa-engineer` if that is what is installed) with hotfix description, affected system, regression results, caller list (grep). If neither is installed, pick the verdict yourself from the regression results and say so in the hotfix record.
+
+Skills below that ship with other profiles may not be installed: check `.claude/skills/<name>/` first, and if it is missing offer `/arcane-add <name>` instead of running it.
 
 | QA Verdict | Action |
 |------------|--------|
@@ -64,7 +66,7 @@ Update original bug file: fixed in (branch/commit), date, status "Fixed — Pend
 - Rollback plan documented before deployment
 - Merge to both release AND dev branches
 - Post-incident review within 48h
-- If fix needs >4h → escalate to `technical-director`
+- If fix needs >4h → escalate to the technical lead (`technical-director` if installed)
 
 ## Phase 7: Post-Deploy Verification
 

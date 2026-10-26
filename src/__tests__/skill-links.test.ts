@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseProfile } from "../profiles.js";
 
 /**
  * A skill that links to a reference file the model then cannot open loses that
@@ -38,5 +39,22 @@ describe("relative links in skills", () => {
       }
     }
     expect(broken).toEqual([]);
+  });
+});
+
+describe("core skills", () => {
+  // Core goes into every project, job-hunt included, yet hotfix sent it to
+  // /qa-plan and /bug-report and start to /scaffold-go: skills another profile ships.
+  it("name another profile's skill only behind an install check", () => {
+    const core = parseProfile(path.join(repoRoot, "profiles", "core.yaml")).skills;
+    const all = new Set(fs.readdirSync(SKILLS));
+    const unguarded = core.filter((skill) => {
+      const named = walk(path.join(SKILLS, skill)).flatMap((f) =>
+        [...fs.readFileSync(f, "utf-8").matchAll(/(?<![\w/.-])\/([a-z][a-z0-9-]+)/g)].map((m) => m[1]),
+      );
+      const foreign = named.some((n) => all.has(n) && !core.includes(n));
+      return foreign && !fs.readFileSync(path.join(SKILLS, skill, "SKILL.md"), "utf-8").includes("/arcane-add");
+    });
+    expect(unguarded).toEqual([]);
   });
 });
