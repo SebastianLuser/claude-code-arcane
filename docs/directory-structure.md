@@ -126,14 +126,14 @@ Los eventos los define `src/installer.ts` al generar `settings.json`, no los pro
 | PreToolUse (`Bash\|PowerShell`) | `guard.sh` → `validate-commit.sh` |
 | PreToolUse (`Write\|Edit\|MultiEdit\|NotebookEdit`) | `guard.sh` |
 | PostToolUse (`Write\|Edit`) | `validate-skill-change.sh` |
-| PostToolUse (todas) | `run-py.sh session_watch.py post-tool` (ediciones, loops, alcance, aviso de compactación) |
+| PostToolUse (todas) | `session-watch.sh post-tool` (ediciones, loops, alcance, aviso de compactación) |
 | Notification | `notify.sh` |
 | PreCompact / PostCompact | `pre-compact.sh` / `post-compact.sh` |
-| Stop | `session-stop.sh`, `worktree-stop.sh`, `run-py.sh session_watch.py stop` (format + type check de lo editado) |
+| Stop | `session-stop.sh`, `worktree-stop.sh`, `session-watch.sh stop` (format + type check de lo editado) |
 | SubagentStart / SubagentStop | `log-agent.sh` / `log-agent-stop.sh` |
 
 Cada comando es `bash "$CLAUDE_PROJECT_DIR/.claude/hooks/<script>"`: dentro de un worktree los hooks corren parados en el worktree, que puede no tener `.claude/hooks/` commiteado, y la variable siempre apunta al proyecto donde arrancó la sesión. `arcane update` migra las instalaciones que tenían la ruta relativa.
 
-`guard.sh` corre `guard.py` (Python stdlib) sobre los comandos de Bash y de la herramienta PowerShell de Windows (con sus formas propias: `Remove-Item -Recurse`, `Set-Content .env`): deniega lo que el usuario ejecuta a mano (force push, `--no-verify`, `sudo`, escribir `.env`), pregunta antes de lo destructivo (`rm -rf` fuera de carpetas regenerables, borrar datos, una dependencia nueva) y al editar CI, infra, migraciones existentes, manifests o configs de lint. Sin Python no hace nada y quedan solo los permisos estáticos.
+`guard.sh` corre `guard.mjs` con Node sobre los comandos de Bash y de la herramienta PowerShell de Windows (con sus formas propias: `Remove-Item -Recurse`, `Set-Content .env`): deniega lo que el usuario ejecuta a mano (force push, `--no-verify`, `sudo`, escribir `.env`), pregunta antes de lo destructivo (`rm -rf` fuera de carpetas regenerables, borrar datos, una dependencia nueva) y al editar CI, infra, migraciones existentes, manifests o configs de lint. Sin Node no hace nada y quedan solo los permisos estáticos; Arcane se instala con npx, así que Node está.
 
 La statusline (`statusline.sh`) se configura aparte, solo con el profile `statusline`.

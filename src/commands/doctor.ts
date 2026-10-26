@@ -21,8 +21,6 @@ export interface Probes {
   findBash(): string | null;
   /** Syntax-checks a script; returns the error, or null when it parses. */
   checkSyntax(bash: string, file: string): string | null;
-  /** The first Python that actually starts, as run-py.sh picks it, or null. */
-  findPython(): string | null;
 }
 
 /**
@@ -67,13 +65,6 @@ export const defaultProbes: Probes = {
     const result = spawnSync(bash, ["-n", file.replace(/\\/g, "/")], { encoding: "utf-8" });
     if (result.error) return result.error.message;
     return result.status === 0 ? null : (result.stderr || "syntax error").trim();
-  },
-  findPython() {
-    for (const py of ["python3", "python", "py"]) {
-      const result = spawnSync(py, ["--version"], { encoding: "utf-8" });
-      if (!result.error && result.status === 0) return py;
-    }
-    return null;
   },
 };
 
@@ -124,8 +115,10 @@ function commandsOf(settings: Record<string, unknown>): string[] {
 /** The files under `.claude/` a command runs, relative to `.claude/`. */
 function scriptsOf(command: string): string[] {
   const scripts = [...command.matchAll(/\.claude\/((?:hooks\/)?[\w.-]+\.(?:sh|py))/g)].map((m) => m[1]);
-  const python = command.match(/run-py\.sh"?\s+([\w.-]+\.py)/);
-  if (python) scripts.push(`hooks/${python[1]}`);
+  // These wrappers only start Node; the logic lives in the .mjs beside them.
+  for (const wrapper of ["guard", "session-watch"]) {
+    if (scripts.includes(`hooks/${wrapper}.sh`)) scripts.push(`hooks/${wrapper}.mjs`);
+  }
   return scripts;
 }
 
@@ -202,18 +195,6 @@ function checkHooks(claudeDir: string, settings: Record<string, unknown>, probes
       : { name: "hook syntax", verdict: "ok", detail: `bash parses every script (${bash})` },
   );
   return checks;
-}
-
-function checkPython(probes: Probes): DoctorCheck {
-  const python = probes.findPython();
-  return python
-    ? { name: "python", verdict: "ok", detail: `${python} starts` }
-    : {
-        name: "python",
-        verdict: "warn",
-        detail: "no working Python: the guard and the session watch do nothing",
-        fix: "Install Python 3.9+ and make sure `python --version` works in Git Bash.",
-      };
 }
 
 function checkContent(claudeDir: string, manifest: ArcaneManifest, cli: string): DoctorCheck {
@@ -331,7 +312,7 @@ export function diagnose(target: string, probes: Probes = defaultProbes): Doctor
   const { check, settings } = checkSettings(claudeDir, cli);
   checks.push(check);
   if (settings) checks.push(...checkHooks(claudeDir, settings, probes, cli));
-  checks.push(checkPython(probes), checkContent(claudeDir, manifest, cli));
+  checks.push(checkContent(claudeDir, manifest, cli));
   if (settings) checks.push(checkPermissions(claudeDir, settings, cli));
   checks.push(checkSecrets(target, claudeDir));
   return checks;

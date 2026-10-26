@@ -75,7 +75,7 @@ if isinstance(cw, dict) and cw:
             pct = float(up)
         except Exception:
             pct = None
-    # Hooks never see the window size; session_watch.py reads it from here to warn
+    # Hooks never see the window size; session-watch.mjs reads it from here to warn
     # before a compaction at a share of the real window instead of a guessed one.
     project_dir = (data.get("workspace") or {}).get("project_dir") or data.get("cwd") or ""
     if pct is not None and project_dir and os.path.isdir(os.path.join(project_dir, ".claude")):
