@@ -28,7 +28,7 @@ Read all before asking anything:
 4. Glob `design/ux/*.md` → note existing specs, entry/exit points
 5. `design/ux/interaction-patterns.md` → pattern catalog index
 6. `design/art/art-bible.md` → visual direction
-7. `design/accessibility-requirements.md` → accessibility tier
+7. `design/accessibility-requirements.md` → accessibility tier (missing → offer to create it from `.claude/docs/templates/accessibility-requirements.md`)
 8. `.claude/docs/technical-preferences.md` → Input & Platform section
 
 Present context summary, then ask: "Anything else before we start?"
@@ -38,7 +38,7 @@ If output file exists → read it, show section status table (Complete/Empty/Pla
 
 ## Skeleton Creation
 
-Create output file with `[To be designed]` placeholders for all sections. Update `.arcane/session-state/active.md`.
+Create output file with `[To be designed]` placeholders for all sections, starting from the full skeleton for the mode: `.claude/docs/templates/ux-spec.md` (screen/flow), `.claude/skills/_templates/hud-design.md` (hud), `.claude/docs/templates/interaction-pattern-library.md` (patterns). Update `.arcane/session-state/active.md`.
 
 > → Read references/spec-sections.md for [section inventories for UX spec, HUD, pattern library, and key section guidance]
 

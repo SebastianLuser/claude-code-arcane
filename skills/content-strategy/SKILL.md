@@ -46,7 +46,7 @@ Gather this context (ask if not provided):
 
 ## Output Format
 
-When creating a content strategy, provide:
+A calendar goes in [assets/content-calendar-template.md](assets/content-calendar-template.md). When creating a content strategy, provide:
 
 ### 1. Content Pillars
 - 3-5 pillars with rationale

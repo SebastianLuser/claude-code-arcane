@@ -55,6 +55,16 @@ Comprehensive toolkit for designing, architecting, and evaluating multi-agent sy
 - **Output Filtering:** Content moderation, consistency validation, audit logging
 - **Human-in-the-Loop:** Approval workflows, escalation triggers, override mechanisms
 
+## Tools
+
+Each script reads a JSON file and writes its report to `-o <name>`:
+
+| Script | Input (sample) | Output (sample) |
+|---|---|---|
+| `python agent_planner.py requirements.json -o arch` | `assets/sample_system_requirements.json` | `expected_outputs/sample_agent_architecture.json` |
+| `python tool_schema_generator.py tools.json -o tools --validate` | `assets/sample_tool_descriptions.json` | `expected_outputs/sample_tool_schemas.json` |
+| `python agent_evaluator.py logs.json -o eval --detailed` | `assets/sample_execution_logs.json` | `expected_outputs/sample_evaluation_report.json` |
+
 ## Reference Documentation
 
 > See references/agent_architecture_patterns.md for detailed pattern catalog with scaling considerations and failure handling.

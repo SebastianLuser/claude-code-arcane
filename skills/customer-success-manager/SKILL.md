@@ -88,6 +88,7 @@ All scripts accept a JSON file as positional input argument. See `assets/sample_
 | `assets/qbr_template.md` | Quarterly Business Review presentation structure |
 | `assets/success_plan_template.md` | Customer success plan with goals and milestones |
 | `assets/onboarding_checklist_template.md` | 90-day onboarding checklist with phase gates |
+| `assets/executive_business_review_template.md` | Executive business review for the sponsor, above the QBR |
 
 ## Limitations
 

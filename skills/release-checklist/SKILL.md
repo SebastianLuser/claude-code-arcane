@@ -23,6 +23,8 @@ Count TODO/FIXME/HACK comments with locations and severity. Check test results i
 
 ## Phase 4: Generate Checklist
 
+Build it on `.claude/docs/templates/release-checklist-template.md`, keeping only the platforms that ship.
+
 ### Sections (all platforms)
 
 **Codebase Health:** TODO/FIXME/HACK counts (list top blockers).

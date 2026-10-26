@@ -34,6 +34,8 @@ Full severity criteria, escalation paths, and decision trees: `references/incide
 
 ### Step 2: Establish Command
 
+Open the incident record from [assets/incident_report_template.md](assets/incident_report_template.md) and keep it current through Step 5.
+
 **IC Responsibilities:**
 1. Own the response process and make resource allocation decisions
 2. Provide regular stakeholder updates and manage external comms
@@ -73,6 +75,8 @@ Applies RCA frameworks (5 Whys, Fishbone, Timeline, Bow Tie) and generates actio
 ---
 
 ## Tools
+
+Each input format has a sample in `assets/`: `simple_incident.json` and `sample_incident_classification.json` for the classifier, `simple_timeline_events.json` and `sample_timeline_events.json` for the timeline, `sample_incident_pir_data.json` for the PIR, and `sample_incident_data.json` with every field an incident record can carry.
 
 ### incident_classifier.py
 Severity classification from incident descriptions. Outputs severity level, recommended response teams, initial actions, and communication templates.
@@ -131,3 +135,4 @@ python scripts/pir_generator.py --incident incident.json --rca-method fishbone -
 | `references/rca_frameworks_guide.md` | 5 Whys, Fishbone, Timeline, Bow Tie methodology |
 | `references/incident-response-framework.md` | IC role details, runbook generation, integration points |
 | `references/sla-management-guide.md` | SLA tracking and management during incidents |
+| `references/reference-information.md` | PIR timeline and ownership, escalation paths, status page updates, action item templates |

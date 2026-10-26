@@ -499,3 +499,16 @@ class EcosystemAnalyzer:
             'tutorials': self.community_data.get('tutorials_count', 0),
             'forum_members': f"{self.community_data.get('forum_members', 0):,}"
         }
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(description="Analyze ecosystem health metrics")
+    parser.add_argument("input", help="JSON file with the input data")
+    args = parser.parse_args()
+    with open(args.input, encoding="utf-8") as f:
+        data = json.load(f)
+    data = data.get("ecosystem", data)
+    print(json.dumps(EcosystemAnalyzer(data).generate_ecosystem_report(), indent=2, default=str))

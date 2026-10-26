@@ -76,7 +76,7 @@ Select template from `references/prd_templates.md`:
 
 ### RICE Prioritizer
 
-RICE framework implementation with portfolio analysis, configurable weights, and multiple output formats.
+RICE framework implementation with portfolio analysis, configurable weights, and multiple output formats. Input columns: [assets/rice_input_template.csv](assets/rice_input_template.csv).
 
 ```bash
 python scripts/rice_prioritizer.py sample                          # Create sample data

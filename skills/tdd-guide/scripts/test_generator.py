@@ -436,3 +436,20 @@ import static org.junit.jupiter.api.Assertions.*;
             if keyword_lower in test_lower:
                 return True
         return False
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(description="Generate test stubs from requirements")
+    parser.add_argument("--input", required=True,
+                        help="JSON with requirements: user_stories, acceptance_criteria, api_specs")
+    parser.add_argument("--framework", choices=[f.value for f in TestFramework], default="pytest")
+    parser.add_argument("--module", default="module", help="name of the module under test")
+    args = parser.parse_args()
+    with open(args.input, encoding="utf-8") as f:
+        data = json.load(f)
+    generator = TestGenerator(TestFramework(args.framework), data.get("language", "python"))
+    cases = generator.generate_from_requirements(data.get("requirements", data))
+    print(generator.generate_test_file(args.module, cases))

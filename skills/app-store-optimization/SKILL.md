@@ -66,6 +66,8 @@ See: [references/keyword-research-guide.md](references/keyword-research-guide.md
 
 ## Metadata Optimization Workflow
 
+Auditing an existing listing first: fill [assets/aso-audit-template.md](assets/aso-audit-template.md) section by section.
+
 Optimize title (`[Brand] - [Primary Keyword] [Secondary]`), subtitle/short description, keyword field (iOS), and full description (hook, features, social proof, CTA).
 
 > See [references/metadata-optimization.md](references/metadata-optimization.md) for the 8-step workflow, platform character limits, and description structure template.
