@@ -6,6 +6,7 @@ import { createHash } from "node:crypto";
 import { mergeProfiles } from "../profiles.js";
 import { Installer } from "../installer.js";
 import { getPackageRoot } from "../utils.js";
+import { referencedDocs } from "../content-hash.js";
 import type { ArcaneManifest } from "../types.js";
 
 /**
@@ -16,15 +17,17 @@ import type { ArcaneManifest } from "../types.js";
  */
 
 const REPO_ROOT = getPackageRoot();
+// bug-triage reads it, and agile ships bug-triage.
 const DOC = "coding-standards.md";
+const PROFILE = "agile";
 
 function sha256(text: string): string {
   return createHash("sha256").update(text).digest("hex");
 }
 
 function install(tmpDir: string): void {
-  const merged = mergeProfiles(path.join(REPO_ROOT, "profiles"), ["testing"]);
-  new Installer(merged, { target: tmpDir, dryRun: false, force: false }).run("testing");
+  const merged = mergeProfiles(path.join(REPO_ROOT, "profiles"), [PROFILE]);
+  new Installer(merged, { target: tmpDir, dryRun: false, force: false }).run(PROFILE);
 }
 
 function manifestPath(tmpDir: string): string {
@@ -82,6 +85,33 @@ describe("update manages .claude/docs/", () => {
 
   it("records the installed docs in the manifest", () => {
     expect(readManifest(tmpDir).content_hashes?.docs?.[DOC]).toBe(sha256(shipped()));
+  });
+
+  it("installs only the docs something installed reads", () => {
+    const merged = mergeProfiles(path.join(REPO_ROOT, "profiles"), [PROFILE]);
+    const expected = referencedDocs(
+      REPO_ROOT,
+      merged.skills,
+      [...merged.rules.universal, ...merged.rules.gamedev],
+      merged.agents,
+    );
+    expect(Object.keys(readManifest(tmpDir).content_hashes!.docs!).sort()).toEqual(expected);
+    expect(fs.existsSync(docPath(tmpDir, "USER-GUIDE.md"))).toBe(false);
+  });
+
+  it("moves a doc an older version copied and nothing reads to the trash", async () => {
+    // Before, docs/ was copied whole: USER-GUIDE.md sits in every install, recorded.
+    const guide = fs.readFileSync(path.join(REPO_ROOT, "docs", "USER-GUIDE.md"), "utf-8");
+    writeDoc(tmpDir, "USER-GUIDE.md", guide);
+    const manifest = readManifest(tmpDir);
+    manifest.content_hashes!.docs!["USER-GUIDE.md"] = sha256(guide);
+    writeManifest(tmpDir, manifest);
+    stampOldVersion(tmpDir);
+
+    await update(tmpDir);
+
+    expect(fs.existsSync(docPath(tmpDir, "USER-GUIDE.md"))).toBe(false);
+    expect(fs.existsSync(trashPath(tmpDir, "USER-GUIDE.md"))).toBe(true);
   });
 
   it("updates a doc Arcane installed and the user never edited", async () => {

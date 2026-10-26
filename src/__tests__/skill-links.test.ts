@@ -58,3 +58,19 @@ describe("core skills", () => {
     expect(unguarded).toEqual([]);
   });
 });
+
+describe(".claude/docs references", () => {
+  // what-next read .claude/docs/workflow-catalog.yaml, a file this repo never had.
+  it("every one names a file under docs/", () => {
+    const shipped = ["skills", "agents", "rules", "output-styles", "docs"].flatMap((d) =>
+      walk(path.join(repoRoot, d)),
+    );
+    const missing = shipped.flatMap((f) =>
+      [...fs.readFileSync(f, "utf-8").matchAll(/\.claude\/docs\/([\w./-]+\.(?:md|ya?ml|json))/g)]
+        .map((m) => m[1])
+        .filter((doc) => !fs.existsSync(path.join(repoRoot, "docs", doc)))
+        .map((doc) => `${path.relative(repoRoot, f).replace(/\\/g, "/")} -> ${doc}`),
+    );
+    expect(missing).toEqual([]);
+  });
+});

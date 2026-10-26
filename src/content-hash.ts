@@ -206,9 +206,55 @@ export function computeSourceHashes(
     }
   }
 
-  // The installer copies docs/ wholesale, so every file in it is part of an install.
-  const docsDir = path.join(packageRoot, "docs");
-  if (fs.existsSync(docsDir)) hashes.docs = hashDirectory(docsDir);
+  for (const doc of referencedDocs(packageRoot, skills, rules, agents)) {
+    hashes.docs[doc] = hashFile(path.join(packageRoot, "docs", doc));
+  }
 
   return hashes;
+}
+
+const DOC_REF = /\.claude\/docs\/([\w./-]+\.(?:md|ya?ml|json))/g;
+const TEXT_FILE = /\.(md|sh|py|json|ya?ml|txt)$/;
+
+function textFiles(p: string): string[] {
+  if (!fs.existsSync(p)) return [];
+  if (!fs.statSync(p).isDirectory()) return [p];
+  return Object.keys(hashDirectory(p)).map((rel) => path.join(p, rel));
+}
+
+/**
+ * The files under docs/ an install ships, relative to docs/: those its skills,
+ * agents, rules, hooks or output styles name as `.claude/docs/<path>`, and what
+ * those docs name in turn. Copying docs/ wholesale put ~30 files nothing reads
+ * into every project, a job-hunt one included.
+ */
+export function referencedDocs(
+  packageRoot: string,
+  skills: string[],
+  rules: string[],
+  agents: string[],
+): string[] {
+  const sources = [
+    ...skills.map((s) => path.join(packageRoot, "skills", s)),
+    ...rules.flatMap((r) => {
+      const name = r.endsWith(".md") ? r : `${r}.md`;
+      return [path.join(packageRoot, "rules", name), path.join(packageRoot, "rules", "gamedev", name)];
+    }),
+    ...agents.flatMap((a) => [path.join(packageRoot, "agents", a), path.join(packageRoot, "agents", `${a}.md`)]),
+    path.join(packageRoot, "hooks"),
+    path.join(packageRoot, "output-styles"),
+  ];
+  const docsDir = path.join(packageRoot, "docs");
+  const found = new Set<string>();
+  const queue = sources.flatMap(textFiles);
+  while (queue.length > 0) {
+    const file = queue.pop()!;
+    if (!TEXT_FILE.test(file)) continue;
+    for (const [, doc] of fs.readFileSync(file, "utf-8").matchAll(DOC_REF)) {
+      if (found.has(doc) || !fs.existsSync(path.join(docsDir, doc))) continue;
+      found.add(doc);
+      queue.push(path.join(docsDir, doc));
+    }
+  }
+  return [...found].sort();
 }
