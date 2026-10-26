@@ -1,5 +1,7 @@
 # Review Mode Gates
 
+A gate runs only when its agent is installed in `.claude/agents/`. Otherwise skip it and note it as skipped, the same as `lean` mode.
+
 ## Phase 4 Gates (Pillars)
 
 - `solo` / `lean` → skip CD-PILLARS and AD-CONCEPT-VISUAL, note skipped

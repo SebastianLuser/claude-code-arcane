@@ -33,6 +33,8 @@ AskUserQuestion multi-tab:
 
 ## Paso 4: Route to division
 
+Varios de estos skills vienen con otros profiles y pueden no estar instalados: antes de recomendar uno, fijate que exista `.claude/skills/<nombre>/`, y si falta ofrecé `/arcane-add <nombre>` en vez de correrlo.
+
 | Tipo | Rol | División | Skills clave |
 |------|-----|----------|-------------|
 | Juego | Dev | Game Dev | `/brainstorm`, `/scaffold-unity` (Unity) o `/ue-project-context` (Unreal), `/design-system` |

@@ -85,6 +85,8 @@ AskUserQuestion for write approval → if "revise" → iterate until approved �
 
 ## Next Steps
 
+The pipeline's skills that ship with other profiles may not be installed: check `.claude/skills/<name>/` first, and if it is missing offer `/arcane-add <name>` instead of running it.
+
 > → Read references/next-steps-pipeline.md for the full 11-step pipeline after concept creation
 
 ## Context Window

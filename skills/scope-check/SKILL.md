@@ -57,7 +57,7 @@ Assign a canonical verdict based on net scope change (<=10% PASS, 10-25% CONCERN
 
 ## Phase 5: Next Steps
 
-After presenting the report, offer concrete follow-up:
+After presenting the report, offer concrete follow-up. Skills named here that ship with other profiles may not be installed: check `.claude/skills/<name>/` first, and if it is missing offer `/arcane-add <name>` instead of running it.
 
 - **PASS** -> no action required. Suggest re-running before next milestone.
 - **CONCERNS** -> offer to identify the 2-3 additions with best cut ratio. Reference `/sprint-plan update` to formally re-scope.

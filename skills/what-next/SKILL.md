@@ -57,6 +57,8 @@ If `active.md` shows active task → surface prominently, suggest continuing or 
 
 ## Step 7: Present Output
 
+Skills you suggest that ship with other profiles may not be installed: check `.claude/skills/<name>/` first, and if it is missing offer `/arcane-add <name>` instead of running it.
+
 Short and direct. Format: phase label, in-progress work, done steps (✓), next required step (→, only one), optional steps (~), coming up after. Commands as backtick code. MANUAL steps → ask user. Gate approach → mention `/gate-check`.
 
 ## Step 8: Gate Warning

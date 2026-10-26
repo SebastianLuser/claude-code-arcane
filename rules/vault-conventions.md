@@ -131,7 +131,7 @@ Una convención que solo vive en un documento se muere en tres meses. Lo que la 
 
 | Convención | Qué la hace cumplir |
 |---|---|
-| Frontmatter completo, notas con al menos un link | El hook `PostToolUse` de `second-brain`, al escribir |
+| Frontmatter completo, notas con al menos un link | El hook `PostToolUse` de `second-brain`, al escribir, si lo activaste en el `setup` (es opt-in) |
 | Huérfanas, links roto, nombres duplicados, semillas que no crecen | `/vault-audit`, cada vez que se corre |
 | Contradicciones sin resolver | `status: contested`, que el audit lista y el monthly mira |
 | Rutas por rol | El `## Rutas` del contrato, que los skills leen antes de escribir |

@@ -66,7 +66,7 @@ A complete reference for how Claude Code's memory systems work together.
 - Saves what was discussed and decided in specific sessions
 - "What did we do yesterday?" context
 - Loaded contextually (relevant past sessions, not all)
-- Use `/remember` to turn session memory into permanent project knowledge
+- Use `/self-improving-agent remember` to turn session memory into permanent project knowledge
 
 ### 4. Rules Directory (You → Claude, scoped)
 
@@ -101,9 +101,9 @@ When entries conflict:
 ## The Self-Improving Agent's Role
 
 ```
-Auto-memory captures → This plugin curates → CLAUDE.md enforces
+Auto-memory captures → This skill curates → CLAUDE.md enforces
 
-MEMORY.md (raw notes)  →  /si:review (analyze)  →  /si:promote (graduate)
+MEMORY.md (raw notes)  →  /self-improving-agent review (analyze)  →  /self-improving-agent promote (graduate)
                                                           ↓
                                                     CLAUDE.md or
                                                     .claude/rules/
@@ -128,4 +128,4 @@ MEMORY.md (raw notes)  →  /si:review (analyze)  →  /si:promote (graduate)
 3. **Don't duplicate** — if it's in CLAUDE.md, remove it from MEMORY.md
 4. **Scope rules** — use `.claude/rules/` with paths for file-type-specific patterns
 5. **Review quarterly** — memory files go stale after refactors
-6. **Use /si:status** — monitor capacity before it becomes a problem
+6. **Use /self-improving-agent status** — monitor capacity before it becomes a problem

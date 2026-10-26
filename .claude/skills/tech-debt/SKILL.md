@@ -85,6 +85,8 @@ Output the report to the user. This mode is read-only — no files are written. 
 
 ## Phase 3: Next Steps
 
+Skills below that ship with other profiles may not be installed: check `.claude/skills/<name>/` first, and if it is missing offer `/arcane-add <name>` instead of running it.
+
 - Run `/sprint-plan` to schedule high-priority debt items into the next sprint.
 - Run `/tech-debt report` at the start of each sprint to track debt trends over time.
 

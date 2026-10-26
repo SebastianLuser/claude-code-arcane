@@ -1,18 +1,22 @@
 ---
 name: what-next
-description: "Analyzes what is done and the users query and offers advice on what to do next. Use if user says what should I do next or what do I do now or I'm stuck or I don't know what to do"
+description: "Analyzes what is done and the users query and offers advice on what to do next. Use if user says what should I do next or what do I do now or I'm stuck or I don't know what to do. Claude Code's native /help lists commands; this one suggests the next step."
 category: "workflow"
 argument-hint: "[optional: what you just finished, e.g. 'finished design-review' or 'stuck on ADRs']"
 user-invocable: true
 allowed-tools: Read, Glob, Grep
-context: |
-  !echo "=== Live Project State ===" && echo "Stage: $(cat production/stage.txt 2>/dev/null | tr -d '[:space:]' || echo 'not set')" && echo "Latest sprint: $(ls -t production/sprints/*.md 2>/dev/null | head -1 || echo 'none')" && echo "Session state: $(head -5 production/session-state/active.md 2>/dev/null || echo 'none')"
 model: haiku
 ---
 
 # Studio Help — What Do I Do Next?
 
-Read-only skill — reports findings, writes no files. Lightweight orientation; for full gap analysis use `/project-stage-detect`.
+## Live Project State
+
+- Stage: !`cat production/stage.txt 2>/dev/null | tr -d '[:space:]' || echo 'not set'`
+- Latest sprint: !`ls -t production/sprints/*.md 2>/dev/null | head -1 || echo 'none'`
+- Session state: !`head -5 .arcane/session-state/active.md 2>/dev/null || echo 'none'`
+
+Read-only skill — reports findings, writes no files. Lightweight orientation; for a formal readiness check use `/gate-check`.
 
 ## Step 1: Read Catalog + Find Uncataloged Skills
 
@@ -25,7 +29,7 @@ Read `.claude/docs/workflow-catalog.yaml` (authoritative phases/steps). Glob `.c
 
 ## Step 3: Read Session Context
 
-Read `production/session-state/active.md` — what was most recently worked on, in-progress tasks, open questions.
+Read `.arcane/session-state/active.md` — what was most recently worked on, in-progress tasks, open questions.
 
 ## Step 4: Check Step Completion
 
@@ -53,6 +57,8 @@ If `active.md` shows active task → surface prominently, suggest continuing or 
 
 ## Step 7: Present Output
 
+Skills you suggest that ship with other profiles may not be installed: check `.claude/skills/<name>/` first, and if it is missing offer `/arcane-add <name>` instead of running it.
+
 Short and direct. Format: phase label, in-progress work, done steps (✓), next required step (→, only one), optional steps (~), coming up after. Commands as backtick code. MANUAL steps → ask user. Gate approach → mention `/gate-check`.
 
 ## Step 8: Gate Warning
@@ -61,7 +67,6 @@ All required steps complete → "Close to [Current]→[Next] gate. Run `/gate-ch
 
 ## Step 9: Escalation (only if user seems stuck)
 
-- `/project-stage-detect` — full gap analysis
 - `/gate-check` — formal readiness check
 - `/start` — re-orient from scratch
 

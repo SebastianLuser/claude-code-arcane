@@ -17,6 +17,6 @@ Run a comprehensive code quality and security check on the current project:
    - Hardcoded secrets, API keys, tokens in source code
    - Known vulnerable dependencies (npm audit, pip audit, etc.)
    - SQL injection, XSS, or command injection patterns
-6. **Report** — Summarize findings with severity levels and suggested fixes
+6. **Report** — Summarize findings with severity levels and suggested fixes, then close with a verdict: **FAIL** if tests or type checks fail, or a secret or critical vulnerability turned up; **CONCERNS** if only lint issues or lower-severity findings remain; **PASS** if nothing actionable came up
 
 Focus on actionable issues, not style nitpicks.

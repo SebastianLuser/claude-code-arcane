@@ -94,6 +94,8 @@ This skill is read-only: it writes no files. The report is the deliverable.
 
 ## Phase 9: Next Steps
 
+Skills below that ship with other profiles may not be installed: check `.claude/skills/<name>/` first, and if it is missing offer `/arcane-add <name>` instead of running it.
+
 - APPROVED → `/story-done [story-path]`
 - CHANGES REQUIRED → fix issues, re-run `/quality-review`
 - ARCHITECTURAL VIOLATION → `/architecture-decision` to record correct approach
