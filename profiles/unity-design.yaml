@@ -21,6 +21,7 @@ skills:
   - consistency-check
   - asset-audit
   - architecture-review
+  - ux-review
 
 rules:
   universal:
@@ -30,7 +31,19 @@ rules:
     - narrative
 
 agents:
-  - game
+  # Engine-agnostic design agents; the dev profiles bring programming and QA.
+  - game/accessibility-specialist
+  - game/art-director
+  - game/creative-director
+  - game/economy-designer
+  - game/game-designer
+  - game/level-designer
+  - game/narrative-director
+  - game/systems-designer
+  - game/technical-director
+  - game/ux-designer
+  - game/world-builder
+  - game/writer
   - product/ux-lead
 
 permissions:

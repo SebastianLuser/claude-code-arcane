@@ -29,6 +29,8 @@ skills:
   - ci-cd-setup
   - worktree-isolation
   - worktree-isolation-setup
+  - query-optimization
+  - database-indexing
 
 rules:
   universal:
@@ -40,7 +42,10 @@ rules:
     []
 
 agents:
-  - engineering
+  - engineering/backend-architect
+  - engineering/go-engineer
+  - engineering/database-architect
+  - engineering/sql-specialist
   - quality/security-architect
 
 permissions:

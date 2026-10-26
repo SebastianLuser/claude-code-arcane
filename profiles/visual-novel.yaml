@@ -31,7 +31,12 @@ rules:
 
 agents:
   - visualnovel
-  - game
+  - game/art-director
+  - game/creative-director
+  - game/economy-designer
+  - game/narrative-director
+  - game/technical-director
+  - game/writer
 
 permissions:
   allow:

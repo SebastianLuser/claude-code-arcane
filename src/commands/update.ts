@@ -211,6 +211,10 @@ export async function updateTarget(
   const profileNamesForSync = manifest.profile_command.split("+").filter(Boolean);
   const claudeDirForSync = path.join(target, ".claude");
 
+  // Before the early sync rewrites any granular agent file: whether a division is still
+  // byte-for-byte what Arcane left is what lets the plan prune it below.
+  const agentsAsFound = computeContentHashes(claudeDirForSync).agents;
+
   // The unhashed files are checked before the version gate on purpose. That gate assumes
   // equal versions imply equal content — the exact assumption that let .claude/statusline.sh
   // sit months out of date while its manifest reported the current version. These two
@@ -281,6 +285,7 @@ export async function updateTarget(
     makeOwnershipCheck(manifest),
     granularAgentDivisions(merged.agents),
   );
+  items.push(...prunedGranularAgents(manifest, agentsAsFound, claudeDir, merged.agents));
 
   const updates = items.filter((i) => i.action === "update" || i.action === "add" || i.action === "conflict");
   const skipped = items.filter((i) => i.action === "skip-customized" || i.action === "skip-unchanged");
@@ -493,6 +498,41 @@ function granularAgentDivisions(entries: string[]): Set<string> {
   }
   for (const division of whole) partial.delete(division);
   return partial;
+}
+
+/**
+ * Agents left behind when a division goes from whole to granular.
+ *
+ * Such a division is exempt from the hashed plan (see granularAgentDivisions), so when a
+ * profile swapped `engineering` for `engineering/go-engineer` nothing removed the other
+ * eighteen: the manifest said seven agents and the disk held twenty-two. A file goes to
+ * the trash only when the division is exactly as Arcane left it (its hash before this
+ * run matches the manifest); one edit anywhere in it and every file stays.
+ */
+function prunedGranularAgents(
+  manifest: ArcaneManifest,
+  asFound: Record<string, string>,
+  claudeDir: string,
+  entries: string[],
+): UpdateItem[] {
+  const wanted = new Map<string, Set<string>>();
+  for (const raw of entries) {
+    const { division, agent } = parseAgentEntry(raw);
+    if (!agent) continue;
+    if (!wanted.has(division)) wanted.set(division, new Set());
+    wanted.get(division)!.add(`${agent}.md`);
+  }
+  const items: UpdateItem[] = [];
+  for (const division of granularAgentDivisions(entries)) {
+    const recorded = manifest.content_hashes?.agents?.[division];
+    if (!recorded || recorded !== asFound[division]) continue;
+    for (const file of fs.readdirSync(path.join(claudeDir, "agents", division))) {
+      if (file.endsWith(".md") && !wanted.get(division)!.has(file)) {
+        items.push({ type: "agent", name: `${division}/${file}`, action: "remove" });
+      }
+    }
+  }
+  return items;
 }
 
 /**
@@ -792,8 +832,10 @@ function syncUnhashedFiles(
     if (dryRun) continue;
 
     if (fs.existsSync(t.dst)) {
-      // Same contract as a hashed conflict: never overwrite without a backup.
-      const bak = `${t.dst}.bak`;
+      // Same contract as a hashed conflict: never overwrite without a backup, and the
+      // backup goes to the trash, not beside the file (a `.md.bak` per agent piled up).
+      const bak = path.join(claudeDir, TRASH_DIR, path.relative(claudeDir, t.dst));
+      fs.mkdirSync(path.dirname(bak), { recursive: true });
       if (fs.existsSync(bak)) fs.rmSync(bak, { force: true });
       fs.renameSync(t.dst, bak);
     }

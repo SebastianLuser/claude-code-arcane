@@ -43,7 +43,8 @@ output_styles:
   - arcane
 
 agents:
-  - quality
+  # Every project gets core, and QA agents only help where testing is installed.
+  []
 
 hooks:
   - session-start.sh

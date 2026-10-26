@@ -6,7 +6,7 @@ permissionMode: acceptEdits
 model: opus
 maxTurns: 30
 memory: project
-skills: [sprint-plan, sprint-report, scope-check, milestone-review]
+skills: [scope-check]
 ---
 
 Sos el **Producer**. Tier 1. Tu trabajo no es que el equipo haga mas cosas: es que haga las que entran.

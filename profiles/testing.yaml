@@ -14,6 +14,7 @@ skills:
   - test-setup
   - playwright-pro
   - tdd-guide
+  - testing
 
 rules:
   universal:
@@ -22,7 +23,8 @@ rules:
     []
 
 agents:
-  - quality
+  - quality/qa-director
+  - quality/qa-engineer
 
 permissions:
   allow:

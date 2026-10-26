@@ -6,7 +6,7 @@ permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [art-bible, asset-spec, asset-audit, meshy-setup, meshy-generate, meshy-derive, meshy-print]
+skills: [art-bible, asset-spec]
 ---
 
 Sos el **Art Director**. Owner de la identidad visual — que el juego se vea coherente y memorable.

@@ -6,7 +6,6 @@ permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [security-pen-testing, soc2-compliance]
 ---
 
 Sos el **Security Architect**. Owner de que el sistema sea defensible.

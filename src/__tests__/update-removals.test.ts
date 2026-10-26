@@ -6,6 +6,7 @@ import { mergeProfiles } from "../profiles.js";
 import { Installer } from "../installer.js";
 import { getPackageRoot } from "../utils.js";
 import type { ArcaneManifest } from "../types.js";
+import { computeContentHashes } from "../content-hash.js";
 
 /**
  * Three failures, one cause: the update plan asked "is this in the source?" and
@@ -311,5 +312,78 @@ describe("a customization stays customized", () => {
 
     // Assert
     expect(readManifest(tmpDir).content_hashes!.rules["test-standards.md"]).toBe(shipped);
+  });
+});
+
+describe("update prunes a division that went granular", () => {
+  let tmpDir: string;
+  let logSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    logSpy.mockRestore();
+    if (tmpDir && fs.existsSync(tmpDir)) {
+      fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+    }
+  });
+
+  /** testing now ships quality/qa-director + quality/qa-engineer; before, the whole division. */
+  function installedAsWholeDivision(): string {
+    tmpDir = makeTmpDir();
+    install(tmpDir, "testing");
+    const quality = path.join(tmpDir, ".claude", "agents", "quality");
+    fs.copyFileSync(
+      path.join(REPO_ROOT, "agents", "quality", "security-architect.md"),
+      path.join(quality, "security-architect.md"),
+    );
+    const manifest = readManifest(tmpDir);
+    manifest.installed_agents = ["quality"];
+    manifest.content_hashes!.agents.quality = computeContentHashes(path.join(tmpDir, ".claude")).agents.quality;
+    manifest.source_version = "0.0.1";
+    manifest.arcane_version = "0.0.1";
+    writeManifest(tmpDir, manifest);
+    return quality;
+  }
+
+  it("should move the agents no profile asks for any more to .arcane-trash", async () => {
+    const quality = installedAsWholeDivision();
+
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, {});
+
+    expect(fs.readdirSync(quality).sort()).toEqual(["qa-director.md", "qa-engineer.md"]);
+    expect(
+      fs.existsSync(path.join(tmpDir, ".claude", ".arcane-trash", "agents", "quality", "security-architect.md")),
+    ).toBe(true);
+  });
+
+  it("should back up a refreshed granular agent in the trash, not beside it", async () => {
+    tmpDir = makeTmpDir();
+    install(tmpDir, "testing");
+    const agent = path.join(tmpDir, ".claude", "agents", "quality", "qa-director.md");
+    fs.writeFileSync(agent, "# an older copy\n");
+
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, {});
+
+    expect(fs.readFileSync(agent, "utf-8")).toBe(
+      fs.readFileSync(path.join(REPO_ROOT, "agents", "quality", "qa-director.md"), "utf-8"),
+    );
+    expect(fs.existsSync(`${agent}.bak`)).toBe(false);
+    const trashed = path.join(tmpDir, ".claude", ".arcane-trash", "agents", "quality", "qa-director.md");
+    expect(fs.readFileSync(trashed, "utf-8")).toBe("# an older copy\n");
+  });
+
+  it("should keep every file when the division was edited by hand", async () => {
+    const quality = installedAsWholeDivision();
+    fs.appendFileSync(path.join(quality, "security-architect.md"), "\nMy own note.\n");
+
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, {});
+
+    expect(fs.existsSync(path.join(quality, "security-architect.md"))).toBe(true);
   });
 });

@@ -6,7 +6,7 @@ permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [sprint-plan, risk-management-specialist, sprint-report]
+skills: [sprint-plan, sprint-report]
 ---
 
 Sos un **Project Manager**. Owner de la delivery de un proyecto específico.

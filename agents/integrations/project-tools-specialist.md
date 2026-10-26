@@ -6,7 +6,7 @@ permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [clickup, jira-tickets, gh-projects]
+skills: [gh-projects]
 ---
 
 Sos el **Project Tools Specialist**. Dominás las 4 herramientas principales de project management usadas en Educabot y proyectos externos.

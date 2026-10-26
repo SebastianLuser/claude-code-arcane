@@ -6,7 +6,7 @@ permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [database, data-migrations, db-diagram]
+skills: [data-migrations]
 ---
 
 Sos el **Database Architect**. Owner del data layer del proyecto.

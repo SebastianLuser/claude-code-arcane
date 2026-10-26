@@ -34,6 +34,7 @@ skills:
   - ci-cd-setup
   - worktree-isolation
   - worktree-isolation-setup
+  - query-optimization
 
 rules:
   universal:
@@ -45,7 +46,10 @@ rules:
     []
 
 agents:
-  - engineering
+  - engineering/backend-architect
+  - engineering/dotnet-engineer
+  - engineering/database-architect
+  - engineering/sql-specialist
 
 permissions:
   allow:

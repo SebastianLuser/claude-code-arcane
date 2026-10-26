@@ -51,7 +51,9 @@ rules:
 
 agents:
   - management
-  - product
+  - product/chief-product-officer
+  - product/product-manager
+  - engineering/vp-engineering
 
 permissions:
   allow:

@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseProfile } from "../profiles.js";
 
 /**
  * Agents and skills point at each other by name, and until this test existed
@@ -148,18 +149,14 @@ interface Profile {
   skills: string[];
 }
 
+// Parsed with the installer's own reader: a hand-rolled block regex stopped at the
+// first comment inside `agents:` and read the profile as shipping no agents.
 const profiles: Profile[] = fs
   .readdirSync(path.join(repoRoot, "profiles"))
   .filter((f) => f.endsWith(".yaml"))
-  .map((f) => {
-    const raw = fs.readFileSync(path.join(repoRoot, "profiles", f), "utf-8");
-    const block = (key: string): string[] => {
-      const m = new RegExp(`^${key}:\\s*\\n((?:\\s+-\\s+\\S+\\n)*)`, "m").exec(raw);
-      if (!m) return [];
-      return [...m[1].matchAll(/-\s+(\S+)/g)].map((x) => x[1]);
-    };
-    return { name: f.replace(/\.yaml$/, ""), agents: block("agents"), skills: block("skills") };
-  });
+  .map((f) => parseProfile(path.join(repoRoot, "profiles", f)))
+  .filter((p) => !p.renamed_to)
+  .map((p) => ({ name: p.name, agents: p.agents, skills: p.skills }));
 
 /** profiles that ship a given skill */
 function shippedBy(skill: string): Profile[] {
@@ -430,6 +427,29 @@ describe("skill definitions", () => {
 });
 
 describe("profiles", () => {
+  const core = profiles.find((p) => p.name === "core")!;
+
+  it("every agent is installed by some profile", () => {
+    const orphans = agents.filter((a) => !profiles.some((p) => profileProvides(p, a.slug)));
+    expect(orphans.map((a) => a.file)).toEqual([]);
+  });
+
+  it("an agent only preloads skills its profile installs", () => {
+    // Division entries dragged every agent of a division into each profile: backend-go
+    // shipped android-engineer, and its agents preloaded 49 skills it never installed.
+    // A missing preload is skipped, so the agent ran without the knowledge it declared.
+    const missing: string[] = [];
+    for (const p of profiles) {
+      const installed = new Set([...core.skills, ...p.skills]);
+      for (const a of agents.filter((x) => profileProvides(p, x.slug) || profileProvides(core, x.slug))) {
+        for (const ref of listField(a.fm.skills)) {
+          if (!installed.has(ref)) missing.push(`${p.name}: ${a.slug} preloads ${ref}`);
+        }
+      }
+    }
+    expect(missing).toEqual([]);
+  });
+
   it("every agents: entry resolves, as a division or a single agent", () => {
     const divisions = new Set(
       fs

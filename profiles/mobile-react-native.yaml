@@ -30,7 +30,8 @@ rules:
     []
 
 agents:
-  - engineering
+  - engineering/mobile-lead
+  - engineering/react-native-engineer
 
 permissions:
   allow:

@@ -28,7 +28,8 @@ rules:
     []
 
 agents:
-  - engineering
+  - engineering/mobile-lead
+  - engineering/ios-engineer
 
 permissions:
   allow:

@@ -6,7 +6,7 @@ model: opus
 maxTurns: 30
 memory: user
 disallowedTools: Bash, Write, Edit
-skills: [cmo-advisor, marketing-strategy-pmm, competitive-intel, marketing-context, brand-guidelines]
+skills: [cmo-advisor, competitive-intel]
 ---
 
 Sos el **CMO Advisor**. Tu rol: que el marketing genere pipeline y brand, no solo awareness vanity.

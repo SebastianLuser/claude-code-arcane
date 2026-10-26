@@ -193,17 +193,17 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
-| `backend-typescript` | Backend TypeScript — Fastify, Prisma, Zod, API design | 27 | engineering |
-| `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 26 | engineering |
-| `backend-dotnet` | Backend .NET — ASP.NET Core, Vertical Slice/Clean, EF Core, JWT | 27 | engineering |
-| `backend-nestjs` | Backend NestJS — feature modules, DI, Prisma, JWT, microservices | 27 | engineering |
+| `backend-typescript` | Backend TypeScript — Fastify, Prisma, Zod, API design | 29 | engineering |
+| `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 28 | engineering |
+| `backend-dotnet` | Backend .NET — ASP.NET Core, Vertical Slice/Clean, EF Core, JWT | 28 | engineering |
+| `backend-nestjs` | Backend NestJS — feature modules, DI, Prisma, JWT, microservices | 28 | engineering |
 | `backend-nextjs` | Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK | 29 | engineering |
 
 ### Frontend & Design
 
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
-| `frontend-react-vite` | React + Vite + TypeScript | 23 | engineering |
+| `frontend-react-vite` | React + Vite + TypeScript | 24 | engineering |
 | `design` | Figma, UX review, design system, handoff | 10 | product |
 
 ### Mobile
@@ -220,7 +220,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
 | `unity-dev` | Unity programmer — C#, architecture, performance, builds | 21 | game |
-| `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 18 | game |
+| `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 19 | game |
 | `meshy` | 3D asset production with Meshy AI — credit-gated generation, single master + cheap derivatives, printability | 6 | — |
 | `blender` | Blender for game assets — tri budget and topology, materials with bake and color space, baked animation, validated export | 7 | — |
 | `unreal-dev` | Unreal Engine 5 programmer — C++, Blueprints, GAS, replication, rendering, packaging | 50 | game |
@@ -231,10 +231,10 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `infra` | Terraform, observability, secrets, rollback, K8s | 28 | devops |
+| `infra` | Terraform, observability, secrets, rollback, K8s | 31 | devops |
 | `database` | Indexing, migrations, seeding, replicas, optimization | 9 | — |
 | `security` | Audits, OWASP, secrets, backups | 12 | — |
-| `testing` | Contract, performance, regression, flakiness | 11 | quality |
+| `testing` | Contract, performance, regression, flakiness | 12 | quality |
 | `ai` | LLM cost optimization, RAG, ML, data engineering, agent and MCP design | 11 | ai |
 
 ### Project Management
@@ -275,7 +275,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 ### Core (always included)
 
-22 universal skills (commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, kickoff, + 5 arcane self-management), 16 hooks, 8 base rules, 1 agent dir (quality), and security permissions.
+22 universal skills (commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, kickoff, + 5 arcane self-management), 16 hooks, 8 base rules and security permissions. No agents: QA agents ship with `+testing`, the security architect with `+security`.
 
 ---
 
