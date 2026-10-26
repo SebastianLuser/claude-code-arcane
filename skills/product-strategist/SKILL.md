@@ -85,6 +85,8 @@ python scripts/okr_cascade_generator.py growth --json > q1_okrs.json
 
 ## OKR Cascade Generator
 
+To write OKRs by hand, or review the generator's output with the team, use [assets/okr_template.md](assets/okr_template.md).
+
 **Strategies:** `growth` | `retention` | `revenue` | `innovation` | `operational`
 
 | Option | Description | Default |

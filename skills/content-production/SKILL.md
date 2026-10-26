@@ -16,7 +16,7 @@ This is the execution engine — not the strategy layer. You're here to build, n
 ## Before Starting
 
 **Check for context first:**
-If `marketing-context.md` exists, read it before asking questions. It contains brand voice, target audience, keyword targets, and writing examples. Use what's there — only ask for what's missing.
+If `marketing-context.md` exists, read it before asking questions. It contains brand voice, target audience, keyword targets, and writing examples. Use what's there — only ask for what's missing. No brand voice defined yet → build one with [references/brand-guidelines.md](references/brand-guidelines.md) and measure an existing piece with `python scripts/brand_voice_analyzer.py post.md --format text`.
 
 Gather this context (ask in one shot, don't drip):
 
@@ -93,7 +93,7 @@ See [references/content-brief-guide.md](references/content-brief-guide.md) for h
 
 ## Mode 2: Draft
 
-You have a brief. Now write.
+You have a brief. Now write. Structures per content type (how-to, listicle, case study, thought leadership) are in [references/content-frameworks.md](references/content-frameworks.md).
 
 ### Outline First
 
@@ -143,7 +143,7 @@ Don't pad the conclusion. If it's done, it's done.
 
 Draft exists. Run SEO pass (title tag, H1, H2s, first paragraph keyword, image alt text, URL slug), readability pass (sentence length, paragraph length, active voice), structure audit, internal links (2-4 minimum), and meta tags.
 
-See [references/optimization-checklist.md](references/optimization-checklist.md) for the full pre-publish checklist and quality gates.
+For the SEO pass, `python scripts/seo_optimizer.py draft.md --keyword "primary term" --secondary "term two,term three"` reports keyword placement and density. See [references/optimization-checklist.md](references/optimization-checklist.md) for the full pre-publish checklist and quality gates.
 
 ---
 

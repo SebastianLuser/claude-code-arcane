@@ -806,3 +806,25 @@ class ArchitectureDesigner:
         ]
 
         return checklist
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(description="Recommend an AWS architecture for a set of requirements")
+    parser.add_argument("--input", required=True, help="JSON file with the requirements")
+    parser.add_argument("--output", help="write the design here instead of printing it")
+    args = parser.parse_args()
+    with open(args.input, encoding="utf-8") as f:
+        designer = ArchitectureDesigner(json.load(f))
+    design = {
+        "architecture": designer.recommend_architecture_pattern(),
+        "checklist": designer.generate_service_checklist(),
+    }
+    text = json.dumps(design, indent=2, default=str)
+    if args.output:
+        with open(args.output, "w", encoding="utf-8") as f:
+            f.write(text)
+    else:
+        print(text)

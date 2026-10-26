@@ -74,3 +74,38 @@ describe(".claude/docs references", () => {
     expect(missing).toEqual([]);
   });
 });
+
+describe("game templates", () => {
+  // Nine of them installed into every game project as .claude/skills/_templates/
+  // with no skill or agent pointing at them.
+  it("are each named by a skill or an agent", () => {
+    const readers = [...walk(SKILLS), ...walk(path.join(repoRoot, "agents"))].map((f) => fs.readFileSync(f, "utf-8"));
+    const unused = fs
+      .readdirSync(path.join(repoRoot, "templates", "gamedev"))
+      .filter((t) => !readers.some((text) => text.includes(t)));
+    expect(unused).toEqual([]);
+  });
+});
+
+describe("agent names in skills and rules", () => {
+  // design-system routed work to engine-programmer and ui-programmer, run-migrations
+  // to postgres-specialist: agents that were never written, so the Task call fell
+  // back to a general-purpose agent with none of the expertise asked for.
+  it("are agents that exist", () => {
+    const roles = /`([a-z]+(?:-[a-z]+)*-(?:director|lead|engineer|specialist|programmer|designer|architect|manager|analyst|artist|writer|tester|officer|reviewer|planner|builder|producer))`/g;
+    const agents = new Set(
+      walk(path.join(repoRoot, "agents")).map((f) => path.basename(f, ".md")),
+    );
+    const known = (name: string) =>
+      agents.has(name) ||
+      fs.existsSync(path.join(SKILLS, name)) ||
+      fs.existsSync(path.join(repoRoot, "rules", `${name}.md`));
+    const missing = [...walk(SKILLS), ...walk(path.join(repoRoot, "rules"))].flatMap((f) =>
+      [...fs.readFileSync(f, "utf-8").matchAll(roles)]
+        .map((m) => m[1])
+        .filter((name) => !known(name))
+        .map((name) => `${path.relative(repoRoot, f).replace(/\\/g, "/")} -> ${name}`),
+    );
+    expect(missing).toEqual([]);
+  });
+});

@@ -66,7 +66,7 @@ All scripts accept JSON following the schema in `assets/sample_sprint_data.json`
 ### Sprint Planning
 1. Run velocity analysis; use 70% confidence interval as recommended commitment ceiling
 2. Review health scorer's Commitment Reliability and Scope Stability to calibrate negotiation
-3. If CV >20%, surface range estimates rather than single-point forecasts
+3. If CV >20%, surface range estimates rather than single-point forecasts (how to read the Monte Carlo ranges: `references/velocity-forecasting-guide.md`)
 4. Document capacity assumptions for retrospective comparison
 
 ### Daily Standup
@@ -75,11 +75,11 @@ All scripts accept JSON following the schema in `assets/sample_sprint_data.json`
 3. If blocker unresolved after 2 days, escalate proactively
 
 ### Sprint Review
-1. Present velocity trend and health score alongside demo for stakeholder context
+1. Present velocity trend and health score alongside demo for stakeholder context, in `assets/sprint_report_template.md`
 2. Capture scope-change requests raised during review
 
 ### Sprint Retrospective
-1. Run all three scripts before the session
+1. Run all three scripts before the session, and pick a format from `references/retro-formats.md`
 2. Open with health score and top-flagged dimensions to focus discussion
 3. Use action-item completion rate to determine how many new items the team can absorb (target: 3 or fewer if completion rate <60%)
 4. Assign each action item an owner and measurable success criterion
@@ -88,7 +88,7 @@ All scripts accept JSON following the schema in `assets/sample_sprint_data.json`
 ## Team Development
 
 ### Assessment
-Run health scorer and retrospective analyzer. Map maturity output to development stage. Supplement with psychological safety pulse survey.
+Run health scorer and retrospective analyzer. Map maturity output to development stage. Supplement with psychological safety pulse survey, or a full session with `assets/team_health_check_template.md`.
 
 ### Intervention
 

@@ -438,3 +438,17 @@ class FixtureGenerator:
             return str(data)
 
         return "\n".join(lines)
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Generate mock objects from a field schema")
+    parser.add_argument("--schema", required=True,
+                        help='JSON mapping each field to its definition, e.g. {"email": {"type": "email"}}')
+    parser.add_argument("--count", type=int, default=1)
+    parser.add_argument("--seed", type=int, help="seed for reproducible data")
+    args = parser.parse_args()
+    with open(args.schema, encoding="utf-8") as f:
+        schema = json.load(f)
+    print(json.dumps(FixtureGenerator(args.seed).generate_mock_data(schema, args.count), indent=2, default=str))

@@ -29,7 +29,7 @@ Present context summary with dependencies, registry facts, engine constraints. W
 
 ## Skeleton Creation
 
-Create `design/gdd/[system-name].md` with template sections. Update session state.
+Create `design/gdd/[system-name].md` from `.claude/skills/_templates/game-design-document.md` (its sections are the ones Section Guidance walks). An economy system also gets its model from `.claude/skills/_templates/economy-model.md`. Update session state.
 
 ## Section-by-Section Design
 

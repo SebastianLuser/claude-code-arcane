@@ -456,3 +456,16 @@ class TCOCalculator:
             optimizations.append("Invest in reliability to reduce downtime costs")
 
         return optimizations
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(description="Calculate total cost of ownership")
+    parser.add_argument("input", help="JSON file with the input data")
+    args = parser.parse_args()
+    with open(args.input, encoding="utf-8") as f:
+        data = json.load(f)
+    data = data.get("tco_analysis", data)
+    print(json.dumps(TCOCalculator(data).generate_tco_summary(), indent=2, default=str))
