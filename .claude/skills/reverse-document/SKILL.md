@@ -46,10 +46,10 @@ Show discovered mechanics/patterns/formulas + unclear intent areas. Wait for use
 
 | Analyzing... | Use template |
 |-------------|-------------|
-| `src/gameplay/*` | design-doc-from-implementation.md |
-| `src/core/*`, `src/ai/*`, `src/networking/*` | architecture-doc-from-code.md |
-| `prototypes/*` | concept-doc-from-prototype.md |
-| `src/ui/*` | design-doc-from-implementation.md |
+| `src/gameplay/*` | `.claude/docs/templates/design-doc-from-implementation.md` |
+| `src/core/*`, `src/ai/*`, `src/networking/*` | `.claude/docs/templates/architecture-doc-from-code.md` |
+| `prototypes/*` | `.claude/skills/_templates/concept-doc-from-prototype.md` (game profiles only; otherwise follow Phase 2's concept list) |
+| `src/ui/*` | `.claude/docs/templates/design-doc-from-implementation.md` |
 
 Capture: what exists (mechanics/patterns), why it exists (clarified intent), what's missing (gaps/edge cases), follow-up work (tuning, missing features).
 

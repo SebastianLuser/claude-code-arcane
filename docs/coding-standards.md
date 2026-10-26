@@ -1,8 +1,8 @@
 # Coding Standards (Core Universal)
 
 Estándares que aplican a cualquier código (software o gamedev). Para estándares específicos:
-- Software (backend / frontend / APIs / infra): ver `docs/software/coding-standards.md`
-- Game dev (engines, shaders, gameplay): ver `docs/gamedev/coding-standards.md`
+- Software (backend / frontend / APIs / infra): ver `.claude/docs/software/coding-standards.md`
+- Game dev (engines, shaders, gameplay): ver `.claude/docs/gamedev/coding-standards.md`
 
 Las rules path-scoped específicas viven en `.claude/rules/`.
 

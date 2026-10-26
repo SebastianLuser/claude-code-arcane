@@ -18,13 +18,13 @@ model: haiku
 
 Read-only skill — reports findings, writes no files. Lightweight orientation; for a formal readiness check use `/gate-check`.
 
-## Step 1: Read Catalog + Find Uncataloged Skills
+## Step 1: List Installed Skills
 
-Read `.claude/docs/workflow-catalog.yaml` (authoritative phases/steps). Glob `.claude/skills/*/SKILL.md`, extract `name:` fields. Skills not appearing as catalog commands → **uncataloged** (usable but not phase-gated). Show up to 10 most relevant as footer block.
+Glob `.claude/skills/*/SKILL.md` and extract `name:` and `description:`. These are the commands you can recommend directly.
 
 ## Step 2: Determine Current Phase
 
-1. **`production/stage.txt`** (authoritative): map to catalog phase key (Concept→concept, Systems Design→systems-design, Technical Setup→technical-setup, Pre-Production→pre-production, Production→production, Polish→polish, Release→release)
+1. **`production/stage.txt`** (authoritative): one of (Concept, Systems Design, Technical Setup, Pre-Production, Production, Polish, Release)
 2. **If missing**, infer from artifacts (most-advanced wins): `src/` 10+ files → production, `production/stories/*.md` → pre-production, `docs/architecture/adr-*.md` → technical-setup, `design/gdd/systems-index.md` → systems-design, `design/gdd/game-concept.md` → concept, nothing → concept
 
 ## Step 3: Read Session Context
@@ -33,10 +33,10 @@ Read `.arcane/session-state/active.md` — what was most recently worked on, in-
 
 ## Step 4: Check Step Completion
 
-Per step in current phase from catalog:
-- **Artifact-based:** Glob for `artifact.glob`, check `min_count`, Grep for `artifact.pattern`. Complete if met.
-- **`artifact.note` (no glob):** mark MANUAL — ask user
-- **No artifact field:** mark UNKNOWN
+A phase's steps are its exit criteria. If `.claude/skills/gate-check/SKILL.md` is installed, read its criteria for the transition out of the current phase; otherwise use the artifact ladder in Step 2. Per criterion:
+- **Names a file or artifact:** Glob/Grep for it. Complete if it exists with real content, not just template headers.
+- **Names nothing checkable:** mark MANUAL — ask user
+- **Can't tell:** mark UNKNOWN
 
 **Production phase special:** read `sprint-status.yaml` for per-story status (in-progress/ready-for-dev/done/blocked). YAML is authoritative over glob checks for implement/story-done steps.
 

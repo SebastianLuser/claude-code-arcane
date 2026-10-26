@@ -62,7 +62,7 @@ claude-code-arcane/
 ├── output-styles/                     # Output styles (arcane.md)
 ├── templates/
 │   └── gamedev/                       # Plantillas de GDD y docs de juego
-├── docs/                              # Documentación; se copia entera a .claude/docs/
+├── docs/                              # Documentación; a .claude/docs/ va lo que algo instalado nombra
 │   ├── templates/                     # Plantillas de ADR, PRD, RFC, test plan, etc.
 │   ├── gates/                         # Gates de fase (software y gamedev)
 │   └── gamedev/, software/            # coding-standards por dominio
@@ -96,7 +96,7 @@ claude-code-arcane/
 │   ├── hooks/                         # Todos los hooks de hooks/ salvo statusline.sh
 │   ├── statusline.sh                  # Solo con el profile statusline
 │   ├── output-styles/                 # Solo si algún profile declara output_styles
-│   ├── docs/                          # Copia de docs/; arcane update la mantiene al día
+│   ├── docs/                          # Los docs que nombra lo instalado; arcane update los mantiene al día
 │   ├── session-state/                 # Logs y estado de los hooks; se ignora solo (.gitignore con *)
 │   └── .arcane-trash/                 # Lo que arcane update saca; nunca se borra con rm
 ├── .arcane/session-state/active.md    # Archivo de progreso que escribe Claude; se ignora solo. Fuera de .claude/ porque ahí cada edición pide permiso

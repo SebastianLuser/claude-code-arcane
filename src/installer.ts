@@ -16,7 +16,7 @@ import {
 } from "./agent-entries.js";
 import { writeManifest } from "./manifest.js";
 import { linkOrCopyDir } from "./worktree.js";
-import { computeContentHashes } from "./content-hash.js";
+import { computeContentHashes, referencedDocs } from "./content-hash.js";
 import { defaultHooks } from "./hook-commands.js";
 
 /**
@@ -316,8 +316,17 @@ export class Installer {
       }
     }
 
-    copyDirSync(docsSrc, docsDir);
-    this.log("  [ok] docs/");
+    const docs = referencedDocs(
+      this.root,
+      this.merged.skills,
+      [...this.merged.rules.universal, ...this.merged.rules.gamedev],
+      this.merged.agents,
+    );
+    for (const doc of docs) {
+      fs.mkdirSync(path.dirname(path.join(docsDir, doc)), { recursive: true });
+      fs.copyFileSync(path.join(docsSrc, doc), path.join(docsDir, doc));
+    }
+    this.log(`  [ok] docs/ (${docs.length} files)`);
   }
 
   private generateSettings(): void {
