@@ -387,3 +387,16 @@ class StackComparator:
             cons.append(f"No significant weaknesses identified")
 
         return {'pros': pros, 'cons': cons}
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(description="Compare technologies with weighted criteria")
+    parser.add_argument("input", help="JSON file with the input data")
+    args = parser.parse_args()
+    with open(args.input, encoding="utf-8") as f:
+        data = json.load(f)
+    data = data.get("comparison", data)
+    print(json.dumps(StackComparator(data).compare_technologies(data.get("technologies", [])), indent=2, default=str))

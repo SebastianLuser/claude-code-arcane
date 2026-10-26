@@ -48,7 +48,7 @@ Run with full tracing:
 npx playwright test <file> --trace=on --retries=0
 ```
 
-Read the trace output. Use `/debug` to analyze trace files if available.
+Read the trace output: `npx playwright show-trace <trace.zip>` opens it step by step.
 
 ### 3. Categorize the Failure
 

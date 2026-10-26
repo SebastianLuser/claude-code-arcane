@@ -15,7 +15,7 @@ allowed-tools: Read, Glob, Grep, Bash
 |----------------|-----------------|
 | **Write** a blog post, article, or guide | [content-production](../content-production/) |
 | **Plan** what content to create, topic clusters, calendar | [content-strategy](../content-strategy/) |
-| **Analyze brand voice** | [content-production](../content-production/) (includes `brand_voice_analyzer.py`) |
+| **Analyze brand voice** | [content-production](../content-production/) (`brand_voice_analyzer.py`, `references/brand-guidelines.md`) |
 | **Optimize SEO** for existing content | [content-production](../content-production/) (includes `seo_optimizer.py`) |
 | **Create social media content** | [social-content](../social-content/) |
 

@@ -28,6 +28,8 @@ Extract: name/ID, TR-IDs, manifest version, ADR refs, acceptance criteria, imple
 
 > → Read references/test-evidence-traceability.md for test-criterion mapping rules and evidence requirements by story type
 
+A story whose evidence is a manual record (visual, feel, UI) gets it written from `.claude/docs/templates/test-evidence.md`.
+
 ## Phase 4: Check Deviations
 
 1. **GDD rules:** current TR requirement text from registry vs implementation (Grep key names)

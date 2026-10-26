@@ -22,7 +22,7 @@ Read: current milestone (`production/milestones/`), previous sprint (`production
 
 ### `new` — Sprint Plan
 
-Sprint goal (1 sentence toward milestone) + capacity (total days, 20% buffer, available) + tasks in 3 tiers (Must Have/Should Have/Nice to Have — tables: ID/task/owner/est days/dependencies/ACs) + carryover from previous + risks table + external dependencies + DoD checklist (Must Have done, ACs pass, QA plan exists, tests pass, smoke check, QA sign-off, no S1/S2 bugs, docs updated, code reviewed).
+Write it on the skeleton in `.claude/docs/templates/sprint-plan.md`: Sprint goal (1 sentence toward milestone) + capacity (total days, 20% buffer, available) + tasks in 3 tiers (Must Have/Should Have/Nice to Have — tables: ID/task/owner/est days/dependencies/ACs) + carryover from previous + risks table + external dependencies + DoD checklist (Must Have done, ACs pass, QA plan exists, tests pass, smoke check, QA sign-off, no S1/S2 bugs, docs updated, code reviewed).
 
 ### `status` — Status Report
 

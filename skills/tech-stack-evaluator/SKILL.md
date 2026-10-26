@@ -72,13 +72,15 @@ The evaluator accepts three input formats:
 
 ## Scripts
 
+Each script reads one JSON file, the data is yours to gather (they fetch nothing), and prints a JSON report.
+
 | Script | Purpose | Command |
 |--------|---------|---------|
-| `stack_comparator.py` | Compare technologies with weighted criteria | `python scripts/stack_comparator.py --help` |
-| `tco_calculator.py` | Calculate total cost of ownership | `python scripts/tco_calculator.py --input assets/sample_input_tco.json` |
-| `ecosystem_analyzer.py` | Analyze ecosystem health metrics | `python scripts/ecosystem_analyzer.py --technology react` |
-| `security_assessor.py` | Evaluate security posture | `python scripts/security_assessor.py --technology express --compliance soc2,gdpr` |
-| `migration_analyzer.py` | Estimate migration complexity | `python scripts/migration_analyzer.py --from angular-1.x --to react` |
+| `stack_comparator.py` | Compare technologies with weighted criteria | `python scripts/stack_comparator.py assets/sample_input_structured.json` |
+| `tco_calculator.py` | Calculate total cost of ownership | `python scripts/tco_calculator.py assets/sample_input_tco.json` |
+| `ecosystem_analyzer.py` | Analyze ecosystem health metrics | `python scripts/ecosystem_analyzer.py data.json` with `technology`, `github`, `npm`, `community`, `corporate_backing` |
+| `security_assessor.py` | Evaluate security posture | `python scripts/security_assessor.py data.json` with `technology`, `vulnerabilities`, `security_features`, `compliance_requirements` (`GDPR`, `SOC2`, `HIPAA`, `PCI_DSS`) |
+| `migration_analyzer.py` | Estimate migration complexity | `python scripts/migration_analyzer.py data.json` with `source_technology`, `target_technology`, `codebase_stats`, `constraints`, `team` |
 
 ## Confidence Levels
 

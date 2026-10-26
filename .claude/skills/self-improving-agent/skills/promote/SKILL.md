@@ -69,6 +69,8 @@ Transform the learning from auto-memory's note format into CLAUDE.md's instructi
 
 ### Step 5: Write to target
 
+A new `.claude/rules/` file starts from `../../templates/rule-template.md`.
+
 **For CLAUDE.md:**
 1. Read existing CLAUDE.md
 2. Find the appropriate section (or create one)

@@ -79,7 +79,7 @@ aws cloudformation describe-stacks --stack-name my-app-stack
 ## Tools
 
 ### architecture_designer.py
-Generates architecture patterns based on requirements.
+Generates architecture patterns based on requirements. Input shape: `assets/sample_input.json`.
 
 ```bash
 python scripts/architecture_designer.py --input requirements.json --output design.json

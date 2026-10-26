@@ -58,10 +58,10 @@ go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@v4.
 - Down migration should perfectly reverse the up migration
 - Use `IF EXISTS` / `IF NOT EXISTS` to make migrations idempotent
 - Test both up and down before committing
-- For Postgres-specific (CONCURRENTLY, partitioning, JSONB indexes) consult `postgres-specialist` agent
+- For Postgres-specific (CONCURRENTLY, partitioning, JSONB indexes) consult the `sql-specialist` agent if it is installed
 - For zero-downtime patterns (expand-contract, online DDL, backfills) use `/data-migrations`
 
 ## Recommended Next
 
 - `/data-migrations` for schema design and zero-downtime strategy
-- `postgres-specialist` agent for PG-specific migration patterns
+- `sql-specialist` agent (if installed) for PG-specific migration patterns

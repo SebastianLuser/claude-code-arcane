@@ -41,7 +41,7 @@ allowed-tools: Read, Glob, Grep, Bash
 
 ### Permission Scheme Design
 
-> See references/security-hardening-guide.md for detailed permission schemes and SSO configuration.
+> See references/security-hardening-guide.md for detailed permission schemes and SSO configuration. A standard scheme to start from, as JSON: `assets/permission_scheme_template.json`.
 
 **Jira Permission Schemes** (`Jira Settings > Issues > Permission Schemes`):
 - **Public Project**: All users can view, members can edit

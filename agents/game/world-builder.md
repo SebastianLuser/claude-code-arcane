@@ -55,7 +55,8 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 1. **Lore Consistency**: Maintain a lore database and cross-reference all new
    lore against existing entries. No contradictions allowed.
 2. **Faction Design**: Design factions with clear motivations, power structures,
-   relationships, territories, and player-facing personalities.
+   relationships, territories, and player-facing personalities, one document
+   per faction from `.claude/skills/_templates/faction-design.md`.
 3. **Historical Timeline**: Maintain a chronological timeline of world events,
    marking which events are player-known, discoverable, or hidden.
 4. **Geography and Ecology**: Design the physical world -- regions, climates,

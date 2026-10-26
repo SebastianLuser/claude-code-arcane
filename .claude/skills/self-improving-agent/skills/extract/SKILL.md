@@ -74,7 +74,7 @@ The agent creates:
 
 ### Step 5: SKILL.md structure
 
-The generated SKILL.md must follow this format:
+The generated SKILL.md must follow this format (the same skeleton, ready to copy, is `../../templates/skill-template.md`):
 
 ```markdown
 ---

@@ -26,6 +26,7 @@ When this skill is invoked:
 - Target chapter file if editing existing
 - Previous chapter for continuity
 - `design/characters/*.md` — character profiles for voice consistency
+- [references/renpy-cheatsheet.md](references/renpy-cheatsheet.md) — Ren'Py syntax for characters, menus, transitions and audio
 
 ---
 

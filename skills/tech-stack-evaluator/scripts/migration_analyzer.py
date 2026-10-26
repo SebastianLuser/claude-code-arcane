@@ -585,3 +585,16 @@ class MigrationAnalyzer:
             'Team trained and comfortable with new technology',
             'Documentation complete and up-to-date'
         ]
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(description="Estimate migration complexity")
+    parser.add_argument("input", help="JSON file with the input data")
+    args = parser.parse_args()
+    with open(args.input, encoding="utf-8") as f:
+        data = json.load(f)
+    data = data.get("migration", data)
+    print(json.dumps(MigrationAnalyzer(data).generate_migration_plan(), indent=2, default=str))
