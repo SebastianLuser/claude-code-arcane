@@ -1,3 +1,10 @@
+## [2.29.2](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.1...v2.29.2) (2026-10-26)
+
+
+### Bug Fixes
+
+* **profiles:** install only the agents each profile can use ([60dd53e](https://github.com/SebastianLuser/claude-code-arcane/commit/60dd53ef6943c0a138327a0eaf63a2d303436b4b))
+
 ## [2.29.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.0...v2.29.1) (2026-10-25)
 
 
