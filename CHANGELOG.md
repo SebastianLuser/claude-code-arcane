@@ -1,3 +1,11 @@
+## [2.29.6](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.5...v2.29.6) (2026-10-26)
+
+
+### Bug Fixes
+
+* **content:** remove skill files, templates and docs nothing reads ([c25f47c](https://github.com/SebastianLuser/claude-code-arcane/commit/c25f47c3ba24cb22dbc9adf9b5504ce968cc9dba))
+* **hooks:** run the guard and the session watch on Node instead of Python ([94c2a4f](https://github.com/SebastianLuser/claude-code-arcane/commit/94c2a4fc5514150a419983a63d52c28797908f76))
+
 ## [2.29.5](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.4...v2.29.5) (2026-10-26)
 
 
