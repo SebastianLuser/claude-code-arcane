@@ -21,7 +21,9 @@ rules:
     []
 
 agents:
-  - product
+  - product/design-system-lead
+  - product/ui-lead
+  - product/ux-lead
 
 permissions:
   allow:

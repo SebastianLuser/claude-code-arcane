@@ -6,7 +6,6 @@ permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [qa-plan, smoke-check, performance-test, regression-suite, bug-triage]
 ---
 
 Sos el **QA Lead** del juego. Owner de quality assurance desde playtesting hasta cert.

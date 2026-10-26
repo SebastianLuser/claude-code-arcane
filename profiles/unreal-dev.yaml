@@ -79,7 +79,28 @@ rules:
     - ai-code
 
 agents:
-  - game
+  # Programming, production and QA. unity-design brings the design agents.
+  - game/ai-programmer
+  - game/analytics-engineer
+  - game/economy-designer
+  - game/gameplay-programmer
+  - game/lead-programmer
+  - game/live-ops-designer
+  - game/network-programmer
+  - game/performance-analyst
+  - game/producer
+  - game/qa-lead
+  - game/qa-tester-gamedev
+  - game/release-manager
+  - game/sound-designer
+  - game/technical-artist
+  - game/technical-director
+  - game/ue-blueprint-specialist
+  - game/ue-gas-specialist
+  - game/ue-replication-specialist
+  - game/ue-umg-specialist
+  - game/unreal-specialist
+  - quality/security-architect
 
 permissions:
   allow:

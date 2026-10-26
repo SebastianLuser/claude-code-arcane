@@ -254,10 +254,10 @@ Every installation automatically loads `core.yaml` first:
 
 | Category | Contents |
 |----------|----------|
-| **Skills (21)** | commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, arcane-status, arcane-list, arcane-add, arcane-remove, arcane-clean |
+| **Skills (22)** | commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, kickoff, arcane-status, arcane-list, arcane-add, arcane-remove, arcane-clean |
 | **Rules (8)** | data-files, prototype-code, test-standards, implementation-workflow, code-comments, verification, agent-delegation, git-worktrees |
 | **Hooks (16)** | session-start, detect-division, detect-unreal, detect-gaps, check-update, guard, validate-commit, validate-skill-change, notify, pre-compact, post-compact, session-stop, worktree-stop, run-py (session_watch), log-agent, log-agent-stop |
-| **Agents (1 dir)** | quality |
+| **Agents** | none: a profile like `job-hunt` has no use for QA agents, so they ship with `+testing` |
 | **Permissions** | 15 allow (git, ls, gh pr/issue/run and read-only gh, curl) + 13 deny (force push, reset --hard, clean -f, sudo, .env, etc.) |
 
 ---
@@ -437,7 +437,9 @@ agents:
   - quality/security-architect  # solo ese agente
 ```
 
-La forma por división es la original y sigue siendo el default. La granular
+Los profiles de stack usan la forma granular: cada agente que instalan tiene que
+encontrar en el mismo profile los skills que precarga (`agents-integrity.test.ts`
+lo verifica), y una división entera arrastraba agentes de otros stacks. La granular
 existe porque **las divisiones son temáticas, no funcionales**: `qa-lead`,
 `ux-designer` y `performance-analyst` viven en `game/` y los quieren profiles
 que no tienen nada de gamedev. Antes la única manera de alcanzar uno era
@@ -476,7 +478,7 @@ Every installation creates `.claude/arcane-manifest.json`:
   "total_rules": 6,
   "installed_skills": ["commit", "create-pr", "..."],
   "installed_rules": ["backend-code", "api-code", "..."],
-  "installed_agents": ["engineering", "quality"],
+  "installed_agents": ["engineering/backend-architect", "engineering/node-engineer"],
   "source": "/path/to/arcane/package"
 }
 ```

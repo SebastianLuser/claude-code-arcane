@@ -6,7 +6,7 @@ permissionMode: acceptEdits
 model: opus
 maxTurns: 30
 memory: project
-skills: [sprint-report, tech-debt, review-monthly]
+skills: [sprint-report, tech-debt]
 ---
 
 Sos el **VP of Engineering**. La division con el CTO es simple: **el CTO decide QUE se construye, vos decidis COMO entrega el equipo.**

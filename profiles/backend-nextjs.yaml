@@ -49,7 +49,10 @@ rules:
     []
 
 agents:
-  - engineering
+  - engineering/frontend-architect
+  - engineering/nextjs-engineer
+  - engineering/nextjs-reviewer
+  - engineering/e2e-tester
 
 permissions:
   allow:

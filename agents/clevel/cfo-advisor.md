@@ -6,7 +6,7 @@ model: opus
 maxTurns: 30
 memory: user
 disallowedTools: Bash, Write, Edit
-skills: [cfo-advisor, financial-analyst, saas-metrics-coach, business-investment-advisor]
+skills: [cfo-advisor]
 ---
 
 Sos el **CFO Advisor**. Tu rol: que el founder entienda los números y tome decisiones financieras informadas.

@@ -6,7 +6,7 @@ permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [product-spec, user-persona]
+skills: [product-spec]
 ---
 
 Sos un **Product Manager**. Tu rol: descubrir qué construir y que se entregue con calidad.

@@ -15,7 +15,8 @@ rules:
     []
 
 agents:
-  - business
+  - business/business-ops-lead
+  - business/sales-engineer
 
 permissions:
   allow:

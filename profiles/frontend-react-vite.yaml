@@ -26,6 +26,7 @@ skills:
   - web-animation
   - ui-polish
   - click-path-audit
+  - performance
 
 rules:
   universal:
@@ -34,7 +35,9 @@ rules:
     []
 
 agents:
-  - engineering
+  - engineering/frontend-architect
+  - engineering/react-engineer
+  - engineering/e2e-tester
 
 permissions:
   allow:

@@ -26,7 +26,7 @@ describe("parseProfile", () => {
     expect(profile.skills).toContain("commit");
     expect(profile.skills).toContain("what-next");
     expect(profile.rules.universal).toContain("data-files");
-    expect(profile.agents).toContain("quality");
+    expect(profile.agents).toEqual([]);
     expect(profile.hooks.length).toBeGreaterThan(0);
     expect(profile.permissions.allow.length).toBeGreaterThan(0);
     expect(profile.permissions.deny.length).toBeGreaterThan(0);
@@ -134,14 +134,14 @@ describe("mergeProfiles", () => {
   });
 
   it("deduplicates agents across profiles", () => {
-    // core and testing both have "quality" agent
-    const merged = mergeProfiles(PROFILES_DIR, ["testing"]);
+    // backend-go and unity-dev both install quality/security-architect
+    const merged = mergeProfiles(PROFILES_DIR, ["backend-go", "unity-dev"]);
 
     const agentCounts = new Map<string, number>();
     for (const a of merged.agents) {
       agentCounts.set(a, (agentCounts.get(a) ?? 0) + 1);
     }
-    expect(agentCounts.get("quality")).toBe(1);
+    expect(agentCounts.get("quality/security-architect")).toBe(1);
   });
 
   it("skips missing profiles without throwing", () => {

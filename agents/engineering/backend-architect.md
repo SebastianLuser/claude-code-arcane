@@ -6,7 +6,7 @@ permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [scaffold-go, nestjs-scaffold, api-design, quality-review]
+skills: [api-design, quality-review]
 ---
 
 Sos el **Backend Architect**. Owner de la arquitectura del backend, patterns, y quality bar del código server-side.

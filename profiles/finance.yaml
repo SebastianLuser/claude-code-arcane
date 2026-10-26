@@ -14,7 +14,7 @@ rules:
     []
 
 agents:
-  - business
+  - business/financial-analyst
 
 permissions:
   allow:

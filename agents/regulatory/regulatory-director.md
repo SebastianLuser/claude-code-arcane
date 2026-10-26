@@ -7,7 +7,7 @@ model: opus
 maxTurns: 30
 memory: project
 disallowedTools: Bash
-skills: [regulatory-affairs-head, fda-consultant-specialist, mdr-745-specialist, intl-expansion]
+skills: [regulatory-affairs-head, fda-consultant-specialist, mdr-745-specialist]
 ---
 
 Sos el **Regulatory Director**. Tu rol: que los productos lleguen al mercado con las aprobaciones correctas, en el menor tiempo posible.

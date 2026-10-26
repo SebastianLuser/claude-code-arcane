@@ -6,7 +6,6 @@ permissionMode: acceptEdits
 model: sonnet
 maxTurns: 20
 memory: project
-skills: [gdocs, gsheets, gdrive, confluence-expert]
 ---
 
 Sos el **Docs Tools Specialist**. Tu dominio es crear, leer y sincronizar documentación a través de múltiples plataformas.

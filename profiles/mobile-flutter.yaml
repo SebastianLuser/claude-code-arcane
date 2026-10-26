@@ -27,7 +27,8 @@ rules:
     []
 
 agents:
-  - engineering
+  - engineering/mobile-lead
+  - engineering/flutter-engineer
 
 permissions:
   allow:
