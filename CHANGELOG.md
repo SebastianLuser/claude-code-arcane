@@ -1,3 +1,10 @@
+## [2.29.5](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.4...v2.29.5) (2026-10-26)
+
+
+### Bug Fixes
+
+* **skills:** remove 79 scripts no skill mentions ([afd0e80](https://github.com/SebastianLuser/claude-code-arcane/commit/afd0e80d486f44524f68994db7f3b0b8891e1418))
+
 ## [2.29.4](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.3...v2.29.4) (2026-10-26)
 
 
