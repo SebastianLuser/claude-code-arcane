@@ -1,3 +1,10 @@
+## [2.29.4](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.3...v2.29.4) (2026-10-26)
+
+
+### Bug Fixes
+
+* **installer:** ship only the docs something installed reads ([463836b](https://github.com/SebastianLuser/claude-code-arcane/commit/463836b83827190e118862d702930b83c0e4cb91))
+
 ## [2.29.3](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.2...v2.29.3) (2026-10-26)
 
 
