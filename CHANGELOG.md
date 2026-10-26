@@ -1,3 +1,10 @@
+## [2.29.3](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.2...v2.29.3) (2026-10-26)
+
+
+### Bug Fixes
+
+* **skills:** make core skills check before naming another profile's skill ([9c2a94a](https://github.com/SebastianLuser/claude-code-arcane/commit/9c2a94a1703982025cfd7bb03ed8f8cae5115980))
+
 ## [2.29.2](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.1...v2.29.2) (2026-10-26)
 
 
