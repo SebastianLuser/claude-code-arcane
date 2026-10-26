@@ -40,6 +40,33 @@ describe("skill folders", () => {
     );
     expect(found).toEqual([]);
   });
+
+  it("ship only scripts something in the skill names", () => {
+    // 79 scripts sat in scripts/ folders no file of their skill mentioned, so Claude
+    // never knew they were there. content-creator routes to these two in content-production.
+    const namedElsewhere = new Set([
+      "content-production/scripts/brand_voice_analyzer.py",
+      "content-production/scripts/seo_optimizer.py",
+    ]);
+    const orphans = skills.flatMap((s) => {
+      const files = walk(path.join(skillsDir, s)).filter((f) => fs.statSync(f).isFile() && !f.includes("__pycache__"));
+      const texts = files
+        .filter((f) => /\.(md|py|sh|json|ya?ml|txt|js|cjs|mjs|ts)$/.test(f))
+        .map((f) => ({ f, text: fs.readFileSync(f, "utf-8") }));
+      return files
+        .filter((script) => /\.(py|sh|js|cjs|mjs|ts|ps1)$/.test(script))
+        .filter((script) => {
+          const base = path.basename(script);
+          const imported = new RegExp(`\\b(import|from)\\s+[\\w.]*\\b${base.replace(/\.\w+$/, "")}\\b`);
+          return !texts.some(
+            ({ f, text }) => f !== script && (text.includes(base) || (f.endsWith(".py") && imported.test(text))),
+          );
+        })
+        .map((f) => path.relative(skillsDir, f).replace(/\\/g, "/"))
+        .filter((rel) => !namedElsewhere.has(rel));
+    });
+    expect(orphans).toEqual([]);
+  });
 });
 
 describe("this repo's own .claude/skills", () => {
