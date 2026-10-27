@@ -1,3 +1,33 @@
+# [3.0.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.31.0...v3.0.0) (2026-10-27)
+
+
+* feat(repo)!: rename the career workspace and vault contracts to English ([2e1d837](https://github.com/SebastianLuser/claude-code-arcane/commit/2e1d837763e981fe008b108c8c1069a4f1ad20cd))
+
+
+### Bug Fixes
+
+* **career-registry:** migrate note structure and bare profile names too ([9bd9e97](https://github.com/SebastianLuser/claude-code-arcane/commit/9bd9e97c4b28d1e1fa46b1d0ed87e8b580cc3a24))
+* **repo:** translate what the first pass missed and harden the language test ([42c85a1](https://github.com/SebastianLuser/claude-code-arcane/commit/42c85a1dd82368e524bc306c00acbbe315e864fe))
+
+
+### Features
+
+* **repo:** translate the whole repo to English, data contracts included ([ebe7b56](https://github.com/SebastianLuser/claude-code-arcane/commit/ebe7b5693d7fd0b8547a2db7dab5bd1b5f8c9639))
+
+
+### BREAKING CHANGES
+
+* the job-hunt, freelance and second-brain skills read and
+write English folder names, frontmatter keys, status values and headings
+(01-Profiles, 03-Applications, status: interested, ## Paths, ## Notes...).
+A career workspace or vault created before this release must be migrated
+first: python .claude/skills/career-registry/scripts/migrate_workspace.py
+and python .claude/skills/second-brain/scripts/migrate_vault.py "<vault>",
+each a dry run unless --apply. The skill job-aplicar is now job-apply.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_011Rqf5bgUK37iRF46fSHXVe
+
 # [2.31.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.30.0...v2.31.0) (2026-10-27)
 
 
