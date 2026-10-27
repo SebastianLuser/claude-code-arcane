@@ -13,11 +13,18 @@ What it touches, and nothing else:
     portfolio data note, the Templates/ files);
   * the frontmatter of the notes in the numbered folders, 00-Dashboard.md and
     Templates/: known keys and known enum values;
+  * in the bodies of those same notes, only the structure the old templates
+    fixed: a whole line that is an old template heading (a title with a
+    placeholder matches by its prefix, so "<old> - Backend" follows), an old
+    bold label at the start of a line (the value after it is kept), a table
+    header row that matches an old one cell for cell, and the enum cells
+    (status, billable, result, source) of the rows of such a table;
   * tools/job_scraper/seen_jobs.json (schema version 1 -> 2).
 
-Note bodies are never edited. Wikilinks in a body that name a renamed note or
-folder are reported so the user can fix them; values it does not recognize are
-reported and left as they are.
+Any other body text is left alone: prose, list items, comments, code fences,
+wikilinks. Wikilinks in a body that name a renamed note or folder are reported
+so the user can fix them; values it does not recognize, in frontmatter or in a
+table enum column, are reported and left as they are.
 
 Usage:
   python migrate_workspace.py                  # dry run: prints the plan as JSON
@@ -81,6 +88,40 @@ STRICT = {"type", "status", "priority", "pricing", "client_risk", "work_mode"}
 LINKS = [("[[" + old[:-3], "[[" + new[:-3]) for folder, old, new in FILE_RENAMES
          if folder != TEMPLATES_DIR]
 PATHS = [(old + "/", new + "/") for old, new in FOLDERS.items()]
+# A profile field can name its note bare ("profile: <name>"), without a wikilink.
+NOTE_NAMES = {old[:-3]: new[:-3] for folder, old, new in FILE_RENAMES if folder != TEMPLATES_DIR}
+NAME_KEYS = {"profile", "base_profile"}
+
+# Note bodies: only the structure the old templates fixed, never prose.
+BODY = LEGACY["body"]
+HEADINGS = {old: new for old, new in BODY["headings"].items() if "{{" not in old}
+# A title with a placeholder ("# <old> - {{title}}") matches by the text before it.
+TITLE_PREFIXES = [(old.split("{{")[0], new.split("{{")[0])
+                  for old, new in BODY["headings"].items() if "{{" in old]
+LABELS = sorted(BODY["bold_labels"].items(), key=lambda pair: -len(pair[0]))
+PIPE = re.compile(r"(?<!\\)\|")
+
+
+def row_cells(row):
+    parts = [p.strip() for p in PIPE.split(row.strip())]
+    return tuple(parts[1:-1] if row.strip().endswith("|") else parts[1:])
+
+
+# Header cells (old or new) -> (the new header row or None, new column names).
+TABLES = {}
+for _old, _new in BODY["table_headers"].items():
+    TABLES[row_cells(_old)] = (_new, row_cells(_new))
+    TABLES[row_cells(_new)] = (None, row_cells(_new))
+# Enum columns, by their new name: old value -> new value, and the values valid in English.
+TABLE_VALID = {
+    "Status": {"pending", "delivered", "overdue", "paid", "proposed", "approved"},
+    "Billable": {"yes", "no"},
+    "Result": {"waiting", "no_response", "replied", "call", "won", "never_hired"},
+    "Source": {"plan_included", "purchased", "refunded"},
+}
+TABLE_VALUES = {col: (BODY["table_values"].get(col, {}), valid) for col, valid in TABLE_VALID.items()}
+LIST_PREFIX = re.compile(r"^([ \t]*(?:(?:[-*+]|\d+[.)])[ \t]+)?)(.*)$")
+FENCE = re.compile(r"^[ \t]{0,3}(`{3,}|~{3,})")
 
 SEEN = LEGACY["seen_jobs"]
 SEEN_TOP_KEYS = SEEN["top_keys"]
@@ -124,6 +165,8 @@ def map_scalar(key, raw, note, unknown):
             value = mapping[folded]
         elif key in STRICT and folded not in valid:
             unknown.append({"note": note, "key": key, "value": value.strip()})
+    if key in NAME_KEYS:
+        value = NOTE_NAMES.get(value, value)
     return quote + replace_text(value) + quote
 
 
@@ -146,16 +189,86 @@ def split_frontmatter(text):
     return None
 
 
+def map_body_line(content):
+    """A heading, title or leading bold label of the old templates, rewritten; else None."""
+    text = content.rstrip(" \t")
+    if text in HEADINGS:
+        return HEADINGS[text] + content[len(text):]
+    for old, new in TITLE_PREFIXES:
+        if content.startswith(old):
+            return new + content[len(old):]
+    prefix, rest = LIST_PREFIX.match(content).groups()
+    for old, new in LABELS:
+        if rest.startswith(old):
+            return prefix + new + rest[len(old):]
+    return None
+
+
+def map_table_row(content, columns, note, number, unknown):
+    """The enum cells of one row of a recognized table, padding kept."""
+    segments = PIPE.split(content)
+    end = len(segments) - 1 if content.rstrip().endswith("|") else len(segments)
+    for index, column in enumerate(columns):
+        if column not in TABLE_VALUES or index + 1 >= end:
+            continue
+        raw = segments[index + 1]
+        value = raw.strip()
+        if not value or "{{" in value:
+            continue
+        mapping, valid = TABLE_VALUES[column]
+        folded = fold(value)
+        if folded in mapping:
+            segments[index + 1] = raw.replace(value, mapping[folded], 1)
+        elif folded not in valid:
+            unknown.append({"note": note, "key": "table column " + column, "value": value,
+                            "line": number})
+    return "|".join(segments)
+
+
+def rewrite_body(lines, first_number, note, unknown):
+    """Body lines (with their line endings) -> (new lines, changes). Code fences are skipped."""
+    out, changes = [], []
+    fence, in_table, columns = None, False, None
+    for number, line in enumerate(lines, first_number):
+        content = line.rstrip("\r\n")
+        eol = line[len(content):]
+        new = content
+        opener = FENCE.match(content)
+        if fence:
+            if opener and opener.group(1)[0] == fence[0] and len(opener.group(1)) >= len(fence):
+                fence = None
+        elif opener:
+            fence, in_table = opener.group(1), False
+        elif content.lstrip().startswith("|"):
+            if not in_table:
+                in_table = True
+                header, columns = TABLES.get(row_cells(content), (None, None))
+                if header:
+                    new = content[:len(content) - len(content.lstrip())] + header
+            elif columns and not set(content.strip()) <= set("|-: \t"):
+                new = map_table_row(content, columns, note, number, unknown)
+        else:
+            in_table = False
+            new = map_body_line(content) or content
+        if new != content:
+            changes.append("line {0}: {1} -> {2}".format(number, content.strip(), new.strip()))
+        out.append(new + eol)
+    return out, changes
+
+
 def rewrite_note(text, note):
-    """Returns (new_text, changes, unknown, conflicts, body_links)."""
+    """Returns (new_text, changes, unknown, conflicts, body_links, body_changes)."""
     changes, unknown, conflicts = [], [], []
     parts = split_frontmatter(text)
     body = parts[2] if parts else text
     body_links = sorted({old for old, _ in LINKS + [("[[" + o, "") for o, _ in PATHS]
                          if old in body})
+    first = 2 + len(parts[1]) if parts else 1  # rest starts at the closing "---"
+    body_lines, body_changes = rewrite_body(body.splitlines(keepends=True), first, note, unknown)
     if not parts:
-        return text, changes, unknown, conflicts, body_links
-    head, fm_lines, rest = parts
+        return "".join(body_lines), changes, unknown, conflicts, body_links, body_changes
+    head, fm_lines, _ = parts
+    rest = "".join(body_lines)
     present = {m.group(1) for m in (LINE.match(l.rstrip("\r\n")) for l in fm_lines) if m}
 
     out, key = [], None
@@ -183,7 +296,7 @@ def rewrite_note(text, note):
         if new_line != content:
             changes.append("{0} -> {1}".format(content.strip(), new_line.strip()))
         out.append(new_line + eol)
-    return head + "".join(out) + rest, changes, unknown, conflicts, body_links
+    return head + "".join(out) + rest, changes, unknown, conflicts, body_links, body_changes
 
 
 def read_note(path):
@@ -236,6 +349,8 @@ def rewrite_seen(doc, unknown):
                 unknown.append({"note": str(SEEN_JOBS), "key": job_key + ".status", "value": v})
             elif target in ("note", "url") and isinstance(v, str):
                 v = replace_text(v).replace(*NOTE_URL_SCHEME)
+            elif target in NAME_KEYS and isinstance(v, str):
+                v = NOTE_NAMES.get(v, v)
             elif target == "sources" and isinstance(v, list):
                 v = [fix_source(job_key, s) for s in v]
             fixed[target] = v
@@ -277,8 +392,9 @@ def rewrite_seen(doc, unknown):
 
 
 def plan(workspace):
-    result = {"rename_files": [], "rename_folders": [], "frontmatter": [], "state_files": [],
-              "unknown_values": [], "conflicts": [], "body_links_to_old_names": []}
+    result = {"rename_files": [], "rename_folders": [], "frontmatter": [], "body": [],
+              "state_files": [], "unknown_values": [], "conflicts": [],
+              "body_links_to_old_names": []}
 
     for folder, old_name, new_name in FILE_RENAMES:
         old_folder = next((o for o, n in FOLDERS.items() if n == folder), None)
@@ -300,9 +416,11 @@ def plan(workspace):
     for path in note_files(workspace):
         rel = path.relative_to(workspace).as_posix()
         text = read_note(path)
-        new_text, changes, unknown, conflicts, links = rewrite_note(text, rel)
-        if new_text != text:
+        new_text, changes, unknown, conflicts, links, body_changes = rewrite_note(text, rel)
+        if changes:
             result["frontmatter"].append({"note": rel, "changes": changes})
+        if body_changes:
+            result["body"].append({"note": rel, "changes": body_changes})
         result["unknown_values"].extend(unknown)
         result["conflicts"].extend(conflicts)
         if links:
@@ -323,14 +441,16 @@ def plan(workspace):
 
 
 def has_work(result):
-    return any(result[k] for k in ("rename_files", "rename_folders", "frontmatter", "state_files"))
+    return any(result[k] for k in ("rename_files", "rename_folders", "frontmatter", "body",
+                                   "state_files"))
 
 
 def apply(workspace, result):
     """Content first, then file renames, then folders: every planned path is still valid."""
-    for item in result["frontmatter"]:
-        path = workspace / item["note"]
-        new_text = rewrite_note(read_note(path), item["note"])[0]  # read before "w" truncates
+    notes = dict.fromkeys(item["note"] for item in result["frontmatter"] + result["body"])
+    for note in notes:
+        path = workspace / note
+        new_text = rewrite_note(read_note(path), note)[0]  # read before "w" truncates
         with open(path, "w", encoding="utf-8", newline="") as handle:
             handle.write(new_text)
 

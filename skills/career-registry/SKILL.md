@@ -76,14 +76,14 @@ What makes traceability real and not an intention:
 
 ### Workspaces from before the English contract
 
-A workspace created before the English data contract reads as empty, and the result carries a "pre-English layout" problem. The migration ships here, so freelance-only installs get it too: `scripts/migrate_workspace.py` rewrites folders, fixed note names, frontmatter and `seen_jobs.json`, with every old name taken from `scripts/legacy_contract.es.json` (the same pack `career_registry.py` reads to spot the old layout).
+A workspace created before the English data contract reads as empty, and the result carries a "pre-English layout" problem. The migration ships here, so freelance-only installs get it too: `scripts/migrate_workspace.py` rewrites folders, fixed note names, frontmatter, the template structure in note bodies and `seen_jobs.json`, with every old name taken from `scripts/legacy_contract.es.json` (the same pack `career_registry.py` reads to spot the old layout). In a body it rewrites only whole lines that are an old template heading (a title by its prefix), an old bold label at the start of a line (the value after it kept), a table header row that matches an old one cell for cell, and the enum cells (`Status`, `Billable`, `Result`, `Source`) of that table's rows; prose, plain list items, comments, code fences and links stay as written.
 
 ```bash
 python .claude/skills/career-registry/scripts/migrate_workspace.py            # dry run: prints the plan, changes nothing
 python .claude/skills/career-registry/scripts/migrate_workspace.py --apply    # backs up the workspace next to it, then migrates
 ```
 
-Show the dry run, point out `unknown_values` and `body_links_to_old_names` (note bodies are never edited), and run `--apply` only with the user's approval. With `+job-hunt` installed, `/job-hunt migrate` walks the same steps.
+Show the dry run (the `body` section lists each line it would rewrite), point out `unknown_values` (frontmatter values and ledger cells it does not recognize, left as they are) and `body_links_to_old_names` (links are never rewritten), and run `--apply` only with the user's approval. With `+job-hunt` installed, `/job-hunt migrate` walks the same steps.
 
 ## Process
 

@@ -69,11 +69,12 @@ python .claude/skills/career-registry/scripts/migrate_workspace.py --workspace ~
 
 The workspace resolves like `/career-registry`: `--workspace`, env `CAREER_WORKSPACE`, or `./career-workspace`.
 
-1. Run the dry run and show the user the plan: folders and fixed notes to rename (to `01-Profiles/`, `Master Profile.md`, `Templates/Application.md`...), frontmatter keys and values to rewrite per note, and the `seen_jobs.json` rewrite (schema version 1 → 2).
-2. Point out `unknown_values`: frontmatter values the script does not recognize (a custom status, a free-text work mode). It leaves them as they are; the user decides whether to fix them by hand.
-3. Point out `body_links_to_old_names`: wikilinks inside note bodies that name a renamed note or folder (the old master profile name, a path in an old folder). The script never edits note bodies; these links have to be fixed by hand, or with Obsidian's rename if the user prefers.
+1. Run the dry run and show the user the plan: folders and fixed notes to rename (to `01-Profiles/`, `Master Profile.md`, `Templates/Application.md`...), frontmatter keys and values to rewrite per note, body lines to rewrite per note (`body`, one `line N: old -> new` each), and the `seen_jobs.json` rewrite (schema version 1 → 2).
+2. Point out `unknown_values`: frontmatter values, and cells of a ledger enum column (`table column <name>`), that the script does not recognize (a custom status, a free-text work mode). It leaves them as they are; the user decides whether to fix them by hand.
+3. Point out `body_links_to_old_names`: wikilinks inside note bodies that name a renamed note or folder (the old master profile name, a path in an old folder). The script does not rewrite links; fix them by hand, or with Obsidian's rename if the user prefers.
 4. With the user's approval, run `--apply`. It first copies the whole workspace to `<workspace>.backup-YYYYMMDD-HHMMSS/` next to it, never deletes anything, and running it twice changes nothing. The backup holds the same personal data as the workspace: keep it out of any git remote.
-5. Template bodies stay in the old language. To get the English templates, copy them again from `references/templates/` into `Templates/` (ask before overwriting a template the user edited).
+
+In note bodies (the same notes whose frontmatter it rewrites, `00-Dashboard.md` and `Templates/` included) the script rewrites only the structure the old templates fixed, so the skills find their sections again: a whole line that is an old template heading (`## Timeline / follow-up`, a title such as `# Profile - <name>` by its prefix), an old bold label at the start of a line (`**High priority:**`, `- **Company:** <value>`, the value kept), a table header row that matches an old one cell for cell (the contract milestones, hours and change orders, the Connects ledger and purchases), and the enum cells of that table's rows (`Status`, `Billable`, `Result`, `Source`). Everything else stays as the user wrote it: prose, plain list items, `%% %%` comments, blockquotes, code fences, links. Template placeholder prose (comments, hints, plain list labels such as `- Base profile:`) therefore stays in the old language; to get the English templates whole, copy them again from `references/templates/` into `Templates/` (ask before overwriting a template the user edited).
 
 ## Routing
 
