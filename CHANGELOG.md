@@ -1,3 +1,10 @@
+# [2.31.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.30.0...v2.31.0) (2026-10-27)
+
+
+### Features
+
+* **job-hunt:** compute job_key in code and check dates and hosts before applying ([b36a94c](https://github.com/SebastianLuser/claude-code-arcane/commit/b36a94cb8d9cc85f77264aed6209747e2a1eb4e9))
+
 # [2.30.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.9...v2.30.0) (2026-10-27)
 
 
