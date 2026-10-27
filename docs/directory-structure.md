@@ -58,7 +58,7 @@ claude-code-arcane/
 ├── rules/                             # Rules universales (rules.universal en los profiles)
 │   └── gamedev/                       # Rules de gamedev (rules.gamedev en los profiles)
 │
-├── hooks/                             # Scripts bash de lifecycle; statusline.sh incluido
+├── hooks/                             # Scripts bash de lifecycle y sus .mjs; statusline.sh incluido
 ├── output-styles/                     # Output styles (arcane.md)
 ├── templates/
 │   └── gamedev/                       # Plantillas de GDD y docs de juego
@@ -93,7 +93,7 @@ claude-code-arcane/
 │   │   └── _templates/                # templates/gamedev/, solo si algún profile trae rules de gamedev
 │   ├── agents/<division>/             # Divisiones enteras o agentes sueltos, según el profile
 │   ├── rules/                         # Universales y de gamedev juntas, en un solo nivel
-│   ├── hooks/                         # Todos los hooks de hooks/ salvo statusline.sh
+│   ├── hooks/                         # Todos los hooks de hooks/ salvo statusline.sh (statusline.mjs sí)
 │   ├── statusline.sh                  # Solo con el profile statusline
 │   ├── output-styles/                 # Solo si algún profile declara output_styles
 │   ├── docs/                          # Los docs que nombra lo instalado; arcane update los mantiene al día

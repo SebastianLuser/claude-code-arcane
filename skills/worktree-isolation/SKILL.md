@@ -16,6 +16,8 @@ Manually apply or inspect worktree isolation for the current directory. Use this
 
 If you want the SessionStart hook to do this automatically on every session start, **and** you want the repo's compose files + `CLAUDE.md` parameterized so commands "just work" without needing to source `.env.worktree`, run the [`worktree-isolation-setup`](../worktree-isolation-setup/) skill once per repo first.
 
+The script is Node, not Python, because it also runs as a hook: Node is always there where Arcane is installed, and it needs no YAML library.
+
 For an in-depth explanation of how isolation works (hook lifecycle, override generation, port allocation, compose chaining), see [README.md](README.md).
 
 ---
@@ -25,13 +27,13 @@ For an in-depth explanation of how isolation works (hook lifecycle, override gen
 ### `apply` (default — regenerate)
 
 ```bash
-python3 scripts/apply.py --cwd "$PWD" --verbose --force
+node scripts/apply.mjs --cwd "$PWD" --verbose --force
 ```
 
 If the global hook+scripts are already installed at `~/.claude/scripts/worktree-isolation/`, prefer that path instead — it's the same code:
 
 ```bash
-~/.claude/scripts/worktree-isolation/apply.py --cwd "$PWD" --verbose --force
+node ~/.claude/scripts/worktree-isolation/apply.mjs --cwd "$PWD" --verbose --force
 ```
 
 After running, bring the stack up:
@@ -45,7 +47,7 @@ docker compose up -d
 ### `status` (inspect)
 
 ```bash
-python3 scripts/apply.py --cwd "$PWD" --status
+node scripts/apply.mjs --cwd "$PWD" --status
 ```
 
 Prints the current `.env.worktree`. Use when the user asks about ports or `COMPOSE_PROJECT_NAME`.

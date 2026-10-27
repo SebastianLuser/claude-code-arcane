@@ -35,7 +35,7 @@ The installer writes these into `settings.json` (`src/hook-commands.ts`); `core.
 | | `session-stop.sh` | Logs the stop |
 | `PreCompact`, `PostCompact`, `Notification`, `SubagentStart`, `SubagentStop` | `pre-compact.sh`, `post-compact.sh`, `notify.sh`, `log-agent*.sh` | Log only, to `.claude/session-state/` |
 
-The guard and the session watch are Node scripts (`guard.mjs`, `session-watch.mjs`) behind bash wrappers. Arcane is installed with npx, so Node is on the machine; without it they do nothing instead of failing.
+The guard, the session watch, the update check and the status line are Node scripts (`guard.mjs`, `session-watch.mjs`, `check-update.mjs`, `statusline.mjs`) behind bash wrappers. Arcane is installed with npx, so Node is on the machine; without it they do nothing instead of failing.
 
 ## Roles
 

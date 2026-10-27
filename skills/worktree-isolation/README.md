@@ -51,7 +51,7 @@ You either (a) tear down worktree #1, (b) hand-edit ports for #2, or (c) live wi
 
 ## The solution
 
-A small Python script that, run inside any worktree, generates per-worktree compose overrides and a `.env.worktree` env file with non-colliding ports and a unique project name. Same worktree path → identical output forever.
+A small Node script (no dependencies) that, run inside any worktree, generates per-worktree compose overrides and a `.env.worktree` env file with non-colliding ports and a unique project name. Same worktree path → identical output forever.
 
 This skill exposes the script. The companion [`worktree-isolation-setup`](../worktree-isolation-setup/) skill installs it as a `SessionStart` hook so it runs automatically on every Claude Code session start.
 
@@ -162,8 +162,8 @@ COMPOSE_FILE=docker-compose.yml:docker-compose.worktree.yml:docker-compose.proce
 
 Deterministic hash → 20000–29999 range:
 
-```python
-host_port = 20000 + (sha1(f"{worktree_id}:{service}:{container_port}").digest_int % 10000)
+```js
+host_port = 20000 + (first4bytes(sha256(`${worktree_id}:${service}:${host_port}:${container_port}`)) % 10000)
 ```
 
 - **Range**: 20000–29999 chosen to avoid (a) the privileged range below 1024, (b) common dev ports below 10000, (c) the ephemeral range usually starting at 32768 on Linux/macOS.
@@ -188,6 +188,5 @@ skills/worktree-isolation/
 ├── SKILL.md          # entry point — how to invoke
 ├── README.md         # this file
 └── scripts/
-    ├── apply.py      # the script itself
-    └── lib.py        # compose parsing + port allocation + override generation
+    └── apply.mjs     # compose parsing, port allocation, override generation (Node, no dependencies)
 ```

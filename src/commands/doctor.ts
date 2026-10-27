@@ -116,9 +116,10 @@ function commandsOf(settings: Record<string, unknown>): string[] {
 function scriptsOf(command: string): string[] {
   const scripts = [...command.matchAll(/\.claude\/((?:hooks\/)?[\w.-]+\.(?:sh|py))/g)].map((m) => m[1]);
   // These wrappers only start Node; the logic lives in the .mjs beside them.
-  for (const wrapper of ["guard", "session-watch"]) {
+  for (const wrapper of ["guard", "session-watch", "check-update"]) {
     if (scripts.includes(`hooks/${wrapper}.sh`)) scripts.push(`hooks/${wrapper}.mjs`);
   }
+  if (scripts.includes("statusline.sh")) scripts.push("hooks/statusline.mjs");
   return scripts;
 }
 

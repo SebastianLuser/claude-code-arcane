@@ -12,6 +12,11 @@ interface GlobalOpts {
 const CLAUDE_HOME = path.join(os.homedir(), ".claude");
 const SCRIPTS_DIR = path.join(CLAUDE_HOME, "scripts", "worktree-isolation");
 const SETTINGS_PATH = path.join(CLAUDE_HOME, "settings.json");
+const SCRIPT = "apply.mjs";
+/** Before the Node port the hook ran apply.py (with lib.py beside it) through uv. */
+const LEGACY_SCRIPTS = ["apply.py", "lib.py"];
+const isOurHook = (command?: string, script = "apply.") =>
+  !!command?.includes(`worktree-isolation/${script}`) && command.includes("--quiet");
 
 export async function globalCommand(opts: GlobalOpts): Promise<void> {
   if (opts.status) {
@@ -49,9 +54,7 @@ function settingsParseable(): boolean {
 function showStatus(): void {
   console.log(chalk.bold("\n=== Arcane Global Status ===\n"));
 
-  const hasScripts = fs.existsSync(
-    path.join(SCRIPTS_DIR, "apply.py"),
-  );
+  const hasScripts = fs.existsSync(path.join(SCRIPTS_DIR, SCRIPT));
   console.log(
     `  Worktree scripts: ${hasScripts ? chalk.green("installed") : chalk.dim("not installed")}`,
   );
@@ -86,7 +89,10 @@ function installGlobal(): void {
   }
 
   fs.mkdirSync(SCRIPTS_DIR, { recursive: true });
-  for (const file of ["apply.py", "lib.py"]) {
+  for (const file of LEGACY_SCRIPTS) {
+    fs.rmSync(path.join(SCRIPTS_DIR, file), { force: true });
+  }
+  for (const file of [SCRIPT]) {
     const src = path.join(scriptsSrc, file);
     const dst = path.join(SCRIPTS_DIR, file);
     if (!fs.existsSync(src)) {
@@ -107,11 +113,13 @@ function installGlobal(): void {
     }
   }
 
-  if (isHookInstalled()) {
+  if (isHookInstalled(SCRIPT)) {
     console.log(
       chalk.dim("  [skip] SessionStart hook (already configured)"),
     );
   } else {
+    // Replaces an apply.py hook from before the Node port rather than adding a second one.
+    if (isHookInstalled()) removeHookFromSettings();
     addHookToSettings();
     console.log(
       chalk.green("  [ok] SessionStart hook added to ~/.claude/settings.json"),
@@ -164,24 +172,17 @@ function writeSettings(settings: Record<string, unknown>): void {
   );
 }
 
-function isHookInstalled(): boolean {
+/** Any worktree-isolation hook, or only the one running `script` when given. */
+function isHookInstalled(script?: string): boolean {
   const settings = readSettings();
   const hooks = (settings.hooks ?? {}) as Record<string, unknown[]>;
   const sessionStart = (hooks.SessionStart ?? []) as Array<{
     hooks?: Array<{ command?: string }>;
   }>;
 
-  for (const entry of sessionStart) {
-    for (const hook of entry.hooks ?? []) {
-      if (
-        hook.command?.includes("worktree-isolation/apply.py") &&
-        hook.command?.includes("--quiet")
-      ) {
-        return true;
-      }
-    }
-  }
-  return false;
+  return sessionStart.some((entry) =>
+    (entry.hooks ?? []).some((hook) => isOurHook(hook.command, script)),
+  );
 }
 
 function addHookToSettings(): void {
@@ -194,7 +195,7 @@ function addHookToSettings(): void {
 
   const hookEntry = {
     type: "command" as const,
-    command: `${SCRIPTS_DIR.replace(/\\/g, "/")}/apply.py --quiet`,
+    command: `node "${SCRIPTS_DIR.replace(/\\/g, "/")}/${SCRIPT}" --quiet`,
   };
 
   const existing = sessionStart.find(
@@ -222,13 +223,7 @@ function removeHookFromSettings(): void {
 
   for (const entry of sessionStart) {
     if (!entry.hooks) continue;
-    entry.hooks = entry.hooks.filter(
-      (h) =>
-        !(
-          h.command?.includes("worktree-isolation/apply.py") &&
-          h.command?.includes("--quiet")
-        ),
-    );
+    entry.hooks = entry.hooks.filter((h) => !isOurHook(h.command));
   }
 
   hooks.SessionStart = sessionStart.filter(

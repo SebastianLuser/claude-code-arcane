@@ -146,7 +146,7 @@ export async function worktreeCommand(
       console.log("  Applying worktree isolation...");
       try {
         execSync(
-          "python3 scripts/apply.py --cwd . --verbose --force",
+          `node scripts/apply.mjs --cwd "${worktreePath}" --verbose --force`,
           {
             cwd: isolateScript,
             encoding: "utf-8",

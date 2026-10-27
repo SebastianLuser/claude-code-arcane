@@ -30,8 +30,8 @@ Two distinct things:
 
 Idempotent. Run once per machine.
 
-- Copies `apply.py` + `lib.py` into `~/.claude/scripts/worktree-isolation/`
-- Adds a `SessionStart` hook to `~/.claude/settings.json` that invokes `apply.py --quiet` on every Claude Code session start
+- Copies `apply.mjs` into `~/.claude/scripts/worktree-isolation/`
+- Adds a `SessionStart` hook to `~/.claude/settings.json` that invokes `node apply.mjs --quiet` on every Claude Code session start
 
 After this, every time you open a worktree under Claude Code, the script auto-generates `.env.worktree` + `*.worktree.yml` overrides for that worktree without any further intervention.
 
@@ -89,7 +89,7 @@ After setup, both work in parallel.
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Every Claude Code session start (automatic, after setup):          │
 │                                                                     │
-│    SessionStart hook → apply.py --quiet                             │
+│    SessionStart hook → apply.mjs --quiet                            │
 │      ├─ generates *.worktree.yml override                           │
 │      └─ writes .env.worktree                                        │
 └─────────────────────────────────────────────────────────────────────┘

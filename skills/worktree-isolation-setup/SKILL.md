@@ -14,8 +14,8 @@ After this runs:
 - `docker-compose*.yml` ports + `container_name` are parameterized with `${VAR-default}`
 - `CLAUDE.md` test commands reference the same env vars
 - `.gitignore` excludes the runtime-generated `.env.worktree` + `*.worktree.yml`
-- `~/.claude/scripts/worktree-isolation/` has `apply.py` + `lib.py` copied
-- `~/.claude/settings.json` has a `SessionStart` hook that runs `apply.py --quiet` on every session start
+- `~/.claude/scripts/worktree-isolation/` has `apply.mjs` copied
+- `~/.claude/settings.json` has a `SessionStart` hook that runs `node apply.mjs --quiet` on every session start
 
 For an in-depth explanation of how isolation works (hook lifecycle, override generation, port allocation, compose chaining), see [README.md](README.md).
 
@@ -36,8 +36,8 @@ npx claude-code-arcane global
 ```
 
 What it does:
-1. Copies `apply.py` + `lib.py` into `~/.claude/scripts/worktree-isolation/`
-2. Adds a `SessionStart` hook in `~/.claude/settings.json` that invokes `~/.claude/scripts/worktree-isolation/apply.py --quiet`
+1. Copies `apply.mjs` into `~/.claude/scripts/worktree-isolation/`
+2. Adds a `SessionStart` hook in `~/.claude/settings.json` that invokes `node ~/.claude/scripts/worktree-isolation/apply.mjs --quiet` (it replaces an `apply.py` hook from older versions)
 
 It refuses to touch a malformed `settings.json`; if it stops there, tell the user and continue with Step 2 — the repo changes do not depend on the hook.
 
@@ -174,7 +174,7 @@ Should succeed. The output won't show env-substitution failures because defaults
 
 Then re-run the runtime hook to confirm it picks up the new structure:
 ```bash
-~/.claude/scripts/worktree-isolation/apply.py --cwd "$PWD" --verbose --force
+node ~/.claude/scripts/worktree-isolation/apply.mjs --cwd "$PWD" --verbose --force
 ```
 
 Confirm:
