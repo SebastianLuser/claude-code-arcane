@@ -74,7 +74,7 @@ AskUserQuestion: write review report + traceability index + TR registry, or repo
 
 ## Phase 9: Handoff
 
-Top 3 ADRs to create → `/gate-check pre-production` when blockers resolved → rerun after each new ADR.
+Top 3 ADRs to create (`/architecture-decision`) → rerun after each new ADR.
 
 ## Protocol
 - Read silently, show matrix before asking anything

@@ -4,6 +4,7 @@ category: gamedev
 
 skills:
   - architecture-review
+  - architecture-decision
   # Foundation — read this first, every other ue-* skill depends on it
   - ue-project-context
   - ue-naming-conventions
@@ -48,6 +49,7 @@ skills:
   # Unreal ships its own MCP as engine plugins; install-mcp only enables and connects it.
   - install-mcp
   - test-setup
+  - smoke-check
   - perf-profile
   - optimize
   - deps-audit
@@ -65,6 +67,8 @@ skills:
   - consistency-check
   - doc-gdd
   - playtest-report
+  - bug-report
+  - bug-triage
 
 rules:
   universal:

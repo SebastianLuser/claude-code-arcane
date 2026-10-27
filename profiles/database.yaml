@@ -12,6 +12,8 @@ skills:
   - read-replicas
   - create-test-user
   - database-ops
+  - data-migrations
+  - backup-strategy
 
 rules:
   universal:
@@ -20,7 +22,7 @@ rules:
     []
 
 agents:
-  []
+  - engineering/sql-specialist
 
 permissions:
   allow:

@@ -19,7 +19,10 @@ skills:
   - art-bible
   - asset-spec
   - playtest-report
+  - bug-report
+  - bug-triage
   - balance-check
+  - consistency-check
   - architecture-review
 
 rules:
