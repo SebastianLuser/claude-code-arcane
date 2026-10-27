@@ -1,3 +1,11 @@
+## [2.29.8](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.7...v2.29.8) (2026-10-27)
+
+
+### Bug Fixes
+
+* **hooks:** run the status line, update check and worktree isolation on Node ([7beb992](https://github.com/SebastianLuser/claude-code-arcane/commit/7beb99257a1007b4f145490599a2ab9aeaff6833))
+* **profiles:** ship the skills each profile's skills send work to ([fcdcfb8](https://github.com/SebastianLuser/claude-code-arcane/commit/fcdcfb8376d4c00c57b1bcdca91813e510c7302a))
+
 ## [2.29.7](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.6...v2.29.7) (2026-10-27)
 
 
