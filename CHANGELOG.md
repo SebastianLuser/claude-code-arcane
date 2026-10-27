@@ -1,3 +1,10 @@
+## [2.29.9](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.8...v2.29.9) (2026-10-27)
+
+
+### Bug Fixes
+
+* **skills:** move android-native-dev's reference sections out of SKILL.md ([c3af738](https://github.com/SebastianLuser/claude-code-arcane/commit/c3af7389b91b01041cc7a36618d14f453a05e62d))
+
 ## [2.29.8](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.7...v2.29.8) (2026-10-27)
 
 
