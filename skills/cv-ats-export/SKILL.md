@@ -41,14 +41,14 @@ El script:
 2. Lee el `.md`, separa frontmatter, convierte el cuerpo a HTML con el CSS ATS embebido.
 3. Imprime a PDF con Chrome/Edge headless (`--headless=new --print-to-pdf`).
 4. Guarda en `02-CVs/exports/`. El nombre sale del frontmatter `archivo_pdf` si existe; si no, del nombre del `.md` (sin el prefijo `CV - `).
-5. **Verifica la capa de texto ATS** con `verify_pdf.py` (pypdf): texto extraíble (mínimo 200 chars), que el nombre del H1 y el email sobrevivan al export, y avisa si supera las 2 páginas. Reporta `[ATS OK]` / `[ATS WARN]` / `[ATS SKIP]`; nunca rompe el export. Se salta con `--no-verify`.
+5. **Verifica la capa de texto ATS** con `verify_pdf.py` (pypdf): texto extraíble (mínimo 200 chars), que el nombre del H1 y el email sobrevivan al export (comparando con comillas, guiones y espacios normalizados), que ningún rango de fechas use un guion Unicode (`2019–2024` → `2019-2024`: un ATS como Workday lo pierde) y avisa si supera las 2 páginas. Reporta `[ATS OK]` / `[ATS WARN]` / `[ATS SKIP]`; nunca rompe el export. Se salta con `--no-verify`.
 
 Los dos `[ATS SKIP]` son distintos: `verify_pdf.py not found next to cv_export.py` significa que copiaste solo un archivo al workspace (instalar pypdf no cambia nada); `pypdf not installed` es el que se resuelve con `pip install pypdf`.
 
 `verify_pdf.py` también funciona standalone para chequear cualquier PDF:
 
 ```bash
-python scripts/verify_pdf.py "02-CVs/exports/Backend.pdf" --min-chars 200 --max-pages 2 --contains "Jane Doe"
+python scripts/verify_pdf.py "02-CVs/exports/Backend.pdf" --min-chars 200 --max-pages 2 --contains "Jane Doe" --ascii-dates
 ```
 
 ## Markdown soportado

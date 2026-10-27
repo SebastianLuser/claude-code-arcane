@@ -69,6 +69,7 @@ CV en **inglés** para roles internacionales/remotos globales; **español** si l
 ## Reglas
 
 - Nunca inventar experiencia, fechas o métricas. Tailoring = reorganizar y traducir, no mentir.
+- Rangos de fechas con guion ASCII (`2019-2024`, `Mar 2023 - Presente`), nunca `–` ni `—`: un ATS que separa el rango por `-` pierde la fecha. `/cv-ats-export` lo verifica.
 - No keyword-stuffing: cada keyword debe vivir en un bullet verdadero.
 - Un CV custom por postulación - no pisar el perfil base ni el maestro.
 - Después de generar el `.md`, recordar al usuario correr `/cv-ats-export` para el PDF.

@@ -10,7 +10,7 @@
     "actualizado": { "type": "string", "format": "date", "description": "Fecha ISO de la ultima escritura" },
     "jobs": {
       "type": "object",
-      "description": "Mapa job_key -> entrada. job_key = slug normalizado de 'empresa|titulo' (lowercase, sin acentos, sin puntuacion, sin sufijos legales de empresa, sin calificadores '(remote)'/'(latam)' del titulo).",
+      "description": "Mapa job_key -> entrada. job_key = 'slug(empresa)|slug(titulo)', calculada con scripts/job_key.py (reglas en references/dedup-playbook.md).",
       "additionalProperties": {
         "type": "object",
         "required": ["title", "company", "sources", "first_seen", "last_seen", "status"],

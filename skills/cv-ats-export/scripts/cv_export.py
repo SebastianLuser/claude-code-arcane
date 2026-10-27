@@ -230,7 +230,7 @@ def verify_ats(pdf_path, body):
         contains.append(m.group(0))
 
     try:
-        problems = verify(pdf_path, min_chars=200, contains=contains, max_pages=2)
+        problems = verify(pdf_path, min_chars=200, contains=contains, max_pages=2, ascii_dates=True)
     except ImportError:
         print("        [ATS SKIP] pypdf not installed (pip install pypdf)")
         return
