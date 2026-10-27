@@ -36,6 +36,7 @@ rules:
     - verification
     - agent-delegation
     - git-worktrees
+    - user-language
   gamedev:
     []
 

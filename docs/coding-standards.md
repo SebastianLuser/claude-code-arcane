@@ -1,101 +1,109 @@
 # Coding Standards (Core Universal)
 
-Estándares que aplican a cualquier código (software o gamedev). Para estándares específicos:
-- Software (backend / frontend / APIs / infra): ver `.claude/docs/software/coding-standards.md`
-- Game dev (engines, shaders, gameplay): ver `.claude/docs/gamedev/coding-standards.md`
+Standards that apply to any code (software or gamedev). For specific standards:
+- Software (backend / frontend / APIs / infra): see `.claude/docs/software/coding-standards.md`
+- Game dev (engines, shaders, gameplay): see `.claude/docs/gamedev/coding-standards.md`
 
-Las rules path-scoped específicas viven en `.claude/rules/`.
-
----
-
-## Principios Generales
-
-1. **Simplicidad primero:** Código que se entiende sin comentarios es mejor que código clever con comments.
-2. **Boundaries claros:** Validar input en los boundaries (API endpoints, form handlers, player input). Confiar en código interno.
-3. **No premature optimization:** Optimizar solo cuando hay evidencia (profiling, métricas).
-4. **Test de lo que importa:** Cobertura alta en lógica de negocio / gameplay systems, no en getters/setters.
-5. **Verification-driven development:** Tests primero cuando agregás lógica crítica. Para cambios visuales, verificá con screenshots. Comparar expected vs actual output antes de marcar trabajo como completo.
+Path-scoped rules live in `.claude/rules/`.
 
 ---
 
-## Elección de lenguaje en este repo
+## General Principles
 
-El lenguaje lo dicta **el contexto de ejecución**, no la preferencia. Hay cuatro contextos y uno solo por cada uno:
+1. **Simplicity first:** code that reads without comments beats clever code with comments.
+2. **Clear boundaries:** validate input at the boundaries (API endpoints, form handlers, player input). Trust internal code.
+3. **No premature optimization:** optimize only with evidence (profiling, metrics).
+4. **Test what matters:** high coverage on business logic / gameplay systems, not on getters/setters.
+5. **Verification-driven development:** tests first when adding critical logic. For visual changes, verify with screenshots. Compare expected vs actual output before marking work complete.
 
-| Contexto | Lenguaje | Por qué | Garantía en CI |
+---
+
+## Language in this repo
+
+**Everything in this repo is English**: skills, agents, rules, docs, code, comments, script output and data contracts (folder names, frontmatter keys, JSON fields, status values). The language of a file never decides the language of the conversation: Claude replies in the language the user writes in, and writes files for the user (notes, CVs, letters) in the language the user uses or asks for. `rules/user-language.md` ships that rule to every project.
+
+Knowledge that only exists in one language (injection phrases, AI-tell lexicons, stopwords) is data, not prose: it lives in a `*.<lang>.json` pack next to the script, the code stays language-agnostic, and a language without a pack falls back to the language-neutral checks instead of applying another language's data. `src/__tests__/language.test.ts` enforces this.
+
+---
+
+## Choosing a programming language in this repo
+
+The **runtime context** picks the language, not preference. There are four contexts and one language each:
+
+| Context | Language | Why | CI guarantee |
 |---|---|---|---|
-| Installer (`src/`) | **TypeScript** | Es el paquete npm publicado: el único código con build (`tsup`) y typechecker | `npm run build`, `tsc --noEmit`, `vitest` |
-| Hooks de lifecycle (`hooks/`, `skills/*/hooks/`) | **Bash**; la lógica que no entra en Bash, en **JavaScript `.mjs`** detrás de un wrapper `.sh` | Claude Code los invoca por path. Node está garantizado porque Arcane se instala con npx; Python no, y sin él el guard no hacía nada | `bash -n` y `node --check` sobre todos; specs en `src/__tests__/hook-*.test.ts` |
-| Scripts de skill (`skills/*/scripts/`) | **Python 3, solo stdlib** | Se copian al proyecto del usuario y corren ahí: sin build, sin `package.json`, sin `node_modules` | Specs en `tests/` (ver Testing) |
-| Templates (`*/templates/`) | **El del proyecto destino** | Son contenido que se emite al proyecto del usuario; el repo nunca los ejecuta | N/A |
+| Installer (`src/`) | **TypeScript** | It is the published npm package: the only code with a build (`tsup`) and a typechecker | `npm run build`, `tsc --noEmit`, `vitest` |
+| Lifecycle hooks (`hooks/`, `skills/*/hooks/`) | **Bash**; logic that does not fit Bash goes in **JavaScript `.mjs`** behind a `.sh` wrapper | Claude Code invokes them by path. Node is guaranteed because Arcane installs through npx; Python is not, and without it the guard did nothing | `bash -n` and `node --check` on all of them; specs in `src/__tests__/hook-*.test.ts` |
+| Skill scripts (`skills/*/scripts/`) | **Python 3, stdlib only** | Copied into the user's project and run there: no build, no `package.json`, no `node_modules` | Specs in `tests/` (see Testing) |
+| Templates (`*/templates/`) | **The target project's** | Content emitted into the user's project; the repo never runs it | N/A |
 
-**TypeScript fuera de `src/` no es una elección de lenguaje: es un requisito de runtime disfrazado.** Sin build step, un `.ts` solo corre con el type stripping nativo de Node 24+, que la matriz de CI (20 y 22) no cubre. Si el script tiene que correr en la máquina del usuario, es Python.
+**TypeScript outside `src/` is not a language choice: it is a runtime requirement in disguise.** Without a build step, a `.ts` only runs with Node 24+'s native type stripping, which the CI matrix (20 and 22) does not cover. If the script has to run on the user's machine, it is Python.
 
-**Dependencias opcionales:** permitidas solo con degradación explícita. Referencia: `cv-ats-export` usa `pypdf` si está y reporta `[ATS SKIP]` si no, sin romper el export.
+**Optional dependencies:** allowed only with explicit degradation. Reference: `cv-ats-export` uses `pypdf` when present and reports `[ATS SKIP]` when not, without breaking the export.
 
-### Escotilla de escape
+### Escape hatch
 
-Otro lenguaje **únicamente cuando una dependencia obligatoria lo impone** — nunca por gusto ni por familiaridad. Requiere una línea de justificación en el SKILL.md del skill. Los casos vigentes:
+Another language **only when a required dependency imposes it** — never by taste or familiarity. It needs a one-line justification in the skill's SKILL.md. Current cases:
 
-- `pdf-generator/scripts/render_cover.js` → Node, porque **Playwright es una librería de Node**.
-- `docx-generator/scripts/` (`.cs`, `.slnx`, `setup.ps1`) → .NET, porque **vendorea un proyecto .NET** (MiniMaxAIDocx); el `.ps1` es su setup en Windows.
-- `worktree-isolation/scripts/apply.mjs` → Node, porque **también es un hook**: `arcane global` lo instala como `SessionStart` global y `arcane worktree --isolate` lo corre, y Python con PyYAML no está garantizado en ninguno de los dos. Spec en `src/__tests__/worktree-isolation.test.ts`.
+- `pdf-generator/scripts/render_cover.js` → Node, because **Playwright is a Node library**.
+- `docx-generator/scripts/` (`.cs`, `.slnx`, `setup.ps1`) → .NET, because it **vendors a .NET project** (MiniMaxAIDocx); the `.ps1` is its Windows setup.
+- `worktree-isolation/scripts/apply.mjs` → Node, because **it is also a hook**: `arcane global` installs it as a global `SessionStart` and `arcane worktree --isolate` runs it, and Python with PyYAML is guaranteed in neither. Spec in `src/__tests__/worktree-isolation.test.ts`.
 
-Si podés hacerlo con la stdlib de Python, la escotilla no aplica.
+If the Python stdlib can do it, the escape hatch does not apply.
 
 ---
 
 ## Naming
 
-- **Variables/funciones:** camelCase (JS/TS/Java/C#) o snake_case (Python/Rust) o PascalCase (Go exports)
-- **Clases/tipos:** PascalCase en todos los lenguajes
+- **Variables/functions:** camelCase (JS/TS/Java/C#), snake_case (Python/Rust) or PascalCase (Go exports)
+- **Classes/types:** PascalCase in every language
 - **Constants:** UPPER_SNAKE_CASE
-- **Files:** kebab-case para web/scripts, PascalCase para componentes/clases, snake_case para Python/Go
+- **Files:** kebab-case for web/scripts, PascalCase for components/classes, snake_case for Python/Go
 
 ---
 
-## Comentarios
+## Comments
 
-La regla vive en `.claude/rules/code-comments.md` y es la única autoridad.
-No dupliques criterios acá: dos listas sobre comentarios siempre terminan
-contradiciéndose, y gana la permisiva.
+The rule lives in `.claude/rules/code-comments.md` and is the only authority.
+Do not duplicate criteria here: two lists about comments always end up
+contradicting each other, and the permissive one wins.
 
 ---
 
 ## Error Handling
 
-- **Fail fast en boundaries, fail soft en UX.** Error al input inválido; UX degrada gracefully.
-- **No tragues errores.** Loguealos o propagalos.
-- **Error types, no strings.** Facilita manejo programático.
-- **Logs con contexto:** userID/sessionID/requestID para traceability.
+- **Fail fast at boundaries, fail soft in UX.** Error on invalid input; the UX degrades gracefully.
+- **Do not swallow errors.** Log them or propagate them.
+- **Error types, not strings.** They make programmatic handling possible.
+- **Logs with context:** userID/sessionID/requestID for traceability.
 
 ---
 
 ## Security
 
-- **Nunca secrets en código** — variables de entorno o secret managers.
-- **Input validation en el boundary** — incluso si viene de tu propio frontend/cliente.
-- **Prepared statements para SQL.** String concat = SQL injection.
-- **CSRF tokens para state-changing operations** (web).
-- **Rate limiting en endpoints públicos**.
-- **Validate URLs de entrada** antes de hacer fetch (SSRF).
+- **Never secrets in code** — environment variables or secret managers.
+- **Input validation at the boundary** — even when it comes from your own frontend/client.
+- **Prepared statements for SQL.** String concatenation = SQL injection.
+- **CSRF tokens for state-changing operations** (web).
+- **Rate limiting on public endpoints.**
+- **Validate incoming URLs** before fetching them (SSRF).
 
 ---
 
 ## Git
 
-- **Commits atómicos:** un cambio lógico por commit.
+- **Atomic commits:** one logical change per commit.
 - **Conventional commits:** `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`, `perf:`, `style:`
-- **Mensaje en imperativo inglés:** "fix auth bug" no "fixed" o "fixes".
-- **Referencia ticket si existe:** `feat(auth): add OAuth (TUNI-123)`
-- **Commits referencian ADR/design doc si aplica:** `feat(combat): implement hitbox system per ADR-0012`
+- **Message in imperative English:** "fix auth bug", not "fixed" or "fixes".
+- **Reference the ticket if there is one:** `feat(auth): add OAuth (TUNI-123)`
+- **Commits reference the ADR/design doc when relevant:** `feat(combat): implement hitbox system per ADR-0012`
 
 ---
 
 ## Testing (Universal)
 
 ### AAA Pattern
-Arrange / Act / Assert. Cada test tiene setup, acción, verificación — separados.
+Arrange / Act / Assert. Every test has setup, action and verification — kept apart.
 
 ```
 test_damage_calculator_reduces_health_correctly:
@@ -110,41 +118,41 @@ test_damage_calculator_reduces_health_correctly:
 ```
 
 ### Naming
-`test_should_[expected_behavior]_when_[condition]` o `test_[system]_[scenario]_[expected]`
+`test_should_[expected_behavior]_when_[condition]` or `test_[system]_[scenario]_[expected]`
 
 ### Determinism
-- Tests deben dar mismo resultado cada corrida
-- Sin random seeds no-fijados, sin time-dependent assertions
-- Aislamiento: cada test setup+teardown propio, sin depender de orden
+- Tests give the same result on every run
+- No unpinned random seeds, no time-dependent assertions
+- Isolation: each test has its own setup+teardown and never depends on order
 
 ### Mocking
-- Mocks solo en boundaries externos (network, filesystem, DB, engine APIs)
-- Para código interno, preferir fakes/stubs
-- No hardcoded magic numbers en fixtures (excepción: boundary value tests)
+- Mocks only at external boundaries (network, filesystem, DB, engine APIs)
+- For internal code, prefer fakes/stubs
+- No hardcoded magic numbers in fixtures (exception: boundary value tests)
 
 ### Regression tests
-Cada bug fix debe llevar un test que hubiera atrapado el bug original.
+Every bug fix carries a test that would have caught the original bug.
 
 ### CI/CD
-- Test suite corre en cada push a main y cada PR
-- No merge si tests fallan — tests son gate bloqueante
-- Nunca disable/skip tests para que CI pase — fix el root cause
+- The test suite runs on every push to main and every PR
+- No merge while tests fail — tests are a blocking gate
+- Never disable/skip tests to make CI pass — fix the root cause
 
 ---
 
 ## Verification-Driven Development
 
-Antes de marcar trabajo como completo:
+Before marking work complete:
 
-1. **Si agregaste lógica:** ¿hay test automatizado que verifique?
-2. **Si cambiaste UI/visual:** ¿tenés screenshot o video antes/después?
-3. **Si es integración:** ¿corriste end-to-end al menos una vez?
-4. **Si es performance:** ¿medí before/after con métricas?
+1. **If you added logic:** is there an automated test that verifies it?
+2. **If you changed UI/visuals:** do you have a before/after screenshot or video?
+3. **If it is an integration:** did you run it end-to-end at least once?
+4. **If it is performance:** did you measure before/after with metrics?
 
-"Parece que funciona" no es verification. Tenés que poder mostrar evidencia concreta.
+"Looks like it works" is not verification. You must be able to show concrete evidence.
 
 ---
 
 ## Comments / Docs
 
-Ver `.claude/rules/code-comments.md`.
+See `.claude/rules/code-comments.md`.
