@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **454 skills, 115 agents, 17 hooks and 37 rules for Claude Code — selective deploy by profile.**
+> **454 skills, 115 agents, 17 hooks and 38 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
@@ -474,7 +474,7 @@ claude-code-arcane/
 ├── profiles/                  # 38 profiles (YAML)
 ├── agents/                    # 17 dirs, 109 agents (Markdown)
 ├── hooks/                     # 17 lifecycle hooks (Bash)
-├── rules/                     # 37 rules (Markdown)
+├── rules/                     # 38 rules (Markdown)
 ├── templates/                 # Gamedev templates
 ├── docs/                      # Documentation
 └── skills-selftest/           # QA framework
