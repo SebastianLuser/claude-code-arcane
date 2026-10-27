@@ -194,7 +194,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
 | `backend-typescript` | Backend TypeScript — Fastify, Prisma, Zod, API design | 29 | engineering |
-| `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 28 | engineering |
+| `backend-go` | Backend Go — Clean Arch, DB, auth, API, CI | 29 | engineering |
 | `backend-dotnet` | Backend .NET — ASP.NET Core, Vertical Slice/Clean, EF Core, JWT | 28 | engineering |
 | `backend-nestjs` | Backend NestJS — feature modules, DI, Prisma, JWT, microservices | 28 | engineering |
 | `backend-nextjs` | Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK | 29 | engineering |
@@ -204,7 +204,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
 | `frontend-react-vite` | React + Vite + TypeScript | 24 | engineering |
-| `design` | Figma, UX review, design system, handoff | 10 | product |
+| `design` | Figma, UX review, design system, handoff | 6 | product |
 
 ### Mobile
 
@@ -219,29 +219,29 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 | Profile | Stack | Skills | Agents |
 |---------|-------|--------|--------|
-| `unity-dev` | Unity programmer — C#, architecture, performance, builds | 21 | game |
-| `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 19 | game |
+| `unity-dev` | Unity programmer — C#, architecture, performance, builds | 25 | game |
+| `unity-design` | Game designer — GDDs, balance, art bible, playtesting | 23 | game |
 | `meshy` | 3D asset production with Meshy AI — credit-gated generation, single master + cheap derivatives, printability | 6 | — |
 | `blender` | Blender for game assets — tri budget and topology, materials with bake and color space, baked animation, validated export | 7 | — |
-| `unreal-dev` | Unreal Engine 5 programmer — C++, Blueprints, GAS, replication, rendering, packaging | 50 | game |
-| `visual-novel` | Visual novel developer — Ren'Py, narrative, branching | 18 | visualnovel, game |
+| `unreal-dev` | Unreal Engine 5 programmer — C++, Blueprints, GAS, replication, rendering, packaging | 54 | game |
+| `visual-novel` | Visual novel developer — Ren'Py, narrative, branching | 21 | visualnovel, game |
 | `audio` | Game audio — direction, composition, sound design, middleware, VO, QA | 13 | audio |
 
 ### Platform & Quality
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `infra` | Terraform, observability, secrets, rollback, K8s | 31 | devops |
-| `database` | Indexing, migrations, seeding, replicas, optimization | 9 | — |
+| `infra` | Terraform, observability, secrets, rollback, K8s | 32 | devops |
+| `database` | Indexing, migrations, seeding, replicas, optimization | 11 | — |
 | `security` | Audits, OWASP, secrets, backups | 12 | — |
 | `testing` | Contract, performance, regression, flakiness | 12 | quality |
-| `ai` | LLM cost optimization, RAG, ML, data engineering, agent and MCP design | 11 | ai |
+| `ai` | LLM cost optimization, RAG, ML, data engineering, agent and MCP design | 12 | ai |
 
 ### Project Management
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `agile` | Sprints, standups, retros, estimates | 39 | management, product |
+| `agile` | Sprints, standups, retros, estimates | 41 | management, product |
 | `jira` | Jira via REST API — issues, sprints, boards | 1 | — |
 | `clickup` | ClickUp via MCP — tasks, docs, time tracking | 1 | — |
 | `integrations` | GitHub Projects, Slack, Postman, Stripe, email templates, Microsoft 365, Snowflake, stack evaluation | 8 | integrations |
@@ -269,7 +269,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `docs` | PDF, PPTX, XLSX, DOCX, architecture decisions | 5 | — |
+| `docs` | PDF, PPTX, XLSX, DOCX, architecture decisions | 6 | — |
 | `self-improving` | Agent self-improvement and skill extraction | 2 | — |
 | `statusline` | Claude Code status bar (branch, division, session info) | 0 | — |
 

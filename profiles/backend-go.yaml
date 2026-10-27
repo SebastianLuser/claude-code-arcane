@@ -4,6 +4,7 @@ category: backend
 
 skills:
   - test-setup
+  - smoke-check
   - llm-evals
   - deps-audit
   - env-sync

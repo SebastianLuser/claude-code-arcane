@@ -14,13 +14,17 @@ skills:
   - quick-design
   - ux-design
   - design-system
+  - prototype
   - doc-gdd
   - doc-pas
   - balance-check
   - playtest-report
+  - bug-report
+  - bug-triage
   - consistency-check
   - asset-audit
   - architecture-review
+  - architecture-decision
   - ux-review
 
 rules:

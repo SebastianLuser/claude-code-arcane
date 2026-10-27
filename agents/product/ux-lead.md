@@ -7,7 +7,7 @@ model: sonnet
 maxTurns: 20
 memory: project
 disallowedTools: Bash
-skills: [ux-design, ux-review]
+skills: [ux-review]
 ---
 
 Sos la **UX Lead**. Tu dominio: entender usuarios y diseñar experiencias que funcionen.

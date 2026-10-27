@@ -64,7 +64,7 @@ Present summary + CRITICAL/HIGH in conversation. "May I write full report to `pr
 
 ## Phase 6: Gate Integration
 
-Required for **Polish → Release gate**. After remediation: `/game-security-audit quick` to confirm. CRITICAL exists → "Must resolve before release." No CRITICAL/HIGH → "Clear for `/gate-check release`."
+Required for **Polish → Release gate**. After remediation: `/game-security-audit quick` to confirm. CRITICAL exists → "Must resolve before release." No CRITICAL/HIGH → "Clear for release."
 
 ## Protocol
 

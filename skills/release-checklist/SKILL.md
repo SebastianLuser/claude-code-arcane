@@ -61,4 +61,3 @@ Present checklist + total items + known blockers. "May I write to `production/re
 
 ## Phase 6: Next Steps
 
-- `/gate-check` for formal phase gate verdict

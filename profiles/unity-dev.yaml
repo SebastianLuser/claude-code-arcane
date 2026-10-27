@@ -4,6 +4,7 @@ category: gamedev
 
 skills:
   - test-setup
+  - smoke-check
   - perf-profile
   - optimize
   - deps-audit
@@ -23,7 +24,10 @@ skills:
   - consistency-check
   - doc-gdd
   - playtest-report
+  - bug-report
+  - bug-triage
   - architecture-review
+  - architecture-decision
 
 rules:
   universal:

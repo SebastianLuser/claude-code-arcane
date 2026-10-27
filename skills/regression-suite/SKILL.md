@@ -11,7 +11,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit
 
 Ensures every bug fix has a regression test, the suite stays current, and coverage drift is detected. Maintains `tests/regression-suite.md` — a curated index of tests covering critical paths and known failures.
 
-**When to run:** after fixing a bug, before release gate (`/gate-check polish`), sprint close.
+**When to run:** after fixing a bug, before a release, sprint close.
 
 ## Phase 1: Parse Arguments
 
