@@ -19,7 +19,7 @@ npx tsc --noEmit                  # typecheck (job aparte en CI)
 npm run test:skills               # specs Python de scripts de skill (tests/)
 python -m compileall -q skills    # gate de sintaxis sobre todo script shippeado
 for f in hooks/*.sh skills/*/hooks/*.sh; do bash -n "$f"; done   # lint de hooks
-for f in hooks/*.mjs; do node --check "$f"; done                 # lint de los hooks en Node
+for f in hooks/*.mjs skills/*/scripts/*.mjs; do node --check "$f"; done   # lint de lo que corre en Node
 ```
 
 Probar el CLI a mano **siempre aislado**:

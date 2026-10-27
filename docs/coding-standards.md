@@ -35,10 +35,11 @@ El lenguaje lo dicta **el contexto de ejecución**, no la preferencia. Hay cuatr
 
 ### Escotilla de escape
 
-Otro lenguaje **únicamente cuando una dependencia obligatoria lo impone** — nunca por gusto ni por familiaridad. Requiere una línea de justificación en el SKILL.md del skill. Los dos casos vigentes:
+Otro lenguaje **únicamente cuando una dependencia obligatoria lo impone** — nunca por gusto ni por familiaridad. Requiere una línea de justificación en el SKILL.md del skill. Los casos vigentes:
 
 - `pdf-generator/scripts/render_cover.js` → Node, porque **Playwright es una librería de Node**.
 - `docx-generator/scripts/` (`.cs`, `.slnx`, `setup.ps1`) → .NET, porque **vendorea un proyecto .NET** (MiniMaxAIDocx); el `.ps1` es su setup en Windows.
+- `worktree-isolation/scripts/apply.mjs` → Node, porque **también es un hook**: `arcane global` lo instala como `SessionStart` global y `arcane worktree --isolate` lo corre, y Python con PyYAML no está garantizado en ninguno de los dos. Spec en `src/__tests__/worktree-isolation.test.ts`.
 
 Si podés hacerlo con la stdlib de Python, la escotilla no aplica.
 

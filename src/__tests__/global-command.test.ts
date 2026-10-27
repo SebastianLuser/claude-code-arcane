@@ -58,7 +58,7 @@ describe("globalCommand", () => {
       expect(output).toContain("not configured");
     });
 
-    it("should show scripts as installed when apply.py exists", async () => {
+    it("should show scripts as installed when apply.mjs exists", async () => {
       const scriptsDir = path.join(
         tmpDir,
         ".claude",
@@ -66,7 +66,7 @@ describe("globalCommand", () => {
         "worktree-isolation",
       );
       fs.mkdirSync(scriptsDir, { recursive: true });
-      fs.writeFileSync(path.join(scriptsDir, "apply.py"), "# test");
+      fs.writeFileSync(path.join(scriptsDir, "apply.mjs"), "// test");
 
       const { globalCommand } = await import(
         "../commands/global.js"
@@ -93,7 +93,7 @@ describe("globalCommand", () => {
                   {
                     type: "command",
                     command:
-                      "worktree-isolation/apply.py --quiet",
+                      "node worktree-isolation/apply.mjs --quiet",
                   },
                 ],
               },
@@ -127,10 +127,7 @@ describe("globalCommand", () => {
         "scripts",
         "worktree-isolation",
       );
-      expect(fs.existsSync(path.join(scriptsDir, "apply.py"))).toBe(
-        true,
-      );
-      expect(fs.existsSync(path.join(scriptsDir, "lib.py"))).toBe(
+      expect(fs.existsSync(path.join(scriptsDir, "apply.mjs"))).toBe(
         true,
       );
 
@@ -292,8 +289,41 @@ describe("globalCommand", () => {
     ).toBe(true);
     expect(
       sessionHooks.some((h: { command: string }) =>
-        h.command.includes("apply.py"),
+        h.command.includes("apply.mjs"),
       ),
     ).toBe(true);
+  });
+
+  it("replaces the apply.py hook and scripts from before the Node port", async () => {
+    const claudeDir = path.join(tmpDir, ".claude");
+    const scriptsDir = path.join(claudeDir, "scripts", "worktree-isolation");
+    fs.mkdirSync(scriptsDir, { recursive: true });
+    for (const f of ["apply.py", "lib.py"]) fs.writeFileSync(path.join(scriptsDir, f), "# old");
+    fs.writeFileSync(
+      path.join(claudeDir, "settings.json"),
+      JSON.stringify({
+        hooks: {
+          SessionStart: [
+            {
+              matcher: "",
+              hooks: [
+                { type: "command", command: "echo existing-hook" },
+                { type: "command", command: `${scriptsDir.split(path.sep).join("/")}/apply.py --quiet` },
+              ],
+            },
+          ],
+        },
+      }),
+    );
+
+    const { globalCommand } = await import("../commands/global.js");
+    await globalCommand({});
+
+    expect(fs.readdirSync(scriptsDir)).toEqual(["apply.mjs"]);
+    const commands = JSON.parse(fs.readFileSync(path.join(claudeDir, "settings.json"), "utf-8"))
+      .hooks.SessionStart.flatMap((e: { hooks: { command: string }[] }) => e.hooks.map((h) => h.command));
+    expect(commands).toHaveLength(2);
+    expect(commands[0]).toBe("echo existing-hook");
+    expect(commands[1]).toMatch(/^node ".*\/apply\.mjs" --quiet$/);
   });
 });
