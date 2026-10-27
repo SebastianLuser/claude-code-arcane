@@ -1,3 +1,10 @@
+# [2.30.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.9...v2.30.0) (2026-10-27)
+
+
+### Features
+
+* **job-hunt:** treat postings as untrusted data and strip what they hide ([607bed5](https://github.com/SebastianLuser/claude-code-arcane/commit/607bed583685b55dd36c9221705e8bcc0cb45614))
+
 ## [2.29.9](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.8...v2.29.9) (2026-10-27)
 
 
