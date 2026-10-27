@@ -47,7 +47,7 @@
 
 | ID | Title | Description | Phase | Tasks |
 |----|--------|-------------|------|--------|
-| HU-{N}.1 | {title} | {description} | {phase} | {count} |
+| US-{N}.1 | {title} | {description} | {phase} | {count} |
 
 ## Technical Decisions
 

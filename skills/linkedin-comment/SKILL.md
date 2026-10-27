@@ -1,6 +1,6 @@
 ---
 name: linkedin-comment
-description: "Write comments on other people's LinkedIn posts that read as a person with an opinion: nine comment types chosen by what the post is, two options per post, humanized, never posted for the user. Also batches an engagement round. Triggers: comentar un post de LinkedIn, qué comento acá, comment on this, engagement round."
+description: "Write comments on other people's LinkedIn posts that read as a person with an opinion: nine comment types chosen by what the post is, two options per post, humanized, never posted for the user. Also batches an engagement round. Triggers: comment on a LinkedIn post, what should I comment here, comment on this, engagement round."
 argument-hint: "<pasted post> | batch"
 category: "career"
 user-invocable: true
@@ -34,7 +34,7 @@ Choose by what the post actually is. Never default to the one-liner.
 ## Phase 3: Write
 
 - **2 to 4 sentences, one idea.** Longer reads as a hijack, two points read as a blog attempt.
-- **Never open with** "Great post", "Love this", "So true", "Couldn't agree more", "This resonates", "Gran post", "Excelente aporte", or the author's name with an exclamation mark. No emoji as the first character.
+- **Never open with** "Great post", "Love this", "So true", "Couldn't agree more", "This resonates", "Awesome post", "Excellent contribution", or the author's name with an exclamation mark. No emoji as the first character.
 - **Never restate the post.** Say the specific thing: a comment that fits any post on the topic is noise.
 - The data, receipts and experiences are the user's own. Ask when they are missing; never invent them.
 

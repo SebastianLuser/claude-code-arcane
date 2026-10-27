@@ -1,15 +1,15 @@
 name: backend-nextjs
-description: "Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK, performance (64 reglas de Vercel). Front + back en un solo runtime."
+description: "Next.js full-stack — App Router, RSC, Server Actions, SEO, AI SDK, performance (64 Vercel rules). Front + back in a single runtime."
 category: backend
 
 skills:
-  # Next.js-specific (nuevas)
+  # Next.js-specific (new)
   - nextjs-scaffold
   - nextjs-best-practices
   - seo-nextjs
   - ai-sdk-setup
   - pgvector-search
-  # Backend / API (Next es full-stack)
+  # Backend / API (Next is full-stack)
   - api-design
   - database
   - caching-strategy

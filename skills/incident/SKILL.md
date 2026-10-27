@@ -98,7 +98,7 @@ gh run list --limit 5
 
 ### 3. Create tickets in Jira (if the user wants)
 
-For each action item, create a ticket of issue type "Tarea" (the workspace's Task type) using the jira-tickets skill:
+For each action item, create a ticket of issue type "Task" using the jira-tickets skill:
 - Summary: "[POST-MORTEM] Action item description"
 - Priority: according to the action item's priority
 - Labels: ["post-mortem", "incident"]

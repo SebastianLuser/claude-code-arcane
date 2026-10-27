@@ -1,6 +1,6 @@
-# Herramientas — OWASP Audit
+# Tools — OWASP Audit
 
-| Tipo | Go | TS/JS | Generico |
+| Type | Go | TS/JS | Generic |
 |------|-----|-------|----------|
 | SAST | gosec, staticcheck | semgrep, eslint-plugin-security | semgrep |
 | Deps | govulncheck | npm audit, snyk | trivy, grype |

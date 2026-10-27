@@ -1,6 +1,6 @@
 ---
 name: deploy-staging
-description: "Despliega el proyecto a staging: verifica branch, identifica método de deploy (CI/CD o script), ejecuta y reporta status. No deploya prod sin confirmación."
+description: "Deploys the project to staging: checks the branch, identifies the deploy method (CI/CD or script), runs it and reports status. Never deploys prod without confirmation."
 category: "operations"
 argument-hint: ""
 user-invocable: true
@@ -10,7 +10,7 @@ allowed-tools: Read, Glob, Grep, Bash
 # Skill: deploy-staging
 
 ## Trigger
-When the user says "deploy", "deploy a staging", "subir a staging", or similar.
+When the user says "deploy", "deploy to staging", "push to staging", or similar.
 
 ## Workflow
 

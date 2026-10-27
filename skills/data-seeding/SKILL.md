@@ -49,7 +49,7 @@ Always `faker/locale/es` (AR/MX/CO/CL/PE) or `pt_BR` (Brazil) for believable dem
 
 ## Educabot Standard Fixtures
 
-1 tenant "Escuela San Martín", 1 super_admin, 1 tenant_admin, 3 teachers, 5 courses/teacher, 30 students/course, 10 grades/student. Password: `dev12345` (bcrypt/argon2). Red banner on staging: "TEST ENVIRONMENT" (in the product's UI language).
+1 tenant "San Martín School", 1 super_admin, 1 tenant_admin, 3 teachers, 5 courses/teacher, 30 students/course, 10 grades/student. Password: `dev12345` (bcrypt/argon2). Red banner on staging: "TEST ENVIRONMENT" (in the product's UI language).
 
 ## CLI
 

@@ -1,5 +1,5 @@
 name: ecommerce
-description: "E-Commerce — dominio commerce end-to-end agnostico de lenguaje: data model, carrito/checkout, inventario, ordenes, pagos, promociones, shipping/tax, listings, analytics, feeds, storefront y suscripciones"
+description: "E-Commerce — end-to-end, language-agnostic commerce domain: data model, cart/checkout, inventory, orders, payments, promotions, shipping/tax, listings, analytics, feeds, storefront and subscriptions"
 category: business
 
 skills:
@@ -16,7 +16,7 @@ skills:
   - merchant-feed
   - storefront-architecture
   - subscription-billing
-  # reutilizadas (existentes, relevantes a e-commerce)
+  # reused (existing skills relevant to e-commerce)
   - stripe-integration-expert
   - page-cro
   - form-cro

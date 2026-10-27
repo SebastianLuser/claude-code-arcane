@@ -1,6 +1,6 @@
 ---
 name: linkedin-post
-description: "Write a LinkedIn post from one raw idea or a topic to explain (games, software, LLMs), in the user's own voice: three hook options from 21 formulas, one full draft with technical claims checked against primary sources, humanized and scored before the user sees it, never published. Triggers: post de LinkedIn, escribir un post, hook LinkedIn, post explicando un tema, post educativo, turn this into a LinkedIn post, draft for the feed."
+description: "Write a LinkedIn post from one raw idea or a topic to explain (games, software, LLMs), in the user's own voice: three hook options from 21 formulas, one full draft with technical claims checked against primary sources, humanized and scored before the user sees it, never published. Triggers: LinkedIn post, write a post, LinkedIn hook, post explaining a topic, educational post, turn this into a LinkedIn post, draft for the feed."
 argument-hint: "<idea> | explain <topic> | write <day from the plan>"
 category: "career"
 user-invocable: true
@@ -50,7 +50,7 @@ Close     one specific question, or one instruction; never both
 - **Length:** 900-1,300 characters is the working range; the hard limit is 3,000. Under 400 reads as a thought.
 - **One idea per post.** Two ideas are two posts: say so.
 - **Numbers over adjectives.** No number given: ask, or leave `{{your number}}` and flag it.
-- **No engagement bait** ("Thoughts?", "Agree?", "¿Qué opinan?"). The closing question is one only this post could ask.
+- **No engagement bait** ("Thoughts?", "Agree?", "What do you all think?"). The closing question is one only this post could ask.
 - **Three hashtags at most**, at the bottom, only real categories people follow.
 - **Links in the first comment**, not the body. LinkedIn has not confirmed that links reduce reach, but it is common practice; tell the user in the receipt.
 - **Language:** the one the user's audience reads (the Voice section says it).

@@ -31,12 +31,19 @@ const SPANISH = new Set(("los las del que una por con como más pero sus este po
 const ENGLISH = new Set(("the and of to in is that for it with as on be this are by or not from at an which you your " +
   "can if will all has have was but they their one should when what each must use do does only into than then them " +
   "these those there more any its new").split(" "));
+// Content words (verbs, nouns) the function-word list cannot see: a description
+// such as "Crea un git commit, revisa diffs" or a table header "| Limite |" passed it.
+const LEXICON = new Set<string>(
+  JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), "spanish-words.es.json"), "utf-8")).words,
+);
 
 function isSpanishLine(line: string): boolean {
   const words = line.toLowerCase().match(/[a-záéíóúñü]+/g) ?? [];
+  // Distinct words: an OOXML list naming `del` twice is not two Spanish words.
+  const lexical = new Set(words.filter((w) => LEXICON.has(w)));
+  if (lexical.size >= 2 || (words.length <= 6 && [...lexical].some((w) => w.length >= 5))) return true;
   if (words.length < 3) return false;
   const accented = /[áéíóúñ¿¡]/i.test(line);
-  // Distinct words: an OOXML list naming `del` twice is not two Spanish words.
   const es = new Set(words.filter((w) => SPANISH.has(w))).size;
   const en = new Set(words.filter((w) => ENGLISH.has(w))).size;
   return es > en && (es >= 2 || (accented && es >= 1));

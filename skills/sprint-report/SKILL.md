@@ -40,12 +40,12 @@ curl -s -X POST -u "$JIRA_AUTH" -H "Content-Type: application/json" \
 ```
 
 Group by status. The Jira status names are the literal values of the Educabot workflow, which is in Spanish (see the `jira-tickets` skill); match them verbatim:
-- To do (`Tareas por hacer`, category new)
-- In progress (`En curso`, category in-progress)
-- To deploy / QA / In review (`Por subir`, `Control de calidad`, `En revision`)
-- Done (`Finalizada`, category done)
+- To do (`To Do`, category new)
+- In progress (`In Progress`, category in-progress)
+- To deploy / QA / In review (`To Deploy`, `Quality Control`, `In Review`)
+- Done (`Done`, category done)
 - Blocked (`Blocked`)
-- Cancelled (`Cancelado`)
+- Cancelled (`Canceled`)
 
 ### 3. Get the GitHub data
 
@@ -109,7 +109,7 @@ git log main --since="1 week ago" --pretty=format:"%h|%s|%an|%ad" --date=short
 ## Alerts
 - Tickets without an associated PR
 - PRs without an associated ticket
-- Tickets in `En curso` (in progress) for more than 3 days with no activity
+- Tickets in `In Progress` for more than 3 days with no activity
 - Unassigned tickets
 
 ## By person

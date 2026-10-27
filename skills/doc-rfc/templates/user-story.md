@@ -1,4 +1,4 @@
-# HU-{N}.{M} — {Title}
+# US-{N}.{M} — {Title}
 
 > As a {role}, I need {feature}, so that {benefit}.
 
@@ -41,7 +41,7 @@
 
 ## Dependencies
 
-- {HU-X.Y or "None"}
+- {US-X.Y or "None"}
 
 ## Test Cases
 

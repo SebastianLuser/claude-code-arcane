@@ -2,7 +2,7 @@
 
 {One-liner: what this task does}
 
-- **Story:** [HU-{N}.{M} — {story-title}]({relative-link})
+- **Story:** [US-{N}.{M} — {story-title}]({relative-link})
 - **Acceptance criterion:** {1 verifiable sentence}
 
 ## Affected Files

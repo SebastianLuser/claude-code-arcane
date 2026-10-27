@@ -8,7 +8,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 ---
 # RFC Documentation Generator — Alizia-BE Style
 
-Generates structured technical documentation: Epics → User Stories (HU) → Tasks.
+Generates structured technical documentation: Epics → User Stories (US) → Tasks.
 
 ## Input
 
@@ -19,31 +19,31 @@ Generates structured technical documentation: Epics → User Stories (HU) → Ta
 
 ## Folder structure
 
-The folder names and the `HU-` / `T-` prefixes are the Alizia-BE layout: keep them as written so new documents line up with existing ones.
+`US-` numbers user stories and `T-` numbers tasks.
 
 ```
 docs/rfc-{project}/
-├── decisiones/                    # Decision logs, technical comparisons
-├── epicas/{NN}-{slug}/
+├── decisions/                    # Decision logs, technical comparisons
+├── epics/{NN}-{slug}/
 │   ├── {NN}-{slug}.md             # Epic overview
-│   └── HU-{N}.{M}-{slug}/
-│       ├── HU-{N}.{M}-{slug}.md  # User story
-│       └── tareas/T-{N}.{M}.{P}-{slug}.md
-└── operaciones/                   # Operational guides
+│   └── US-{N}.{M}-{slug}/
+│       ├── US-{N}.{M}-{slug}.md  # User story
+│       └── tasks/T-{N}.{M}.{P}-{slug}.md
+└── operations/                   # Operational guides
 ```
 
 ## Templates
 
-> → Read templates/epica.md for the epic document skeleton
-> → Read templates/hu.md for the user story document skeleton
-> → Read templates/tarea.md for the task document skeleton
+> → Read templates/epic.md for the epic document skeleton
+> → Read templates/user-story.md for the user story document skeleton
+> → Read templates/task.md for the task document skeleton
 > → Read templates/decision.md for the technical decision document skeleton
 
 ## Numbering
 
 - Epics: `00`, `01`, `02` (2 digits, chronological)
-- Stories: `HU-{epic}.{sequential}` → `HU-0.1`, `HU-1.2`
-- Tasks: `T-{epic}.{HU}.{sequential}` → `T-0.1.1`, `T-1.2.3`
+- Stories: `US-{epic}.{sequential}` → `US-0.1`, `US-1.2`
+- Tasks: `T-{epic}.{US}.{sequential}` → `T-0.1.1`, `T-1.2.3`
 
 ## Rules
 

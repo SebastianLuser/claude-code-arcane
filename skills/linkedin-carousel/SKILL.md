@@ -1,6 +1,6 @@
 ---
 name: linkedin-carousel
-description: "Build a LinkedIn document post (carousel) for a topic with steps or parts (games, software, LLMs): slide-by-slide copy in the user's voice, the post text above it, and the PDF to upload, checked for overflowing slides; never published. Triggers: carrusel de LinkedIn, carousel, document post, slides para LinkedIn, explicar un tema paso a paso, turn this into a carousel."
+description: "Build a LinkedIn document post (carousel) for a topic with steps or parts (games, software, LLMs): slide-by-slide copy in the user's voice, the post text above it, and the PDF to upload, checked for overflowing slides; never published. Triggers: LinkedIn carousel, carousel, document post, slides for LinkedIn, explain a topic step by step, turn this into a carousel."
 argument-hint: "<topic or list-shaped idea>"
 category: "career"
 user-invocable: true

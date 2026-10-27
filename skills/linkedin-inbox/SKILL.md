@@ -1,6 +1,6 @@
 ---
 name: linkedin-inbox
-description: "Triage a pasted batch of LinkedIn DMs and connection requests into lead, recruiter, peer, ask and spam, name the tell that gives away an automated sequence, and draft only the replies worth sending. Triggers: ordenar mis mensajes de LinkedIn, inbox de LinkedIn, le respondo a este recruiter, triage my DMs, connection requests."
+description: "Triage a pasted batch of LinkedIn DMs and connection requests into lead, recruiter, peer, ask and spam, name the tell that gives away an automated sequence, and draft only the replies worth sending. Triggers: sort my LinkedIn messages, LinkedIn inbox, should I reply to this recruiter, triage my DMs, connection requests."
 argument-hint: "<pasted messages>"
 category: "career"
 user-invocable: true

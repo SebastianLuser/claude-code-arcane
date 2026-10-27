@@ -1,23 +1,23 @@
 # Checklists - Database Indexing
 
-## Checklist pre-creacion
+## Pre-creation checklist
 
-- [ ] Tabla >10k rows
-- [ ] Queries concretas identificadas
-- [ ] EXPLAIN actual muestra Seq Scan costoso
-- [ ] Orden composite: igualdad -> rango -> ORDER BY
-- [ ] `tenant_id` primera columna
-- [ ] Partial si filtro recurrente (`deleted_at IS NULL`, `status = 'active'`)
-- [ ] `INCLUDE` si query solo toca columnas indexables
-- [ ] FK tiene su propio indice
-- [ ] `CONCURRENTLY` y migration fuera de transaccion
-- [ ] Post-creacion: EXPLAIN ANALYZE confirma plan
-- [ ] No redundante con indice existente
+- [ ] Table >10k rows
+- [ ] Specific queries identified
+- [ ] Current EXPLAIN shows a costly Seq Scan
+- [ ] Composite order: equality -> range -> ORDER BY
+- [ ] `tenant_id` first column
+- [ ] Partial if the filter recurs (`deleted_at IS NULL`, `status = 'active'`)
+- [ ] `INCLUDE` if the query only touches indexable columns
+- [ ] FK has its own index
+- [ ] `CONCURRENTLY` and the migration outside a transaction
+- [ ] Post-creation: EXPLAIN ANALYZE confirms the plan
+- [ ] Not redundant with an existing index
 
-## Checklist periodica
+## Periodic checklist
 
-- [ ] `idx_scan = 0` tras 1 mes -> candidato a drop
-- [ ] Tablas con `seq_scan >> idx_scan` -> indice faltante
-- [ ] Indices INVALID detectados y dropeados
-- [ ] Bloat medido en indices calientes
-- [ ] REINDEX CONCURRENTLY de bloated
+- [ ] `idx_scan = 0` after 1 month -> drop candidate
+- [ ] Tables with `seq_scan >> idx_scan` -> missing index
+- [ ] INVALID indexes detected and dropped
+- [ ] Bloat measured on hot indexes
+- [ ] REINDEX CONCURRENTLY the bloated ones

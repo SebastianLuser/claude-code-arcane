@@ -2,19 +2,19 @@
 
 ## Statuses and Transitions
 
-Transition and status names (in backticks) are the literal values configured in the Educabot Jira workflow, which is in Spanish. Use them verbatim in JQL and when matching API responses; the English column is only a gloss.
+Transition and status names (in backticks) are the values to use in JQL and when matching API responses; the IDs are what the API needs.
 
-| Transition | Trans. ID | Status | Status ID | Cat | English gloss |
-|------------|-----------|--------|-----------|-----|---------------|
-| `Por hacer` | 11 | `Tareas por hacer` | 10018 | `new` | To do |
-| `En curso` | 21 | `En curso` | 10012 | `in-progress` | In progress |
-| `Por subir` | 41 | `Por subir` | 10019 | `in-progress` | To deploy |
-| `QA` | 51 | `Control de calidad` | 10020 | `in-progress` | QA |
-| `En revision` | 61 | `En revision` | 10021 | `in-progress` | In review |
-| `EN PROD` | 81 | `EN PROD` | 10105 | `in-progress` | In prod |
-| `Blocked` | 91 | `Blocked` | 10171 | `in-progress` | Blocked |
-| `Listo` | 31 | `Finalizada` | 10007 | `done` | Done |
-| `Canceled` | 71 | `Cancelado` | 10036 | `done` | Canceled |
+| Transition | Trans. ID | Status | Status ID | Cat |
+|------------|-----------|--------|-----------|-----|
+| `To Do` | 11 | `To Do` | 10018 | `new` |
+| `In Progress` | 21 | `In Progress` | 10012 | `in-progress` |
+| `To Deploy` | 41 | `To Deploy` | 10019 | `in-progress` |
+| `QA` | 51 | `Quality Control` | 10020 | `in-progress` |
+| `In Review` | 61 | `In Review` | 10021 | `in-progress` |
+| `IN PROD` | 81 | `IN PROD` | 10105 | `in-progress` |
+| `Blocked` | 91 | `Blocked` | 10171 | `in-progress` |
+| `Done` | 31 | `Done` | 10007 | `done` |
+| `Canceled` | 71 | `Canceled` | 10036 | `done` |
 
 ## Active TUNI epics
 

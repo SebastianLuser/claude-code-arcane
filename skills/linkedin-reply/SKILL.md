@@ -1,6 +1,6 @@
 ---
 name: linkedin-reply
-description: "Handle the comments under the user's own LinkedIn post: sort them into lead, substance, peer, support and noise, then draft replies in that order, humanized and copy-ready, never posted for the user. Handles critics and leads in the thread. Triggers: responder comentarios de mi post, alguien comentó en mi post, reply to these comments, handle my comments."
+description: "Handle the comments under the user's own LinkedIn post: sort them into lead, substance, peer, support and noise, then draft replies in that order, humanized and copy-ready, never posted for the user. Handles critics and leads in the thread. Triggers: reply to the comments on my post, someone commented on my post, reply to these comments, handle my comments."
 argument-hint: "<pasted comments>"
 category: "career"
 user-invocable: true
