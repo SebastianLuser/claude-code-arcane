@@ -1,143 +1,143 @@
 ---
 name: blender-export
-description: "Exporta desde Blender al engine y valida el resultado: eleccion de formato (glTF/GLB, FBX, .blend), settings que importan, export headless reproducible y validacion automatica de tris, UVs, escala, texturas y clips con validate_gltf.py. Usar para: exportar de blender, glb, fbx, validar export, blender a unity, blender a ue5."
+description: "Exports from Blender to the engine and validates the result: format choice (glTF/GLB, FBX, .blend), the settings that matter, reproducible headless export and automatic validation of tris, UVs, scale, textures and clips with validate_gltf.py. Use for: export from blender, glb, fbx, validate export, blender to unity, blender to ue5."
 category: "gamedev"
 argument-hint: "[asset-slug] [--target unity|ue5|web] [--budget-tris <n>]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-# blender-export — Salida al engine
+# blender-export — Output to the engine
 
-Saca el asset de Blender y **verifica que lo que salio es lo que se esperaba**. Este skill cierra
-el pipeline: `asset-spec` → Meshy o modelado → Blender → **export validado** → `asset-audit`.
+Gets the asset out of Blender and **verifies that what came out is what was expected**. This skill closes
+the pipeline: `asset-spec` → Meshy or modeling → Blender → **validated export** → `asset-audit`.
 
-> Requiere `/blender-context` (destino y escala definidos). Si el asset tiene rig, requiere el bake
-> de `/blender-animation` hecho: los constraints no viajan.
+> Requires `/blender-context` (target and scale defined). If the asset has a rig, it requires the
+> `/blender-animation` bake to be done: constraints do not travel.
 
 ---
 
-## Phase 1: Elegir formato
+## Phase 1: Choose the format
 
-| Formato | Cuando | Cuidado |
+| Format | When | Watch out |
 |---|---|---|
-| **glTF 2.0 (`.glb`)** | Default para Unity URP, web, y cualquier cosa moderna | Un solo archivo, texturas embebidas, Y-up automatico |
-| **FBX** | Pipelines de UE5 y Unity legacy, skeletal meshes | Hay que fijar ejes y escala a mano, formato cerrado |
-| **`.blend` directo** | Prototipo rapido en Unity | Unity necesita Blender instalado para importarlo. **No usar en CI ni en un repo de equipo** |
-| **USD** | Pipelines de VFX / interop DCC | Soporte irregular en engines de juego |
+| **glTF 2.0 (`.glb`)** | Default for Unity URP, web, and anything modern | A single file, embedded textures, automatic Y-up |
+| **FBX** | UE5 and legacy Unity pipelines, skeletal meshes | Axes and scale have to be set by hand, closed format |
+| **Direct `.blend`** | Quick prototype in Unity | Unity needs Blender installed to import it. **Do not use in CI or in a team repo** |
+| **USD** | VFX pipelines / DCC interop | Uneven support in game engines |
 
-Regla practica: **glTF salvo que el destino lo impida.** FBX es la excepcion, no el default, y
-existe casi siempre por el lado del engine, no por el de Blender.
+Rule of thumb: **glTF unless the target prevents it.** FBX is the exception, not the default, and
+it almost always exists because of the engine side, not the Blender side.
 
 ---
 
-## Phase 2: Settings que importan
+## Phase 2: Settings that matter
 
 ### glTF / GLB
 
-| Setting | Valor | Por que |
+| Setting | Value | Why |
 |---|---|---|
-| Format | `glTF Binary (.glb)` | Un archivo, texturas adentro |
-| Include | `Selected Objects` | Un export por asset, no la escena entera |
-| `+Y Up` | On | Es la convencion de glTF y de Unity |
-| Apply Modifiers | On | Lo que no se aplica no existe en el archivo |
+| Format | `glTF Binary (.glb)` | One file, textures inside |
+| Include | `Selected Objects` | One export per asset, not the whole scene |
+| `+Y Up` | On | It is the glTF and Unity convention |
+| Apply Modifiers | On | What is not applied does not exist in the file |
 | Materials | `Export` | |
 | Images | `Automatic` | |
-| Compression (Draco) | Off al exportar | Se comprime despues, como paso propio |
-| Animation → Sampling | On, y **una accion por clip** | |
+| Compression (Draco) | Off when exporting | Compress afterwards, as a separate step |
+| Animation → Sampling | On, and **one action per clip** | |
 
 ### FBX
 
-| Setting | Valor | Por que |
+| Setting | Value | Why |
 |---|---|---|
-| Scale | `1.0` con `Apply Unit` | El engine hace el resto |
-| Forward / Up | Segun el engine destino | UE5: `-Z Forward`, `Y Up` |
-| Apply Scalings | `FBX All` | Evita escalas dobles |
-| Bake Animation | On, con `NLA Strips` off si se exporta una sola accion | |
-| Add Leaf Bones | **Off** | Ensucia el esqueleto en el engine |
+| Scale | `1.0` with `Apply Unit` | The engine does the rest |
+| Forward / Up | Depending on the target engine | UE5: `-Z Forward`, `Y Up` |
+| Apply Scalings | `FBX All` | Avoids double scaling |
+| Bake Animation | On, with `NLA Strips` off if a single action is exported | |
+| Add Leaf Bones | **Off** | Clutters the skeleton in the engine |
 
-Lo que **nunca** se exporta: huesos de control, objetos de referencia, camaras y luces de trabajo,
-collections de scratch. Si estan en el archivo, van a aparecer en el engine.
+What is **never** exported: control bones, reference objects, work cameras and lights,
+scratch collections. If they are in the file, they will show up in the engine.
 
 ---
 
-## Phase 3: Export headless
+## Phase 3: Headless export
 
-Reproducible y versionable, a diferencia de exportar a mano desde la UI:
+Reproducible and versionable, unlike exporting by hand from the UI:
 
 ```bash
-blender --background <archivo.blend> --python <export_script.py> -- \
+blender --background <file.blend> --python <export_script.py> -- \
     --out assets/3d/<slug>/export/<slug>.glb
 ```
 
-El script hace: seleccionar los objetos que corresponden, limpiar la seleccion de lo que no va, y
-llamar a `bpy.ops.export_scene.gltf(...)` con los settings de la Phase 2 explicitos — **ninguno
-por default**, porque los defaults del operador cambian entre versiones de Blender.
+The script: selects the objects that belong, clears the selection of what does not, and
+calls `bpy.ops.export_scene.gltf(...)` with the Phase 2 settings explicit — **none of them
+left to default**, because the operator's defaults change between Blender versions.
 
-El script vive en el repo (`assets/3d/_scripts/` o al lado del asset), no en el chat. Un export que
-solo existe como pasos manuales se hace distinto cada vez.
+The script lives in the repo (`assets/3d/_scripts/` or next to the asset), not in the chat. An export that
+only exists as manual steps is done differently every time.
 
-**Pedir aprobacion antes de escribir** el script y antes del primer export a una ruta que ya tiene
-un archivo: un `.glb` sobrescrito no se recupera si el `.blend` cambio.
+**Ask for approval before writing** the script and before the first export to a path that already has
+a file: an overwritten `.glb` cannot be recovered if the `.blend` changed.
 
 ---
 
-## Phase 4: Validar el resultado
+## Phase 4: Validate the result
 
-Nunca dar un export por bueno sin medirlo. El validador es stdlib puro, no instala nada:
+Never accept an export without measuring it. The validator is pure stdlib, it installs nothing:
 
 ```bash
 python scripts/validate_gltf.py assets/3d/<slug>/export/<slug>.glb \
     --budget-tris 8000 --max-materials 2 --require-uv1 --target unity
 ```
 
-| Flag | Para que |
+| Flag | What for |
 |---|---|
-| `--budget-tris <n>` | Presupuesto declarado en `/blender-modeling` |
-| `--max-materials <n>` | Tope de draw calls |
-| `--require-uv1` | Exigir lightmap UV cuando el asset recibe luz bakeada |
-| `--target unity\|ue5\|web` | Avisos propios del destino (normal maps DirectX en UE5, compresion en web) |
-| `--json` | Salida parseable, para encadenarlo en CI |
+| `--budget-tris <n>` | Budget declared in `/blender-modeling` |
+| `--max-materials <n>` | Draw call cap |
+| `--require-uv1` | Require a lightmap UV when the asset receives baked lighting |
+| `--target unity\|ue5\|web` | Target-specific warnings (DirectX normal maps in UE5, compression on web) |
+| `--json` | Parseable output, to chain it in CI |
 
-Que chequea, y por que cada uno esta:
+What it checks, and why each check is there:
 
-1. **Contenedor** — magic y chunks del GLB. Un archivo truncado se detecta aca, no en el engine.
-2. **Presupuesto de tris** — contando indices reales por primitiva, no estimando.
-3. **UV0 / UV1** — sin UV0 no hay textura; sin UV1 el lightmap sale manchado.
-4. **Escala** — nodos con escala 100 o 0.01 son conversion de unidades sin aplicar.
-5. **Materiales** — cantidad contra el tope, mas nombres autogenerados (`Material.001`) que en el
-   engine son imposibles de rastrear.
-6. **Texturas** — imagenes referenciadas fuera de un `.glb` (llegan roto al engine) y resoluciones
-   que no son potencia de dos.
-7. **Clips** — cantidad y nombres; un clip sin nombre entra al engine como `Animation_0`.
+1. **Container** — GLB magic and chunks. A truncated file is detected here, not in the engine.
+2. **Tris budget** — counting real indices per primitive, not estimating.
+3. **UV0 / UV1** — without UV0 there is no texture; without UV1 the lightmap comes out blotchy.
+4. **Scale** — nodes with scale 100 or 0.01 are an unapplied unit conversion.
+5. **Materials** — count against the cap, plus autogenerated names (`Material.001`) that are
+   impossible to trace in the engine.
+6. **Textures** — images referenced outside a `.glb` (they arrive broken in the engine) and resolutions
+   that are not a power of two.
+7. **Clips** — count and names; an unnamed clip enters the engine as `Animation_0`.
 
-Exit code 0 si el verdict es PASS o CONCERNS, 1 si es FAIL. Eso lo hace usable como gate.
+Exit code 0 if the verdict is PASS or CONCERNS, 1 if it is FAIL. That makes it usable as a gate.
 
-> El validador lee glTF/GLB, **no FBX**. FBX binario no se puede inspeccionar sin dependencias, y
-> este repo no las agrega. Si el destino es FBX, exportar **tambien** un `.glb` de control y
-> validar ese: la geometria y los materiales son los mismos.
+> The validator reads glTF/GLB, **not FBX**. Binary FBX cannot be inspected without dependencies, and
+> this repo does not add them. If the target is FBX, **also** export a control `.glb` and
+> validate that one: the geometry and materials are the same.
 
 ---
 
-## Phase 5: Resumen
+## Phase 5: Summary
 
-Reportar: formato y ruta de salida, settings usados, y la tabla completa del validador con su
+Report: format and output path, settings used, and the validator's full table with its
 verdict.
 
 **Verdict:**
-- **PASS** — el validador da PASS y el asset esta listo para integrar.
-- **CONCERNS** — exportado con avisos (no potencia de dos, clips sin nombre, avisos del target).
-  Listar cada uno y decir si se acepta o se corrige.
-- **FAIL** — presupuesto excedido, sin UVs, escala sin aplicar, texturas externas en un `.glb`, o
-  contenedor invalido. **No integrar**: indicar el fix y volver al skill que corresponde
+- **PASS** — the validator gives PASS and the asset is ready to integrate.
+- **CONCERNS** — exported with warnings (not a power of two, unnamed clips, target warnings).
+  List each one and say whether it is accepted or fixed.
+- **FAIL** — budget exceeded, no UVs, unapplied scale, external textures in a `.glb`, or an
+  invalid container. **Do not integrate**: state the fix and go back to the matching skill
   (`/blender-modeling`, `/blender-materials`, `/blender-animation`).
 
 ## Next Steps
 
-- `/asset-audit` para validar naming, formatos y huerfanos ya dentro del proyecto
-- `/meshy-derive` si hacen falta mas targets del mismo master (web, print)
-- En UE5, `/ue-animation-system` o `/ue-materials-rendering` para el lado del engine
-- Si el verdict fue FAIL, volver al skill del area que fallo — no parchear el archivo exportado
+- `/asset-audit` to validate naming, formats and orphans once inside the project
+- `/meshy-derive` if more targets of the same master are needed (web, print)
+- In UE5, `/ue-animation-system` or `/ue-materials-rendering` for the engine side
+- If the verdict was FAIL, go back to the skill of the area that failed — do not patch the exported file
 
 ---
 
-> → Formatos, ejes, escala y reglas de Git LFS estan en `.claude/rules/blender-files.md`.
+> → Formats, axes, scale and Git LFS rules are in `.claude/rules/blender-files.md`.

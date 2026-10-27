@@ -1,6 +1,6 @@
 ---
 name: nestjs-scaffold
-description: "Scaffold de API NestJS production-ready con módulos por feature, DI, ValidationPipe global, Prisma/Drizzle, guards de auth y testing. Usar para iniciar un backend NestJS nuevo."
+description: "Production-ready NestJS API scaffold with feature modules, DI, global ValidationPipe, Prisma/Drizzle, auth guards and testing. Use to start a new NestJS backend."
 category: "backend"
 argument-hint: "[project-name]"
 user-invocable: true
@@ -10,17 +10,17 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 
 ## MANDATORY WORKFLOW
 
-**Antes de generar cualquier código, completar estos pasos en orden.**
+**Before generating any code, complete these steps in order.**
 
 ### Step 0: Gather Requirements
-1. **Nombre del servicio** (kebab-case)
-2. **Transport:** REST (default) / GraphQL / microservicio
+1. **Service name** (kebab-case)
+2. **Transport:** REST (default) / GraphQL / microservice
 3. **ORM:** Prisma (default) / Drizzle / TypeORM
 4. **DB:** PostgreSQL (default) / MySQL
-5. **Auth:** JWT + refresh (default) / OAuth / ninguna
+5. **Auth:** JWT + refresh (default) / OAuth / none
 6. **Deploy:** Docker (default) / Railway / AWS ECS
 
-### Step 1: Crear base
+### Step 1: Create the base
 ```bash
 npm i -g @nestjs/cli
 nest new <name> --package-manager pnpm
@@ -28,7 +28,7 @@ cd <name>
 nest g module users && nest g controller users && nest g service users
 ```
 
-### Step 2: Estructura (feature modules — NO por capa)
+### Step 2: Structure (feature modules — NOT by layer)
 ```
 src/
   users/   { users.module.ts, users.controller.ts, users.service.ts, dto/, entities/ }
@@ -38,7 +38,7 @@ src/
   main.ts
 ```
 
-### Step 3: Bootstrap no negociable (`main.ts`)
+### Step 3: Non-negotiable bootstrap (`main.ts`)
 ```ts
 app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
 app.useGlobalFilters(new AllExceptionsFilter());
@@ -47,29 +47,29 @@ app.enableVersioning({ type: VersioningType.URI });
 ```
 
 ### Step 4: Defaults
-- Constructor injection siempre; cero `ModuleRef.get()` en runtime
-- DTOs decorados (`class-validator`) en todos los endpoints
-- Guards declarativos para auth/authz
-- `ConfigModule` con validación de env (Joi/Zod) al boot
-- Migraciones versionadas, `synchronize: false`
+- Constructor injection always; zero `ModuleRef.get()` at runtime
+- Decorated DTOs (`class-validator`) on every endpoint
+- Declarative guards for auth/authz
+- `ConfigModule` with env validation (Joi/Zod) at boot
+- Versioned migrations, `synchronize: false`
 - Health check (`@nestjs/terminus`) + structured logging (pino)
 - Tests: `Test.createTestingModule` (unit) + supertest (e2e)
 
-### Step 5: Verificar
-`npm run build` + `npm run test`. Revisar contra la rule `nestjs-code` y el skill `nestjs-best-practices`. Build + tests verdes → scaffold **READY**.
+### Step 5: Verify
+`npm run build` + `npm run test`. Review against the `nestjs-code` rule and the `nestjs-best-practices` skill. Build + tests green → scaffold **READY**.
 
 ## Stack Defaults
 
-| Componente | Default |
+| Component | Default |
 |------------|---------|
 | Framework | NestJS 10+ |
 | ORM | Prisma |
 | DB | PostgreSQL |
 | Auth | JWT + refresh tokens |
-| Validación | class-validator + ValidationPipe |
+| Validation | class-validator + ValidationPipe |
 | Testing | Jest + supertest |
 | Deploy | Docker |
 
 ---
 
-_Inspirado en las skills NestJS de [kadajett/agent-nestjs-skills](https://github.com/kadajett/agent-nestjs-skills) y [giuseppe-trisciuoglio/developer-kit](https://github.com/giuseppe-trisciuoglio/developer-kit). Adaptado al formato Arcane._
+_Inspired by the NestJS skills from [kadajett/agent-nestjs-skills](https://github.com/kadajett/agent-nestjs-skills) and [giuseppe-trisciuoglio/developer-kit](https://github.com/giuseppe-trisciuoglio/developer-kit). Adapted to the Arcane format._

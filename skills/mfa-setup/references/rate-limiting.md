@@ -1,10 +1,10 @@
 # Rate Limiting — MFA Endpoints
 
-| Endpoint | Limite | Lockout |
+| Endpoint | Limit | Lockout |
 |----------|--------|---------|
-| `/mfa/verify` (TOTP/SMS) | 5/5min por user+IP | 15 min |
+| `/mfa/verify` (TOTP/SMS) | 5/5min per user+IP | 15 min |
 | `/mfa/webauthn/authenticate` | 10/5min | 15 min |
-| `/mfa/sms/send` | 3/hora por numero | 24h si abuso |
-| `/mfa/recovery/start` | 3/dia por email | alerta manual |
+| `/mfa/sms/send` | 3/hour per number | 24h on abuse |
+| `/mfa/recovery/start` | 3/day per email | manual alert |
 
-Redis sliding window o token bucket. Loguear cada lockout.
+Redis sliding window or token bucket. Log every lockout.

@@ -1,0 +1,5 @@
+{
+  "language": "es",
+  "note": "Words getonbrd_search.py drops from a GetOnBoard slug to build a narrower search query: GetOnBoard slugs are built from Spanish titles and the search API ANDs every term. Every stopwords.<lang>.json next to the script applies at once, because one slug mixes languages. Lowercase.",
+  "words": ["y", "de", "e", "la", "el", "los", "las", "en", "para", "con", "a"]
+}

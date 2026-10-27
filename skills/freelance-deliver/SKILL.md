@@ -1,90 +1,90 @@
 ---
 name: freelance-deliver
-description: "Track an active contract while it runs: log hours against the estimate, catch scope creep the day it happens instead of at invoice time, and draft the change order before doing the extra work. Triggers: registrar horas, el cliente me pidio algo mas, esto no estaba en el alcance, scope creep, como va el contrato, change order, cerrar el contrato."
+description: "Track an active contract while it runs: log hours against the estimate, catch scope creep the day it happens instead of at invoice time, and draft the change order before doing the extra work. Triggers: log hours, the client asked me for something else, this was not in the scope, scope creep, how is the contract going, change order, close the contract."
 argument-hint: "[log | check | change | close]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 
-# Freelance Deliver - Ejecutar sin regalar horas
+# Freelance Deliver - Deliver without giving hours away
 
-El loop mientras el proyecto corre. Tres cosas: registrar horas, detectar cuando el alcance se movió, y cobrarlo antes de hacerlo.
+The loop while the project runs. Three things: log hours, catch when the scope moved, and charge for it before doing it.
 
-Rutas relativas al career workspace (`--workspace`, env `CAREER_WORKSPACE`, o `./career-workspace/`).
+Paths are relative to the career workspace (`--workspace`, env `CAREER_WORKSPACE`, or `./career-workspace/`).
 
-Modo: `$ARGUMENTS`
+Mode: `$ARGUMENTS`
 
-## Por qué el momento importa
+## Why timing matters
 
-El scope creep no se detecta al facturar: **se detecta el día que pasa**, y casi siempre entra disfrazado de favor. "¿Me agregás esto rapidito?" es la frase que más plata cuesta en freelance, y funciona porque en el momento parece chico y decir no parece desproporcionado.
+Scope creep is not caught at invoice time: **it is caught the day it happens**, and it almost always comes in disguised as a favor. "Could you add this real quick?" is the phrase that costs the most money in freelance, and it works because in the moment it seems small and saying no seems out of proportion.
 
-Un mes después son 18 horas que nadie va a pagar, y ahí ya es tarde: pedir plata por trabajo entregado suena a reclamo; pedirla antes suena a profesional.
+A month later it is 18 hours nobody is going to pay for, and by then it is too late: asking for money for delivered work sounds like a complaint; asking for it beforehand sounds professional.
 
-## Modos
+## Modes
 
-### `log` - registrar horas
+### `log` - log hours
 
-Agregar filas a `## Horas registradas` de la nota del contrato: fecha, horas, qué se hizo, y **si es facturable o no**.
+Add rows to `## Hours logged` in the contract note: date, hours, work done, and **whether it is billable or not**.
 
-Esa última columna es la que casi nadie lleva y la que hace toda la diferencia: las reuniones, el ida y vuelta por accesos y las rondas de revisión son horas reales de tu semana. Si no se registran, tu tarifa efectiva parece mejor de lo que es y vas a seguir cotizando mal.
+That last column is the one almost nobody keeps and the one that makes all the difference: meetings, the back and forth over access and the review rounds are real hours of your week. If they are not logged, your effective rate looks better than it is and you will keep quoting badly.
 
-Después de registrar, correr `check` si el acumulado se acercó al estimado.
+After logging, run `check` if the running total got close to the estimate.
 
-### `check` - cómo va
+### `check` - how it is going
 
-1. Sumar horas registradas y comparar contra `horas_estimadas` de la nota.
-2. Estado de los milestones: entregados, vencidos, pendientes de aprobación del cliente.
-3. Semáforo, y lo importante es qué hacer con cada color:
+1. Add up the logged hours and compare them against the note's `estimated_hours`.
+2. Milestone status: delivered, overdue, pending client approval.
+3. Traffic light, and what matters is what to do with each color:
 
-| Consumido del estimado | Qué significa |
+| Share of the estimate used | What it means |
 |---|---|
-| Menos del 70% con el alcance avanzando | Va bien |
-| 70-100% con alcance pendiente | **Avisar al cliente ahora**, no al pasarse |
-| Arriba del 100% | Parar y ver si fue mala estimación (se absorbe y se aprende) o alcance nuevo (se cobra) |
+| Under 70% with the scope moving forward | On track |
+| 70-100% with scope still pending | **Tell the client now**, not once you go over |
+| Over 100% | Stop and see whether it was a bad estimate (absorb it and learn) or new scope (charge for it) |
 
-Esa distinción es la única que importa: **subestimé** contra **me pidieron más**. La primera es tu costo; la segunda es un change order. Confundirlas te hace pagar por errores del cliente o cobrarle por los tuyos.
+That distinction is the only one that matters: **I underestimated** versus **they asked for more**. The first is your cost; the second is a change order. Mixing them up makes you pay for the client's mistakes or charge them for yours.
 
-4. Detectar tareas hechas que no están en el alcance acordado. Si hay, ofrecer `change`.
+4. Catch completed tasks that are not in the agreed scope. If there are any, offer `change`.
 
-### `change` - el change order
+### `change` - the change order
 
-Cuando el cliente pide algo fuera del alcance acordado:
+When the client asks for something outside the agreed scope:
 
-1. **Nombrarlo como alcance nuevo** en el momento y sin dramatizar: no es un reclamo, es cómo funciona. "Eso lo puedo hacer, está fuera del alcance de este contrato, te paso el número."
-2. Estimar con `/estimate` y cotizar con el mismo criterio que la propuesta original: sobre el piso neto, con buffer.
-3. Redactar el change order con `/contract-and-proposal-writer`.
-4. Registrarlo en `## Change orders` de la nota con estado `propuesto`.
-5. **No hacer el trabajo hasta que esté aprobado.** Es la regla 3 de `freelance-guardrails`: alcance nuevo, precio nuevo.
+1. **Name it as new scope** on the spot and without drama: it is not a complaint, it is how it works. "I can do that, it's outside the scope of this contract, I'll send you the number."
+2. Estimate with `/estimate` and quote with the same criteria as the original proposal: on top of the net floor, with a buffer.
+3. Draft the change order with `/contract-and-proposal-writer`.
+4. Record it in `## Change orders` in the note with status `proposed`.
+5. **Do not do the work until it is approved.** It is rule 3 of `freelance-guardrails`: new scope, new price.
 
-Si el usuario decide regalarlo (porque es chico, o por relación con el cliente), **está bien - pero se registra igual** con monto 0 y el motivo. Lo que no se registra no se puede medir, y `/freelance-pipeline` necesita saber cuánto trabajo regalado hay para decirte si es un patrón.
+If the user decides to give it away (because it is small, or for the relationship with the client), **that is fine - but it is recorded anyway** with amount 0 and the reason. What is not recorded cannot be measured, and `/freelance-pipeline` needs to know how much work is given away to tell you whether it is a pattern.
 
-### `close` - cerrar el contrato
+### `close` - close the contract
 
-1. Completar `## Cierre`: entregado, cobrado, calificación recibida, y **qué haría distinto** (esa línea es la que sirve para cotizar el próximo).
-2. `estado: cerrado`, y `/job-outcome` para mover la nota de la propuesta.
-3. Comparar estimado contra real y dejarlo escrito. Es el dato más valioso del contrato entero: sin él, la próxima estimación es otra vez a ojo.
-4. Ofrecer `/freelance-pipeline` si ya hay volumen, y `/cold-outreach` para pedir la referencia mientras el trabajo está fresco.
+1. Fill in `## Closing`: delivered, paid, rating received, and **what I would do differently** (that line is the one that helps quote the next one).
+2. `status: closed`, and `/job-outcome` to move the proposal note.
+3. Compare estimate against actual and write it down. It is the most valuable data point of the whole contract: without it, the next estimate is guesswork again.
+4. Offer `/freelance-pipeline` if there is already volume, and `/cold-outreach` to ask for the reference while the work is fresh.
 
-## Verificación rápida del estado
+## Quick status check
 
-Para ver de una todos los contratos con horas por encima de lo estimado, sin abrirlos uno por uno:
+To see at once every contract with hours above the estimate, without opening them one by one:
 
 ```bash
 python .claude/skills/career-registry/scripts/career_registry.py audit
 ```
 
-Devuelve `contratos_con_horas_arriba_de_lo_estimado` con el exceso en horas y en porcentaje. Es la entrada natural de este skill cuando el usuario pregunta "¿cómo vengo?".
+It returns `contracts_over_estimated_hours` with the excess in hours and as a percentage. It is this skill's natural entry point when the user asks "how am I doing?".
 
-## Reglas
+## Rules
 
-- **Nunca hacer trabajo fuera del alcance sin cotizarlo primero.** Si el usuario decide regalarlo, se registra con monto 0 y motivo.
-- **Distinguir siempre subestimación de alcance nuevo.** Son dos cosas y se pagan distinto.
-- Registrar las horas **no facturables** también: son las que explican por qué tu tarifa real es menor que la nominal.
-- No editar el alcance acordado para que coincida con lo que se hizo. El alcance es el que se firmó; lo demás es change order.
-- Nunca marcar un milestone como cobrado sin que el usuario lo confirme.
-- Sin guiones largos en el texto agregado a las notas.
+- **Never do work outside the scope without quoting it first.** If the user decides to give it away, it is recorded with amount 0 and the reason.
+- **Always tell underestimation apart from new scope.** They are two different things and get paid differently.
+- Log the **non-billable** hours too: they are the ones that explain why your real rate is lower than the nominal one.
+- Do not edit the agreed scope to match what was done. The scope is the one that was signed; the rest is a change order.
+- Never mark a milestone as paid without the user confirming it.
+- No long dashes in text added to notes.
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir en la nota del contrato. Entrega COMPLETE cuando las horas están registradas y el alcance está alineado o hay un change order propuesto. Según el caso, el siguiente paso es `/contract-and-proposal-writer` (redactar el change order), `/job-outcome` (mover el estado al cerrar) o `/freelance-pipeline` (con 10+ propuestas resueltas, el diagnóstico del negocio).
+Ask for approval before writing to the contract note. Delivery COMPLETE when the hours are logged and the scope is aligned or there is a proposed change order. Depending on the case, the next step is `/contract-and-proposal-writer` (draft the change order), `/job-outcome` (move the status on closing) or `/freelance-pipeline` (with 10+ resolved proposals, the business diagnosis).

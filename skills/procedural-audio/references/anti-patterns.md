@@ -1,45 +1,45 @@
-# Audio Procedural — Anti-patterns
+# Procedural Audio — Anti-patterns
 
-## Síntesis por elegancia
+## Synthesis for elegance
 
-Procedural no es mejor por ser procedural. Para un sonido hero, un sample bien diseñado gana en calidad, en control y en tiempo de producción. La síntesis rinde donde samplear no escala; en el resto es trabajo extra con peor resultado.
+Procedural is not better for being procedural. For a hero sound, a well-designed sample wins in quality, in control and in production time. Synthesis pays off where sampling does not scale; everywhere else it is extra work with a worse result.
 
-## Confundir el presupuesto de frame con el de callback
+## Confusing the frame budget with the callback budget
 
-"1-2 ms por footstep" leído como "se puede hacer inline en el update" es el error de cálculo más frecuente. El audio entero dispone de 0.8-1.7 ms por frame a 60 fps. El footstep hay que amortizarlo: precomputar, cachear, o generarlo en el thread de audio con buffer.
+"1-2 ms per footstep" read as "it can be done inline in the update" is the most frequent calculation mistake. All of audio gets 0.8-1.7 ms per frame at 60 fps. The footstep has to be amortized: precompute, cache, or generate it on the audio thread with a buffer.
 
-## No medir, estimar
+## Estimating instead of measuring
 
-Los costos de referencia son puntos de partida, no promesas. El costo real depende de plataforma, compilador y qué más corre. Medir con el profiler del middleware antes de comprometer la arquitectura.
+The reference costs are starting points, not promises. The real cost depends on platform, compiler and what else is running. Measure with the middleware profiler before committing to the architecture.
 
-## Un solo parámetro sin curva
+## A single parameter without a curve
 
-Mapear intensidad 0-1 linealmente a amplitud produce una respuesta que se siente muerta en la mitad del rango. La percepción de volumen y de brillo es logarítmica: la curva importa tanto como el rango.
+Mapping intensity 0-1 linearly to amplitude produces a response that feels dead in the middle of the range. The perception of loudness and brightness is logarithmic: the curve matters as much as the range.
 
-## Parámetros sin clamp
+## Unclamped parameters
 
-Un valor de velocidad que llega en 3.7 cuando el modelo espera 0-1 produce ruido blanco a todo volumen. Normalizar y clampear en el boundary, del lado de gameplay.
+A speed value that arrives as 3.7 when the model expects 0-1 produces white noise at full volume. Normalize and clamp at the boundary, on the gameplay side.
 
-## Sintetizar el ambiente entero
+## Synthesizing the whole ambience
 
-El ambiente puramente sintético suena sintético. La sensación de "vivo" viene de la distribución temporal y espacial de los detalles, no de generarlos. Bed sampleado + detalles posicionados proceduralmente gana.
+Purely synthetic ambience sounds synthetic. The feeling of "alive" comes from the temporal and spatial distribution of the details, not from generating them. A sampled bed + procedurally positioned details wins.
 
-## Variación sin límites perceptuales
+## Variation without perceptual limits
 
-Randomizar los parámetros con rango amplio produce pasos que suenan a materiales distintos entre sí. La variación tiene que ser suficiente para no repetir y chica para no romper la identidad.
+Randomizing the parameters over a wide range produces steps that sound like different materials from each other. The variation has to be large enough not to repeat and small enough not to break the identity.
 
-## Sin fallback de plataforma
+## No platform fallback
 
-El modelo entra cómodo en PC y no entra en el target más bajo. Si eso se descubre en certificación, hay que rehacer el sistema contra reloj. El camino de samples reducido se decide en el diseño.
+The model fits comfortably on PC and does not fit on the lowest target. If that is discovered at certification, the system has to be redone against the clock. The reduced sample path is decided in the design.
 
-## Reemplazar todo de golpe
+## Replacing everything at once
 
-Migrar el sistema de audio entero a procedural en un paso hace imposible saber qué regresión vino de dónde. Un sistema por vez, midiendo antes y después.
+Migrating the whole audio system to procedural in one step makes it impossible to know which regression came from where. One system at a time, measuring before and after.
 
-## Ignorar que sigue siendo una fuente 3D
+## Forgetting it is still a 3D source
 
-Un footstep procedural igual necesita posición, atenuación y — si son varios personajes — límite de voces. La síntesis resuelve la memoria, no la gestión de voces.
+A procedural footstep still needs position, attenuation and — if there are several characters — a voice limit. Synthesis solves memory, not voice management.
 
-## Modelo sin parámetros expuestos
+## Model without exposed parameters
 
-Si el modelo está hardcodeado, no es procedural: es un sample generado en runtime, con todos los costos y ninguna ventaja. El valor está en que gameplay pueda modularlo.
+If the model is hardcoded, it is not procedural: it is a sample generated at runtime, with all the costs and none of the advantages. The value is in gameplay being able to modulate it.

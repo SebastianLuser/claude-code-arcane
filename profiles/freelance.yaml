@@ -1,9 +1,9 @@
 name: freelance
-description: "Freelance — conseguir proyectos como freelancer y ejecutarlos: scan de fuentes publicas sin API key con dedup y scoring, busqueda en los marketplaces (Upwork, Workana) via WebSearch, inteligencia de tarifas de mercado, screening de riesgo del cliente, perfil de plataforma, propuestas con cotizacion sobre piso de tarifa neto, contratos y SOWs, kickoff con validacion de horas contra lo cotizado, registro de horas y change orders, pipeline con costo de adquisicion y utilizacion, y 4 agentes de contexto fresco (review de propuesta, screener adversarial, discovery call, estratega de pipeline)"
+description: "Freelance — win freelance projects and deliver them: scan of public sources with no API key, with dedup and scoring, marketplace search (Upwork, Workana) via WebSearch, market rate intelligence, client risk screening, platform profile, proposals quoted over a net rate floor, contracts and SOWs, kickoff that checks hours against the quote, hour logging and change orders, a pipeline with acquisition cost and utilization, and 4 fresh-context agents (proposal review, adversarial screener, discovery call, pipeline strategist)"
 category: personal
 
 skills:
-  # Nucleo del perfil
+  # Profile core
   - freelance-hunt
   - freelance-profile
   - fiverr-gig
@@ -13,14 +13,14 @@ skills:
   - freelance-pipeline
   - freelance-kickoff
   - freelance-deliver
-  # Compartidas con +job-hunt (una sola fuente de verdad del perfil profesional)
+  # Shared with +job-hunt (a single source of truth for the professional profile)
   - master-profile
   - portfolio-site
   - cold-outreach
   - job-outcome
   - career-registry
   - content-humanizer
-  # Compartidas con +business y +agile
+  # Shared with +business and +agile
   - contract-and-proposal-writer
   - estimate
 
@@ -42,6 +42,8 @@ permissions:
     - "Bash(python3 *posting_guard.py*)"
     - "Bash(python *career_registry.py*)"
     - "Bash(python3 *career_registry.py*)"
+    - "Bash(python *migrate_workspace.py*)"
+    - "Bash(python3 *migrate_workspace.py*)"
     - "Bash(python *humanize.py*)"
     - "Bash(python3 *humanize.py*)"
     - "Bash(python *detect.py*)"

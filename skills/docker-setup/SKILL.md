@@ -8,21 +8,21 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # docker-setup — Docker & Compose Setup
 
-## Quick Start Checklist — Setup completo desde cero
+## Quick Start Checklist — Full setup from scratch
 
-- [ ] `.dockerignore` creado antes de cualquier `COPY` (excluye `.git`, `node_modules`, `.env`, `coverage`, `*.md`)
-- [ ] Dockerfile multi-stage: stage `builder` separado del stage `runtime`
-- [ ] Base image con tag fijo, nunca `:latest` (ej: `golang:1.22-alpine`, `node:20-alpine`)
-- [ ] Dependencias copiadas e instaladas ANTES del código fuente (cache de layers)
-- [ ] Stage runtime usa imagen mínima: `distroless` (Go) o `node:20-alpine` (TS) o `nginx:alpine` (React)
-- [ ] `USER nonroot` o usuario no-root en stage runtime
-- [ ] `HEALTHCHECK` presente en cada servicio
-- [ ] Signal handler: `tini`/`dumb-init` en Node (Go nativo); `CMD` con exec form
-- [ ] `docker-compose.yml` con `depends_on: condition: service_healthy`
-- [ ] `docker-compose.override.yml` para dev-only (volúmenes, puertos) — no commiteado a prod
-- [ ] Secrets nunca en `ENV` ni en build args — solo via env vars en runtime o mounts
-- [ ] `trivy image` o `docker scout` en CI antes de push al registry
-- [ ] Runtime endurecido: `read_only`, `cap_drop: [ALL]`, `no-new-privileges`, límites de memoria y PIDs (ver `references/checklists.md`)
+- [ ] `.dockerignore` created before any `COPY` (excludes `.git`, `node_modules`, `.env`, `coverage`, `*.md`)
+- [ ] Multi-stage Dockerfile: `builder` stage separate from the `runtime` stage
+- [ ] Base image with a pinned tag, never `:latest` (e.g. `golang:1.22-alpine`, `node:20-alpine`)
+- [ ] Dependencies copied and installed BEFORE the source code (layer cache)
+- [ ] Runtime stage uses a minimal image: `distroless` (Go) or `node:20-alpine` (TS) or `nginx:alpine` (React)
+- [ ] `USER nonroot` or a non-root user in the runtime stage
+- [ ] `HEALTHCHECK` present on every service
+- [ ] Signal handler: `tini`/`dumb-init` on Node (native in Go); `CMD` in exec form
+- [ ] `docker-compose.yml` with `depends_on: condition: service_healthy`
+- [ ] `docker-compose.override.yml` for dev-only settings (volumes, ports) — not committed to prod
+- [ ] Secrets never in `ENV` or build args — only via runtime env vars or mounts
+- [ ] `trivy image` or `docker scout` in CI before pushing to the registry
+- [ ] Hardened runtime: `read_only`, `cap_drop: [ALL]`, `no-new-privileges`, memory and PID limits (see `references/checklists.md`)
 
 ---
 

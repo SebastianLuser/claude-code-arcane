@@ -1,8 +1,8 @@
-# Patrones Idiomáticos (.NET 10 / ASP.NET Core)
+# Idiomatic Patterns (.NET 10 / ASP.NET Core)
 
-## Handler por caso de uso
+## One handler per use case
 
-Un request (record) + un handler. Con MediatR o con un sender hand-rolled mínimo.
+One request (record) + one handler. With MediatR or with a minimal hand-rolled sender.
 
 ```csharp
 public sealed record CreateOrder(Guid CustomerId, decimal Amount) : IRequest<Result<Guid>>;
@@ -20,10 +20,10 @@ internal sealed class CreateOrderHandler(IApplicationDbContext db)
 }
 ```
 
-## IApplicationDbContext (EF Core detrás de una interfaz, sin repo genérico)
+## IApplicationDbContext (EF Core behind an interface, no generic repo)
 
-Exponé el `DbContext` a través de una interfaz en `Application`; implementala en
-`Infrastructure`. El `DbContext` ya es Unit of Work + repositorio: no lo envuelvas.
+Expose the `DbContext` through an interface in `Application`; implement it in
+`Infrastructure`. The `DbContext` already is Unit of Work + repository: do not wrap it.
 
 ```csharp
 // Application/Common/IApplicationDbContext.cs
@@ -43,9 +43,9 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 }
 ```
 
-## Pipeline behaviors (validación, logging, transacción)
+## Pipeline behaviors (validation, logging, transaction)
 
-Cross-cutting concerns alrededor de cada handler, sin ensuciar la lógica.
+Cross-cutting concerns around every handler, without cluttering the logic.
 
 ```csharp
 public sealed class ValidationBehavior<TReq, TRes>(IEnumerable<IValidator<TReq>> validators)
@@ -63,13 +63,13 @@ public sealed class ValidationBehavior<TReq, TRes>(IEnumerable<IValidator<TReq>>
 }
 ```
 
-Un `TransactionBehavior` similar abre `BeginTransactionAsync` antes de `next()` y
-hace commit/rollback alrededor: el UnitOfWork vive acá, no en repos a mano.
+A similar `TransactionBehavior` opens `BeginTransactionAsync` before `next()` and
+commits/rolls back around it: the UnitOfWork lives here, not in hand-written repos.
 
-## Result pattern para fallos esperados
+## Result pattern for expected failures
 
-No tires excepciones para flujo de negocio esperado (not found, validación, conflicto).
-Devolvé `Result<T>` (o `ErrorOr<T>`) y mapealo a HTTP en el endpoint.
+Do not throw exceptions for expected business flow (not found, validation, conflict).
+Return `Result<T>` (or `ErrorOr<T>`) and map it to HTTP in the endpoint.
 
 ```csharp
 public readonly record struct Error(string Code, string Message);
@@ -78,21 +78,21 @@ public async Task<Result<OrderDto>> Handle(GetOrder q, CancellationToken ct)
 {
     var order = await db.Orders.FindAsync([q.Id], ct);
     return order is null
-        ? new Error("Order.NotFound", "Order no existe")
+        ? new Error("Order.NotFound", "Order does not exist")
         : order.ToDto();
 }
 ```
 
-## Outbox pattern (consistencia DB + eventos)
+## Outbox pattern (DB + event consistency)
 
-Para publicar eventos de forma confiable: persistí el evento en una tabla `Outbox`
-**dentro de la misma transacción** que el cambio de datos. Un background worker
-(`BackgroundService`) lee la tabla y publica al broker; así nunca queda el estado
-guardado sin el evento ni el evento sin el estado.
+To publish events reliably: persist the event in an `Outbox` table
+**inside the same transaction** as the data change. A background worker
+(`BackgroundService`) reads the table and publishes to the broker; that way the state is never
+saved without the event, nor the event without the state.
 
 ## TypedResults en minimal API endpoints
 
-El endpoint es delgado: traduce HTTP ↔ request y mapea el `Result` a status code.
+The endpoint is thin: it translates HTTP ↔ request and maps the `Result` to a status code.
 
 ```csharp
 public static class OrderEndpoints
@@ -112,7 +112,7 @@ public static class OrderEndpoints
 }
 ```
 
-`TypedResults` da el tipo de respuesta exacto (útil para OpenAPI y tests) en vez del
-`Results` no tipado.
+`TypedResults` gives the exact response type (useful for OpenAPI and tests) instead of the
+untyped `Results`.
 
 _Ref: https://www.milanjovanovic.tech/blog/internal-vs-public-apis-in-clean-architecture · https://github.com/ardalis/CleanArchitecture · https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/responses_

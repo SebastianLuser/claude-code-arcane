@@ -1,69 +1,69 @@
 ---
 name: job-outcome
-description: "Record the outcome or progress of a job application (interview, offer, hired, rejected, no reply) updating the application note and the dashboard. Triggers: me respondieron de, registrar resultado, me rechazaron, tengo entrevista con, recibi una oferta, no me contestaron, actualizar estado de la postulacion."
-argument-hint: "[empresa]"
+description: "Record the outcome or progress of a job application (interview, offer, hired, rejected, no reply) updating the application note and the dashboard. Triggers: I heard back from, record outcome, I got rejected, I have an interview with, I got an offer, they never replied, update application status."
+argument-hint: "[company]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 
-# /job-outcome - Registrar resultado de una aplicación
+# /job-outcome - Record the outcome of an application
 
-Registrá qué pasó con una postulación: avances (entrevista agendada/hecha, oferta recibida) o resoluciones (contratado, rechazado, sin respuesta, oferta declinada, descartado). Adaptado del `/outcome` de MadsLorentzen/ai-job-search al esquema de notas del career workspace (rutas relativas al workspace: `--workspace`, env `CAREER_WORKSPACE`, o `./career-workspace/`).
+Record what happened with an application: progress (interview scheduled/done, offer received) or resolutions (hired, rejected, no response, offer declined, discarded). Adapted from the `/outcome` in MadsLorentzen/ai-job-search to the career workspace note schema (paths relative to the workspace: `--workspace`, env `CAREER_WORKSPACE`, or `./career-workspace/`).
 
-Empresa/oferta indicada: `$ARGUMENTS`
+Company/posting given: `$ARGUMENTS`
 
-## Pasos
+## Steps
 
-1. **Localizar la nota.** Buscar en `03-Aplicaciones/` la nota cuyo nombre o frontmatter `empresa` matchee (case-insensitive) con `$ARGUMENTS`. Si no se pasó argumento o hay ambigüedad, listar las aplicaciones con estado abierto (`interesado`, `aplicado`, `entrevista`, `oferta`) y preguntar cuál.
+1. **Locate the note.** Search `03-Applications/` for the note whose name or `company` frontmatter matches (case-insensitive) `$ARGUMENTS`. If no argument was passed or it is ambiguous, list the applications with an open status (`interested`, `applied`, `interviewing`, `offer`) and ask which one.
 
-2. **Recolectar qué pasó.** Preguntar al usuario y clasificar:
-   - **Progreso:** entrevista agendada / entrevista realizada / oferta recibida → estados `entrevista` u `oferta`.
-   - **Resolución:** `contratado` · `rechazado` · `sin_respuesta` · `declinada` (la oferta la rechazó el usuario) · `descartado` (el usuario perdió interés / la oferta cerró).
-   Registrar fecha, feedback textual recibido y lecciones aprendidas. **Registrar datos, no interpretarlos:** citar el feedback tal como llegó, sin suavizarlo ni analizarlo acá.
+2. **Collect what happened.** Ask the user and classify:
+   - **Progress:** interview scheduled / interview done / offer received → statuses `interviewing` or `offer`.
+   - **Resolution:** `hired` · `rejected` · `no_response` · `declined` (the user turned down the offer) · `discarded` (the user lost interest / the posting closed).
+   Record the date, the verbatim feedback received and lessons learned. **Record data, do not interpret it:** quote the feedback as it arrived, without softening or analyzing it here.
 
-3. **Actualizar la nota de aplicación**, con approval del usuario sobre lo recolectado (idempotente - agregar, nunca duplicar ni sobrescribir):
-   - Frontmatter: `estado` al nuevo valor y `fecha_actualizacion` a hoy. Compatibilidad: si la nota vieja usa `score:` en vez de `match_score:`, no renombrar el campo, solo tocar `estado`.
-   - `## Timeline / seguimiento`: agregar línea `- YYYY-MM-DD - <qué pasó>`.
-   - Si hubo entrevista: entrada en `## Entrevistas` (fecha, etapa, entrevistador si se sabe, y link a la nota de `06-Entrevistas/` si existe).
-   - Feedback y lecciones van en `## Notas`.
+3. **Update the application note**, with the user's approval on what was collected (idempotent - append, never duplicate or overwrite):
+   - Frontmatter: `status` to the new value and `updated` to today. Compatibility: if the old note uses `score:` instead of `match_score:`, do not rename the field, only touch `status`.
+   - `## Timeline / follow-up`: add a line `- YYYY-MM-DD - <what happened>`.
+   - If there was an interview: an entry in `## Interviews` (date, stage, interviewer if known, and a link to the `06-Interviews/` note if it exists).
+   - Feedback and lessons go in `## Notes`.
 
-4. **Actualizar el dashboard** (`00-Dashboard.md`): buscar la fila de la oferta y actualizar la columna **Estado** con el nuevo estado (usar la leyenda de emojis de abajo, la misma del template Dashboard) y la columna de nota si aporta (ej. "Rechazada 2026-07-13").
+4. **Update the dashboard** (`00-Dashboard.md`): find the posting's row and update the **Status** column with the new status (use the emoji legend below, the same as the Dashboard template) and the note column if it adds something (e.g. "Rejected 2026-07-13").
 
-5. **Sugerir siguiente paso** según el caso:
-   - `entrevista` → ofrecer `/interview-prep`.
-   - `rechazado` con feedback → anotar la lección en la nota; si se acumulan 3+ resoluciones, ofrecer `/job-upskill` y revisar los criterios de búsqueda contra los resultados reales.
-   - `sin_respuesta` a los 10-14 días → ofrecer follow-up con `/cold-outreach`.
-   - `contratado` → 🎉 y actualizar el resto de las aplicaciones abiertas (¿retirarse de procesos?).
-   - **Freelance** - `en_conversacion` → ofrecer ensayar con el agente `discovery-call`; `contrato_activo` → crear la nota en `08-Contratos/`; `sin_respuesta` o `rechazado` acumulados (10+ propuestas resueltas) → ofrecer `/freelance-pipeline`, que es donde se ve si el problema es la propuesta o el targeting.
+5. **Suggest the next step** depending on the case:
+   - `interviewing` → offer `/interview-prep`.
+   - `rejected` with feedback → write the lesson down in the note; if 3+ resolutions pile up, offer `/job-upskill` and review the search criteria against the real results.
+   - `no_response` after 10-14 days → offer a follow-up with `/cold-outreach`.
+   - `hired` → 🎉 and update the rest of the open applications (withdraw from processes?).
+   - **Freelance** - `in_conversation` → offer to rehearse with the `discovery-call` agent; `contract_active` → create the note in `08-Contracts/`; accumulated `no_response` or `rejected` (10+ resolved proposals) → offer `/freelance-pipeline`, which is where you see whether the problem is the proposal or the targeting.
 
-6. **Confirmar** al usuario qué se registró (nota, campos tocados, fila del dashboard).
+6. **Confirm** to the user what was recorded (note, fields touched, dashboard row).
 
-## Vocabulario de `estado` (frontmatter)
+## `status` vocabulary (frontmatter)
 
-Depende del `tipo:` de la nota. Leelo primero: son dos pipelines distintos y confundirlos rompe el dashboard y los reportes.
+It depends on the note's `type:`. Read it first: they are two different pipelines and mixing them up breaks the dashboard and the reports.
 
-**`tipo: aplicacion` (empleo, perfil `+job-hunt`):**
+**`type: application` (employment, `+job-hunt` profile):**
 
-`interesado → aplicado → entrevista → oferta` y cierra en: `contratado | rechazado | sin_respuesta | declinada | descartado`
+`interested → applied → interviewing → offer` and closes in: `hired | rejected | no_response | declined | discarded`
 
-**`tipo: freelance` (propuestas, perfil `+freelance`):**
+**`type: freelance` (proposals, `+freelance` profile):**
 
-`interesado → screeneado → propuesta_enviada → en_conversacion → contrato_activo → entregado` y cierra en: `ganado_cerrado | sin_respuesta | rechazado | descartado | disputa`
+`interested → screened → proposal_sent → in_conversation → contract_active → delivered` and closes in: `won_closed | no_response | rejected | discarded | disputed`
 
-En freelance hay dos registros extra que no existen en empleo, y sin ellos `/freelance-pipeline` no puede calcular nada:
+Freelance has two extra records that do not exist in employment, and without them `/freelance-pipeline` cannot compute anything:
 
-- Al marcar `propuesta_enviada`, preguntar y registrar **cuántos Connects costó** (frontmatter `connects_gastados`) y agregar la fila al ledger de `07-Recursos/Connects - <año>.md`.
-- Si la oferta se cerró sin que el cliente contratara a nadie, el resultado en el ledger es `oferta_nunca_contrato`, no `sin_respuesta`. Son cosas distintas: la primera es Connects perdidos por mal screening, la segunda es tu propuesta que no convenció.
+- When setting `proposal_sent`, ask and record **how many Connects it cost** (frontmatter `connects_spent`) and add the row to the ledger in `07-Resources/Connects - <year>.md`.
+- If the posting closed without the client hiring anyone, the result in the ledger is `never_hired`, not `no_response`. They are different things: the first is Connects lost to bad screening, the second is your proposal that did not convince.
 
-Emojis del dashboard: ⬜ interesado/screeneado · ✅ aplicado/propuesta_enviada · 📅 entrevista/oferta/en_conversacion · 🔨 contrato_activo/entregado · ❌ rechazado/sin_respuesta/declinada · 🚫 descartado/cerrada · ⚠️ disputa
+Dashboard emojis: ⬜ interested/screened · ✅ applied/proposal_sent · 📅 interviewing/offer/in_conversation · 🔨 contract_active/delivered · ❌ rejected/no_response/declined · 🚫 discarded/closed · ⚠️ disputed
 
-## Reglas
+## Rules
 
-- No editar en masa notas existentes: solo la nota de la aplicación en cuestión y su fila del dashboard.
-- No inventar datos: si falta información (fecha, feedback), preguntar o dejar el campo como está.
-- Sin guiones largos en todo texto agregado.
+- Do not bulk-edit existing notes: only the application note in question and its dashboard row.
+- Do not invent data: if information is missing (date, feedback), ask or leave the field as it is.
+- No em dashes in any added text.
 
 ## Handoff
 
-Registro COMPLETE cuando nota y dashboard quedaron consistentes. Según el resultado, el siguiente paso es `/interview-prep` (entrevista agendada), `/cold-outreach` (follow-up) o `/job-upskill` (rechazos acumulados).
+Record COMPLETE when the note and the dashboard are consistent. Depending on the outcome, the next step is `/interview-prep` (interview scheduled), `/cold-outreach` (follow-up) or `/job-upskill` (accumulated rejections).

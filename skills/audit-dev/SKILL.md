@@ -1,6 +1,6 @@
 ---
 name: audit-dev
-description: "Auditoría integral de software: arquitectura, código, tests, seguridad, docs y deuda técnica."
+description: "Comprehensive software audit: architecture, code, tests, security, docs and technical debt."
 category: "workflow"
 argument-hint: "[full|architecture|security|quality|api|deps]"
 user-invocable: true
@@ -10,34 +10,34 @@ allowed-tools: Read, Glob, Grep, Bash, Task
 
 ## Input
 
-Arg: `full` (default), `architecture`, `security`, `quality`, `api`, `deps`, o path específico.
+Arg: `full` (default), `architecture`, `security`, `quality`, `api`, `deps`, or a specific path.
 
-## Phase 1 — Detectar stack y estructura
+## Phase 1 — Detect stack and structure
 
-Identificar lenguajes/frameworks/package manager. Leer configs raíz. Mapear carpetas. Identificar CI/CD. Leer README/docs.
+Identify languages/frameworks/package manager. Read the root configs. Map the folders. Identify CI/CD. Read README/docs.
 
-## Phase 2 — Análisis por dimensión (agents en paralelo)
+## Phase 2 — Analysis per dimension (agents in parallel)
 
-| Dimensión | Severidad | Qué buscar |
+| Dimension | Severity | What to look for |
 |-----------|-----------|------------|
-| Arquitectura | CRITICAL | Convenciones del stack, separación responsabilidades, circular deps, entry point claro, patrones consistentes, config hardcoded, error handling |
-| Calidad código | HIGH | Código muerto, duplicación, funciones >50 líneas, complejidad ciclomática, naming inconsistente, TODOs abandonados, magic numbers, errores ignorados |
-| Testing | HIGH | Existencia y cobertura, unit/integration/e2e balance, tests útiles (comportamiento no implementación), flaky/estado global, fixtures, facilidad de ejecución |
-| Seguridad | CRITICAL | Secrets en código, input validation, SQL injection, XSS, auth/authz, CORS, deps vulnerables, rate limiting |
-| API/Contratos | MEDIUM | Documentación (OpenAPI), naming consistente, error responses estándar, versionado, validation, paginación |
-| Dependencias/Infra | MEDIUM | Deps desactualizadas/no usadas, lock file, Docker (base images, multi-stage), CI pipeline (tests, lint, security) |
-| Documentación | LOW | README útil, API docs, ADRs, onboarding posible |
+| Architecture | CRITICAL | Stack conventions, separation of concerns, circular deps, clear entry point, consistent patterns, hardcoded config, error handling |
+| Code quality | HIGH | Dead code, duplication, functions >50 lines, cyclomatic complexity, inconsistent naming, abandoned TODOs, magic numbers, swallowed errors |
+| Testing | HIGH | Existence and coverage, unit/integration/e2e balance, useful tests (behavior, not implementation), flaky/global state, fixtures, ease of running |
+| Security | CRITICAL | Secrets in code, input validation, SQL injection, XSS, auth/authz, CORS, vulnerable deps, rate limiting |
+| API/Contracts | MEDIUM | Documentation (OpenAPI), consistent naming, standard error responses, versioning, validation, pagination |
+| Dependencies/Infra | MEDIUM | Outdated/unused deps, lock file, Docker (base images, multi-stage), CI pipeline (tests, lint, security) |
+| Documentation | LOW | Useful README, API docs, ADRs, onboarding possible |
 
-## Phase 3 — Producir reporte
+## Phase 3 — Produce the report
 
-Guardar como `AUDIT.md` en raíz. Secciones: fecha/stack/estado general (**SALUDABLE** si todas las dimensiones del scorecard están en OK, **NECESITA ATENCIÓN** si alguna quedó en WARN, **CRÍTICO** si alguna quedó en CRIT), resumen ejecutivo (3-5 oraciones), scorecard (tabla dimensión/estado OK-WARN-CRIT/nota), hallazgos críticos, hallazgos importantes, observaciones, lo que está bien, plan de acción recomendado, detalles por dimensión con evidencia (paths, líneas).
+Save as `AUDIT.md` at the root. Sections: date/stack/overall status (**HEALTHY** if every scorecard dimension is OK, **NEEDS ATTENTION** if any is WARN, **CRITICAL** if any is CRIT), executive summary (3-5 sentences), scorecard (dimension/status OK-WARN-CRIT/note table), critical findings, important findings, observations, what is done well, recommended action plan, per-dimension details with evidence (paths, lines).
 
 ## Rules
 
-- Español siempre. Citar file paths y líneas
-- Solución concreta por problema
-- Agents en paralelo por dimensión
+- Write the report in the user's language. Cite file paths and lines
+- A concrete solution per problem
+- Agents in parallel per dimension
 - NO over-engineering (100% coverage, DI frameworks)
-- Calibrar al tamaño/etapa del proyecto
-- Priorizar por impacto real, no purismo
-- Reconocer lo bien hecho
+- Calibrate to the project's size/stage
+- Prioritize by real impact, not purism
+- Acknowledge what is done well

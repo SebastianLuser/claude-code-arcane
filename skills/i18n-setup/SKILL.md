@@ -8,7 +8,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
 # i18n-setup — Internationalization Decision Guide
 
-Markets: **ES (AR/MX/CO/CL)**, **PT (BR)**, **EN**. ES is source-of-truth locale.
+Markets: **ES (AR/MX/CO/CL)**, **PT (BR)**, **EN**. ES is the source-of-truth locale.
 Use when: >1 country/language, backend content needs translation, local formats required.
 Skip when: monolingual MVP without multi-country roadmap, or user-generated content.
 
@@ -66,7 +66,7 @@ Good: `courses.list.empty`, `courses.create.error.duplicate` | Bad: `button1`, `
 - Manual date/currency formatting instead of `Intl`
 - No fallback language — missing key = broken UI
 - Language change not persisted — lost on reload
-- Assuming 1 language = 1 locale (es-AR ≠ es-MX)
+- Assuming that one language is one locale (es-AR ≠ es-MX)
 
 ## Checklist
 

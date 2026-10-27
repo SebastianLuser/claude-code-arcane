@@ -1,7 +1,7 @@
 ---
 name: obsidian-canvas
-description: "Crea y edita archivos .canvas (JSON Canvas): nodos de nota, texto, archivo y link, grupos y edges con direccion y color. Triggers: obsidian canvas, json canvas, mapa visual, diagrama de notas, archivo .canvas, pizarra obsidian."
-argument-hint: "[create <descripcion> | explain <archivo.canvas> | edit <archivo.canvas>]"
+description: "Creates and edits .canvas files (JSON Canvas): note, text, file and link nodes, groups, and edges with direction and color. Triggers: obsidian canvas, json canvas, visual map, note diagram, .canvas file, obsidian whiteboard."
+argument-hint: "[create <description> | explain <file.canvas> | edit <file.canvas>]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
@@ -9,17 +9,17 @@ allowed-tools: Read, Glob, Grep, Write, Edit
 
 # Obsidian Canvas - JSON Canvas
 
-Un `.canvas` es JSON plano con dos arrays: `nodes` y `edges`. El formato es JSON Canvas, un spec abierto, así que el archivo se puede generar y leer sin Obsidian. Adaptado de `kepano/obsidian-skills` al formato de este repo.
+A `.canvas` is plain JSON with two arrays: `nodes` and `edges`. The format is JSON Canvas, an open spec, so the file can be generated and read without Obsidian. Adapted from `kepano/obsidian-skills` to this repo's format.
 
-Modo: `$ARGUMENTS`
+Mode: `$ARGUMENTS`
 
-## Modos
+## Modes
 
-- **`create`**: generar un canvas nuevo desde una descripción o desde un conjunto de notas del vault.
-- **`explain`**: leer un canvas y describir su estructura en texto. Read-only.
-- **`edit`**: agregar o reacomodar nodos de un canvas existente. Pedí approval antes de escribir, y avisá que un canvas abierto en Obsidian sobrescribe el archivo al guardar: hay que cerrarlo antes.
+- **`create`**: generate a new canvas from a description or from a set of vault notes.
+- **`explain`**: read a canvas and describe its structure in text. Read-only.
+- **`edit`**: add or rearrange nodes in an existing canvas. Ask for approval before writing, and warn that a canvas open in Obsidian overwrites the file on save: it has to be closed first.
 
-## Estructura
+## Structure
 
 ```json
 {
@@ -27,20 +27,20 @@ Modo: `$ARGUMENTS`
     {
       "id": "n1",
       "type": "file",
-      "file": "03_Resources/Indices parciales.md",
+      "file": "03_Resources/Partial indexes.md",
       "x": 0, "y": 0, "width": 400, "height": 300
     },
     {
       "id": "n2",
       "type": "text",
-      "text": "Hipotesis: el costo esta en las lecturas",
+      "text": "Hypothesis: the cost is in the reads",
       "x": 480, "y": 0, "width": 300, "height": 120,
       "color": "4"
     },
     {
       "id": "g1",
       "type": "group",
-      "label": "Investigacion",
+      "label": "Research",
       "x": -40, "y": -60, "width": 900, "height": 440
     }
   ],
@@ -49,43 +49,43 @@ Modo: `$ARGUMENTS`
       "id": "e1",
       "fromNode": "n1", "fromSide": "right",
       "toNode": "n2", "toSide": "left",
-      "label": "sugiere"
+      "label": "suggests"
     }
   ]
 }
 ```
 
-**Nodos.** Campos obligatorios: `id`, `type`, `x`, `y`, `width`, `height`. Tipos:
+**Nodes.** Required fields: `id`, `type`, `x`, `y`, `width`, `height`. Types:
 
-| `type` | Campo propio |
+| `type` | Own field |
 |---|---|
 | `text` | `text` (markdown) |
-| `file` | `file` (ruta en el vault), `subpath` opcional para un heading o bloque |
+| `file` | `file` (path in the vault), optional `subpath` for a heading or block |
 | `link` | `url` |
-| `group` | `label`, `background`, `backgroundStyle` opcionales |
+| `group` | optional `label`, `background`, `backgroundStyle` |
 
-**Edges.** Obligatorio `id`, `fromNode`, `toNode`. Opcionales: `fromSide` y `toSide` (`top`, `right`, `bottom`, `left`), `fromEnd`/`toEnd` (`none`, `arrow`), `label`, `color`.
+**Edges.** Required: `id`, `fromNode`, `toNode`. Optional: `fromSide` and `toSide` (`top`, `right`, `bottom`, `left`), `fromEnd`/`toEnd` (`none`, `arrow`), `label`, `color`.
 
-**Color.** Un preset `"1"` a `"6"` (rojo, naranja, amarillo, verde, cyan, violeta) o un hex `"#ff0000"`.
+**Color.** A preset `"1"` to `"6"` (red, orange, yellow, green, cyan, purple) or a hex `"#ff0000"`.
 
-**Coordenadas.** El eje Y crece hacia abajo. Un grupo no contiene nodos por referencia: los contiene **geométricamente**, por solaparse con su rectángulo. Si movés un nodo fuera del rectángulo, sale del grupo.
+**Coordinates.** The Y axis grows downward. A group doesn't contain nodes by reference: it contains them **geometrically**, by overlapping with its rectangle. If you move a node outside the rectangle, it leaves the group.
 
-## Reglas para generar uno usable
+## Rules for generating a usable one
 
-- **Los `id` tienen que ser únicos.** Si se repiten, Obsidian se queda con uno solo y el resto desaparece sin error.
-- **Layout en grilla, no apilado en el origen.** Separar los nodos al menos 60px: un canvas con todo en `x: 0, y: 0` se abre como una pila ilegible y reacomodarlo a mano cuesta más que generarlo de nuevo.
-- **Verificar que cada `file` exista** antes de escribir el canvas: un nodo que apunta a una nota inexistente renderiza vacío.
-- Un canvas es para pensar visualmente, no para almacenar conocimiento. Lo que se aprende en un canvas se escribe después como nota atómica.
+- **`id`s must be unique.** If they repeat, Obsidian keeps only one and the rest disappear without an error.
+- **Grid layout, not stacked at the origin.** Keep nodes at least 60px apart: a canvas with everything at `x: 0, y: 0` opens as an unreadable pile, and rearranging it by hand costs more than generating it again.
+- **Check that every `file` exists** before writing the canvas: a node pointing to a nonexistent note renders empty.
+- A canvas is for thinking visually, not for storing knowledge. What you learn in a canvas is written afterwards as an atomic note.
 
-Canvas READY cuando el JSON es válido, los ids son únicos, las rutas existen y el usuario confirmó que abre bien en Obsidian.
+Canvas READY when the JSON is valid, the ids are unique, the paths exist and the user confirmed it opens correctly in Obsidian.
 
-## Reglas
+## Rules
 
-- No inventar campos que el spec no define: Obsidian los ignora y ensucia el archivo.
-- No reescribir un canvas entero para agregar un nodo: `Edit` sobre el array.
-- Pedí approval antes de escribir o sobrescribir un `.canvas`, y verificá que no esté abierto en Obsidian.
-- Sin guiones largos en labels ni en nodos de texto.
+- Don't invent fields the spec doesn't define: Obsidian ignores them and they clutter the file.
+- Don't rewrite a whole canvas to add a node: `Edit` the array.
+- Ask for approval before writing or overwriting a `.canvas`, and check that it isn't open in Obsidian.
+- No em dashes in labels or text nodes.
 
 ## Handoff
 
-Si lo que hacía falta era una vista tabular y no un mapa visual, el skill correcto es `/obsidian-bases`. Cuando el canvas dejó una conclusión, el siguiente paso es `/zettel` para escribirla como nota atómica: el canvas es el andamio, la nota es lo que queda.
+If what was needed was a tabular view and not a visual map, the right skill is `/obsidian-bases`. When the canvas produced a conclusion, the next step is `/zettel` to write it as an atomic note: the canvas is the scaffolding, the note is what remains.

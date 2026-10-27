@@ -1,169 +1,169 @@
-# Plataformas freelance: qué se puede consumir y qué no
+# Freelance platforms: what can and cannot be consumed
 
-Estado verificado en agosto de 2026, corriendo las requests, no leyendo la documentación. Antes de agregar una fuente, verificar de nuevo: las plataformas cambian sin avisar.
+Status verified in August 2026, by running the requests, not by reading the documentation. Before adding a source, verify again: platforms change without notice.
 
-## El criterio, y por qué es estricto
+## The criterion, and why it is strict
 
-Este repo es público y lo instala cualquiera. Una fuente entra a la corrida automática solo si cumple **las tres**:
+This repo is public and anyone installs it. A source joins the automatic run only if it meets **all three**:
 
-1. **Sin API key ni registro.** Si cada usuario tiene que pedir credenciales, el skill funciona para uno y está roto para el resto.
-2. **Términos que permiten consumirla desde una herramienta local.** No alcanza con que técnicamente responda.
-3. **Tiene trabajo freelance de verdad**, no solo empleo remoto full-time.
+1. **No API key or sign-up.** If every user has to request credentials, the skill works for one and is broken for the rest.
+2. **Terms that allow consuming it from a local tool.** Responding technically is not enough.
+3. **It has real freelance work**, not just full-time remote employment.
 
-Que una API devuelva 200 no la habilita. Dos de las candidatas más recomendadas en internet fallan el punto 2 y quedaron afuera.
+An API returning 200 does not qualify it. Two of the candidates most recommended online fail point 2 and were left out.
 
-## Incluidas
+## Included
 
-### GetOnBrd (LatAm y remoto)
+### GetOnBrd (LatAm and remote)
 
-`https://www.getonbrd.com/api/v0` · sin key · comparte API con `/job-scrape`
+`https://www.getonbrd.com/api/v0` · no key · shares the API with `/job-scrape`
 
-- `/modalities` devuelve `1 Full time`, `2 Part time`, **`3 Freelance`**, `4 Internship`.
-- **El filtro de modalidad no existe del lado del servidor.** Se probaron `modality`, `modality_id`, `modalities`, `modality[]`, `filter[modality]`, `modality=freelance` y `job_modality`: las siete devuelven 200 y el mismo resultado sin filtrar (48 de 50 full-time). Hay que filtrar en el cliente.
-- **Usar `expand[]=company&expand[]=tags&expand[]=modality`.** Sin eso esos campos vienen como `{"data":{"id":...}}` y no hay nombre que mostrar. Lo aprendimos de `job-scrape/scripts/getonbrd_search.py`, que ya lo hacía.
-- **Trampa:** con `expand[]` el id de la modalidad llega como string `"3"`; sin expand, como int `3`. Comparar el id se rompe en silencio al cambiar los parámetros. Filtrar por `attributes.locale_key == "freelance"`.
-- Rendimiento medido: ~10 freelance cada 200 escaneados con `query=developer`.
+- `/modalities` returns `1 Full time`, `2 Part time`, **`3 Freelance`**, `4 Internship`.
+- **The work-mode filter does not exist server-side.** `modality`, `modality_id`, `modalities`, `modality[]`, `filter[modality]`, `modality=freelance` and `job_modality` were tried: all seven return 200 and the same unfiltered result (48 of 50 full-time). It has to be filtered client-side.
+- **Use `expand[]=company&expand[]=tags&expand[]=modality`.** Without it those fields come back as `{"data":{"id":...}}` and there is no name to show. We learned it from `job-scrape/scripts/getonbrd_search.py`, which already did it.
+- **Trap:** with `expand[]` the modality id arrives as the string `"3"`; without expand, as the int `3`. Comparing the id breaks silently when the parameters change. Filter by `attributes.locale_key == "freelance"`.
+- Measured yield: ~10 freelance per 200 scanned with `query=developer`.
 
-### Himalayas (remoto global)
+### Himalayas (global remote)
 
-`https://himalayas.app/jobs/api` · sin key
+`https://himalayas.app/jobs/api` · no key
 
-- `employmentType` toma los valores `Full Time` y **`Contractor`**.
-- **Tampoco filtra del lado del servidor:** se probaron `employmentType=Contractor`, en minúscula, `employment_type` y `type`. Las cuatro devuelven el mismo set mezclado y `totalCount` sin cambios (97.323).
-- **`limit` se topea en 20** aunque pidas más. Paginar con `offset`.
-- Rendimiento medido: ~28 contractor cada 120 escaneados. Sesgo a tener en cuenta: la cabeza del feed la domina una sola empresa de BPO con puestos no técnicos (transcripción, documentos, peritaje). Con filtro de query se acomoda, pero ese pool no es homogéneo y el usuario tiene que saberlo.
+- `employmentType` takes the values `Full Time` and **`Contractor`**.
+- **It does not filter server-side either:** `employmentType=Contractor`, lowercase, `employment_type` and `type` were tried. All four return the same mixed set and an unchanged `totalCount` (97,323).
+- **`limit` caps at 20** even if you ask for more. Paginate with `offset`.
+- Measured yield: ~28 contractor per 120 scanned. Bias to keep in mind: the head of the feed is dominated by a single BPO company with non-technical positions (transcription, documents, expert appraisal). A query filter sorts it out, but that pool is not homogeneous and the user has to know it.
 
-## Solo para inteligencia de mercado, no para buscar trabajo
+## Only for market intelligence, not for finding work
 
 ### Hacker News: "Ask HN: Freelancer? Seeking freelancer?"
 
-`https://hn.algolia.com/api/v1` · sin key · 10.000 requests por hora
+`https://hn.algolia.com/api/v1` · no key · 10,000 requests per hour
 
-El nombre engaña. Se midieron 6 hilos mensuales (marzo a agosto de 2026):
+The name is misleading. 6 monthly threads were measured (March to August 2026):
 
-| Categoría | Comentarios |
+| Category | Comments |
 |---|---|
-| Freelancers ofreciéndose (`SEEKING WORK`) | 113 |
-| Clientes buscando (`SEEKING FREELANCER`) | **2** |
-| Sin seguir la convención | 6 |
+| Freelancers offering themselves (`SEEKING WORK`) | 113 |
+| Clients looking (`SEEKING FREELANCER`) | **2** |
+| Not following the convention | 6 |
 
-Reproducible: `freelance_search.py market --months 6` devuelve ese conteo en `composition`.
+Reproducible: `freelance_search.py market --months 6` returns that count in `composition`.
 
-Como cola de trabajo no sirve. Como muestra de **cómo se posiciona y cuánto cobra gente con tu perfil**, es lo mejor que hay gratis. Por eso vive en el subcomando `market` y no en `search`.
+As a work queue it is useless. As a sample of **how people with your profile position themselves and how much they charge**, it is the best there is for free. That is why it lives in the `market` subcommand and not in `search`.
 
-Rendimiento de la extracción de tarifas: **3 tarifas sobre 119 perfiles** (~3%), mediana 100 USD/hora. Poco, pero es dato real y con la cita textual al lado.
+Rate extraction yield: **3 rates out of 119 profiles** (~3%), median 100 USD/hour. Little, but it is real data with the verbatim quote next to it.
 
-Detalles de implementación: los comentarios vienen con HTML escapado (`github&#x2F;user`), y los que no siguen la convención se clasifican como `unknown` a propósito - adivinar de qué lado están mete ofertas falsas en la cola, que es peor que omitirlas.
+Implementation details: comments come with escaped HTML (`github&#x2F;user`), and those that do not follow the convention are classified as `unknown` on purpose - guessing which side they are on puts fake postings in the queue, which is worse than leaving them out.
 
-## Excluidas, con motivo
+## Excluded, with the reason
 
 ### RemoteOK
 
-Sus términos, que vienen **en el propio payload de la API**, exigen un backlink do-follow desde tu sitio mencionando RemoteOK como fuente, o suspenden el acceso.
+Its terms, which come **in the API payload itself**, require a do-follow backlink from your site naming RemoteOK as the source, or they suspend access.
 
-Un CLI local no tiene sitio web. No podemos cumplirlo, y usarlo igual haría que le suspendan la IP al usuario. Además, de 100 ofertas revisadas **ninguna** tenía tag `contract`, `freelance` ni `part-time`. Falla el punto 2 y el punto 3.
+A local CLI has no website. We cannot comply, and using it anyway would get the user's IP suspended. Also, out of 100 postings reviewed **none** had a `contract`, `freelance` or `part-time` tag. Fails point 2 and point 3.
 
 ### Remotive
 
-Mismo problema y más restricciones: backlink do-follow obligatorio, **máximo 4 requests por día**, datos con **24 horas de retraso** deliberado, y prohibición explícita de usar los datos para captar emails. Ofrecen una API privada de pago desde 5.000 USD al mes.
+Same problem and more restrictions: mandatory do-follow backlink, **at most 4 requests per day**, data with a deliberate **24-hour delay**, and an explicit ban on using the data to harvest emails. They offer a paid private API from 5,000 USD a month.
 
-Tiene `job_type` con valores `freelance` y `contract` reales, así que el punto 3 lo cumple. Los otros dos no.
+It has `job_type` with real `freelance` and `contract` values, so it meets point 3. Not the other two.
 
 ### Upwork
 
-- **API GraphQL** en `api.upwork.com/graphql` con OAuth 2.0. La key se pide desde el API Center de la cuenta (cualquier freelancer o cliente, cualquier plan - **no** hace falta cuenta de empresa) y según el propio soporte de Upwork **responden por mail en aproximadamente una semana**. El rechazo más común es data de cuenta incompleta.
-- **Sí tiene búsqueda de ofertas** (`marketplaceJobPostingsSearch`) entre las operaciones de lectura, junto con perfiles y contratos. Lo que no tiene es escritura de propuestas.
-- Límites si te la aprueban: 40.000 requests por día, 10 por segundo por IP.
-- **No hay mutation para enviar una propuesta ni para gastar Connects.** Está cerrado a propósito para frenar auto-bidding.
-- **Los RSS feeds murieron el 20 de agosto de 2024**, por la misma razón. Cualquier tutorial que los mencione está viejo.
-- Scrapear viola los ToS y es exactamente lo que la plataforma cerró.
+- **GraphQL API** at `api.upwork.com/graphql` with OAuth 2.0. The key is requested from the account's API Center (any freelancer or client, any plan - a company account is **not** needed) and according to Upwork's own support **they reply by email in about a week**. The most common rejection is incomplete account data.
+- **It does have posting search** (`marketplaceJobPostingsSearch`) among its read operations, along with profiles and contracts. What it does not have is writing proposals.
+- Limits if they approve you: 40,000 requests per day, 10 per second per IP.
+- **There is no mutation to send a proposal or spend Connects.** It is closed on purpose to stop auto-bidding.
+- **The RSS feeds died on August 20, 2024**, for the same reason. Any tutorial that mentions them is outdated.
+- Scraping violates the ToS and is exactly what the platform shut down.
 
-Por la aprobación manual por usuario **no entra a la corrida automática**: rompería el skill para todos menos quien tenga key. Si un usuario la consigue, puede escribir su propio adaptador siguiendo el patrón del script; el camino soportado es pegar la oferta a mano.
+Because of the manual per-user approval **it does not join the automatic run**: it would break the skill for everyone except whoever has a key. If a user gets one, they can write their own adapter following the script's pattern; the supported path is pasting the posting by hand.
 
 ### Freelancer.com
 
-API con OAuth 2.0 y credenciales por usuario (`Freelancer-Developer-OAuth-Client-Id`). No hay endpoint público de búsqueda de proyectos. Mismo problema estructural que Upwork.
+API with OAuth 2.0 and per-user credentials (`Freelancer-Developer-OAuth-Client-Id`). There is no public project search endpoint. Same structural problem as Upwork.
 
-Hay wrappers de terceros en RapidAPI que dicen exponer la búsqueda sin credenciales. No los usamos: son intermediarios no oficiales, se caen sin aviso y su forma de obtener los datos no es auditable.
+There are third-party wrappers on RapidAPI that claim to expose the search without credentials. We do not use them: they are unofficial middlemen, they go down without notice and the way they obtain the data is not auditable.
 
-### El resto de los marketplaces tipo Upwork
+### The rest of the Upwork-style marketplaces
 
-Distinción que importa: GetOnBrd y Himalayas son **job boards** con una modalidad freelance. Upwork es un **marketplace**: el cliente publica, vos ofertás, hay Connects y escrow. Ninguna de las fuentes incluidas es un marketplace, y no es por falta de ganas.
+A distinction that matters: GetOnBrd and Himalayas are **job boards** with a freelance work mode. Upwork is a **marketplace**: the client posts, you bid, there are Connects and escrow. None of the included sources is a marketplace, and not for lack of trying.
 
-Probado en agosto de 2026, códigos reales:
+Tested in August 2026, real status codes:
 
-| Plataforma | Endpoint probado | Resultado |
+| Platform | Endpoint tested | Result |
 |---|---|---|
-| Workana (LatAm) | `/jobs.rss`, `/jobs.rss?language=es`, `/api/v1/projects` | 404 en las tres. No hay feed público |
-| Guru | `/rss/jobs/`, `api.guru.com` | 404 y DNS inexistente. Su `robots.txt` tiene `Disallow: /api/` explícito |
-| PeoplePerHour | `/freelance-jobs.rss` | 404. Su `robots.txt` tiene `Disallow: /*?`, o sea que las URLs de búsqueda con filtros están prohibidas |
-| Truelancer | `/api/projects` | 429 desde la primera request |
-| Freelancermap (DACH) | `/project-rss.xml`, `/api/v1/projects` | 404 y **401**: la API existe pero pide credenciales |
-| Malt (Europa) | `/api/missions` | **401**: misma historia |
+| Workana (LatAm) | `/jobs.rss`, `/jobs.rss?language=es`, `/api/v1/projects` | 404 on all three. There is no public feed |
+| Guru | `/rss/jobs/`, `api.guru.com` | 404 and nonexistent DNS. Its `robots.txt` has an explicit `Disallow: /api/` |
+| PeoplePerHour | `/freelance-jobs.rss` | 404. Its `robots.txt` has `Disallow: /*?`, meaning search URLs with filters are forbidden |
+| Truelancer | `/api/projects` | 429 from the first request |
+| Freelancermap (DACH) | `/project-rss.xml`, `/api/v1/projects` | 404 and **401**: the API exists but asks for credentials |
+| Malt (Europe) | `/api/missions` | **401**: same story |
 | Codeable, Twine | `/api/projects`, `/api/jobs` | 404 |
 
-Los dos 401 son el mismo problema estructural que Upwork: API real, credencial por usuario. No entran por el punto 1.
+The two 401s are the same structural problem as Upwork: real API, per-user credential. They do not get in because of point 1.
 
-El resto no expone nada, y donde el `robots.txt` habla, habla en contra: PeoplePerHour prohíbe justo las URLs con filtros y Guru prohíbe `/api/`. Sacar los proyectos de ahí sería scrapear contra la política declarada del sitio.
+The rest expose nothing, and where `robots.txt` speaks, it speaks against it: PeoplePerHour forbids exactly the URLs with filters and Guru forbids `/api/`. Pulling projects from there would be scraping against the site's declared policy.
 
-**Conclusión para el diseño del perfil:** los marketplaces se usan a mano, en el navegador. El skill no busca ahí; ayuda con lo que pasa después de encontrar el posteo, que es donde se pierde la plata. Pegar la oferta a mano es el camino soportado, no un parche.
+**Conclusion for the profile design:** marketplaces are used by hand, in the browser. The skill does not search there; it helps with what happens after finding the posting, which is where the money is lost. Pasting the posting by hand is the supported path, not a patch.
 
-Nota lateral útil: Lemon.io y Proxify (marketplaces con screening) publican sus búsquedas en Working Nomads, 21 de 50 avisos entre las dos. No se puede filtrar por modalidad ahí, pero dice algo sobre estrategia: pasar el screening de una de esas una vez rinde más que ofertar de a una.
+Useful side note: Lemon.io and Proxify (marketplaces with screening) publish their searches on Working Nomads, 21 of 50 listings between the two. You cannot filter by work mode there, but it says something about strategy: passing the screening of one of those once pays off more than bidding one posting at a time.
 
 ### Fiverr
 
-Modelo invertido: no te postulás a trabajos, publicás gigs y el comprador te encuentra. Los "Buyer Requests" ya no existen como los conocía la gente. No hay cola que scorear.
+Inverted model: you do not apply to jobs, you publish gigs and the buyer finds you. "Buyer Requests" no longer exist as people knew them. There is no queue to score.
 
-Queda fuera del scanner por eso, no porque no valga la pena: el lado de la oferta lo cubre `/fiverr-gig` (título, packages, gallery, FAQ y precio derivado del piso).
+It is left out of the scanner for that reason, not because it is not worth it: the supply side is covered by `/fiverr-gig` (title, packages, gallery, FAQ and price derived from the floor).
 
 ### Toptal, Gun.io, Braintrust, Arc, Lemon.io
 
-Verticales con screening previo. No hay board público consumible; el acceso se gana pasando su proceso de admisión. Fuera del alcance de un scanner.
+Verticals with prior screening. There is no consumable public board; access is earned by passing their admission process. Outside the reach of a scanner.
 
 ### We Work Remotely
 
-Tiene RSS y funciona (`/remote-jobs.rss`, 100 items), pero **el feed de la categoría contract redirige a sí mismo**: `/categories/remote-contract-jobs.rss` devuelve 301 apuntando a la misma URL. Sin categoría de contract usable, el feed general es empleo full-time y no aporta a este perfil.
+It has RSS and it works (`/remote-jobs.rss`, 100 items), but **the contract category feed redirects to itself**: `/categories/remote-contract-jobs.rss` returns 301 pointing to the same URL. Without a usable contract category, the general feed is full-time employment and adds nothing to this profile.
 
 ### Arbeitnow
 
-Sin key y funciona. Tiene `job_types` con `Contract` (7 de ~100), pero es sobre todo ATS alemán y austríaco con puestos permanentes. Marginal: si en algún momento el usuario apunta al mercado DACH, vale agregarlo.
+No key and it works. It has `job_types` with `Contract` (7 of ~100), but it is mostly German and Austrian ATS with permanent positions. Marginal: if the user ever targets the DACH market, it is worth adding.
 
 ### Jobicy
 
-`https://jobicy.com/api/v2/remote-jobs` · sin key · responde 200 y pagina bien.
+`https://jobicy.com/api/v2/remote-jobs` · no key · responds 200 and paginates well.
 
-Pasa el punto 1 y, a diferencia de RemoteOK y Remotive, **pasa el punto 2**: su `friendlyNotice` pide crédito con link directo y que el botón de postularse apunte a la URL original del feed. Eso un CLI lo cumple, porque ya imprime fuente y URL, y no hay amenaza de suspensión.
+It passes point 1 and, unlike RemoteOK and Remotive, **it passes point 2**: its `friendlyNotice` asks for credit with a direct link and that the apply button point to the feed's original URL. A CLI meets that, because it already prints source and URL, and there is no threat of suspension.
 
-Falla el punto 3, que es el que importa: sobre 100 avisos, `jobType` dio **99 Full-Time y 1 Part-Time, ningún contract ni freelance**. Pedir `jobType=contract` devuelve HTTP 400, o sea que el valor no existe. Además el pool está dominado por Customer Support (25) y Sales (19), con solo 10 de Software Engineering.
+It fails point 3, which is the one that matters: out of 100 listings, `jobType` gave **99 Full-Time and 1 Part-Time, no contract or freelance**. Asking for `jobType=contract` returns HTTP 400, meaning the value does not exist. Also the pool is dominated by Customer Support (25) and Sales (19), with only 10 from Software Engineering.
 
 ### Working Nomads
 
-`https://www.workingnomads.com/api/exposed_jobs/` · sin key · 50 avisos por llamada.
+`https://www.workingnomads.com/api/exposed_jobs/` · no key · 50 listings per call.
 
-**No tiene campo de tipo de contrato.** Las claves son `category_name`, `company_name`, `location`, `tags`, `title`, `url` y nada más, así que no hay forma de filtrar freelance: habría que adivinar por el título, y sobre 50 avisos solo 1 lo mencionaba.
+**It has no contract type field.** The keys are `category_name`, `company_name`, `location`, `tags`, `title`, `url` and nothing else, so there is no way to filter freelance: you would have to guess from the title, and out of 50 listings only 1 mentioned it.
 
-Detalle que igual vale registrar: la cabeza del feed la dominan Proxify (15 de 50) y Lemon.io (6), que son marketplaces de devs freelance. O sea que buena parte de esos puestos *son* contract en la práctica, pero eso es inferencia nuestra y no dato, y esas dos ya están descartadas por screening previo. Adivinar la modalidad desde el nombre de la empresa mete ruido en la cola, que es peor que no traerla.
+A detail still worth recording: the head of the feed is dominated by Proxify (15 of 50) and Lemon.io (6), which are freelance dev marketplaces. So a good share of those positions *are* contract in practice, but that is our inference and not data, and those two are already ruled out for prior screening. Guessing the work mode from the company name puts noise in the queue, which is worse than not bringing it.
 
-## El camino que sí llega a los marketplaces: WebSearch
+## The path that does reach the marketplaces: WebSearch
 
-Medido en agosto de 2026. Es la excepción al problema de credenciales, porque la credencial es Claude Code mismo: todo el que instala el perfil ya la tiene.
+Measured in August 2026. It is the exception to the credentials problem, because the credential is Claude Code itself: everyone who installs the profile already has it.
 
-**Qué funciona.** `WebSearch` con `allowed_domains` devuelve URLs de proyectos reales en Upwork, Workana, Freelancer.com, PeoplePerHour y Guru. Tres búsquedas en paralelo en un turno traen candidatos de cinco plataformas a la vez, con títulos, y a veces con tarifa y stack en el resumen. Ejemplos que devolvió: `upwork.com/job/Golang-Developer_~0157b3a527d0809956/`, `workana.com/es/job/crear-tienda-shopify-ecommerce`.
+**What works.** `WebSearch` with `allowed_domains` returns real project URLs on Upwork, Workana, Freelancer.com, PeoplePerHour and Guru. Three parallel searches in one turn bring candidates from five platforms at once, with titles, and sometimes with rate and stack in the summary. Examples it returned: `upwork.com/job/Golang-Developer_~0157b3a527d0809956/`, `workana.com/es/job/crear-tienda-shopify-ecommerce`.
 
-**Qué no funciona, y es la mitad importante.** `WebFetch` devuelve **403 en todo**: el listado de Workana, la búsqueda de Upwork y hasta las páginas de proyecto individuales que el buscador ya tenía indexadas. Cloudflare bloquea el fetcher. O sea que se puede descubrir la oferta pero **no leerla**: presupuesto, cantidad de propuestas, país del cliente y si tiene el pago verificado siguen requiriendo abrir el link vos.
+**What does not work, and it is the important half.** `WebFetch` returns **403 on everything**: the Workana listing, the Upwork search and even the individual project pages the search engine already had indexed. Cloudflare blocks the fetcher. So you can discover the posting but **not read it**: budget, number of proposals, the client's country and whether their payment is verified still require opening the link yourself.
 
-**Tres límites que hay que decir de frente:**
+**Three limits that have to be stated up front:**
 
-1. **Frescura.** El índice no filtra por fecha. Una de las ofertas de Upwork que devolvió estaba **posteada en julio de 2021**. Para un marketplace donde una oferta de tres días ya está fría, es un problema serio.
-2. **Ruido de SEO.** Cerca de la mitad de los resultados no son ofertas: son landings de "Hire Golang developers", tablas de tarifas y gigs del Project Catalog. Hay que descartarlos por patrón de URL.
-3. **El resumen no es dato.** Lo que devuelve la búsqueda es un modelo resumiendo varias páginas: puede mezclar detalles de dos ofertas. Sirve como pista para abrir, no como campo para guardar.
+1. **Freshness.** The index does not filter by date. One of the Upwork postings it returned was **posted in July 2021**. For a marketplace where a three-day-old posting is already cold, that is a serious problem.
+2. **SEO noise.** About half of the results are not postings: they are "Hire Golang developers" landings, rate tables and Project Catalog gigs. They have to be discarded by URL pattern.
+3. **The summary is not data.** What the search returns is a model summarizing several pages: it can mix details from two postings. It is useful as a hint to open, not as a field to save.
 
-**Conclusión de diseño.** Da para descubrimiento y triage, no para screening ni para una cola confiable. Un skill que haga esto tiene que entregar links para abrir y decir explícitamente que la fecha no está verificada; guardar esos datos en el registro como si fueran ciertos sería peor que no tenerlos.
+**Design conclusion.** It is good enough for discovery and triage, not for screening or for a reliable queue. A skill that does this has to deliver links to open and say explicitly that the date is not verified; saving that data in the registry as if it were true would be worse than not having it.
 
-## Si querés agregar una fuente
+## If you want to add a source
 
-1. **Correr la request y mirar el payload**, no la documentación. Las dos APIs incluidas mienten sobre sus propios filtros.
-2. **Leer los términos, incluido lo que venga dentro de la respuesta.** RemoteOK y Remotive ponen ahí las condiciones que las descalifican.
-3. **Medir el rendimiento freelance real** sobre una muestra y anotarlo acá. Una fuente con 2 ofertas útiles cada 500 no justifica la request.
-4. **Confirmar que no necesita credenciales por usuario.** Si las necesita, va como opt-in documentado, no en `SOURCES`.
-5. **Agregar los specs** en `tests/freelance/test_freelance_search.py` con un payload fijo. Nada de tests contra la red.
+1. **Run the request and look at the payload**, not the documentation. The two included APIs lie about their own filters.
+2. **Read the terms, including whatever comes inside the response.** RemoteOK and Remotive put the conditions that disqualify them there.
+3. **Measure the real freelance yield** on a sample and write it down here. A source with 2 useful postings per 500 does not justify the request.
+4. **Confirm it does not need per-user credentials.** If it does, it goes in as a documented opt-in, not in `SOURCES`.
+5. **Add the specs** in `tests/freelance/test_freelance_search.py` with a fixed payload. No tests against the network.

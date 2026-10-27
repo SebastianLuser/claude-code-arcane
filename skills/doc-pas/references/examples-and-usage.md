@@ -1,27 +1,27 @@
 # Examples & Usage Guide
 
-## Ejemplos de bien vs mal
+## Good vs bad examples
 
-### MAL (verboso, divaga):
-> "El sistema de combate actual presenta algunos desafíos interesantes que vale la pena analizar. Cuando el jugador se enfrenta a enemigos en las primeras salas del dungeon, la experiencia puede resultar un poco frustrante debido a que los dados no siempre cooperan con la estrategia que el jugador tiene en mente. Esto se debe a múltiples factores que interactúan entre sí de maneras complejas..."
+### BAD (verbose, rambling):
+> "The current combat system presents some interesting challenges worth analyzing. When the player faces enemies in the first rooms of the dungeon, the experience can be somewhat frustrating because the dice do not always cooperate with the strategy the player has in mind. This is due to multiple factors that interact with each other in complex ways..."
 
-### BIEN (PAS, conciso):
-> **Qué pasa:**
-> - El jugador falla 60%+ de los ataques en Floor 1 con dados d6 base
-> - El threshold de Goblin (4) es demasiado alto para el loadout inicial (4x d6)
+### GOOD (PAS, concise):
+> **What happens:**
+> - The player misses 60%+ of attacks on Floor 1 with base d6 dice
+> - The Goblin threshold (4) is too high for the starting loadout (4x d6)
 >
-> **Impacto:** El jugador siente que no tiene control. Abandona runs en los primeros 3 combates.
+> **Impact:** The player feels they have no control. They abandon runs within the first 3 combats.
 
-## Cuando usar este formato
+## When to use this format
 
-- Analisis de mecanicas problematicas
-- Propuestas de cambios de balance
-- Decisiones de diseno (nueva feature, cambio de sistema)
-- Evaluacion de feedback de playtest
-- Comparativas entre opciones de diseno
+- Analysis of problematic mechanics
+- Balance change proposals
+- Design decisions (new feature, system change)
+- Evaluating playtest feedback
+- Comparisons between design options
 
-## Cuando NO usar este formato
+## When NOT to use this format
 
-- GDD completo (usar `/doc-gdd`)
-- Spec tecnica de implementacion (usar `/doc-rfc`)
-- Bug report (usar issues de GitHub/Jira)
+- A full GDD (use `/doc-gdd`)
+- A technical implementation spec (use `/doc-rfc`)
+- A bug report (use GitHub/Jira issues)

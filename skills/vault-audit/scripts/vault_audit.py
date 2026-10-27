@@ -35,6 +35,7 @@ import time
 SKIP_DIRS = {
     ".obsidian", ".git", ".trash", ".stfolder", ".stversions",
     "node_modules", "__pycache__", ".smart-env",
+    ".arcane-migration-backup",  # migrate_vault.py backups: copies of notes, not notes
 }
 
 # Scanned so links into them resolve, but excluded from the findings that would
@@ -310,7 +311,7 @@ def audit(root, args):
             no_backlinks.append(note["path"])
 
         status = note["status"]
-        by_status[status or "(sin status)"] = by_status.get(status or "(sin status)", 0) + 1
+        by_status[status or "(no status)"] = by_status.get(status or "(no status)", 0) + 1
         if status == STATUS_CONTESTED:
             contested.append(note["path"])
 

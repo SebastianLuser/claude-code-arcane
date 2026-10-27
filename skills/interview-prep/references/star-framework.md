@@ -1,42 +1,42 @@
-# STAR Framework - Respuestas de comportamiento
+# STAR Framework - Behavioral answers
 
-STAR estructura respuestas a preguntas de comportamiento ("contame de una vez que…") para que sean concretas, completas y memorables. La mayoría de los candidatos divaga; STAR te da una historia con resultado.
+STAR structures answers to behavioral questions ("tell me about a time when…") so they are concrete, complete and memorable. Most candidates ramble; STAR gives you a story with a result.
 
-## Las 4 partes
+## The 4 parts
 
-- **S - Situación:** el contexto, breve. Dónde, cuándo, qué estaba pasando. (1-2 oraciones)
-- **T - Tarea:** tu responsabilidad / el problema a resolver. (1 oración)
-- **A - Acción:** qué hiciste *vos* (no "el equipo"). El grueso de la respuesta. Decisiones concretas. (2-4 oraciones)
-- **R - Resultado:** el impacto, **con número** siempre que se pueda. Qué aprendiste. (1-2 oraciones)
+- **S - Situation:** the context, briefly. Where, when, what was going on. (1-2 sentences)
+- **T - Task:** your responsibility / the problem to solve. (1 sentence)
+- **A - Action:** what *you* did (not "the team"). The bulk of the answer. Concrete decisions. (2-4 sentences)
+- **R - Result:** the impact, **with a number** whenever possible. What you learned. (1-2 sentences)
 
-Objetivo: 60-90 segundos hablado. Ni telegrama, ni monólogo de 5 minutos.
+Target: 60-90 seconds spoken. Neither a telegram nor a 5-minute monologue.
 
-## Ejemplo
+## Example
 
-> **Pregunta:** "Contame de una vez que mejoraste el rendimiento de un sistema."
+> **Question:** "Tell me about a time you improved a system's performance."
 >
-> **S:** En Acme nuestro servicio de matchmaking tenía picos de latencia que cortaban partidas.
-> **T:** Como backend lead, me tocó bajar la latencia sin agregar infra.
-> **A:** Perfilé el hot path, encontré queries N+1 y serialización redundante; introduje caching por sesión y batch de writes, y agregué métricas para validar.
-> **R:** Latencia -25% y estabilidad del server +40%; duplicamos jugadores concurrentes sin sumar costos. Aprendí a medir antes de optimizar.
+> **S:** At Acme our matchmaking service had latency spikes that dropped matches.
+> **T:** As backend lead, it fell to me to bring latency down without adding infra.
+> **A:** I profiled the hot path, found N+1 queries and redundant serialization; I introduced per-session caching and batched writes, and added metrics to validate.
+> **R:** Latency -25% and server stability +40%; we doubled concurrent players without adding cost. I learned to measure before optimizing.
 
-## Banco de historias (preparar 5-6)
+## Story bank (prepare 5-6)
 
-Construí 5-6 historias STAR reutilizables desde el perfil maestro, cubriendo:
+Build 5-6 reusable STAR stories from the master profile, covering:
 
-1. **Logro/impacto** del que estés orgulloso (con métrica).
-2. **Problema técnico difícil** que resolviste.
-3. **Conflicto / desacuerdo** con un compañero o stakeholder.
-4. **Fracaso / error** y qué aprendiste (mostrá ownership, no excusas).
-5. **Liderazgo / iniciativa** (lideraste algo, mentoreaste, empujaste un cambio).
-6. **Ambigüedad / cambio de prioridades** que manejaste.
+1. **Achievement/impact** you are proud of (with a metric).
+2. **Hard technical problem** you solved.
+3. **Conflict / disagreement** with a teammate or stakeholder.
+4. **Failure / mistake** and what you learned (show ownership, not excuses).
+5. **Leadership / initiative** (you led something, mentored, pushed a change).
+6. **Ambiguity / shifting priorities** you handled.
 
-La misma historia puede servir para varias preguntas - lo que cambia es qué parte enfatizás.
+The same story can serve several questions - what changes is which part you emphasize.
 
-## Errores comunes
+## Common mistakes
 
-- Quedarse en "nosotros" - la entrevista evalúa *tu* aporte. Decí "yo".
-- Saltearse el Resultado, o un resultado sin número.
-- Demasiada Situación, poca Acción.
-- Historias vagas/inventadas que no aguantan repreguntas.
-- No tener la historia de fracaso preparada (la piden casi siempre).
+- Staying in "we" - the interview evaluates *your* contribution. Say "I".
+- Skipping the Result, or a result without a number.
+- Too much Situation, too little Action.
+- Vague/invented stories that do not hold up to follow-up questions.
+- Not having the failure story prepared (they ask for it almost always).

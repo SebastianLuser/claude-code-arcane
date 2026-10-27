@@ -1,6 +1,6 @@
 ---
 name: unity-game-architecture
-description: "Arquitectura Unity 6: _Project/ structure, ScriptableObjects, state machines, Addressables, pooling, 60 FPS budgets, save system."
+description: "Unity 6 architecture: _Project/ structure, ScriptableObjects, state machines, Addressables, pooling, 60 FPS budgets, save system."
 category: "gamedev"
 argument-hint: "[system or module name]"
 user-invocable: true
@@ -8,31 +8,31 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # unity-game-architecture — Decisions & Conventions
 
-Decision guide para Unity 6 (C#). Equipos chicos, patrones probados sin over-engineering.
+Decision guide for Unity 6 (C#). Small teams, proven patterns without over-engineering.
 
-## Filosofía
+## Philosophy
 
-No ECS/DOTS salvo necesidad demostrada con Profiler. Escalar complejidad con el proyecto. Profile primero, optimizá después. Lógica testeable desacoplada de MonoBehaviour.
+No ECS/DOTS unless the Profiler proves the need. Scale complexity with the project. Profile first, optimize later. Testable logic decoupled from MonoBehaviour.
 
-## Estructura de Carpetas
+## Folder Structure
 
-`Assets/_Project/Scripts/` agrupado por **feature** (no por tipo). Core/ (persistent managers, scene loader), Gameplay/[Feature]/, Systems/, UI/, Data/ (SO class defs), Utils/. Prefabs/, ScriptableObjects/ (.asset instances), Scenes/, Art/, Audio/, Shaders/. Plugins/ y ThirdParty/ fuera de _Project/.
+`Assets/_Project/Scripts/` grouped by **feature** (not by type). Core/ (persistent managers, scene loader), Gameplay/[Feature]/, Systems/, UI/, Data/ (SO class defs), Utils/. Prefabs/, ScriptableObjects/ (.asset instances), Scenes/, Art/, Audio/, Shaders/. Plugins/ and ThirdParty/ outside _Project/.
 
-## Decisiones de Arquitectura
+## Architecture Decisions
 
-| Patrón | Cuándo SÍ | Cuándo NO |
+| Pattern | When YES | When NO |
 |--------|-----------|-----------|
-| **Singletons** | State global persistente cross-scene (run state, settings, audio, input, scene loader). Max 3-4 | Todo lo demás. Solo 1 escena → `[SerializeField]` o SO event |
-| **ScriptableObjects** | Todos los datos tuneables (stats, items, habilidades, config niveles). Editor-friendly, hot-swappable, shared by ref, testeable | — |
-| **Composition** | Entidades = GO + componentes pequeños (Health, Movement, Inventory) | Jerarquías profundas (Player:Character:Entity:MB) |
-| **State Machine** | Entidad con 3+ estados (combat turns, enemy AI, UI flows) | Toggle simple on/off |
-| **SO Event Bus** | 3+ sistemas comunicándose sin referencia directa (UI, SFX, VFX reaccionan) | Solo 2 sistemas (ref directa OK). Payload complejo (C# events) |
-| **Input System** | Siempre nuevo (`com.unity.inputsystem`). Action maps por contexto | Nunca `Input.GetKey` legacy |
-| **Addressables** | Escenas y assets pesados (carga async, memory mgmt, DLC) | Settings/UI prefabs livianos (directo OK) |
+| **Singletons** | Persistent global cross-scene state (run state, settings, audio, input, scene loader). Max 3-4 | Everything else. Only 1 scene → `[SerializeField]` or an SO event |
+| **ScriptableObjects** | All tunable data (stats, items, abilities, level config). Editor-friendly, hot-swappable, shared by ref, testable | — |
+| **Composition** | Entities = GO + small components (Health, Movement, Inventory) | Deep hierarchies (Player:Character:Entity:MB) |
+| **State Machine** | Entity with 3+ states (combat turns, enemy AI, UI flows) | Simple on/off toggle |
+| **SO Event Bus** | 3+ systems communicating without a direct reference (UI, SFX, VFX react) | Only 2 systems (direct ref OK). Complex payload (C# events) |
+| **Input System** | Always the new one (`com.unity.inputsystem`). Action maps per context | Never legacy `Input.GetKey` |
+| **Addressables** | Scenes and heavy assets (async loading, memory mgmt, DLC) | Lightweight settings/UI prefabs (direct is OK) |
 
 ## Performance, Save, Testing & Build
 
-60 FPS target: <16ms/frame, 0 GC allocs in hot loops, <200 draw calls. JSON saves with versioning. Lógica pura testeable sin Play Mode. IL2CPP+stripping for release.
+60 FPS target: <16ms/frame, 0 GC allocs in hot loops, <200 draw calls. JSON saves with versioning. Pure logic testable without Play Mode. IL2CPP+stripping for release.
 
 > → Read references/performance-and-systems.md for budgets, optimization list, save system, testing, and build/git config
 

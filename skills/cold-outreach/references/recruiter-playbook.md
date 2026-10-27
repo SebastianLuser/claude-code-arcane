@@ -1,65 +1,65 @@
 # Recruiter / Hiring Manager Playbook
 
-Plantillas y psicología para outreach de candidato. Adaptá siempre la primera línea - las plantillas son esqueleto, no copy-paste.
+Templates and psychology for candidate outreach. Always adapt the first line - the templates are a skeleton, not copy-paste. Write the final message in the language of the person you are writing to.
 
-## Por qué responden (y por qué no)
+## Why they reply (and why they don't)
 
-Responden cuando: el mensaje es corto, claro sobre el fit, fácil de responder, y se nota que es para *ellos*. No responden cuando: es genérico, largo, pide demasiado de entrada, o suena desesperado. El recruiter recibe decenas por día - el filtro es "¿esto me ahorra trabajo o me lo agrega?".
+They reply when: the message is short, clear about the fit, easy to answer, and clearly meant for *them*. They do not reply when: it is generic, long, asks for too much up front, or sounds desperate. A recruiter gets dozens a day - the filter is "does this save me work or add to it?".
 
-## Plantillas
+## Templates
 
-### 1. Recruiter que posteó un rol
+### 1. Recruiter who posted a role
 ```
-Hola {nombre}, vi que están buscando {rol} en {empresa}.
-Soy {rol/seniority} con {logro relevante en 1 línea, con número}.
-Me interesa especialmente {algo real del rol/empresa}.
-¿Te sirve si te paso mi CV o coordinamos 15 min?
-```
-
-### 2. Hiring manager / futuro lead (mensaje de valor)
-```
-Hola {nombre}, sigo {producto/equipo de la empresa} y me llamó {detalle específico}.
-Vengo de {contexto}: {logro mapeado a lo que su equipo necesita}.
-Apliqué a {rol}; si te viene bien, encantado de darte contexto en una charla corta.
+Hi {name}, I saw you're hiring a {role} at {company}.
+I'm a {role/seniority} who {relevant achievement in 1 line, with a number}.
+I'm especially interested in {something real about the role/company}.
+Would it help if I sent my CV, or could we set up 15 min?
 ```
 
-### 3. Pedir un referido (a alguien del equipo)
+### 2. Hiring manager / future lead (value message)
 ```
-Hola {nombre}, vi que trabajás en {empresa} como {rol}.
-Estoy aplicando a {rol} ahí y me encantaría tu perspectiva sobre el equipo.
-Si te parece y te hace sentido, ¿estarías abierto a referirme? Sin problema si no.
-Te dejo mi perfil para que veas si encaja: {link}.
+Hi {name}, I follow {company's product/team} and {specific detail} caught my eye.
+I come from {context}: {achievement mapped to what their team needs}.
+I applied for {role}; if it suits you, happy to give you context in a short chat.
+```
+
+### 3. Asking for a referral (someone on the team)
+```
+Hi {name}, I saw you work at {company} as {role}.
+I'm applying for {role} there and would love your perspective on the team.
+If it makes sense to you, would you be open to referring me? No problem if not.
+Here's my profile so you can see whether it fits: {link}.
 ```
 
 ### 4. Connection note (<300 chars)
 ```
-Hola {nombre}, me interesa mucho {empresa/área}. Vengo de {1 cosa}.
-Me encantaría conectar y, si surge, charlar sobre {rol/equipo}.
+Hi {name}, I'm really interested in {company/area}. I come from {1 thing}.
+I'd love to connect and, if it comes up, chat about {role/team}.
 ```
 
-### 5. Follow-up 1 (día 4-5) - con valor nuevo
+### 5. Follow-up 1 (day 4-5) - with new value
 ```
-Hola {nombre}, te escribo para reafirmar mi interés en {rol}.
-Sumo un dato: {proyecto/idea relevante para su producto}.
-Quedo a disposición para lo que necesiten del proceso.
-```
-
-### 6. Follow-up 2 (día 10-12) - cierre digno
-```
-Hola {nombre}, entiendo que están con mucho.
-Dejo la puerta abierta por si avanza {rol}; me encantaría sumar.
-¡Gracias por el tiempo!
+Hi {name}, writing to reaffirm my interest in {role}.
+One more thing: {project/idea relevant to their product}.
+Happy to help with anything you need for the process.
 ```
 
-## Reglas de cadencia
+### 6. Follow-up 2 (day 10-12) - a dignified close
+```
+Hi {name}, I know you have a lot going on.
+I'm leaving the door open in case {role} moves forward; I'd love to contribute.
+Thanks for your time!
+```
 
-- Máximo 2 follow-ups. Después, soltar.
-- Cada follow-up agrega algo (no "¿novedades?").
-- Espaciar 4-5 días. Nunca el mismo día ni días consecutivos.
-- Registrar cada toque en la nota de `05-Contactos/`.
+## Cadence rules
 
-## Tono
+- 2 follow-ups at most. After that, let go.
+- Every follow-up adds something (not "any news?").
+- Space them 4-5 days apart. Never the same day or consecutive days.
+- Record every touch in the `05-Contacts/` note.
 
-- Cálido y profesional, nunca servil ni agresivo.
-- Confiado: estás ofreciendo valor, no mendigando.
-- Humano: escribí como hablás, sin jerga corporativa vacía.
+## Tone
+
+- Warm and professional, never servile or aggressive.
+- Confident: you are offering value, not begging.
+- Human: write the way you talk, without empty corporate jargon.

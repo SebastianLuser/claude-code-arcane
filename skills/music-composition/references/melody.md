@@ -1,48 +1,48 @@
-# Melodía
+# Melody
 
-## Qué hace que una melodía se pegue
+## What makes a melody stick
 
-Cuatro propiedades, y ninguna es "ser linda":
+Four properties, and none of them is "being pretty":
 
-1. **Perfil reconocible** — la silueta (sube, se sostiene, cae) es identificable sin el ritmo
-2. **Un gesto memorable** — un salto, una nota fuera de la escala, una síncopa. Un solo evento distintivo, no cinco
-3. **Repetición con variación** — el oído necesita reconocer antes de que le interese lo nuevo
-4. **Relación clara con la armonía** — las notas fuertes caen en tiempos fuertes y son consonantes o tensiones que resuelven
+1. **Recognizable profile** — the contour (rises, holds, falls) is identifiable without the rhythm
+2. **One memorable gesture** — a leap, a note outside the scale, a syncopation. A single distinctive event, not five
+3. **Repetition with variation** — the ear needs to recognize before it gets interested in what is new
+4. **Clear relationship with the harmony** — the strong notes fall on strong beats and are consonant or tensions that resolve
 
-Si una melodía no se pega, casi siempre falta el punto 2: es fluida, correcta y sin ningún evento que el oído pueda agarrar.
+If a melody does not stick, point 2 is almost always missing: it is fluid, correct and has no event the ear can grab onto.
 
-## Construcción
+## Construction
 
-**Grados de escala, no notas.** Escribir `5 - 3 - 2 - 1` en vez de `G - E - D - C` la hace portable y expone la estructura.
+**Scale degrees, not notes.** Writing `5 - 3 - 2 - 1` instead of `G - E - D - C` makes it portable and exposes the structure.
 
-**Balance salto/grado.** Melodía toda por grados conjuntos: suave y anodina. Toda por saltos: instrumental, difícil de cantar. La proporción típica en música vocal memorable es mayoría de grados con 1-2 saltos ubicados en el punto de mayor interés.
+**Leap/step balance.** A melody that moves only by step: smooth and bland. Only by leaps: instrumental, hard to sing. The typical proportion in memorable vocal music is mostly steps with 1-2 leaps placed at the point of greatest interest.
 
-**Clímax único.** La nota más aguda debería aparecer una vez, y tarde. Si el punto alto llega en el compás 2, no queda a dónde ir.
+**A single climax.** The highest note should appear once, and late. If the high point arrives in bar 2, there is nowhere left to go.
 
-**Registro como recurso finito.** Cada octava que subís es un recurso que se gasta. Guardá el registro alto para el momento que lo necesita.
+**Register as a finite resource.** Each octave you climb is a resource that gets spent. Save the high register for the moment that needs it.
 
-## Desarrollo motívico
+## Motivic development
 
-Un motivo es una célula de 2-5 notas. Las transformaciones, de más a menos reconocible:
+A motif is a cell of 2-5 notes. The transformations, from most to least recognizable:
 
-| Transformación | Qué hace |
+| Transformation | What it does |
 |---|---|
-| **Repetición literal** | Establece |
-| **Secuencia** | Mismo motivo, otra altura. La herramienta más eficiente |
-| **Transposición diatónica** | Igual pero adaptado a la escala; cambia intervalos |
-| **Inversión** | Espeja los intervalos. Mismo ADN, otro carácter |
-| **Retrogradación** | Al revés. Reconocible solo si el motivo es rítmicamente distintivo |
-| **Aumentación / disminución** | Duplicar o dividir las duraciones. Aumentación = épico; disminución = urgencia |
-| **Fragmentación** | Quedarse con un trozo y repetirlo. Genera desarrollo/tensión |
-| **Ornamentación** | Rellenar con notas de paso. Cuidado: diluye |
+| **Literal repetition** | Establishes |
+| **Sequence** | Same motif, different pitch. The most efficient tool |
+| **Diatonic transposition** | The same but adapted to the scale; changes intervals |
+| **Inversion** | Mirrors the intervals. Same DNA, different character |
+| **Retrograde** | Backwards. Recognizable only if the motif is rhythmically distinctive |
+| **Augmentation / diminution** | Double or halve the durations. Augmentation = epic; diminution = urgency |
+| **Fragmentation** | Keep one piece and repeat it. Generates development/tension |
+| **Ornamentation** | Fill in with passing notes. Careful: it dilutes |
 
-En música de juego, la aumentación y la fragmentación de un mismo motivo son la forma más barata de tener 4 variantes de un tema con una sola idea.
+In game music, augmentation and fragmentation of the same motif are the cheapest way to get 4 variants of a theme from a single idea.
 
-## Estructura de frase
+## Phrase structure
 
-- **Antecedente / consecuente** — 4+4 compases: la primera termina abierta (semicadencia), la segunda cierra. El patrón de pregunta-respuesta más usado
-- **Sentence** — presentación (2), continuación con fragmentación (2), cadencia (4)
-- **Frases asimétricas** (3, 5, 7 compases) — inquietan, útiles para tensión
-- **Elisión** — la última nota de una frase es la primera de la siguiente. Elimina la respiración, encadena
+- **Antecedent / consequent** — 4+4 bars: the first ends open (half cadence), the second closes. The most used question-answer pattern
+- **Sentence** — presentation (2), continuation with fragmentation (2), cadence (4)
+- **Asymmetric phrases** (3, 5, 7 bars) — unsettling, useful for tension
+- **Elision** — the last note of one phrase is the first of the next. Removes the breath, chains them
 
-**Prosodia (si hay letra):** las sílabas acentuadas caen en tiempos fuertes y en notas largas. Una melodía que pelea con el acento natural de la palabra suena mal aunque la armonía sea perfecta. Las vocales abiertas soportan notas agudas y largas; las cerradas no.
+**Prosody (if there are lyrics):** stressed syllables fall on strong beats and on long notes. A melody that fights the word's natural stress sounds wrong even if the harmony is perfect. Open vowels support high and long notes; closed ones do not.

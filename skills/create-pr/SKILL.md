@@ -1,6 +1,6 @@
 ---
 name: create-pr
-description: "Crea un pull request del branch actual usando gh CLI. Genera title + body con summary y test plan."
+description: "Creates a pull request for the current branch using the gh CLI. Generates title + body with summary and test plan."
 category: "workflow"
 argument-hint: ""
 user-invocable: true

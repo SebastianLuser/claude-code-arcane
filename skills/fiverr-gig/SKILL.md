@@ -1,147 +1,147 @@
 ---
 name: fiverr-gig
-description: "Construye el gig de Fiverr: titulo I will, tags de busqueda, los tres packages con precio derivado del piso neto, gallery, FAQ y requirements. Triggers: gig de fiverr, fiverr, packages basic standard premium, precio del gig, tags de fiverr, vender en fiverr."
+description: "Builds the Fiverr gig: I will title, search tags, the three packages priced from the net floor, gallery, FAQ and requirements. Triggers: fiverr gig, fiverr, basic standard premium packages, gig price, fiverr tags, sell on fiverr."
 argument-hint: "[audit | title | packages | gallery | faq | price]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, WebFetch
 ---
 
-# Fiverr Gig - El lado de la oferta
+# Fiverr Gig - The offer side
 
-Fiverr funciona al revés que Upwork: **no te postulás, publicás.** El gig queda parado y el
-comprador te encuentra buscando. Los Buyer Requests ya no existen, así que no hay cola de ofertas
-que scorear - por eso `/freelance-scan` excluye Fiverr a propósito, y este skill es el que cubre lo
-que ahí falta.
+Fiverr works the opposite way from Upwork: **you do not apply, you publish.** The gig stays up and the
+buyer finds you by searching. Buyer Requests no longer exist, so there is no queue of postings
+to score - that is why `/freelance-scan` leaves Fiverr out on purpose, and this skill is the one that covers
+what is missing there.
 
-Consecuencia práctica: un gig es un **activo**, no una postulación. Se escribe una vez bien y se
-itera con datos (impresiones → clicks → órdenes), no se reescribe por cada cliente.
+Practical consequence: a gig is an **asset**, not an application. It is written well once and
+iterated with data (impressions → clicks → orders), not rewritten for each client.
 
-Rutas relativas al career workspace (`--workspace`, env `CAREER_WORKSPACE`, o `./career-workspace/`).
+Paths are relative to the career workspace (`--workspace`, env `CAREER_WORKSPACE`, or `./career-workspace/`).
 
-Modo: `$ARGUMENTS`
+Mode: `$ARGUMENTS`
 
 ## Inputs
 
-- **El perfil maestro** de `01-Perfiles/` - la fuente de verdad del nicho, el stack y los números.
-  Si no existe, correr `/master-profile` primero.
-- **El piso de tarifa neto** definido en `/freelance-hunt`. Sin piso no se puede fijar precio: se
-  estaría adivinando.
-- **El gig actual**, si ya existe: URL pública → WebFetch, o pegado.
+- **The master profile** in `01-Profiles/` - the source of truth for the niche, the stack and the numbers.
+  If it does not exist, run `/master-profile` first.
+- **The net rate floor** defined in `/freelance-hunt`. Without a floor there is no way to set a price: it
+  would be guesswork.
+- **The current gig**, if there is one: public URL → WebFetch, or pasted.
 
-## Modos
+## Modes
 
-### `audit` - Revisar el gig actual
+### `audit` - Review the current gig
 
-Recorrer los cinco elementos de abajo y reportar qué falta, priorizado por impacto. Empezar siempre
-por **título, primera imagen de la gallery y precio del Basic**: son los únicos tres que se ven en
-los resultados de búsqueda, antes de que alguien haga click.
+Go through the five elements below and report what is missing, prioritized by impact. Always start
+with **the title, the first gallery image and the Basic price**: they are the only three that show in
+the search results, before anyone clicks.
 
-### `title` - El título
+### `title` - The title
 
-Arranca con `I will` por convención de la plataforma, y es lo que indexa la búsqueda.
+It starts with `I will` by platform convention, and it is what the search indexes.
 
-- **Nicho concreto, no rol.** "I will develop your Unity game" compite con todo el mundo. "I will
-  build multiplayer gameplay for your Unity mobile game" compite con pocos y aparece en la búsqueda
-  que importa.
-- Las palabras que usa el comprador, no las tuyas. El comprador no busca "gameplay architecture",
-  busca "multiplayer".
-- Sin superlativos ni "professional": no aportan y ocupan caracteres que sí indexan.
-- **Los tags (hasta 5) son parte del título, funcionalmente.** Elegirlos del mismo vocabulario, sin
-  repetir la misma palabra cinco veces.
+- **A concrete niche, not a role.** "I will develop your Unity game" competes with everyone. "I will
+  build multiplayer gameplay for your Unity mobile game" competes with few and shows up in the search
+  that matters.
+- The words the buyer uses, not yours. The buyer does not search for "gameplay architecture",
+  they search for "multiplayer".
+- No superlatives or "professional": they add nothing and take up characters that do get indexed.
+- **The tags (up to 5) are functionally part of the title.** Pick them from the same vocabulary, without
+  repeating the same word five times.
 
-Proponer siempre **2 variantes** para elegir.
+Always propose **2 variants** to choose from.
 
-### `packages` - Los tres niveles
+### `packages` - The three tiers
 
-El error clásico es hacer tres versiones del mismo trabajo con distinto precio. Los packages tienen
-que separarse por **alcance**, no por velocidad ni por ganas.
+The classic mistake is making three versions of the same work at different prices. The packages have
+to be separated by **scope**, not by speed or effort.
 
 | | Basic | Standard | Premium |
 |---|---|---|---|
-| Qué es | La unidad mínima entregable y útil | **El que se quiere vender** | El techo, para el comprador que ya decidió |
-| Alcance | Una cosa, definida | Lo del Basic más lo que casi todos terminan pidiendo | Alcance completo, con lo que consume tiempo real |
-| Rol | Filtro de entrada y precio de referencia | Ancla: se compara contra los otros dos y gana | Sube el promedio y hace que el Standard parezca razonable |
+| What it is | The smallest useful deliverable unit | **The one you want to sell** | The ceiling, for the buyer who has already decided |
+| Scope | One thing, defined | The Basic plus what almost everyone ends up asking for | Full scope, including what takes real time |
+| Role | Entry filter and reference price | Anchor: it is compared against the other two and wins | Raises the average and makes the Standard look reasonable |
 
-Reglas duras:
+Hard rules:
 
-- **El alcance va escrito en el package.** Lo que no está escrito es scope creep sin change order
-  posible: en Fiverr no hay renegociación a mitad de camino, hay una orden con un alcance.
-- **Revisiones con número.** "Unlimited revisions" es una promesa que destruye el margen y no se
-  puede retirar sin cancelar la orden.
-- **Delivery time realista, no competitivo.** Entregar tarde pega en el nivel de la cuenta, que no
-  se edita. Un día extra en el gig cuesta menos que una entrega tarde.
-- Los **gig extras** son para lo que es genuinamente opcional (fuente editable, licencia comercial,
-  entrega express), no para partir en pedazos algo que el package ya prometió.
+- **The scope is written in the package.** Whatever is not written is scope creep with no possible change order:
+  on Fiverr there is no renegotiation halfway through, there is an order with a scope.
+- **Revisions with a number.** "Unlimited revisions" is a promise that destroys the margin and cannot
+  be withdrawn without cancelling the order.
+- **Realistic delivery time, not competitive.** Delivering late hits the account level, which cannot
+  be edited. One extra day on the gig costs less than one late delivery.
+- **Gig extras** are for what is genuinely optional (editable source file, commercial license,
+  express delivery), not for splitting into pieces something the package already promised.
 
-### `gallery` - Lo que se ve
+### `gallery` - What is seen
 
-- **La primera imagen es el gig en la búsqueda.** Tiene que leerse en miniatura: una idea, texto
-  grande, cero decoración.
-- Después: el resultado real, no el proceso. Un before/after gana a cualquier mockup.
-- Video corto si el trabajo se entiende mejor en movimiento (animación, gameplay, motion).
-- Nunca material de un cliente sin permiso ni bajo NDA. Si no se puede mostrar, se reconstruye un
-  ejemplo propio equivalente y **se dice que es un ejemplo**.
+- **The first image is the gig in search.** It has to read as a thumbnail: one idea, big
+  text, zero decoration.
+- After that: the real result, not the process. A before/after beats any mockup.
+- A short video if the work is better understood in motion (animation, gameplay, motion).
+- Never a client's material without permission or under NDA. If it cannot be shown, rebuild an
+  equivalent example of your own and **say it is an example**.
 
-### `faq` - Las objeciones, adelantadas
+### `faq` - The objections, answered in advance
 
-Cada FAQ existe para sacar una objeción del camino antes de que alguien escriba un mensaje. Las que
-casi siempre hacen falta: qué necesitás para arrancar, qué pasa si no gusta, si el precio incluye
-la fuente editable, si se puede usar comercialmente, qué **no** incluye el gig.
+Every FAQ exists to clear an objection out of the way before someone writes a message. The ones
+almost always needed: what you need to get started, what happens if they do not like it, whether the price includes
+the editable source file, whether it can be used commercially, what the gig does **not** include.
 
-Decir qué no hacés filtra al comprador equivocado, que es el que después califica mal.
+Saying what you do not do filters out the wrong buyer, who is the one who rates badly later.
 
-### `price` - El precio
+### `price` - The price
 
-- Se deriva del **piso neto** de `01-Perfiles/` más la comisión de la plataforma. Fiverr retiene un
-  porcentaje del valor de la orden (históricamente 20%): verificar el vigente antes de fijar, y
-  cargarlo sobre el piso, no descontarlo del precio pensado.
-- El precio del Basic es el que aparece en la búsqueda: es filtro de tráfico, no la venta esperada.
-- **Arrancar barato para conseguir las primeras reviews es una trampa conocida**: atrae compradores
-  de precio, que son los que más piden y peor califican, y las reviews que dejan son las que
-  después determinan el nivel de la cuenta. Si falta historial, la palanca es **acotar el nicho**,
-  no bajar el precio.
-- Un gig con precio arriba del mercado y nicho angosto convierte peor en volumen y mejor en plata.
-  Esa es la elección, y la hace el usuario, no el skill.
+- It is derived from the **net floor** in `01-Profiles/` plus the platform fee. Fiverr keeps a
+  percentage of the order value (historically 20%): check the current one before setting it, and
+  add it on top of the floor, do not subtract it from the price you had in mind.
+- The Basic price is the one that shows in search: it is a traffic filter, not the expected sale.
+- **Starting cheap to get the first reviews is a well-known trap**: it attracts price buyers,
+  who ask for the most and rate the worst, and the reviews they leave are the ones that
+  later decide the account level. If history is lacking, the lever is **narrowing the niche**,
+  not lowering the price.
+- A gig priced above the market with a narrow niche converts worse in volume and better in money.
+  That is the choice, and the user makes it, not the skill.
 
-## Lo que el gig no controla
+## What the gig does not control
 
-El **nivel de la cuenta** (New Seller → Level 1 → Level 2 → Top Rated) y la métrica de respuesta no
-se editan: salen de órdenes completadas, calificaciones, entregas a tiempo y tiempo de respuesta.
-Es el mismo problema que el Job Success Score en Upwork, y se protege igual - eligiendo qué órdenes
-se aceptan y qué alcance se promete, no escribiendo mejor el gig.
+The **account level** (New Seller → Level 1 → Level 2 → Top Rated) and the response metric cannot
+be edited: they come from completed orders, ratings, on-time deliveries and response time.
+It is the same problem as the Job Success Score on Upwork, and it is protected the same way - by choosing which orders
+to accept and what scope to promise, not by writing the gig better.
 
-Las **impresiones** tampoco: dependen del algoritmo de búsqueda. Lo que el gig sí controla es la
-conversión de impresión a click (título y primera imagen) y de click a orden (packages y FAQ). Si
-las impresiones son bajas, el problema es el nicho o los tags; si son altas y no hay órdenes, el
-problema son los packages o el precio.
+Neither are the **impressions**: they depend on the search algorithm. What the gig does control is the
+conversion from impression to click (title and first image) and from click to order (packages and FAQ). If
+impressions are low, the problem is the niche or the tags; if they are high and there are no orders, the
+problem is the packages or the price.
 
-## Proceso
+## Process
 
-1. Leer el perfil maestro y el piso de tarifa. Si falta el piso, parar y mandar a `/freelance-hunt`.
-2. Correr el modo pedido (o `audit` si no se indicó ninguno).
-3. Proponer los textos como borradores en el chat, con 2 variantes de título y la tabla de los tres
-   packages completa, incluyendo delivery time y revisiones.
-4. Con approval, guardar en `01-Perfiles/Fiverr-<slug-del-gig>.md` (derivado del maestro, no
-   reemplazo). El usuario copia y pega en la plataforma - **este skill nunca toca la cuenta.**
-5. Anotar la fecha de publicación o del último ajuste, para poder correlacionarla después con
-   impresiones y órdenes.
+1. Read the master profile and the rate floor. If the floor is missing, stop and send the user to `/freelance-hunt`.
+2. Run the requested mode (or `audit` if none was given).
+3. Propose the texts as drafts in the chat, with 2 title variants and the full table of the three
+   packages, including delivery time and revisions.
+4. With approval, save to `01-Profiles/Fiverr-<gig-slug>.md` (derived from the master, not a
+   replacement). The user copies and pastes into the platform - **this skill never touches the account.**
+5. Write down the publication date or the date of the last tweak, so it can be correlated later with
+   impressions and orders.
 
-Un gig por nicho. Dos gigs que compiten por la misma búsqueda se canibalizan las impresiones.
+One gig per niche. Two gigs competing for the same search cannibalize each other's impressions.
 
-## Reglas
+## Rules
 
-- Nunca inventar experiencia, clientes ni números.
-- Nunca prometer en el package algo que no está en el alcance escrito.
-- Nunca "unlimited" nada.
-- El precio se deriva del piso, nunca de la competencia.
-- Sin guiones largos en los textos generados.
+- Never make up experience, clients or numbers.
+- Never promise in the package something that is not in the written scope.
+- Never "unlimited" anything.
+- The price is derived from the floor, never from the competition.
+- No long dashes in the generated texts.
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir en `01-Perfiles/`. Gig **READY** cuando título, los
-tres packages con alcance y delivery, primera imagen definida y al menos tres FAQ están completos.
+Ask for approval before writing to `01-Profiles/`. Gig **READY** when the title, the
+three packages with scope and delivery, the first image defined and at least three FAQs are complete.
 
-Después: `/freelance-pipeline` para medir el gig con las órdenes que entren (el embudo de Fiverr es
-impresiones → clicks → órdenes, no propuestas enviadas), `/freelance-profile` si además va a
-trabajar en Upwork, y `/portfolio-site` si quiere un portfolio propio fuera de las plataformas.
+Then: `/freelance-pipeline` to measure the gig with the orders that come in (the Fiverr funnel is
+impressions → clicks → orders, not proposals sent), `/freelance-profile` if they will also
+work on Upwork, and `/portfolio-site` if they want their own portfolio outside the platforms.

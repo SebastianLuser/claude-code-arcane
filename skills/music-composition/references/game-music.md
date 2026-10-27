@@ -1,82 +1,82 @@
-# Música de Juego
+# Game Music
 
-## La restricción central
+## The central constraint
 
-La música de juego se escucha **muchas más veces que la música lineal, en duración desconocida, y compitiendo con SFX y diálogo**. Eso cambia las decisiones compositivas, no solo la implementación.
+Game music is heard **many more times than linear music, for an unknown duration, and competing with SFX and dialogue**. That changes the compositional decisions, not just the implementation.
 
-Consecuencias directas:
+Direct consequences:
 
-1. **Lo que en música lineal es "interesante" acá es "fatigante".** Un gesto llamativo cada 8 compases se vuelve insoportable a la vigésima repetición
-2. **La duración es indefinida.** No hay clímax garantizado; el arco tiene que funcionar cortado en cualquier punto
-3. **El registro medio no es tuyo.** Diálogo y feedback de UI viven ahí
-4. **El silencio es barato y potente.** Es el único recurso que no se gasta con la repetición
+1. **What is "interesting" in linear music is "tiring" here.** A striking gesture every 8 bars becomes unbearable by the twentieth repetition
+2. **The duration is undefined.** There is no guaranteed climax; the arc has to work when cut at any point
+3. **The mid register is not yours.** Dialogue and UI feedback live there
+4. **Silence is cheap and powerful.** It is the only resource that does not wear out with repetition
 
-## Escribir para repetición
+## Writing for repetition
 
-- **Loops largos con material corto** — un loop de 2 minutos construido con 4 células es menos fatigante que uno de 30 segundos con 12 ideas
-- **Evitar el gesto firma dentro del loop** — guardar los eventos distintivos para stingers o para capas que entran ocasionalmente
-- **Ritmo armónico lento** — la progresión que se puede escuchar 50 veces es la que no llama la atención sobre sí misma
-- **Ambigüedad de fin** — si el loop cierra con cadencia auténtica, cada repetición suena a arranque forzado. Cerrar con semicadencia, pedal o cadencia plagal
-- **Priorizar textura sobre melodía en gameplay sostenido** — la melodía fuerte es para momentos, no para fondo
+- **Long loops with short material** — a 2-minute loop built from 4 cells is less tiring than a 30-second one with 12 ideas
+- **Avoid the signature gesture inside the loop** — save the distinctive events for stingers or for layers that enter occasionally
+- **Slow harmonic rhythm** — the progression you can hear 50 times is the one that does not draw attention to itself
+- **Ambiguous ending** — if the loop closes with an authentic cadence, each repetition sounds like a forced restart. Close with a half cadence, a pedal or a plagal cadence
+- **Prioritize texture over melody in sustained gameplay** — a strong melody is for moments, not for background
 
-## Composición por capas
+## Layered composition
 
-La forma nativa. Escribir un mismo material en estratos que pueden entrar y salir sin romper nada:
+The native form. Write the same material in strata that can enter and leave without breaking anything:
 
-| Capa | Rol | Entra cuando |
+| Layer | Role | Enters when |
 |---|---|---|
-| **Bed** | Pad/textura sostenida, define tonalidad | Siempre |
-| **Pulse** | Pulso rítmico mínimo | Hay actividad |
-| **Harmony** | Movimiento armónico explícito | Sube la tensión |
-| **Melody** | Tema identificable | Momento narrativo |
-| **Intensity** | Percusión densa, metales, disonancia | Combate/clímax |
+| **Bed** | Sustained pad/texture, defines the key | Always |
+| **Pulse** | Minimal rhythmic pulse | There is activity |
+| **Harmony** | Explicit harmonic motion | Tension rises |
+| **Melody** | Identifiable theme | Narrative moment |
+| **Intensity** | Dense percussion, brass, dissonance | Combat/climax |
 
-**Regla de composición:** cada capa tiene que sonar bien sola y en cualquier combinación con las de abajo. Eso se logra escribiéndolas todas contra la misma armonía y el mismo grid, y no dejando que ninguna dependa de otra para tener sentido.
+**Composition rule:** each layer has to sound good alone and in any combination with the ones below. You achieve that by writing them all against the same harmony and the same grid, and by not letting any of them depend on another to make sense.
 
-## Temas y transformación
+## Themes and transformation
 
-Un tema, N estados de juego. Las transformaciones más rentables:
+One theme, N game states. The most cost-effective transformations:
 
-| Transformación | Estado que representa |
+| Transformation | State it represents |
 |---|---|
-| Aumentación + reducción de densidad | Memoria, calma, safe zone |
-| Modo menor / ♭6 | Amenaza, pérdida |
-| Fragmentación + aumento de tempo | Persecución, urgencia |
-| Reorquestación a solo | Intimidad, muerte de personaje |
-| Sobre pedal disonante | Corrupción, algo está mal |
-| Métrica cambiada | Extrañeza, otro plano |
+| Augmentation + density reduction | Memory, calm, safe zone |
+| Minor mode / ♭6 | Threat, loss |
+| Fragmentation + tempo increase | Chase, urgency |
+| Reorchestration to a solo | Intimacy, a character's death |
+| Over a dissonant pedal | Corruption, something is wrong |
+| Changed meter | Strangeness, another plane |
 
-Esto le da coherencia a una banda de sonido entera con una sola idea musical, y hace que el jugador "reconozca" sin saber por qué.
+This gives coherence to an entire soundtrack with a single musical idea, and makes the player "recognize" it without knowing why.
 
-## Modos por mood
+## Modes by mood
 
-| Mood buscado | Recurso |
+| Desired mood | Device |
 |---|---|
-| Aventura, optimismo | Mixolidio, ♭7; cuartas y quintas abiertas |
-| Melancolía sin tragedia | Dórico, ♮6 |
-| Asombro, escala | Lidio, ♯4; acordes mayores por movimiento de terceras |
-| Amenaza | Frigio, ♭2; tritono; cluster |
-| Misterio | Escala de tonos enteros; armonía cuartal; ambigüedad de centro |
-| Tensión sostenida | Pedal + disonancia que no resuelve |
-| Vacío, desolación | Intervalos abiertos, silencio, un solo timbre |
+| Adventure, optimism | Mixolydian, ♭7; open fourths and fifths |
+| Melancholy without tragedy | Dorian, ♮6 |
+| Wonder, scale | Lydian, ♯4; major chords moving by thirds |
+| Threat | Phrygian, ♭2; tritone; cluster |
+| Mystery | Whole-tone scale; quartal harmony; ambiguous center |
+| Sustained tension | Pedal + dissonance that does not resolve |
+| Emptiness, desolation | Open intervals, silence, a single timbre |
 
-## Enfoques generativos
+## Generative approaches
 
-Cuando el contenido tiene que exceder lo que se puede escribir a mano:
+When the content has to exceed what can be written by hand:
 
-- **Cadenas de Markov** — melodía estocástica entrenada sobre material propio. Preserva el idioma; no genera estructura
-- **L-systems / gramáticas recursivas** — generan *estructura* jerárquica (frases, secciones) por reescritura de reglas. Complemento natural de Markov, que no tiene forma
-- **Restricciones de armonía** — capa de validación: el generador propone, las reglas de voice leading y función filtran
-- **Selección estocástica de capas** — la variación viene de qué combinación suena, no de generar notas nuevas. Mucho más barato y más controlable
+- **Markov chains** — stochastic melody trained on your own material. Preserves the idiom; does not generate structure
+- **L-systems / recursive grammars** — generate hierarchical *structure* (phrases, sections) by rule rewriting. The natural complement to Markov, which has no form
+- **Harmony constraints** — a validation layer: the generator proposes, the voice leading and function rules filter
+- **Stochastic layer selection** — the variation comes from which combination plays, not from generating new notes. Much cheaper and more controllable
 
-**Recomendación práctica:** la selección estocástica de capas resuelve el 90% de la necesidad real de variación en un juego, sin ninguno de los riesgos de calidad de la generación de notas. Ir a Markov/L-systems solo cuando la variación de capas ya no alcanza.
+**Practical recommendation:** stochastic layer selection covers 90% of the real need for variation in a game, with none of the quality risks of note generation. Go to Markov/L-systems only when layer variation is no longer enough.
 
 ## Anti-patterns
 
-- **Loop de 30 segundos con melodía fuerte** — el camino más rápido a que el jugador baje la música
-- **Cadencia auténtica al final del loop** — cada vuelta suena a error
-- **Melodía en 500 Hz-2 kHz durante diálogo** — pelea con VO y pierde
-- **Todas las capas dependientes entre sí** — al quitar una, el resto suena incompleto
-- **Un tema por zona sin relación entre ellos** — la banda de sonido no acumula significado
-- **Componer a duración fija** — el gameplay no dura lo que dura tu pieza
-- **Sub saturado de música** — se come el espacio de los impactos
+- **30-second loop with a strong melody** — the fastest way to get the player to turn the music down
+- **Authentic cadence at the end of the loop** — every pass sounds like a mistake
+- **Melody at 500 Hz-2 kHz during dialogue** — it fights with VO and loses
+- **All layers dependent on each other** — remove one and the rest sounds incomplete
+- **One theme per zone with no relation between them** — the soundtrack does not accumulate meaning
+- **Composing to a fixed duration** — gameplay does not last as long as your piece
+- **Sub saturated with music** — it eats the space for impacts

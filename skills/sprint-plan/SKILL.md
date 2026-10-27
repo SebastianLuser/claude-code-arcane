@@ -6,9 +6,9 @@ argument-hint: "[new|update|status] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
 ---
-## Sprints existentes
+## Existing sprints
 
-!`ls production/sprints/ 2>/dev/null || echo "sin sprints"`
+!`ls production/sprints/ 2>/dev/null || echo "no sprints"`
 
 ## Phase 0: Parse Arguments
 

@@ -4,10 +4,10 @@
 ```css
 .row { content-visibility: auto; contain-intrinsic-size: 0 80px; }
 ```
-Difiere render y paint de lo off-screen.
+Defers render and paint of what is off-screen.
 
 ## 6.8 Use defer or async on Script Tags — HIGH
-`defer`/`async` para no bloquear el render durante el parsing.
+`defer`/`async` so render is not blocked during parsing.
 
 ## 6.10 Use React DOM Resource Hints — HIGH
 ```ts
@@ -17,30 +17,30 @@ preload('/hero.jpg', { as: 'image' });
 ```
 
 ## 6.5 Prevent Hydration Mismatch Without Flickering — MEDIUM
-Script inline síncrono que actualiza el DOM antes de hidratar (ej: theme).
+A synchronous inline script that updates the DOM before hydration (e.g. theme).
 
 ## 6.7 Use Activity Component for Show/Hide — MEDIUM
-`<Activity>` preserva estado y DOM para componentes que togglean visibilidad seguido.
+`<Activity>` preserves state and DOM for components that toggle visibility often.
 
 ## 6.6 Suppress Expected Hydration Mismatches — LOW-MEDIUM
-`suppressHydrationWarning` solo para diferencias server/client intencionales (fechas, IDs).
+`suppressHydrationWarning` only for intentional server/client differences (dates, IDs).
 
 ## 6.1 Animate SVG Wrapper Instead of SVG Element — LOW
-Envolver el SVG en un div y animar el wrapper → aceleración por hardware.
+Wrap the SVG in a div and animate the wrapper → hardware acceleration.
 
 ## 6.3 Hoist Static JSX Elements — LOW
-JSX estático fuera del componente → no se recrea en cada render.
+Static JSX outside the component → not recreated on every render.
 
 ## 6.4 Optimize SVG Precision — LOW
-Reducir precisión de coordenadas SVG → menor tamaño, sin impacto visual.
+Reduce SVG coordinate precision → smaller size, no visual impact.
 
 ## 6.9 Use Explicit Conditional Rendering — LOW
-Ternario en vez de `&&` → evita renderizar `0` u otros falsy.
+Ternary instead of `&&` → avoids rendering `0` or other falsy values.
 ```tsx
-{count > 0 ? <Badge n={count}/> : null}  // no {count && ...}
+{count > 0 ? <Badge n={count}/> : null}  // not {count && ...}
 ```
 
 ## 6.11 Use useTransition Over Manual Loading States — LOW
-`useTransition` da pending state automático en vez de `useState` manual.
+`useTransition` gives automatic pending state instead of a manual `useState`.
 
 _Ref: https://developer.mozilla.org/docs/Web/CSS/content-visibility · https://react.dev/reference/react-dom/preload_

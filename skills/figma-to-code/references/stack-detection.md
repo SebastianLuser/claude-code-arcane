@@ -2,21 +2,21 @@
 
 ## Framework Detection
 
-| Archivo | Stack |
+| File | Stack |
 |---------|-------|
-| `package.json` con `next` | Next.js |
-| `package.json` con `react` | React |
-| `package.json` con `vue` | Vue |
-| `package.json` con `svelte` | Svelte |
+| `package.json` with `next` | Next.js |
+| `package.json` with `react` | React |
+| `package.json` with `vue` | Vue |
+| `package.json` with `svelte` | Svelte |
 | `pubspec.yaml` | Flutter |
 | `*.swift` + `Package.swift` | SwiftUI |
-| `package.json` con `react-native` | React Native |
+| `package.json` with `react-native` | React Native |
 
 ## UI Library Detection
 
-| Indicador | Library |
+| Indicator | Library |
 |-----------|---------|
-| `@shadcn/ui` o `components/ui/` | shadcn/ui |
+| `@shadcn/ui` or `components/ui/` | shadcn/ui |
 | `@mui/material` | Material UI |
 | `@chakra-ui` | Chakra UI |
 | `tailwindcss` | Tailwind CSS |
@@ -24,11 +24,11 @@
 
 ## Stack Adaptation
 
-| Si el proyecto usa | Adaptar a |
+| If the project uses | Adapt to |
 |--------------------|-----------|
-| shadcn/ui | Usar `<Button>`, `<Card>`, `<Input>` etc. del proyecto |
-| CSS Modules | Convertir Tailwind a CSS Modules |
-| Styled Components | Convertir a styled() |
-| Vue | Convertir JSX a `<template>` + `<script setup>` |
-| Svelte | Convertir a `.svelte` components |
-| Flutter | Convertir a Widgets |
+| shadcn/ui | Use the project's `<Button>`, `<Card>`, `<Input>`, etc. |
+| CSS Modules | Convert Tailwind to CSS Modules |
+| Styled Components | Convert to styled() |
+| Vue | Convert JSX to `<template>` + `<script setup>` |
+| Svelte | Convert to `.svelte` components |
+| Flutter | Convert to Widgets |

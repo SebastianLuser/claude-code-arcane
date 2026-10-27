@@ -1,46 +1,46 @@
-# ATS Keywords - Cómo extraer y mapear
+# ATS Keywords - How to extract and map them
 
-Los Applicant Tracking Systems (Greenhouse, Lever, Workday, Workable, etc.) hacen un primer filtro automático antes de que un humano vea el CV. Entender cómo "leen" cambia el resultado.
+Applicant Tracking Systems (Greenhouse, Lever, Workday, Workable, etc.) run a first automated filter before a human sees the CV. Understanding how they "read" changes the result.
 
-## Cómo funciona un ATS (modelo mental)
+## How an ATS works (mental model)
 
-- Parsea el CV a texto plano y lo indexa.
-- Hace matching de **strings** y variantes contra la oferta y/o contra criterios del recruiter.
-- Rankea o filtra candidatos por densidad/relevancia de keywords y por campos estructurados (título, fechas, ubicación).
-- **Lo que rompe el parseo:** tablas, columnas, text boxes, headers/footers con datos, gráficos, iconos en lugar de texto, PDFs escaneados (imagen).
+- It parses the CV into plain text and indexes it.
+- It matches **strings** and variants against the posting and/or against the recruiter's criteria.
+- It ranks or filters candidates by keyword density/relevance and by structured fields (title, dates, location).
+- **What breaks parsing:** tables, columns, text boxes, headers/footers with data, charts, icons instead of text, scanned PDFs (images).
 
-## Extracción de keywords del JD
+## Extracting keywords from the JD
 
-1. **Hard skills / tecnologías** - lenguajes, frameworks, DBs, cloud, herramientas. Copiá la forma **literal** (React.js ≠ React ≠ ReactJS para un match exacto; cuando puedas, incluí la variante que usa la oferta).
-2. **Responsabilidades / verbos** - "design REST APIs", "lead a team", "CI/CD pipelines".
-3. **Metodologías** - Agile, Scrum, TDD, clean architecture.
-4. **Seniority y años** - "5+ years", "senior", "lead".
-5. **Soft skills explícitos** - communication, ownership, cross-functional.
-6. **Señales de cultura / frases gatillo** - ej. "code-forward", "startup mentality", "high autonomy". Suelen indicar qué valoran y dan ángulo para el summary y la cover letter.
+1. **Hard skills / technologies** - languages, frameworks, DBs, cloud, tools. Copy the **literal** form (React.js ≠ React ≠ ReactJS for an exact match; when you can, include the variant the posting uses).
+2. **Responsibilities / verbs** - "design REST APIs", "lead a team", "CI/CD pipelines".
+3. **Methodologies** - Agile, Scrum, TDD, clean architecture.
+4. **Seniority and years** - "5+ years", "senior", "lead".
+5. **Explicit soft skills** - communication, ownership, cross-functional.
+6. **Culture signals / trigger phrases** - e.g. "code-forward", "startup mentality", "high autonomy". They usually show what they value and give an angle for the summary and the cover letter.
 
-## Mapeo contra el perfil
+## Mapping against the profile
 
-| Keyword del JD | ¿Lo tengo? | Dónde lo demuestro (bullet/proyecto) | Acción |
+| JD keyword | Do I have it? | Where I prove it (bullet/project) | Action |
 |---|---|---|---|
-| React.js | Sí | "Built React + TS frontends @ X" | resaltar arriba |
-| Kubernetes | Parcial | exposición en CI/CD | mencionar honesto |
-| Go | No | - | gap; no inventar |
+| React.js | Yes | "Built React + TS frontends @ X" | highlight at the top |
+| Kubernetes | Partial | exposure through CI/CD | mention honestly |
+| Go | No | - | gap; do not make it up |
 
-- **Must-have que tenés** → arriba, con espacio, con la palabra exacta.
-- **Must-have parcial** → mencionar con honestidad ("exposure to…").
-- **Must-have que no tenés** → gap real; no lo inventes. Decidí si igual aplicás.
+- **Must-have you have** → at the top, with space, with the exact word.
+- **Partial must-have** → mention it honestly ("exposure to…").
+- **Must-have you do not have** → real gap; do not make it up. Decide whether to apply anyway.
 
-## Inyección natural (no stuffing)
+## Natural injection (no stuffing)
 
-- Cada keyword vive en un **bullet verdadero** con contexto y resultado.
-- Una sección "Skills" lista las tecnologías (bien para el ATS), pero las importantes también deben aparecer en la experiencia (bien para el humano y para el ranking).
-- Evitá listas de 40 tecnologías sin contexto: lee como relleno y diluye el ranking.
+- Every keyword lives in a **true bullet** with context and result.
+- A "Skills" section lists the technologies (good for the ATS), but the important ones must also appear in the experience (good for the human and for the ranking).
+- Avoid lists of 40 technologies without context: it reads as filler and dilutes the ranking.
 
-## Checklist de formato ATS-safe
+## ATS-safe format checklist
 
-- [ ] Una sola columna, sin tablas/text boxes.
-- [ ] Headers de sección estándar (Experience, Skills, Education…).
-- [ ] Fechas consistentes MM/YYYY.
-- [ ] Texto seleccionable (no imagen) - el export de `/cv-ats-export` ya lo garantiza.
-- [ ] Nombre del archivo profesional (`Nombre_Apellido_Empresa.pdf`).
-- [ ] Contacto en el cuerpo, no en el header/footer del documento.
+- [ ] A single column, no tables/text boxes.
+- [ ] Standard section headers (Experience, Skills, Education…).
+- [ ] Consistent MM/YYYY dates.
+- [ ] Selectable text (not an image) - the `/cv-ats-export` export already guarantees it.
+- [ ] Professional file name (`First_Last_Company.pdf`).
+- [ ] Contact details in the body, not in the document's header/footer.

@@ -1,14 +1,14 @@
-# Quick Start Checklist — Pipeline completo desde cero
+# Quick Start Checklist — Full pipeline from scratch
 
-- [ ] Workflow `.github/workflows/ci.yml` creado con stages en orden: lint -> type-check -> test -> build -> deploy
-- [ ] Lint + type-check + test corren en paralelo (jobs separados); build espera que los 3 pasen
-- [ ] Caching activo (`setup-node`/`setup-go` built-in o `actions/cache` para paths custom)
-- [ ] `npm ci` (no `npm install`) en todos los jobs Node
-- [ ] Todas las actions pinneadas por SHA o major version (`@v3`, nunca `@master`)
-- [ ] Concurrency group con `cancel-in-progress: true` en PRs
-- [ ] GitHub Environment `staging` con auto-deploy en push a main
-- [ ] GitHub Environment `production` con required reviewers + deploy solo en tags `v*`
-- [ ] Secrets de prod en Environment `production`, nunca en repo-level ni hardcodeados
-- [ ] OIDC para cloud auth (no long-lived keys)
-- [ ] Branch protection: PR requerido + CI must pass + force-push bloqueado en main
-- [ ] Rollback procedure documentado en README o runbook
+- [ ] Workflow `.github/workflows/ci.yml` created with stages in order: lint -> type-check -> test -> build -> deploy
+- [ ] Lint + type-check + test run in parallel (separate jobs); build waits for all 3 to pass
+- [ ] Caching enabled (`setup-node`/`setup-go` built-in or `actions/cache` for custom paths)
+- [ ] `npm ci` (not `npm install`) in every Node job
+- [ ] Every action pinned by SHA or major version (`@v3`, never `@master`)
+- [ ] Concurrency group with `cancel-in-progress: true` on PRs
+- [ ] GitHub Environment `staging` with auto-deploy on push to main
+- [ ] GitHub Environment `production` with required reviewers + deploy only on `v*` tags
+- [ ] Prod secrets in the `production` Environment, never at repo level or hardcoded
+- [ ] OIDC for cloud auth (no long-lived keys)
+- [ ] Branch protection: PR required + CI must pass + force-push blocked on main
+- [ ] Rollback procedure documented in the README or a runbook

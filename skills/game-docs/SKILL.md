@@ -1,6 +1,6 @@
 ---
 name: game-docs
-description: "Game design docs: GDD completo (core loop, balance, glosario) y PAS para decisiones de diseño."
+description: "Game design docs: full GDD (core loop, balance, glossary) and PAS for design decisions."
 category: "gamedev"
 argument-hint: "[gdd [game-name] | pas [problem-title]]"
 user-invocable: true
@@ -8,7 +8,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 # game-docs — GDD + Design Decisions
 
-Dos formatos de documentación de game design: GDD completo y PAS para decisiones puntuales.
+Two game design documentation formats: a full GDD and PAS for one-off decisions.
 
 ---
 
@@ -16,34 +16,34 @@ Dos formatos de documentación de game design: GDD completo y PAS para decisione
 
 ### Input
 
-Preguntar al usuario:
-1. **Nombre del juego**
-2. **Género** (roguelite, RPG, puzzle, platformer, etc.)
-3. **Plataforma** (PC, mobile, consola, web)
-4. **Elevator pitch** (1-2 oraciones: qué es y qué lo hace único)
-5. **Mecánica core** (qué hace el jugador el 80% del tiempo)
-6. **Referentes** (juegos similares o inspiraciones)
-7. **Contexto** (tesis, indie, jam, estudio, tamaño equipo)
+Ask the user:
+1. **Game name**
+2. **Genre** (roguelite, RPG, puzzle, platformer, etc.)
+3. **Platform** (PC, mobile, console, web)
+4. **Elevator pitch** (1-2 sentences: what it is and what makes it unique)
+5. **Core mechanic** (what the player does 80% of the time)
+6. **References** (similar games or inspirations)
+7. **Context** (thesis, indie, jam, studio, team size)
 
-### Estructura del GDD
+### GDD Structure
 
-16 secciones: Resumen, Concepto, Pilares, Arte, Game Feel, Glosario, Core Loop, Sistema Core, Niveles, Enemigos, Items, Economía, UI/UX, Audio, Scope, Decisiones Abiertas. Adaptar al género.
+16 sections: Summary, Concept, Pillars, Art, Game Feel, Glossary, Core Loop, Core System, Levels, Enemies, Items, Economy, UI/UX, Audio, Scope, Open Decisions. Adapt to the genre.
 
 > → Read references/gdd-structure.md for full section table with content guidelines
 
 ---
 
-## 2. PAS (Problema-Análisis-Solución)
+## 2. PAS (Problem-Analysis-Solution)
 
-Formato para decisiones de diseño puntuales: Problema → Análisis → Opciones → Decisión. Usar para mecánicas problemáticas, balance, features, playtest feedback. NO para GDD completo, specs técnicas o bugs.
+Format for one-off design decisions: Problem → Analysis → Options → Decision. Use it for problematic mechanics, balance, features, playtest feedback. NOT for a full GDD, technical specs or bugs.
 
 > → Read references/pas-format.md for full PAS template, usage criteria, and examples
 
 ---
 
-## Reglas de escritura (ambos formatos)
+## Writing rules (both formats)
 
-Bullets > párrafos. Números concretos > descripciones vagas. No divagar, no repetir entre secciones. [TBD] para decisiones pendientes.
+Bullets > paragraphs. Concrete numbers > vague descriptions. Don't ramble, don't repeat across sections. [TBD] for pending decisions.
 
 > → Read references/writing-rules.md for full 9-rule list with examples
 
@@ -51,8 +51,8 @@ Bullets > párrafos. Números concretos > descripciones vagas. No divagar, no re
 
 ## Rules
 
-- Siempre en español
-- El GDD es documento vivo — versionar y fechar
-- Incluir scope MVP vs full game
-- Si falta info → [TBD] + listar en Decisiones Abiertas
-- Los pilares son obligatorios — todo se evalúa contra ellos
+- Write the document in the user's language, or the one they ask for
+- The GDD is a living document — version and date it
+- Include MVP scope vs full game
+- If info is missing → [TBD] + list it under Open Decisions
+- Pillars are mandatory — everything is evaluated against them

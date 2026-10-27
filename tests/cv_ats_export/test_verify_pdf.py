@@ -32,19 +32,19 @@ class TestAsciiDates(unittest.TestCase):
         self.assertEqual(self.find("Acme  2019–2024"), ["–"])
 
     def test_a_year_to_present_with_an_em_dash_is_caught(self):
-        self.assertEqual(self.find("Mar 2016 — Presente"), ["—"])
+        self.assertEqual(self.find("Mar 2016 — Present"), ["—"])
 
     def test_ascii_ranges_pass(self):
-        self.assertEqual(self.find("2019-2024\nMar 2016 - Presente"), [])
+        self.assertEqual(self.find("2019-2024\nMar 2016 - Present"), [])
 
     def test_quantities_are_not_dates(self):
-        self.assertEqual(self.find("EUR 1500–2000 y 2000–5000 req/s"), [])
+        self.assertEqual(self.find("EUR 1500–2000 and 2000–5000 req/s"), [])
 
     def test_a_season_written_short_is_still_a_date(self):
-        self.assertEqual(self.find("Temporada 2019–20"), ["–"])
+        self.assertEqual(self.find("Season 2019–20"), ["–"])
 
     def test_a_dash_opening_the_next_line_does_not_join_the_year(self):
-        self.assertEqual(self.find("Desde 2019\n– un bullet"), [])
+        self.assertEqual(self.find("Since 2019\n– a bullet"), [])
 
 
 class TestVerify(unittest.TestCase):

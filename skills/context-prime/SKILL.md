@@ -1,6 +1,6 @@
 ---
 name: context-prime
-description: "Carga contexto completo del proyecto al inicio de la sesión: stack, estructura, git state, archivos clave. Mejora respuestas posteriores."
+description: "Loads full project context at the start of a session: stack, structure, git state, key files. Improves later answers."
 category: "workflow"
 argument-hint: ""
 user-invocable: true

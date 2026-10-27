@@ -427,32 +427,32 @@ my-project/.claude/
 └── docs/                  # General documentation
 ```
 
-### Qué agentes instala un profile
+### Which agents a profile installs
 
-La lista `agents:` de un profile acepta dos formas:
+A profile's `agents:` list accepts two forms:
 
 ```yaml
 agents:
-  - game                        # la división entera: 32 agentes
-  - quality/security-architect  # solo ese agente
+  - game                        # the whole division: 32 agents
+  - quality/security-architect  # only that agent
 ```
 
-Los profiles de stack usan la forma granular: cada agente que instalan tiene que
-encontrar en el mismo profile los skills que precarga (`agents-integrity.test.ts`
-lo verifica), y una división entera arrastraba agentes de otros stacks. La granular
-existe porque **las divisiones son temáticas, no funcionales**: `qa-lead`,
-`ux-designer` y `performance-analyst` viven en `game/` y los quieren profiles
-que no tienen nada de gamedev. Antes la única manera de alcanzar uno era
-instalar los 30 — justo el peso que los profiles existen para evitar.
+Stack profiles use the granular form: every agent they install has to find
+the skills it preloads in the same profile (`agents-integrity.test.ts`
+checks it), and a whole division dragged in agents from other stacks. The granular
+form exists because **divisions are thematic, not functional**: `qa-lead`,
+`ux-designer` and `performance-analyst` live in `game/` and are wanted by profiles
+that have nothing to do with gamedev. Before, the only way to get one was
+to install all 30 — exactly the weight profiles exist to avoid.
 
-Reglas:
+Rules:
 
-- Si un profile ya trae la división entera, una entrada granular de esa misma
-  división es un no-op, no una segunda copia.
-- Al desinstalar, una entrada granular borra solo su archivo, y se lleva el
-  directorio de la división únicamente si queda vacío.
-- Si otro profile activo declara la división completa, esa gana: la entrada
-  granular no borra nada, porque rompería al otro profile.
+- If a profile already brings the whole division, a granular entry from that same
+  division is a no-op, not a second copy.
+- On uninstall, a granular entry deletes only its file, and removes the
+  division directory only if it ends up empty.
+- If another active profile declares the full division, that one wins: the granular
+  entry deletes nothing, because it would break the other profile.
 
 ### settings.json
 

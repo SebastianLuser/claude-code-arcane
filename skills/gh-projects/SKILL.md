@@ -8,56 +8,56 @@ allowed-tools: Read, Glob, Grep, Bash
 ---
 # GitHub Projects Manager
 
-Interactúa con GitHub Projects v2 (el nuevo sistema de project management de GitHub, no los classic).
+Interacts with GitHub Projects v2 (GitHub's new project management system, not the classic ones).
 
 ## Setup
 
-Requiere `gh CLI` autenticado:
+Requires an authenticated `gh CLI`:
 ```bash
 gh auth status
-gh auth refresh -s project  # scope para projects
+gh auth refresh -s project  # scope for projects
 ```
 
-## Comandos gh CLI
+## gh CLI commands
 
-### Listar projects
+### List projects
 ```bash
 gh project list --owner <user-or-org>
 gh project list --owner myorg --format json
 ```
 
-### Ver project
+### View a project
 ```bash
 gh project view <number> --owner <owner>
 gh project item-list <number> --owner <owner>
 ```
 
-### Agregar item (issue o PR existente)
+### Add an item (existing issue or PR)
 ```bash
 gh project item-add <number> --owner <owner> --url https://github.com/org/repo/issues/123
 ```
 
-### Crear draft item (sin issue)
+### Create a draft item (no issue)
 ```bash
 gh project item-create <number> --owner <owner> --title "Draft idea"
 ```
 
-### Editar fields
+### Edit fields
 ```bash
 gh project item-edit --id <item_id> --project-id <project_id> \
   --field-id <field_id> --single-select-option-id <option_id>
 ```
 
-## GraphQL para Operaciones Complejas
+## GraphQL for Complex Operations
 
-Para operaciones que `gh project` CLI no soporta (filtros complejos, bulk updates, iteraciones, draft items), usar GraphQL via `gh api graphql`.
+For operations the `gh project` CLI does not support (complex filters, bulk updates, iterations, draft items), use GraphQL via `gh api graphql`.
 
-> Queries completas con variables (GetProject, GetProjectItems, UpdateStatus, AddItem, CreateDraft, DeleteItem) y cómo obtener IDs: leer `references/graphql-queries.md`.
+> Full queries with variables (GetProject, GetProjectItems, UpdateStatus, AddItem, CreateDraft, DeleteItem) and how to get IDs: read `references/graphql-queries.md`.
 
-## Casos de Uso
+## Use Cases
 
 ### Roadmap board
-Estructura típica:
+Typical structure:
 - Fields: Status (Todo/In Progress/Done), Priority, Quarter, Epic
 - Views: By Quarter, By Epic, By Status
 
@@ -69,35 +69,35 @@ Estructura típica:
 - Fields: Sprint, Story Points, Assignee, Status
 - Views: Current Sprint, Next Sprint
 
-## Comandos
+## Commands
 
-### Crear epic con tasks
+### Create an epic with tasks
 ```
 /gh-projects epic <project> "epic title"
 ```
 
-1. Crear draft item "Epic: X" en el project
-2. Crear issues children en repo linked
-3. Linkear cada issue al epic via task list
-4. Agregar cada issue al project con Status=Todo
+1. Create a draft item "Epic: X" in the project
+2. Create child issues in the linked repo
+3. Link each issue to the epic via a task list
+4. Add each issue to the project with Status=Todo
 
 ### Sync issues → project
 ```
 /gh-projects sync <repo> <project>
 ```
-- Listar issues abiertos en repo
-- Agregar al project los que no estén
-- Setear Status=Todo por default
+- List open issues in the repo
+- Add the missing ones to the project
+- Set Status=Todo by default
 
 ### Board snapshot
 ```
 /gh-projects snapshot <project>
 ```
-Reporte actual del board en markdown.
+Current board report in markdown.
 
-## Reglas
+## Rules
 
-- **Projects v2 ≠ Projects classic.** Este skill NO soporta classic (deprecado).
-- **IDs globales**: Projects v2 usa node IDs opacos (`PVT_...`), no números simples.
-- **Rate limit**: GitHub API tiene 5000 req/h — generoso pero no infinito.
-- **Webhooks disponibles** para automación real-time (fuera de scope de este skill).
+- **Projects v2 ≠ Projects classic.** This skill does NOT support classic (deprecated).
+- **Global IDs**: Projects v2 uses opaque node IDs (`PVT_...`), not plain numbers.
+- **Rate limit**: the GitHub API allows 5000 req/h — generous but not infinite.
+- **Webhooks available** for real-time automation (out of scope for this skill).

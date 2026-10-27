@@ -30,7 +30,7 @@ Backend:
   ...
 
 Project Management:
-  agile          Gestión de proyecto — sprints, standups
+  agile          Project management — sprints, standups
   jira           Jira via curl/REST API — issues, sprints, boards
   ...
 

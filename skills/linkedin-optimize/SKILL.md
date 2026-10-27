@@ -1,103 +1,103 @@
 ---
 name: linkedin-optimize
-description: "Optimize a LinkedIn profile to attract recruiters and rank in search - headline, About, experience with KPIs, keywords, value proposition and a 30-second pitch. No LinkedIn Premium needed. Triggers: optimizar LinkedIn, mejorar perfil LinkedIn, headline LinkedIn, about LinkedIn, LinkedIn para reclutadores, LinkedIn SEO, pitch profesional."
+description: "Optimize a LinkedIn profile to attract recruiters and rank in search - headline, About, experience with KPIs, keywords, value proposition and a 30-second pitch. No LinkedIn Premium needed. Triggers: optimize LinkedIn, improve LinkedIn profile, LinkedIn headline, LinkedIn about, LinkedIn for recruiters, LinkedIn SEO, professional pitch."
 argument-hint: "[section | full] (paste your current profile)"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 
-# LinkedIn Optimize - Perfil que atrae oportunidades
+# LinkedIn Optimize - A profile that attracts opportunities
 
-Optimizás un perfil de LinkedIn para que (1) ranquee en las búsquedas de recruiters y (2) convenza al humano que lo abre. Trabajás contra el **perfil maestro** (`01-Perfiles/`) y lo que el usuario pega de su perfil actual.
+You optimize a LinkedIn profile so that (1) it ranks in recruiter searches and (2) it convinces the human who opens it. You work against the **master profile** (`01-Profiles/`) and whatever the user pastes from their current profile.
 
-> **Importante:** Claude no accede a LinkedIn ni edita el perfil directamente. El usuario pega/sube el contenido actual; vos generás el texto optimizado para que lo copie/pegue.
+> **Important:** Claude does not access LinkedIn or edit the profile directly. The user pastes/uploads the current content; you generate the optimized text for them to copy/paste.
 
-## Cómo traer tu perfil a Claude
+## How to bring your profile to Claude
 
-La forma más completa: en LinkedIn → **Recursos / More → Save to PDF** (exporta el perfil entero) y subí ese PDF a Claude. Alternativa: copiar/pegar headline + About + experiencia. Con el PDF, podés pedir una **auditoría contra JDs reales**:
+The most complete way: on LinkedIn → **Resources / More → Save to PDF** (exports the whole profile) and upload that PDF to Claude. Alternative: copy/paste headline + About + experience. With the PDF, you can ask for an **audit against real JDs**:
 
-> "Audita mi perfil de LinkedIn (adjunto) contra JDs de [rol] senior en [empresas objetivo]. Encontrá gaps en headline, About y Experience: keywords faltantes, framing de identidad equivocado, credenciales enterradas. Después reescribí headline y About para posicionarme como **builder**, optimizado para la búsqueda de recruiters."
+> "Audit my LinkedIn profile (attached) against JDs for senior [role] at [target companies]. Find gaps in the headline, About and Experience: missing keywords, wrong identity framing, buried credentials. Then rewrite the headline and About to position me as a **builder**, optimized for recruiter search."
 
-**Framing de identidad:** posicionate como alguien que *construye/entrega* (builder), no como una lista de tareas. El headline y el About deben gritar resultados e identidad, no responsabilidades.
+**Identity framing:** position yourself as someone who *builds/delivers* (builder), not as a list of tasks. The headline and the About must shout outcomes and identity, not responsibilities.
 
-## Las 7 áreas de optimización
+## The 7 optimization areas
 
-Cubrí estas siete (el usuario puede pedir una con `[section]` o todas con `full`):
+Cover these seven (the user can ask for one with `[section]` or all with `full`):
 
-### 1. Headline (titular)
-- Usá todo el largo que permite el editor (muestra el contador; hoy ronda los 220 caracteres). No solo el puesto: **rol + valor + keywords**.
-- Evitá abrir con "Helping X do Y" / "Ayudo a X a Y": la mitad de los perfiles arranca así. Dá tres opciones.
-- Patrón: `{Rol} | {especialidad/stack} | {valor o a quién ayudás}`.
-- Las keywords del headline pesan fuerte en el ranking de búsqueda.
+### 1. Headline
+- Use the full length the editor allows (it shows the counter; today it is around 220 characters). Not just the job title: **role + value + keywords**.
+- Avoid opening with "Helping X do Y" (or its equivalent in the profile's language): half of all profiles start that way. Give three options.
+- Pattern: `{Role} | {specialty/stack} | {value or who you help}`.
+- Headline keywords weigh heavily in search ranking.
 
-### 2. About (sección "Acerca de")
-- Las primeras 2 líneas son lo único que se ve sin "ver más": para la mayoría de los lectores son todo el About. Que digan qué resolvés y para quién. Sin "apasionado por", sin bio en tercera persona, sin abrir con tu nombre.
-- Estructura: gancho → qué hacés y para quién → 2-3 logros con número → stack/keywords → CTA suave.
-- Primera persona, tono humano, escaneable (párrafos cortos o bullets). Apuntá a menos de ~1.400 caracteres aunque entre más.
+### 2. About
+- The first 2 lines are the only thing visible without "see more": for most readers they are the whole About. Make them say what you solve and for whom. No "passionate about", no third-person bio, no opening with your name.
+- Structure: hook → what you do and for whom → 2-3 achievements with numbers → stack/keywords → soft CTA.
+- First person, human tone, scannable (short paragraphs or bullets). Aim for under ~1,400 characters even if more fits.
 
-### 3. Experiencia con KPIs
-- Cada rol con bullets de **logros cuantificables**, no responsabilidades.
-- Mismo principio que el CV: verbo de acción + métrica + impacto.
-- Incluí keywords de tu industria/rol en los bullets.
+### 3. Experience with KPIs
+- Each role with bullets of **quantifiable achievements**, not responsibilities.
+- Same principle as the CV: action verb + metric + impact.
+- Include keywords from your industry/role in the bullets.
 
-### 4. Keywords estratégicas (LinkedIn SEO)
-- Identificá las keywords que los recruiters de tu rol buscan.
-- Distribuilas en headline, About, experiencia, y la sección Skills.
-- Las **Skills** (hasta 100) alimentan el match con búsquedas y endorsements. Las primeras que se ven tienen que ser las tres por las que querés que te contraten; el resto es ruido.
+### 4. Strategic keywords (LinkedIn SEO)
+- Identify the keywords recruiters for your role search for.
+- Spread them across the headline, About, experience, and the Skills section.
+- **Skills** (up to 100) feed matching with searches and endorsements. The first ones visible have to be the three you want to be hired for; the rest is noise.
 
-### 5. Propuesta de valor única
-- Qué te diferencia: combinación de skills, dominio, resultados. Una frase clara que sintetiza "por qué vos".
+### 5. Unique value proposition
+- What sets you apart: combination of skills, domain, results. One clear sentence that sums up "why you".
 
-### 6. Pitch de 30 segundos
-- Versión hablada de tu propuesta de valor: quién sos, qué hacés/resolvés, qué buscás. Para mensajes, networking y el "contame de vos".
+### 6. 30-second pitch
+- The spoken version of your value proposition: who you are, what you do/solve, what you are looking for. For messages, networking and "tell me about yourself".
 
-### 7. Review ATS / searchability
-- Foto profesional, banner, URL personalizada, "Open to work" configurado (público o solo-recruiters), ubicación y rol objetivo seteados.
-- Perfil completo = más alcance (LinkedIn premia completitud).
-- Sin gaps inexplicados; títulos consistentes con cómo se busca el rol.
+### 7. ATS / searchability review
+- Professional photo, banner, custom URL, "Open to work" configured (public or recruiters-only), location and target role set.
+- Complete profile = more reach (LinkedIn rewards completeness).
+- No unexplained gaps; titles consistent with how the role is searched for.
 
-## Score de 100 puntos
+## 100-point score
 
-En modo `full`, puntuá el perfil **antes** de reescribir y mostrá la tabla. Sé honesto: la mayoría de los perfiles queda en 30-40 en la primera pasada, y un score generoso no le sirve a nadie.
+In `full` mode, score the profile **before** rewriting and show the table. Be honest: most profiles land at 30-40 on the first pass, and a generous score helps nobody.
 
-| Ítem | Pts | Puntaje completo |
+| Item | Pts | Full marks |
 |---|---|---|
-| Headline | 12 | Dice a quién ayudás o qué resolvés, trae una prueba, no es solo el puesto, usa el largo disponible |
-| About, primeras 2 líneas | 10 | Nombran el problema del lector; sin "apasionado por", sin tercera persona |
-| About, cuerpo | 10 | A un lector: su problema, qué hacés, un número como prueba, qué hacer después |
-| Rol actual | 10 | Una línea de alcance + 2-3 bullets de resultados con número (no tareas) |
-| Actividad | 10 | Posteó o comentó en los últimos 7 días; un feed vacío parece perfil abandonado |
-| Featured | 8 | Tres ítems: el mejor post, una prueba (proyecto, demo), la forma de contactarte |
-| Profundidad de experiencia | 8 | Últimos dos roles detallados; lo de más de 10 años, una línea |
-| Recomendaciones | 8 | Al menos tres de los últimos dos años, que nombren un resultado concreto |
-| Banner | 6 | Una línea de posicionamiento y una forma de contacto; no el default |
-| Foto | 6 | La cara ocupa buena parte del cuadro, ojos visibles, de los últimos dos años |
-| Skills | 6 | Las primeras que se ven son las tres por las que te quieren contratar |
-| Contacto | 6 | URL personalizada, email o link que funcione, mismo handle que en GitHub/portfolio |
+| Headline | 12 | Says who you help or what you solve, brings proof, is not just the job title, uses the available length |
+| About, first 2 lines | 10 | Name the reader's problem; no "passionate about", no third person |
+| About, body | 10 | To one reader: their problem, what you do, a number as proof, what to do next |
+| Current role | 10 | One line of scope + 2-3 result bullets with numbers (not tasks) |
+| Activity | 10 | Posted or commented in the last 7 days; an empty feed looks like an abandoned profile |
+| Featured | 8 | Three items: the best post, a proof (project, demo), the way to contact you |
+| Experience depth | 8 | Last two roles detailed; anything older than 10 years, one line |
+| Recommendations | 8 | At least three from the last two years, naming a concrete result |
+| Banner | 6 | A positioning line and a way to contact you; not the default |
+| Photo | 6 | The face fills a good part of the frame, eyes visible, from the last two years |
+| Skills | 6 | The first ones visible are the three you want to be hired for |
+| Contact | 6 | Custom URL, an email or link that works, the same handle as on GitHub/portfolio |
 
-Reescribí en orden de **puntos perdidos**, no todo junto: el usuario tiene que pegar cada parte. Al final re-puntuá y mostrá el delta real: si llega a 88, decí 88 y qué falta (recomendaciones, banner, historial de actividad: nada que una reescritura pueda crear).
+Rewrite in order of **points lost**, not all at once: the user has to paste each part. At the end re-score and show the real delta: if it reaches 88, say 88 and what is missing (recommendations, banner, activity history: nothing a rewrite can create).
 
-## Proceso
+## Process
 
-1. Leer el perfil maestro + lo que el usuario pega de su LinkedIn actual.
-2. Definir el/los **rol(es) objetivo** y sus keywords (reusá `cv-tailor/references/ats-keywords.md` para el método).
-3. En `full`: score de 100 puntos.
-4. Generar el contenido optimizado por sección (la/s que pida), pasado por `/content-humanizer` (`.claude/skills/content-humanizer/scripts/humanize.py` + `detect.py` de la misma carpeta) antes de mostrarlo.
-5. Entregar listo para copiar/pegar + un checklist de la review (área 7) + el re-score.
-6. Opcional: guardar el output en `01-Perfiles/LinkedIn.md` para versionarlo.
+1. Read the master profile + what the user pastes from their current LinkedIn.
+2. Define the **target role(s)** and their keywords (reuse `cv-tailor/references/ats-keywords.md` for the method).
+3. In `full`: 100-point score.
+4. Generate the optimized content per section (the one(s) requested), passed through `/content-humanizer` (`.claude/skills/content-humanizer/scripts/humanize.py` + `detect.py` from the same folder) before showing it.
+5. Deliver it ready to copy/paste + a review checklist (area 7) + the re-score.
+6. Optional: save the output in `01-Profiles/LinkedIn.md` to version it.
 
-## Idioma
+## Language
 
-LinkedIn en **inglés** si apuntás a roles internacionales (mayor alcance), español si tu mercado es local. Se puede tener el About bilingüe.
+LinkedIn in **English** if you target international roles (wider reach), in your local market's language if your market is local. The About can be bilingual.
 
-## Reglas
+## Rules
 
-- No inventar logros ni métricas - todo debe ser defendible.
-- Keywords naturales, no stuffing.
-- Recordar que no se puede acceder/editar LinkedIn: el output es para copiar/pegar.
-- Rubric y orden de reescritura adaptados de linkedin-agent-skill de Jake Schincariol (MIT).
+- Do not invent achievements or metrics - everything must be defensible.
+- Natural keywords, no stuffing.
+- Remember that LinkedIn cannot be accessed/edited: the output is for copy/paste.
+- Rubric and rewrite order adapted from Jake Schincariol's linkedin-agent-skill (MIT).
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir `01-Perfiles/LinkedIn.md`. Cuando el contenido está READY para copiar/pegar, un buen siguiente paso es `/portfolio-site` para alinear el portfolio web.
+Ask for approval before writing `01-Profiles/LinkedIn.md`. When the content is READY to copy/paste, a good next step is `/portfolio-site` to align the web portfolio.

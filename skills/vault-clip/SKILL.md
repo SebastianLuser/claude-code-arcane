@@ -1,73 +1,73 @@
 ---
 name: vault-clip
-description: "Guarda una pagina web en el vault como nota limpia: extrae el contenido sin menus ni banners, con frontmatter de fuente y un resumen propio. Triggers: clipear, guardar este articulo, clip web, guardar link en el vault, archivar esta pagina, web clipper."
+description: "Saves a web page into the vault as a clean note: extracts the content without menus or banners, with source frontmatter and a summary of its own. Triggers: clip, save this article, web clip, save link to the vault, archive this page, web clipper."
 argument-hint: "<url> [--full | --summary]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, WebFetch
 ---
 
-# Vault Clip - Captura web
+# Vault Clip - Web capture
 
-Convertís una URL en una nota del vault que se lee dentro de cinco años, cuando la página original ya no exista. Lo que guardás es el contenido, no el HTML.
+You turn a URL into a vault note that can still be read five years from now, when the original page no longer exists. What you save is the content, not the HTML.
 
 URL: `$ARGUMENTS`
 
-Aplica la rule `vault-conventions`.
+Apply the `vault-conventions` rule.
 
-**Rutas por rol:** los destinos se nombran por rol y la ruta real de cada uno sale del `## Rutas` del `CLAUDE.md` del vault. Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+**Paths by role:** destinations are named by role, and the real path of each one comes from the `## Paths` section of the vault's `CLAUDE.md`. The defaults in parentheses only apply if the vault does not declare otherwise.
 
-## Fase 1 - Traer el contenido
+## Phase 1 - Fetch the content
 
-1. **Ubicar el vault** y leer su `CLAUDE.md`.
-2. **Validar la URL** antes de tocarla: tiene que ser `http(s)` y pública. Si el usuario pasó algo que no es una URL, preguntar.
-3. **Traer la página con `WebFetch`** pidiendo el contenido principal en markdown, sin navegación, sidebars, banners de cookies, footers ni bloques de "artículos relacionados". Un artículo crudo son decenas de miles de tokens de los cuales el 80 por ciento es chrome del sitio.
-4. **Si la página es un paywall, un login o un JS shell vacío**, decirlo y parar. Ofrecer que el usuario pegue el texto a mano. No inventes el contenido a partir del título ni de lo que sepas del tema: un clip fabricado es peor que no tener el clip.
+1. **Locate the vault** and read its `CLAUDE.md`.
+2. **Validate the URL** before touching it: it has to be `http(s)` and public. If the user passed something that is not a URL, ask.
+3. **Fetch the page with `WebFetch`**, asking for the main content in markdown, without navigation, sidebars, cookie banners, footers or "related articles" blocks. A raw article is tens of thousands of tokens, 80 percent of which is site chrome.
+4. **If the page is a paywall, a login or an empty JS shell**, say so and stop. Offer to let the user paste the text by hand. Do not invent the content from the title or from what you know about the topic: a fabricated clip is worse than no clip.
 
-## Fase 2 - Decidir qué se guarda
+## Phase 2 - Decide what gets saved
 
-| Modo | Qué guarda | Cuándo |
+| Mode | What it saves | When |
 |---|---|---|
-| `--summary` (default) | Resumen propio de 5 a 10 líneas + los puntos clave + link a la fuente | Casi siempre. El vault es para tus ideas, no para copias de internet. |
-| `--full` | El texto completo limpio | Referencia técnica que vas a citar, o contenido que puede desaparecer |
+| `--summary` (default) | A 5 to 10 line summary of its own + the key points + a link to the source | Almost always. The vault is for your ideas, not for copies of the internet. |
+| `--full` | The full clean text | Technical reference you are going to quote, or content that may disappear |
 
-En los dos modos, **el resumen lo escribís vos y va arriba**: si dentro de un año el usuario abre la nota, lo primero que tiene que ver es qué había ahí y por qué lo guardó, no el primer párrafo del autor.
+In both modes, **you write the summary and it goes at the top**: if the user opens the note a year from now, the first thing they need to see is what was there and why they saved it, not the author's first paragraph.
 
-## Fase 3 - Escribir
+## Phase 3 - Write
 
-Con approval sobre destino y modo, crear la nota en `<atomic>` (default `03_Resources/`):
+With approval on the destination and mode, create the note in `<atomic>` (default `03_Resources/`):
 
 ```yaml
 ---
 created: YYYY-MM-DD
 type: clip
 source: <URL>
-author: <si la página lo declara>
+author: <if the page declares it>
 status: seed
 tags: []
 ---
 ```
 
-Estructura del cuerpo:
+Body structure:
 
-1. `# <Título del artículo>`
-2. **Por qué lo guardé:** una línea. Si el usuario no lo dijo, preguntar; es el campo que decide si la nota sirve o es basura acumulada.
-3. `## Resumen` con los puntos clave.
-4. `## Contenido` solo en modo `--full`, con el texto limpio.
-5. `## Relacionado`: al menos un `[[wikilink]]`. Un clip sin link es una huérfana con URL. Si no hay a qué linkearlo, el hub del tema falta: `/hub-note`.
+1. `# <Article title>`
+2. **Why I saved it:** one line. If the user did not say, ask; it is the field that decides whether the note is useful or accumulated junk.
+3. `## Summary` with the key points.
+4. `## Content` only in `--full` mode, with the clean text.
+5. `## Related`: at least one `[[wikilink]]`. A clip without a link is an orphan with a URL. If there is nothing to link it to, the topic's hub is missing: `/hub-note`.
 
-Nombre del archivo: el título del artículo, no el slug de la URL. Sin caracteres que rompan en Windows (`: \ / | ? * < >`).
+File name: the article's title, not the URL slug. No characters that break on Windows (`: \ / | ? * < >`).
 
-Clip COMPLETE cuando la nota tiene fuente, resumen propio y al menos un link.
+Clip COMPLETE when the note has a source, a summary of its own and at least one link.
 
-## Reglas
+## Rules
 
-- Nunca guardar el HTML crudo ni el markdown con la navegación adentro.
-- Nunca fabricar contenido que no vino de la página.
-- Respetar el copyright: en modo `--full` la nota es de uso personal en el vault del usuario, y la fuente queda siempre atribuida. No proponer republicar nada.
-- El clip es material crudo, no una nota atómica: si de acá sale una idea propia del usuario, esa idea es una nota aparte con `/zettel`.
-- Sin guiones largos.
+- Never save the raw HTML or the markdown with the navigation inside.
+- Never fabricate content that did not come from the page.
+- Respect copyright: in `--full` mode the note is for personal use in the user's vault, and the source is always attributed. Do not propose republishing anything.
+- The clip is raw material, not an atomic note: if an idea of the user's own comes out of it, that idea is a separate note with `/zettel`.
+- No long dashes.
 
 ## Handoff
 
-Con el clip guardado, el siguiente paso es `/zettel` si el artículo produjo una idea que el usuario quiere hacer propia, o `/hub-note` si el tema todavía no tiene hub desde donde encontrar este clip.
+With the clip saved, the next step is `/zettel` if the article produced an idea the user wants to make their own, or `/hub-note` if the topic does not yet have a hub from which to find this clip.

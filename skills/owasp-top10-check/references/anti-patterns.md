@@ -1,19 +1,19 @@
-# Anti-patterns Frecuentes — OWASP Top 10
+# Common Anti-patterns — OWASP Top 10
 
-| # | No hacer | Hacer en cambio | OWASP |
+| # | Do not | Do instead | OWASP |
 |---|----------|-----------------|-------|
-| 1 | Auth solo en frontend | Backend valida siempre | A01 |
-| 2 | CORS `*` con credentials | Whitelist explicita de origenes | A01 |
-| 3 | MD5/SHA1/SHA256 plano para passwords | Argon2id o bcrypt cost>=10 | A02 |
-| 4 | JWT HS256 compartido entre servicios | RS256 / EdDSA con JWKS | A02 |
-| 5 | `fmt.Sprintf` / concatenacion para queries SQL | Prepared statements siempre | A03 |
-| 6 | `dangerouslySetInnerHTML` sin sanitizar | DOMPurify o no renderizar HTML externo | A03 |
-| 7 | Sin rate limit en login/register/reset | 5 intentos/min por IP + lockout | A04, A07 |
-| 8 | `NODE_ENV` / `GIN_MODE` no configurados en prod | prod mode explicito; debug endpoints deshabilitados | A05 |
-| 9 | Dependencias sin auditar | `govulncheck` + `pnpm audit` en CI, Renovate habilitado | A06 |
-| 10 | Tokens de reset multi-uso o con TTL largo | One-time, TTL <=30min, invalidar en uso | A07 |
-| 11 | `npm install` en CI | `npm ci` — lockfile enforcement | A08 |
-| 12 | Loggear passwords, tokens o PII | Structured logs con trace_id, sin datos sensibles | A09 |
-| 13 | URL de usuario sin whitelist de dominio | Whitelist explicita + bloquear IPs privadas | A10 |
+| 1 | Auth only in the frontend | The backend always validates | A01 |
+| 2 | CORS `*` with credentials | Explicit origin whitelist | A01 |
+| 3 | Plain MD5/SHA1/SHA256 for passwords | Argon2id or bcrypt cost>=10 | A02 |
+| 4 | JWT HS256 shared between services | RS256 / EdDSA with JWKS | A02 |
+| 5 | `fmt.Sprintf` / concatenation for SQL queries | Prepared statements always | A03 |
+| 6 | `dangerouslySetInnerHTML` without sanitizing | DOMPurify or do not render external HTML | A03 |
+| 7 | No rate limit on login/register/reset | 5 attempts/min per IP + lockout | A04, A07 |
+| 8 | `NODE_ENV` / `GIN_MODE` not set in prod | Explicit prod mode; debug endpoints disabled | A05 |
+| 9 | Unaudited dependencies | `govulncheck` + `pnpm audit` in CI, Renovate enabled | A06 |
+| 10 | Multi-use reset tokens or with a long TTL | One-time, TTL <=30min, invalidate on use | A07 |
+| 11 | `npm install` in CI | `npm ci` — lockfile enforcement | A08 |
+| 12 | Logging passwords, tokens or PII | Structured logs with trace_id, no sensitive data | A09 |
+| 13 | User URL without a domain whitelist | Explicit whitelist + block private IPs | A10 |
 
-OWASP Top 10 es piso, no techo. Servicios criticos: complementar con ASVS Level 2+, threat modeling, pentest externo anual.
+OWASP Top 10 is a floor, not a ceiling. Critical services: complement it with ASVS Level 2+, threat modeling, an annual external pentest.

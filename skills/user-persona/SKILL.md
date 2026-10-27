@@ -8,57 +8,57 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
 ---
 # user-persona — User Persona & JTBD Generator
 
-Genera personas documentadas, JTBD, empathy maps y pain/gain analysis para productos Educabot (Alizia, Tuni, Vigia, Tich).
+Generates documented personas, JTBD, empathy maps and pain/gain analysis for Educabot products (Alizia, Tuni, Vigia, Tich).
 
-## Cuando usar / NO usar
+## When to use / NOT use
 
-| Usar | NO usar |
+| Use | Do NOT use |
 |------|---------|
-| Nuevo producto/vertical sin target definido | Persona validada vigente (refinar, no recrear) |
-| Feature grande que requiere empatia profunda | Stakeholders internos (stakeholder map aparte) |
-| PRD sin persona clara (hand-in con `/product-spec`) | Bugs o issues tecnicos |
-| Re-assessment del ICP existente | |
-| Onboarding de nuevos PMs/designers | |
+| New product/vertical with no defined target | A validated, current persona exists (refine it, do not recreate it) |
+| Large feature that needs deep empathy | Internal stakeholders (separate stakeholder map) |
+| PRD without a clear persona (hand-in with `/product-spec`) | Bugs or technical issues |
+| Re-assessment of the existing ICP | |
+| Onboarding new PMs/designers | |
 
-## Filosofia
+## Philosophy
 
-Persona util: basada en data real (interviews, analytics, surveys), actionable (decide que hacer/no hacer), memorable (equipo la referencia). Persona mala: demografia irrelevante, copy-paste de competidor, 15 personas que nadie recuerda.
+A useful persona: based on real data (interviews, analytics, surveys), actionable (decides what to do/not do), memorable (the team references it). A bad persona: irrelevant demographics, copy-pasted from a competitor, 15 personas nobody remembers.
 
-## Preguntas previas
+## Questions first
 
-1. **Producto:** Alizia / Tuni / Vigia / Tich / nuevo
-2. **Primaria o secundaria?**
-3. **Research existente?** (interviews, surveys, analytics, NPS)
-4. **Cantidad:** 1-3 recomendado, max 5
-5. **Contexto educativo:** Primaria / Secundaria / Univ / Adultos / Formal / No-formal
+1. **Product:** Alizia / Tuni / Vigia / Tich / new
+2. **Primary or secondary?**
+3. **Existing research?** (interviews, surveys, analytics, NPS)
+4. **How many:** 1-3 recommended, max 5
+5. **Educational context:** Primary / Secondary / University / Adults / Formal / Non-formal
 
 ## Workflow
 
-### Paso 1 — Recolectar evidencia
-Pedir inputs: links a interviews (Notion/grabaciones), exports analytics (Mixpanel/GA), tickets soporte recurrentes, data CRM/Hubspot, competitor research. Sin data -> proponer plan discovery: 5-7 interviews, survey 50+ respuestas, 2 semanas minimo.
+### Step 1 — Gather evidence
+Ask for inputs: links to interviews (Notion/recordings), analytics exports (Mixpanel/GA), recurring support tickets, CRM/Hubspot data, competitor research. No data -> propose a discovery plan: 5-7 interviews, a survey with 50+ responses, 2 weeks minimum.
 
-### Paso 2 — Segmentar
-Dimensiones clave: rol (docente/estudiante/director/padre), nivel educativo, tipo institucion (publica/privada/mixta), tech-savviness (low/mid/high), contexto uso (aula/remoto/hibrido).
+### Step 2 — Segment
+Key dimensions: role (teacher/student/principal/parent), education level, institution type (public/private/mixed), tech-savviness (low/mid/high), usage context (classroom/remote/hybrid).
 
-### Paso 3 — Escribir persona
+### Step 3 — Write the persona
 
 > → Read references/persona-template.md for full persona template sections, anti-persona template, and JTBD canvas
 
-### Paso 4 — Validar
-Research/Data team revisa -> PM + Design aprueban -> iterar si no resuena.
+### Step 4 — Validate
+Research/Data team reviews -> PM + Design approve -> iterate if it does not resonate.
 
-### Paso 5 — Publicar
-Notion/Coda (hub personas) -> linkear desde PRDs y Figma -> printables opcional.
+### Step 5 — Publish
+Notion/Coda (persona hub) -> link from PRDs and Figma -> optional printables.
 
 ## Rules of thumb
 
-- Max 3-5 personas por producto; 1 primaria, max 2 secundarias
-- Refrescar cada 6-12 meses o tras cambio grande
-- Sin interview -> marcar como hipotesis
-- Cada feature debe mapear a una persona
-- "Pero Flor no haria eso" en meetings = senal de que funciona
+- Max 3-5 personas per product; 1 primary, max 2 secondary
+- Refresh every 6-12 months or after a big change
+- No interview -> mark it as a hypothesis
+- Every feature must map to a persona
+- "But Flor wouldn't do that" in meetings = a sign that it works
 
-## Delegacion
+## Delegation
 
-- `/product-spec` — PRD que usa la persona
-- `/meeting-to-tasks` — convertir interviews en insights
+- `/product-spec` — PRD that uses the persona
+- `/meeting-to-tasks` — turn interviews into insights

@@ -1,15 +1,15 @@
-# Checklist Pre-deploy
+# Pre-deploy Checklist
 
-- [ ] Artefacto taggeado por `$GIT_SHA`
-- [ ] 10+ imagenes retenidas en Artifact Registry
-- [ ] Schema expand/contract separados de codigo
-- [ ] Compatibility window N-1 validada
-- [ ] Comando rollback escrito en ticket/PR
-- [ ] Feature flag con kill switch si user-facing
-- [ ] Canary configurado para cambios riesgosos
-- [ ] Auto-rollback triggers definidos
-- [ ] Workflow rollback.yml disponible y probado
-- [ ] Runbook actualizado con comandos del servicio
-- [ ] DR drill DB restore ejecutado ultimo trimestre
-- [ ] Responsable on-call identificado
-- [ ] Plan comunicacion listo
+- [ ] Artifact tagged by `$GIT_SHA`
+- [ ] 10+ images retained in Artifact Registry
+- [ ] Schema expand/contract separated from code
+- [ ] N-1 compatibility window validated
+- [ ] Rollback command written in the ticket/PR
+- [ ] Feature flag with kill switch if user-facing
+- [ ] Canary configured for risky changes
+- [ ] Auto-rollback triggers defined
+- [ ] rollback.yml workflow available and tested
+- [ ] Runbook updated with the service's commands
+- [ ] DB restore DR drill run last quarter
+- [ ] On-call owner identified
+- [ ] Communication plan ready

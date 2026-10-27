@@ -1,9 +1,9 @@
 name: backend-nestjs
-description: "Backend NestJS — feature modules, DI, guards/pipes, Prisma, JWT, testing, microservicios. Best practices priorizadas por impacto."
+description: "Backend NestJS — feature modules, DI, guards/pipes, Prisma, JWT, testing, microservices. Best practices prioritized by impact."
 category: backend
 
 skills:
-  # NestJS-specific (nuevas)
+  # NestJS-specific (new)
   - nestjs-scaffold
   - nestjs-best-practices
   - pgvector-search

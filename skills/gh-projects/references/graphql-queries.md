@@ -1,6 +1,6 @@
 # GitHub Projects v2 — GraphQL Reference
 
-## Obtener project ID y fields
+## Get the project ID and fields
 
 ```graphql
 query GetProject($org: String!, $number: Int!) {
@@ -43,7 +43,7 @@ query GetProject($org: String!, $number: Int!) {
 }
 ```
 
-## Listar items de un project
+## List a project's items
 
 ```graphql
 query GetProjectItems($projectId: ID!, $cursor: String) {
@@ -96,7 +96,7 @@ query GetProjectItems($projectId: ID!, $cursor: String) {
 }
 ```
 
-## Actualizar field value (single select)
+## Update a field value (single select)
 
 ```graphql
 mutation UpdateStatus($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
@@ -111,23 +111,23 @@ mutation UpdateStatus($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: S
 }
 ```
 
-## Actualizar field de texto o número
+## Update a text or number field
 
 ```graphql
 mutation UpdateField($projectId: ID!, $itemId: ID!, $fieldId: ID!) {
-  # Texto:
+  # Text:
   updateProjectV2ItemFieldValue(input: {
     projectId: $projectId
     itemId: $itemId
     fieldId: $fieldId
-    value: { text: "nuevo valor" }
+    value: { text: "new value" }
   }) {
     projectV2Item { id }
   }
 }
 ```
 
-## Agregar issue/PR al project
+## Add an issue/PR to the project
 
 ```graphql
 mutation AddItem($projectId: ID!, $contentId: ID!) {
@@ -140,7 +140,7 @@ mutation AddItem($projectId: ID!, $contentId: ID!) {
 }
 ```
 
-## Crear draft item
+## Create a draft item
 
 ```graphql
 mutation CreateDraft($projectId: ID!, $title: String!, $body: String) {
@@ -154,7 +154,7 @@ mutation CreateDraft($projectId: ID!, $title: String!, $body: String) {
 }
 ```
 
-## Eliminar item del project
+## Remove an item from the project
 
 ```graphql
 mutation RemoveItem($projectId: ID!, $itemId: ID!) {
@@ -167,10 +167,10 @@ mutation RemoveItem($projectId: ID!, $itemId: ID!) {
 }
 ```
 
-## Ejecutar queries con gh CLI
+## Run queries with the gh CLI
 
 ```bash
-# Query básica
+# Basic query
 gh api graphql -f query='
   query {
     organization(login: "educabot") {
@@ -179,7 +179,7 @@ gh api graphql -f query='
   }
 '
 
-# Con variables
+# With variables
 gh api graphql \
   -f query="$(cat query.graphql)" \
   -f org="educabot" \
@@ -190,7 +190,7 @@ gh api graphql \
   -f query='mutation { updateProjectV2ItemFieldValue(input: { ... }) { projectV2Item { id } } }'
 ```
 
-## IDs importantes — cómo obtenerlos
+## Important IDs — how to get them
 
 ```bash
 # Project ID (PVT_...)
@@ -202,6 +202,6 @@ gh api graphql -f query='...' | jq '.data.organization.projectV2.fields.nodes[] 
 # Item ID (PVTI_...)
 gh project item-list 1 --owner educabot --format json | jq '.[0].id'
 
-# Issue/PR content ID (para addProjectV2ItemById)
+# Issue/PR content ID (for addProjectV2ItemById)
 gh api repos/educabot/repo/issues/123 | jq '.node_id'
 ```

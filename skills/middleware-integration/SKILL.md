@@ -1,6 +1,6 @@
 ---
 name: middleware-integration
-description: "Integracion de middleware de audio (Wwise/FMOD): containers, eventos, Switches/States/RTPCs, atenuaciones, soundbanks, streaming vs memoria, y el contrato con el codigo de gameplay. Usar para: Wwise, FMOD, event authoring, RTPC, soundbanks, arquitectura de audio."
+description: "Audio middleware integration (Wwise/FMOD): containers, events, Switches/States/RTPCs, attenuations, soundbanks, streaming vs memory, and the contract with gameplay code. Use for: Wwise, FMOD, event authoring, RTPC, soundbanks, audio architecture."
 category: "audio"
 argument-hint: "[structure | events | rtpc | banks | contract]"
 user-invocable: true
@@ -8,172 +8,172 @@ allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 # middleware-integration — Wwise / FMOD
 
-Diseña la estructura del proyecto de middleware y el contrato entre el audio y el código de gameplay.
+Designs the structure of the middleware project and the contract between audio and gameplay code.
 
-Conceptos agnósticos donde se puede; nomenclatura de Wwise como referencia principal, con el equivalente FMOD anotado, porque los dos modelan lo mismo con nombres distintos.
+Agnostic concepts where possible; Wwise naming as the main reference, with the FMOD equivalent noted, because both model the same things under different names.
 
-## Cuándo usar
+## When to use
 
-- Estructurar un proyecto de Wwise/FMOD desde cero
-- Definir el contrato de eventos que va a postear el código
-- Diseñar la organización de soundbanks
-- El proyecto de middleware creció desordenado y hay que reorganizarlo
-- Decidir qué va en memoria y qué va en streaming
+- Structuring a Wwise/FMOD project from scratch
+- Defining the contract of events the code will post
+- Designing the soundbank organization
+- The middleware project grew messy and needs reorganizing
+- Deciding what goes in memory and what goes in streaming
 
 ## Input
 
-1. Leer `/audio-spec` (event lists), `/audio-mix` (buses) y `/adaptive-music` (matriz de transiciones) si existen
-2. Determinar el middleware y su versión
-3. Preguntar al usuario: plataformas target, budget de memoria de audio, y si el proyecto ya existe o se arranca limpio
+1. Read `/audio-spec` (event lists), `/audio-mix` (buses) and `/adaptive-music` (transition matrix) if they exist
+2. Determine the middleware and its version
+3. Ask the user: target platforms, audio memory budget, and whether the project already exists or starts clean
 
 ---
 
-## Equivalencias Wwise ↔ FMOD
+## Wwise ↔ FMOD equivalences
 
-| Concepto | Wwise | FMOD Studio |
+| Concept | Wwise | FMOD Studio |
 |---|---|---|
-| Unidad que dispara el código | Event | Event |
-| Contenedor de variación | Random / Sequence Container | Multi-instrument, Scatterer |
-| Selección por estado discreto | Switch Container | Parameter (labeled) |
-| Mezcla continua entre variantes | Blend Container | Parameter con automatización |
-| Parámetro continuo | RTPC (Game Parameter) | Parameter (continuous) |
-| Estado global | State | Global parameter / Snapshot |
-| Agrupación de mezcla | Actor-Mixer / Bus | Group bus |
-| Snapshot de mezcla | State con propiedades de bus | Snapshot |
-| Curva de distancia | Attenuation ShareSet | 3D panner + curvas |
-| Empaquetado | SoundBank | Bank |
-| Música interactiva | Music Switch / Playlist Container | Event con transition regions |
+| Unit the code triggers | Event | Event |
+| Variation container | Random / Sequence Container | Multi-instrument, Scatterer |
+| Selection by discrete state | Switch Container | Parameter (labeled) |
+| Continuous mix between variants | Blend Container | Parameter with automation |
+| Continuous parameter | RTPC (Game Parameter) | Parameter (continuous) |
+| Global state | State | Global parameter / Snapshot |
+| Mix grouping | Actor-Mixer / Bus | Group bus |
+| Mix snapshot | State with bus properties | Snapshot |
+| Distance curve | Attenuation ShareSet | 3D panner + curves |
+| Packaging | SoundBank | Bank |
+| Interactive music | Music Switch / Playlist Container | Event with transition regions |
 
-## Estructura del proyecto
+## Project structure
 
-Organizar por **sistema de gameplay**, no por tipo de sonido. `Weapons/Shotgun/` es navegable; `Impacts/` con todo mezclado no.
+Organize by **gameplay system**, not by sound type. `Weapons/Shotgun/` is navigable; `Impacts/` with everything mixed together is not.
 
 ```
 Actor-Mixer Hierarchy
-├── Player          (locomoción, armas, voz del jugador)
-├── Enemies         (por arquetipo)
-├── World           (props, entorno, destructibles)
-├── Ambience        (por zona)
+├── Player          (locomotion, weapons, player voice)
+├── Enemies         (per archetype)
+├── World           (props, environment, destructibles)
+├── Ambience        (per zone)
 └── UI
 
 Interactive Music
-└── (por estado: Explore, Combat, Victory...)
+└── (per state: Explore, Combat, Victory...)
 
 Events
-└── (espeja la jerarquía de Actor-Mixer)
+└── (mirrors the Actor-Mixer hierarchy)
 ```
 
-**Reglas que evitan el desorden:**
-- Un evento por acción de gameplay, no por sonido. `Play_Weapon_Fire` con un Switch de tipo de arma le gana a un evento por arma
-- Los ShareSets (atenuación, conversión, efectos) se definen una vez y se reusan. Un ShareSet por objeto es la causa número uno de proyectos inmanejables
-- Work units separados por sistema: es lo que permite que dos personas trabajen sin conflictos de merge
+**Rules that prevent the mess:**
+- One event per gameplay action, not per sound. `Play_Weapon_Fire` with a weapon-type Switch beats one event per weapon
+- ShareSets (attenuation, conversion, effects) are defined once and reused. One ShareSet per object is the number one cause of unmanageable projects
+- Separate work units per system: that is what lets two people work without merge conflicts
 
 ## Containers
 
-| Container | Cuándo | Cuidado |
+| Container | When | Watch out |
 |---|---|---|
-| **Random** | Variación de un mismo sonido | Usar *shuffle* (round-robin), no random puro: random repite |
-| **Sequence** | Sonidos que tienen orden (carga → disparo) | Definir qué pasa al interrumpir |
-| **Switch** | Selección por estado discreto (superficie, tipo de arma) | Definir el default: si el Switch no está seteado, el evento no suena |
-| **Blend** | Mezcla continua por parámetro (RPM de motor) | Cuidar el solapamiento de las curvas o hay huecos |
+| **Random** | Variation of the same sound | Use *shuffle* (round-robin), not pure random: random repeats |
+| **Sequence** | Sounds that have an order (charge → fire) | Define what happens on interruption |
+| **Switch** | Selection by discrete state (surface, weapon type) | Define the default: if the Switch is not set, the event does not play |
+| **Blend** | Continuous mix by parameter (engine RPM) | Watch the curve overlap or there will be gaps |
 
-## Switches, States y RTPCs
+## Switches, States and RTPCs
 
-Tres cosas distintas, y confundirlas es un error de arquitectura frecuente:
+Three different things, and mixing them up is a common architecture mistake:
 
-| | Alcance | Tipo | Ejemplo |
+| | Scope | Type | Example |
 |---|---|---|---|
-| **Switch** | Por objeto de juego | Discreto | Superficie bajo *este* personaje |
-| **State** | Global | Discreto | El juego está en pausa |
-| **RTPC** | Global o por objeto | Continuo | Salud del jugador, intensidad de combate |
+| **Switch** | Per game object | Discrete | Surface under *this* character |
+| **State** | Global | Discrete | The game is paused |
+| **RTPC** | Global or per object | Continuous | Player health, combat intensity |
 
-**Regla:** si es una propiedad de un objeto específico, es Switch. Si es una condición del juego entero, es State. Si es un número que varía suave, es RTPC.
+**Rule:** if it is a property of a specific object, it is a Switch. If it is a condition of the whole game, it is a State. If it is a number that varies smoothly, it is an RTPC.
 
-Usar un State para algo que es por objeto es el bug que produce "todos los personajes caminan sobre la superficie del jugador".
+Using a State for something that is per object is the bug that produces "every character walks on the player's surface".
 
-**Contrato de RTPCs:** todo RTPC necesita rango declarado, curva, y valor por default. El código **normaliza y clampea antes de enviarlo** — el middleware no debería recibir nunca un valor fuera de rango.
+**RTPC contract:** every RTPC needs a declared range, a curve, and a default value. The code **normalizes and clamps before sending it** — the middleware should never receive an out-of-range value.
 
 ## Soundbanks
 
-Estrategia por defecto que funciona en la mayoría de los proyectos:
+Default strategy that works in most projects:
 
-| Bank | Contenido | Cuándo carga |
+| Bank | Contents | When it loads |
 |---|---|---|
-| `Init` | Estructura del proyecto, buses | Al arrancar, siempre |
-| `Global` | UI, voz del jugador, música persistente | Al arrancar, siempre |
-| `Level_XX` | Ambiente y props del nivel | Al cargar el nivel |
-| `Character_XX` | Por personaje/enemigo | Con el spawn del personaje |
+| `Init` | Project structure, buses | At startup, always |
+| `Global` | UI, player voice, persistent music | At startup, always |
+| `Level_XX` | The level's ambience and props | When the level loads |
+| `Character_XX` | Per character/enemy | With the character's spawn |
 
-**Streaming vs memoria:**
+**Streaming vs memory:**
 
-| Va en memoria | Va en streaming |
+| Goes in memory | Goes in streaming |
 |---|---|
-| Todo lo corto y frecuente (SFX, UI, footsteps) | Música |
-| Cualquier cosa que necesite latencia cero | Diálogo largo |
-| | Ambientes largos |
+| Everything short and frequent (SFX, UI, footsteps) | Music |
+| Anything that needs zero latency | Long dialogue |
+| | Long ambiences |
 
-El streaming ahorra memoria y cuesta latencia y accesos a disco. Un SFX en streaming llega tarde; la música en memoria se come el budget.
+Streaming saves memory and costs latency and disk access. A streamed SFX arrives late; music in memory eats the budget.
 
-**Prefetch** para lo streameado que necesita arrancar rápido: los primeros ms van en memoria y el resto se stremea.
+**Prefetch** for streamed content that needs to start fast: the first ms go in memory and the rest is streamed.
 
-## Contrato con el código
+## Contract with the code
 
-Lo que el código tiene que poder hacer, y nada más:
+What the code must be able to do, and nothing more:
 
 ```
-PostEvent(eventName, gameObject)      → dispara
-StopEvent(playingId, fadeMs)          → detiene lo que loopea
-SetSwitch(group, value, gameObject)   → propiedad de objeto
-SetState(group, value)                → condición global
-SetRTPC(param, value01, gameObject?)  → parámetro, normalizado
-RegisterGameObject / Unregister       → ciclo de vida
+PostEvent(eventName, gameObject)      → triggers
+StopEvent(playingId, fadeMs)          → stops what loops
+SetSwitch(group, value, gameObject)   → object property
+SetState(group, value)                → global condition
+SetRTPC(param, value01, gameObject?)  → parameter, normalized
+RegisterGameObject / Unregister       → lifecycle
 ```
 
-**Reglas del contrato** (las mismas que enforcea `rules/gamedev/audio-code.md`):
+**Contract rules** (the same ones `rules/gamedev/audio-code.md` enforces):
 
-- Gameplay **nunca** referencia assets, solo nombres de evento
-- Todo loop tiene un stop explícito, y se detiene al destruirse el objeto dueño
-- Los RTPCs llegan normalizados y clampeados
-- Un evento que falla (bank no cargado) **no rompe el frame**: degrada en silencio
-- Registrar y des-registrar game objects es obligatorio — objetos filtrados son un leak clásico
+- Gameplay **never** references assets, only event names
+- Every loop has an explicit stop, and stops when its owning object is destroyed
+- RTPCs arrive normalized and clamped
+- An event that fails (bank not loaded) **does not break the frame**: it degrades silently
+- Registering and unregistering game objects is mandatory — leaked objects are a classic leak
 
 ## Profiling
 
-El middleware trae el profiler, y es la única fuente de verdad sobre lo que pasa en runtime:
+The middleware ships the profiler, and it is the only source of truth about what happens at runtime:
 
-- **Voces activas** vs el límite configurado, y qué se está descartando
-- **CPU de audio** contra el 5-10% del frame
-- **Memoria** por bank y total
-- **Valores de RTPC en vivo** — sirve para descubrir que el código manda un rango equivocado
-- **Árbol de contribución de voz** — por qué un sonido se oye más o menos de lo esperado
-- Capturas exportables para análisis offline
+- **Active voices** vs the configured limit, and what is being dropped
+- **Audio CPU** against 5-10% of the frame
+- **Memory** per bank and total
+- **Live RTPC values** — useful to discover that the code is sending the wrong range
+- **Voice contribution tree** — why a sound is louder or quieter than expected
+- Exportable captures for offline analysis
 
-Para profilear objetos de juego hay que tener la captura activa en la vista de Game Object antes de disparar los eventos, o no se registra nada.
+To profile game objects, the capture must be active in the Game Object view before the events fire, or nothing is recorded.
 
 ---
 
-## Proceso
+## Process
 
-1. **Definir la jerarquía** por sistema de gameplay, con work units separados
-2. **Crear los ShareSets** de atenuación y conversión antes de los objetos, para que se reusen
-3. **Autorear los eventos** desde la event list de `/audio-spec`, uno por acción
-4. **Definir Switch/State/RTPC** con su alcance correcto, rango y default
-5. **Diseñar los buses** desde `/audio-mix`
-6. **Definir los banks** y qué va en streaming
-7. **Documentar el contrato** para el equipo de código
-8. **Escribir** — preguntar "¿Escribo la arquitectura a `<path>`?" antes de usar Write
+1. **Define the hierarchy** by gameplay system, with separate work units
+2. **Create the attenuation and conversion ShareSets** before the objects, so they get reused
+3. **Author the events** from the `/audio-spec` event list, one per action
+4. **Define Switch/State/RTPC** with the correct scope, range and default
+5. **Design the buses** from `/audio-mix`
+6. **Define the banks** and what goes in streaming
+7. **Document the contract** for the code team
+8. **Write** — ask "May I write the architecture to `<path>`?" before using Write
 
-### Nota sobre automatización
+### Note on automation
 
-Wwise expone WAAPI y FMOD tiene su API de scripting, así que la autoría en batch es automatizable. Hay servidores MCP de terceros que exponen WAAPI a un agente, pero al momento de escribir esto el más completo se declara **EXPERIMENTAL y explícitamente no recomendado para proyectos de producción**. Si querés explorarlo, hacelo en un proyecto de prueba, nunca sobre el proyecto real.
+Wwise exposes WAAPI and FMOD has its scripting API, so batch authoring can be automated. There are third-party MCP servers that expose WAAPI to an agent, but at the time of writing the most complete one declares itself **EXPERIMENTAL and explicitly not recommended for production projects**. If you want to explore it, do it on a test project, never on the real one.
 
 ---
 
 ## Verdict
 
-- **READY** — jerarquía por sistema, ShareSets reusados, cada parámetro con el alcance correcto, banks definidos, contrato documentado
-- **CONCERNS** — la estructura existe pero hay ShareSets duplicados, parámetros con alcance equivocado (State donde va Switch), o banks sin estrategia de carga
-- **BLOCKED** — falta la event list de `/audio-spec` o la estructura de buses de `/audio-mix`
+- **READY** — hierarchy by system, ShareSets reused, every parameter with the correct scope, banks defined, contract documented
+- **CONCERNS** — the structure exists but there are duplicated ShareSets, parameters with the wrong scope (State where a Switch belongs), or banks without a loading strategy
+- **BLOCKED** — the `/audio-spec` event list or the `/audio-mix` bus structure is missing
 
 ## Anti-patterns
 
@@ -181,6 +181,6 @@ Wwise expone WAAPI y FMOD tiene su API de scripting, así que la autoría en bat
 
 ## Next steps
 
-- `/audio-audit` para profilear voces, CPU y memoria en runtime
-- `/adaptive-music` si falta la matriz de transiciones de música
-- `/audio-spec` si la event list no existe todavía
+- `/audio-audit` to profile voices, CPU and memory at runtime
+- `/adaptive-music` if the music transition matrix is missing
+- `/audio-spec` if the event list does not exist yet

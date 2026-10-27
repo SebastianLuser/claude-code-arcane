@@ -1,0 +1,17 @@
+{
+  "language": "es",
+  "note": "Column names and transaction types import_history.py recognizes in Spanish exports and hand-kept spreadsheets. Every columns.<lang>.json next to the script applies at once, because a hand-kept spreadsheet mixes languages. Entries are matched folded (lowercase, no accents), exactly first and then as a substring of the header.",
+  "fields": {
+    "date": ["fecha"],
+    "type": ["tipo", "categoria"],
+    "client": ["cliente", "empresa"],
+    "contract": ["contrato", "descripcion", "proyecto"],
+    "fee": ["comision"],
+    "net": ["neto", "liquido"],
+    "amount": ["monto", "importe", "bruto", "ganancia"],
+    "hours": ["horas", "cantidad", "hs"],
+    "currency": ["moneda"]
+  },
+  "non_income_types": ["retiro", "transferencia", "reembolso", "ajuste", "impuesto"],
+  "fee_row_types": ["comision"]
+}

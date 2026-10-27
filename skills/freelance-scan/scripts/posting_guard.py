@@ -36,7 +36,15 @@ evaluates anything:
     `invisible_text` and scanned like hidden content, so an instruction
     spelled that way is quoted instead of merely counted;
   * instruction-shaped lines aimed at an agent rather than a reader - quoted,
-    never removed (an SSH administrator posting legitimately says "SSH");
+    never removed (an SSH administrator posting legitimately says "SSH"). The
+    shapes no language owns (role markers, chat-template tokens, curl/ssh,
+    .env, settings.json, tool-call names) are in this file; the phrasings
+    ("ignore all previous instructions") are data, one pack per language:
+    injection.en.json and injection.es.json beside this script. Every pack
+    present is loaded at import and runs on every posting, because an attack
+    is written in the language its author picks, not the posting's; the
+    findings list them under `phrase_packs`. A new language is a new
+    injection.<lang>.json, with no code change;
   * URLs that only exist in hidden content - listed;
   * words mixing Latin with Cyrillic or Greek letters (look-alike spoofing) -
     listed.
@@ -123,27 +131,9 @@ CLOSES_P = BLOCK - {"br"}  # an open <p> is closed by any block-level opener
 HTML_HINT = re.compile(r"<\s*(html|body|div|p)\b", re.I)
 
 URL = re.compile(r"https?://[^\s<>\"')\]]+")
-INSTRUCTION_PATTERNS = [re.compile(p, re.I) for p in (
-    r"\bignore (all|any|the|previous|prior|above|earlier)\b",
-    # The same instruction with its other two verbs. These take an explicit
-    # object ("previous instructions"), because "forget the" and "disregard
-    # the" are ordinary prose where "ignore the" already is not.
-    r"\b(disregard|forget)( all| any| the| your| my)? (previous|prior|above|earlier|preceding|initial|original|system) (instructions?|prompts?)\b",
-    r"\byou are (?:an?|the) (?:ai(?![\w-])|ai (?:assistant|agent|model|language model)|assistant|llm|language model)\b",
-    r"\bsystem prompt\b",
-    # "do not tell the user", "never inform the user": the verb straight onto
-    # "the user" (not "the user's"), with the typographic apostrophe most web
-    # text uses. Kept narrow on purpose: "never disclose user data" and "do
-    # not tell users about unreleased features" are everyday privacy and
-    # support prose.
-    r"\b(do not|don['\u2019]?t|never) (tell|inform) the user\b(?!['\u2019]s)",
-    # "do not reveal these instructions to the user", "never mention this to
-    # the user": a demonstrative object, then "to the user" within a clause.
-    r"\b(do not|don['\u2019]?t|never) (mention|reveal|disclose) (this|these|that|it|any of this|the (above|following|previous))\b[^.\n]{0,30}\bto the user\b",
-    r"\b(run|execute) the following (command|commands|script|code|shell|instruction|instructions|steps)\b",
-    # "As an AI" flags by default. Exempt only a job-title noun within a few words of "AI", the way AI
-    # job ads introduce the role ("As an AI Engineer", "as an AI/ML Researcher", "As an AI Product Manager").
-    r"\bas an ai(?![\w-])(?![\s/&]+(?:[\w&/-]+\s+){0,3}?(?:engineer|developer|researcher|scientist|architect|specialist|lead|consultant|manager|analyst|intern|trainer|expert|strategist|designer|tester|owner|programmer)s?\b)",
+# Instruction shapes no language owns: role markers, chat-template tokens, and
+# the tools and files an injected command reaches for.
+NEUTRAL_PATTERNS = [re.compile(p, re.I) for p in (
     r"^\s*(assistant|system|user)\s*:",
     r"<\|",
     r"\[INST\]",
@@ -153,12 +143,25 @@ INSTRUCTION_PATTERNS = [re.compile(p, re.I) for p in (
     r"settings\.json",
     r"allowed-tools",
     r"\btool_use\b|\bfunction_call\b",
-    r"\bignor(a|á|e|ar)\w* (todas? |cualquier )?(las |tus )?instrucciones\b",
-    r"\b(olvid|descart)\w* (todas? )?(las |tus )?instrucciones (anteriores|previas|originales|del sistema)\b",
-    r"\b(sos|eres|actuá como|actúa como) (una? )?(ia|asistente|modelo de lenguaje|llm)\b",
-    r"\bno (le )?(digas|cuentes|menciones|reveles) (esto |nada )?al usuario\b",
-    r"\bejecut(a|á|e|ar) (el|los) siguientes? (comandos?|script|código)\b",
 )]
+
+
+def _load_phrase_packs() -> dict:
+    """{lang: [compiled pattern]} for every injection.<lang>.json beside this script.
+
+    A pack that does not parse fails the import on purpose: a guard that
+    silently skips a language is worse than a loud error.
+    """
+    packs = {}
+    for path in sorted(Path(__file__).resolve().parent.glob("injection.*.json")):
+        lang = path.name[len("injection."):-len(".json")]
+        data = json.loads(path.read_text(encoding="utf-8"))
+        packs[lang] = [re.compile(p["regex"], re.I) for p in data["patterns"]]
+    return packs
+
+
+PHRASE_PACKS = _load_phrase_packs()
+INSTRUCTION_PATTERNS = [p for patterns in PHRASE_PACKS.values() for p in patterns] + NEUTRAL_PATTERNS
 WORD = re.compile(r"\w+", re.UNICODE)
 LATIN = re.compile(r"[A-Za-z]")
 CONFUSABLE = re.compile(r"[Ѐ-ӿͰ-Ͽ]")
@@ -397,6 +400,7 @@ def scan(visible: str, hidden: str) -> dict:
         "hidden_urls": hidden_urls,
         "visible_url_count": len(URL.findall(visible)),
         "homoglyph_runs": homoglyphs,
+        "phrase_packs": list(PHRASE_PACKS),
     }
 
 
@@ -408,35 +412,35 @@ def verdict(findings: dict) -> str:
     alarms = []
     n = len(findings.get("instruction_like") or [])
     if n:
-        alarms.append(_plural(n, "línea con forma de instrucción", "líneas con forma de instrucción"))
+        alarms.append(_plural(n, "instruction-shaped line", "instruction-shaped lines"))
     n = int(findings.get("invisible_flagged") or 0)
     if n:
-        alarms.append(_plural(n, "carácter invisible dentro de palabras", "caracteres invisibles dentro de palabras"))
+        alarms.append(_plural(n, "invisible character inside words", "invisible characters inside words"))
     n = int((findings.get("invisible_chars") or {}).get("tag") or 0)
     if n:
-        alarms.append(_plural(n, "carácter tag (texto oculto al lector)", "caracteres tag (texto oculto al lector)"))
+        alarms.append(_plural(n, "tag character (text hidden from the reader)", "tag characters (text hidden from the reader)"))
     n = len(findings.get("invisible_text") or [])
     if n:
-        alarms.append(_plural(n, "texto escrito en caracteres invisibles", "textos escritos en caracteres invisibles"))
+        alarms.append(_plural(n, "text spelled in invisible characters", "texts spelled in invisible characters"))
     n = len(findings.get("homoglyph_runs") or [])
     if n:
-        alarms.append(_plural(n, "palabra con alfabetos mezclados", "palabras con alfabetos mezclados"))
+        alarms.append(_plural(n, "word mixing alphabets", "words mixing alphabets"))
 
     context = []
     n = len(findings.get("hidden_blocks") or [])
     if n:
-        context.append(_plural(n, "bloque oculto", "bloques ocultos"))
+        context.append(_plural(n, "hidden block", "hidden blocks"))
     n = len(findings.get("hidden_urls") or [])
     if n:
-        context.append(_plural(n, "URL oculta", "URLs ocultas"))
-    removed = " y ".join(context)
+        context.append(_plural(n, "hidden URL", "hidden URLs"))
+    removed = " and ".join(context)
 
     if alarms:
-        line = "posting_guard: ⚠ " + ", ".join(alarms) + " - revisar antes de seguir"
-        return f"{line} (se sacó: {removed})" if removed else line
+        line = "posting_guard: ⚠ " + ", ".join(alarms) + " - review before continuing"
+        return f"{line} (removed: {removed})" if removed else line
     if removed:
-        return f"posting_guard: limpio (se sacó: {removed}; nada con forma de instrucción)"
-    return "posting_guard: limpio"
+        return f"posting_guard: clean (removed: {removed}; nothing instruction-shaped)"
+    return "posting_guard: clean"
 
 
 def guard(raw: str, mode: str):
@@ -488,6 +492,7 @@ def _plain_findings(findings: dict) -> str:
     lines.append("invisible_chars: " + (", ".join(f"{k}={v}" for k, v in findings["invisible_chars"].items()) or "none"))
     lines.append(f"invisible_flagged: {findings['invisible_flagged']}")
     lines.append(f"visible_url_count: {findings['visible_url_count']}")
+    lines.append("phrase_packs: " + (", ".join(findings["phrase_packs"]) or "none"))
     return "\n".join(lines)
 
 

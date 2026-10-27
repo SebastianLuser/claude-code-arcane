@@ -4,32 +4,32 @@ filters:
     - '!file.inFolder("04_Archive")'
 
 formulas:
-  dias_sin_tocar: '(now() - file.mtime).days'
+  days_untouched: '(now() - file.mtime).days'
 
 properties:
   status:
-    displayName: Madurez
-  formula.dias_sin_tocar:
-    displayName: "Dias sin tocar"
+    displayName: Maturity
+  formula.days_untouched:
+    displayName: "Days untouched"
   file.mtime:
-    displayName: Modificada
+    displayName: Modified
 
 views:
   - type: table
-    name: "Semillas que no crecieron"
+    name: "Seeds that did not grow"
     filters:
       and:
         - 'status == "seed"'
-        - "formula.dias_sin_tocar > 30"
+        - "formula.days_untouched > 30"
     order:
       - file.name
-      - formula.dias_sin_tocar
+      - formula.days_untouched
       - created
     summaries:
-      formula.dias_sin_tocar: Average
+      formula.days_untouched: Average
 
   - type: table
-    name: "Contradicciones abiertas"
+    name: "Open contradictions"
     filters:
       - 'status == "contested"'
     order:
@@ -37,7 +37,7 @@ views:
       - created
 
   - type: table
-    name: "Tocado esta semana"
+    name: "Touched this week"
     limit: 30
     filters:
       - "file.mtime > now() - 7d"
@@ -47,7 +47,7 @@ views:
       - status
 
   - type: table
-    name: "Conocimiento por madurez"
+    name: "Knowledge by maturity"
     filters:
       - 'type == "atomic" || type == "hub" || type == "clip"'
     groupBy:
@@ -56,14 +56,14 @@ views:
     order:
       - file.name
       - type
-      - formula.dias_sin_tocar
+      - formula.days_untouched
 
   - type: table
-    name: "Proyectos activos"
+    name: "Active projects"
     filters:
       and:
         - 'type == "project"'
-        - 'status != "cerrado"'
+        - 'status != "closed"'
     order:
       - file.name
       - status

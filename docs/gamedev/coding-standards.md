@@ -1,184 +1,184 @@
 # Game Dev Coding Standards
 
-Estándares específicos para desarrollo de videojuegos (engines, gameplay, shaders, assets). Complementa `docs/coding-standards.md` (core universal).
+Standards specific to video game development (engines, gameplay, shaders, assets). Complements `docs/coding-standards.md` (universal core).
 
 ---
 
-## Arquitectura
+## Architecture
 
 ### Data-driven values
-**Los valores de gameplay NO van hardcoded.** Nunca.
+**Gameplay values are NOT hardcoded.** Ever.
 
-- Damage, HP, velocidades, tiempos, drop rates, precios → config externo (JSON, TSV, ScriptableObject, Resource)
-- Diseñadores editan config sin tocar código
-- Excepción: valores matemáticos (π, conversiones de unidades)
+- Damage, HP, speeds, timings, drop rates, prices → external config (JSON, TSV, ScriptableObject, Resource)
+- Designers edit config without touching code
+- Exception: mathematical values (π, unit conversions)
 
-### ADRs por sistema
-Cada sistema de juego debe tener ADR en `docs/architecture/` explicando decisiones técnicas. Usar template `.claude/docs/templates/architecture-decision-record.md`.
+### ADRs per system
+Every game system must have an ADR in `docs/architecture/` explaining its technical decisions. Use the template `.claude/docs/templates/architecture-decision-record.md`.
 
 ### Scene/prefab separation
-- **Lógica en código, composición en scenes/prefabs.**
-- Scenes no deben tener scripting crítico inline.
-- Prefabs son instances configurables, no code containers.
+- **Logic in code, composition in scenes/prefabs.**
+- Scenes must not hold critical inline scripting.
+- Prefabs are configurable instances, not code containers.
 
 ### Dependency injection > Singletons
-Para testabilidad, inyectar dependencies (via constructor, factory, o service locator explícito). Singletons solo para casos genuinos (GameManager de alto nivel, AudioBus).
+For testability, inject dependencies (via constructor, factory, or an explicit service locator). Singletons only for genuine cases (high-level GameManager, AudioBus).
 
 ---
 
 ## Engine-Specific
 
 ### Unity
-- **ScriptableObjects para data** (stats, configs, events)
-- **Addressables para asset loading** en proyectos medianos/grandes
-- **Jobs + Burst o DOTS** solo cuando hay evidencia de performance needed — no preventivo
-- **Awake vs Start:** Awake para setup propio, Start para setup que depende de otros
-- **Coroutines vs async/await:** coroutines para animation/timing, async para I/O
+- **ScriptableObjects for data** (stats, configs, events)
+- **Addressables for asset loading** in medium/large projects
+- **Jobs + Burst or DOTS** only when there is evidence the performance is needed — not preemptively
+- **Awake vs Start:** Awake for the object's own setup, Start for setup that depends on others
+- **Coroutines vs async/await:** coroutines for animation/timing, async for I/O
 
 ### Unreal
-- **Blueprint vs C++:** gameplay rápido en BP, sistemas críticos y performance en C++
-- **GAS (Gameplay Ability System)** para todo ability-based si el juego lo usa extensamente
-- **UMG para UI** (no ImGui ni Slate directo a menos que sea debug)
-- **Replication:** diseñar networking desde día 1 si es multiplayer — no bolt-on después
+- **Blueprint vs C++:** quick gameplay in BP, critical and performance systems in C++
+- **GAS (Gameplay Ability System)** for everything ability-based if the game uses it extensively
+- **UMG for UI** (no ImGui or raw Slate unless it is debug)
+- **Replication:** design networking from day 1 if it is multiplayer — not bolted on later
 
 ---
 
 ## Gameplay Code
 
 ### State machines
-- **Enums + switch** para states simples (<5)
-- **State pattern** (clases por state) para >5 states o lógica compleja
-- **HFSM (hierarchical)** para AI compleja
+- **Enums + switch** for simple states (<5)
+- **State pattern** (classes per state) for >5 states or complex logic
+- **HFSM (hierarchical)** for complex AI
 
 ### Events / communication
-- **Events over direct references** entre sistemas desacoplados
-- **Direct references** cuando el coupling es inherente (Player → PlayerHealth)
-- **Pub/sub global** solo para cross-cutting (achievement system, analytics)
+- **Events over direct references** between decoupled systems
+- **Direct references** when the coupling is inherent (Player → PlayerHealth)
+- **Global pub/sub** only for cross-cutting concerns (achievement system, analytics)
 
 ### Frame-rate independence
-- Movimiento usa `delta` time
-- Cooldowns en segundos, no frames
-- Animaciones con curve + duración, no frame-counted
+- Movement uses `delta` time
+- Cooldowns in seconds, not frames
+- Animations with curve + duration, not frame-counted
 
-### Determinism (cuando importa)
-- Replay systems, rollback netcode, lockstep multiplayer → requieren determinismo estricto
-- Fixed timestep para physics
-- Seeds explícitos para RNG
-- Floating point: cuidado con order of operations
+### Determinism (when it matters)
+- Replay systems, rollback netcode, lockstep multiplayer → require strict determinism
+- Fixed timestep for physics
+- Explicit seeds for RNG
+- Floating point: watch the order of operations
 
 ---
 
 ## Shader Code
 
 ### General
-- **Precision declarada** (highp/mediump/lowp) para mobile
-- **Minimizar branches** en pixel shaders (usar `lerp` / `step`)
-- **No texture fetches en loops sin bound**
-- **Batching-friendly:** mismo material → mismo draw call
-- **Variants controlados** — multi_compile genera explosion; preferir keywords específicos
+- **Declared precision** (highp/mediump/lowp) for mobile
+- **Minimize branches** in pixel shaders (use `lerp` / `step`)
+- **No texture fetches in unbounded loops**
+- **Batching-friendly:** same material → same draw call
+- **Controlled variants** — multi_compile causes an explosion; prefer specific keywords
 
 ### Performance
-- **Quad overdraw:** visualizar en engine antes de shipping
-- **Texture sampling count:** medir, minimizar
-- **GPU profiler:** corroborar con herramientas del engine (RenderDoc, PIX, Unity Frame Debugger)
+- **Quad overdraw:** visualize it in the engine before shipping
+- **Texture sampling count:** measure, minimize
+- **GPU profiler:** confirm with the engine's tools (RenderDoc, PIX, Unity Frame Debugger)
 
 ---
 
 ## UI Code (Games)
 
-- **Separar vista de estado:** UI lee estado, no tiene lógica de negocio
-- **Navegación:** keyboard + gamepad + touch desde día 1, no bolt-on
-- **Focus management:** siempre hay un elemento con foco (accesibilidad + gamepad)
-- **Layout responsive:** anchors, constraints, safe areas (mobile)
-- **Localización:** strings externos desde día 1, no hardcoded
+- **Separate view from state:** UI reads state, it holds no business logic
+- **Navigation:** keyboard + gamepad + touch from day 1, not bolted on
+- **Focus management:** there is always one focused element (accessibility + gamepad)
+- **Responsive layout:** anchors, constraints, safe areas (mobile)
+- **Localization:** external strings from day 1, not hardcoded
 
 ---
 
 ## Network Code (Games)
 
 ### Authority
-- **Server-authoritative** para competitive / economy / anti-cheat
-- **Client-authoritative** solo para cosméticos y preferences
-- **Hybrid** (client predicts, server corrects) para movimiento en juegos rápidos
+- **Server-authoritative** for competitive / economy / anti-cheat
+- **Client-authoritative** only for cosmetics and preferences
+- **Hybrid** (client predicts, server corrects) for movement in fast games
 
 ### Reliability
-- **UDP unreliable** para movimiento/posición (stream constante, se corrige)
-- **UDP reliable** para events importantes (spawn, death, ability activation)
-- **TCP** solo para lobby/matchmaking/chat
+- **Unreliable UDP** for movement/position (constant stream, self-correcting)
+- **Reliable UDP** for important events (spawn, death, ability activation)
+- **TCP** only for lobby/matchmaking/chat
 
 ### Bandwidth
-- **Delta compression** para state updates
-- **Interest management:** no mandar data de entities fuera del view
-- **Snapshots:** rate configurable según red
+- **Delta compression** for state updates
+- **Interest management:** do not send data for entities outside the view
+- **Snapshots:** rate configurable by network
 
 ---
 
 ## Testing (Gamedev-Specific)
 
-### Test evidence por tipo de story
+### Test evidence by story type
 
-| Tipo | Required | Location | Gate |
+| Type | Required | Location | Gate |
 |------|----------|----------|------|
-| **Logic** (formulas, AI, state machines) | Unit test automático — pass requerido | `tests/unit/[system]/` | BLOCKING |
-| **Integration** (multi-sistema) | Integration test O playtest documentado | `tests/integration/[system]/` | BLOCKING |
-| **Visual/Feel** (animation, VFX, feel) | Screenshot + sign-off del lead | `production/qa/evidence/` | ADVISORY |
-| **UI** (menus, HUD, screens) | Manual walkthrough doc O interaction test | `production/qa/evidence/` | ADVISORY |
+| **Logic** (formulas, AI, state machines) | Automated unit test — pass required | `tests/unit/[system]/` | BLOCKING |
+| **Integration** (multi-system) | Integration test OR documented playtest | `tests/integration/[system]/` | BLOCKING |
+| **Visual/Feel** (animation, VFX, feel) | Screenshot + lead sign-off | `production/qa/evidence/` | ADVISORY |
+| **UI** (menus, HUD, screens) | Manual walkthrough doc OR interaction test | `production/qa/evidence/` | ADVISORY |
 | **Config/Data** (balance tuning) | Smoke check pass | `production/qa/smoke-[date].md` | ADVISORY |
 
 ### Automated test rules
-- **Naming:** `[system]_[feature]_test.[ext]`; función: `test_[scenario]_[expected]`
-- **Determinismo:** tests dan mismo resultado cada run — no random seeds libres, no time-dependent
-- **Aislamiento:** cada test setup/teardown; no depender de orden
-- **Sin hardcoded data:** fixtures en archivos constantes o factory functions
-- **Sin external calls:** no APIs reales, no file I/O sin mock, no engine subsystems no aislados
+- **Naming:** `[system]_[feature]_test.[ext]`; function: `test_[scenario]_[expected]`
+- **Determinism:** tests give the same result every run — no free random seeds, nothing time-dependent
+- **Isolation:** each test has its own setup/teardown; never depend on order
+- **No hardcoded data:** fixtures in constant files or factory functions
+- **No external calls:** no real APIs, no file I/O without a mock, no unisolated engine subsystems
 
-### Qué NO automatizar
+### What NOT to automate
 - Visual fidelity (shader output, VFX appearance, animation curves)
 - "Feel" (input responsiveness, perceived weight, timing feel)
-- Platform rendering (correr en target hardware, no headless)
-- Full gameplay sessions (playtesting, no automation)
+- Platform rendering (run on target hardware, not headless)
+- Full gameplay sessions (playtesting, not automation)
 
-### CI/CD por engine
+### CI/CD per engine
 
 - **Unity:** `game-ci/unity-test-runner@v4` (GitHub Actions)
-- **Unreal:** headless runner con `-nullrhi` flag
+- **Unreal:** headless runner with the `-nullrhi` flag
 
 ---
 
 ## Design Document Standards
 
-Todos los design docs en `design/gdd/` siguen estas 8 secciones obligatorias:
+Every design doc in `design/gdd/` follows these 8 required sections:
 
-1. **Overview** — summary de un párrafo
-2. **Player Fantasy** — feeling intended + experiencia
-3. **Detailed Rules** — mecánicas sin ambigüedad
-4. **Formulas** — toda la matemática con variables definidas + ejemplos
-5. **Edge Cases** — situaciones inusuales resueltas
-6. **Dependencies** — otros sistemas listados (bidireccional: si A depende de B, B menciona A)
-7. **Tuning Knobs** — valores configurables identificados
-8. **Acceptance Criteria** — condiciones de éxito testables (no "debe sentirse bien")
+1. **Overview** — one-paragraph summary
+2. **Player Fantasy** — intended feeling + experience
+3. **Detailed Rules** — unambiguous mechanics
+4. **Formulas** — all the math with defined variables + examples
+5. **Edge Cases** — unusual situations resolved
+6. **Dependencies** — other systems listed (bidirectional: if A depends on B, B mentions A)
+7. **Tuning Knobs** — configurable values identified
+8. **Acceptance Criteria** — testable success conditions (not "it should feel good")
 
-### Reglas adicionales
-- Balance values linkean a formula de origen o rationale
-- Formulas: incluir rango esperado de valores + ejemplo de cálculo
-- Edge cases: decir qué pasa explícitamente, no "handle gracefully"
-- Tuning knobs: especificar rangos seguros + qué aspecto afectan
-- Acceptance criteria: testable — un QA debe poder verificar pass/fail
+### Additional rules
+- Balance values link to their source formula or rationale
+- Formulas: include the expected value range + a worked calculation
+- Edge cases: state explicitly what happens, not "handle gracefully"
+- Tuning knobs: specify safe ranges + which aspect they affect
+- Acceptance criteria: testable — a QA must be able to verify pass/fail
 
 ---
 
 ## Asset Conventions
 
 ### Naming
-- **Textures:** `t_[category]_[name]_[type]` ej `t_env_rock_albedo.png`
+- **Textures:** `t_[category]_[name]_[type]` e.g. `t_env_rock_albedo.png`
 - **Meshes:** `sm_[category]_[name]` (static mesh) / `sk_[character]_[variant]` (skeletal)
 - **Materials:** `m_[category]_[name]` / `mi_[name]` (material instance)
 - **Audio:** `sfx_[category]_[name]` / `music_[context]` / `vo_[character]_[line_id]`
 
 ### Organization
-- Por feature, no por tipo de asset
-- `assets/characters/hero/{meshes, textures, materials, anims}`, no `assets/meshes/all`
+- By feature, not by asset type
+- `assets/characters/hero/{meshes, textures, materials, anims}`, not `assets/meshes/all`
 
 ### Version control
-- LFS para binarios grandes (>1MB)
-- `.gitignore` para caches del engine (Library/, Intermediate/, Saved/)
+- LFS for large binaries (>1MB)
+- `.gitignore` for engine caches (Library/, Intermediate/, Saved/)

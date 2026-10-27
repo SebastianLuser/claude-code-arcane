@@ -1,45 +1,45 @@
 # Audio Spec — Anti-patterns
 
-## Spec sin números
+## Spec without numbers
 
-"Impacto potente y satisfactorio" no es producible. Duración, envolvente, bandas de frecuencia y nivel relativo sí. Si el campo no tiene número o rango, no está especificado.
+"Powerful, satisfying impact" is not producible. Duration, envelope, frequency bands and relative level are. If the field has no number or range, it is not specified.
 
-## Duración como valor único
+## Duration as a single value
 
-"200 ms" fuerza al sound designer a mentir o a pedir aprobación. Un rango (180-260 ms) le da lugar a que el sonido termine donde tiene que terminar.
+"200 ms" forces the sound designer to lie or to ask for approval. A range (180-260 ms) lets the sound end where it needs to end.
 
-## Eventos sin concurrencia
+## Events without concurrency
 
-El spec dice "sonido de casquillo al caer". Llegan 40 enemigos, 300 casquillos, el voice budget explota y el mix desaparece. Todo evento que puede dispararse más de una vez por frame necesita máximo de instancias y política de descarte.
+The spec says "shell casing hitting the ground". 40 enemies show up, 300 casings, the voice budget blows up and the mix disappears. Every event that can fire more than once per frame needs a max instance count and a drop policy.
 
-## Cooldown ausente en eventos de UI
+## Missing cooldown on UI events
 
-Navegación rápida en un menú dispara el mismo tick 15 veces en 200 ms. Suena como un glitch. Cooldown mínimo, siempre.
+Fast navigation in a menu fires the same tick 15 times in 200 ms. It sounds like a glitch. Minimum cooldown, always.
 
-## Una variante
+## A single variant
 
-Un sonido sin variantes se vuelve audible como *sonido* en vez de como evento en unos 20 minutos de juego. Si el evento es frecuente, mínimo 4-5 variantes o randomización de pitch, y preferentemente ambas.
+A sound with no variants becomes audible as a *sound* instead of as an event after about 20 minutes of play. If the event is frequent, at least 4-5 variants or pitch randomization, and preferably both.
 
-## Pitch randomization exagerada
+## Exaggerated pitch randomization
 
-±3% es variación. ±20% cambia el objeto: el arma parece otra arma. Rango chico y round-robin le gana a rango grande.
+±3% is variation. ±20% changes the object: the weapon sounds like a different weapon. A small range plus round-robin beats a large range.
 
-## Specs 3D sin curva
+## 3D specs without a curve
 
-Marcar "3D" y no definir min/max distance ni forma de la curva deja la atenuación en el default del middleware, que casi nunca es el correcto. El sonido se oye a 200 m o desaparece a 3 m.
+Marking "3D" without defining min/max distance or curve shape leaves attenuation at the middleware default, which is almost never the right one. The sound is heard at 200 m or disappears at 3 m.
 
-## Especificar antes de decidir procedural
+## Specifying before deciding on procedural
 
-Escribir 360 spec sheets de footsteps es trabajo perdido si la respuesta correcta era síntesis. Evaluar el eje frecuencia × dimensiones antes de especificar.
+Writing 360 footstep spec sheets is wasted work if the right answer was synthesis. Evaluate the frequency × dimensions axis before specifying.
 
-## Event list sin stop condition
+## Event list without a stop condition
 
-Los loops son la fuente número uno de audio colgado. Todo sonido que loopea necesita decir explícitamente quién lo para y qué pasa si el objeto dueño se destruye primero.
+Loops are the number one source of stuck audio. Every looping sound needs to state explicitly who stops it and what happens if the owning object is destroyed first.
 
-## Prioridades todas iguales
+## All priorities equal
 
-Si todo es prioridad alta, el voice limiter descarta al azar y se cae el feedback de la acción del jugador antes que un ambiente lejano. Las prioridades solo sirven si están diferenciadas.
+If everything is high priority, the voice limiter drops at random and the player's action feedback drops before a distant ambience. Priorities only work if they are differentiated.
 
-## IDs que no siguen el naming del bible
+## IDs that don't follow the bible's naming
 
-`shotgun2_FINAL_v3` rompe búsqueda, batch processing y automatización de banks. El ID sale del pattern del bible, sin excepciones.
+`shotgun2_FINAL_v3` breaks search, batch processing and bank automation. The ID comes from the bible's pattern, no exceptions.

@@ -1,9 +1,9 @@
-# Reglas por Rol — MFA
+# Rules per Role — MFA
 
-| Rol | MFA | Metodos | Step-up maxAge |
+| Role | MFA | Methods | Step-up maxAge |
 |-----|-----|---------|----------------|
-| Super-admin | Obligatorio | Passkey + TOTP (2 factores) | 2 min |
-| Admin institucion | Obligatorio | Passkey o TOTP | 5 min |
-| Docente | Obligatorio | Passkey/TOTP; SMS solo recovery | 10 min |
-| Alumno adulto (16+) | Opcional | TOTP o Passkey | 15 min |
-| Alumno menor | No obligatorio | TOTP (via tutor); NUNCA SMS | N/A |
+| Super-admin | Mandatory | Passkey + TOTP (2 factors) | 2 min |
+| Institution admin | Mandatory | Passkey or TOTP | 5 min |
+| Teacher | Mandatory | Passkey/TOTP; SMS recovery only | 10 min |
+| Adult student (16+) | Optional | TOTP or Passkey | 15 min |
+| Underage student | Not mandatory | TOTP (via guardian); NEVER SMS | N/A |

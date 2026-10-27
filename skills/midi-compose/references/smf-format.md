@@ -1,34 +1,34 @@
-# Standard MIDI File — formato binario
+# Standard MIDI File — binary format
 
-Referencia de lo que emite `scripts/compose_midi.py`. Útil para debuggear un `.mid` a mano o extender el script.
+Reference for what `scripts/compose_midi.py` emits. Useful for debugging a `.mid` by hand or extending the script.
 
-## Estructura general
+## Overall structure
 
-Un SMF es una secuencia de chunks. Cada chunk: 4 bytes de tipo + 4 bytes de longitud (big-endian) + cuerpo.
+An SMF is a sequence of chunks. Each chunk: 4 bytes of type + 4 bytes of length (big-endian) + body.
 
 ```
 MThd <len=6> <format:2> <ntrks:2> <division:2>
-MTrk <len>   <eventos...>
-MTrk <len>   <eventos...>
+MTrk <len>   <events...>
+MTrk <len>   <events...>
 ```
 
-**Formatos:**
+**Formats:**
 
-| Formato | Qué es |
+| Format | What it is |
 |---|---|
-| 0 | Un solo track con todo mezclado |
-| 1 | Múltiples tracks simultáneos; el track 0 es el conductor (tempo/compás) |
-| 2 | Tracks independientes, secuenciales. Casi no se usa |
+| 0 | A single track with everything merged |
+| 1 | Multiple simultaneous tracks; track 0 is the conductor (tempo/time signature) |
+| 2 | Independent, sequential tracks. Hardly ever used |
 
-El script emite **formato 1**: track 0 con tempo, compás y tonalidad sin notas, y un `MTrk` por pista musical. Es lo que esperan los DAWs.
+The script emits **format 1**: track 0 with tempo, time signature and key and no notes, plus one `MTrk` per musical part. It is what DAWs expect.
 
-**División** — con el bit alto en 0, es *ticks por negra* (PPQ). 480 es el valor estándar de la industria y divide bien tresillos (160) y semicorcheas (120).
+**Division** — with the high bit at 0, it is *ticks per quarter note* (PPQ). 480 is the industry standard value and divides cleanly into triplets (160) and sixteenth notes (120).
 
-## Delta-times y VLQ
+## Delta-times and VLQ
 
-Cada evento arranca con un delta-time: cuántos ticks pasaron desde el evento anterior *en ese track*. Se codifica como Variable-Length Quantity: 7 bits de datos por byte, MSB = 1 en todos los bytes menos el último.
+Each event starts with a delta-time: how many ticks passed since the previous event *in that track*. It is encoded as a Variable-Length Quantity: 7 data bits per byte, MSB = 1 on every byte but the last.
 
-| Valor | Bytes |
+| Value | Bytes |
 |---|---|
 | 0 | `00` |
 | 127 | `7F` |
@@ -36,50 +36,50 @@ Cada evento arranca con un delta-time: cuántos ticks pasaron desde el evento an
 | 480 | `83 60` |
 | 8192 | `C0 00` |
 
-Un delta mal codificado desplaza todo lo que sigue: es la causa número uno de un `.mid` que "suena raro a partir de la mitad".
+A badly encoded delta shifts everything after it: it is the number one cause of a `.mid` that "sounds weird from the middle on".
 
-## Eventos de canal
+## Channel events
 
-`n` es el canal, 0-15.
+`n` is the channel, 0-15.
 
-| Evento | Bytes | Notas |
+| Event | Bytes | Notes |
 |---|---|---|
-| Note Off | `8n kk vv` | `kk` nota, `vv` velocity de release |
-| Note On | `9n kk vv` | `vv = 0` equivale a Note Off |
-| Control Change | `Bn cc vv` | cc 7 = volumen, 10 = pan, 11 = expresión |
-| Program Change | `Cn pp` | Instrumento GM |
-| Pitch Bend | `En ll mm` | 14 bits, centro en `00 40` |
+| Note Off | `8n kk vv` | `kk` note, `vv` release velocity |
+| Note On | `9n kk vv` | `vv = 0` is equivalent to Note Off |
+| Control Change | `Bn cc vv` | cc 7 = volume, 10 = pan, 11 = expression |
+| Program Change | `Cn pp` | GM instrument |
+| Pitch Bend | `En ll mm` | 14 bits, centered at `00 40` |
 
-**Orden en el mismo tick:** el Note Off tiene que ir antes del Note On cuando se reataca la misma nota, o el sintetizador corta la nota nueva. El script ordena por `(tick, 0=off, 1=on)` justamente por esto.
+**Order on the same tick:** the Note Off has to come before the Note On when the same note is re-attacked, or the synthesizer cuts the new note. The script sorts by `(tick, 0=off, 1=on)` precisely for this.
 
-## Meta eventos
+## Meta events
 
-Todos arrancan con `FF`, después tipo, después longitud en VLQ.
+They all start with `FF`, then the type, then the length in VLQ.
 
-| Meta | Bytes | Contenido |
+| Meta | Bytes | Content |
 |---|---|---|
-| Nombre de secuencia/track | `FF 03 <len> <texto>` | |
-| Tempo | `FF 51 03 tttttt` | Microsegundos por negra = `60000000 / BPM` |
-| Compás | `FF 58 04 nn dd cc bb` | `dd` = log2(denominador); `cc` = 24; `bb` = 8 |
-| Tonalidad | `FF 59 02 sf mi` | `sf` sostenidos (+) o bemoles (−), signed; `mi` 0 mayor / 1 menor |
-| End of Track | `FF 2F 00` | **Obligatorio** al final de cada `MTrk` |
+| Sequence/track name | `FF 03 <len> <text>` | |
+| Tempo | `FF 51 03 tttttt` | Microseconds per quarter note = `60000000 / BPM` |
+| Time signature | `FF 58 04 nn dd cc bb` | `dd` = log2(denominator); `cc` = 24; `bb` = 8 |
+| Key signature | `FF 59 02 sf mi` | `sf` sharps (+) or flats (−), signed; `mi` 0 major / 1 minor |
+| End of Track | `FF 2F 00` | **Required** at the end of every `MTrk` |
 
-Sin `End of Track` muchos lectores rechazan el archivo entero.
+Without `End of Track` many readers reject the whole file.
 
-## Conversión de tiempo
+## Time conversion
 
 ```
 ticks = beats × PPQ
-ms_por_tick = 60000 / (BPM × PPQ)
+ms_per_tick = 60000 / (BPM × PPQ)
 ```
 
-A 120 BPM con PPQ 480: 1 tick = 1.041 ms. A 84 BPM: 1 tick = 1.488 ms.
+At 120 BPM with PPQ 480: 1 tick = 1.041 ms. At 84 BPM: 1 tick = 1.488 ms.
 
-Para escribir un desvío de feel en beats: `beats = ms × BPM / 60000`.
+To write a feel offset in beats: `beats = ms × BPM / 60000`.
 
-## Programas General MIDI usados seguido
+## Frequently used General MIDI programs
 
-| # | Instrumento | # | Instrumento |
+| # | Instrument | # | Instrument |
 |---|---|---|---|
 | 0 | Acoustic Grand Piano | 48 | String Ensemble 1 |
 | 4 | Electric Piano 1 | 49 | String Ensemble 2 |
@@ -93,11 +93,11 @@ Para escribir un desvío de feel en beats: `beats = ms × BPM / 60000`.
 | 42 | Cello | 89 | Pad 2 (warm) |
 | 46 | Orchestral Harp | 94 | Pad 7 (halo) |
 
-## Percusión (canal 9)
+## Percussion (channel 9)
 
-El `pitch` es el instrumento, no la altura.
+The `pitch` is the instrument, not the pitch.
 
-| # | Instrumento | # | Instrumento |
+| # | Instrument | # | Instrument |
 |---|---|---|---|
 | 35 | Acoustic Bass Drum | 44 | Pedal Hi-Hat |
 | 36 | Bass Drum 1 | 46 | Open Hi-Hat |
@@ -107,12 +107,12 @@ El `pitch` es el instrumento, no la altura.
 | 41 | Low Floor Tom | 56 | Cowbell |
 | 42 | Closed Hi-Hat | 76 | Hi Wood Block |
 
-## Verificar un .mid a mano
+## Checking a .mid by hand
 
 ```bash
 python - <<'EOF'
 import struct
-data = open("salida.mid", "rb").read()
+data = open("output.mid", "rb").read()
 assert data[:4] == b"MThd"
 length, fmt, ntrks, div = struct.unpack(">IHHH", data[4:14])
 print("format", fmt, "| tracks", ntrks, "| ppq", div)
@@ -120,10 +120,10 @@ pos, seen = 14, 0
 while pos < len(data):
     name, size = data[pos:pos+4], struct.unpack(">I", data[pos+4:pos+8])[0]
     body = data[pos+8:pos+8+size]
-    assert name == b"MTrk" and body[-3:] == b"\xff\x2f\x00", f"track {seen} malformado"
+    assert name == b"MTrk" and body[-3:] == b"\xff\x2f\x00", f"track {seen} malformed"
     pos += 8 + size
     seen += 1
 assert seen == ntrks and pos == len(data)
-print("SMF valido")
+print("valid SMF")
 EOF
 ```

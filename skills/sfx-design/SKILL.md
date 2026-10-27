@@ -1,122 +1,122 @@
 ---
 name: sfx-design
-description: "Diseno de efectos de sonido: capas attack/body/tail, variacion y round-robin, pitch randomization, layering de impactos, anti-repeticion. Usar para: disenar SFX, sonidos de impacto, armas, feedback de accion."
+description: "Sound effect design: attack/body/tail layers, variation and round-robin, pitch randomization, impact layering, anti-repetition. Use for: designing SFX, impact sounds, weapons, action feedback."
 category: "audio"
 argument-hint: "[sound-name | layers | variation | review]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
-# sfx-design — Diseño de Efectos
+# sfx-design — Effects Design
 
-Diseña *cómo suena* un efecto: de qué capas se construye, cómo varía, y por qué se lee como el evento que representa.
+Designs *how an effect sounds*: which layers it is built from, how it varies, and why it reads as the event it represents.
 
-`/audio-spec` escribe el contrato (qué lo dispara, con qué límites). Esta skill diseña el sonido.
+`/audio-spec` writes the contract (what triggers it, with which limits). This skill designs the sound.
 
-## Cuándo usar
+## When to use
 
-- Sonidos hero que merecen diseño individual: el arma principal, el golpe crítico, el skill definitivo
-- Cuando un efecto "no se siente" y hay que diagnosticar por qué
-- Cuando la biblioteca se escucha repetitiva y hay que resolver variación
-- Antes de grabar o comprar assets, para saber qué buscar
+- Hero sounds that deserve individual design: the main weapon, the critical hit, the ultimate skill
+- When an effect "doesn't feel right" and you have to diagnose why
+- When the library sounds repetitive and variation has to be solved
+- Before recording or buying assets, to know what to look for
 
-## Modos
+## Modes
 
-| Modo | Qué hace |
+| Mode | What it does |
 |---|---|
-| `sound-name` | Diseña un efecto concreto de punta a punta |
-| `layers` | Solo la anatomía por capas: qué banda ocupa cada una |
-| `variation` | Solo el plan de variación: variantes, round-robin, randomización, layer swapping |
-| `review` | Diagnostica un efecto existente contra la tabla de síntomas |
+| `sound-name` | Designs a specific effect end to end |
+| `layers` | Only the layer anatomy: which band each layer occupies |
+| `variation` | Only the variation plan: variants, round-robin, randomization, layer swapping |
+| `review` | Diagnoses an existing effect against the symptoms table |
 
 ## Input
 
-1. Leer audio bible (paleta, frequency allocation) y el spec del sonido si existe
-2. Preguntar al usuario: qué evento representa, qué debe sentir el jugador, y si hay referencia sonora
-3. Identificar la restricción: ¿este sonido suena una vez por partida o cien veces por minuto? Eso cambia todo
+1. Read the audio bible (palette, frequency allocation) and the sound's spec if it exists
+2. Ask the user: which event it represents, what the player should feel, and whether there is a sound reference
+3. Identify the constraint: does this sound play once per match or a hundred times per minute? That changes everything
 
 ---
 
-## Anatomía de un efecto
+## Anatomy of an effect
 
-Todo efecto se lee en tres partes. Diseñarlas por separado es la diferencia entre un sonido que funciona y uno que "le falta algo":
+Every effect reads in three parts. Designing them separately is the difference between a sound that works and one that is "missing something":
 
-| Capa | Duración típica | Qué comunica | Se percibe como |
+| Layer | Typical duration | What it communicates | Perceived as |
 |---|---|---|---|
-| **Attack** | 1-20 ms | Qué material, cuánta fuerza | Impacto, precisión, "punch" |
-| **Body** | 20-200 ms | Qué tamaño, qué objeto | Peso, escala |
-| **Tail** | 50 ms-2 s | Dónde está, qué espacio | Ambiente, distancia, potencia |
+| **Attack** | 1-20 ms | Which material, how much force | Impact, precision, "punch" |
+| **Body** | 20-200 ms | What size, what object | Weight, scale |
+| **Tail** | 50 ms-2 s | Where it is, what space | Ambience, distance, power |
 
-**Diagnóstico por síntoma:**
+**Diagnosis by symptom:**
 
-| Síntoma | Capa culpable | Arreglo |
+| Symptom | Culprit layer | Fix |
 |---|---|---|
-| "Se siente débil" | Attack sin transiente | Sumar una capa de click/crack corta y brillante |
-| "No tiene peso" | Body sin graves | Sumar sub o cuerpo en 60-150 Hz |
-| "Suena a sample de librería" | Tail genérico o ausente | Cola propia, o reverb del espacio real del juego |
-| "Es confuso, no se lee" | Demasiadas capas peleando | Sacar capas hasta que se lea; casi siempre 3 alcanzan |
-| "Se siente lento" | Attack largo | Recortar el pre-ataque; el transiente tiene que estar en los primeros ms |
-| "Molesta después de un rato" | Energía en 2-6 kHz | Bajar; esa banda fatiga rápido |
+| "It feels weak" | Attack without a transient | Add a short, bright click/crack layer |
+| "It has no weight" | Body without lows | Add sub or body at 60-150 Hz |
+| "It sounds like a library sample" | Generic or missing tail | A tail of its own, or reverb from the game's real space |
+| "It is confusing, it doesn't read" | Too many layers fighting | Remove layers until it reads; 3 is almost always enough |
+| "It feels slow" | Long attack | Trim the pre-attack; the transient has to be in the first ms |
+| "It gets annoying after a while" | Energy at 2-6 kHz | Lower it; that band fatigues fast |
 
 ## Layering
 
-Construir por función, no por acumulación. Un impacto potente típico:
+Build by function, not by accumulation. A typical powerful impact:
 
-1. **Sub** (40-80 Hz) — peso físico. Corto, 60-120 ms. En un handheld no se va a oír: no puede ser la única fuente de fuerza
-2. **Punch** (100-300 Hz) — el cuerpo que se percibe en cualquier speaker
-3. **Crack** (2-5 kHz) — la definición y el material
-4. **Tail** — el espacio
+1. **Sub** (40-80 Hz) — physical weight. Short, 60-120 ms. It will not be heard on a handheld: it cannot be the only source of force
+2. **Punch** (100-300 Hz) — the body that is perceived on any speaker
+3. **Crack** (2-5 kHz) — definition and material
+4. **Tail** — the space
 
-**Regla:** cada capa ocupa una banda distinta. Si dos capas pelean la misma banda, una sobra. Es el mismo principio de frequency allocation del audio bible, aplicado dentro de un solo sonido.
+**Rule:** each layer occupies a different band. If two layers fight over the same band, one is surplus. It is the same frequency allocation principle as the audio bible, applied inside a single sound.
 
-Cuatro capas es el techo práctico. Arriba de eso el sonido pierde legibilidad y ganás solo peso de archivo.
+Four layers is the practical ceiling. Beyond that the sound loses legibility and you only gain file weight.
 
-## Variación y anti-repetición
+## Variation and anti-repetition
 
-Un sonido sin variación se vuelve audible **como sonido** en vez de como evento. En eventos frecuentes eso pasa alrededor de los 20 minutos de juego.
+A sound without variation becomes audible **as a sound** instead of as an event. For frequent events that happens around 20 minutes into play.
 
-Las herramientas, de más a menos efectiva:
+The tools, from most to least effective:
 
-| Técnica | Cómo | Nota |
+| Technique | How | Note |
 |---|---|---|
-| **Variantes reales** | 4-8 grabaciones/renders distintos | La única que varía el timbre de verdad |
-| **Round-robin** | Recorrer variantes en orden, sin repetir la última | Le gana a random puro: random repite |
-| **Pitch randomization** | ±2% a ±4% | ±3% es variación; ±20% cambia el objeto |
-| **Volume randomization** | ±1 a ±2 dB | Sutil, siempre suma |
-| **Layer swapping** | Fijar el body, rotar attack y tail | Combinatorio: 3 attacks × 3 tails = 9 sonidos con 6 assets |
-| **Filtro aleatorio** | Cutoff ±10% | Último recurso, se nota poco |
+| **Real variants** | 4-8 different recordings/renders | The only one that truly varies the timbre |
+| **Round-robin** | Cycle through variants in order, never repeating the last one | Beats pure random: random repeats |
+| **Pitch randomization** | ±2% to ±4% | ±3% is variation; ±20% changes the object |
+| **Volume randomization** | ±1 to ±2 dB | Subtle, always helps |
+| **Layer swapping** | Fix the body, rotate attack and tail | Combinatorial: 3 attacks × 3 tails = 9 sounds from 6 assets |
+| **Random filter** | Cutoff ±10% | Last resort, barely noticeable |
 
-**Layer swapping es la de mejor relación resultado/costo** y la menos usada. Con 4 attacks, 2 bodies y 3 tails tenés 24 combinaciones desde 9 archivos.
+**Layer swapping has the best result/cost ratio** and is the least used. With 4 attacks, 2 bodies and 3 tails you get 24 combinations from 9 files.
 
-Si el evento es de altísima frecuencia y muchas dimensiones (footsteps sobre 6 superficies × 3 intensidades), la respuesta no es más variantes: es `/procedural-audio`.
+If the event is very high frequency with many dimensions (footsteps over 6 surfaces × 3 intensities), the answer is not more variants: it is `/procedural-audio`.
 
-## Estilización vs realismo
+## Stylization vs realism
 
-El sonido realista casi nunca es el sonido correcto. Un disparo real es un chasquido corto y poco impresionante; una puerta real suena a nada.
+The realistic sound is almost never the right sound. A real gunshot is a short, unimpressive crack; a real door sounds like nothing.
 
-Criterio: el efecto tiene que comunicar **la función en el gameplay**, no la física. Si el arma hace 40 de daño y la otra 90, tienen que sonar distintas en peso aunque sean el mismo calibre. La legibilidad le gana al realismo siempre que compiten.
+Criterion: the effect has to communicate **its function in gameplay**, not the physics. If one weapon does 40 damage and the other 90, they have to sound different in weight even if they are the same caliber. Legibility beats realism whenever they compete.
 
 ---
 
-## Proceso
+## Process
 
-1. **Definir la lectura** — en una frase, qué tiene que entender el jugador al escucharlo
-2. **Diseñar las capas** por función, con banda asignada a cada una
-3. **Definir la variación** — cuántas variantes, qué randomización, round-robin o no
-4. **Chequear contra el bible** — ¿respeta la paleta y la allocation de frecuencias?
-5. **Chequear en contexto** — un sonido nunca se juzga solo: con música, ambiente y otros 10 SFX encima
-6. **Escribir** — preguntar "¿Escribo el diseño a `<path>`?" antes de usar Write
+1. **Define the read** — in one sentence, what the player has to understand when hearing it
+2. **Design the layers** by function, with a band assigned to each one
+3. **Define the variation** — how many variants, what randomization, round-robin or not
+4. **Check against the bible** — does it respect the palette and the frequency allocation?
+5. **Check in context** — a sound is never judged alone: with music, ambience and 10 other SFX on top
+6. **Write** — ask "Shall I write the design to `<path>`?" before using Write
 
-### Chequeo en contexto
+### Check in context
 
-El error más caro del sound design es aprobar sonidos en aislamiento. Un efecto perfecto solo puede desaparecer en la mezcla o taparle el ataque a otro. Evaluar siempre con el resto sonando, y al volumen real de juego.
+The most expensive sound design mistake is approving sounds in isolation. An effect that is perfect on its own can disappear in the mix or mask another sound's attack. Always evaluate with everything else playing, and at real game volume.
 
 ---
 
 ## Verdict
 
-- **READY** — el sonido tiene lectura definida, capas por banda, plan de variación, y se validó en contexto
-- **CONCERNS** — está diseñado pero no se probó con el resto del mix, o la variación no alcanza para su frecuencia de uso
-- **BLOCKED** — no está claro qué evento representa o falta la dirección del audio bible
+- **READY** — the sound has a defined read, layers per band, a variation plan, and was validated in context
+- **CONCERNS** — it is designed but was not tested with the rest of the mix, or the variation is not enough for its frequency of use
+- **BLOCKED** — it is not clear which event it represents, or the audio bible direction is missing
 
 ## Anti-patterns
 
@@ -124,7 +124,7 @@ El error más caro del sound design es aprobar sonidos en aislamiento. Un efecto
 
 ## Next steps
 
-- `/audio-spec` para formalizar el contrato del evento (concurrencia, cooldown, prioridad)
-- `/procedural-audio` si el conteo de variantes se vuelve inmanejable
-- `/audio-mix` para ubicarlo en la jerarquía de buses
-- `/middleware-integration` para implementar el round-robin y la randomización en containers
+- `/audio-spec` to formalize the event contract (concurrency, cooldown, priority)
+- `/procedural-audio` if the variant count becomes unmanageable
+- `/audio-mix` to place it in the bus hierarchy
+- `/middleware-integration` to implement the round-robin and randomization in containers

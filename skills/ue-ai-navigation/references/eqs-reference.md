@@ -109,7 +109,7 @@ Checks line-of-sight between item and a context. Can be used to find covered pos
 |----------|------|-----|
 | `TraceFrom` | Context | Usually enemy actor context |
 | `TraceChannel` | Enum | Visibility, Camera, or custom |
-| `BoolMatch` | Bool | `true` = requires LoS; `false` = requires NO LoS (cover) |
+| `BoolMatch` | Bool | `true` = requires line of sight; `false` = requires no line of sight (cover) |
 | `TraceMode` | Enum | Navigation, Geometry, ByChannel |
 
 **Cover query**: `BoolMatch=false` (item must NOT be visible from enemy)

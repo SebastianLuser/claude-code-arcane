@@ -11,7 +11,7 @@ allowed-tools: Read, Bash
 
 ## Trigger
 
-When the user says "create ticket", "nuevo ticket", "crear ticket", or similar.
+When the user says "create ticket", "new ticket", "open a ticket", or similar.
 
 ## Workflow
 
@@ -37,7 +37,7 @@ When the user says "create ticket", "nuevo ticket", "crear ticket", or similar.
 
 ## Notes
 
-- Always write tickets in Spanish (the team's working language)
+- Write tickets in the language the user writes or asks for
 - Keep titles concise (under 80 characters)
 - Separate functional requirements from technical requirements
 - Technical enrichment happens AFTER ticket creation, not during

@@ -1,67 +1,67 @@
 ---
 name: cover-letter
-description: "Write concise, confident cover letters and application messages tailored to the company and the person who will read them. Triggers: cover letter, carta de presentacion, mensaje de aplicacion, application message, carta de motivacion, why I'm a fit."
+description: "Write concise, confident cover letters and application messages tailored to the company and the person who will read them. Triggers: cover letter, letter of introduction, application message, motivation letter, why I'm a fit."
 argument-hint: "[application-note | company + role]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, WebFetch, Task
 ---
 
-# Cover Letter - Mensaje de aplicación de élite
+# Cover Letter - A top-tier application message
 
-Escribís cover letters y mensajes de aplicación **concisos, seguros y custom** - que suenan a una persona que entendió el rol y la empresa, no a una plantilla. El objetivo: que el lector quiera leer el CV.
+You write **concise, confident and custom** cover letters and application messages - ones that sound like a person who understood the role and the company, not a template. The goal: make the reader want to read the CV.
 
 ## Inputs
 
-- **Rol y empresa** + el job description.
-- **Perfil base / maestro** (`01-Perfiles/`) para los logros y el ángulo.
-- **Research** de `04-Empresas/` y del contacto en `05-Contactos/` (a quién le escribís cambia el tono).
-- El **canal**: cover letter formal (campo del ATS), mensaje corto de LinkedIn/email, o párrafo de "why you" en un form.
+- **Role and company** + the job description.
+- **Base / master profile** (`01-Profiles/`) for the achievements and the angle.
+- **Research** from `04-Companies/` and on the contact in `05-Contacts/` (who you are writing to changes the tone).
+- The **channel**: formal cover letter (ATS field), short LinkedIn/email message, or a "why you" paragraph in a form.
 
-## Principios
+## Principles
 
-- **Una página máximo; idealmente 150-250 palabras** para mensajes, 250-350 para carta formal.
-- **El primer renglón gana o pierde.** Nada de "I am writing to apply for…". Abrí con un gancho específico: un logro relevante, un punto de conexión con la empresa, o por qué este rol te mueve.
-- **Mostrá fit, no historia.** 1-2 logros que mapean directo a lo que piden, con número.
-- **Específico de la empresa.** Una frase que demuestre que investigaste (producto, valor, problema que resuelven). Si la podés pegar en otra aplicación, no sirve.
-- **Confiado, no arrogante; cálido, no servil.** Ni "would be honored", ni "I'm the best candidate".
-- **CTA simple al final.** Disponibilidad / ganas de charlar, sin rogar.
+- **One page at most; ideally 150-250 words** for messages, 250-350 for a formal letter.
+- **The first line wins or loses.** No "I am writing to apply for…". Open with a specific hook: a relevant achievement, a point of connection with the company, or why this role moves you.
+- **Show fit, not history.** 1-2 achievements that map directly to what they ask for, with a number.
+- **Company-specific.** One sentence that shows you did the research (product, value, problem they solve). If you can paste it into another application, it does not work.
+- **Confident, not arrogant; warm, not servile.** Neither "would be honored" nor "I'm the best candidate".
+- **A simple CTA at the end.** Availability / interest in talking, without begging.
 
-## Estructura (carta formal)
+## Structure (formal letter)
 
-1. **Hook** - gancho específico (logro o conexión real).
-2. **Fit** - 1-2 logros mapeados a must-haves del JD, con métrica.
-3. **Empresa** - por qué *esta* empresa/rol (research real).
-4. **Cierre** - CTA breve + gracias.
+1. **Hook** - specific hook (achievement or a real connection).
+2. **Fit** - 1-2 achievements mapped to the JD's must-haves, with a metric.
+3. **Company** - why *this* company/role (real research).
+4. **Close** - brief CTA + thanks.
 
-## Estructura (mensaje corto / LinkedIn / email)
+## Structure (short message / LinkedIn / email)
 
-- Saludo personal (nombre del contacto si lo tenés).
-- 1 oración: quién sos + el logro más relevante.
-- 1 oración: por qué esta empresa/rol.
-- 1 oración: CTA (charlar / te dejo el CV).
+- Personal greeting (the contact's name if you have it).
+- 1 sentence: who you are + the most relevant achievement.
+- 1 sentence: why this company/role.
+- 1 sentence: CTA (chat / here's my CV).
 
-## Proceso
+## Process
 
-1. Leer JD + research. Identificar los 2 must-haves donde más brillás.
-2. Elegir formato según canal.
-3. Draftear. Después **cortar sin piedad** todo lo genérico.
-4. Generar 2 variantes de apertura si el usuario quiere elegir.
-5. **Review (regla drafter-reviewer, obligatorio si la carta va a una postulación concreta).** Lanzar el agente `cv-reviewer` de contexto fresco con el JD y el borrador inline; aplicar la Parte A e incorporar de la Parte B lo que corresponda. Una sola ronda. El primer renglón es lo que más gana con una lectura fresca: el que la escribió ya está convencido de su propio gancho. No aplica a mensajes cortos reutilizables de `07-Recursos/`.
-6. Guardar en la nota de aplicación (`03-Aplicaciones/`, sección cover letter) o en `07-Recursos/` si es reutilizable.
+1. Read the JD + research. Identify the 2 must-haves where you shine the most.
+2. Choose the format by channel.
+3. Draft. Then **cut ruthlessly** everything generic.
+4. Generate 2 alternative openings if the user wants to choose.
+5. **Review (drafter-reviewer rule, mandatory if the letter goes to a specific application).** Launch the fresh-context `cv-reviewer` agent with the JD and the draft inline; apply Part A and incorporate whatever fits from Part B. A single round. The first line is what gains the most from a fresh read: whoever wrote it is already convinced by their own hook. It does not apply to reusable short messages in `07-Resources/`.
+6. Save it in the application note (`03-Applications/`, cover letter section) or in `07-Resources/` if it is reusable.
 
-## Idioma
+## Language
 
-Inglés para roles internacionales; español si la empresa es hispanohablante. Espejá el idioma del JD ante la duda.
+Write it in the language the user asks for; when unsure, mirror the language of the JD. English is the usual default for international roles.
 
-## Anti-patrones (cortar siempre)
+## Anti-patterns (always cut)
 
-- "I am writing to express my interest in…" / "Por medio de la presente…".
-- Recitar el CV en prosa.
-- Adjetivos vacíos sin evidencia (passionate, hardworking, team player).
-- Párrafos genéricos que sirven para cualquier empresa.
-- Pedir disculpas o sonar desesperado.
+- "I am writing to express my interest in…" and its formulaic equivalents in other languages.
+- Reciting the CV in prose.
+- Empty adjectives without evidence (passionate, hardworking, team player).
+- Generic paragraphs that work for any company.
+- Apologizing or sounding desperate.
 
 ## Handoff
 
-Pedí aprobación (approval) antes de guardar la carta en la nota de aplicación o en `07-Recursos/`. Cuando la cover letter está READY y pasó el review del paso 5, el siguiente paso es `/cold-outreach` si hay un contacto al que escribirle directo.
+Ask for approval before saving the letter in the application note or in `07-Resources/`. When the cover letter is READY and has passed the review in step 5, the next step is `/cold-outreach` if there is a contact to write to directly.

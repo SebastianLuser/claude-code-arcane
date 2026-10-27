@@ -13,11 +13,11 @@ New mobile app (iOS+Android), rapid mobile POC, or mobile companion to an existi
 
 ## MANDATORY WORKFLOW
 
-**Antes de generar cualquier código, completar estos pasos en orden.**
+**Before generating any code, complete these steps in order.**
 
 ### Step 0: Gather Requirements
 
-Clarificar (o inferir del contexto si ya fue especificado):
+Clarify (or infer from context if already specified):
 
 1. **App name** (kebab-case + display name)
 2. **Bundle IDs:** `com.educabot.<app>` (iOS + Android)
@@ -26,18 +26,18 @@ Clarificar (o inferir del contexto si ya fue especificado):
 5. **Styling:** NativeWind (default) / Tamagui / plain StyleSheet
 6. **Platforms:** iOS + Android / single / + web
 
-Si el usuario ya especificó estos valores, saltar directamente al Step 1.
+If the user already specified these values, skip straight to Step 1.
 
-### Step 1: Implementar
+### Step 1: Implement
 
-Seguir: Workflow Decision → Navigation Decision → Dependency Baseline → Project Structure → Conventions.
+Follow: Workflow Decision → Navigation Decision → Dependency Baseline → Project Structure → Conventions.
 
-### Step 2: Verificar
+### Step 2: Verify
 
 ```bash
-npx expo start          # dev server arriba sin errores
-npx expo run:android    # compila (si hay emulador)
-npm run test            # Vitest/RNTL pasa
+npx expo start          # dev server up with no errors
+npx expo run:android    # builds (if there is an emulator)
+npm run test            # Vitest/RNTL passes
 ```
 
 ## Workflow & Navigation Decisions

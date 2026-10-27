@@ -1,94 +1,94 @@
 ---
 name: freelance-kickoff
-description: "Turn a won contract into an executable plan: break the scope into deliverables, write the acceptance criteria, and validate honestly whether what you promised fits the hours you quoted - before week five. Then hand off to the technical skills. Triggers: gane el proyecto, arrancar el contrato, kickoff, desarmar el alcance, criterios de aceptacion, me alcanzan las horas que cotice, planificar el proyecto freelance."
-argument-hint: "[nota de contrato | cliente]"
+description: "Turn a won contract into an executable plan: break the scope into deliverables, write the acceptance criteria, and validate honestly whether what you promised fits the hours you quoted - before week five. Then hand off to the technical skills. Triggers: I won the project, start the contract, kickoff, break down the scope, acceptance criteria, will the hours I quoted be enough, plan the freelance project."
+argument-hint: "[contract note | client]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, WebFetch, Task
 ---
 
-# Freelance Kickoff - Del contrato al plan
+# Freelance Kickoff - From contract to plan
 
-Ganaste el proyecto. Ahora hay que convertir la propuesta en algo ejecutable, y sobre todo **descubrir ahora y no en la semana 5** si lo que prometiste entra en las horas que cotizaste.
+You won the project. Now the proposal has to become something executable, and above all you have to **find out now and not in week 5** whether what you promised fits the hours you quoted.
 
-Rutas relativas al career workspace (`--workspace`, env `CAREER_WORKSPACE`, o `./career-workspace/`).
+Paths are relative to the career workspace (`--workspace`, env `CAREER_WORKSPACE`, or `./career-workspace/`).
 
-Contrato o cliente: `$ARGUMENTS`
+Contract or client: `$ARGUMENTS`
 
-## Por qué existe este paso
+## Why this step exists
 
-El resto del perfil te ayuda a conseguir el trabajo. Este es el primero que te ayuda a **hacerlo**, y existe porque el momento de mayor riesgo del freelance no es postularse: es la brecha entre lo que la propuesta dice y lo que el trabajo realmente pide.
+The rest of the profile helps you land the work. This is the first one that helps you **do it**, and it exists because the riskiest moment in freelance is not applying: it is the gap between what the proposal says and what the work really demands.
 
-Esa brecha se descubre siempre. La única variable es cuándo: acá, cuando todavía se puede renegociar, o en la semana 5, cuando ya es tu problema.
+That gap is always discovered. The only variable is when: here, while it can still be renegotiated, or in week 5, when it is already your problem.
 
 ## Inputs
 
-- **La nota del contrato** (`08-Contratos/`) y la propuesta que la originó (`03-Aplicaciones/`).
-- **El SOW o contrato firmado** si existe, y si no, avisar: sin alcance escrito no hay alcance.
-- La nota de `/client-screen`: lo que ahí quedó marcado como alcance difuso es exactamente lo que hay que cerrar ahora.
-- El perfil de `01-Perfiles/` para el piso de tarifa y la capacidad semanal.
+- **The contract note** (`08-Contracts/`) and the proposal it came from (`03-Applications/`).
+- **The SOW or signed contract** if there is one, and if not, warn: no written scope means no scope.
+- The `/client-screen` note: whatever was flagged there as fuzzy scope is exactly what has to be pinned down now.
+- The profile in `01-Profiles/` for the rate floor and the weekly capacity.
 
-## Proceso
+## Process
 
-### 1. Desarmar el alcance en entregables
+### 1. Break the scope down into deliverables
 
-Cada entregable: qué es, qué incluye, **qué no incluye**, y de qué depende. Las dependencias importan porque las del lado del cliente (accesos, contenido, decisiones, aprobaciones) son la causa número uno de proyectos que se estiran sin que sea tu culpa - y sin que te lo paguen.
+Each deliverable: what it is, what it includes, **what it does not include**, and what it depends on. Dependencies matter because the ones on the client's side (access, content, decisions, approvals) are the number one cause of projects that drag on without it being your fault - and without you getting paid for it.
 
-Lo que la propuesta decía en una línea acá se convierte en tres o cuatro items. Si no se puede desarmar, es que el alcance no está definido, y ese es el hallazgo.
+What the proposal said in one line turns into three or four items here. If it cannot be broken down, the scope is not defined, and that is the finding.
 
-### 2. Escribir los criterios de aceptación
+### 2. Write the acceptance criteria
 
-Por cada entregable: **cómo sabemos que está terminado**, en términos verificables.
+For each deliverable: **how we know it is done**, in verifiable terms.
 
-Sin esto, "terminado" lo define el cliente cuando quiera, y siempre está un poco más lejos. Es el mecanismo más barato que existe contra el scope creep, y casi nadie lo escribe.
+Without this, "done" is defined by the client whenever they like, and it is always a bit further away. It is the cheapest mechanism there is against scope creep, and almost nobody writes it.
 
-Si el usuario no sabe qué poner, la pregunta que lo desbloquea es: *"¿qué tendría que pasar para que el cliente lo apruebe sin pedir cambios?"*
+If the user does not know what to put, the question that unblocks them is: *"what would have to happen for the client to approve it without asking for changes?"*
 
-### 3. Estimar de verdad
+### 3. Estimate for real
 
-Usar `/estimate` por entregable. Sumar además lo que nunca entra en la estimación y siempre pasa: reuniones, rondas de revisión, ida y vuelta por accesos, setup del entorno.
+Use `/estimate` per deliverable. Also add what never makes it into the estimate and always happens: meetings, review rounds, back and forth over access, environment setup.
 
-### 4. La validación honesta (el paso que justifica el skill)
+### 4. The honest validation (the step that justifies the skill)
 
-Comparar el total estimado contra las **horas implícitas en lo cotizado** (monto acordado dividido tu tarifa objetivo).
+Compare the estimated total against the **hours implied by what was quoted** (agreed amount divided by your target rate).
 
-| Resultado | Qué hacer |
+| Result | What to do |
 |---|---|
-| Entra con margen | Seguir. Registrar el margen para no regalarlo después |
-| Entra justo | Seguir, avisando que cualquier imprevisto sale de tu bolsillo |
-| **No entra** | **Parar y decirlo con el número** |
+| Fits with margin | Go ahead. Record the margin so it does not get given away later |
+| Fits just barely | Go ahead, warning that any surprise comes out of your pocket |
+| **Does not fit** | **Stop and say so with the number** |
 
-Cuando no entra, las opciones reales son tres, y hay que ponerlas sobre la mesa antes de escribir una línea de código: **recortar alcance** al que cabe, **renegociar** el monto o el plazo con el desarme como evidencia, o **absorber la diferencia** como decisión consciente y registrada.
+When it does not fit, there are three real options, and they have to be put on the table before writing a line of code: **cut the scope** to what fits, **renegotiate** the amount or the deadline using the breakdown as evidence, or **absorb the difference** as a conscious, recorded decision.
 
-Lo que no es una opción es empezar y ver qué pasa. Eso ya sabemos cómo termina.
+What is not an option is starting and seeing what happens. We already know how that ends.
 
-Nunca maquillar la estimación para que cierre. Si al desarmarlo son 90 horas y cotizaste 40, el número es 90.
+Never dress up the estimate so it works out. If the breakdown says 90 hours and you quoted 40, the number is 90.
 
-### 5. Plan de ejecución
+### 5. Execution plan
 
-Secuenciar por dependencias, no por lo que da más ganas. Marcar el camino crítico y qué está bloqueado por el cliente. Definir milestones que coincidan con los pagos si el contrato los tiene: entregar tres cosas antes del primer cobro es financiar al cliente.
+Sequence by dependencies, not by what you feel like doing. Mark the critical path and what is blocked by the client. Define milestones that line up with the payments if the contract has them: delivering three things before the first payment is financing the client.
 
-### 6. Escribir y rutear
+### 6. Write and route
 
-Con approval, completar la nota de `08-Contratos/`: alcance acordado, alcance excluido, criterios de aceptación, milestones y estimación por entregable.
+With approval, fill in the `08-Contracts/` note: agreed scope, excluded scope, acceptance criteria, milestones and the estimate per deliverable.
 
-Después **rutear al trabajo técnico**, que ya existe en el repo:
+Then **route to the technical work**, which already exists in the repo:
 
-| Si el proyecto es | Seguí con |
+| If the project is | Continue with |
 |---|---|
-| Historias y tickets | `/create-stories`, `/create-epics` |
-| Backend, frontend, mobile | El perfil técnico que corresponda (`+backend-typescript`, `+frontend-react-vite`, ...) |
-| Algo sin especificar del lado del cliente | `/product-discovery` antes de codear |
-| Documentar lo que ya existe | `/reverse-document` |
+| Stories and tickets | `/create-stories`, `/create-epics` |
+| Backend, frontend, mobile | The matching technical profile (`+backend-typescript`, `+frontend-react-vite`, ...) |
+| Something unspecified on the client's side | `/product-discovery` before coding |
+| Documenting what already exists | `/reverse-document` |
 
-## Reglas
+## Rules
 
-- **Sin alcance escrito no se arranca.** Si no hay SOW ni propuesta con alcance, este skill produce el alcance propuesto y pide confirmarlo con el cliente antes de ejecutar.
-- **Nunca ajustar la estimación para que entre en lo cotizado.** El número es el número; la decisión es del usuario.
-- **Todo lo que no está en el alcance acordado va a "alcance excluido"**, explícito. Lo que no se escribe se discute después, y se discute gratis.
-- No inventar criterios de aceptación que el cliente no aceptó: si se proponen, se marcan como propuestos hasta que los confirme.
-- Sin guiones largos en el texto agregado a las notas.
+- **No written scope, no start.** If there is no SOW or proposal with a scope, this skill produces the proposed scope and asks for it to be confirmed with the client before executing.
+- **Never adjust the estimate to fit what was quoted.** The number is the number; the decision is the user's.
+- **Everything not in the agreed scope goes into "excluded scope"**, explicitly. What is not written down gets argued about later, and argued about for free.
+- Do not make up acceptance criteria the client did not accept: if they are proposed, they are marked as proposed until the client confirms them.
+- No long dashes in text added to notes.
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir en la nota del contrato. Kickoff COMPLETE cuando hay entregables, criterios de aceptación, estimación y el veredicto de si entra en lo cotizado. El siguiente paso es el skill técnico que corresponda para ejecutar, y `/freelance-deliver` para el seguimiento de horas y alcance mientras el proyecto corre.
+Ask for approval before writing to the contract note. Kickoff COMPLETE when there are deliverables, acceptance criteria, an estimate and the verdict on whether it fits what was quoted. The next step is the matching technical skill to execute, and `/freelance-deliver` to track hours and scope while the project runs.

@@ -6,9 +6,9 @@ argument-hint: "[sprint-N|milestone-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write
 ---
-## Commits de las ultimas 2 semanas
+## Commits from the last 2 weeks
 
-!`git log --oneline --since="2 weeks ago" 2>/dev/null || echo "sin commits"`
+!`git log --oneline --since="2 weeks ago" 2>/dev/null || echo "no commits"`
 
 ## Phase 1: Parse & Check Existing
 

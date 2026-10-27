@@ -1,8 +1,8 @@
 ---
 name: ue-naming-conventions
-description: "Asset naming y estructura de Content — Prefix_BaseAssetName_Variant_Suffix, prefijos por tipo de asset, layout de carpetas, identifiers seguros"
+description: "Asset naming and Content structure — Prefix_BaseAssetName_Variant_Suffix, prefixes per asset type, folder layout, safe identifiers"
 category: "gamedev"
-argument-hint: "[asset, folder o review]"
+argument-hint: "[asset, folder or review]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---

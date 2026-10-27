@@ -1,163 +1,163 @@
 ---
 name: adaptive-music
-description: "Musica interactiva para juegos: layering vertical, re-secuenciacion horizontal, stingers, reglas de transicion con sync points, y mapeo de estados de gameplay a musica. Usar para: musica adaptativa, sistema de musica dinamica, transiciones musicales, combat music."
+description: "Interactive music for games: vertical layering, horizontal re-sequencing, stingers, transition rules with sync points, and mapping gameplay states to music. Use for: adaptive music, dynamic music system, musical transitions, combat music."
 category: "audio"
 argument-hint: "[design|layers|transitions|stingers|map]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
-# adaptive-music — Sistemas de Música Interactiva
+# adaptive-music — Interactive Music Systems
 
-Diseña el sistema que decide **qué música suena cuándo** y **cómo pasa de un estado a otro sin que se escuche la costura**.
+Designs the system that decides **which music plays when** and **how it moves from one state to another without the seam being heard**.
 
-Esta skill diseña el sistema. El material musical lo escribe `/music-composition`; la implementación en middleware la baja `/middleware-integration`.
+This skill designs the system. The musical material is written by `/music-composition`; the middleware implementation is done by `/middleware-integration`.
 
-## Cuándo usar
+## When to use
 
-- Cuando la música tiene que responder a gameplay y no alcanza con reproducir un track
-- Cuando las transiciones entre estados (exploración → combate → victoria) suenan a corte
-- Cuando el loop fatiga y necesitás variación estructural, no otro track
-- Antes de que el compositor escriba una nota: el sistema condiciona cómo se compone
+- When the music has to respond to gameplay and playing a track is not enough
+- When transitions between states (exploration → combat → victory) sound like cuts
+- When the loop becomes fatiguing and you need structural variation, not another track
+- Before the composer writes a note: the system constrains how the music is composed
 
-## Modos
+## Modes
 
-| Modo | Qué hace |
+| Mode | What it does |
 |---|---|
-| `design` | El sistema completo: eje dominante, capas/segmentos, matriz, stingers, parámetros |
-| `layers` | Solo la arquitectura vertical: qué capas, qué rol, qué restricción compositiva |
-| `transitions` | Solo la matriz de transiciones con sync points y segmentos de transición |
-| `stingers` | Solo los stingers: armonía, sincronización, cooldown |
-| `map` | Solo la tabla estado de gameplay → música, con triggers e histéresis |
+| `design` | The full system: dominant axis, layers/segments, matrix, stingers, parameters |
+| `layers` | Only the vertical architecture: which layers, which role, which compositional constraint |
+| `transitions` | Only the transition matrix with sync points and transition segments |
+| `stingers` | Only the stingers: harmony, synchronization, cooldown |
+| `map` | Only the gameplay state → music table, with triggers and hysteresis |
 
 ## Input
 
-1. Leer audio bible, sección 2 (emotional targets por game state) y 6 (music direction). Si no existe, avisar y ofrecer `/audio-bible`
-2. Listar los estados de gameplay reales — del código o del GDD, no inventados
-3. Preguntar al usuario: middleware target (Wwise / FMOD / engine nativo / sin definir), budget de memoria para música, y si hay material compuesto o se parte de cero
+1. Read the audio bible, section 2 (emotional targets per game state) and 6 (music direction). If it does not exist, warn and offer `/audio-bible`
+2. List the real gameplay states — from the code or the GDD, not invented
+3. Ask the user: middleware target (Wwise / FMOD / native engine / undecided), memory budget for music, and whether there is composed material or it starts from scratch
 
 ---
 
-## Los dos ejes
+## The two axes
 
-Todo sistema de música adaptativa es una combinación de estos dos. Elegir cuál domina es la primera decisión.
+Every adaptive music system is a combination of these two. Choosing which one dominates is the first decision.
 
 ### Vertical — layering
 
-Un mismo bloque temporal, capas que entran y salen. Todas suenan sincronizadas porque comparten grid y armonía.
+The same time block, with layers that come in and out. They all play in sync because they share a grid and harmony.
 
-- **Fuerte en:** respuesta inmediata a parámetros continuos (proximidad de enemigo, salud, intensidad de combate)
-- **Débil en:** cambiar de material. Todo suena a la misma pieza
-- **Costo:** memoria (N stems simultáneos) y una restricción compositiva real — cada capa debe funcionar sola y en toda combinación
+- **Strong at:** immediate response to continuous parameters (enemy proximity, health, combat intensity)
+- **Weak at:** changing material. Everything sounds like the same piece
+- **Cost:** memory (N simultaneous stems) and a real compositional constraint — each layer must work alone and in every combination
 
-### Horizontal — re-secuenciación
+### Horizontal — re-sequencing
 
-Segmentos distintos que se concatenan según reglas, con transiciones en puntos musicalmente válidos.
+Different segments concatenated according to rules, with transitions at musically valid points.
 
-- **Fuerte en:** cambiar de material y de forma; estructura no repetitiva
-- **Débil en:** respuesta inmediata. La transición espera el sync point
-- **Costo:** latencia de respuesta (hasta un compás o más) y complejidad de reglas
+- **Strong at:** changing material and form; non-repetitive structure
+- **Weak at:** immediate response. The transition waits for the sync point
+- **Cost:** response latency (up to a bar or more) and rule complexity
 
-**Recomendación:** vertical para intensidad continua, horizontal para cambios de estado discretos. La mayoría de los juegos necesitan los dos: capas dentro de cada segmento, re-secuenciación entre segmentos.
+**Recommendation:** vertical for continuous intensity, horizontal for discrete state changes. Most games need both: layers inside each segment, re-sequencing between segments.
 
 ---
 
-## Sync points — dónde se puede cortar
+## Sync points — where you can cut
 
-Una transición suena bien o mal según **dónde** ocurre, no según el crossfade. De más responsivo a más musical:
+A transition sounds good or bad depending on **where** it happens, not on the crossfade. From most responsive to most musical:
 
-| Sync point | Latencia | Cuándo usarlo |
+| Sync point | Latency | When to use it |
 |---|---|---|
-| **Inmediato** | 0 | Emergencias (muerte del jugador). Suena a corte, y a veces eso está bien |
-| **Siguiente beat** | hasta 1 beat | Reacción rápida que igual respeta el pulso |
-| **Siguiente compás (bar)** | hasta 1 compás | El default sano para la mayoría de los casos |
-| **Siguiente grid** | variable | Cuando definís una grilla más gruesa (2 o 4 compases) |
-| **Exit cue** | hasta el fin del segmento | Máxima musicalidad, máxima latencia |
-| **Entry cue del destino** | — | Define desde dónde arranca el segmento destino |
+| **Immediate** | 0 | Emergencies (player death). It sounds like a cut, and sometimes that is fine |
+| **Next beat** | up to 1 beat | Fast reaction that still respects the pulse |
+| **Next bar** | up to 1 bar | The sane default for most cases |
+| **Next grid** | variable | When you define a coarser grid (2 or 4 bars) |
+| **Exit cue** | up to the end of the segment | Maximum musicality, maximum latency |
+| **Destination entry cue** | — | Defines where the destination segment starts from |
 
-**Segmento de transición** — un fragmento corto que se inserta entre origen y destino. Resuelve los saltos que ningún sync point salva: cambio de tonalidad, de tempo o de métrica. Es la herramienta que más mejora un sistema y la que menos se usa.
+**Transition segment** — a short fragment inserted between source and destination. It resolves the jumps no sync point can save: a change of key, tempo or meter. It is the tool that improves a system the most and the one used the least.
 
-En Wwise esto es la Transition Matrix del Music Switch Container: origen × destino, con Exit Cue del origen, Entry Cue del destino, fade in/out, y segmento de transición opcional. En FMOD el equivalente son transition regions y transition timelines. El concepto es el mismo; la nomenclatura cambia.
+In Wwise this is the Transition Matrix of the Music Switch Container: source × destination, with the source's Exit Cue, the destination's Entry Cue, fade in/out, and an optional transition segment. In FMOD the equivalent is transition regions and transition timelines. The concept is the same; the naming changes.
 
 ---
 
 ## Stingers
 
-Frases cortas que se superponen sin interrumpir la música de fondo, sincronizadas al grid para que no suenen encima del tiempo equivocado.
+Short phrases layered over the background music without interrupting it, synced to the grid so they do not land on the wrong beat.
 
-- Uso: eventos puntuales que merecen puntuación musical — descubrimiento, kill, item raro, fallo
-- **Deben compartir armonía con el material de fondo**, o sonar deliberadamente disonantes. Un stinger en la tonalidad equivocada es el error más audible del sistema
-- Sincronizar a beat o compás, nunca inmediato
-- Definir cooldown: dos stingers superpuestos suenan a error
-- Si el fondo modula, el stinger necesita versiones por tonalidad o tiene que ser tonalmente neutro (percusión, cluster, ruido)
+- Use: one-off events that deserve musical punctuation — discovery, kill, rare item, failure
+- **They must share harmony with the background material**, or sound deliberately dissonant. A stinger in the wrong key is the most audible error in the system
+- Sync to beat or bar, never immediate
+- Define a cooldown: two overlapping stingers sound like a bug
+- If the background modulates, the stinger needs per-key versions or has to be tonally neutral (percussion, cluster, noise)
 
 ---
 
-## Diseño del mapeo
+## Mapping design
 
-El entregable central: la tabla estado → música.
+The central deliverable: the state → music table.
 
-| Estado de gameplay | Trigger | Segmento / capas | Sync point | Notas |
+| Gameplay state | Trigger | Segment / layers | Sync point | Notes |
 |---|---|---|---|---|
-| Explore calm | default | bed + pulse | bar | loop indefinido |
-| Explore alert | enemigo a <30 m | + harmony | beat | vuelve a calm con 5 s de histéresis |
-| Combat | combate iniciado | segmento combat, todas las capas | bar | |
-| Combat low health | HP < 25% | + intensity, filtro | beat | |
-| Victory | combate resuelto | stinger + segmento victory | exit cue | one-shot, vuelve a explore |
-| Death | HP = 0 | inmediato, corte | inmediato | |
+| Explore calm | default | bed + pulse | bar | indefinite loop |
+| Explore alert | enemy at <30 m | + harmony | beat | returns to calm with 5 s of hysteresis |
+| Combat | combat started | combat segment, all layers | bar | |
+| Combat low health | HP < 25% | + intensity, filter | beat | |
+| Victory | combat resolved | stinger + victory segment | exit cue | one-shot, returns to explore |
+| Death | HP = 0 | immediate, cut | immediate | |
 
-**Parámetros continuos** aparte: qué RTPC/parámetro maneja qué, con rango normalizado y curva.
+**Continuous parameters** separately: which RTPC/parameter drives what, with normalized range and curve.
 
-| Parámetro | Rango | Controla | Curva |
+| Parameter | Range | Controls | Curve |
 |---|---|---|---|
-| `combat_intensity` | 0-1 | volumen de capa intensity | log |
-| `player_health` | 0-1 | filtro low-pass sobre el bus música | lineal |
+| `combat_intensity` | 0-1 | intensity layer volume | log |
+| `player_health` | 0-1 | low-pass filter on the music bus | linear |
 
 ---
 
-## Histéresis — el detalle que rompe los sistemas
+## Hysteresis — the detail that breaks systems
 
-Un estado que se calcula por umbral (`enemigo a <30 m`) va a oscilar cuando el jugador camine en el borde. El resultado es música entrando y saliendo cada segundo.
+A state computed from a threshold (`enemy at <30 m`) will oscillate when the player walks along the edge. The result is music coming in and out every second.
 
-Toda transición basada en umbral necesita:
-- **Umbrales distintos por dirección** — entra a 30 m, sale a 40 m
-- **Tiempo mínimo en estado** — no se puede salir antes de N segundos
-- **Debounce del trigger** — la condición tiene que sostenerse antes de contar
+Every threshold-based transition needs:
+- **Different thresholds per direction** — enters at 30 m, exits at 40 m
+- **Minimum time in state** — it cannot exit before N seconds
+- **Trigger debounce** — the condition has to hold before it counts
 
-Sin esto, el sistema funciona en el editor y falla con un jugador real.
-
----
-
-## Enfoques generativos
-
-Cuando la variación por capas y segmentos no alcanza:
-
-- **Selección estocástica de capas/segmentos** — la variación sale de qué combinación suena. El más barato y controlable; empezar acá siempre
-- **Cadenas de Markov** — melodía estocástica entrenada sobre material propio. Preserva idioma, no genera estructura
-- **L-systems / gramáticas recursivas** — generan estructura jerárquica por reescritura de reglas. Complemento de Markov, que no tiene forma
-- **Restricciones armónicas** — capa de validación sobre lo generado: el generador propone, las reglas de función y voice leading filtran
-
-La generación de notas en tiempo real tiene un techo de calidad y un riesgo de que suene mal en producción que la selección de material pregrabado no tiene. Justificar antes de ir por ahí.
+Without this, the system works in the editor and fails with a real player.
 
 ---
 
-## Proceso
+## Generative approaches
 
-1. **Listar estados reales** del gameplay, con sus triggers exactos
-2. **Elegir el eje dominante** (vertical / horizontal / mixto) y justificarlo contra el budget
-3. **Definir capas o segmentos** y la restricción compositiva que impone al compositor
-4. **Llenar la matriz de transiciones** con sync points, y marcar dónde hace falta segmento de transición
-5. **Definir stingers** con su armonía y cooldown
-6. **Definir parámetros continuos** con rango y curva
-7. **Agregar histéresis** a toda transición por umbral
-8. **Presentar** al usuario y preguntar "¿Escribo el diseño a `<path>`?" antes de usar Write
+When variation through layers and segments is not enough:
+
+- **Stochastic selection of layers/segments** — variation comes from which combination plays. The cheapest and most controllable; always start here
+- **Markov chains** — stochastic melody trained on your own material. Preserves idiom, does not generate structure
+- **L-systems / recursive grammars** — generate hierarchical structure by rule rewriting. A complement to Markov, which has no form
+- **Harmonic constraints** — a validation layer over what is generated: the generator proposes, function and voice-leading rules filter
+
+Real-time note generation has a quality ceiling and a risk of sounding bad in production that selecting pre-recorded material does not have. Justify it before going that way.
+
+---
+
+## Process
+
+1. **List the real gameplay states**, with their exact triggers
+2. **Choose the dominant axis** (vertical / horizontal / mixed) and justify it against the budget
+3. **Define layers or segments** and the compositional constraint they impose on the composer
+4. **Fill in the transition matrix** with sync points, and mark where a transition segment is needed
+5. **Define stingers** with their harmony and cooldown
+6. **Define continuous parameters** with range and curve
+7. **Add hysteresis** to every threshold transition
+8. **Present** it to the user and ask "Should I write the design to `<path>`?" before using Write
 
 ---
 
 ## Verdict
 
-- **READY** — la matriz está completa, todo umbral tiene histéresis, los stingers tienen armonía definida, y el compositor sabe qué restricción respetar
-- **CONCERNS** — el diseño existe pero hay transiciones sin sync point, umbrales sin histéresis, o el budget de memoria no se verificó contra el número de stems
-- **BLOCKED** — los estados de gameplay no están definidos, o no hay dirección musical de la cual derivar los emotional targets
+- **READY** — the matrix is complete, every threshold has hysteresis, the stingers have defined harmony, and the composer knows which constraint to respect
+- **CONCERNS** — the design exists but there are transitions without a sync point, thresholds without hysteresis, or the memory budget was not checked against the number of stems
+- **BLOCKED** — the gameplay states are not defined, or there is no music direction to derive the emotional targets from
 
 ## Anti-patterns
 
@@ -165,7 +165,7 @@ La generación de notas en tiempo real tiene un techo de calidad y un riesgo de 
 
 ## Next steps
 
-- `/music-composition` para escribir el material respetando las restricciones de capas
-- `/middleware-integration` para implementar la matriz en Wwise/FMOD
-- `/audio-mix` para el ducking entre música y diálogo
-- `/audio-audit` para verificar memoria y voice count del sistema en runtime
+- `/music-composition` to write the material respecting the layer constraints
+- `/middleware-integration` to implement the matrix in Wwise/FMOD
+- `/audio-mix` for ducking between music and dialogue
+- `/audio-audit` to verify the system's memory and voice count at runtime

@@ -18,28 +18,28 @@ metadata:
 
 ## MANDATORY WORKFLOW
 
-**Antes de recomendar o implementar cualquier estrategia de auth, completar estos pasos en orden.**
+**Before recommending or implementing any auth strategy, complete these steps in order.**
 
 ### Step 0: Gather Requirements
 
-Clarificar (o inferir del contexto si ya fue especificado):
+Clarify (or infer from context if already specified):
 
-1. **Stack:** Go + TS / pure TS / otro
-2. **¿Auth nueva o migración de existente?** (si es migración, revisar implementación actual)
-3. **¿Multi-tenant?** → define si necesita tenant scope en tokens y middleware
-4. **¿OAuth provider externo** (Google, GitHub, etc.) **o auth propio?**
-5. **¿MFA requerido?** ¿Para todos o solo roles admin/privilegiados?
+1. **Stack:** Go + TS / pure TS / other
+2. **New auth or migrating an existing one?** (if it is a migration, review the current implementation)
+3. **Multi-tenant?** → decides whether tokens and middleware need a tenant scope
+4. **External OAuth provider** (Google, GitHub, etc.) **or in-house auth?**
+5. **MFA required?** For everyone or only admin/privileged roles?
 
-Si el usuario ya especificó estos valores, saltar directamente al Step 1.
+If the user already specified these values, jump straight to Step 1.
 
-### Step 1: Recomendar estrategia
+### Step 1: Recommend a strategy
 
-Usar las tablas de OAuth / JWT / Authorization más abajo.
-Elegir el modelo correcto para el contexto. Explicar en 1-2 oraciones por qué.
+Use the OAuth / JWT / Authorization tables below.
+Pick the right model for the context. Explain why in 1-2 sentences.
 
-### Step 2: Implementar + Verificar
+### Step 2: Implement + Verify
 
-Implementar. Al terminar, validar contra el Checklist al final de este documento.
+Implement. When done, validate against the Checklist at the end of this document.
 
 ---
 

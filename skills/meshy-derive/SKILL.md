@@ -1,47 +1,47 @@
 ---
 name: meshy-derive
-description: "Deriva targets (FBX para Unity/UE5, GLB web optimizado, blend, STL) desde el master GLB de un asset. Usa convert (1 credito) o gltf-transform (gratis), nunca regenera. Usar para: exportar asset, target unity, target web, optimizar glb, lod web."
+description: "Derives targets (FBX for Unity/UE5, optimized web GLB, blend, STL) from an asset's master GLB. Uses convert (1 credit) or gltf-transform (free), never regenerates. Use for: export asset, unity target, web target, optimize glb, web lod."
 category: "gamedev"
 argument-hint: "<slug> [game|web|edit|print|all]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-# meshy-derive — Master a targets
+# meshy-derive — Master to targets
 
-Todos los targets salen del `master.glb`. **Nunca se regenera desde el prompt** — eso son 20-30 creditos para algo que cuesta 1 o 0.
+Every target comes from `master.glb`. **Never regenerate from the prompt** — that is 20-30 credits for something that costs 1 or 0.
 
 ## Input
 
-- `<slug>` (requerido). Sin argumento → mostrar el uso y parar.
-- Target (opcional, default `all`): `game` | `web` | `edit` | `print` | `all`.
+- `<slug>` (required). No argument → show usage and stop.
+- Target (optional, default `all`): `game` | `web` | `edit` | `print` | `all`.
 
 ---
 
-## Phase 1: Validar el master
+## Phase 1: Validate the master
 
-- `assets/3d/<slug>/master.glb` tiene que existir. Si no, parar: "Corre `/meshy-generate <slug>` primero."
-- Leer `assets/3d/<slug>/meshy.json`. Si el target pedido ya esta en `derived[]` y el archivo existe en disco, **no rehacerlo**: reportarlo y parar.
+- `assets/3d/<slug>/master.glb` must exist. If not, stop: "Run `/meshy-generate <slug>` first."
+- Read `assets/3d/<slug>/meshy.json`. If the requested target is already in `derived[]` and the file exists on disk, **do not redo it**: report it and stop.
 
-El master es inmutable. Ninguna fase de esta skill lo escribe.
+The master is immutable. No phase of this skill writes it.
 
 ---
 
-## Phase 2: Elegir la herramienta
+## Phase 2: Pick the tool
 
-| Target | Salida | Como | Creditos |
+| Target | Output | How | Credits |
 |---|---|---|---|
 | `game` | `targets/game.fbx` | `mcp__meshy__convert` -> `fbx` | 1 |
 | `edit` | `targets/edit.blend` | `mcp__meshy__convert` -> `blend` | 1 |
-| `print` | `targets/print.stl` (`.3mf` si multicolor) | `mcp__meshy__convert` | 1 |
+| `print` | `targets/print.stl` (`.3mf` if multicolor) | `mcp__meshy__convert` | 1 |
 | `web` | `targets/web.glb` | `npx gltf-transform` | **0** |
 
-Un solo `game.fbx` sirve para Unity y UE5. No generar uno por engine.
+A single `game.fbx` works for both Unity and UE5. Do not generate one per engine.
 
-**Nunca usar `remesh` (5) donde `convert` (1) alcanza.** `remesh` cambia topologia; no es un conversor de formato. Y nunca usar `remesh` para LODs de web: `gltf-transform` hace decimation, meshopt y KTX2 en local y gratis.
+**Never use `remesh` (5) where `convert` (1) is enough.** `remesh` changes topology; it is not a format converter. And never use `remesh` for web LODs: `gltf-transform` does decimation, meshopt and KTX2 locally and for free.
 
 ---
 
-## Phase 3A: Web — gratis, local
+## Phase 3A: Web — free, local
 
 ```bash
 npx --yes @gltf-transform/cli optimize \
@@ -50,70 +50,70 @@ npx --yes @gltf-transform/cli optimize \
   --simplify --texture-compress ktx2 --compress draco
 ```
 
-Presupuesto: ≤15k tris, texturas 1024. Verificar el resultado:
+Budget: ≤15k tris, 1024 textures. Check the result:
 
 ```bash
 npx --yes @gltf-transform/cli inspect assets/3d/<slug>/targets/web.glb
 ```
 
-Reportar tris y tamaño finales. Si queda por encima del presupuesto, bajar con `--simplify-ratio` antes de dar por bueno — no aceptar el default en silencio.
+Report the final tris and size. If it is over budget, lower it with `--simplify-ratio` before calling it done — do not silently accept the default.
 
-Cero creditos: esta fase no necesita confirmacion de gasto.
+Zero credits: this phase needs no spend confirmation.
 
-## Phase 3B: convert — 1 credito por target
+## Phase 3B: convert — 1 credit per target
 
-Cada `convert` gasta. Mostrar al usuario **la lista completa de targets y el total** en un solo mensaje y pedir una confirmacion para todo el lote:
+Every `convert` spends. Show the user **the full list of targets and the total** in a single message and ask for one confirmation for the whole batch:
 
-> `game` + `edit` = 2 creditos. Balance actual: N.
+> `game` + `edit` = 2 credits. Current balance: N.
 
-Con `all`, hacer web primero (gratis) y despues los `convert` — asi el usuario ve un resultado antes de aprobar gasto.
+With `all`, do web first (free) and then the `convert` calls — that way the user sees a result before approving any spend.
 
-Pollear con `mcp__meshy__get_task_status`, bajar con `mcp__meshy__download_model`.
+Poll with `mcp__meshy__get_task_status`, download with `mcp__meshy__download_model`.
 
 ---
 
-## Phase 4: Ejes y escala
+## Phase 4: Axes and scale
 
-Verificar una vez por asset y **anotarlo en el ledger** para no volver a pensarlo:
+Check once per asset and **record it in the ledger** so nobody has to think about it again:
 
-| Destino | Convencion |
+| Destination | Convention |
 |---|---|
-| GLB | Y-up, metros |
-| Unity | Y-up, 1 unidad = 1 m |
-| UE5 | Z-up, 1 unidad = 1 cm — rotacion + factor 100 al importar |
-| Blender | Z-up, metros |
+| GLB | Y-up, meters |
+| Unity | Y-up, 1 unit = 1 m |
+| UE5 | Z-up, 1 unit = 1 cm — rotation + factor 100 on import |
+| Blender | Z-up, meters |
 
-El FBX se importa igual en los dos engines; lo que cambia es la config de import, no el archivo.
+The FBX imports the same way in both engines; what changes is the import config, not the file.
 
-**Rigging**: si el asset esta rigueado, el esqueleto de Meshy no es el mannequin de UE5 — el retargeting es manual. En UE5, los static meshes van a Nanite y no necesitan LODs; los skeletal meshes si.
-
----
-
-## Phase 5: Actualizar el ledger
-
-Agregar cada target a `derived[]` en `meshy.json`, sumar los creditos de los `convert` a `tasks[]` y a `credits_total`. **En el mismo turno.** Mostrar el diff del ledger y **pedir aprobacion antes de escribir**.
-
-Verificar LFS sobre los archivos nuevos (`git check-attr filter`).
+**Rigging**: if the asset is rigged, Meshy's skeleton is not the UE5 mannequin — retargeting is manual. In UE5, static meshes go to Nanite and do not need LODs; skeletal meshes do.
 
 ---
 
-## Phase 6: Resumen
+## Phase 5: Update the ledger
 
-Reportar: targets generados, creditos gastados reales (delta de `check_balance`), tris/tamaño del web target, y que quedo sin hacer.
+Add each target to `derived[]` in `meshy.json`, add the `convert` credits to `tasks[]` and to `credits_total`. **In the same turn.** Show the ledger diff and **ask for approval before writing**.
+
+Check LFS on the new files (`git check-attr filter`).
+
+---
+
+## Phase 6: Summary
+
+Report: targets generated, actual credits spent (delta from `check_balance`), tris/size of the web target, and what was left undone.
 
 **Verdict:**
-- **COMPLETE** — todos los targets pedidos en disco y en el ledger.
-- **PARTIAL** — alguno fallo o el usuario no aprobo el gasto. Decir cual y por que.
-- **SKIPPED** — ya existian, no se gasto nada.
+- **COMPLETE** — every requested target is on disk and in the ledger.
+- **PARTIAL** — one failed or the user did not approve the spend. Say which one and why.
+- **SKIPPED** — they already existed, nothing was spent.
 
 ## Next Steps
 
-- `/asset-audit` para validar naming, budgets y formatos contra los standards
-- `/meshy-print <slug>` si ademas va a impresion (tiene su propio flujo de printability)
-- `/blender-context` si el derivado `.blend` necesita limpieza: la topologia que sale de Meshy no
-  esta pensada para deformar, y las UVs suelen necesitar rehacerse. Ahi siguen `/blender-modeling`,
-  `/blender-materials` y `/blender-export` con su validador de glTF
+- `/asset-audit` to validate naming, budgets and formats against the standards
+- `/meshy-print <slug>` if it also goes to print (it has its own printability flow)
+- `/blender-context` if the derived `.blend` needs cleanup: the topology Meshy produces is not
+  built to deform, and the UVs usually need redoing. From there, `/blender-modeling`,
+  `/blender-materials` and `/blender-export` with its glTF validator
 
 ---
 
-> Presupuestos, estructura de `targets/` y formato del ledger: `.claude/rules/meshy-files.md`. Tabla de creditos completa: `.claude/rules/meshy-assets.md`.
+> Budgets, `targets/` structure and ledger format: `.claude/rules/meshy-files.md`. Full credit table: `.claude/rules/meshy-assets.md`.

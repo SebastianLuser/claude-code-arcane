@@ -6,20 +6,20 @@ tags: []
 
 # {{date:YYYY-MM-DD}}
 
-Dump del día: [[{{date:YYYY-MM-DD}} dump]]
+Day's dump: [[{{date:YYYY-MM-DD}} dump]]
 
-## Qué pasó
+## What happened
 
-<Síntesis en 3 a 5 líneas, escrita por /review-dump a partir del dump. Hechos, no interpretación.>
+<Synthesis in 3 to 5 lines, written by /review-dump from the dump. Facts, not interpretation.>
 
-## Notas creadas
+## Notes created
 
-<Links a las notas que salieron del dump de hoy.>
+<Links to the notes that came out of today's dump.>
 
-## Tareas del día
+## Today's tasks
 
-<Tareas que quedaron en este día, con su estado real. Las no hechas quedan como `- [-]`, no se mueven.>
+<Tasks that stayed on this day, with their real status. The ones not done stay as `- [-]`, they are not moved.>
 
-## Reflexión
+## Reflection
 
-<Esta sección la escribe el usuario. Claude no la toca.>
+<The user writes this section. Claude does not touch it.>

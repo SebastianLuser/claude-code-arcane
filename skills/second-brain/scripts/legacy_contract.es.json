@@ -1,0 +1,71 @@
+{
+  "about": "The second brain's vault contract before it moved to English: old name -> new name. Read by migrate_vault.py and its tests.",
+  "note_headings": {
+    "## Por qué me importa": "## Why it matters",
+    "## Relacionado": "## Related",
+    "## Fuente": "## Source",
+    "## Resumen": "## Summary",
+    "## Contenido": "## Content",
+    "## Estado actual": "## Current status",
+    "## Notas": "## Notes",
+    "## Historial": "## History",
+    "## Qué pasó": "## What happened",
+    "## Notas creadas": "## Notes created",
+    "## Tareas del día": "## Today's tasks",
+    "## Reflexión": "## Reflection",
+    "## Temas de la semana": "## Themes of the week",
+    "## Hilos abiertos": "## Open threads",
+    "## Tareas: hechas y no hechas": "## Tasks: done and not done",
+    "## Notas que crecieron": "## Notes that grew",
+    "## Patrones": "## Patterns",
+    "## Logros": "## Achievements",
+    "## Ideas para adelante": "## Ideas going forward",
+    "## Salud del vault": "## Vault health",
+    "# Contexto reciente": "# Recent context",
+    "## Dónde estoy": "## Where I am",
+    "## Cambió en los últimos días": "## Changed in the last few days",
+    "## Tareas vivas": "## Live tasks",
+    "## Antes de explorar un repo, consultá su grafo": "## Before exploring a repo, query its graph",
+    "## Qué va en el vault y qué va en el repo": "## What goes in the vault and what goes in the repo"
+  },
+  "claude_md_headings": {
+    "## Quién soy": "## Who I am",
+    "## Rutas": "## Paths",
+    "## Estructura": "## Structure",
+    "## Contrato de frontmatter": "## Frontmatter contract",
+    "### `status`: madurez de la nota": "### `status`: note maturity",
+    "## Reglas de link": "## Link rules",
+    "## Tareas": "## Tasks",
+    "## Qué puede hacer Claude": "## What Claude can do",
+    "## Qué no puede hacer Claude": "## What Claude cannot do",
+    "## Plugins instalados": "## Installed plugins",
+    "## Quién escribe qué": "## Who writes what",
+    "## Uso desde otros proyectos": "## Use from other projects"
+  },
+  "claude_md_values": {
+    "(no usa)": "(unused)",
+    "activo | pausado | cerrado": "active | paused | closed",
+    "activo \\| pausado \\| cerrado": "active \\| paused \\| closed"
+  },
+  "clip_labels": {
+    "**Por qué lo guardé:**": "**Why I saved it:**"
+  },
+  "project_status": {
+    "activo": "active",
+    "pausado": "paused",
+    "cerrado": "closed"
+  },
+  "base_labels": {
+    "Madurez": "Maturity",
+    "Dias sin tocar": "Days untouched",
+    "Modificada": "Modified",
+    "Semillas que no crecieron": "Seeds that did not grow",
+    "Contradicciones abiertas": "Open contradictions",
+    "Tocado esta semana": "Touched this week",
+    "Conocimiento por madurez": "Knowledge by maturity",
+    "Proyectos activos": "Active projects"
+  },
+  "base_identifiers": {
+    "dias_sin_tocar": "days_untouched"
+  }
+}

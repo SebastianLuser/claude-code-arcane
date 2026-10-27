@@ -1,29 +1,29 @@
 #!/usr/bin/env python3
 """
-Registro y trazabilidad del career workspace: empleo y freelance en un solo lugar.
+Registry and traceability for the career workspace: jobs and freelance in one place.
 
-Contesta la pregunta que grepear a mano no contesta bien: "¿ya me postule aca?".
-Y exporta todo a CSV para mirarlo en una planilla.
+Answers the question that grepping by hand answers badly: "did I already apply here?".
+And exports everything to CSV to look at in a spreadsheet.
 
-La regla que sostiene todo esto: **las notas son la fuente de verdad y el CSV se
-deriva de ellas**. No hay una segunda base que mantener sincronizada, porque una
-segunda base diverge en dos semanas y despues no sabes cual miente. Mismo flujo
-unidireccional que el dedup de job-scrape: seen_jobs -> nota -> vista.
+The rule behind all of this: **the notes are the source of truth and the CSV is
+derived from them**. There is no second database to keep in sync, because a
+second database drifts within two weeks and then nobody knows which one lies.
+Same one-way flow as job-scrape's dedup: seen_jobs -> note -> view.
 
-Lee tres tipos de nota, sin importar que perfil las creo:
-  tipo: aplicacion  (03-Aplicaciones/, +job-hunt)
-  tipo: freelance   (03-Aplicaciones/, +freelance)
-  tipo: contrato    (08-Contratos/, +freelance)
+Reads three note types, no matter which profile created them:
+  type: application  (03-Applications/, +job-hunt)
+  type: freelance    (03-Applications/, +freelance)
+  type: contract     (08-Contracts/, +freelance)
 
-Uso:
+Usage:
   python career_registry.py check "Acme"
   python career_registry.py check https://www.linkedin.com/jobs/view/123
-  python career_registry.py export --csv registro.csv
+  python career_registry.py export --csv registry.csv
   python career_registry.py stats
   python career_registry.py audit
 
-Todo es read-only salvo `export --csv`, que escribe el archivo que le pidas.
-Solo stdlib. Compatible con Python 3.9.
+Everything is read-only except `export --csv`, which writes the file you ask for.
+Stdlib only. Compatible with Python 3.9.
 """
 
 from __future__ import annotations
@@ -40,55 +40,59 @@ from datetime import date, datetime
 from pathlib import Path
 
 DEFAULT_WORKSPACE = "career-workspace"
-APPLICATIONS_DIR = "03-Aplicaciones"
-CONTRACTS_DIR = "08-Contratos"
+APPLICATIONS_DIR = "03-Applications"
+CONTRACTS_DIR = "08-Contracts"
+# The applications folder of the pre-English layout, from the pack migrate_workspace.py uses.
+with open(Path(__file__).with_name("legacy_contract.es.json"), encoding="utf-8") as _pack:
+    LEGACY_APPLICATIONS_DIR = next(old for old, new in json.load(_pack)["folders"].items()
+                                   if new == APPLICATIONS_DIR)
 SEEN_JOBS = os.path.join("tools", "job_scraper", "seen_jobs.json")
 
-KNOWN_TIPOS = ("aplicacion", "freelance", "contrato")
+KNOWN_TYPES = ("application", "freelance", "contract")
 
-# Estados abiertos por tipo: los que todavia esperan algo del otro lado.
+# Open statuses per type: the ones still waiting on the other side.
 OPEN_STATES = {
-    "aplicacion": ("interesado", "aplicado", "entrevista", "oferta"),
-    "freelance": ("interesado", "screeneado", "propuesta_enviada",
-                  "en_conversacion", "contrato_activo"),
-    "contrato": ("activo", "pausado"),
+    "application": ("interested", "applied", "interviewing", "offer"),
+    "freelance": ("interested", "screened", "proposal_sent",
+                  "in_conversation", "contract_active"),
+    "contract": ("active", "paused"),
 }
-# Estados que significan "esto ya se envio" - los que importan para no repetir.
-SENT_STATES = ("aplicado", "entrevista", "oferta", "contratado", "rechazado",
-               "sin_respuesta", "declinada", "propuesta_enviada",
-               "en_conversacion", "contrato_activo", "entregado",
-               "ganado_cerrado", "disputa")
+# Statuses that mean "this was already sent" - the ones that matter to avoid repeating.
+SENT_STATES = ("applied", "interviewing", "offer", "hired", "rejected",
+               "no_response", "declined", "proposal_sent",
+               "in_conversation", "contract_active", "delivered",
+               "won_closed", "disputed")
 
 STALE_DAYS = 21
 
-# Sufijos legales que no distinguen una empresa de otra. Mismo criterio que el
-# job_key del dedup, para que las dos herramientas coincidan.
+# Legal suffixes that do not tell one company from another. Same rule as the
+# dedup job_key, so both tools agree.
 LEGAL_SUFFIXES = ("inc", "llc", "ltd", "sa", "srl", "sas", "gmbh", "bv", "co",
                   "corp", "company", "sl", "spa", "plc", "ag", "oy", "ab")
 
-CSV_COLUMNS = ("tipo", "contraparte", "titulo", "estado", "abierto", "plataforma",
-               "match_score", "riesgo_cliente", "perfil", "bid_o_monto",
-               "costo_postulacion", "fecha_envio", "fecha_actualizacion",
-               "dias_sin_movimiento", "link_oferta", "nota")
+CSV_COLUMNS = ("type", "counterpart", "title", "status", "open", "platform",
+               "match_score", "client_risk", "profile", "bid_or_amount",
+               "application_cost", "sent_date", "updated",
+               "days_idle", "posting_url", "note")
 
 
 # --------------------------------------------------------------------------- #
-# Lectura de notas
+# Reading notes
 # --------------------------------------------------------------------------- #
 
 def fold(text: str) -> str:
-    """Minusculas sin acentos, para comparar 'Tecnologia' con 'tecnología'."""
+    """Lowercase without accents, to compare 'Zurich' with 'Zürich'."""
     decomposed = unicodedata.normalize("NFD", (text or "").lower())
     return "".join(c for c in decomposed if unicodedata.category(c) != "Mn")
 
 
 def slug(text: str) -> str:
     """
-    Nombre comparable: sin acentos, sin puntuacion, sin sufijo legal.
+    Comparable name: no accents, no punctuation, no legal suffix.
 
-    Los puntos se borran ANTES de tokenizar, no se cambian por espacios: "S.A."
-    tiene que colapsar a "sa" para que el sufijo legal se reconozca. Partiendolo
-    quedaba "s" y "a", ninguno esta en la lista, y "Globex S.A." no matcheaba con
+    Dots are removed BEFORE tokenizing, not turned into spaces: "S.A." has to
+    collapse to "sa" for the legal suffix to be recognized. Splitting it left
+    "s" and "a", neither is in the list, and "Globex S.A." did not match
     "Globex".
     """
     base = re.sub(r"\.", "", fold(text))
@@ -99,11 +103,11 @@ def slug(text: str) -> str:
 
 def parse_frontmatter(text: str):
     """
-    Frontmatter YAML plano: `clave: valor` y listas en bloque.
+    Flat YAML frontmatter: `key: value` and block lists.
 
-    No usa pyyaml porque los scripts de skill corren sin instalar nada. Soporta
-    lo que los templates del workspace realmente usan; cualquier cosa mas
-    exotica se ignora en vez de reventar.
+    Does not use pyyaml because skill scripts run without installing anything.
+    Supports what the workspace templates actually use; anything more exotic
+    is ignored instead of blowing up.
     """
     if not text.startswith("---"):
         return {}
@@ -117,8 +121,8 @@ def parse_frontmatter(text: str):
         if not line.strip() or line.lstrip().startswith("#"):
             continue
         if line.lstrip().startswith("- ") and key:
-            # Una lista en bloque solo cuenta si la clave quedo vacia; si no, el
-            # valor escalar ya leido es el bueno.
+            # A block list only counts if the key was left empty; otherwise the
+            # scalar value already read is the right one.
             if not isinstance(fields.get(key), list):
                 if str(fields.get(key) or "").strip():
                     continue
@@ -143,7 +147,7 @@ def parse_date(value):
 
 
 def number(value):
-    """Numero o None. Un campo de template vacio no es un cero."""
+    """Number or None. An empty template field is not a zero."""
     text = str(value or "").strip().replace(",", ".")
     try:
         return float(text)
@@ -157,7 +161,7 @@ def days_since(value, today):
 
 
 def canonical_url(url: str) -> str:
-    """URL sin tracking, para que dos links de la misma oferta coincidan."""
+    """URL without tracking, so two links to the same posting match."""
     if not url:
         return ""
     clean = url.strip().split("#")[0]
@@ -170,63 +174,69 @@ def canonical_url(url: str) -> str:
 
 
 def load_notes(workspace: Path):
-    """Todas las notas de aplicaciones, propuestas y contratos, normalizadas."""
+    """Every application, proposal and contract note, normalized."""
     rows, problems = [], []
     today = date.today()
+
+    if (workspace / LEGACY_APPLICATIONS_DIR).exists():
+        problems.append({"note": LEGACY_APPLICATIONS_DIR + "/",
+                         "problem": "workspace still uses the pre-English layout; run "
+                                    "python .claude/skills/career-registry/scripts/"
+                                    "migrate_workspace.py (dry run first)"})
 
     for folder in (APPLICATIONS_DIR, CONTRACTS_DIR):
         base = workspace / folder
         if not base.exists():
             continue
         for path in sorted(base.rglob("*.md")):
-            if path.name.startswith("_"):  # _index y similares
+            if path.name.startswith("_"):  # _index and the like
                 continue
             try:
                 text = path.read_text(encoding="utf-8", errors="replace")
             except OSError as e:
-                problems.append({"nota": path.name, "problema": "no se pudo leer: {0}".format(e)})
+                problems.append({"note": path.name, "problem": "could not read: {0}".format(e)})
                 continue
             fields = parse_frontmatter(text)
             if not fields:
-                problems.append({"nota": path.name, "problema": "sin frontmatter"})
+                problems.append({"note": path.name, "problem": "no frontmatter"})
                 continue
 
-            tipo = (fields.get("tipo") or "").strip() or "desconocido"
-            if tipo not in KNOWN_TIPOS:
-                problems.append({"nota": path.name,
-                                 "problema": "tipo desconocido: {0}".format(tipo)})
+            kind = (fields.get("type") or "").strip() or "unknown"
+            if kind not in KNOWN_TYPES:
+                problems.append({"note": path.name,
+                                 "problem": "unknown type: {0}".format(kind)})
 
-            estado = (fields.get("estado") or "").strip()
-            # Compatibilidad: notas viejas usan `score` en vez de `match_score`.
+            status = (fields.get("status") or "").strip()
+            # Compatibility: old notes use `score` instead of `match_score`.
             score = fields.get("match_score") or fields.get("score") or ""
-            # Empresa en empleo, cliente en freelance y contratos.
-            contraparte = (fields.get("empresa") or fields.get("cliente") or "").strip()
-            fecha_envio = fields.get("fecha_aplicacion") or fields.get("fecha_envio") \
-                or fields.get("fecha_inicio") or ""
-            actualizacion = fields.get("fecha_actualizacion") or ""
+            # Company for jobs, client for freelance and contracts.
+            counterpart = (fields.get("company") or fields.get("client") or "").strip()
+            sent_date = fields.get("applied_date") or fields.get("sent_date") \
+                or fields.get("start_date") or ""
+            updated = fields.get("updated") or ""
 
             rows.append({
-                "tipo": tipo,
-                "contraparte": contraparte,
-                "titulo": path.stem,
-                "estado": estado,
-                "abierto": "si" if estado in OPEN_STATES.get(tipo, ()) else "no",
-                "plataforma": (fields.get("plataforma") or fields.get("fuente") or "").strip(),
+                "type": kind,
+                "counterpart": counterpart,
+                "title": path.stem,
+                "status": status,
+                "open": "yes" if status in OPEN_STATES.get(kind, ()) else "no",
+                "platform": (fields.get("platform") or fields.get("source") or "").strip(),
                 "match_score": score,
-                "riesgo_cliente": (fields.get("riesgo_cliente") or "").strip(),
-                "perfil": (fields.get("perfil") or fields.get("perfil_base") or "").strip(),
-                "bid_o_monto": (fields.get("bid") or fields.get("monto_acordado")
-                                or fields.get("salario_rango") or "").strip(),
-                "costo_postulacion": (fields.get("connects_gastados") or "").strip(),
-                "fecha_envio": fecha_envio,
-                "fecha_actualizacion": actualizacion,
-                "dias_sin_movimiento": days_since(actualizacion, today),
-                "link_oferta": (fields.get("link_oferta") or "").strip(),
-                "nota": str(path.relative_to(workspace)).replace("\\", "/"),
-                # Solo en contratos. Se guardan crudas para que audit compare sin
-                # tener que reabrir el archivo.
-                "horas_estimadas": number(fields.get("horas_estimadas")),
-                "horas_reales": number(fields.get("horas_reales")),
+                "client_risk": (fields.get("client_risk") or "").strip(),
+                "profile": (fields.get("profile") or fields.get("base_profile") or "").strip(),
+                "bid_or_amount": (fields.get("bid") or fields.get("agreed_amount")
+                                  or fields.get("salary_range") or "").strip(),
+                "application_cost": (fields.get("connects_spent") or "").strip(),
+                "sent_date": sent_date,
+                "updated": updated,
+                "days_idle": days_since(updated, today),
+                "posting_url": (fields.get("posting_url") or "").strip(),
+                "note": str(path.relative_to(workspace)).replace("\\", "/"),
+                # Contracts only. Kept raw so audit can compare without
+                # reopening the file.
+                "estimated_hours": number(fields.get("estimated_hours")),
+                "actual_hours": number(fields.get("actual_hours")),
             })
 
     return rows, problems
@@ -242,14 +252,27 @@ def load_seen_jobs(workspace: Path):
         return None
 
 
+def seen_entries(seen):
+    """Entries of seen_jobs.json: `jobs` is a job_key -> entry map (a list also works)."""
+    jobs = (seen or {}).get("jobs") or []
+    return [e for e in (jobs.values() if isinstance(jobs, dict) else jobs) if isinstance(e, dict)]
+
+
+def entry_urls(entry):
+    """Canonical URLs of an entry: the schema keeps them in sources[], older files at the top."""
+    urls = [entry.get("url")] + [s.get("url") for s in entry.get("sources") or []
+                                 if isinstance(s, dict)]
+    return [canonical_url(str(u)) for u in urls if u]
+
+
 # --------------------------------------------------------------------------- #
-# check: la pregunta "¿ya me postule aca?"
+# check: the "did I already apply here?" question
 # --------------------------------------------------------------------------- #
 
 def match_rows(rows, needle: str):
     """
-    Busca por tres claves distintas porque el usuario pega cualquiera de las tres:
-    el nombre de la contraparte, la URL de la oferta, o el titulo de la nota.
+    Searches by three different keys because the user pastes any of the three:
+    the counterpart's name, the posting URL, or the note title.
     """
     hits = []
     url = canonical_url(needle) if "://" in needle else ""
@@ -257,46 +280,46 @@ def match_rows(rows, needle: str):
 
     for row in rows:
         why = None
-        if url and canonical_url(row["link_oferta"]) == url:
-            why = "misma URL de la oferta"
-        elif target and target == slug(row["contraparte"]):
-            why = "misma contraparte"
-        elif target and target and target in slug(row["titulo"]):
-            why = "coincide con el titulo de la nota"
-        elif target and slug(row["contraparte"]) and target in slug(row["contraparte"]):
-            why = "contraparte parecida"
+        if url and canonical_url(row["posting_url"]) == url:
+            why = "same posting URL"
+        elif target and target == slug(row["counterpart"]):
+            why = "same counterpart"
+        elif target and target in slug(row["title"]):
+            why = "note title match"
+        elif target and slug(row["counterpart"]) and target in slug(row["counterpart"]):
+            why = "similar counterpart"
         if why:
-            hits.append(dict(row, coincide_por=why))
+            hits.append(dict(row, matched_by=why))
     return hits
 
 
 def run_check(args) -> int:
     workspace = resolve_workspace(args)
     rows, _ = load_notes(workspace)
-    needle = args.termino
+    needle = args.term
     hits = match_rows(rows, needle)
 
     seen = load_seen_jobs(workspace)
     seen_hits = []
     if seen and "://" in needle:
         url = canonical_url(needle)
-        for entry in (seen.get("jobs") or seen.get("entries") or []):
-            if canonical_url(str(entry.get("url") or "")) == url:
+        for entry in seen_entries(seen):
+            if url in entry_urls(entry):
                 seen_hits.append({"status": entry.get("status"),
                                   "quick_score": entry.get("quick_score"),
-                                  "nota": entry.get("nota"),
+                                  "note": entry.get("note"),
                                   "last_seen": entry.get("last_seen")})
 
-    already_sent = [h for h in hits if h["estado"] in SENT_STATES]
-    veredicto = "YA TE POSTULASTE" if already_sent else (
-        "YA LO VISTE, NO TE POSTULASTE" if (hits or seen_hits) else "SIN REGISTRO")
+    already_sent = [h for h in hits if h["status"] in SENT_STATES]
+    verdict = "ALREADY APPLIED" if already_sent else (
+        "SEEN, NOT APPLIED" if (hits or seen_hits) else "NO RECORD")
 
     emit({
-        "busque": needle,
-        "veredicto": veredicto,
-        "coincidencias_en_notas": hits,
-        "coincidencias_en_dedup": seen_hits,
-        "dedup_disponible": seen is not None,
+        "query": needle,
+        "verdict": verdict,
+        "note_matches": hits,
+        "dedup_matches": seen_hits,
+        "dedup_available": seen is not None,
     })
     return 0
 
@@ -308,9 +331,9 @@ def run_check(args) -> int:
 def run_export(args) -> int:
     workspace = resolve_workspace(args)
     rows, problems = load_notes(workspace)
-    if args.tipo != "all":
-        rows = [r for r in rows if r["tipo"] == args.tipo]
-    rows.sort(key=lambda r: (r["tipo"], str(r["fecha_actualizacion"] or ""), r["titulo"]),
+    if args.type != "all":
+        rows = [r for r in rows if r["type"] == args.type]
+    rows.sort(key=lambda r: (r["type"], str(r["updated"] or ""), r["title"]),
               reverse=True)
 
     buffer = io.StringIO()
@@ -322,11 +345,11 @@ def run_export(args) -> int:
 
     if args.csv:
         target = Path(args.csv)
-        # newline="" para que csv no meta \r\r\n en Windows.
+        # newline="" so csv does not write \r\r\n on Windows.
         with open(target, "w", encoding="utf-8-sig", newline="") as handle:
             handle.write(content)
-        emit({"escrito": str(target), "filas": len(rows), "columnas": list(CSV_COLUMNS),
-              "notas_con_problemas": problems})
+        emit({"written": str(target), "rows": len(rows), "columns": list(CSV_COLUMNS),
+              "notes_with_problems": problems})
         return 0
 
     sys.stdout.write(content)
@@ -338,88 +361,87 @@ def run_stats(args) -> int:
     rows, problems = load_notes(workspace)
     today = date.today()
 
-    by_tipo = {}
+    by_type = {}
     for row in rows:
-        bucket = by_tipo.setdefault(row["tipo"], {"total": 0, "abiertas": 0, "por_estado": {}})
+        bucket = by_type.setdefault(row["type"], {"total": 0, "open": 0, "by_status": {}})
         bucket["total"] += 1
-        bucket["abiertas"] += 1 if row["abierto"] == "si" else 0
-        estado = row["estado"] or "(sin estado)"
-        bucket["por_estado"][estado] = bucket["por_estado"].get(estado, 0) + 1
+        bucket["open"] += 1 if row["open"] == "yes" else 0
+        status = row["status"] or "(no status)"
+        bucket["by_status"][status] = bucket["by_status"].get(status, 0) + 1
 
-    enviadas = [r for r in rows if r["estado"] in SENT_STATES]
-    costo = sum(float(r["costo_postulacion"]) for r in enviadas
-                if str(r["costo_postulacion"]).replace(".", "", 1).isdigit())
+    sent = [r for r in rows if r["status"] in SENT_STATES]
+    cost = sum(float(r["application_cost"]) for r in sent
+               if str(r["application_cost"]).replace(".", "", 1).isdigit())
 
     emit({
-        "hoy": today.isoformat(),
-        "total_notas": len(rows),
-        "por_tipo": by_tipo,
-        "enviadas": len(enviadas),
-        "costo_de_postulaciones_registrado": costo or None,
-        "notas_con_problemas": len(problems),
-        # Sin muestra suficiente, cualquier tasa es ruido. Que lo diga el script
-        # y no la interpretacion de despues.
-        "muestra_suficiente_para_tasas": len(enviadas) >= 10,
+        "today": today.isoformat(),
+        "total_notes": len(rows),
+        "by_type": by_type,
+        "sent": len(sent),
+        "recorded_application_cost": cost or None,
+        "notes_with_problems": len(problems),
+        # Without a big enough sample any rate is noise. The script says so,
+        # not the interpretation that comes after.
+        "enough_sample_for_rates": len(sent) >= 10,
     })
     return 0
 
 
 def run_audit(args) -> int:
-    """Divergencias. Sin esto la trazabilidad es una intencion."""
+    """Divergences. Without this, traceability is just an intention."""
     workspace = resolve_workspace(args)
     rows, problems = load_notes(workspace)
     seen = load_seen_jobs(workspace)
-    today = date.today()
 
-    sin_estado = [r["nota"] for r in rows if not r["estado"]]
-    sin_contraparte = [r["nota"] for r in rows if not r["contraparte"]]
-    enviadas_sin_fecha = [r["nota"] for r in rows
-                          if r["estado"] in SENT_STATES and not r["fecha_envio"]]
-    frenadas = [{"nota": r["nota"], "estado": r["estado"],
-                 "dias": r["dias_sin_movimiento"]}
-                for r in rows
-                if r["abierto"] == "si" and (r["dias_sin_movimiento"] or 0) >= STALE_DAYS]
+    missing_status = [r["note"] for r in rows if not r["status"]]
+    missing_counterpart = [r["note"] for r in rows if not r["counterpart"]]
+    sent_without_date = [r["note"] for r in rows
+                         if r["status"] in SENT_STATES and not r["sent_date"]]
+    stalled = [{"note": r["note"], "status": r["status"], "days": r["days_idle"]}
+               for r in rows
+               if r["open"] == "yes" and (r["days_idle"] or 0) >= STALE_DAYS]
 
-    # Duplicados: la misma contraparte con el mismo titulo dos veces.
+    # Duplicates: the same counterpart with the same title twice.
     keys = {}
     for row in rows:
-        key = (slug(row["contraparte"]), slug(row["titulo"]))
+        key = (slug(row["counterpart"]), slug(row["title"]))
         if not key[0]:
             continue
-        keys.setdefault(key, []).append(row["nota"])
-    duplicados = [{"contraparte": k[0], "notas": v} for k, v in keys.items() if len(v) > 1]
+        keys.setdefault(key, []).append(row["note"])
+    duplicates = [{"counterpart": k[0], "notes": v} for k, v in keys.items() if len(v) > 1]
 
-    # Horas reales por encima de lo estimado = trabajo regalado si no hubo change
-    # order. Aca solo se senala; el analisis del patron es de /freelance-pipeline.
-    horas_de_mas = []
+    # Actual hours above the estimate = free work if there was no change
+    # order. Only flagged here; the pattern analysis belongs to /freelance-pipeline.
+    over_hours = []
     for row in rows:
-        est, real = row.get("horas_estimadas"), row.get("horas_reales")
+        est, real = row.get("estimated_hours"), row.get("actual_hours")
         if est and real and real > est:
-            horas_de_mas.append({
-                "nota": row["nota"], "estimadas": est, "reales": real,
-                "exceso_horas": round(real - est, 2),
-                "exceso_pct": round((real - est) / est * 100),
+            over_hours.append({
+                "note": row["note"], "estimated": est, "actual": real,
+                "excess_hours": round(real - est, 2),
+                "excess_pct": round((real - est) / est * 100),
             })
 
-    punteros_rotos = []
+    broken_pointers = []
     if seen:
-        existing = {r["nota"] for r in rows}
-        for entry in (seen.get("jobs") or seen.get("entries") or []):
-            target = entry.get("nota")
+        existing = {r["note"] for r in rows}
+        for entry in seen_entries(seen):
+            target = entry.get("note")
             if target and not any(target in n or n in target for n in existing):
-                punteros_rotos.append({"url": entry.get("url"), "nota": target})
+                urls = entry_urls(entry)
+                broken_pointers.append({"url": urls[0] if urls else None, "note": target})
 
     emit({
-        "notas_revisadas": len(rows),
-        "sin_frontmatter_o_tipo_raro": problems,
-        "sin_estado": sin_estado,
-        "sin_contraparte": sin_contraparte,
-        "enviadas_sin_fecha_de_envio": enviadas_sin_fecha,
-        "abiertas_frenadas_mas_de_{0}_dias".format(STALE_DAYS): frenadas,
-        "posibles_duplicados": duplicados,
-        "contratos_con_horas_arriba_de_lo_estimado": horas_de_mas,
-        "punteros_de_dedup_rotos": punteros_rotos,
-        "dedup_disponible": seen is not None,
+        "notes_checked": len(rows),
+        "missing_frontmatter_or_unknown_type": problems,
+        "missing_status": missing_status,
+        "missing_counterpart": missing_counterpart,
+        "sent_without_sent_date": sent_without_date,
+        "open_stalled_over_{0}_days".format(STALE_DAYS): stalled,
+        "possible_duplicates": duplicates,
+        "contracts_over_estimated_hours": over_hours,
+        "broken_dedup_pointers": broken_pointers,
+        "dedup_available": seen is not None,
     })
     return 0
 
@@ -430,9 +452,9 @@ def resolve_workspace(args) -> Path:
     candidate = args.workspace or os.environ.get("CAREER_WORKSPACE") or DEFAULT_WORKSPACE
     path = Path(candidate).expanduser()
     if not path.exists():
-        emit({"error": "no existe el workspace: {0}".format(path),
+        emit({"error": "workspace does not exist: {0}".format(path),
               "code": "NO_WORKSPACE",
-              "ayuda": "pasa --workspace, o defini CAREER_WORKSPACE, o corre /freelance-hunt setup"})
+              "help": "pass --workspace, or set CAREER_WORKSPACE, or run /freelance-hunt setup"})
         raise SystemExit(1)
     return path
 
@@ -443,7 +465,7 @@ def emit(payload) -> None:
 
 
 def force_utf8_streams() -> None:
-    """En Windows stdout es cp1252 y un acento revienta al pipear a un archivo."""
+    """On Windows stdout is cp1252 and an accent blows up when piped to a file."""
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(encoding="utf-8")
@@ -451,24 +473,24 @@ def force_utf8_streams() -> None:
 
 def build_parser():
     parser = argparse.ArgumentParser(
-        description="Registro y trazabilidad de postulaciones, propuestas y contratos.")
-    parser.add_argument("--workspace", help="ruta del career workspace")
+        description="Registry and traceability of applications, proposals and contracts.")
+    parser.add_argument("--workspace", help="path to the career workspace")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    check = sub.add_parser("check", help="¿ya me postule aca? por empresa, URL o titulo")
-    check.add_argument("termino")
+    check = sub.add_parser("check", help="did I already apply here? by company, URL or title")
+    check.add_argument("term")
     check.set_defaults(func=run_check)
 
-    export = sub.add_parser("export", help="exportar todo a CSV")
-    export.add_argument("--csv", help="archivo destino; sin esto va a stdout")
-    export.add_argument("--tipo", default="all",
-                        choices=list(KNOWN_TIPOS) + ["all"])
+    export = sub.add_parser("export", help="export everything to CSV")
+    export.add_argument("--csv", help="target file; without it, goes to stdout")
+    export.add_argument("--type", default="all",
+                        choices=list(KNOWN_TYPES) + ["all"])
     export.set_defaults(func=run_export)
 
-    stats = sub.add_parser("stats", help="conteos por tipo y estado")
+    stats = sub.add_parser("stats", help="counts by type and status")
     stats.set_defaults(func=run_stats)
 
-    audit = sub.add_parser("audit", help="divergencias, duplicados y notas frenadas")
+    audit = sub.add_parser("audit", help="divergences, duplicates and stalled notes")
     audit.set_defaults(func=run_audit)
     return parser
 

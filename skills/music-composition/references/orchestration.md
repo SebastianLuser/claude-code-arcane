@@ -1,69 +1,69 @@
-# Orquestación
+# Orchestration
 
-## Rangos y carácter
+## Ranges and character
 
-Rangos prácticos (no extremos virtuosos). El **carácter cambia por registro** en el mismo instrumento — es lo que más se ignora.
+Practical ranges (not virtuoso extremes). **Character changes by register** within the same instrument — it is what gets ignored the most.
 
-| Instrumento | Rango práctico | Registro grave | Registro agudo |
+| Instrument | Practical range | Low register | High register |
 |---|---|---|---|
-| Flauta | C4 – C7 | Aireado, débil, se tapa | Brillante, penetrante |
-| Clarinete | D3 – C6 | Oscuro, cálido, único | Estridente si se fuerza |
-| Oboe | B♭3 – G6 | Nasal, presente | Tenso |
-| Fagot | B♭1 – E5 | Sombrío, cómico | Vulnerable, expresivo |
-| Corno | F2 – F5 | Noble, difuso | Heroico, esfuerzo audible |
-| Trompeta | E3 – C6 | Sólido | Brillante, corta cualquier textura |
-| Trombón | E2 – F4 | Grave, potente | Cantabile |
-| Violín | G3 – E7 | Cálido (cuerda G) | Brillante; muy agudo = tensión |
-| Viola | C3 – E6 | Ronco, melancólico | Delgado |
-| Cello | C2 – C6 | Profundo | El registro más expresivo de la orquesta |
-| Contrabajo | E1 – G4 | Fundamento | Raro, tenso |
-| Voz (soprano) | C4 – A5 | Débil | Potente, esfuerzo audible |
-| Voz (barítono) | A2 – F4 | Cómodo | Intenso |
+| Flute | C4 – C7 | Airy, weak, gets covered | Bright, piercing |
+| Clarinet | D3 – C6 | Dark, warm, unique | Strident if forced |
+| Oboe | B♭3 – G6 | Nasal, present | Tense |
+| Bassoon | B♭1 – E5 | Somber, comic | Vulnerable, expressive |
+| Horn | F2 – F5 | Noble, diffuse | Heroic, audible effort |
+| Trumpet | E3 – C6 | Solid | Bright, cuts through any texture |
+| Trombone | E2 – F4 | Deep, powerful | Cantabile |
+| Violin | G3 – E7 | Warm (G string) | Bright; very high = tension |
+| Viola | C3 – E6 | Husky, melancholic | Thin |
+| Cello | C2 – C6 | Deep | The most expressive register in the orchestra |
+| Double bass | E1 – G4 | Foundation | Rare, tense |
+| Voice (soprano) | C4 – A5 | Weak | Powerful, audible effort |
+| Voice (baritone) | A2 – F4 | Comfortable | Intense |
 
-## Densidad de arreglo
+## Arrangement density
 
-**La regla que resuelve el 80% de los problemas: menos elementos, mejor definidos.**
+**The rule that solves 80% of the problems: fewer elements, better defined.**
 
-| Nivel | Elementos simultáneos | Uso |
+| Level | Simultaneous elements | Use |
 |---|---|---|
-| Íntimo | 1-2 | Momentos de máxima atención |
-| Cámara | 3-5 | Estándar de gameplay sostenido |
-| Pleno | 6-10 | Clímax |
-| Tutti | todo | Una vez, y corto |
+| Intimate | 1-2 | Moments of maximum attention |
+| Chamber | 3-5 | Standard for sustained gameplay |
+| Full | 6-10 | Climax |
+| Tutti | everything | Once, and short |
 
-En música de juego, el nivel de densidad es la palanca adaptativa más eficiente: subir y bajar capas sin cambiar el material.
+In game music, the density level is the most efficient adaptive lever: add and remove layers without changing the material.
 
-## Voicing y textura
+## Voicing and texture
 
-- **Espaciado natural** — intervalos amplios abajo, cerrados arriba. Copia la serie armónica; suena limpio automáticamente
-- **No apilar en el mismo registro** — cuatro instrumentos entre C4 y C5 producen barro. Separar por octavas
-- **Doblar con intención** — al unísono para peso, a la octava para brillo, en 3ªs/6ªs para dulzura. Doblar todo es no doblar nada
-- **Registro medio saturado** — 500 Hz-2 kHz es donde vive el diálogo. En un juego, la música debería *dejar ese rango relativamente libre* si hay VO simultáneo (ver `/audio-mix`)
+- **Natural spacing** — wide intervals at the bottom, close at the top. It copies the harmonic series; it sounds clean automatically
+- **Do not stack in the same register** — four instruments between C4 and C5 produce mud. Separate by octaves
+- **Double with intent** — in unison for weight, at the octave for brightness, in 3rds/6ths for sweetness. Doubling everything is doubling nothing
+- **Saturated mid register** — 500 Hz-2 kHz is where dialogue lives. In a game, the music should *leave that range relatively free* if there is simultaneous VO (see `/audio-mix`)
 
-## Combinaciones que funcionan
+## Combinations that work
 
-| Combinación | Efecto |
+| Combination | Effect |
 |---|---|
-| Cello + corno (unísono) | Calidez con peso |
-| Clarinete grave + viola | Oscuridad ambigua |
-| Flauta + violín (octava) | Brillo aireado |
-| Pizzicato + arpa/mallets | Puntillismo, curiosidad |
-| Cuerdas con sordina + coro suave | Distancia, memoria |
-| Trompas en 5ªs abiertas | Épica; cliché si se abusa |
-| Solo + silencio | Máxima atención |
+| Cello + horn (unison) | Warmth with weight |
+| Low clarinet + viola | Ambiguous darkness |
+| Flute + violin (octave) | Airy brightness |
+| Pizzicato + harp/mallets | Pointillism, curiosity |
+| Muted strings + soft choir | Distance, memory |
+| Horns in open 5ths | Epic; a cliché if overused |
+| Solo + silence | Maximum attention |
 
-## Escritura coral / vocal
+## Choral / vocal writing
 
-- Rango cómodo, no extremo: la tesitura sostenida importa más que la nota más alta
-- Voice leading estricto: las voces internas se mueven lo mínimo
-- Texto inteligible pide notas más largas y registro medio
-- Vocales abiertas (a, o) para agudos y notas largas; cerradas (i, u) suenan tensas arriba
+- Comfortable range, not extreme: the sustained tessitura matters more than the highest note
+- Strict voice leading: the inner voices move as little as possible
+- Intelligible text calls for longer notes and the mid register
+- Open vowels (a, o) for high and long notes; closed ones (i, u) sound tense up high
 
-## Producción-aware
+## Production-aware
 
-Si el material va a un mix con SFX y diálogo encima:
+If the material goes into a mix with SFX and dialogue on top:
 
-- Dejar espacio en 500 Hz-2 kHz cuando puede haber VO
-- El sub (20-60 Hz) suele estar reservado a impactos — no llenarlo con música
-- Los transientes agudos compiten con feedback de UI: si el arreglo tiene mucho hi-hat/percusión brillante, el UI se pierde
-- Arreglos densos sobreviven mal a la compresión lossy de plataforma: el detalle en 6-20 kHz es lo primero que se va
+- Leave room at 500 Hz-2 kHz when there may be VO
+- The sub (20-60 Hz) is usually reserved for impacts — do not fill it with music
+- High transients compete with UI feedback: if the arrangement has a lot of hi-hat/bright percussion, the UI gets lost
+- Dense arrangements survive the platform's lossy compression poorly: the detail at 6-20 kHz is the first thing to go

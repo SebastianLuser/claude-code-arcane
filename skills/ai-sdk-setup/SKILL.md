@@ -1,30 +1,30 @@
 ---
 name: ai-sdk-setup
-description: "Integrar features de IA en Next.js con el Vercel AI SDK: streaming de chat, tool calling, structured output, agents y RAG. Default a modelos Claude. Usar al agregar chat, generación o agentes a una app Next/Node."
+description: "Integrate AI features into Next.js with the Vercel AI SDK: chat streaming, tool calling, structured output, agents and RAG. Defaults to Claude models. Use when adding chat, generation or agents to a Next/Node app."
 category: "ai"
 argument-hint: "[chat|stream|tools|structured|agent|rag]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-# ai-sdk-setup — Vercel AI SDK con Claude
+# ai-sdk-setup — Vercel AI SDK with Claude
 
 ## MANDATORY WORKFLOW
 
-> **Antes de codear features LLM, leer la skill `claude-api`** para model IDs vigentes, params y pricing. No asumir de memoria.
+> **Before coding LLM features, read the `claude-api` skill** for current model IDs, params and pricing. Do not assume from memory.
 
 ### Step 0: Gather Requirements
-1. **Caso:** chat / generación one-shot / extracción structured / agente con tools / RAG
-2. **Streaming** al cliente o respuesta completa
-3. **Modelo:** Opus 5.5 (`claude-opus-5-5`, razonamiento) / Sonnet 5.5 (`claude-sonnet-5-5`, balance) / Haiku 5.5 (`claude-haiku-5-5`, rápido/barato)
-4. ¿Necesita tool calling / structured output / RAG (ver skill `pgvector-search`)?
+1. **Case:** chat / one-shot generation / structured extraction / agent with tools / RAG
+2. **Streaming** to the client or a complete response
+3. **Model:** Opus 5.5 (`claude-opus-5-5`, reasoning) / Sonnet 5.5 (`claude-sonnet-5-5`, balance) / Haiku 5.5 (`claude-haiku-5-5`, fast/cheap)
+4. Does it need tool calling / structured output / RAG (see the `pgvector-search` skill)?
 
-### Step 1: Instalar
+### Step 1: Install
 ```bash
 pnpm add ai @ai-sdk/anthropic zod
-# env: ANTHROPIC_API_KEY (validar con Zod en src/lib/env.ts, nunca hardcodear)
+# env: ANTHROPIC_API_KEY (validate with Zod in src/lib/env.ts, never hardcode)
 ```
 
-### Step 2: Chat con streaming (Route Handler)
+### Step 2: Chat with streaming (Route Handler)
 ```ts
 // app/api/chat/route.ts
 import { anthropic } from '@ai-sdk/anthropic';
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
   return result.toUIMessageStreamResponse();
 }
 ```
-Cliente: `useChat()` de `@ai-sdk/react`.
+Client: `useChat()` from `@ai-sdk/react`.
 
 ### Step 3: Structured output (Zod)
 ```ts
@@ -50,33 +50,33 @@ const { object } = await generateObject({
 });
 ```
 
-### Step 4: Tool calling / agente
+### Step 4: Tool calling / agent
 ```ts
 const result = await generateText({
   model: anthropic('claude-opus-5-5'),
   tools: {
     search: tool({
-      description: 'Buscar docs', inputSchema: z.object({ q: z.string() }),
+      description: 'Search docs', inputSchema: z.object({ q: z.string() }),
       execute: async ({ q }) => searchDocs(q),
     }),
   },
-  stopWhen: stepCountIs(5),   // loop multi-step controlado
+  stopWhen: stepCountIs(5),   // controlled multi-step loop
   prompt,
 });
 ```
 
-### Step 5: Buenas prácticas
-- **Server-only** la API key — nunca exponer al cliente
-- Auth en el route handler (como cualquier API route — ver rule `nextjs-code`)
-- Rate limiting en endpoints de IA (costo $)
-- Prompt caching para system prompts grandes (ver skill `claude-api`)
-- Manejar errores de stream y abort (`AbortController`)
-- Validar/parsear toda salida structured con Zod antes de usarla
+### Step 5: Good practices
+- Keep the API key **server-only** — never expose it to the client
+- Auth in the route handler (like any API route — see the `nextjs-code` rule)
+- Rate limiting on AI endpoints (cost $)
+- Prompt caching for large system prompts (see the `claude-api` skill)
+- Handle stream errors and aborts (`AbortController`)
+- Validate/parse all structured output with Zod before using it
 
-## Cierre
+## Wrap-up
 
-Probar el endpoint con streaming real, verificar manejo de errores/abort y que la API key nunca llega al cliente. Endpoint funcionando + key server-only → integración **READY**. Confirmar el approach con el usuario antes de escribir código. Siguiente paso: skill `claude-api` para tuning de modelo/caching, o `pgvector-search` para RAG.
+Test the endpoint with real streaming, verify error/abort handling and that the API key never reaches the client. Working endpoint + server-only key → integration **READY**. Confirm the approach with the user before writing code. Next step: the `claude-api` skill for model/caching tuning, or `pgvector-search` for RAG.
 
 ---
 
-_Inspirado en las skills de AI SDK de [laguagu/claude-code-nextjs-skills](https://github.com/laguagu/claude-code-nextjs-skills). Adaptado al formato Arcane y a modelos Claude. Verificar API/SDK contra la skill `claude-api`._
+_Inspired by the AI SDK skills in [laguagu/claude-code-nextjs-skills](https://github.com/laguagu/claude-code-nextjs-skills). Adapted to the Arcane format and to Claude models. Verify the API/SDK against the `claude-api` skill._

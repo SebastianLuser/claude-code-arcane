@@ -2,22 +2,22 @@
 
 ## 4.1 Secure JWT Authentication — CRITICAL
 
-Tokens de vida corta (15m) + refresh tokens. Secreto en env/secret manager. Nunca data sensible en el payload.
+Short-lived tokens (15m) + refresh tokens. Secret in env/secret manager. Never sensitive data in the payload.
 ```ts
 JwtModule.register({
-  secret: process.env.JWT_SECRET,        // nunca hardcodeado
+  secret: process.env.JWT_SECRET,        // never hardcoded
   signOptions: { expiresIn: '15m' },
 });
-// payload: { sub: userId, role }  ← nada de passwords, emails completos, PII
+// payload: { sub: userId, role }  ← no passwords, full emails or PII
 ```
 
 ## 4.5 Validate All Input with DTOs and Pipes — HIGH
 
-`ValidationPipe` global + DTOs decorados. Rechazar input malformado antes de procesarlo.
+Global `ValidationPipe` + decorated DTOs. Reject malformed input before processing it.
 ```ts
 app.useGlobalPipes(new ValidationPipe({
-  whitelist: true,            // descarta props no declaradas
-  forbidNonWhitelisted: true, // 400 si vienen props extra
+  whitelist: true,            // drops undeclared props
+  forbidNonWhitelisted: true, // 400 if extra props arrive
   transform: true,
 }));
 
@@ -29,7 +29,7 @@ export class CreateUserDto {
 
 ## 4.4 Use Guards for AuthN/AuthZ — HIGH
 
-Guards declarativos, no checks manuales en cada handler.
+Declarative guards, not manual checks in every handler.
 ```ts
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
@@ -38,13 +38,13 @@ Guards declarativos, no checks manuales en cada handler.
 
 ## 4.2 Rate Limiting — HIGH
 
-`@nestjs/throttler`, límites por endpoint (login más estricto que lecturas).
+`@nestjs/throttler`, per-endpoint limits (login stricter than reads).
 ```ts
-@Throttle({ default: { limit: 5, ttl: 60000 } }) // 5/min en /login
+@Throttle({ default: { limit: 5, ttl: 60000 } }) // 5/min on /login
 ```
 
 ## 4.3 Sanitize Output to Prevent XSS — HIGH
 
-Sanitizar contenido generado por usuario antes de almacenar; `Content-Type` correcto en respuestas.
+Sanitize user-generated content before storing it; correct `Content-Type` on responses.
 
 _Ref: https://docs.nestjs.com/security/authentication · https://docs.nestjs.com/security/rate-limiting_

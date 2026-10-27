@@ -1,48 +1,48 @@
 # Output Template & Finding Format
 
-## Plantilla de reporte
+## Report template
 
 ```markdown
-# Auditoría del GDD — [fecha]
-**Fecha:** [hoy]
-**Estado:** [SALUDABLE / NECESITA ATENCIÓN / CRÍTICO]
-**Scope:** [qué se auditó contra qué]
+# GDD Audit — [date]
+**Date:** [today]
+**Status:** [HEALTHY / NEEDS ATTENTION / CRITICAL]
+**Scope:** [what was audited against what]
 
-## RESUMEN EJECUTIVO
-[2-3 oraciones: salud general, problema más grande, próximo paso recomendado]
+## EXECUTIVE SUMMARY
+[2-3 sentences: overall health, biggest problem, recommended next step]
 
-## 1. CONTRADICCIONES
-[Tabla, ordenada por severidad]
+## 1. CONTRADICTIONS
+[Table, sorted by severity]
 
-## 2. GAPS / CONTENIDO FALTANTE
-[Agrupado por Bloqueante / Importante / Nice to Have]
+## 2. GAPS / MISSING CONTENT
+[Grouped by Blocking / Important / Nice to Have]
 
-## 3. COHERENCIA Y LÓGICA
-[Issues de edge cases, terminología, lógica]
+## 3. COHERENCE AND LOGIC
+[Edge case, terminology and logic issues]
 
 ## 4. BALANCE RED FLAGS
-[Problemas de balance con escenarios ejemplo]
+[Balance problems with example scenarios]
 
-## 5. DECISIONES PENDIENTES
-[Lista priorizada con opciones y recomendaciones]
+## 5. PENDING DECISIONS
+[Prioritized list with options and recommendations]
 
-## 6. LO QUE ESTÁ BIEN
-[Qué funciona bien — no solo criticar, reconocer buen diseño]
+## 6. WHAT WORKS WELL
+[What works well — do not only criticize, acknowledge good design]
 
-## 7. PRÓXIMOS PASOS
-[Action items concretos, ordenados por prioridad]
+## 7. NEXT STEPS
+[Concrete action items, sorted by priority]
 ```
 
-## Formato de hallazgos
+## Finding format
 
-Cada hallazgo del reporte debe seguir formato PAS condensado (ver `/doc-pas`):
+Each finding in the report must follow the condensed PAS format (see `/doc-pas`):
 
 ```markdown
-### [Título del hallazgo] — [CRITICAL/HIGH/MEDIUM]
+### [Finding title] — [CRITICAL/HIGH/MEDIUM]
 
-**Problema:** [1-2 oraciones: qué está mal y qué impacto tiene]
-**Análisis:** [1-2 oraciones: por qué pasa]
-**Solución:** [1-2 oraciones: qué hacer, con valores concretos]
+**Problem:** [1-2 sentences: what is wrong and what impact it has]
+**Analysis:** [1-2 sentences: why it happens]
+**Solution:** [1-2 sentences: what to do, with concrete values]
 ```
 
-NO escribir párrafos largos explicando el problema. NO divagar con recomendaciones genéricas. Bullet points y números concretos.
+Do NOT write long paragraphs explaining the problem. Do NOT ramble with generic recommendations. Bullet points and concrete numbers.

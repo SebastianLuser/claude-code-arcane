@@ -1,61 +1,61 @@
 ---
 name: network-map
-description: "Turn your LinkedIn connections data export into warm-intro intelligence: find your 1st-degree contacts at a target company, identify likely warm-intro paths, and draft a tailored outreach message per contact. Triggers: red de contactos, networking LinkedIn, contactos en una empresa, warm intro, referido, quien conozco en, LinkedIn connections export."
+description: "Turn your LinkedIn connections data export into warm-intro intelligence: find your 1st-degree contacts at a target company, identify likely warm-intro paths, and draft a tailored outreach message per contact. Triggers: my network, LinkedIn networking, contacts at a company, warm intro, referral, who do I know at, LinkedIn connections export."
 argument-hint: "[company] | import <path-to-Connections.csv>"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 
-# Network Map - Inteligencia de contactos para warm intros
+# Network Map - Contact intelligence for warm intros
 
-Convertís el **export de conexiones de LinkedIn** en inteligencia accionable: dado un target company, quién de tu red 1er-grado trabaja (o trabajó) ahí, quién puede darte un warm intro, y un mensaje custom por contacto. Reemplaza a LinkedIn Premium para esto: solo necesitás tu propio export + Claude.
+You turn the **LinkedIn connections export** into actionable intelligence: given a target company, who in your 1st-degree network works (or worked) there, who can give you a warm intro, and a custom message per contact. It replaces LinkedIn Premium for this: you only need your own export + Claude.
 
-## Conseguir el export (una vez)
+## Getting the export (once)
 
-En LinkedIn → **Settings → Data Privacy → Get a copy of your data → Download**. En el ZIP viene `Connections.csv` (tus 1er-grado con nombre, URL, empresa, posición, fecha de conexión). Pasáselo a la skill.
+On LinkedIn → **Settings → Data Privacy → Get a copy of your data → Download**. The ZIP contains `Connections.csv` (your 1st-degree connections with name, URL, company, position, connection date). Hand it to the skill.
 
-> **Privacidad:** `Connections.csv` es data personal de terceros. Guardalo en `05-Contactos/` del workspace y **nunca** lo commitees a un remoto. Trabajalo localmente.
+> **Privacy:** `Connections.csv` is third parties' personal data. Keep it in the workspace's `05-Contacts/` and **never** commit it to a remote. Work on it locally.
 
-## Qué produce
+## What it produces
 
-Dado un target company:
-1. **1er-grado en la empresa** - contactos tuyos que trabajan ahí ahora (match por `Company`).
-2. **Paths de warm intro** - contactos 1er-grado que probablemente conozcan gente del target (ej. ex-empleados de la empresa, gente del mismo rubro/rol) y podrían presentarte. *Nota honesta:* el export solo tiene tus 1er-grado; el verdadero 2do-grado (las conexiones de ellos) no está en el archivo. Lo que hacemos es **inferir** buenos candidatos a intro desde tus 1er-grado (empleo actual/pasado en el target, overlap de empresa/rol), no leer la red de cada uno.
-3. **Mensaje por contacto** - template custom según historia compartida (misma empresa pasada, mismo rubro, conexión vieja vs reciente).
+Given a target company:
+1. **1st-degree at the company** - your contacts who work there now (match by `Company`).
+2. **Warm-intro paths** - 1st-degree contacts who probably know people at the target (e.g. former employees of the company, people in the same field/role) and could introduce you. *Honest note:* the export only has your 1st-degree connections; the real 2nd degree (their connections) is not in the file. What we do is **infer** good intro candidates from your 1st-degree (current/past employment at the target, company/role overlap), not read each person's network.
+3. **Message per contact** - a custom template based on shared history (same past company, same field, old vs recent connection).
 
-## El motor
+## The engine
 
-`scripts/network_map.py` parsea `Connections.csv` (maneja el preámbulo del export) y filtra/rankea por empresa.
+`scripts/network_map.py` parses `Connections.csv` (it handles the export's preamble) and filters/ranks by company.
 
 ```bash
-# Contactos en una empresa
-python scripts/network_map.py --csv "05-Contactos/Connections.csv" --company "Acme"
+# Contacts at a company
+python scripts/network_map.py --csv "05-Contacts/Connections.csv" --company "Acme"
 
-# Top empresas donde tenés más contactos (descubrir oportunidades)
-python scripts/network_map.py --csv "05-Contactos/Connections.csv" --top-companies
+# Top companies where you have the most contacts (discover opportunities)
+python scripts/network_map.py --csv "05-Contacts/Connections.csv" --top-companies
 ```
 
-Devuelve nombre, posición, empresa, URL del perfil y fecha de conexión. Vos (Claude) tomás esa salida y armás los paths de intro y los mensajes.
+It returns name, position, company, profile URL and connection date. You (Claude) take that output and build the intro paths and the messages.
 
-## Modos
+## Modes
 
-### `import <path>` - Registrar el export
-Copiar/referenciar `Connections.csv` en `05-Contactos/`, verificar que parsea (corré el script con `--top-companies`), y reportar tamaño de la red + top empresas.
+### `import <path>` - Register the export
+Copy/reference `Connections.csv` in `05-Contacts/`, verify that it parses (run the script with `--top-companies`), and report the network size + top companies.
 
-### `[company]` - Mapear una empresa
-1. Correr el script filtrando por la empresa.
-2. Clasificar: 1er-grado actuales en la empresa vs candidatos a warm-intro (ex-empleados / mismo rubro).
-3. Priorizar por relevancia (seniority/rol vs tu objetivo) y calidez (conexión reciente, historia compartida).
-4. Draftear un mensaje por contacto top (apoyate en `/cold-outreach` para el tono y los templates).
-5. Guardar contactos relevantes como notas en `05-Contactos/` (template `Contacto`).
+### `[company]` - Map a company
+1. Run the script filtering by the company.
+2. Classify: current 1st-degree at the company vs warm-intro candidates (former employees / same field).
+3. Prioritize by relevance (seniority/role vs your goal) and warmth (recent connection, shared history).
+4. Draft a message per top contact (lean on `/cold-outreach` for tone and templates).
+5. Save relevant contacts as notes in `05-Contacts/` (template `Contact`).
 
-## Reglas
+## Rules
 
-- Data de terceros: tratamiento local, nunca a un remoto sin confirmación; respetá privacidad.
-- No inventar relaciones ni 2do-grado que el export no soporta - sé explícito sobre qué es dato y qué es inferencia.
-- Calidad sobre cantidad: 5 contactos bien elegidos > 50 mensajes genéricos.
+- Third-party data: local handling, never to a remote without confirmation; respect privacy.
+- Do not invent relationships or a 2nd degree the export does not support - be explicit about what is data and what is inference.
+- Quality over quantity: 5 well-chosen contacts > 50 generic messages.
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir notas de contacto o copiar el CSV al workspace. Cuando el mapa está READY, el siguiente paso es `/cold-outreach` para redactar los mensajes y agendar follow-ups.
+Ask for approval before writing contact notes or copying the CSV into the workspace. When the map is READY, the next step is `/cold-outreach` to draft the messages and schedule follow-ups.

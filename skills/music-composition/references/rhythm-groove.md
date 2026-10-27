@@ -1,49 +1,49 @@
-# Ritmo y Groove
+# Rhythm and Groove
 
-## Qué es el groove
+## What groove is
 
-La relación entre una grilla implícita y dónde caen los eventos reales. Sin grilla no hay groove; sin desvío tampoco.
+The relationship between an implicit grid and where the real events fall. Without a grid there is no groove; without deviation there is none either.
 
-Tres capas independientes:
+Three independent layers:
 
-1. **Pulso** — el tempo y su subdivisión
-2. **Patrón** — qué subdivisiones se atacan
-3. **Feel** — cuánto se corren los ataques respecto de la grilla, y cómo se acentúan
+1. **Pulse** — the tempo and its subdivision
+2. **Pattern** — which subdivisions are attacked
+3. **Feel** — how far the attacks are pushed relative to the grid, and how they are accented
 
-Un patrón correcto con feel plano suena a máquina. El mismo patrón con los backbeats 8-15 ms atrasados y acentuados suena a banda.
+A correct pattern with a flat feel sounds like a machine. The same pattern with the backbeats delayed 8-15 ms and accented sounds like a band.
 
-## Recursos rítmicos
+## Rhythmic devices
 
-| Recurso | Qué hace |
+| Device | What it does |
 |---|---|
-| **Síncopa** | Acentuar una subdivisión débil. El motor de casi todo groove popular |
-| **Anticipación** | Adelantar un ataque medio pulso antes del tiempo fuerte |
-| **Hemiola** | Agrupar 3 donde el metro dice 2 (o al revés). Tensión sin cambiar tempo |
-| **Desplazamiento** | Correr un patrón entero N subdivisiones. Mismo material, otro lugar |
-| **Aumentación / disminución** | Duplicar o partir las duraciones del patrón |
-| **Silencio en el downbeat** | El recurso más fuerte y el menos usado |
-| **Polirritmia** | Dos ciclos de distinta longitud simultáneos (3:2, 4:3). El compuesto se repite cada MCM |
-| **Cross-rhythm** | El acento contradice el metro sostenidamente |
+| **Syncopation** | Accent a weak subdivision. The engine of almost every popular groove |
+| **Anticipation** | Bring an attack half a beat before the strong beat |
+| **Hemiola** | Group in 3 where the meter says 2 (or the other way around). Tension without changing tempo |
+| **Displacement** | Shift a whole pattern by N subdivisions. Same material, another place |
+| **Augmentation / diminution** | Double or split the pattern's durations |
+| **Silence on the downbeat** | The strongest device and the least used |
+| **Polyrhythm** | Two cycles of different length at once (3:2, 4:3). The composite repeats every LCM |
+| **Cross-rhythm** | The accent contradicts the meter in a sustained way |
 
-## Feel y microtiming
+## Feel and microtiming
 
-- **Swing** — la primera corchea del par se alarga. Cuantificable como ratio (50:50 recto, ~60:40 swing suave, 66:33 swing fuerte, hasta tresillo)
-- **Laid back** — atacar unos ms después de la grilla. Sensación de relajación, peso
-- **Push** — atacar antes. Urgencia, ansiedad
-- **Flam** — dos instrumentos casi al unísono, corridos unos ms. Engorda el ataque
+- **Swing** — the first eighth note of the pair is lengthened. Quantifiable as a ratio (50:50 straight, ~60:40 light swing, 66:33 hard swing, up to a triplet)
+- **Laid back** — attack a few ms after the grid. A feeling of relaxation, weight
+- **Push** — attack before. Urgency, anxiety
+- **Flam** — two instruments almost in unison, offset by a few ms. Fattens the attack
 
-Un desvío de 10-30 ms es feel. Arriba de ~50 ms se percibe como error o como otra subdivisión.
+A deviation of 10-30 ms is feel. Above ~50 ms it is perceived as a mistake or as another subdivision.
 
-## Métricas impares
+## Odd meters
 
-- **5/4, 7/8** — se sienten como agrupaciones asimétricas (5 = 3+2 o 2+3; 7 = 2+2+3, 3+2+2...). La agrupación importa más que el número
-- **Métrica mixta** — alternar compases. Funciona si el patrón de alternancia es reconocible
-- **Metro aditivo** — construir por células (2+2+3) en vez de dividir el compás
+- **5/4, 7/8** — they feel like asymmetric groupings (5 = 3+2 or 2+3; 7 = 2+2+3, 3+2+2...). The grouping matters more than the number
+- **Mixed meter** — alternate bars. It works if the alternation pattern is recognizable
+- **Additive meter** — build from cells (2+2+3) instead of dividing the bar
 
-Para juegos, las métricas impares complican la sincronización de música adaptativa: los sync points en compás/beat asumen un metro estable. Si el metro cambia, definir los puntos de transición en cues explícitos.
+For games, odd meters complicate the synchronization of adaptive music: bar/beat sync points assume a stable meter. If the meter changes, define the transition points as explicit cues.
 
-## Groove en el arreglo
+## Groove in the arrangement
 
-- **Interlock** — cada instrumento ocupa subdivisiones que los otros dejan libres. El groove emerge del conjunto, no de una parte
-- **Densidad como dinámica** — más subdivisiones atacadas = más energía, sin subir volumen
-- **Espacio** — el groove vive en los silencios. Un patrón con todas las subdivisiones llenas no groovea, machaca
+- **Interlock** — each instrument takes the subdivisions the others leave free. The groove emerges from the ensemble, not from one part
+- **Density as dynamics** — more attacked subdivisions = more energy, without raising the volume
+- **Space** — groove lives in the rests. A pattern with every subdivision filled does not groove, it pounds

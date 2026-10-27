@@ -2,52 +2,52 @@
 
 ## 1.1 Avoid Circular Dependencies — CRITICAL
 
-Causa #1 de crashes en runtime. `forwardRef()` es un parche, no una solución.
+The #1 cause of runtime crashes. `forwardRef()` is a patch, not a solution.
 
-**Incorrecto** — A importa B, B importa A:
+**Incorrect** — A imports B, B imports A:
 ```ts
-// users.service.ts → inyecta OrdersService
-// orders.service.ts → inyecta UsersService  ⇒ ciclo
+// users.service.ts → injects OrdersService
+// orders.service.ts → injects UsersService  ⇒ cycle
 ```
-**Correcto** — extraer lo compartido a un tercer módulo o usar eventos:
+**Correct** — extract the shared part into a third module or use events:
 ```ts
-// Mover la lógica común a SharedModule, o emitir un evento
+// Move the shared logic to SharedModule, or emit an event
 this.eventEmitter.emit('order.created', payload);
 ```
 
 ## 1.2 Organize by Feature Modules — CRITICAL
 
-Estructurar por feature, no por capa técnica → desarrollo 3-5x más rápido.
+Structure by feature, not by technical layer → 3-5x faster development.
 
 ```
 src/
   users/   { users.module.ts, users.controller.ts, users.service.ts, dto/ }
   orders/  { orders.module.ts, ... }
 ```
-No: `controllers/`, `services/`, `repositories/` globales.
+Not: global `controllers/`, `services/`, `repositories/`.
 
 ## 1.3 Proper Module Sharing — CRITICAL
 
-Exportar servicios desde un módulo dedicado garantiza instancia singleton.
+Exporting services from a dedicated module guarantees a singleton instance.
 
-**Correcto:**
+**Correct:**
 ```ts
 @Module({ providers: [UsersService], exports: [UsersService] })
 export class UsersModule {}
-// Otro módulo: imports: [UsersModule] → reusa la MISMA instancia
+// Another module: imports: [UsersModule] → reuses the SAME instance
 ```
-Re-declarar el provider en otro módulo crea una instancia nueva → estado inconsistente.
+Re-declaring the provider in another module creates a new instance → inconsistent state.
 
 ## 1.4 Single Responsibility for Services — CRITICAL
 
-Un servicio = un concepto de dominio. +40% testabilidad. Si un servicio hace auth + email + billing, separarlo.
+One service = one domain concept. +40% testability. If a service does auth + email + billing, split it.
 
 ## 1.5 Event-Driven Architecture for Decoupling — MEDIUM-HIGH
 
-Emitir eventos de dominio (`@nestjs/event-emitter`) para desacoplar módulos y permitir procesamiento async sin dependencias directas.
+Emit domain events (`@nestjs/event-emitter`) to decouple modules and allow async processing without direct dependencies.
 
 ## 1.6 Repository Pattern for Data Access — HIGH
 
-Encapsular queries en repositorios; separar lógica de negocio de la persistencia. El servicio depende de una abstracción `UserRepository`, no del ORM directamente.
+Encapsulate queries in repositories; separate business logic from persistence. The service depends on a `UserRepository` abstraction, not on the ORM directly.
 
 _Ref: https://docs.nestjs.com/modules · https://docs.nestjs.com/fundamentals/circular-dependency_

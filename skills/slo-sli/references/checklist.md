@@ -1,14 +1,14 @@
-# Checklist por Servicio — SLO/SLI
+# Per-Service Checklist — SLO/SLI
 
-- [ ] Servicio clasificado por tier (1/2/3)
-- [ ] SLIs definidos: availability + latency minimo; quality/freshness si aplica
-- [ ] Baseline medido (>=2-4 semanas)
-- [ ] SLO firmado por ingenieria + producto
-- [ ] Error budget policy escrita y linkeada
-- [ ] Owner asignado (equipo, no persona)
-- [ ] Recording rules Prometheus desplegadas
-- [ ] Alertas multi-burn-rate (fast + slow) configuradas
-- [ ] SLO visible en dashboard interno
-- [ ] Runbook linkeado desde cada alerta
-- [ ] Review trimestral calendarizado
-- [ ] Ventana horaria escolar considerada (tier-1)
+- [ ] Service classified by tier (1/2/3)
+- [ ] SLIs defined: availability + latency at minimum; quality/freshness if applicable
+- [ ] Baseline measured (>=2-4 weeks)
+- [ ] SLO signed off by engineering + product
+- [ ] Error budget policy written and linked
+- [ ] Owner assigned (a team, not a person)
+- [ ] Prometheus recording rules deployed
+- [ ] Multi-burn-rate alerts (fast + slow) configured
+- [ ] SLO visible on an internal dashboard
+- [ ] Runbook linked from every alert
+- [ ] Quarterly review scheduled
+- [ ] School-hours window considered (tier-1)

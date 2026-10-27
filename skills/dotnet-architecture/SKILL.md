@@ -1,66 +1,66 @@
 ---
 name: dotnet-architecture
-description: "Arquitectura de backends .NET: Vertical Slice Architecture (features) y Clean Architecture (capas), con guía de cuándo usar cada una, estructura, patrones (MediatR/Result/outbox) y anti-patterns. Usar al diseñar o revisar la estructura de un proyecto ASP.NET Core."
+description: ".NET backend architecture: Vertical Slice Architecture (features) and Clean Architecture (layers), with guidance on when to use each, structure, patterns (MediatR/Result/outbox) and anti-patterns. Use when designing or reviewing the structure of an ASP.NET Core project."
 category: "backend"
 argument-hint: "[vertical-slice|clean|when-to-use]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-# dotnet-architecture — VSA & Clean Architecture para .NET
+# dotnet-architecture — VSA & Clean Architecture for .NET
 
-Dos enfoques production-ready para estructurar un backend ASP.NET Core. No son excluyentes: muchos proyectos
-usan Clean Architecture en el borde y slices verticales adentro. Esta skill ayuda a **elegir** y a aplicar
-cada uno correctamente.
+Two production-ready approaches to structuring an ASP.NET Core backend. They are not mutually exclusive: many projects
+use Clean Architecture at the edge and vertical slices inside. This skill helps **choose** and apply
+each one correctly.
 
 ## MANDATORY WORKFLOW
 
-**No imponer arquitectura por moda. Elegir según complejidad del dominio y vida del proyecto.**
+**Do not impose an architecture because it is fashionable. Choose by domain complexity and project lifespan.**
 
-### Step 0: Elegir enfoque (`when-to-use`)
+### Step 0: Choose the approach (`when-to-use`)
 
-| Señal | Recomendación |
+| Signal | Recommendation |
 |-------|---------------|
-| CRUD, prototipos, APIs chicas, dominio fino, equipo chico | **Vertical Slice** (o single project) |
-| Dominio complejo, reglas de negocio ricas, long-lived, varios equipos | **Clean Architecture** |
-| Necesitás aislar el dominio de frameworks/DB para test y reemplazo | **Clean Architecture** |
-| Querés velocidad y bajo overhead de indirección | **Vertical Slice** |
+| CRUD, prototypes, small APIs, thin domain, small team | **Vertical Slice** (or single project) |
+| Complex domain, rich business rules, long-lived, several teams | **Clean Architecture** |
+| You need to isolate the domain from frameworks/DB for testing and replacement | **Clean Architecture** |
+| You want speed and low indirection overhead | **Vertical Slice** |
 
-> Evitá Clean Architecture para CRUD simple: los proyectos extra y la indirección cuestan más de lo que aportan
-> cuando la lógica de negocio es delgada. Empezá con Vertical Slice y migrá si el dominio crece.
+> Avoid Clean Architecture for simple CRUD: the extra projects and indirection cost more than they deliver
+> when the business logic is thin. Start with Vertical Slice and migrate if the domain grows.
 
-### Step 1: Aplicar la estructura
+### Step 1: Apply the structure
 
-- **Vertical Slice:** un folder por feature/use-case; cada slice tiene su request, handler, validator y endpoint juntos. Ver `references/project-structure.md`.
-- **Clean Architecture:** proyectos `Domain → Application → Infrastructure → Api`; las dependencias apuntan **hacia adentro**, nunca al revés. Ver `references/project-structure.md`.
+- **Vertical Slice:** one folder per feature/use case; each slice keeps its request, handler, validator and endpoint together. See `references/project-structure.md`.
+- **Clean Architecture:** `Domain → Application → Infrastructure → Api` projects; dependencies point **inward**, never the other way around. See `references/project-structure.md`.
 
-### Step 2: Patrones idiomáticos
+### Step 2: Idiomatic patterns
 
-Leer `references/patterns.md`: MediatR/handlers por use-case, `IApplicationDbContext` (exponer EF Core sin repos
-genéricos), pipeline behaviors (validación/logging/transacción), Result pattern en vez de excepciones para flujo,
-y outbox pattern para consistencia entre DB y eventos.
+Read `references/patterns.md`: MediatR/handlers per use case, `IApplicationDbContext` (expose EF Core without generic
+repos), pipeline behaviors (validation/logging/transaction), Result pattern instead of exceptions for flow control,
+and the outbox pattern for consistency between the DB and events.
 
-### Step 3: Revisar contra anti-patterns + checklist
+### Step 3: Review against anti-patterns + checklist
 
-- `references/anti-patterns.md` — repos genéricos sobre EF Core, fat controllers, dependencias que apuntan hacia afuera, lógica de dominio en Infrastructure.
-- `references/checklist.md` — verificación de cierre antes de dar la estructura por buena.
+- `references/anti-patterns.md` — generic repos over EF Core, fat controllers, outward-pointing dependencies, domain logic in Infrastructure.
+- `references/checklist.md` — closing verification before accepting the structure.
 
-Antes de aplicar una reestructuración significativa, confirmar el approach con el usuario (Question → Decision → Approval). Si todo el checklist pasa → arquitectura **COMPLIANT**.
+Before applying a significant restructuring, confirm the approach with the user (Question → Decision → Approval). If the whole checklist passes → architecture **COMPLIANT**.
 
-## Resumen de enfoques
+## Approach summary
 
-| Aspecto | Vertical Slice | Clean Architecture |
+| Aspect | Vertical Slice | Clean Architecture |
 |---------|----------------|--------------------|
-| Eje de organización | Feature / use-case | Capa técnica |
-| Proyectos | 1 (+ tests) | 4 (Domain/App/Infra/Api) |
-| Acoplamiento entre features | Bajo (slices independientes) | Mediado por Application |
-| Overhead inicial | Bajo | Alto |
-| Mejor para | CRUD, features, velocidad | Dominios complejos, long-lived |
-| Riesgo | Duplicación entre slices | Sobre-ingeniería |
+| Organizing axis | Feature / use case | Technical layer |
+| Projects | 1 (+ tests) | 4 (Domain/App/Infra/Api) |
+| Coupling between features | Low (independent slices) | Mediated by Application |
+| Initial overhead | Low | High |
+| Best for | CRUD, features, speed | Complex, long-lived domains |
+| Risk | Duplication across slices | Over-engineering |
 
-## Próximos pasos
+## Next steps
 
-Definida la arquitectura → `/dotnet-scaffold` para generar el proyecto, y `/dotnet-best-practices` para revisar el código contra las 40 reglas.
+With the architecture defined → `/dotnet-scaffold` to generate the project, and `/dotnet-best-practices` to review the code against the 40 rules.
 
 ---
 
-_Inspirado en [ardalis/CleanArchitecture](https://github.com/ardalis/CleanArchitecture), [nadirbad/VerticalSliceArchitecture](https://github.com/nadirbad/VerticalSliceArchitecture) y la guía de Vertical Slice de [Milan Jovanović](https://www.milanjovanovic.tech/blog/vertical-slice-architecture-dotnet). Adaptado al formato Arcane._
+_Inspired by [ardalis/CleanArchitecture](https://github.com/ardalis/CleanArchitecture), [nadirbad/VerticalSliceArchitecture](https://github.com/nadirbad/VerticalSliceArchitecture) and [Milan Jovanović](https://www.milanjovanovic.tech/blog/vertical-slice-architecture-dotnet)'s Vertical Slice guide. Adapted to the Arcane format._

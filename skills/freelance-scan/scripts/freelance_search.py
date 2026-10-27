@@ -1,44 +1,45 @@
 #!/usr/bin/env python3
 """
-Busca proyectos freelance en fuentes publicas y sin API key.
+Searches freelance projects in public sources, with no API key.
 
-Toda fuente incluida cumple tres condiciones, porque este repo es publico y lo
-instala cualquiera: no pide key ni registro, sus terminos permiten consumirla
-desde una herramienta local, y expone trabajo freelance/contract de verdad.
+Every source included meets three conditions, because this repo is public and
+anyone installs it: it needs no key or sign-up, its terms allow consuming it
+from a local tool, and it exposes real freelance/contract work.
 
-Dos fuentes que parecen candidatas quedaron afuera a proposito (RemoteOK y
-Remotive): sus terminos exigen un backlink do-follow desde un sitio web y
-amenazan con suspender el acceso si falta. Un CLI local no tiene sitio web, asi
-que no podemos cumplirlo, y usarlas igual haria que le suspendan la IP al
-usuario. Detalle en ../references/platforms.md.
+Two sources that look like candidates were left out on purpose (RemoteOK and
+Remotive): their terms require a do-follow backlink from a website and
+threaten to suspend access if it is missing. A local CLI has no website, so we
+cannot comply, and using them anyway would get the user's IP suspended.
+Details in ../references/platforms.md.
 
-Ojo con los filtros: ni GetOnBrd ni Himalayas filtran por modalidad del lado del
-servidor. Aceptan el parametro, devuelven 200, y te mandan full-time igual (se
-probaron 7 variantes de nombre en GetOnBrd y 4 en Himalayas). Por eso el filtro
-de freelance es del lado del cliente y hay que paginar para juntar volumen.
+Watch the filters: neither GetOnBrd nor Himalayas filter by work type on the
+server side. They accept the parameter, return 200, and send full-time anyway
+(7 name variants were tried on GetOnBrd and 4 on Himalayas). That is why the
+freelance filter is client-side and paging is needed to gather volume.
 
-El hilo mensual "Ask HN: Freelancer? Seeking freelancer?" no esta en `search` a
-proposito. Se midieron 6 meses con el propio subcomando `market`: 113
-freelancers ofreciendose contra 2 ofertas de trabajo. Como fuente de proyectos no sirve; como fuente de que cobran
-y como se posicionan otros, es la mejor que hay sin pagar. Por eso vive en el
-subcomando `market`, que es lo que realmente es.
+The monthly "Ask HN: Freelancer? Seeking freelancer?" thread is not in `search`
+on purpose. Six months were measured with the `market` subcommand itself: 113
+freelancers offering themselves against 2 job offers. As a source of projects it
+is useless; as a source of what others charge and how they position
+themselves, it is the best there is for free. That is why it lives in the
+`market` subcommand, which is what it really is.
 
-Buscar por categoria escondia trabajo real: "ecommerce" devolvia 0 mientras
-habia un "Desarrollador Web Shopify" en el pool, porque nadie titula una oferta
-"ecommerce". Por eso `search` expande sinonimos (ver SYNONYMS) y consulta el
-server una vez por termino: el ranking del server depende de `query`, asi que
-buscar "ecommerce" nunca trae el pool donde vive el de Shopify. Con --no-expand
-se apaga.
+Searching by category hid real work: "ecommerce" returned 0 while there was a
+Shopify web developer posting in the pool, because nobody titles a posting
+"ecommerce". That is why `search` expands synonyms (see SYNONYMS) and queries
+the server once per term: the server ranking depends on `query`, so searching
+"ecommerce" never brings back the pool where the Shopify one lives. --no-expand
+turns it off.
 
-Uso:
+Usage:
   python freelance_search.py sources
   python freelance_search.py search --query "unity developer" --source all
   python freelance_search.py search --query python --source getonbrd --pages 3
   python freelance_search.py market --months 3
   python freelance_search.py detail --source getonbrd --id <id>
 
-Salida: JSON a stdout. Errores: JSON con "error" y "code" a stdout, exit 1.
-Solo stdlib. Compatible con Python 3.9.
+Output: JSON on stdout. Errors: JSON with "error" and "code" on stdout, exit 1.
+Stdlib only. Compatible with Python 3.9.
 """
 
 from __future__ import annotations
@@ -64,17 +65,17 @@ RETRY_SLEEP = 2
 GETONBRD_API = "https://www.getonbrd.com/api/v0"
 GETONBRD_JOBS = "https://www.getonbrd.com/jobs"
 # /api/v0/modalities -> 1 Full time, 2 Part time, 3 Freelance, 4 Internship.
-# Se filtra por locale_key y no por id: con expand[] el id viene como string "3"
-# y sin expand como int 3, asi que comparar el id se rompe en silencio.
+# Filtered by locale_key and not by id: with expand[] the id comes as the string
+# "3" and without expand as the int 3, so comparing the id breaks silently.
 GETONBRD_FREELANCE_KEY = "freelance"
-# expand[] inlinea los atributos de las referencias. Sin esto, company y tags
-# vienen como {"data":{"id":...}} y no hay nombre que mostrar. Lo aprendimos de
-# job-scrape/scripts/getonbrd_search.py, que ya lo usaba.
+# expand[] inlines the attributes of references. Without it, company and tags
+# come as {"data":{"id":...}} and there is no name to show. Learned from
+# job-scrape/scripts/getonbrd_search.py, which already used it.
 GETONBRD_EXPAND = ("company", "tags", "modality")
 
 HIMALAYAS_API = "https://himalayas.app/jobs/api"
 HIMALAYAS_CONTRACT = "Contractor"
-HIMALAYAS_PAGE = 20  # el limit se topea en 20 aunque pidas mas
+HIMALAYAS_PAGE = 20  # limit is capped at 20 even if you ask for more
 
 HN_SEARCH = "https://hn.algolia.com/api/v1/search_by_date"
 HN_ITEM = "https://hn.algolia.com/api/v1/items"
@@ -82,17 +83,17 @@ HN_THREAD_QUERY = '"Seeking freelancer"'
 HN_HIRING = "seeking_freelancer"
 HN_AVAILABLE = "seeking_work"
 
-# Fuentes de proyectos. HN no esta aca: ver `market` y el docstring de arriba.
+# Project sources. HN is not here: see `market` and the docstring above.
 SOURCES = ("getonbrd", "himalayas")
 
 # --------------------------------------------------------------------------- #
-# Fuentes con credencial por usuario
+# Sources with a per-user credential
 #
-# No pueden entrar a la corrida automatica: la key es de una persona y este repo
-# lo instala cualquiera. Pero omitirlas en silencio es peor, porque el usuario
-# no se entera de que existe una fuente que podria usar. Asi que se declaran
-# aca: `keys` explica como conseguir cada una, y si la variable de entorno esta
-# puesta la fuente se activa sola sin tocar nada mas.
+# They cannot join the automatic run: the key belongs to one person and anyone
+# installs this repo. But leaving them out silently is worse, because the user
+# never learns there is a source they could use. So they are declared here:
+# `keys` explains how to get each one, and if the environment variable is set
+# the source turns on by itself without touching anything else.
 # --------------------------------------------------------------------------- #
 
 UPWORK_GRAPHQL = "https://api.upwork.com/graphql"
@@ -100,83 +101,68 @@ UPWORK_GRAPHQL = "https://api.upwork.com/graphql"
 KEYED_SOURCES = {
     "upwork": {
         "env": "UPWORK_ACCESS_TOKEN",
-        "scope": "el marketplace mas grande; proyectos de todo el mundo",
-        "como_conseguirla": [
-            "Entrar al API Center de tu cuenta de Upwork (freelancer o cliente, cualquier plan).",
-            "Pedir una API key nueva. No hace falta cuenta de empresa.",
-            "Upwork revisa a mano y contesta por mail en ~1 semana.",
-            "Completar los datos de la cuenta antes de pedirla: el rechazo mas comun es data incompleta.",
-            "Con el client id y secret, sacar un access token OAuth 2.0 y exportarlo en UPWORK_ACCESS_TOKEN.",
+        "scope": "the largest marketplace; projects from all over the world",
+        "how_to_get": [
+            "Open the API Center of your Upwork account (freelancer or client, any plan).",
+            "Request a new API key. No company account is needed.",
+            "Upwork reviews it by hand and answers by email in ~1 week.",
+            "Complete the account details before requesting it: the most common rejection is incomplete data.",
+            "With the client id and secret, get an OAuth 2.0 access token and export it in UPWORK_ACCESS_TOKEN.",
         ],
-        "limites": "40.000 requests por dia, 10 por segundo por IP",
-        "lo_que_no_se_puede": (
-            "no hay mutation para enviar una propuesta ni para gastar Connects: "
-            "Upwork lo cerro a proposito contra el auto-bidding. Postularse sigue siendo a mano"
+        "limits": "40,000 requests per day, 10 per second per IP",
+        "cannot_do": (
+            "there is no mutation to send a proposal or spend Connects: "
+            "Upwork closed it on purpose against auto-bidding. Applying is still done by hand"
         ),
         "doc": "https://www.upwork.com/developer/documentation/graphql/api/docs/index.html",
     },
     "freelancer": {
         "env": "FREELANCER_OAUTH_TOKEN",
-        "scope": "marketplace global, mucho volumen y mucha competencia por precio",
-        "como_conseguirla": [
-            "Crear una app en la seccion de desarrolladores de Freelancer.com.",
-            "Es self-service: no hay revision manual como en Upwork.",
-            "Exportar el token en FREELANCER_OAUTH_TOKEN.",
+        "scope": "global marketplace, lots of volume and lots of price competition",
+        "how_to_get": [
+            "Create an app in the developer section of Freelancer.com.",
+            "It is self-service: there is no manual review like on Upwork.",
+            "Export the token in FREELANCER_OAUTH_TOKEN.",
         ],
-        "limites": "sin publicar",
-        "lo_que_no_se_puede": "el adaptador todavia no esta escrito; la guia esta para quien quiera hacerlo",
+        "limits": "not published",
+        "cannot_do": "the adapter is not written yet; the guide is here for whoever wants to write it",
         "doc": "https://developers.freelancer.com/",
         "adapter": False,
     },
 }
 
-# Expansion por sinonimos.
+# Synonym expansion.
 #
-# Nadie titula una oferta "ecommerce": la titula "Shopify" o "WooCommerce". Se
-# midio el pool completo de las dos fuentes (29 ofertas freelance) y buscar
-# "ecommerce" devolvia 0 mientras habia un "Desarrollador Web Shopify" adentro;
-# "website" devolvia 0 con un "Especialista WordPress" y un "Partner Tecnico
-# Astro" presentes. Buscar por categoria escondia trabajo real.
+# Nobody titles a posting "ecommerce": they title it "Shopify" or "WooCommerce".
+# The full pool of both sources was measured (29 freelance postings) and
+# searching "ecommerce" returned 0 while a Shopify web developer posting was in
+# it; "website" returned 0 with a WordPress specialist and an Astro technical
+# partner posting present. Searching by category hid real work.
 #
-# La clave es la palabra que el freelancer piensa; los valores son las que el
-# cliente escribe. Solo se expande hacia abajo (categoria -> tecnologias): al
-# reves inflaria los resultados de quien ya busca preciso.
-SYNONYMS = {
-    "ecommerce": ["shopify", "woocommerce", "magento", "vtex", "tiendanube", "prestashop"],
-    "tienda": ["shopify", "woocommerce", "vtex", "tiendanube"],
-    "website": ["wordpress", "webflow", "astro", "landing", "next.js", "html"],
-    "web": ["wordpress", "webflow", "astro", "landing", "next.js"],
-    "sitio": ["wordpress", "webflow", "astro", "landing"],
-    "landing": ["wordpress", "webflow", "astro", "html"],
-    "cms": ["wordpress", "strapi", "contentful", "sanity", "headless"],
-    "backend": ["node", "nestjs", "express", "django", "fastapi", "spring", ".net", "laravel"],
-    "frontend": ["react", "vue", "angular", "svelte", "next.js", "tailwind"],
-    "fullstack": ["node", "react", "typescript", "django", "laravel"],
-    "full-stack": ["node", "react", "typescript", "django", "laravel"],
-    "mobile": ["react native", "flutter", "swift", "kotlin", "ios", "android"],
-    "go": ["golang"],
-    "golang": ["go"],
-    "api": ["rest", "graphql", "openapi", "webhook", "integracion"],
-    "integraciones": ["api", "webhook", "erp", "crm", "salesforce", "middleware"],
-    "saas": ["multi-tenant", "stripe", "billing", "subscription", "dashboard"],
-    "dashboard": ["bi", "reporting", "metabase", "looker", "analytics"],
-    "database": ["postgres", "mysql", "mongodb", "sql", "migracion"],
-    "migracion": ["legacy", "refactor", "modernizacion", "migration"],
-    "testing": ["qa", "automation", "cypress", "playwright", "pytest"],
-    "qa": ["testing", "cypress", "playwright", "automation"],
-    "devops": ["kubernetes", "docker", "terraform", "aws", "ci/cd"],
-    "data": ["sql", "etl", "airflow", "bigquery", "dbt"],
-    "scraping": ["crawler", "scraper", "playwright", "extraction"],
-    "ai": ["llm", "openai", "rag", "machine learning", "langchain"],
-    "automatizacion": ["zapier", "n8n", "make", "airflow", "automation"],
-    "automation": ["zapier", "n8n", "make", "workflow"],
-    # Unity y game design entran porque son perfil del usuario, no porque el
-    # mapa apunte a gamedev: Unreal y Godot quedan afuera a proposito. El foco
-    # de este perfil es software en general.
-    "unity": ["c#", "gameplay", "game design"],
-    "gamedesign": ["game design", "level design", "unity"],
-}
-MAX_EXPANDED_TERMS = 6  # tope de terminos extra: cada uno es una request mas
+# The key is the word the freelancer thinks; the values are the ones the client
+# writes. It only expands downward (category -> technologies): the other way
+# would inflate the results of someone already searching precisely.
+#
+# The map lives in synonyms.<lang>.json next to this script (synonyms.en.json,
+# synonyms.es.json): GetOnBrd is a LatAm board, users search in Spanish and the
+# postings are written in Spanish, so every pack applies at once. Unity and game
+# design are in because they are the user's profile, not because the map
+# targets gamedev: Unreal and Godot are left out on purpose.
+def load_synonyms() -> dict:
+    """Every synonyms.<lang>.json, in file-name order; a shared key appends the later pack's values."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    merged: dict = {}
+    for name in sorted(os.listdir(here)):
+        if name.startswith("synonyms.") and name.endswith(".json"):
+            with open(os.path.join(here, name), encoding="utf-8") as handle:
+                for key, values in json.load(handle)["synonyms"].items():
+                    known = merged.setdefault(key, [])
+                    known.extend(v for v in values if v not in known)
+    return merged
+
+
+SYNONYMS = load_synonyms()
+MAX_EXPANDED_TERMS = 6  # cap on extra terms: each one is one more request
 
 RATE_PATTERNS = (
     r"(?:USD|US\$|\$|EUR|€)\s?(\d{1,4})(?:\s?[-a]\s?(?:USD|US\$|\$|EUR|€)?\s?(\d{1,4}))?\s?(?:/|per\s)\s?(hour|hr|h|day|d|week|wk|month|mo)",
@@ -196,7 +182,7 @@ def fetch(url: str) -> str:
             with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
                 return response.read().decode("utf-8", "replace")
         except urllib.error.HTTPError as e:
-            # 4xx no se reintenta: no va a cambiar.
+            # 4xx is not retried: it is not going to change.
             if 400 <= e.code < 500 and e.code != 429:
                 raise SourceError("HTTP {0} {1}".format(e.code, e.reason))
             last = "HTTP {0} {1}".format(e.code, e.reason)
@@ -212,27 +198,28 @@ def fetch_json(url: str):
     try:
         return json.loads(body)
     except ValueError as e:
-        raise SourceError("respuesta no es JSON: {0}".format(e))
+        raise SourceError("response is not JSON: {0}".format(e))
 
 
 def strip_html(raw: str) -> str:
-    """Texto visible de un aviso: posting_guard saca lo oculto y los caracteres invisibles."""
+    """Visible text of a posting: posting_guard removes hidden content and invisible characters."""
     return guard(raw or "", "html")[0]
 
 
-# Comas y espacios separan terminos. Solo espacios no alcanza: "typescript,backend"
-# es la forma natural de escribir una lista, y separando solo por espacios se
-# buscaba ese string literal, que no aparece en ningun aviso. El resultado eran
-# cero hits, que se leen como "no hay trabajo" en vez de "no busque nada".
+# Commas and spaces separate terms. Spaces alone are not enough:
+# "typescript,backend" is the natural way to write a list, and splitting only
+# on spaces searched that literal string, which appears in no posting. The
+# result was zero hits, read as "there is no work" instead of "I searched for
+# nothing".
 TERM_SEPARATOR = r"[,\s]+"
 
 
 def expand_query(query: str):
     """
-    Devuelve (terminos_de_busqueda, expansiones_aplicadas).
+    Returns (search_terms, applied_expansions).
 
-    El primer termino es siempre lo que el usuario escribio: es el que se pagina
-    en profundidad. Los sinonimos van despues y se consultan mas superficialmente.
+    The first term is always what the user typed: it is the one paged in depth.
+    Synonyms come after and are queried more shallowly.
     """
     words = [w for w in re.split(TERM_SEPARATOR, (query or "").strip().lower()) if w]
     terms = list(words)
@@ -251,26 +238,26 @@ def expand_query(query: str):
 
 def matches_terms(terms, *fields) -> bool:
     """
-    Chequeo de relevancia del lado del cliente.
+    Client-side relevance check.
 
-    La busqueda de GetOnBrd ordena por relevancia, no filtra: `query=unity`
-    devuelve 21 paginas donde las ultimas no tienen nada que ver (SAP, COBOL,
-    un recruiter). Paginando en profundidad y quedandose con lo freelance de esa
-    cola larga, el resultado es basura relevante a nada.
+    GetOnBrd's search ranks by relevance, it does not filter: `query=unity`
+    returns 21 pages where the last ones have nothing to do with it (SAP, COBOL,
+    a recruiter). Paging in depth and keeping the freelance part of that long
+    tail gives junk relevant to nothing.
 
-    Alcanza que UN termino aparezca: "unity developer" tiene que traer los que
-    dicen Unity aunque no digan developer, y con expansion "ecommerce" tiene que
-    traer los de Shopify.
+    ONE term appearing is enough: "unity developer" has to bring the ones that
+    say Unity even if they do not say developer, and with expansion "ecommerce"
+    has to bring the Shopify ones.
 
-    Match por limite de palabra y no por substring. En este dominio hay muchas
-    busquedas de dos letras que son legitimas (go, ux, ai, qa) y por substring
-    "ux" matchearia dentro de "Linux" y "go" dentro de "Django". El costo es que
-    buscar "script" ya no encuentra "JavaScript"; se prefiere ese costo antes que
-    devolver ofertas de Linux a quien busca UX.
+    Matches on word boundaries, not substrings. In this domain many two-letter
+    searches are legitimate (go, ux, ai, qa) and by substring "ux" would match
+    inside "Linux" and "go" inside "Django". The cost is that searching
+    "script" no longer finds "JavaScript"; that cost is preferred over
+    returning Linux postings to someone searching for UX.
 
-    Los terminos con caracteres no alfanumericos (c#, .net, node.js, react
-    native) caen a substring: \\b no funciona contra `#`, `.` ni el espacio
-    interno de un termino de dos palabras.
+    Terms with non-alphanumeric characters (c#, .net, node.js, react native)
+    fall back to substring: \\b does not work against `#`, `.` or the inner
+    space of a two-word term.
     """
     terms = [t for t in (terms or []) if t]
     if not terms:
@@ -286,20 +273,20 @@ def matches_terms(terms, *fields) -> bool:
 
 
 def matches_query(query: str, *fields) -> bool:
-    """Version sin expansion, partiendo la query en palabras."""
+    """Version without expansion, splitting the query into words."""
     return matches_terms([t for t in re.split(r"\s+", (query or "").strip().lower()) if t], *fields)
 
 
 def record(**kw):
-    """Forma comun para que el dedup de /freelance-scan trate todo igual."""
+    """Common shape so /freelance-scan's dedup treats everything the same."""
     base = {
         "source": None, "id": None, "title": None, "company": None, "url": None,
         "modality": None, "published_at": None, "location": None,
         "salary_min": None, "salary_max": None, "tags": [], "excerpt": None,
     }
     base.update(kw)
-    # El aviso es texto de terceros: el veredicto de posting_guard viaja con el
-    # registro solo si alarma, para no sumar un campo a cada resultado limpio.
+    # The posting is third-party text: posting_guard's verdict travels with the
+    # record only when it raises an alarm, so clean results get no extra field.
     _, integrity = check("\n".join(str(base.get(k) or "") for k in ("title", "excerpt", "description")), "text")
     if "flags" in integrity:
         base["integrity"] = integrity
@@ -307,11 +294,11 @@ def record(**kw):
 
 
 # --------------------------------------------------------------------------- #
-# GetOnBrd: LatAm + remoto. Comparte API con /job-scrape, sin key.
+# GetOnBrd: LatAm + remote. Shares its API with /job-scrape, no key.
 # --------------------------------------------------------------------------- #
 
 def expanded_name(node):
-    """Saca el nombre de una referencia JSON:API expandida, o None."""
+    """Gets the name of an expanded JSON:API reference, or None."""
     data = (node or {}).get("data") or {}
     return ((data.get("attributes") or {}).get("name")) or None
 
@@ -325,12 +312,12 @@ def expanded_names(node):
 
 def getonbrd_search(query: str, pages: int, per_page: int = 50, terms=None):
     """
-    `query` maneja el pool que devuelve el server; `terms` filtra lo que se queda.
+    `query` drives the pool the server returns; `terms` filters what stays.
 
-    Los dos hacen falta y no son lo mismo: el server rankea por relevancia
-    respecto de `query`, asi que buscar "ecommerce" nunca trae el pool donde vive
-    el "Desarrollador Web Shopify". Por eso el caller llama una vez por termino
-    expandido y dedupea; aca solo se resuelve una.
+    Both are needed and they are not the same: the server ranks by relevance
+    to `query`, so searching "ecommerce" never brings back the pool where the
+    Shopify web developer posting lives. That is why the caller calls once per
+    expanded term and dedupes; here only one is resolved.
     """
     terms = terms if terms is not None else [query]
     out = []
@@ -349,9 +336,9 @@ def getonbrd_search(query: str, pages: int, per_page: int = 50, terms=None):
             if ((modality.get("attributes") or {}).get("locale_key")) != GETONBRD_FREELANCE_KEY:
                 continue
             tags = expanded_names(attrs.get("tags"))
-            # El orden importa: la relevancia se chequea DESPUES de la modalidad,
-            # asi `irrelevant` cuenta solo freelance descartado por no tener nada
-            # que ver, que es el numero que le dice al usuario que afine la query.
+            # Order matters: relevance is checked AFTER the work type, so
+            # `irrelevant` counts only freelance dropped for being off-topic,
+            # which is the number that tells the user to refine the query.
             if not matches_terms(terms, attrs.get("title"), " ".join(tags),
                                  attrs.get("description_headline")):
                 irrelevant += 1
@@ -401,11 +388,11 @@ def getonbrd_detail(job_id: str):
 
 
 # --------------------------------------------------------------------------- #
-# Himalayas: remoto global. employmentType "Contractor" existe pero no filtra.
+# Himalayas: global remote. employmentType "Contractor" exists but does not filter.
 # --------------------------------------------------------------------------- #
 
 def himalayas_search(query: str, pages: int, terms=None):
-    """Himalayas devuelve un feed unico, asi que la expansion es solo del filtro."""
+    """Himalayas returns a single feed, so expansion only applies to the filter."""
     terms = terms if terms is not None else [query]
     out = []
     truncated = False
@@ -448,36 +435,36 @@ def himalayas_search(query: str, pages: int, terms=None):
 
 
 # --------------------------------------------------------------------------- #
-# Hacker News: el hilo mensual "Freelancer? Seeking freelancer?".
+# Hacker News: the monthly "Freelancer? Seeking freelancer?" thread.
 #
-# Esto NO es un buscador de proyectos, aunque el titulo del hilo lo sugiera. Se
-# midieron 6 meses (marzo a agosto 2026): 113 comentarios de freelancers
-# ofreciendose contra 2 ofertas de trabajo. Lo que si te da, y gratis, es
-# como se presentan y cuanto cobran otros con tu perfil. Eso alimenta
-# /freelance-profile y la decision de tarifa.
+# This is NOT a project finder, even if the thread title suggests it. Six
+# months were measured (March to August 2026): 113 comments from freelancers
+# offering themselves against 2 job offers. What it does give you, for free, is
+# how others with your profile present themselves and how much they charge.
+# That feeds /freelance-profile and the rate decision.
 # --------------------------------------------------------------------------- #
 
 # --------------------------------------------------------------------------- #
-# Triage de resultados de WebSearch
+# WebSearch result triage
 #
-# WebSearch es el unico camino que llega a los marketplaces sin credencial, pero
-# ~la mitad de lo que devuelve no son ofertas: son landings de "Hire Golang
-# developers", tablas de tarifas y gigs del Project Catalog. Se separan por
-# patron de URL, que es la parte determinista y por eso vive aca y no en el
-# criterio del modelo.
+# WebSearch is the only path that reaches the marketplaces without a
+# credential, but ~half of what it returns are not postings: they are "Hire
+# Golang developers" landings, rate tables and Project Catalog gigs. They are
+# separated by URL pattern, which is the deterministic part and that is why it
+# lives here and not in the model's judgment.
 #
-# Lo que no matchea ningun patron queda `unknown` a proposito. Adivinar mete
-# landings en la cola, y una cola con basura se deja de mirar.
+# Whatever matches no pattern stays `unknown` on purpose. Guessing puts
+# landings in the queue, and a queue with junk stops being looked at.
 # --------------------------------------------------------------------------- #
 
 URL_RULES = (
     ("upwork", r"(^|\.)upwork\.com$", (
         r"/jobs?/[^/]*~[0-9a-z]+",          # /job/Slug_~017abc...
-        r"/freelance-jobs/apply/[^/]*~",    # variante con /apply/
+        r"/freelance-jobs/apply/[^/]*~",    # /apply/ variant
     ), (
         r"/hire/", r"/services/product/", r"/services/",
         r"/freelance-jobs/[a-z]{2}/", r"/developer", r"/support",
-        r"/nx/search/",                     # la busqueda, no una oferta
+        r"/nx/search/",                     # the search page, not a posting
     )),
     ("workana", r"(^|\.)workana\.com$", (
         r"/job/[^/?]+$",
@@ -505,10 +492,10 @@ URL_RULES = (
 
 def classify_url(url: str):
     """
-    Devuelve (plataforma, veredicto) donde veredicto es posting | landing | unknown.
+    Returns (platform, verdict) where verdict is posting | landing | unknown.
 
-    Se mira solo el path: los parametros de query cambian por sesion y por
-    campania, asi que meterlos en la decision la vuelve inestable.
+    Only the path is looked at: query parameters change per session and per
+    campaign, so putting them in the decision makes it unstable.
     """
     try:
         parts = urllib.parse.urlsplit(url)
@@ -556,30 +543,30 @@ def triage_urls(urls):
         by_platform[row["platform"]] = by_platform.get(row["platform"], 0) + 1
 
     return {
-        # Lo unico que vale abrir. El resto se reporta para que se vea cuanto
-        # ruido trajo la busqueda, no para esconderlo.
+        # The only thing worth opening. The rest is reported so you can see how
+        # much noise the search brought, not to hide it.
         "postings": postings,
-        "postings_por_plataforma": by_platform,
-        "descartados_landing": landings,
-        "sin_clasificar": unknown,
-        "fuera_de_plataformas_conocidas": other,
-        "total_recibidas": len(seen),
-        "advertencia": (
-            "El indice de busqueda no filtra por fecha: estas URLs pueden ser viejas. "
-            "Verificar la fecha al abrir cada una antes de invertir tiempo."
+        "postings_by_platform": by_platform,
+        "discarded_landings": landings,
+        "unclassified": unknown,
+        "outside_known_platforms": other,
+        "total_received": len(seen),
+        "warning": (
+            "The search index does not filter by date: these URLs can be old. "
+            "Check the date when opening each one before investing time."
         ),
     }
 
 
 # --------------------------------------------------------------------------- #
-# Upwork (opt-in, requiere UPWORK_ACCESS_TOKEN)
+# Upwork (opt-in, requires UPWORK_ACCESS_TOKEN)
 # --------------------------------------------------------------------------- #
 
-# La query va aparte para que se pueda ajustar sin tocar la logica. Sale de la
-# doc GraphQL de Upwork; el transporte y el parseo estan testeados contra un
-# payload fijo, pero la forma exacta de la query no se pudo verificar contra la
-# API real porque hace falta una key aprobada. Si Upwork cambio un nombre de
-# campo, el error de abajo lo dice con el mensaje del server en la mano.
+# The query is kept separate so it can be adjusted without touching the logic.
+# It comes from Upwork's GraphQL docs; transport and parsing are tested against
+# a fixed payload, but the exact shape of the query could not be verified
+# against the real API because it needs an approved key. If Upwork renamed a
+# field, the error below says so with the server's message in hand.
 UPWORK_QUERY = """
 query marketplaceJobPostings($filter: MarketplaceJobPostingsSearchFilter,
                              $pagination: PaginationInput) {
@@ -614,10 +601,10 @@ def upwork_token():
 
 def _walk_nodes(obj, out, depth=0):
     """
-    Junta los `node` de cualquier conexion GraphQL sin asumir el anidamiento.
+    Collects the `node`s of any GraphQL connection without assuming the nesting.
 
-    Upwork cambio la forma de la respuesta al menos una vez; caminar el arbol
-    cuesta poco y evita que un nivel extra rompa todo con un KeyError.
+    Upwork changed the response shape at least once; walking the tree costs
+    little and keeps an extra level from breaking everything with a KeyError.
     """
     if depth > 8:
         return
@@ -647,7 +634,7 @@ def upwork_search(query: str, pages: int, terms=None):
     token = upwork_token()
     if not token:
         raise SourceError(
-            "falta {0}. Correr `keys` para ver como conseguir la credencial".format(
+            "{0} is missing. Run `keys` to see how to get the credential".format(
                 KEYED_SOURCES["upwork"]["env"]
             )
         )
@@ -678,19 +665,19 @@ def upwork_search(query: str, pages: int, terms=None):
             detail = exc.read().decode("utf-8", "replace")[:300] if exc.fp else ""
             if exc.code in (401, 403):
                 raise SourceError(
-                    "Upwork rechazo el token ({0}). Puede estar vencido: los access token "
-                    "de OAuth 2.0 caducan y hay que refrescarlos. {1}".format(exc.code, detail)
+                    "Upwork rejected the token ({0}). It may be expired: OAuth 2.0 access "
+                    "tokens expire and have to be refreshed. {1}".format(exc.code, detail)
                 )
             raise SourceError("Upwork HTTP {0}: {1}".format(exc.code, detail))
         except Exception as exc:  # noqa: BLE001
-            raise SourceError("Upwork inalcanzable: {0}".format(exc))
+            raise SourceError("Upwork unreachable: {0}".format(exc))
 
-        # GraphQL responde 200 con los errores adentro, asi que hay que mirarlos.
+        # GraphQL answers 200 with the errors inside, so they have to be checked.
         if body.get("errors"):
             msgs = "; ".join(str(e.get("message", e))[:160] for e in body["errors"][:3])
             raise SourceError(
-                "Upwork devolvio errores de GraphQL: {0}. Si menciona un campo desconocido, "
-                "ajustar UPWORK_QUERY: el schema pudo haber cambiado.".format(msgs)
+                "Upwork returned GraphQL errors: {0}. If it mentions an unknown field, "
+                "adjust UPWORK_QUERY: the schema may have changed.".format(msgs)
             )
 
         nodes = []
@@ -747,7 +734,7 @@ def hn_latest_threads(limit: int = 3):
 
 
 def hn_classify(text: str) -> str:
-    """La convencion del hilo: el comentario arranca declarando de que lado esta."""
+    """The thread's convention: the comment starts by declaring which side it is on."""
     head = re.sub(r"[^A-Za-z ]", " ", text[:110]).upper()
     head = re.sub(r"\s+", " ", head)
     if "SEEKING FREELANCER" in head:
@@ -758,7 +745,7 @@ def hn_classify(text: str) -> str:
 
 
 def extract_rates(text: str):
-    """Tarifas mencionadas en el texto. Devuelve lo que encuentra, sin inventar."""
+    """Rates mentioned in the text. Returns what it finds, without inventing."""
     found = []
     for pattern in RATE_PATTERNS:
         for m in re.finditer(pattern, text, re.IGNORECASE):
@@ -770,7 +757,7 @@ def extract_rates(text: str):
 
 
 def hn_market(months: int, query: str):
-    """Inteligencia de posicionamiento, no ofertas. Ver el comentario de arriba."""
+    """Positioning intelligence, not postings. See the comment above."""
     profiles, offers, counts = [], [], collections.Counter()
     threads_read = []
 
@@ -806,10 +793,10 @@ def hn_market(months: int, query: str):
     return {
         "threads_read": threads_read,
         "composition": dict(counts),
-        "note": ("El hilo lo dominan freelancers ofreciendose, no clientes buscando. "
-                 "Usalo para posicionamiento y tarifa, no como cola de trabajo. "
-                 "Solo ~3% de los perfiles declara una tarifa parseable: mira siempre el n "
-                 "de rates_summary antes de tratar la mediana como dato de mercado."),
+        "note": ("The thread is dominated by freelancers offering themselves, not clients looking. "
+                 "Use it for positioning and rates, not as a work queue. "
+                 "Only ~3% of profiles state a parseable rate: always check the n "
+                 "of rates_summary before treating the median as market data."),
         "competitor_profiles": profiles,
         "actual_offers": offers,
         "rates_found": rates,
@@ -836,9 +823,9 @@ def rate_summary(rates):
 
 def run_search(args) -> int:
     if args.source == "all":
-        # Las fuentes con credencial se suman solas cuando la variable esta
-        # puesta. Sin ella no se intentan, porque fallarian en cada corrida y el
-        # usuario aprenderia a ignorar los errores.
+        # Keyed sources join by themselves when the variable is set. Without it
+        # they are not tried, because they would fail on every run and the
+        # user would learn to ignore the errors.
         wanted = list(SOURCES) + [
             name for name, spec in KEYED_SOURCES.items()
             if spec.get("adapter", True) and os.environ.get(spec["env"], "").strip()
@@ -858,10 +845,10 @@ def run_search(args) -> int:
     for name in wanted:
         try:
             if name == "getonbrd":
-                # Una request por termino: el server rankea segun `query`, asi que
-                # "ecommerce" y "shopify" devuelven pools distintos. El termino del
-                # usuario se pagina hondo; los sinonimos, una pagina (el tope de
-                # relevancia es lo que importa y cada uno cuesta una request).
+                # One request per term: the server ranks by `query`, so
+                # "ecommerce" and "shopify" return different pools. The user's
+                # term is paged deep; synonyms get one page (the top of the
+                # relevance ranking is what matters and each one costs a request).
                 found, seen, off, cut = [], 0, 0, False
                 for i, term in enumerate(terms):
                     depth = args.pages if i < len(re.split(r"\s+", base_query.strip())) else 1
@@ -885,29 +872,29 @@ def run_search(args) -> int:
                 results.append(row)
                 fresh += 1
             scanned[name] = {"scanned": seen, "freelance": fresh,
-                             "freelance_pero_irrelevante": off}
+                             "freelance_but_irrelevant": off}
             if cut:
                 truncated.append(name)
         except SourceError as e:
-            # Una fuente caida no invalida las otras: se reporta y se sigue.
+            # One source down does not invalidate the others: report and move on.
             errors[name] = str(e)
 
     if errors and not results:
-        emit({"error": "todas las fuentes fallaron", "code": "ALL_SOURCES_FAILED", "detail": errors})
+        emit({"error": "all sources failed", "code": "ALL_SOURCES_FAILED", "detail": errors})
         return 1
 
     emit({
         "query": args.query,
-        # Que se busco realmente. Sin esto el usuario no entiende por que una
-        # busqueda de "ecommerce" le trajo una oferta de Shopify.
+        # What was actually searched. Without this the user does not understand
+        # why an "ecommerce" search brought a Shopify posting.
         "terms_searched": terms,
         "synonyms_applied": applied,
         "sources_requested": list(wanted),
         "sources_failed": errors,
-        # El rendimiento por fuente se reporta siempre: filtrar freelance del lado
-        # del cliente significa descartar mucho, y eso tiene que quedar a la vista
-        # en vez de parecer que la fuente no tiene nada. `freelance_pero_irrelevante`
-        # alto quiere decir que la query es muy amplia para el catalogo de la fuente.
+        # Yield per source is always reported: filtering freelance client-side
+        # means dropping a lot, and that has to be visible instead of looking
+        # like the source has nothing. A high `freelance_but_irrelevant` means
+        # the query is too broad for the source's catalog.
         "yield_by_source": scanned,
         "truncated": truncated,
         "count": len(results),
@@ -918,76 +905,77 @@ def run_search(args) -> int:
 
 def run_sources(_args) -> int:
     emit({"project_sources": [
-        {"name": "getonbrd", "scope": "LatAm y remoto", "auth": "ninguna",
-         "freelance_filter": "client-side (modality id 3); el parametro del server no filtra",
+        {"name": "getonbrd", "scope": "LatAm and remote", "auth": "none",
+         "freelance_filter": "client-side (modality id 3); the server parameter does not filter",
          "shares_cli_with": "job-scrape"},
-        {"name": "himalayas", "scope": "remoto global", "auth": "ninguna",
-         "freelance_filter": "client-side (employmentType Contractor); el parametro del server no filtra",
-         "note": "limit topeado en 20 por pagina"},
+        {"name": "himalayas", "scope": "global remote", "auth": "none",
+         "freelance_filter": "client-side (employmentType Contractor); the server parameter does not filter",
+         "note": "limit capped at 20 per page"},
     ], "market_intel_only": [
-        {"name": "hn", "subcommand": "market", "auth": "ninguna (10k req/hora)",
-         "why_not_projects": ("medido sobre 6 meses: 113 freelancers ofreciendose contra 2 ofertas. "
-                              "Sirve para tarifa y posicionamiento, no como cola de trabajo")},
-    ], "con_credencial_propia": [
+        {"name": "hn", "subcommand": "market", "auth": "none (10k req/hour)",
+         "why_not_projects": ("measured over 6 months: 113 freelancers offering themselves against 2 offers. "
+                              "Useful for rates and positioning, not as a work queue")},
+    ], "keyed_sources": [
         {"name": name, "env": spec["env"],
-         "configurada": bool(os.environ.get(spec["env"], "").strip()),
-         "detalle": "correr `keys` para ver como conseguirla"}
+         "configured": bool(os.environ.get(spec["env"], "").strip()),
+         "detail": "run `keys` to see how to get it"}
         for name, spec in KEYED_SOURCES.items()
     ], "excluded": [
-        {"name": "remoteok", "why": "sus terminos exigen backlink do-follow o suspenden el acceso; un CLI local no puede cumplirlo"},
-        {"name": "remotive", "why": "backlink do-follow obligatorio, maximo 4 requests por dia y datos con 24h de retraso"},
-        {"name": "jobicy", "why": "sin key y con terminos cumplibles, pero 99 de 100 avisos son full-time y jobType=contract devuelve HTTP 400"},
-        {"name": "workingnomads", "why": "sin campo de tipo de contrato: no hay forma de filtrar freelance sin adivinar por el titulo"},
-        {"name": "workana", "why": "sin API ni RSS publico (404 en las tres rutas probadas). Se busca con WebSearch y se abre a mano"},
-        {"name": "peopleperhour", "why": "sin RSS, y su robots.txt prohibe las URLs con filtros que usaria un buscador"},
-        {"name": "guru", "why": "sin RSS y con Disallow: /api/ explicito en robots.txt"},
-        {"name": "malt / freelancermap", "why": "API real detras de 401: credencial por usuario, mismo muro que Upwork"},
-    ], "sin_api_pero_alcanzables": {
-        "como": "WebSearch con allowed_domains, y despues `triage` para separar ofertas del ruido SEO",
-        "plataformas": ["upwork", "workana", "freelancer", "peopleperhour", "guru"],
-        "limite": "WebFetch devuelve 403 en todas: se descubre la oferta pero hay que abrirla a mano",
+        {"name": "remoteok", "why": "its terms require a do-follow backlink or they suspend access; a local CLI cannot comply"},
+        {"name": "remotive", "why": "mandatory do-follow backlink, at most 4 requests per day and data delayed 24h"},
+        {"name": "jobicy", "why": "no key and terms we can meet, but 99 of 100 postings are full-time and jobType=contract returns HTTP 400"},
+        {"name": "workingnomads", "why": "no contract type field: no way to filter freelance without guessing from the title"},
+        {"name": "workana", "why": "no public API or RSS (404 on the three routes tried). Searched with WebSearch and opened by hand"},
+        {"name": "peopleperhour", "why": "no RSS, and its robots.txt forbids the filtered URLs a search would use"},
+        {"name": "guru", "why": "no RSS and an explicit Disallow: /api/ in robots.txt"},
+        {"name": "malt / freelancermap", "why": "real API behind 401: per-user credential, same wall as Upwork"},
+    ], "reachable_without_api": {
+        "how": "WebSearch with allowed_domains, then `triage` to separate postings from SEO noise",
+        "platforms": ["upwork", "workana", "freelancer", "peopleperhour", "guru"],
+        "limit": "WebFetch returns 403 on all of them: the posting is found but has to be opened by hand",
     }})
     return 0
 
 
 def run_keys(_args) -> int:
     """
-    Que fuentes necesitan credencial, como se consigue cada una y cual esta lista.
+    Which sources need a credential, how to get each one and which is ready.
 
-    Existe porque omitirlas en silencio le esconde al usuario que hay una fuente
-    que podria estar usando. El estado se calcula mirando el entorno, asi que
-    responde por la maquina donde corre y no por lo que diga un README.
+    It exists because leaving them out silently hides from the user that there
+    is a source they could be using. The status is computed from the
+    environment, so it answers for the machine it runs on and not for what a
+    README says.
     """
     out = []
     for name, spec in KEYED_SOURCES.items():
-        configurada = bool(os.environ.get(spec["env"], "").strip())
-        tiene_adaptador = spec.get("adapter", True)
-        if configurada and tiene_adaptador:
-            estado = "lista: la variable esta puesta, `search --source {0}` ya la usa".format(name)
-        elif configurada:
-            estado = "credencial puesta pero el adaptador no esta escrito todavia"
-        elif tiene_adaptador:
-            estado = "no disponible: falta {0}. Con la variable puesta se activa sola".format(spec["env"])
+        configured = bool(os.environ.get(spec["env"], "").strip())
+        has_adapter = spec.get("adapter", True)
+        if configured and has_adapter:
+            status = "ready: the variable is set, `search --source {0}` already uses it".format(name)
+        elif configured:
+            status = "credential set but the adapter is not written yet"
+        elif has_adapter:
+            status = "not available: {0} is missing. With the variable set it turns on by itself".format(spec["env"])
         else:
-            estado = "no disponible: falta {0} y ademas el adaptador no esta escrito".format(spec["env"])
+            status = "not available: {0} is missing and the adapter is not written either".format(spec["env"])
         out.append({
-            "fuente": name,
-            "estado": estado,
-            "configurada": configurada,
-            "variable_de_entorno": spec["env"],
+            "source": name,
+            "status": status,
+            "configured": configured,
+            "env_var": spec["env"],
             "scope": spec["scope"],
-            "como_conseguirla": spec["como_conseguirla"],
-            "limites": spec["limites"],
-            "lo_que_no_se_puede": spec["lo_que_no_se_puede"],
+            "how_to_get": spec["how_to_get"],
+            "limits": spec["limits"],
+            "cannot_do": spec["cannot_do"],
             "doc": spec["doc"],
         })
     emit({
-        "fuentes_con_credencial": out,
-        "por_que_no_vienen_por_defecto": (
-            "la credencial es de una persona y este repo lo instala cualquiera. "
-            "Una fuente que necesita key funcionaria para uno y estaria rota para el resto"
+        "keyed_sources": out,
+        "why_not_default": (
+            "the credential belongs to one person and anyone installs this repo. "
+            "A source that needs a key would work for one user and be broken for everyone else"
         ),
-        "sin_credencial_ya_funcionan": list(SOURCES),
+        "work_without_credential": list(SOURCES),
     })
     return 0
 
@@ -997,7 +985,7 @@ def run_triage(args) -> int:
     if not urls and not sys.stdin.isatty():
         urls = [line.strip() for line in sys.stdin.read().splitlines()]
     if not urls:
-        emit({"error": "no llegaron URLs; pasar --url o por stdin", "code": "NO_URLS"})
+        emit({"error": "no URLs received; pass --url or use stdin", "code": "NO_URLS"})
         return 1
     emit(triage_urls(urls))
     return 0
@@ -1010,7 +998,7 @@ def run_market(args) -> int:
 
 def run_detail(args) -> int:
     if args.source != "getonbrd":
-        emit({"error": "detail solo esta implementado para getonbrd; las otras fuentes ya traen el texto completo en search",
+        emit({"error": "detail is only implemented for getonbrd; the other sources already bring the full text in search",
               "code": "NO_DETAIL"})
         return 1
     emit(getonbrd_detail(args.id))
@@ -1024,9 +1012,9 @@ def emit(payload) -> None:
 
 def force_utf8_streams() -> None:
     """
-    En Windows stdout es cp1252, asi que un acento o una vinieta en una
-    descripcion revienta con UnicodeEncodeError en cuanto se pipea a un archivo.
-    Mismo fix que job-scrape/scripts/getonbrd_search.py.
+    On Windows stdout is cp1252, so an accent or a bullet in a description
+    blows up with UnicodeEncodeError as soon as it is piped to a file.
+    Same fix as job-scrape/scripts/getonbrd_search.py.
     """
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
@@ -1035,37 +1023,37 @@ def force_utf8_streams() -> None:
 
 def main(argv=None) -> int:
     force_utf8_streams()
-    parser = argparse.ArgumentParser(description="Busca proyectos freelance en fuentes publicas sin API key.")
+    parser = argparse.ArgumentParser(description="Searches freelance projects in public sources without an API key.")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    search = sub.add_parser("search", help="buscar proyectos freelance")
-    search.add_argument("--query", default="", help="terminos a buscar")
+    search = sub.add_parser("search", help="search freelance projects")
+    search.add_argument("--query", default="", help="terms to search")
     search.add_argument("--source", default="all",
                         choices=list(SOURCES) + list(KEYED_SOURCES) + ["all"])
-    search.add_argument("--pages", type=int, default=3, help="paginas por fuente (default 3)")
+    search.add_argument("--pages", type=int, default=3, help="pages per source (default 3)")
     search.add_argument("--no-expand", action="store_true",
-                        help="no expandir por sinonimos (ecommerce no busca shopify, etc)")
+                        help="do not expand synonyms (ecommerce does not search shopify, etc)")
     search.set_defaults(func=run_search)
 
-    sources = sub.add_parser("sources", help="listar fuentes disponibles y las descartadas con su motivo")
+    sources = sub.add_parser("sources", help="list available sources and the excluded ones with their reason")
     sources.set_defaults(func=run_sources)
 
-    keys = sub.add_parser("keys", help="fuentes que piden credencial, como conseguirla y cual esta lista")
+    keys = sub.add_parser("keys", help="sources that need a credential, how to get it and which is ready")
     keys.set_defaults(func=run_keys)
 
     triage = sub.add_parser(
         "triage",
-        help="separar ofertas reales del ruido SEO en URLs traidas por WebSearch",
+        help="separate real postings from SEO noise in URLs brought by WebSearch",
     )
-    triage.add_argument("--url", action="append", help="repetible; si falta, lee de stdin")
+    triage.add_argument("--url", action="append", help="repeatable; if missing, reads from stdin")
     triage.set_defaults(func=run_triage)
 
-    market = sub.add_parser("market", help="que cobran y como se posicionan otros freelancers (hilo mensual de HN)")
-    market.add_argument("--months", type=int, default=3, help="cuantos hilos mensuales leer (default 3)")
-    market.add_argument("--query", default="", help="filtrar por stack o palabra")
+    market = sub.add_parser("market", help="what other freelancers charge and how they position themselves (monthly HN thread)")
+    market.add_argument("--months", type=int, default=3, help="how many monthly threads to read (default 3)")
+    market.add_argument("--query", default="", help="filter by stack or word")
     market.set_defaults(func=run_market)
 
-    detail = sub.add_parser("detail", help="traer el detalle completo de una oferta")
+    detail = sub.add_parser("detail", help="get the full detail of a posting")
     detail.add_argument("--source", default="getonbrd", choices=list(SOURCES))
     detail.add_argument("--id", required=True)
     detail.set_defaults(func=run_detail)

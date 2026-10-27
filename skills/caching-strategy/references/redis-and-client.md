@@ -2,12 +2,12 @@
 
 ## Redis
 
-- Cluster managed (Memorystore/ElastiCache), separar por proposito: cache (allkeys-lru) / session (noeviction) / queue
+- Managed cluster (Memorystore/ElastiCache), split by purpose: cache (allkeys-lru) / session (noeviction) / queue
 - Key naming: `<domain>:<entity>:<id>:<variant>` — pattern-based purge
-- Serializacion: JSON default, MessagePack si latencia importa
+- Serialization: JSON by default, MessagePack if latency matters
 
-## Cliente (React/RN)
+## Client (React/RN)
 
 - TanStack Query: `staleTime`, `gcTime`, `invalidateQueries` on mutation
-- RN: AsyncStorage persister para offline-first
+- RN: AsyncStorage persister for offline-first
 - PWA: Service Worker — assets CacheFirst, API NetworkFirst

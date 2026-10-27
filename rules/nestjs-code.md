@@ -14,63 +14,63 @@ paths:
 
 # NestJS Code Rules
 
-Reglas production-ready para NestJS, ordenadas por impacto. Catálogo completo (40 reglas, 10 categorías) + ejemplos incorrecto/correcto: skill `nestjs-best-practices`.
+Production-ready rules for NestJS, ordered by impact. Full catalog (40 rules, 10 categories) + incorrect/correct examples: skill `nestjs-best-practices`.
 
-## CRITICAL — Arquitectura & DI
+## CRITICAL — Architecture & DI
 
-- **Cero dependencias circulares entre módulos** — causa #1 de crashes en runtime. Si aparece `forwardRef()`, es señal de mal diseño: refactorizar.
-- **Organizar por feature modules**, no por capas técnicas (`users/`, no `controllers/` + `services/` globales).
-- **Exportar servicios desde módulos dedicados** para garantizar instancias singleton y evitar estado inconsistente.
-- **Single Responsibility por servicio** — un servicio = un concepto de dominio.
-- **Constructor injection siempre.** Nunca `ModuleRef.get()` en runtime (service locator anti-pattern). Dependencias explícitas, tipadas, testeables.
-- **Provider scopes**: `DEFAULT` (singleton) por defecto; `REQUEST` scope solo cuando se necesita contexto de request (tiene costo de performance).
-- **Injection tokens (símbolos o abstract classes) para interfaces** — las interfaces de TS no existen en runtime.
+- **Zero circular dependencies between modules** — the #1 cause of runtime crashes. If `forwardRef()` shows up, it signals bad design: refactor.
+- **Organize by feature modules**, not by technical layers (`users/`, not global `controllers/` + `services/`).
+- **Export services from dedicated modules** to guarantee singleton instances and avoid inconsistent state.
+- **Single Responsibility per service** — one service = one domain concept.
+- **Always constructor injection.** Never `ModuleRef.get()` at runtime (service locator anti-pattern). Explicit, typed, testable dependencies.
+- **Provider scopes**: `DEFAULT` (singleton) by default; `REQUEST` scope only when request context is needed (it has a performance cost).
+- **Injection tokens (symbols or abstract classes) for interfaces** — TS interfaces do not exist at runtime.
 
 ## HIGH — Error handling & Security
 
-- **Servicios lanzan `HttpException` subclasses**, no retornan objetos de error.
-- **Manejar errores async explícitamente** — fire-and-forget y background tasks deben atrapar errores (no unhandled rejections).
-- **Exception filters** para formato de respuesta de error centralizado y consistente.
-- **`ValidationPipe` global + DTOs decorados** — rechazar input malformado antes de procesarlo. `whitelist: true`, `forbidNonWhitelisted: true`.
-- **Guards declarativos para auth/authz**, no chequeos manuales en cada handler.
-- **JWT seguro**: tokens de vida corta + refresh tokens, secretos en env/secret manager, nunca data sensible en el payload.
-- **Rate limiting con `@nestjs/throttler`**, límites por endpoint.
-- **Sanitizar output** (XSS) y setear `Content-Type` correcto.
+- **Services throw `HttpException` subclasses**, they do not return error objects.
+- **Handle async errors explicitly** — fire-and-forget and background tasks must catch errors (no unhandled rejections).
+- **Exception filters** for a centralized, consistent error response format.
+- **Global `ValidationPipe` + decorated DTOs** — reject malformed input before processing it. `whitelist: true`, `forbidNonWhitelisted: true`.
+- **Declarative guards for auth/authz**, not manual checks in every handler.
+- **Secure JWT**: short-lived tokens + refresh tokens, secrets in env/secret manager, never sensitive data in the payload.
+- **Rate limiting with `@nestjs/throttler`**, per-endpoint limits.
+- **Sanitize output** (XSS) and set the correct `Content-Type`.
 
 ## HIGH — Performance & Data
 
-- **Evitar N+1**: eager loading con relations o joins de QueryBuilder.
-- **Optimizar queries**: seleccionar solo columnas necesarias, índices apropiados, no over-fetch de relaciones.
-- **Caching estratégico** con TTL apropiado e invalidación basada en eventos.
-- **Transacciones para operaciones multi-step** dependientes (consistencia ante fallos).
-- **Migraciones versionadas** — nunca `synchronize: true` en producción.
-- **Async lifecycle hooks** retornan promesas; constructores síncronos (no bloquear el arranque).
+- **Avoid N+1**: eager loading with relations or QueryBuilder joins.
+- **Optimize queries**: select only the columns you need, appropriate indexes, no over-fetching of relations.
+- **Strategic caching** with an appropriate TTL and event-based invalidation.
+- **Transactions for dependent multi-step operations** (consistency on failure).
+- **Versioned migrations** — never `synchronize: true` in production.
+- **Async lifecycle hooks** return promises; constructors stay synchronous (do not block startup).
 
 ## MEDIUM — API, Microservices, DevOps
 
-- **DTOs + serialización** (`ClassSerializerInterceptor`) para respuestas — controlar exposición, evitar referencias circulares.
-- **Interceptors para cross-cutting concerns** (logging, transformación, formato de respuesta).
-- **Pipes para transformación/validación** de input.
-- **API versioning** para cambios breaking.
-- **Health checks** (readiness/liveness) para orquestadores.
-- **Message queues para jobs largos** — no bloquear handlers de request.
-- **Graceful shutdown**: escuchar SIGTERM, drenar requests in-flight antes de salir.
-- **`ConfigModule` para configuración** por entorno — nada hardcodeado.
-- **Structured logging (JSON)** para parseo/filtrado en producción.
+- **DTOs + serialization** (`ClassSerializerInterceptor`) for responses — control exposure, avoid circular references.
+- **Interceptors for cross-cutting concerns** (logging, transformation, response format).
+- **Pipes for input transformation/validation**.
+- **API versioning** for breaking changes.
+- **Health checks** (readiness/liveness) for orchestrators.
+- **Message queues for long jobs** — do not block request handlers.
+- **Graceful shutdown**: listen for SIGTERM, drain in-flight requests before exiting.
+- **`ConfigModule` for per-environment configuration** — nothing hardcoded.
+- **Structured logging (JSON)** for parsing/filtering in production.
 
 ## Anti-Patterns
 
-- `forwardRef()` para parchear dependencias circulares en vez de rediseñar
-- Lógica de negocio en controllers (solo parsean input, llaman service, dan shape a la respuesta)
-- `synchronize: true` contra una DB de producción
-- `ModuleRef.get()` / service locator en runtime
-- Validación manual de input en cada handler en vez de `ValidationPipe` + DTO
-- Devolver entidades de ORM crudas como respuesta HTTP
-- `REQUEST` scope sin necesidad real (penaliza performance)
+- `forwardRef()` to patch circular dependencies instead of redesigning
+- Business logic in controllers (they only parse input, call the service, shape the response)
+- `synchronize: true` against a production DB
+- `ModuleRef.get()` / service locator at runtime
+- Manual input validation in every handler instead of `ValidationPipe` + DTO
+- Returning raw ORM entities as the HTTP response
+- `REQUEST` scope without a real need (hurts performance)
 
 ---
 
-_Derivado de [kadajett/agent-nestjs-skills](https://github.com/kadajett/agent-nestjs-skills) (nestjs-best-practices). Condensado al formato Arcane._
+_Derived from [kadajett/agent-nestjs-skills](https://github.com/kadajett/agent-nestjs-skills) (nestjs-best-practices). Condensed to the Arcane format._
 
 ## How to verify
 

@@ -1,107 +1,107 @@
 # Indexing Guide — PostgreSQL
 
-## Tipos de índice
+## Index types
 
-| Tipo | Cuándo | Cuándo NO |
+| Type | When | When NOT |
 |------|--------|-----------|
-| **B-tree** | Equality, range, ORDER BY (95% de casos) | Full-text, arrays, geo |
-| **GIN** | Arrays, jsonb, tsvector, trigram | Tablas con muchos writes |
-| **GiST** | Geo, ranges, nearest-neighbor | Queries de igualdad simples |
-| **BRIN** | Tablas enormes ordenadas (timestamps, series temporales) | Datos no correlacionados |
+| **B-tree** | Equality, range, ORDER BY (95% of cases) | Full-text, arrays, geo |
+| **GIN** | Arrays, jsonb, tsvector, trigram | Write-heavy tables |
+| **GiST** | Geo, ranges, nearest-neighbor | Simple equality queries |
+| **BRIN** | Huge ordered tables (timestamps, time series) | Uncorrelated data |
 
-## Composite: orden de columnas
+## Composite: column order
 
-**Regla:** Igualdad primero → rango después → ORDER BY al final.
+**Rule:** Equality first → range next → ORDER BY last.
 
 ```sql
--- Correcto: tenant_id (igualdad) → created_at (rango) → status (ORDER BY)
+-- Correct: tenant_id (equality) → created_at (range) → status (ORDER BY)
 CREATE INDEX idx_orders_tenant_date ON orders (tenant_id, created_at, status);
 
--- Incorrecto: rango primero — el índice no puede usar tenant_id para saltar
+-- Wrong: range first — the index cannot use tenant_id to skip ahead
 CREATE INDEX idx_bad ON orders (created_at, tenant_id);
 ```
 
-Un índice `(a, b, c)` sirve para queries sobre `a`, `a+b`, y `a+b+c` — pero NO para solo `b` o `c`.
+An `(a, b, c)` index serves queries on `a`, `a+b`, and `a+b+c` — but NOT on `b` or `c` alone.
 
-## Variantes útiles
+## Useful variants
 
 ### Partial index
-Reduce tamaño del índice cuando la mayoría de rows no matchea la condición:
+Shrinks the index when most rows do not match the condition:
 ```sql
 CREATE INDEX idx_orders_pending ON orders (created_at)
 WHERE status = 'pending' AND deleted_at IS NULL;
 ```
 
 ### Covering index (INCLUDE)
-Evita heap access si todas las columnas del SELECT están en el índice:
+Avoids heap access if every column in the SELECT is in the index:
 ```sql
 CREATE INDEX idx_users_email_covering ON users (email)
 INCLUDE (id, name, tenant_id);
--- Una query SELECT id, name, tenant_id WHERE email = ? no toca la tabla
+-- A SELECT id, name, tenant_id WHERE email = ? query does not touch the table
 ```
 
 ### Expression index
-Necesario cuando el WHERE usa una función sobre la columna:
+Required when the WHERE applies a function to the column:
 ```sql
 CREATE INDEX idx_users_email_lower ON users (lower(email));
--- Permite: WHERE lower(email) = lower($1)
+-- Enables: WHERE lower(email) = lower($1)
 ```
 
 ## CREATE INDEX CONCURRENTLY
 
-Obligatorio en tablas con tráfico en producción. No bloquea writes.
+Mandatory on tables with production traffic. Does not block writes.
 
 ```sql
--- Correcto para producción:
+-- Correct for production:
 CREATE INDEX CONCURRENTLY idx_orders_tenant ON orders (tenant_id);
 
--- Nunca en producción sin CONCURRENTLY (ACCESS SHARE LOCK bloquea writes):
+-- Never in production without CONCURRENTLY (ACCESS SHARE LOCK blocks writes):
 CREATE INDEX idx_orders_tenant ON orders (tenant_id);
 ```
 
-**Restricción:** No puede correr dentro de una transacción.
-- golang-migrate: usar `-- +migrate NoTransaction`
-- Prisma: `--create-only` + editar SQL manualmente
+**Restriction:** It cannot run inside a transaction.
+- golang-migrate: use `-- +migrate NoTransaction`
+- Prisma: `--create-only` + edit the SQL by hand
 
-**Si falla:** queda estado `INVALID`. Detectar y limpiar:
+**If it fails:** it is left in the `INVALID` state. Detect and clean up:
 ```sql
 SELECT indexname FROM pg_indexes
 JOIN pg_index ON pg_index.indexrelid = pg_indexes.indexrelid::regclass
 WHERE NOT indisvalid AND tablename = 'orders';
 
--- Limpiar y reintentar:
+-- Clean up and retry:
 DROP INDEX CONCURRENTLY idx_orders_tenant;
 CREATE INDEX CONCURRENTLY idx_orders_tenant ON orders (tenant_id);
 ```
 
 ## JSONB
 
-Para containment (`@>`): GIN con `jsonb_path_ops` (4x más pequeño que el default):
+For containment (`@>`): GIN with `jsonb_path_ops` (4x smaller than the default):
 ```sql
 CREATE INDEX idx_metadata_gin ON events USING GIN (metadata jsonb_path_ops);
--- Permite: WHERE metadata @> '{"type": "login"}'
+-- Enables: WHERE metadata @> '{"type": "login"}'
 ```
 
-Para un solo key: expression index:
+For a single key: expression index:
 ```sql
 CREATE INDEX idx_preferences_role ON users ((preferences->>'role'));
--- Permite: WHERE preferences->>'role' = 'admin'
+-- Enables: WHERE preferences->>'role' = 'admin'
 ```
 
-## FK child columns — siempre indexar
+## FK child columns — always index
 
-PostgreSQL NO crea índices automáticamente en columnas FK del lado hijo.
-Un DELETE/UPDATE en el padre hace Seq Scan en el hijo sin índice:
+PostgreSQL does NOT automatically create indexes on FK columns on the child side.
+A DELETE/UPDATE on the parent does a Seq Scan on the child without an index:
 
 ```sql
--- Siempre agregar junto al FK:
+-- Always add it alongside the FK:
 ALTER TABLE orders ADD CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users(id);
 CREATE INDEX CONCURRENTLY idx_orders_user_id ON orders (tenant_id, user_id);
 ```
 
-## Detectar índices problemáticos
+## Detect problematic indexes
 
-### Faltantes (Seq Scan en tablas grandes)
+### Missing (Seq Scan on large tables)
 ```sql
 SELECT relname, seq_scan, idx_scan, n_live_tup
 FROM pg_stat_user_tables
@@ -109,18 +109,18 @@ WHERE seq_scan > idx_scan AND n_live_tup > 10000
 ORDER BY seq_scan DESC;
 ```
 
-### No usados (candidatos a DROP)
+### Unused (DROP candidates)
 ```sql
 SELECT schemaname, tablename, indexname, idx_scan
 FROM pg_stat_user_indexes
 WHERE idx_scan = 0
   AND indexname NOT LIKE '%_pkey'
 ORDER BY pg_relation_size(indexrelid) DESC;
--- Solo DROP tras ≥1 mes de observación en producción
+-- Only DROP after ≥1 month of observation in production
 ```
 
-### Bloat (índices fragmentados)
+### Bloat (fragmented indexes)
 ```sql
--- Reconstruir sin downtime:
+-- Rebuild without downtime:
 REINDEX INDEX CONCURRENTLY idx_orders_tenant;
 ```

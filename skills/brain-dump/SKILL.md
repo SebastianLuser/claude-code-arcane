@@ -1,53 +1,53 @@
 ---
 name: brain-dump
-description: "Captura sin friccion al dump del dia en el vault de Obsidian: tareas, ideas, links, transcripciones. Sin tags, sin decidir donde va. Triggers: anota, capturar, brain dump, tirame esto al vault, apunta esto, agregar al inbox, dump del dia."
-argument-hint: "[texto a capturar]"
+description: "Frictionless capture into the day's dump in the Obsidian vault: tasks, ideas, links, transcripts. No tags, no deciding where it goes. Triggers: jot this down, capture, brain dump, throw this in the vault, note this, add to inbox, today's dump."
+argument-hint: "[text to capture]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Write, Edit
 ---
 
-# Brain Dump - Captura sin fricción
+# Brain Dump - Frictionless capture
 
-Agregás lo que el usuario te pasa al dump del día y te callás. Este skill existe para que capturar cueste cero: el momento en que el usuario tiene que pensar "¿dónde va esto?", el sistema ya falló.
+You append what the user gives you to the day's dump and stay quiet. This skill exists so that capturing costs nothing: the moment the user has to think "where does this go?", the system has already failed.
 
-Contenido a capturar: `$ARGUMENTS`
+Content to capture: `$ARGUMENTS`
 
-Aplica la rule `vault-conventions`.
+The `vault-conventions` rule applies.
 
-**Rutas por rol:** el destino se nombra por rol (`inbox`, `templates`), y la ruta real sale del `## Rutas` del `CLAUDE.md` del vault. Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+**Paths by role:** the destination is named by role (`inbox`, `templates`), and the real path comes from the `## Paths` section of the vault's `CLAUDE.md`. The defaults in parentheses only apply if the vault does not declare otherwise.
 
-## Pasos
+## Steps
 
-1. **Ubicar el vault.** Flag `--vault <path>`, env `OBSIDIAN_VAULT`, o el directorio actual si contiene `.obsidian/`. Si no hay vault, decirlo en una línea y ofrecer `/second-brain setup`. No inventar una carpeta.
+1. **Locate the vault.** Flag `--vault <path>`, env `OBSIDIAN_VAULT`, or the current directory if it contains `.obsidian/`. If there is no vault, say so in one line and offer `/second-brain setup`. Do not invent a folder.
 
-2. **Resolver el rol `inbox`.** Leer el `## Rutas` del `CLAUDE.md` del vault. Es lo único que hace falta leer del contrato acá, y cuesta una lectura: escribir en `_inbox/` cuando el vault usa otra carpeta deja la captura en un lugar que ningún review va a mirar. Si el vault no tiene `CLAUDE.md`, usar el default y avisar en la misma línea de confirmación.
+2. **Resolve the `inbox` role.** Read the `## Paths` section of the vault's `CLAUDE.md`. It is the only part of the contract you need to read here, and it costs one read: writing to `_inbox/` when the vault uses another folder leaves the capture somewhere no review will look. If the vault has no `CLAUDE.md`, use the default and say so in the same confirmation line.
 
-3. **Abrir el dump de hoy.** `<inbox>/YYYY-MM-DD dump.md` (default `_inbox/`) con la fecha de hoy. El dump se llama `YYYY-MM-DD dump.md` y no `YYYY-MM-DD.md` a propósito: el daily de ese día ya se llama `YYYY-MM-DD.md`, y dos archivos con el mismo nombre hacen que `[[2026-07-28]]` resuelva de forma impredecible en todo el vault. Es la colisión que el audit reporta como `ambiguous_names`, y sin el sufijo pasaría todos los días. Si el vault ya tiene dumps con el nombre viejo, seguir su convención y avisarlo, en vez de partir la serie en dos.
+3. **Open today's dump.** `<inbox>/YYYY-MM-DD dump.md` (default `_inbox/`) with today's date. The dump is named `YYYY-MM-DD dump.md` and not `YYYY-MM-DD.md` on purpose: that day's daily is already called `YYYY-MM-DD.md`, and two files with the same name make `[[2026-07-28]]` resolve unpredictably across the whole vault. It is the collision the audit reports as `ambiguous_names`, and without the suffix it would happen every day. If the vault already has dumps with the old name, follow its convention and say so, instead of splitting the series in two.
 
-   Si no existe, crearlo desde `<templates>/Dump.md` (default `Templates/`), o con el frontmatter mínimo `created`, `type: dump`, `tags: []` si el template no está.
+   If it does not exist, create it from `<templates>/Dump.md` (default `Templates/`), or with the minimal frontmatter `created`, `type: dump`, `tags: []` if the template is missing.
 
-4. **Agregar el contenido al final**, una línea por cosa, sin reordenar ni reescribir lo que ya había:
-   - Lo que suena a tarea va como `- [ ] <texto>`. Lo que suena a idea, nota o link va como `- <texto>`.
-   - URLs sueltas se dejan crudas, con el título de la página al lado solo si el usuario lo dio. No abrir la URL: eso es `/vault-clip`.
-   - Se preserva la redacción del usuario. No corregís su ortografía ni su registro, no resumís, no traducís.
+4. **Append the content at the end**, one line per item, without reordering or rewriting what was already there:
+   - What sounds like a task goes in as `- [ ] <text>`. What sounds like an idea, note or link goes in as `- <text>`.
+   - Loose URLs are left raw, with the page title next to them only if the user gave it. Do not open the URL: that is `/vault-clip`.
+   - The user's wording is preserved. You do not fix their spelling or register, you do not summarize, you do not translate.
 
-5. **Si no vino contenido en `$ARGUMENTS`**, preguntar qué capturar en una sola línea y esperar. No abrir un cuestionario.
+5. **If `$ARGUMENTS` brought no content**, ask what to capture in a single line and wait. Do not open a questionnaire.
 
-6. **Confirmar en una línea** qué se agregó y a qué archivo. Nada más: el usuario está en medio de otra cosa.
+6. **Confirm in one line** what was added and to which file. Nothing more: the user is in the middle of something else.
 
 ## Approval
 
-La invocación del skill es la aprobación para agregar al dump de hoy: pedir confirmación en cada captura destruiría el punto del skill. Los límites son estrictos en cambio para todo lo demás: **pedí approval explícito antes de escribir fuera del rol `inbox`**, antes de editar líneas que ya estaban en el dump, y antes de crear cualquier nota en los roles `atomic` o `hubs`. Clasificar es trabajo de `/review-dump`, no de acá.
+Invoking the skill is the approval to append to today's dump: asking for confirmation on every capture would defeat the point of the skill. The limits are strict for everything else instead: **ask for explicit approval before writing outside the `inbox` role**, before editing lines that were already in the dump, and before creating any note in the `atomic` or `hubs` roles. Classifying is the job of `/review-dump`, not this skill.
 
-## Reglas
+## Rules
 
-- No clasificar, no taggear, no linkear, no crear notas nuevas. Nada de eso pasa en la captura.
-- No juzgar el contenido ni sugerir mejoras. Es un dump, no un borrador.
-- Nunca reescribir ni reordenar lo que ya estaba en el archivo: solo append.
-- Sin guiones largos en lo que agregues de tu parte.
-- Si el usuario captura algo que claramente es una tarea de un proyecto que existe, **igual va al dump**. La ruteada la hace el review, así el usuario nunca decide en el momento.
+- Do not classify, tag, link or create new notes. None of that happens at capture time.
+- Do not judge the content or suggest improvements. It is a dump, not a draft.
+- Never rewrite or reorder what was already in the file: append only.
+- No long dashes in anything you add yourself.
+- If the user captures something that is clearly a task for an existing project, **it still goes to the dump**. The review does the routing, so the user never has to decide in the moment.
 
 ## Handoff
 
-Captura COMPLETE cuando el contenido está en el dump del día. A la noche, o cuando el usuario quiera cerrar el día, el siguiente paso es `/review-dump` para clasificar todo lo capturado y generar el daily.
+Capture COMPLETE when the content is in the day's dump. In the evening, or whenever the user wants to close the day, the next step is `/review-dump` to classify everything captured and generate the daily.

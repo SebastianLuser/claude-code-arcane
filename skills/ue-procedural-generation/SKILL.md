@@ -2,7 +2,7 @@
 name: ue-procedural-generation
 description: "PCG framework, ProceduralMesh, instanced mesh, runtime generation, noise"
 category: "gamedev"
-argument-hint: "[generator o PCG graph]"
+argument-hint: "[generator or PCG graph]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---

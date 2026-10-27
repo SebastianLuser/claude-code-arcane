@@ -6,75 +6,75 @@ last_used_in_incident: {YYYY-MM-DD}
 ---
 # {ALERT_NAME}
 
-## Severidad
+## Severity
 
-{SEV1 (>50% afectados) | SEV2 (degradacion parcial) | SEV3 (informativa)}
+{SEV1 (>50% affected) | SEV2 (partial degradation) | SEV3 (informational)}
 
-## Sintomas
+## Symptoms
 
-- Que ve el usuario: {descripcion}
-- Que dispara la alerta: {condicion de la alerta}
+- What the user sees: {description}
+- What fires the alert: {alert condition}
 - Dashboards: [{dashboard-name}]({dashboard-url})
 
 ## Impact Assessment
 
-- Que esta roto: {descripcion}
-- A cuantos afecta: {numero/porcentaje}
-- Desde cuando: {timestamp o "desde que disparo la alerta"}
-- Horario escolar: {si/no — si es horario escolar, elevar severidad +1}
+- What is broken: {description}
+- How many it affects: {number/percentage}
+- Since when: {timestamp or "since the alert fired"}
+- School hours: {yes/no — if it is during school hours, raise severity by 1}
 
 ## Diagnostic Steps
 
 ```bash
-# Paso 1: {descripcion}
-{comando-exacto-copypasteable}
+# Step 1: {description}
+{exact-copy-pasteable-command}
 
-# Paso 2: {descripcion}
-{comando-exacto-copypasteable}
+# Step 2: {description}
+{exact-copy-pasteable-command}
 ```
 
-**Criterio de decision:** Si {metrica} > {umbral} -> ir a Mitigation. Si no -> verificar {otra cosa}.
+**Decision criterion:** If {metric} > {threshold} -> go to Mitigation. If not -> check {something else}.
 
 ## Mitigation
 
-Parar el sangrado — no fix permanente.
+Stop the bleeding — not a permanent fix.
 
 ```bash
-# Opcion A: Rollback
-{comando-rollback}
+# Option A: Rollback
+{rollback-command}
 
-# Opcion B: Scale up
-{comando-scale}
+# Option B: Scale up
+{scale-command}
 ```
 
 ## Resolution
 
-Fix permanente (puede ser en horas):
+Permanent fix (it can take hours):
 
-1. {paso}
-2. {paso}
-3. {paso}
+1. {step}
+2. {step}
+3. {step}
 
 ## Rollback Plan
 
-Si el fix empeora las cosas:
+If the fix makes things worse:
 
 ```bash
-{comando-rollback-del-fix}
+{fix-rollback-command}
 ```
 
 ## Escalation Path
 
-| Tiempo | Accion | Contacto | Canal |
+| Time | Action | Contact | Channel |
 |--------|--------|----------|-------|
-| 0-15 min | On-call primario | {nombre} | {canal-slack} |
-| 15-30 min | On-call secundario | {nombre} | {canal-slack} |
-| 30-45 min | Engineering Manager | {nombre} | {telefono} |
-| 45+ min | CTO | {nombre} | {telefono} |
+| 0-15 min | Primary on-call | {name} | {slack-channel} |
+| 15-30 min | Secondary on-call | {name} | {slack-channel} |
+| 30-45 min | Engineering Manager | {name} | {phone} |
+| 45+ min | CTO | {name} | {phone} |
 
 ## Post-incident
 
-- [ ] Crear postmortem con `/incident`
-- [ ] Jira action items creados
-- [ ] Actualizar este runbook con lo aprendido
-- [ ] Review con equipo en proxima retro
+- [ ] Create a postmortem with `/incident`
+- [ ] Jira action items created
+- [ ] Update this runbook with what was learned
+- [ ] Review with the team at the next retro

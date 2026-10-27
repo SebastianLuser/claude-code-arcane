@@ -1,85 +1,85 @@
 ---
 name: meshy-generate
-description: "Genera un asset 3D con Meshy: preview -> aprobacion -> refine, con gate de creditos, dedupe contra el ledger y escritura de meshy.json. Usar para: generar modelo 3D, text to 3d, image to 3d, crear asset con meshy."
+description: "Generates a 3D asset with Meshy: preview -> approval -> refine, with a credit gate, dedupe against the ledger and writing of meshy.json. Use for: generate a 3D model, text to 3d, image to 3d, create an asset with meshy."
 category: "gamedev"
 argument-hint: "<slug> [--from-image <path>] [--spec <path>]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-# meshy-generate — Generar un asset 3D
+# meshy-generate — Generate a 3D asset
 
-Un asset por corrida. **Nunca en batch.** Cada llamada de generacion cuesta 20-30 creditos reales.
+One asset per run. **Never in batch.** Every generation call costs 20-30 real credits.
 
 ## Input
 
-- `<slug>` (requerido): kebab-case, sin fechas ni task_ids. Es el nombre de la carpeta. Sin argumento → mostrar el uso y parar.
-- `--from-image <path>` (opcional): usa `image_to_3d` en vez de `text_to_3d`. Con varias imagenes, `multi_image_to_3d`.
-- `--spec <path>` (opcional): spec de `asset-spec` de donde sale el prompt.
+- `<slug>` (required): kebab-case, no dates or task_ids. It is the folder name. No argument → show usage and stop.
+- `--from-image <path>` (optional): uses `image_to_3d` instead of `text_to_3d`. With several images, `multi_image_to_3d`.
+- `--spec <path>` (optional): an `asset-spec` spec the prompt comes from.
 
 ---
 
-## Phase 1: Dedupe — antes de gastar
+## Phase 1: Dedupe — before spending
 
 ```bash
-grep -rl "<termino>" assets/3d/*/meshy.json 2>/dev/null
+grep -rl "<term>" assets/3d/*/meshy.json 2>/dev/null
 ```
 
-Buscar por slug y por palabras clave del prompt. **Si hay un asset equivalente, parar**: mostrarlo al usuario, con su `credits_total`, y preguntar si quiere reusarlo, derivar un target nuevo con `/meshy-derive`, o generar igual.
+Search by slug and by the prompt's keywords. **If there is an equivalent asset, stop**: show it to the user, with its `credits_total`, and ask whether they want to reuse it, derive a new target with `/meshy-derive`, or generate anyway.
 
-Si `assets/3d/<slug>/` ya existe, no pisarlo. Parar y preguntar.
+If `assets/3d/<slug>/` already exists, don't overwrite it. Stop and ask.
 
 ---
 
 ## Phase 2: Prompt
 
-- **Con `--spec`**: el prompt sale del spec, textual.
-- **Sin spec**: si existe art bible (`design/art/art-bible.md` o equivalente), derivar el prompt de ahi — estilo, paleta, nivel de detalle. Si no existe, redactarlo con el usuario.
-- Nunca inventar un estilo que contradiga el art bible.
+- **With `--spec`**: the prompt comes from the spec, verbatim.
+- **Without a spec**: if an art bible exists (`design/art/art-bible.md` or equivalent), derive the prompt from it — style, palette, level of detail. If it doesn't exist, draft it with the user.
+- Never invent a style that contradicts the art bible.
 
-Mostrar el prompt final y pedir aprobacion. El prompt aprobado va al ledger textual: es lo que hace que el dedupe de la proxima sesion funcione.
+Show the final prompt and ask for approval. The approved prompt goes into the ledger verbatim: that is what makes the next session's dedupe work.
 
 ---
 
-## Phase 3: Gate de creditos
+## Phase 3: Credit gate
 
-Antes de la primera llamada que gasta:
+Before the first call that spends:
 
 ```
 mcp__meshy__check_balance
 ```
 
-Presentar al usuario, en un solo mensaje:
+Present to the user, in a single message:
 
 | | |
 |---|---|
-| Operacion | `text_to_3d` preview |
-| Costo estimado | 20-30 creditos (preview + refine) |
-| Balance actual | (de `check_balance`) |
+| Operation | `text_to_3d` preview |
+| Estimated cost | 20-30 credits (preview + refine) |
+| Current balance | (from `check_balance`) |
 
-**Esperar confirmacion explicita.** No generar con un "dale" ambiguo sobre otra cosa — la confirmacion tiene que ser sobre el costo mostrado.
+**Wait for explicit confirmation.** Don't generate on a vague "go ahead" about something else — the confirmation has to be about the cost shown.
 
 ---
 
 ## Phase 4: Preview
 
-Llamar `mcp__meshy__text_to_3d` (o `image_to_3d` / `multi_image_to_3d`) en modo preview. Pollear con `mcp__meshy__get_task_status` — es gratis, no hay razon para adivinar.
+Call `mcp__meshy__text_to_3d` (or `image_to_3d` / `multi_image_to_3d`) in preview mode. Poll with `mcp__meshy__get_task_status` — it is free, there is no reason to guess.
 
-Bajar el preview con `mcp__meshy__download_model` y **mostrarselo al usuario**. Anotar el `task_id` y los creditos del preview en el ledger ya en este punto: si el refine se cancela, el gasto del preview igual ocurrio y tiene que quedar registrado.
-
----
-
-## Phase 5: Refine — solo con el preview aprobado
-
-Si el preview no convence: **no refinar**. Opciones, en orden de costo:
-1. Ajustar el prompt y volver a preview.
-2. `retexture` (10) si la geometria sirve y el problema es la textura.
-3. Descartar.
-
-Con el preview aprobado, llamar `mcp__meshy__text_to_3d_refine`. El GLB resultante es el **master** y es inmutable — nada lo edita despues.
+Download the preview with `mcp__meshy__download_model` and **show it to the user**. Record the `task_id` and the preview's credits in the ledger at this point already: if the refine is canceled, the preview spend still happened and has to be recorded.
 
 ---
 
-## Phase 6: Escribir en disco
+## Phase 5: Refine — only with the preview approved
+
+If the preview isn't convincing: **don't refine**. Options, in order of cost:
+1. Adjust the prompt and preview again.
+2. `retexture` (10) if the geometry works and the problem is the texture.
+3. Discard.
+
+With the preview approved, call `mcp__meshy__text_to_3d_refine`. The resulting GLB is the **master** and is immutable — nothing edits it afterwards.
+
+---
+
+## Phase 6: Write to disk
 
 ```
 assets/3d/<slug>/
@@ -88,31 +88,31 @@ assets/3d/<slug>/
   thumb.png
 ```
 
-Mostrar el contenido de `meshy.json` y **pedir aprobacion antes de escribir**. Se escribe **en este mismo turno**, con el prompt textual, `ai_model`, un entry por task con sus creditos, y `credits_total`. El formato exacto esta en la rule.
+Show the contents of `meshy.json` and **ask for approval before writing**. It is written **in this same turn**, with the verbatim prompt, `ai_model`, one entry per task with its credits, and `credits_total`. The exact format is in the rule.
 
-Verificar que `master.glb` este cubierto por Git LFS (`git check-attr filter assets/3d/<slug>/master.glb`). Si no lo esta, avisar — commitear un GLB sin LFS ensucia el repo de forma dificil de revertir.
+Check that `master.glb` is covered by Git LFS (`git check-attr filter assets/3d/<slug>/master.glb`). If it isn't, warn — committing a GLB without LFS pollutes the repo in a way that is hard to revert.
 
 ---
 
-## Phase 7: Resumen
+## Phase 7: Summary
 
-Reportar:
-- Slug, prompt usado y de donde salio (spec / art bible / redactado).
-- Task ids y **creditos gastados reales** (correr `check_balance` de nuevo y reportar el delta contra Phase 3).
-- Archivos escritos.
-- Estado de LFS.
+Report:
+- Slug, the prompt used and where it came from (spec / art bible / drafted).
+- Task ids and **real credits spent** (run `check_balance` again and report the delta against Phase 3).
+- Files written.
+- LFS status.
 
 **Verdict:**
-- **COMPLETE** — master en disco, ledger escrito, LFS ok.
-- **PARTIAL** — se gasto en preview pero no hubo refine. El ledger tiene que reflejarlo igual. Decir cuanto se gasto.
-- **ABORTED** — no se gasto nada. Decir por que.
+- **COMPLETE** — master on disk, ledger written, LFS ok.
+- **PARTIAL** — credits were spent on the preview but there was no refine. The ledger has to reflect it anyway. State how much was spent.
+- **ABORTED** — nothing was spent. State why.
 
 ## Next Steps
 
-- `/meshy-derive <slug>` para los targets (FBX, web, blend) — el master no se toca
-- `/meshy-print <slug>` si va a impresion
-- `/asset-audit` para validar contra los standards del proyecto
+- `/meshy-derive <slug>` for the targets (FBX, web, blend) — the master is not touched
+- `/meshy-print <slug>` if it is going to print
+- `/asset-audit` to validate against the project's standards
 
 ---
 
-> Tabla de creditos completa, reglas de gasto, formato del ledger y convenciones de ejes/escala: `.claude/rules/meshy-assets.md` y `.claude/rules/meshy-files.md`. Leerlas antes de la Phase 3.
+> Full credit table, spending rules, ledger format and axis/scale conventions: `.claude/rules/meshy-assets.md` and `.claude/rules/meshy-files.md`. Read them before Phase 3.

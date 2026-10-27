@@ -134,7 +134,7 @@ skills:
     last_category_result: ""
     priority: critical
     category: utility
-    verdict: ["SALUDABLE", "NECESITA ATENCIÓN", "CRÍTICO"]
+    verdict: ["HEALTHY", "NEEDS ATTENTION", "CRITICAL"]
 
   - name: audit-log
     spec: null
@@ -2389,7 +2389,7 @@ skills:
     last_category_result: ""
     priority: critical
     category: authoring
-    verdict: ["SALUDABLE", "NECESITA ATENCIÓN", "CRÍTICO"]
+    verdict: ["HEALTHY", "NEEDS ATTENTION", "CRITICAL"]
 
   - name: balance-check
     spec: skills-selftest/skills/analysis/balance-check.md
@@ -2464,7 +2464,7 @@ skills:
     last_category_result: ""
     priority: medium
     category: authoring
-    verdict: ["SALUDABLE", "NECESITA ATENCIÓN", "CRÍTICO"]
+    verdict: ["HEALTHY", "NEEDS ATTENTION", "CRITICAL"]
 
   - name: game-docs
     spec: null
@@ -4830,7 +4830,7 @@ skills:
     priority: medium
     category: utility
 
-  - name: job-aplicar
+  - name: job-apply
     spec: null
     stack: personal
     last_static: ""

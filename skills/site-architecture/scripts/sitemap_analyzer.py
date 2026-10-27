@@ -167,10 +167,10 @@ def parse_sitemap(content: str) -> list:
         return []
 
     # Regular urlset
-    for url_el in root.findall(".//{http://www.sitemaps.org/schemas/sitemap/0.9}url") or root.findall(".//url"):
-        loc_el = url_el.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc") or url_el.find("loc")
-        lastmod_el = url_el.find("{http://www.sitemaps.org/schemas/sitemap/0.9}lastmod") or url_el.find("lastmod")
-        priority_el = url_el.find("{http://www.sitemaps.org/schemas/sitemap/0.9}priority") or url_el.find("priority")
+    for url_node in root.findall(".//{http://www.sitemaps.org/schemas/sitemap/0.9}url") or root.findall(".//url"):
+        loc_el = url_node.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc") or url_node.find("loc")
+        lastmod_el = url_node.find("{http://www.sitemaps.org/schemas/sitemap/0.9}lastmod") or url_node.find("lastmod")
+        priority_el = url_node.find("{http://www.sitemaps.org/schemas/sitemap/0.9}priority") or url_node.find("priority")
 
         if loc_el is not None and loc_el.text:
             urls.append({

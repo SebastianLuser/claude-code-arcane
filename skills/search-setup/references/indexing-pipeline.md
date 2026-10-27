@@ -1,11 +1,11 @@
 # Indexing Pipeline (Outbox Pattern)
 
-- **Nunca indexar desde el handler HTTP** — async con outbox + worker
+- **Never index from the HTTP handler** — async with outbox + worker
 - DB transaction: INSERT entity + INSERT outbox_event -> COMMIT
-- Worker poll outbox -> batch hasta 500 docs -> POST a Meili -> mark processed
-- Retries con backoff, DLQ tras N fallos. Siempre agregar `tenantId` al doc
+- Worker polls the outbox -> batches up to 500 docs -> POST to Meili -> marks processed
+- Retries with backoff, DLQ after N failures. Always add `tenantId` to the doc
 
 ## Reindex (Alias Switch)
 
-- Nunca DELETE + CREATE + reindex en prod. Usar `swapIndexes`:
-  1. Crear `courses_v2` con settings nuevos -> reindex full -> verificar -> swap -> borrar viejo
+- Never DELETE + CREATE + reindex in prod. Use `swapIndexes`:
+  1. Create `courses_v2` with the new settings -> full reindex -> verify -> swap -> delete the old one

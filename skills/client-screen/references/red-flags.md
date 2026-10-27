@@ -1,95 +1,95 @@
-# Red flags de un cliente - cómo leer cada señal
+# Client red flags - how to read each signal
 
-El objetivo no es descartar clientes: es no gastar Connects donde el resultado esperado es negativo, y no ganar contratos que van a costar más de lo que pagan.
+The goal is not to discard clients: it is not to spend Connects where the expected outcome is negative, and not to win contracts that will cost more than they pay.
 
-Un cliente con payment verificado, historial y alcance escrito es **riesgo bajo**, y decirlo es parte del trabajo. Un screen que marca todo como riesgoso deja de leerse.
+A client with verified payment, a history and a written scope is **low risk**, and saying so is part of the job. A screen that flags everything as risky stops being read.
 
-## Señales duras (del panel del cliente)
+## Hard signals (from the client panel)
 
-Están en la página pública de la oferta. Si alguna falta, pedirla antes de opinar.
+They are on the posting's public page. If one is missing, ask for it before giving an opinion.
 
-### Payment method sin verificar
+### Unverified payment method
 
-El riesgo más caro de la lista. Sin verificación no hay garantía de pago, y la protección de la plataforma se apoya en eso.
+The most expensive risk on the list. Without verification there is no payment guarantee, and the platform's protection rests on it.
 
-Un cliente nuevo sin verificar todavía es distinto de uno con historial que nunca verificó. El primero es incertidumbre; el segundo es una decisión que ya tomó.
+A new client not verified yet is different from one with a history who never verified. The first is uncertainty; the second is a decision they already made.
 
-### Hire rate bajo con muchos posts publicados
+### Low hire rate with many posts published
 
-Publica y no contrata. Tus Connects se van a una oferta que probablemente no se llene nunca.
+Posts and does not hire. Your Connects go to a posting that will probably never be filled.
 
-No confundir con hire rate bajo y pocos posts: alguien que publicó dos veces y contrató una vez no tiene un patrón, tiene dos datos.
+Do not confuse it with a low hire rate and few posts: someone who posted twice and hired once does not have a pattern, they have two data points.
 
-### Total gastado en cero, cuenta nueva
+### Zero total spent, new account
 
-No es descalificante por sí solo - todos empezaron alguna vez. Pero **sube un nivel el peso de todo lo demás**: sin historial, el post y el alcance son la única evidencia que hay.
+Not disqualifying on its own - everyone started at some point. But it **raises the weight of everything else by one level**: with no history, the post and the scope are the only evidence there is.
 
-### Promedio pagado por hora muy bajo
+### Very low average hourly rate paid
 
-Dato más útil que el presupuesto declarado: dice lo que este cliente **efectivamente paga**, no lo que dice estar dispuesto a pagar. Si su promedio está lejos abajo de tu piso, la negociación empieza perdida.
+A more useful data point than the stated budget: it says what this client **actually pays**, not what they say they are willing to pay. If their average is far below your floor, the negotiation starts lost.
 
-### Reviews que el cliente dejó a otros freelancers
+### Reviews the client left other freelancers
 
-La señal más subestimada. Un cliente que calificó mal a casi todos los que contrató es el patrón, no la excepción, y vos vas a ser el próximo.
+The most underrated signal. A client who rated badly almost everyone they hired is the pattern, not the exception, and you are going to be next.
 
-Leer también **cómo** escribe las reviews: quejas sobre "no entendió lo que quería" repetidas en varios freelancers distintos suelen indicar un problema de especificación del lado del cliente.
+Also read **how** they write the reviews: complaints like "did not understand what I wanted" repeated across several different freelancers usually point to a specification problem on the client's side.
 
-### Muchos contratos abiertos y ninguno cerrado
+### Many open contracts and none closed
 
-Proyectos que no terminan, o que no cierra para no tener que calificar. En los dos casos, tu contrato puede quedar en el limbo - y un contrato sin cerrar no aporta al JSS.
+Projects that never end, or that they do not close to avoid having to rate. Either way, your contract may end up in limbo - and an unclosed contract does not count toward the JSS.
 
-## Señales del texto del post
+## Signals in the post text
 
-### Presupuesto incoherente con el alcance
+### Budget inconsistent with the scope
 
-La más común y la más caro de ignorar. "E-commerce completo con panel de admin, 250 USD" no es una oportunidad de negociar: es una expectativa que ya está calibrada en otro orden de magnitud.
+The most common one and the most expensive to ignore. "Complete e-commerce site with admin panel, 250 USD" is not a chance to negotiate: it is an expectation already calibrated an order of magnitude away.
 
-Cuantificar siempre: horas estimadas contra presupuesto ofrecido, en dinero por hora, neto de comisión. El número decide mejor que la lectura de tono.
+Always quantify: estimated hours against budget offered, in money per hour, net of fees. The number decides better than a reading of tone.
 
-### Alcance difuso
+### Fuzzy scope
 
-"Y otras tareas relacionadas", "iremos definiendo en el camino", "algo simple, ya te vas a dar cuenta". Sin límite escrito no hay límite, y el límite lo vas a pagar vos en horas.
+"And other related tasks", "we'll define it along the way", "something simple, you'll figure it out". No written limit means no limit, and you are the one who will pay for it in hours.
 
-Difuso **más** precio fijo es la combinación que más plata pierde de todas.
+Fuzzy **plus** fixed price is the combination that loses the most money of all.
 
-### Pedido de trabajo real gratis
+### Request for real work for free
 
-Distinguir dos cosas:
+Tell two things apart:
 
-- **Test acotado y razonable** (una hora, un ejercicio sintético, o pagado): legítimo, es común.
-- **El trabajo real disfrazado de prueba** ("mandame el diseño de la home para ver tu estilo"): es trabajo gratis y suele repetirse con diez candidatos.
+- **A bounded, reasonable test** (one hour, a synthetic exercise, or paid): legitimate, it is common.
+- **The real work disguised as a test** ("send me the homepage design so I can see your style"): it is free work and it is usually repeated with ten candidates.
 
-Si lo que piden es entregable, es trabajo.
+If what they ask for is a deliverable, it is work.
 
-### Urgencia artificial
+### Artificial urgency
 
-"Lo necesito hoy", "arrancamos ya". Casi nunca viene con organización; viene con caos, cambios de último momento y decisiones tomadas encima tuyo.
+"I need it today", "we start right now". It almost never comes with organization; it comes with chaos, last-minute changes and decisions made over your head.
 
-Urgencia real existe y a veces paga mejor. La diferencia se nota en si el cliente tiene el alcance claro: urgente y específico es una cosa, urgente y difuso es otra.
+Real urgency exists and sometimes pays better. The difference shows in whether the client has a clear scope: urgent and specific is one thing, urgent and fuzzy is another.
 
-### Presión para salirse de la plataforma
+### Pressure to leave the platform
 
-Pagar por fuera, mover la conversación a otro canal antes de contratar, pedir contacto directo. Es violación de ToS **de las dos partes**: te deja sin protección de pago y pone en riesgo la cuenta del usuario, no solo la del cliente.
+Paying off-platform, moving the conversation to another channel before hiring, asking for direct contact. It violates the ToS **for both parties**: it leaves you without payment protection and puts the user's account at risk, not just the client's.
 
-Es red flag y a la vez motivo de no avanzar, independientemente de lo bueno que suene el proyecto.
+It is a red flag and at the same time a reason not to move forward, however good the project sounds.
 
-### Post genérico o reutilizado
+### Generic or reused post
 
-El mismo texto en varias ofertas, o una descripción que no dice nada del proyecto concreto. Suele indicar un cliente que está tirando la red a ver qué pesca, y que va a tratar tu propuesta con la misma atención con la que escribió el post.
+The same text across several postings, or a description that says nothing about the concrete project. It usually points to a client casting a net to see what they catch, who will treat your proposal with the same attention they put into writing the post.
 
-### Requisitos contradictorios
+### Contradictory requirements
 
-Senior con presupuesto junior. Full-stack más diseño más marketing en un solo rol. Diez años de experiencia en una tecnología que tiene cinco.
+Senior with a junior budget. Full-stack plus design plus marketing in a single role. Ten years of experience in a technology that is five years old.
 
-No siempre es mala fe: muchas veces es un cliente que no sabe lo que necesita. Igual es riesgo, porque lo va a descubrir durante tu contrato.
+It is not always bad faith: often it is a client who does not know what they need. It is still a risk, because they will find out during your contract.
 
-## Cómo pesar todo junto
+## How to weigh it all together
 
-No hay puntaje mecánico, y no conviene inventarlo: el peso depende de la combinación.
+There is no mechanical score, and it is better not to invent one: the weight depends on the combination.
 
-Dos guías que sí sirven:
+Two guides that do help:
 
-1. **Una señal dura sin verificar de pago pesa más que tres señales blandas de tono.** Lo primero te puede costar el pago entero.
-2. **La brecha presupuesto/alcance manda.** Si no cierra por un factor de 5, ninguna otra cosa lo compensa: no hay propuesta lo bastante buena para arreglar una expectativa desalineada en un orden de magnitud.
+1. **One hard signal of unverified payment weighs more than three soft tone signals.** The first can cost you the whole payment.
+2. **The budget/scope gap rules.** If it is off by a factor of 5, nothing else makes up for it: no proposal is good enough to fix an expectation misaligned by an order of magnitude.
 
-Cuando el veredicto sea no postularse, **registrar el descarte con el motivo**. Es la mitad de los datos que `/freelance-pipeline` necesita para decirte si tu filtro funciona.
+When the verdict is not to apply, **record the discard with the reason**. It is half the data `/freelance-pipeline` needs to tell you whether your filter works.

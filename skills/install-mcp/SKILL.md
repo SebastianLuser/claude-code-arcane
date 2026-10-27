@@ -1,6 +1,6 @@
 ---
 name: install-mcp
-description: "Conecta Claude Code con el MCP del engine: Unity (package UPM CoplayDev) o Unreal (plugins del engine). Detecta, registra y verifica. Usar para: mcp unity, mcp unreal, setup MCP del editor."
+description: "Connects Claude Code to the engine's MCP: Unity (CoplayDev UPM package) or Unreal (engine plugins). Detects, registers and verifies. Use for: unity mcp, unreal mcp, editor MCP setup."
 category: "gamedev"
 argument-hint: "[unity | unreal] [--secondary] [project-path]"
 user-invocable: true
@@ -8,120 +8,120 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 # install-mcp — Engine MCP Setup
 
-Conecta Claude Code con el editor del engine via MCP. Los dos engines difieren en algo importante:
+Connects Claude Code to the engine editor via MCP. The two engines differ in one important way:
 
 | | Unity | Unreal |
 |---|---|---|
-| **De donde viene el MCP** | Package de terceros (CoplayDev) | **Plugins propios del engine** (`ModelContextProtocol` + `AllToolsets`) |
-| **Se suma algo al proyecto** | Si — package UPM en `Packages/manifest.json` | **No** — ya viene con el engine, solo se habilita |
-| **Que hace este skill** | Instalar + registrar + verificar | Habilitar + conectar + verificar |
+| **Where the MCP comes from** | Third-party package (CoplayDev) | **The engine's own plugins** (`ModelContextProtocol` + `AllToolsets`) |
+| **Is anything added to the project** | Yes — a UPM package in `Packages/manifest.json` | **No** — it ships with the engine, it only gets enabled |
+| **What this skill does** | Install + register + verify | Enable + connect + verify |
 
-> En Unreal **no hay nada que instalar**. El server y los toolsets son plugins del engine; el trabajo es habilitarlos en el `.uproject`, prender auto-start y generar el `.mcp.json`. No agregues packages ni plugins de terceros.
+> In Unreal **there is nothing to install**. The server and the toolsets are engine plugins; the work is enabling them in the `.uproject`, turning on auto-start and generating the `.mcp.json`. Do not add third-party packages or plugins.
 
 ## Input
 
-- `unity` | `unreal` (opcional): fuerza el engine. Sin argumento, se autodetecta.
-- `project-path` (opcional): raiz del proyecto. Default: directorio actual.
-- `--secondary` (opcional, **solo Unity**): ademas del primario, instala el package CoderGamester.
+- `unity` | `unreal` (optional): forces the engine. Without an argument, it is autodetected.
+- `project-path` (optional): project root. Default: current directory.
+- `--secondary` (optional, **Unity only**): besides the primary, installs the CoderGamester package.
 
 ---
 
-## Phase 1: Detectar el engine
+## Phase 1: Detect the engine
 
-Desde `project-path` (o cwd), buscar marcadores:
+From `project-path` (or cwd), look for markers:
 
-| Marcador | Engine |
+| Marker | Engine |
 |---|---|
 | `Packages/manifest.json` + `ProjectSettings/ProjectVersion.txt` | Unity |
-| `*.uproject` (o `GenerateProjectFiles.*` en un source tree) | Unreal |
+| `*.uproject` (or `GenerateProjectFiles.*` in a source tree) | Unreal |
 
-- Si el argumento explicito contradice los marcadores, **avisar y preguntar** antes de seguir.
-- Si no hay marcadores, **abortar**: "No parece un proyecto Unity ni Unreal. Pasa la ruta con `/install-mcp [unity|unreal] <project-path>`."
-- Si aparecen ambos, preguntar cual.
+- If the explicit argument contradicts the markers, **warn and ask** before continuing.
+- If there are no markers, **abort**: "This does not look like a Unity or Unreal project. Pass the path with `/install-mcp [unity|unreal] <project-path>`."
+- If both show up, ask which one.
 
-Confirmar el engine detectado y la ruta antes de tocar archivos.
+Confirm the detected engine and the path before touching files.
 
 ---
 
-## Phase 2A: Unity — instalar y registrar
+## Phase 2A: Unity — install and register
 
-### 1. Verificar prerrequisitos
+### 1. Check prerequisites
 
-`uv --version` y `uvx --version` (server del primario). Si falta `uv`, **no abortar**: avisar, dar el comando y seguir editando el manifest.
+`uv --version` and `uvx --version` (the primary's server). If `uv` is missing, **do not abort**: warn, give the command and keep editing the manifest.
 
 - Windows: `winget install astral-sh.uv`
-- alternativa: `pipx install uv`
+- alternative: `pipx install uv`
 
-Solo con `--secondary`: `node --version`. Si falta, avisar (el server CoderGamester no podra correr).
+Only with `--secondary`: `node --version`. If it is missing, warn (the CoderGamester server will not be able to run).
 
-### 2. Agregar el package UPM
+### 2. Add the UPM package
 
-Un MCP de terceros es **código ajeno que corre con acceso al editor y al proyecto**. Antes de agregarlo:
+A third-party MCP is **someone else's code running with access to the editor and the project**. Before adding it:
 
-- **Quién lo publica:** el repo de la URL es el oficial del proyecto (CoplayDev, CoderGamester), no un fork con nombre parecido.
-- **Versión fijada:** nunca `#main`. Resolver el último release y fijar ese tag:
-  `gh api repos/CoplayDev/unity-mcp/releases/latest --jq .tag_name` (con `--secondary`, también `repos/CoderGamester/mcp-unity`). Si `gh` no está, pedirle el tag al usuario.
-- **Qué puede hacer:** listar en el resumen las tools que expone el server una vez conectado, para que el usuario sepa qué le habilita.
+- **Who publishes it:** the repo in the URL is the project's official one (CoplayDev, CoderGamester), not a fork with a similar name.
+- **Pinned version:** never `#main`. Resolve the latest release and pin that tag:
+  `gh api repos/CoplayDev/unity-mcp/releases/latest --jq .tag_name` (with `--secondary`, also `repos/CoderGamester/mcp-unity`). If `gh` is not available, ask the user for the tag.
+- **What it can do:** list in the summary the tools the server exposes once connected, so the user knows what it enables.
 
-Leer `Packages/manifest.json`. Dentro de `"dependencies"`, agregar **solo si la key no existe** (idempotente — nunca duplicar), con el tag resuelto:
+Read `Packages/manifest.json`. Inside `"dependencies"`, add **only if the key does not exist** (idempotent — never duplicate), with the resolved tag:
 
 ```json
 "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#<tag>"
 ```
 
-Con `--secondary`, agregar tambien:
+With `--secondary`, also add:
 
 ```json
 "com.gamelovers.mcp-unity": "https://github.com/CoderGamester/mcp-unity.git#<tag>"
 ```
 
-Si la key ya existe apuntando a `#main` o sin tag, avisarlo y proponer fijarla; no cambiarla sin aprobación.
+If the key already exists pointing to `#main` or without a tag, flag it and propose pinning it; do not change it without approval.
 
-Usar `Edit` puntual sobre el bloque `dependencies` preservando el JSON valido (indentacion, comas). Si la key ya estaba, reportar "ya presente, sin cambios".
+Use a targeted `Edit` on the `dependencies` block, keeping the JSON valid (indentation, commas). If the key was already there, report "already present, no changes".
 
-> **Antes de escribir**, mostrar el diff propuesto sobre `manifest.json` (y el `.mcp.json` del paso 3B si aplica) y pedir aprobacion al usuario. No editar sin confirmacion.
+> **Before writing**, show the proposed diff of `manifest.json` (and of the `.mcp.json` from step 3B if applicable) and ask the user for approval. Do not edit without confirmation.
 
-### 3. Registrar el server en Claude Code
+### 3. Register the server in Claude Code
 
-**A. Recomendado (auto-config desde Unity).** Instruir al usuario:
-1. Abrir el proyecto en Unity (importara el package nuevo).
+**A. Recommended (auto-config from Unity).** Instruct the user to:
+1. Open the project in Unity (it will import the new package).
 2. `Window → MCP for Unity`.
-3. Usar el boton de auto-configuracion para **Claude Code** — instala el server `uv` y registra el cliente.
+3. Use the auto-configuration button for **Claude Code** — it installs the `uv` server and registers the client.
 
-**B. Fallback manual.** Registrar el transport HTTP de CoplayDev:
+**B. Manual fallback.** Register CoplayDev's HTTP transport:
 
 ```bash
 claude mcp add --transport http unity-mcp http://127.0.0.1:8080
 ```
 
-> El server solo responde con Unity abierto y `MCP for Unity` activo. Registrar el cliente no levanta el server.
+> The server only responds while Unity is open with `MCP for Unity` active. Registering the client does not start the server.
 
 ---
 
-## Phase 2B: Unreal — habilitar y conectar
+## Phase 2B: Unreal — enable and connect
 
-Nada se instala. Tres pasos, en orden. **No edites el `.uproject` sin confirmar la ruta con el usuario.**
+Nothing gets installed. Three steps, in order. **Do not edit the `.uproject` without confirming the path with the user.**
 
-### 1. Habilitar los plugins del engine en el `.uproject`
+### 1. Enable the engine plugins in the `.uproject`
 
-Dos plugins, ambos requeridos. `ModelContextProtocol` es el server y el transport; `AllToolsets` provee las tools. Con solo `ModelContextProtocol` el server arranca pero **no expone ninguna tool**.
+Two plugins, both required. `ModelContextProtocol` is the server and the transport; `AllToolsets` provides the tools. With only `ModelContextProtocol` the server starts but **exposes no tools**.
 
-En el array `Plugins` del `.uproject`, asegurar las dos entradas:
+In the `.uproject`'s `Plugins` array, make sure both entries are present:
 
 ```json
 { "Name": "ModelContextProtocol", "Enabled": true },
 { "Name": "AllToolsets", "Enabled": true }
 ```
 
-Si el array no existe, crearlo. Si alguna entrada esta en `"Enabled": false`, pasarla a `true`. Mostrar el diff y pedir aprobacion antes de escribir.
+If the array does not exist, create it. If an entry is `"Enabled": false`, switch it to `true`. Show the diff and ask for approval before writing.
 
-`AllToolsets` es un agregador editor-only con `EnabledByDefault` apagado, asi que hay que habilitarlo explicitamente. Para exponer solo un subconjunto, habilitar los plugins de toolset puntuales en lugar de `AllToolsets`.
+`AllToolsets` is an editor-only aggregator with `EnabledByDefault` off, so it has to be enabled explicitly. To expose only a subset, enable the specific toolset plugins instead of `AllToolsets`.
 
-### 2. Prender auto-start
+### 2. Turn on auto-start
 
-Por default el server queda detenido. Para arrancarlo a mano en una sesion: `ModelContextProtocol.StartServer` desde la consola del editor.
+By default the server stays stopped. To start it by hand in a session: `ModelContextProtocol.StartServer` from the editor console.
 
-Para que arranque en cada launch, agregar al config per-user del editor:
+To have it start on every launch, add to the editor's per-user config:
 
 `<Project>/Saved/Config/<Platform>Editor/EditorPerProjectUserSettings.ini`
 
@@ -130,26 +130,26 @@ Para que arranque en cada launch, agregar al config per-user del editor:
 bAutoStartServer=True
 ```
 
-Es per-user y no va a source control. Overrides opcionales si el default choca con otro servicio local:
+It is per-user and does not go into source control. Optional overrides if the default clashes with another local service:
 
 ```ini
 ServerPortNumber=8000
 ServerUrlPath=/mcp
 ```
 
-Alternativa por command line: `-ModelContextProtocolStartServer` (y `-ModelContextProtocolPort=<port>`). Preferir el `.ini` porque persiste.
+Command-line alternative: `-ModelContextProtocolStartServer` (and `-ModelContextProtocolPort=<port>`). Prefer the `.ini` because it persists.
 
-### 3. Generar el `.mcp.json`
+### 3. Generate the `.mcp.json`
 
-El editor no lo escribe solo.
+The editor does not write it on its own.
 
-**Con el editor corriendo (preferido):** `ModelContextProtocol.GenerateClientConfig ClaudeCode` en la consola (o `All` para todos los clientes soportados). Re-correrlo mergea sobre el JSON existente, asi que es seguro despues de cambiar puerto o path.
+**With the editor running (preferred):** `ModelContextProtocol.GenerateClientConfig ClaudeCode` in the console (or `All` for every supported client). Re-running it merges over the existing JSON, so it is safe after changing the port or path.
 
-El destino depende del tipo de build:
-- **Source build** (el repo contiene `Engine/`): se escribe en la raiz del workspace, al lado de `Engine/` — **no** junto al `.uproject`.
-- **Installed/launcher build**: se escribe junto al `.uproject`.
+The destination depends on the build type:
+- **Source build** (the repo contains `Engine/`): it is written at the workspace root, next to `Engine/` — **not** next to the `.uproject`.
+- **Installed/launcher build**: it is written next to the `.uproject`.
 
-**Sin lanzar el editor**, escribir a mano en la ubicacion que corresponda:
+**Without launching the editor**, write it by hand in the right location:
 
 ```json
 {
@@ -162,44 +162,44 @@ El destino depende del tipo de build:
 }
 ```
 
-Ajustar la URL si se override el puerto o el path en el paso 2.
+Adjust the URL if the port or path was overridden in step 2.
 
 ---
 
-## Phase 3: Verificar
+## Phase 3: Verify
 
 ```bash
 claude mcp list
 ```
 
-Reportar si el server aparece **conectado** (`unity-mcp` o `unreal-mcp` segun el engine). En Unreal, dos senales extra: el Output Log muestra mensajes de arranque del MCP, y `list_toolsets` responde.
+Report whether the server shows up **connected** (`unity-mcp` or `unreal-mcp` depending on the engine). In Unreal, two extra signals: the Output Log shows MCP startup messages, and `list_toolsets` responds.
 
-**Si NO esta conectado, avisar explicitamente** y aclarar que las operaciones de engine (scenes, assets, blueprints, prefabs, UI wiring) NO se aplicaron — no asumir exito.
+**If it is NOT connected, say so explicitly** and make clear that engine operations (scenes, assets, blueprints, prefabs, UI wiring) were NOT applied — do not assume success.
 
 ---
 
-## Phase 4: Resumen
+## Phase 4: Summary
 
-Reportar:
-- Engine detectado y ruta del proyecto.
-- **Unity:** que keys se agregaron a `manifest.json` (o si ya estaban).
-- **Unreal:** que plugins se habilitaron en el `.uproject`, si se prendio auto-start, y donde quedo el `.mcp.json`.
-- Estado del registro y resultado de `claude mcp list`.
-- Proximo paso manual, si queda alguno.
+Report:
+- Detected engine and project path.
+- **Unity:** which keys were added to `manifest.json` (or whether they were already there).
+- **Unreal:** which plugins were enabled in the `.uproject`, whether auto-start was turned on, and where the `.mcp.json` ended up.
+- Registration status and the result of `claude mcp list`.
+- The next manual step, if any remains.
 
 **Verdict:**
-- **READY** — server registrado y conectado en `claude mcp list`.
-- **PENDING** — config lista, pero falta abrir el editor para que el server conecte (Unity: `Window → MCP for Unity`; Unreal: lanzar el editor con auto-start, o `ModelContextProtocol.StartServer`). Avisar que las operaciones de engine aun NO estan disponibles.
-- **BLOCKED** — falta un prerrequisito (`uv` ausente en Unity), el `.uproject` no se pudo editar, o no es un proyecto valido. Indicar el fix.
+- **READY** — server registered and connected in `claude mcp list`.
+- **PENDING** — config ready, but the editor still has to be opened for the server to connect (Unity: `Window → MCP for Unity`; Unreal: launch the editor with auto-start, or `ModelContextProtocol.StartServer`). Warn that engine operations are NOT available yet.
+- **BLOCKED** — a prerequisite is missing (`uv` absent in Unity), the `.uproject` could not be edited, or it is not a valid project. State the fix.
 
 ## Next Steps
 
-- **Unity:** `/unity-game-architecture` o `/scaffold-unity` para trabajar el proyecto
-- **Unreal:** `/ue-project-context` primero (el resto de los `ue-*` lo leen), despues `/ue-cpp-foundations` o `/ue-blueprints`
-- Si el server no conecta, ver el troubleshooting de la referencia del engine que corresponda
+- **Unity:** `/unity-game-architecture` or `/scaffold-unity` to work on the project
+- **Unreal:** `/ue-project-context` first (the rest of the `ue-*` skills read it), then `/ue-cpp-foundations` or `/ue-blueprints`
+- If the server does not connect, see the troubleshooting in the matching engine reference
 
 ---
 
-> → Read references/manual-setup.md for el flujo manual de Unity (`Window → MCP for Unity`), troubleshooting (uv no encontrado, puerto 8080 ocupado, MCP no conecta) y la variante secundaria CoderGamester
+> → Read references/manual-setup.md for the manual Unity flow (`Window → MCP for Unity`), troubleshooting (uv not found, port 8080 busy, MCP does not connect) and the CoderGamester secondary variant
 
-> → Read references/unreal-operations.md for los console commands de Unreal (`StartServer`, `StopServer`, `RefreshTools`, `GenerateClientConfig`), el modo tool-search y la matriz de troubleshooting (puerto ocupado, toolset faltante, tool calls que cuelgan)
+> → Read references/unreal-operations.md for the Unreal console commands (`StartServer`, `StopServer`, `RefreshTools`, `GenerateClientConfig`), tool-search mode and the troubleshooting matrix (port busy, missing toolset, hanging tool calls)

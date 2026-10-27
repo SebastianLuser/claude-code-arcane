@@ -1,142 +1,142 @@
 ---
 name: voice-pipeline
-description: "Pipeline de voz: script de VO, casting, sesiones de grabacion, naming y batch processing, localizacion, lipsync y barks. Usar para: dialogo grabado, voice over, doblaje, localizacion de voz, gestion de assets de VO."
+description: "Voice pipeline: VO script, casting, recording sessions, naming and batch processing, localization, lipsync and barks. Use for: recorded dialogue, voice over, dubbing, voice localization, VO asset management."
 category: "audio"
 argument-hint: "[script | casting | naming | loc | barks]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
-# voice-pipeline — Voz y Localización
+# voice-pipeline — Voice and Localization
 
-Gestiona el ciclo completo de voz grabada: del script al asset integrado y localizado.
+Manages the full recorded-voice cycle: from the script to the integrated, localized asset.
 
-La voz es el área de audio donde los errores son **más caros**: rehacer una sesión de grabación cuesta dinero y agenda de actores, y un error de naming multiplicado por 12 idiomas es inmanejable a mano.
+Voice is the audio area where mistakes are **most expensive**: redoing a recording session costs money and actors' schedules, and a naming mistake multiplied by 12 languages is unmanageable by hand.
 
-## Cuándo usar
+## When to use
 
-- Preparar un script de VO para grabación
-- Definir naming y estructura antes de recibir assets
-- Planificar localización a varios idiomas
-- Gestionar barks (chatter de combate) y su variación
-- El pipeline de VO se desordenó y hay que reorganizarlo
+- Preparing a VO script for recording
+- Defining naming and structure before receiving assets
+- Planning localization into several languages
+- Managing barks (combat chatter) and their variation
+- The VO pipeline got messy and needs reorganizing
 
 ## Input
 
-1. Leer audio bible (dirección de voz si existe) y el guion narrativo
-2. Determinar: cuántos idiomas, cuántos personajes, si hay lipsync
-3. Preguntar al usuario: presupuesto de grabación, si hay actores ya contratados, y plataforma de destino
+1. Read the audio bible (voice direction if it exists) and the narrative script
+2. Determine: how many languages, how many characters, whether there is lipsync
+3. Ask the user: recording budget, whether actors are already hired, and the target platform
 
 ---
 
-## Naming — la decisión más importante
+## Naming — the most important decision
 
-**El naming se define antes de grabar una sola línea.** Renombrar 4.000 archivos × 12 idiomas después no es una tarea, es un proyecto.
+**Naming is defined before recording a single line.** Renaming 4,000 files × 12 languages afterwards is not a task, it is a project.
 
-Patrón recomendado:
+Recommended pattern:
 
 ```
-vo_<personaje>_<contexto>_<id>_<variante>
+vo_<character>_<context>_<id>_<variant>
 vo_kira_combat_taunt_003_a
 vo_kira_story_ch02_017
 ```
 
-**Requisitos del patrón:**
-- **ID estable y único** — nunca se reusa, ni si la línea se corta. Los huecos son gratis; renumerar no
-- **Sin espacios ni acentos** — sobrevive a cualquier filesystem y a batch scripts
-- **El idioma NO va en el nombre del archivo** — va en la ruta o en el bank de idioma. Así el mismo nombre resuelve en cualquier locale
-- **Ordenable alfabéticamente** en el orden en que se usa
-- **Longitud acotada** — algunas plataformas tienen límites de path
+**Pattern requirements:**
+- **Stable, unique ID** — never reused, not even if the line is cut. Gaps are free; renumbering is not
+- **No spaces or accents** — survives any filesystem and batch scripts
+- **The language does NOT go in the file name** — it goes in the path or in the language bank. That way the same name resolves in any locale
+- **Alphabetically sortable** in the order it is used
+- **Bounded length** — some platforms have path limits
 
-El ID es la llave que une script, sesión de grabación, asset, subtítulo y traducción. Si cambia en algún punto, el vínculo se rompe.
+The ID is the key that ties together script, recording session, asset, subtitle and translation. If it changes anywhere, the link breaks.
 
-## Script de VO
+## VO script
 
-Lo que el actor y el director necesitan por línea:
+What the actor and the director need per line:
 
-| Campo | Por qué |
+| Field | Why |
 |---|---|
-| **ID** | La llave de todo el pipeline |
-| **Personaje** | |
-| **Texto** | Exacto, es lo que se graba y se subtitula |
-| **Contexto** | Qué pasó antes; sin esto la actuación es a ciegas |
-| **Dirección** | Emoción, intensidad, a quién le habla |
-| **Restricción de duración** | Si tiene que calzar en una animación o un hueco de gameplay |
-| **Tomas pedidas** | Cuántas variantes de intención |
+| **ID** | The key for the whole pipeline |
+| **Character** | |
+| **Text** | Exact, it is what gets recorded and subtitled |
+| **Context** | What happened before; without it the performance is blind |
+| **Direction** | Emotion, intensity, who they are talking to |
+| **Duration constraint** | Whether it has to fit an animation or a gameplay gap |
+| **Takes requested** | How many intent variants |
 
-**El contexto es lo que más se omite y lo que más arruina sesiones.** Un actor grabando líneas sueltas en orden alfabético, sin saber a quién le habla ni qué acaba de pasar, entrega material que no sirve y hay que volver a convocarlo.
+**Context is what gets omitted most and what ruins sessions most.** An actor recording loose lines in alphabetical order, without knowing who they are talking to or what just happened, delivers unusable material and has to be called back.
 
-**Orden de grabación:** por personaje y por escena, no por ID. Agrupar además por intensidad emocional — dejar los gritos para el final de la sesión, porque desgastan la voz y arruinan lo que venga después.
+**Recording order:** by character and by scene, not by ID. Also group by emotional intensity — leave the screams for the end of the session, because they wear the voice out and ruin whatever comes after.
 
 ## Casting
 
-- **Rango, no solo timbre** — el personaje que grita en el acto tres necesita un actor que pueda gritar sin perder la voz
-- **Distinguibilidad** — dos personajes que suenan parecido confunden en un juego donde el jugador no siempre ve quién habla. Test: escuchar sin ver
-- **Disponibilidad para pickups** — siempre hay pickups. Un actor imposible de reconvocar es un riesgo de producción
-- **Consistencia entre idiomas** — el casting de localización debería mantener el *rol tímbrico*, no imitar al actor original
+- **Range, not just timbre** — the character who screams in act three needs an actor who can scream without losing their voice
+- **Distinguishability** — two characters who sound alike are confusing in a game where the player does not always see who is speaking. Test: listen without watching
+- **Availability for pickups** — there are always pickups. An actor who cannot be called back is a production risk
+- **Consistency across languages** — localization casting should keep the *timbral role*, not imitate the original actor
 
 ## Barks
 
-El chatter de combate tiene reglas propias porque se escucha muchísimo:
+Combat chatter has its own rules because it is heard a lot:
 
-- **Muchas variantes por intención** — mínimo 5-8 por tipo. Un bark repetido es lo primero que el jugador nota
-- **Cortos** — 0.5 a 2 s. Un bark largo se pisa con el gameplay
-- **Cooldown global por personaje y por tipo** — dos enemigos gritando lo mismo a la vez suena a bug
-- **Prioridad baja** — un bark nunca debe tapar diálogo narrativo ni feedback del jugador
-- **Bus separado** de `Dialogue` para que no duckeen la música (ver `/audio-mix`)
-- **Interrumpibles** — si el personaje muere a mitad del bark, se corta
+- **Many variants per intent** — at least 5-8 per type. A repeated bark is the first thing the player notices
+- **Short** — 0.5 to 2 s. A long bark gets stepped on by gameplay
+- **Global cooldown per character and per type** — two enemies shouting the same thing at once sounds like a bug
+- **Low priority** — a bark must never cover narrative dialogue or player feedback
+- **A bus separate** from `Dialogue` so they do not duck the music (see `/audio-mix`)
+- **Interruptible** — if the character dies mid-bark, it gets cut
 
-## Localización
+## Localization
 
-| Decisión | Recomendación |
+| Decision | Recommendation |
 |---|---|
-| Estructura | Un bank o carpeta por idioma, mismos nombres de archivo adentro |
-| Idioma en runtime | Se resuelve cargando el bank del locale, sin lógica en gameplay |
-| Fallback | Idioma base si falta el asset — nunca silencio |
-| Expansión de texto | El alemán y el español crecen 20-35% sobre el inglés: los huecos de tiempo tienen que tolerarlo |
-| Subtítulos | Mismo ID que el audio. Un ID sin subtítulo es un bug de accesibilidad |
-| Sin doblar | Idiomas con subtítulo solo: definir explícitamente cuáles y que la mezcla lo contemple |
+| Structure | One bank or folder per language, same file names inside |
+| Runtime language | Resolved by loading the locale's bank, with no logic in gameplay |
+| Fallback | The base language if the asset is missing — never silence |
+| Text expansion | German and Spanish grow 20-35% over English: the timing gaps have to tolerate it |
+| Subtitles | Same ID as the audio. An ID without a subtitle is an accessibility bug |
+| Not dubbed | Subtitle-only languages: define explicitly which ones and make sure the mix accounts for it |
 
-**La expansión de texto es el problema práctico más común.** Una línea que calza justo en inglés se pasa 30% en alemán, y si hay una animación fija o un hueco de gameplay, no entra. Presupuestar el hueco contra el idioma más largo del target, no contra el inglés.
+**Text expansion is the most common practical problem.** A line that fits exactly in English runs 30% over in German, and if there is a fixed animation or a gameplay gap, it does not fit. Budget the gap against the longest language in the target, not against English.
 
-## Procesamiento por lotes
+## Batch processing
 
-El VO llega en crudo y necesita el mismo tratamiento en miles de archivos. Lo que debe ser automatizado, no manual:
+VO arrives raw and needs the same treatment across thousands of files. What must be automated, not manual:
 
-1. **Recorte de silencios** con umbral consistente
-2. **Normalización de loudness** a un target común
-3. **De-noise / de-click** si la fuente lo pide
-4. **Fades** de entrada y salida cortos
-5. **Verificación**: sample rate, bit depth, canales, duración vs restricción
-6. **Reporte** de los que no cumplen
+1. **Silence trimming** with a consistent threshold
+2. **Loudness normalization** to a common target
+3. **De-noise / de-click** if the source calls for it
+4. Short in and out **fades**
+5. **Verification**: sample rate, bit depth, channels, duration vs constraint
+6. **Report** of the ones that fail
 
-El paso 5 y 6 son los que hay que exigir: sin verificación automática, los assets que no cumplen se descubren en integración.
+Steps 5 and 6 are the ones to insist on: without automatic verification, non-conforming assets are discovered at integration.
 
 ## Lipsync
 
-- **Basado en fonemas** (extraído del audio o del texto) o **basado en amplitud** (más barato, mucho peor)
-- Si hay lipsync, el **texto tiene que coincidir exactamente** con lo grabado — una improvisación del actor rompe la sincronía
-- La localización necesita lipsync regenerado por idioma, o aceptar el desfasaje explícitamente
-- Los pickups tienen que regenerar el lipsync de la línea afectada
+- **Phoneme-based** (extracted from the audio or the text) or **amplitude-based** (cheaper, much worse)
+- If there is lipsync, the **text has to match exactly** what was recorded — an actor's improvisation breaks the sync
+- Localization needs lipsync regenerated per language, or explicitly accepting the mismatch
+- Pickups have to regenerate the lipsync of the affected line
 
 ---
 
-## Proceso
+## Process
 
-1. **Definir el naming** y congelarlo. Este paso primero, sin excepción
-2. **Armar el script** con contexto y dirección por línea
-3. **Planificar las sesiones** por personaje/escena, con los gritos al final
-4. **Definir la estructura** de localización y el fallback
-5. **Definir el pipeline** de batch con su paso de verificación
-6. **Definir barks** con variantes, cooldown y bus
-7. **Escribir** — preguntar "¿Escribo el pipeline a `<path>`?" antes de usar Write
+1. **Define the naming** and freeze it. This step first, no exceptions
+2. **Build the script** with context and direction per line
+3. **Plan the sessions** by character/scene, with the screams at the end
+4. **Define the localization structure** and the fallback
+5. **Define the batch pipeline** with its verification step
+6. **Define barks** with variants, cooldown and bus
+7. **Write** — ask "Shall I write the pipeline to `<path>`?" before using Write
 
 ---
 
 ## Verdict
 
-- **READY** — naming congelado, script con contexto y dirección, estructura de localización con fallback, pipeline de batch con verificación automática
-- **CONCERNS** — el pipeline existe pero el script no tiene contexto por línea, o la expansión de texto no se presupuestó, o los barks no tienen cooldown
-- **BLOCKED** — el naming no está definido: cualquier grabación antes de eso genera trabajo que se va a rehacer
+- **READY** — naming frozen, script with context and direction, localization structure with fallback, batch pipeline with automatic verification
+- **CONCERNS** — the pipeline exists but the script has no per-line context, or text expansion was not budgeted, or barks have no cooldown
+- **BLOCKED** — naming is not defined: any recording before that produces work that will have to be redone
 
 ## Anti-patterns
 
@@ -144,7 +144,7 @@ El paso 5 y 6 son los que hay que exigir: sin verificación automática, los ass
 
 ## Next steps
 
-- `/audio-mix` para el bus de diálogo y el ducking
-- `/audio-spec` para el contrato de eventos de barks (concurrencia y cooldown)
-- `/audio-audit` para verificar los assets entregados contra el spec
-- `/middleware-integration` para los banks de idioma
+- `/audio-mix` for the dialogue bus and ducking
+- `/audio-spec` for the barks event contract (concurrency and cooldown)
+- `/audio-audit` to verify delivered assets against the spec
+- `/middleware-integration` for the language banks

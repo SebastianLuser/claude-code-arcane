@@ -1,21 +1,21 @@
 # 8. Advanced Patterns (LOW)
 
-Patrones de borde con `useEffectEvent` y setup de app. Impacto bajo pero evitan bugs sutiles.
+Edge patterns with `useEffectEvent` and app setup. Low impact, but they prevent subtle bugs.
 
 ## 8.4 useEffectEvent for Stable Callback Refs — LOW
-Referencias de callback estables para componentes memoizados sin re-disparar effects.
+Stable callback references for memoized components without re-firing effects.
 ```tsx
 const onTick = useEffectEvent(() => doSomething(latestProp));
 useEffect(() => { const id = setInterval(onTick, 1000); return () => clearInterval(id); }, []);
 ```
 
 ## 8.1 Do Not Put Effect Events in Dependency Arrays — LOW
-Los Effect Events no van en el array de dependencias; se llaman desde el effect, no lo re-disparan.
+Effect Events do not go in the dependency array; they are called from the effect and do not re-fire it.
 
 ## 8.2 Initialize App Once, Not Per Mount — LOW
-Setup de app a nivel module-load, no en effects/mounts de componente.
+App setup at module-load level, not in component effects/mounts.
 
 ## 8.3 Store Event Handlers in Refs — LOW
-Handlers que cambian seguido en refs → no causan re-render.
+Handlers that change often go in refs → they do not cause re-renders.
 
 _Ref: https://react.dev/reference/react/experimental_useEffectEvent_

@@ -1,6 +1,6 @@
 ---
 name: web-security
-description: "OWASP Top 10 audit, security headers y CSP para web apps (React+Vite, Go/TS backends)."
+description: "OWASP Top 10 audit, security headers and CSP for web apps (React+Vite, Go/TS backends)."
 category: "security"
 argument-hint: "[audit|csp|headers|owasp|full]"
 user-invocable: true

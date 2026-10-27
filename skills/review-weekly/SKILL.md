@@ -1,91 +1,91 @@
 ---
 name: review-weekly
-description: "Retrospectiva semanal del vault: lee los dumps y dailies de la semana, extrae temas recurrentes e hilos abiertos, cuenta tareas hechas y no hechas, y crea el weekly. Triggers: review semanal, cerrar la semana, retrospectiva de la semana, weekly review, que paso esta semana."
+description: "Weekly vault retrospective: reads the week's dumps and dailies, extracts recurring themes and open threads, counts done and undone tasks, and creates the weekly. Triggers: weekly review, close the week, week retrospective, what happened this week."
 argument-hint: "[current | YYYY-Www | YYYY-MM-DD]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 
-# Review Weekly - Cerrar la semana
+# Review Weekly - Close the week
 
-Subís un nivel de abstracción: el daily registra, el weekly detecta patrones. Lo que buscás son los temas que se repitieron y los hilos que quedaron abiertos, no un resumen de siete resúmenes.
+You go up one level of abstraction: the daily records, the weekly detects patterns. What you are looking for are the themes that repeated and the threads left open, not a summary of seven summaries.
 
-Semana a procesar: `$ARGUMENTS` (default: la semana en curso, lunes a domingo)
+Week to process: `$ARGUMENTS` (default: the current week, Monday to Sunday)
 
-Aplica la rule `vault-conventions`.
+The `vault-conventions` rule applies.
 
-**Rutas por rol:** los destinos se nombran por rol y la ruta real de cada uno sale del `## Rutas` del `CLAUDE.md` del vault. Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+**Paths by role:** destinations are named by role, and each one's real path comes from the `## Paths` section of the vault's `CLAUDE.md`. The defaults in parentheses only apply if the vault doesn't declare something else.
 
-## Fase 1 - Leer la semana
+## Phase 1 - Read the week
 
-1. **Ubicar el vault** y leer su `CLAUDE.md`.
-2. **Resolver el rango**: si el argumento es una fecha, la semana ISO que la contiene; si es `YYYY-Www`, esa; si no hay argumento, la semana en curso.
-3. **Leer los dailies del rango (rol `daily`) y sus dumps (rol `inbox`).** Los dailies dan la síntesis, los dumps dan lo que no llegó a la síntesis. Faltan dailies casi siempre: anotá qué días quedaron sin procesar y ofrecé `/review-dump` para esos días antes de seguir, porque un weekly sobre dumps crudos es peor.
-4. **Presupuesto de lectura:** los 7 dailies del rango, sus dumps, y hasta 10 hubs de los que esos dailies linkean. Techo duro de 25 lecturas. Si el material no alcanza para sacar conclusiones, **decilo y pará** en vez de entregar un weekly a medias con cara de completo.
+1. **Locate the vault** and read its `CLAUDE.md`.
+2. **Resolve the range**: if the argument is a date, the ISO week that contains it; if it is `YYYY-Www`, that one; if there is no argument, the current week.
+3. **Read the range's dailies (role `daily`) and their dumps (role `inbox`).** The dailies give the synthesis, the dumps give what didn't make it into the synthesis. Dailies are almost always missing: note which days were left unprocessed and offer `/review-dump` for those days before continuing, because a weekly built on raw dumps is worse.
+4. **Reading budget:** the range's 7 dailies, their dumps, and up to 10 hubs those dailies link to. Hard ceiling of 25 reads. If the material isn't enough to draw conclusions, **say so and stop** instead of delivering a half-done weekly that looks complete.
 
-## Fase 2 - Extraer
+## Phase 2 - Extract
 
-1. **Temas:** de 3 a 5 asuntos que aparecen en dos días o más. Cada tema con los dailies donde aparece. Un tema que aparece un solo día no es un tema, es un evento.
+1. **Themes:** 3 to 5 subjects that show up on two or more days. Each theme with the dailies where it appears. A theme that shows up on a single day is not a theme, it is an event.
 
-Una conexión califica solo si es de uno de estos cuatro tipos (rúbrica adaptada del patrón de sesiones de conexión):
+A connection qualifies only if it is one of these four types (rubric adapted from the connection-session pattern):
 
-| Tipo | Qué buscar |
+| Type | What to look for |
 |---|---|
-| **A** | El mismo principio en dos dominios distintos |
-| **B** | Dos notas que se contradicen y la contradicción es productiva |
-| **C** | Un patrón que solo aparece juntando tres notas o más, y todavía no tiene nombre |
-| **D** | Una pregunta de una nota que otra nota responde sin proponérselo |
+| **A** | The same principle in two different domains |
+| **B** | Two notes that contradict each other, and the contradiction is productive |
+| **C** | A pattern that only appears when you put three or more notes together, and doesn't have a name yet |
+| **D** | A question in one note that another note answers without meaning to |
 
-Para no depender solo de lo que recordás de la semana, pedile candidatos al índice: `vault_index.py "<vault>" related "<nota de la semana>"` devuelve las notas más cercanas por vocabulario compartido, y ahí suelen estar las del tipo A y C. El criterio de si califican sigue siendo tuyo: el script propone vecinos, no conexiones.
+To avoid relying only on what you remember from the week, ask the index for candidates: `vault_index.py "<vault>" related "<note from the week>"` returns the closest notes by shared vocabulary, and types A and C are usually there. Whether they qualify is still your call: the script proposes neighbors, not connections.
 
-**Si la conexión es obvia, no califica.** El test es: ¿el usuario la habría encontrado solo, eventualmente? Si sí, sobra. Este paso se gana el lugar encontrando lo que él se pierde. Mínimo 3, máximo 5: por encima de eso la lista deja de leerse.
+**If the connection is obvious, it doesn't qualify.** The test is: would the user have found it alone, eventually? If so, it's surplus. This step earns its place by finding what they miss. Minimum 3, maximum 5: beyond that the list stops being read.
 
-Las del tipo B se marcan: las dos notas involucradas van al weekly como contradicción, y si el usuario confirma que sigue sin resolverse, se les pone `status: contested` en el frontmatter con approval. La contradicción se preserva, no se resuelve sola.
+Type B ones get flagged: the two notes involved go into the weekly as a contradiction, and if the user confirms it is still unresolved, they get `status: contested` in the frontmatter, with approval. The contradiction is preserved, it doesn't resolve itself.
 
-### El artefacto de una contradicción
+### The artifact of a contradiction
 
-Cuando una conexión tipo B se confirma, el weekly lleva un bloque con **las dos posiciones enfrentadas y su fuente**, no una síntesis que las promedie:
+When a type B connection is confirmed, the weekly carries a block with **the two opposing positions and their source**, not a synthesis that averages them:
 
 ```markdown
-> [!warning] Contradicción sin resolver
-> **[[Nota A]]** dice: <la afirmación, textual o parafraseada fielmente>
-> **[[Nota B]]** dice: <la otra>
-> Sin resolver desde YYYY-MM-DD. Las dos quedan `status: contested`.
+> [!warning] Unresolved contradiction
+> **[[Note A]]** says: <the claim, verbatim or faithfully paraphrased>
+> **[[Note B]]** says: <the other one>
+> Unresolved since YYYY-MM-DD. Both stay `status: contested`.
 ```
 
-Se usa `[!warning]` con título propio y no `[!contradiction]`: ese tipo no existe en Obsidian y renderizaría como un `note` cualquiera sin avisar (ver `/obsidian-markdown`).
+Use `[!warning]` with its own title and not `[!contradiction]`: that type doesn't exist in Obsidian and would render as a plain `note` without warning (see `/obsidian-markdown`).
 
-Tres reglas del artefacto:
+Three rules of the artifact:
 
-- **No la resuelvas.** Si te parece obvio cuál de las dos gana, decilo como comentario aparte; la nota no elige.
-- **No borres ninguna de las dos.** Una contradicción resuelta borrando la mitad no se resolvió, se tapó.
-- **Cuando el usuario la resuelve**, se le saca el `contested` a las dos y la resolución va como nota atómica propia, linkeando a ambas. Eso es conocimiento nuevo: es el caso donde la contradicción produjo algo.
-2. **Hilos abiertos:** preguntas o decisiones pendientes, distintas de una tarea. "Definir si migramos" es un hilo; "mandar el mail" es una tarea.
-3. **Tareas:** conteo de hechas y de no hechas, con las no hechas nombradas una por una. No suavizar el número ni omitirlas.
-4. **Notas que crecieron:** hubs y notas atómicas que recibieron contenido en la semana.
-5. **Señales, si aparecen:** un tema que se repite tres semanas seguidas sin avanzar, o un proyecto sin una sola mención en toda la semana. Reportarlas como observación, sin diagnóstico ni consejo.
+- **Don't resolve it.** If it seems obvious to you which of the two wins, say so as a separate comment; the note doesn't choose.
+- **Don't delete either one.** A contradiction resolved by deleting half of it wasn't resolved, it was covered up.
+- **When the user resolves it**, remove `contested` from both, and the resolution goes into its own atomic note, linking to both. That is new knowledge: it is the case where the contradiction produced something.
+2. **Open threads:** pending questions or decisions, distinct from a task. "Decide whether we migrate" is a thread; "send the email" is a task.
+3. **Tasks:** count of done and not done, with the undone ones named one by one. Don't soften the number or leave them out.
+4. **Notes that grew:** hubs and atomic notes that received content during the week.
+5. **Signals, if they appear:** a theme that repeats three weeks in a row without progress, or a project without a single mention all week. Report them as an observation, without diagnosis or advice.
 
-## Fase 3 - Escribir
+## Phase 3 - Write
 
-Refrescar también `hot.md` con los hilos abiertos de la semana, respetando su techo de 40 líneas.
+Also refresh `hot.md` with the week's open threads, respecting its 40-line ceiling.
 
-Con approval sobre lo extraído, crear `<weekly>/YYYY-Www.md` (default `Reflect/Weekly/`) desde `<templates>/Weekly.md`, con links a los dailies de la semana. Si el weekly ya existe, actualizarlo sin duplicar secciones.
+With approval on what was extracted, create `<weekly>/YYYY-Www.md` (default `Reflect/Weekly/`) from `<templates>/Weekly.md`, with links to the week's dailies. If the weekly already exists, update it without duplicating sections.
 
-Los links van hacia arriba: el weekly linkea a los dailies. Ningún daily se edita para linkear al weekly.
+Links go upward: the weekly links to the dailies. No daily is edited to link to the weekly.
 
-La sección `## Reflexión` queda vacía para el usuario.
+The `## Reflection` section is left empty for the user.
 
-Review COMPLETE cuando existe el weekly con temas, hilos y el conteo real de tareas.
+Review COMPLETE when the weekly exists with themes, threads and the real task count.
 
-## Reglas
+## Rules
 
-- Sin interpretación: reportás lo que pasó y lo que se repitió, no qué significa ni qué debería hacer el usuario.
-- Las tareas no hechas se nombran. Un weekly que las esconde no sirve para nada.
-- Idempotente: correrlo dos veces sobre la misma semana no duplica nada.
-- Solo el rango de la semana: nunca reescribir dailies ni dumps pasados desde acá.
-- Sin guiones largos.
+- No interpretation: report what happened and what repeated, not what it means or what the user should do.
+- Undone tasks are named. A weekly that hides them is useless.
+- Idempotent: running it twice on the same week duplicates nothing.
+- Only the week's range: never rewrite past dailies or dumps from here.
+- No em dashes.
 
 ## Handoff
 
-Con el weekly listo, el siguiente paso es seguir con `/brain-dump` la semana que viene, y al cierre del mes `/review-monthly`, que lee los weeklies y no los dailies. Si el weekly dejó al descubierto un tema que ya merece nota propia, `/zettel` o `/hub-note`.
+With the weekly ready, the next step is to keep going with `/brain-dump` next week, and at the end of the month `/review-monthly`, which reads the weeklies and not the dailies. If the weekly exposed a theme that already deserves its own note, `/zettel` or `/hub-note`.

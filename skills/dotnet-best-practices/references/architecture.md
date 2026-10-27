@@ -2,13 +2,13 @@
 
 ## 1.1 Organize by Feature, Not Technical Layers — CRITICAL
 
-Carpetas por feature (vertical slice) → cohesión alta y cambios localizados; las carpetas por capa técnica dispersan un cambio en 5 sitios.
+Folders per feature (vertical slice) → high cohesion and localized changes; folders per technical layer scatter a change across 5 places.
 
-**Incorrecto** — carpetas técnicas globales:
+**Incorrect** — global technical folders:
 ```csharp
-// Controllers/, Services/, Repositories/, Dtos/ ... un cambio toca 4 carpetas
+// Controllers/, Services/, Repositories/, Dtos/ ... one change touches 4 folders
 ```
-**Correcto** — un slice por feature:
+**Correct** — one slice per feature:
 ```csharp
 // Features/Orders/{ CreateOrder.cs, GetOrder.cs, OrdersEndpoints.cs, OrderDto.cs }
 // Features/Users/{ RegisterUser.cs, UsersEndpoints.cs, UserDto.cs }
@@ -16,20 +16,20 @@ Carpetas por feature (vertical slice) → cohesión alta y cambios localizados; 
 
 ## 1.2 Thin Endpoints — CRITICAL
 
-El endpoint parsea, delega y forma la respuesta. Sin lógica de negocio: así es testeable y reutilizable desde otros transportes.
+The endpoint parses, delegates and shapes the response. No business logic: that keeps it testable and reusable from other transports.
 
-**Incorrecto:**
+**Incorrect:**
 ```csharp
 app.MapPost("/orders", async (CreateOrderDto dto, AppDbContext db) =>
 {
-    if (dto.Items.Count == 0) return Results.BadRequest();   // negocio en el endpoint
-    var total = dto.Items.Sum(i => i.Price * i.Qty);          // negocio en el endpoint
+    if (dto.Items.Count == 0) return Results.BadRequest();   // business logic in the endpoint
+    var total = dto.Items.Sum(i => i.Price * i.Qty);          // business logic in the endpoint
     db.Orders.Add(new Order { Total = total });
     await db.SaveChangesAsync();
     return Results.Ok();
 });
 ```
-**Correcto:**
+**Correct:**
 ```csharp
 app.MapPost("/orders", async (CreateOrderRequest req, CreateOrderHandler handler, CancellationToken ct) =>
 {
@@ -40,15 +40,15 @@ app.MapPost("/orders", async (CreateOrderRequest req, CreateOrderHandler handler
 
 ## 1.3 Dependencies Point Inward / Slices Independent — HIGH
 
-El dominio no conoce infraestructura (Clean Architecture): el handler depende de una abstracción `IOrderRepository`, no de `AppDbContext`. Entre slices, sin acoplamiento directo; coordinar vía eventos de dominio o un mediador.
+The domain knows nothing about infrastructure (Clean Architecture): the handler depends on an `IOrderRepository` abstraction, not on `AppDbContext`. No direct coupling between slices; coordinate through domain events or a mediator.
 
 ## 1.4 Single Responsibility per Handler — HIGH
 
-Un handler resuelve un caso de uso. `CreateOrderHandler` no envía emails ni cobra: emite un evento y otro handler reacciona. Mejora testabilidad y limita el blast radius de cada cambio.
+A handler resolves one use case. `CreateOrderHandler` does not send emails or charge payments: it emits an event and another handler reacts. It improves testability and limits the blast radius of each change.
 
 ## 1.5 Program.cs as Composition Root Only — MEDIUM-HIGH
 
-`Program.cs` solo registra servicios y arma el pipeline; nada de lógica de negocio. Mover el wiring a extensiones (`builder.Services.AddOrdersFeature()`) mantiene el root legible.
+`Program.cs` only registers services and builds the pipeline; no business logic. Moving the wiring into extensions (`builder.Services.AddOrdersFeature()`) keeps the root readable.
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);

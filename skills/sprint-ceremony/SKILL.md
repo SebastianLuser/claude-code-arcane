@@ -8,68 +8,68 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
 # sprint-ceremony — Agile Ceremony Assistant
 
-Agendas, templates y outputs de ceremonias de sprint. Integra con Notion/Coda (docs) y Jira (action items).
+Agendas, templates and outputs for sprint ceremonies. Integrates with Notion/Coda (docs) and Jira (action items).
 
-## Invocación
+## Invocation
 
-`/sprint-ceremony <tipo> [before|after]` — `before` genera agenda, `after` registra notas + action items.
+`/sprint-ceremony <type> [before|after]` — `before` generates the agenda, `after` records notes + action items.
 
-## Ceremonias
+## Ceremonies
 
-### 1. Daily Standup (15 min, diaria)
+### 1. Daily Standup (15 min, daily)
 
-Template: sprint info + por persona (ayer/hoy/bloqueos con ticket IDs) + bloqueos consolidados (tabla: bloqueo/owner/ETA) + follow-ups + sprint health check (in progress/QA/done/scope change).
+Template: sprint info + per person (yesterday/today/blockers with ticket IDs) + consolidated blockers (table: blocker/owner/ETA) + follow-ups + sprint health check (in progress/QA/done/scope change).
 
-Reglas: no es status report a manager, bloqueos a parking lot, cortar si >15 min. Acciones: bloqueos sin owner → proponer asignar, action items → subtasks Jira.
+Rules: it is not a status report to a manager, blockers go to the parking lot, cut it if >15 min. Actions: blockers without an owner → propose an assignee, action items → Jira subtasks.
 
-### 2. Sprint Planning (2h, inicio sprint)
+### 2. Sprint Planning (2h, sprint start)
 
-**Pre-read (24h antes):** backlog refinado, PRDs activos, capacity, retro action items.
+**Pre-read (24h before):** refined backlog, active PRDs, capacity, retro action items.
 
-**Agenda:** sprint goal (15 min) → review backlog priorizado (30 min) → estimación/commitment planning poker fibonacci (60 min) → dependencias y riesgos (10 min) → confirmación (5 min).
+**Agenda:** sprint goal (15 min) → review the prioritized backlog (30 min) → estimation/commitment with Fibonacci planning poker (60 min) → dependencies and risks (10 min) → confirmation (5 min).
 
-**Output:** sprint goal + capacity/comprometido + stories table (ID/story/SP/owner) + riesgos + dependencias externas. Acciones: mover tickets al sprint, asignar SP, crear sprint goal.
+**Output:** sprint goal + capacity/committed + stories table (ID/story/SP/owner) + risks + external dependencies. Actions: move tickets into the sprint, assign SP, create the sprint goal.
 
-### 3. Sprint Review/Demo (1h, fin sprint)
+### 3. Sprint Review/Demo (1h, sprint end)
 
-**PPT outline:** portada → sprint goal → resumen ejecutivo (entregado/en progreso/no entregado) → 1 slide por feature (screenshot/video + quién lo usa + métrica) → próximos pasos.
+**PPT outline:** cover → sprint goal → executive summary (delivered/in progress/not delivered) → 1 slide per feature (screenshot/video + who uses it + metric) → next steps.
 
-**Doc output:** entregado con demos + en progreso (% + razón) + no entregado (razón) + feedback stakeholders → action items + decisiones. Acciones: PPT outline, feedback → Notion/Coda, accionable → tickets Jira.
+**Doc output:** delivered with demos + in progress (% + reason) + not delivered (reason) + stakeholder feedback → action items + decisions. Actions: PPT outline, feedback → Notion/Coda, actionable items → Jira tickets.
 
-### 4. Retrospective (1h, fin sprint, solo equipo)
+### 4. Retrospective (1h, sprint end, team only)
 
-**Default: Start/Stop/Continue** con votos + kudos + action items (MAX 3, con owner+due+Jira) + follow-up retro anterior. Formatos alternativos para rotar: 4Ls, Sailboat, Mad/Sad/Glad.
+**Default: Start/Stop/Continue** with votes + kudos + action items (MAX 3, with owner+due+Jira) + follow-up on the previous retro. Alternative formats to rotate: 4Ls, Sailboat, Mad/Sad/Glad.
 
-Reglas: max 3 action items, cada uno con owner+due+ticket, siempre revisar anterior, nada vago ("mejorar comunicación" → algo específico). Vegas rule. Acciones: tickets Jira label `retro-action`, doc Notion privado equipo.
+Rules: max 3 action items, each with owner+due+ticket, always review the previous one, nothing vague ("improve communication" → something specific). Vegas rule. Actions: Jira tickets labeled `retro-action`, private team Notion doc.
 
-### 5. Refinement (1h, 1x por sprint mitad)
+### 5. Refinement (1h, once per sprint, mid-sprint)
 
-Por ticket: context + AC claros? + dependencias + estimación SP + ready for dev? Backlog hygiene: tickets >3 meses → archivar?, sin prioridad, duplicados. Acciones: actualizar SP, label `ready-for-sprint`, archivar stale.
+Per ticket: context + clear AC? + dependencies + SP estimate + ready for dev? Backlog hygiene: tickets >3 months old → archive?, no priority, duplicates. Actions: update SP, label `ready-for-sprint`, archive stale ones.
 
-### 6. 1-on-1 (30-45 min, semanal/quincenal)
+### 6. 1-on-1 (30-45 min, weekly/biweekly)
 
-**Report template:** foco sesión + status trabajo + temas + feedback para manager + desarrollo profesional + action items anterior + notas + nuevos action items.
+**Report template:** session focus + work status + topics + feedback for the manager + professional development + previous action items + notes + new action items.
 
-**Manager template:** temas + preguntas guía rotativas + feedback positivo/constructivo + notas privadas.
+**Manager template:** topics + rotating guiding questions + positive/constructive feedback + private notes.
 
-Reglas: lo arma el report, no cancelar, no es status report, notas privadas confidenciales. Acciones: doc Notion privado, action items → tickets/recordatorios.
+Rules: the report sets it up, do not cancel, it is not a status report, private notes are confidential. Actions: private Notion doc, action items → tickets/reminders.
 
-## Integración Educabot
+## Educabot integration
 
-| Ceremonia | Doc | Action items | PPT |
+| Ceremony | Doc | Action items | PPT |
 |-----------|-----|--------------|-----|
-| Daily | Notion (canal equipo) | Jira subtasks | — |
+| Daily | Notion (team channel) | Jira subtasks | — |
 | Planning | Notion | Jira sprint | — |
 | Review | Coda (public) | Jira | Slides outline |
-| Retro | Notion (privado equipo) | Jira `retro-action` | — |
-| Refinement | Jira directo | Jira | — |
-| 1-on-1 | Notion privado | Jira personal | — |
+| Retro | Notion (team private) | Jira `retro-action` | — |
+| Refinement | Jira directly | Jira | — |
+| 1-on-1 | Private Notion | Personal Jira | — |
 
 ## Anti-patterns
 
-- Daily >15 min → cortar side conversations
-- Retro sin action items o con 10 → no pasa nada después
-- Planning sin capacity check → sprint sobrecargado
-- Review sin stakeholders → demo al vacío
-- 1-on-1 cancelado repetidamente → mensaje "no sos prioridad"
-- Action items sin owner+due → no se cierran
+- Daily >15 min → cut side conversations
+- Retro without action items, or with 10 → nothing happens afterwards
+- Planning without a capacity check → overloaded sprint
+- Review without stakeholders → demo into the void
+- 1-on-1 cancelled repeatedly → sends the message "you are not a priority"
+- Action items without owner+due → they never get closed

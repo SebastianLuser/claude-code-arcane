@@ -1,0 +1,31 @@
+{
+  "language": "en",
+  "note": "Query expansion for freelance_search.py search: the key is the word the freelancer types, the values are the words clients put in postings. Every synonyms.<lang>.json next to the script applies at once, in file-name order; a key in several packs gets their values appended in that order. Keys are lowercase.",
+  "synonyms": {
+    "ecommerce": ["shopify", "woocommerce", "magento", "vtex", "tiendanube", "prestashop"],
+    "website": ["wordpress", "webflow", "astro", "landing", "next.js", "html"],
+    "web": ["wordpress", "webflow", "astro", "landing", "next.js"],
+    "landing": ["wordpress", "webflow", "astro", "html"],
+    "cms": ["wordpress", "strapi", "contentful", "sanity", "headless"],
+    "backend": ["node", "nestjs", "express", "django", "fastapi", "spring", ".net", "laravel"],
+    "frontend": ["react", "vue", "angular", "svelte", "next.js", "tailwind"],
+    "fullstack": ["node", "react", "typescript", "django", "laravel"],
+    "full-stack": ["node", "react", "typescript", "django", "laravel"],
+    "mobile": ["react native", "flutter", "swift", "kotlin", "ios", "android"],
+    "go": ["golang"],
+    "golang": ["go"],
+    "api": ["rest", "graphql", "openapi", "webhook"],
+    "saas": ["multi-tenant", "stripe", "billing", "subscription", "dashboard"],
+    "dashboard": ["bi", "reporting", "metabase", "looker", "analytics"],
+    "database": ["postgres", "mysql", "mongodb", "sql"],
+    "testing": ["qa", "automation", "cypress", "playwright", "pytest"],
+    "qa": ["testing", "cypress", "playwright", "automation"],
+    "devops": ["kubernetes", "docker", "terraform", "aws", "ci/cd"],
+    "data": ["sql", "etl", "airflow", "bigquery", "dbt"],
+    "scraping": ["crawler", "scraper", "playwright", "extraction"],
+    "ai": ["llm", "openai", "rag", "machine learning", "langchain"],
+    "automation": ["zapier", "n8n", "make", "workflow"],
+    "unity": ["c#", "gameplay", "game design"],
+    "gamedesign": ["game design", "level design", "unity"]
+  }
+}

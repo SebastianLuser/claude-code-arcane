@@ -10,50 +10,50 @@ paths:
 
 # React Performance Rules
 
-Reglas de re-render, rendering y micro-optimización JS para React. Ordenadas por impacto. Catálogo completo (64 reglas) + ejemplos: skill `nextjs-best-practices`.
+Re-render, rendering and JS micro-optimization rules for React. Ordered by impact. Full catalog (64 rules) + examples: the `nextjs-best-practices` skill.
 
-## HIGH — Estructura de componentes
+## HIGH — Component structure
 
-- **No definir componentes dentro de componentes.** Definir a nivel módulo o extraer; definirlos inline los remonta en cada render (pierde estado, mata performance).
-- **`content-visibility: auto`** para listas largas — difiere render y paint de lo que está off-screen.
-- **`defer`/`async` en `<script>`** para no bloquear el render durante el parsing.
-- **Resource hints de React DOM** (`preload`, `preconnect`, `prefetchDNS`) para recursos críticos.
+- **Do not define components inside components.** Define them at module level or extract them; defining them inline remounts them on every render (loses state, kills performance).
+- **`content-visibility: auto`** for long lists — defers render and paint of what is off-screen.
+- **`defer`/`async` on `<script>`** so render is not blocked during parsing.
+- **React DOM resource hints** (`preload`, `preconnect`, `prefetchDNS`) for critical resources.
 
 ## MEDIUM — Re-render optimization
 
-- **Calcular derived state durante el render**, no guardarlo en `useState` (se desincroniza y genera renders extra).
-- **Leer state dinámico en el callback**, no suscribirse en render time cuando solo se usa en un handler.
-- **Functional `setState`** (`setX(prev => ...)`) para operar sobre el último valor y crear callbacks estables.
-- **Lazy state init**: pasar función a `useState(() => expensive())` para no recomputar en cada render.
-- **`useTransition` para updates no urgentes**; `useDeferredValue` para mantener inputs responsivos durante cómputo pesado.
-- **`useRef` para valores transitorios** (no-UI) que cambian seguido y no deben disparar render.
-- **Extraer defaults no-primitivos** de componentes memoizados a constantes a nivel módulo (preserva la memoización).
-- **Side effects de interacción van en event handlers**, no en `useEffect`.
-- **Dependencias de effect primitivas y estrechas**, no objetos enteros.
+- **Compute derived state during render**, do not store it in `useState` (it gets out of sync and causes extra renders).
+- **Read dynamic state in the callback**, do not subscribe at render time when it is only used in a handler.
+- **Functional `setState`** (`setX(prev => ...)`) to operate on the latest value and create stable callbacks.
+- **Lazy state init**: pass a function to `useState(() => expensive())` so it is not recomputed on every render.
+- **`useTransition` for non-urgent updates**; `useDeferredValue` to keep inputs responsive during heavy computation.
+- **`useRef` for transient values** (non-UI) that change often and must not trigger a render.
+- **Extract non-primitive defaults** from memoized components into module-level constants (preserves memoization).
+- **Interaction side effects go in event handlers**, not in `useEffect`.
+- **Narrow, primitive effect dependencies**, not whole objects.
 
 ## LOW-MEDIUM — useMemo / JS
 
-- **No envolver expresiones simples en `useMemo`** — el overhead del hook supera el cómputo.
-- **Index maps (`Map`) para lookups repetidos** en vez de `.find()`/`.includes()` en loops → O(1).
-- **`.flatMap()`** en lugar de `.map().filter(Boolean)`; combinar iteraciones múltiples de array en un solo loop.
-- **Hoist de `RegExp`** a nivel módulo (no recrear en cada render).
-- **Early return** cuando el resultado ya está determinado; chequear `length` antes de operaciones caras (sort).
-- **`.toSorted()`** en vez de `.sort()` para inmutabilidad.
+- **Do not wrap simple expressions in `useMemo`** — the hook overhead exceeds the computation.
+- **Index maps (`Map`) for repeated lookups** instead of `.find()`/`.includes()` in loops → O(1).
+- **`.flatMap()`** instead of `.map().filter(Boolean)`; combine multiple array iterations into a single loop.
+- **Hoist `RegExp`** to module level (do not recreate it on every render).
+- **Early return** when the result is already determined; check `length` before expensive operations (sort).
+- **`.toSorted()`** instead of `.sort()` for immutability.
 
 ## Hydration
 
-- Evitar mismatch sin flicker con scripts inline síncronos cuando se actualiza el DOM antes de hidratar.
-- `suppressHydrationWarning` solo para diferencias server/client intencionales (fechas, IDs).
-- Conditional rendering explícito con ternario, no `&&` (evita renderizar `0` u otros falsy).
+- Avoid mismatches without flicker using synchronous inline scripts when the DOM is updated before hydration.
+- `suppressHydrationWarning` only for intentional server/client differences (dates, IDs).
+- Explicit conditional rendering with a ternary, not `&&` (avoids rendering `0` or other falsy values).
 
 ## Anti-Patterns
 
-- Componentes definidos dentro del render de otro componente
-- `useMemo`/`useCallback` por default "por las dudas" sin medir
-- `useEffect` para lógica que pertenece a un event handler
-- Guardar en state lo que se puede derivar de props/state existentes
-- `.find()` dentro de `.map()` (O(n²)) sobre listas grandes
+- Components defined inside another component's render
+- `useMemo`/`useCallback` by default "just in case" without measuring
+- `useEffect` for logic that belongs in an event handler
+- Storing in state what can be derived from existing props/state
+- `.find()` inside `.map()` (O(n²)) over large lists
 
 ---
 
-_Derivado de [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) (react-best-practices, MIT). Condensado al formato Arcane._
+_Derived from [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) (react-best-practices, MIT). Condensed to the Arcane format._

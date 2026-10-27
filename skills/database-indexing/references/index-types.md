@@ -1,18 +1,18 @@
 # Index Types Reference
 
-| Tipo | Uso | Notas |
+| Type | Use | Notes |
 |------|-----|-------|
-| **B-tree** (default) | Equality, range, ORDER BY, UNIQUE | 95% de los casos |
-| **Hash** | Skip — B-tree es igual o mejor | No recomendado |
-| **GIN** | Arrays, jsonb, tsvector | Usar `jsonb_path_ops` si solo `@>` (4x mas chico) |
-| **GiST** | Geo (PostGIS), ranges, exclusion | Para datos espaciales/temporales |
-| **BRIN** | Tablas enormes ordenadas fisicamente | Timestamps, IDs secuenciales; tamano minimo |
-| **Partial** | `WHERE` en definicion | Soft-deletes, flags; reduce tamano |
-| **Covering** (`INCLUDE`) | Columnas extra en leaf | Habilita Index-Only Scan sin ir a heap |
-| **Expression** | Funciones sobre columna | `lower(email)` — query debe matchear la expresion |
+| **B-tree** (default) | Equality, range, ORDER BY, UNIQUE | 95% of cases |
+| **Hash** | Skip — B-tree is equal or better | Not recommended |
+| **GIN** | Arrays, jsonb, tsvector | Use `jsonb_path_ops` if only `@>` (4x smaller) |
+| **GiST** | Geo (PostGIS), ranges, exclusion | For spatial/temporal data |
+| **BRIN** | Huge physically ordered tables | Timestamps, sequential IDs; minimal size |
+| **Partial** | `WHERE` in the definition | Soft-deletes, flags; reduces size |
+| **Covering** (`INCLUDE`) | Extra columns in the leaf | Enables Index-Only Scan without going to the heap |
+| **Expression** | Functions over a column | `lower(email)` — the query must match the expression |
 
 ## JSONB Indexing
 
-- `@>` (contains): GIN con `jsonb_path_ops` (4x mas chico que default)
-- Solo si necesitas `?`, `?&`, `?|`: GIN default
-- Un solo key: expression index `((preferences->>'role'))` mejor que indexar todo jsonb
+- `@>` (contains): GIN with `jsonb_path_ops` (4x smaller than default)
+- Only if you need `?`, `?&`, `?|`: default GIN
+- A single key: expression index `((preferences->>'role'))` beats indexing the whole jsonb

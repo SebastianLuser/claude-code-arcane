@@ -2,9 +2,9 @@
 
 ## 2.1 Prefer Constructor Injection (Primary Constructors) — CRITICAL
 
-Dependencias explícitas, type-safe y testeables. Con primary constructors (C# 12+) el boilerplate desaparece.
+Explicit, type-safe and testable dependencies. With primary constructors (C# 12+) the boilerplate disappears.
 
-**Correcto:**
+**Correct:**
 ```csharp
 public sealed class CreateOrderHandler(IOrderRepository repo, ILogger<CreateOrderHandler> logger)
 {
@@ -18,23 +18,23 @@ public sealed class CreateOrderHandler(IOrderRepository repo, ILogger<CreateOrde
 
 ## 2.2 Use Correct Lifetimes — CRITICAL
 
-`Scoped` para `DbContext` y handlers (una instancia por request). `Singleton` solo para servicios stateless y thread-safe. `Transient` para servicios livianos sin estado.
+`Scoped` for `DbContext` and handlers (one instance per request). `Singleton` only for stateless, thread-safe services. `Transient` for lightweight stateless services.
 
 ```csharp
-builder.Services.AddDbContext<AppDbContext>(o => o.UseNpgsql(cs)); // Scoped por defecto
+builder.Services.AddDbContext<AppDbContext>(o => o.UseNpgsql(cs)); // Scoped by default
 builder.Services.AddScoped<CreateOrderHandler>();
 builder.Services.AddSingleton<IClock, SystemClock>(); // stateless
 ```
 
 ## 2.3 Never Inject Scoped into Singleton — CRITICAL
 
-Es la "captured dependency": el Singleton retiene una instancia Scoped muerta tras el primer request → datos corruptos o `ObjectDisposedException`. Resolverlo bajo demanda con un scope.
+This is the "captured dependency": the Singleton holds on to a dead Scoped instance after the first request → corrupted data or `ObjectDisposedException`. Resolve it on demand with a scope.
 
-**Incorrecto:**
+**Incorrect:**
 ```csharp
-public sealed class CacheWarmer(AppDbContext db) : IHostedService { } // Singleton captura DbContext Scoped
+public sealed class CacheWarmer(AppDbContext db) : IHostedService { } // Singleton captures a Scoped DbContext
 ```
-**Correcto:**
+**Correct:**
 ```csharp
 public sealed class CacheWarmer(IServiceScopeFactory scopeFactory) : IHostedService
 {
@@ -48,11 +48,11 @@ public sealed class CacheWarmer(IServiceScopeFactory scopeFactory) : IHostedServ
 
 ## 2.4 No Service Locator / No Manual BuildServiceProvider() — HIGH
 
-`provider.GetService<T>()` dentro de la lógica oculta dependencias y rompe los tests. `BuildServiceProvider()` en `Program.cs` crea un container paralelo (singletons duplicados, fugas). Inyectar por constructor (2.1).
+`provider.GetService<T>()` inside the logic hides dependencies and breaks the tests. `BuildServiceProvider()` in `Program.cs` creates a parallel container (duplicate singletons, leaks). Inject through the constructor (2.1).
 
 ## 2.5 Register by Interface — HIGH
 
-Registrar contra la abstracción permite sustituir implementaciones (tests, features) sin tocar consumidores.
+Registering against the abstraction lets you swap implementations (tests, features) without touching consumers.
 
 ```csharp
 builder.Services.AddScoped<IOrderRepository, EfOrderRepository>();
@@ -60,7 +60,7 @@ builder.Services.AddScoped<IOrderRepository, EfOrderRepository>();
 
 ## 2.6 IOptions<T> Pattern for Config — MEDIUM-HIGH
 
-Bind tipado y validado de configuración, en vez de leer `IConfiguration` con strings por todo el código.
+Typed, validated configuration binding, instead of reading `IConfiguration` with strings throughout the code.
 
 ```csharp
 builder.Services.AddOptions<JwtOptions>()

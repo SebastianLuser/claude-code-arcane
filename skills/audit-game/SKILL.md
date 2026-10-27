@@ -8,47 +8,47 @@ allowed-tools: Read, Glob, Grep, Bash, Task
 ---
 # Game Document Audit
 
-Auditoría integral de documentación y código para proyectos de desarrollo de videojuegos.
+Comprehensive audit of documentation and code for video game development projects.
 
 ## Input
 
-El usuario especifica qué auditar. Argumento opcional: `$ARGUMENTS` (e.g., "GDD", "spec-docs", "GDD vs code", "balance", o un path específico)
+The user specifies what to audit. Optional argument: `$ARGUMENTS` (e.g., "GDD", "spec-docs", "GDD vs code", "balance", or a specific path)
 
-## Phase 1 — Detectar proyecto y documentos
+## Phase 1 — Detect the project and documents
 
-1. Identificar el tipo de proyecto (Unity, Unreal, etc.) por la estructura de archivos
-2. Buscar documentos de diseño:
-   - GDD (Game Design Document) — buscar en raíz, `docs/`, `Documents/`, `Assets/Documents/`
-   - Spec docs — buscar en `spec-docs/`, `specs/`, `design/`
-   - Auditorías previas — buscar `*AUDIT*`, `*audit*`
-3. Buscar código de gameplay en las carpetas del engine correspondiente
-4. Si no encuentra documentos → preguntar al usuario dónde están
+1. Identify the project type (Unity, Unreal, etc.) from the file structure
+2. Look for design documents:
+   - GDD (Game Design Document) — look in the root, `docs/`, `Documents/`, `Assets/Documents/`
+   - Spec docs — look in `spec-docs/`, `specs/`, `design/`
+   - Previous audits — look for `*AUDIT*`, `*audit*`
+3. Look for gameplay code in the corresponding engine folders
+4. If no documents are found → ask the user where they are
 
 ## Phase 2 — Gather Context
 
-1. Leer el/los documento(s) target completamente
-2. Leer documentos relacionados (specs, GDD, README del proyecto)
-3. Leer auditorías previas si existen (para no repetir hallazgos ya resueltos)
-4. Si se audita contra código: usar agents para explorar la implementación actual
+1. Read the target document(s) in full
+2. Read related documents (specs, GDD, project README)
+3. Read previous audits if they exist (so already-resolved findings are not repeated)
+4. If auditing against code: use agents to explore the current implementation
 
 ## Phase 3 — Cross-Reference Analysis
 
-Analizar 5 dimensiones: A) Contradicciones (CRITICAL), B) Gaps (HIGH), C) Coherencia (MEDIUM), D) Balance Red Flags (MEDIUM), E) Completitud milestone (HIGH).
+Analyze 5 dimensions: A) Contradictions (CRITICAL), B) Gaps (HIGH), C) Coherence (MEDIUM), D) Balance Red Flags (MEDIUM), E) Milestone completeness (HIGH).
 
 > → Read references/cross-reference-criteria.md for detailed criteria per dimension, severity classification, and output format
 
-## Phase 4 — Producir reporte
+## Phase 4 — Produce the report
 
-Guardar la auditoría en la ubicación apropiada del proyecto (junto al GDD o en `docs/`). Secciones: Resumen Ejecutivo, Contradicciones, Gaps, Coherencia, Balance, Decisiones Pendientes, Lo Que Está Bien, Próximos Pasos. Cada hallazgo en formato PAS condensado (5 líneas max).
+Save the audit in the appropriate location in the project (next to the GDD or in `docs/`). Sections: Executive Summary, Contradictions, Gaps, Coherence, Balance, Pending Decisions, What Works Well, Next Steps. Each finding in condensed PAS format (5 lines max).
 
 > → Read references/output-template.md for full report template and finding format
 
 ## Rules
-- Siempre en español
-- CONCISO — cada hallazgo cabe en 5 líneas máximo
-- Ser específico: citar nombres de sección, valores exactos
-- Para cada problema, 1 solución concreta (no 5 opciones)
-- Correr escenarios mentales para validar fórmulas y balance
-- Si se compara contra código, usar agents para leer la implementación real
-- Priorizar problemas por impacto en el desarrollo
-- Reconocer lo que está bien diseñado, no solo lo que está roto
+- Always in the user's language
+- CONCISE — each finding fits in 5 lines at most
+- Be specific: cite section names, exact values
+- For each problem, 1 concrete solution (not 5 options)
+- Run mental scenarios to validate formulas and balance
+- If comparing against code, use agents to read the real implementation
+- Prioritize problems by impact on development
+- Acknowledge what is well designed, not only what is broken

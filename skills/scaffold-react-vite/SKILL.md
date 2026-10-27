@@ -12,30 +12,30 @@ React 18+ with Vite, TypeScript strict, client-side SPA consuming Go/TS backend.
 
 ## MANDATORY WORKFLOW
 
-**Antes de generar cualquier código, completar estos pasos en orden.**
+**Before generating any code, complete these steps in order.**
 
 ### Step 0: Gather Requirements
 
-Clarificar (o inferir del contexto si ya fue especificado):
+Clarify (or infer from context if already specified):
 
 1. **Project name** (kebab-case)
-2. **Backend:** Go / TS — Base URL del API
+2. **Backend:** Go / TS — API base URL
 3. **Auth:** JWT / Session cookies / OAuth
-4. **i18n:** react-i18next / ninguna
-5. **Design system:** shadcn/ui (default) / custom existente
+4. **i18n:** react-i18next / none
+5. **Design system:** shadcn/ui (default) / existing custom one
 
-Si el usuario ya especificó estos valores, saltar directamente al Step 1.
+If the user already specified these values, skip straight to Step 1.
 
-### Step 1: Implementar
+### Step 1: Implement
 
-Seguir: Project Structure → Dependency Baseline → Vite Config Decisions.
+Follow: Project Structure → Dependency Baseline → Vite Config Decisions.
 
-### Step 2: Verificar
+### Step 2: Verify
 
 ```bash
-npm run build    # tsc + vite build sin errores
-npm run test     # vitest pasa
-npm run lint     # ESLint sin warnings
+npm run build    # tsc + vite build with no errors
+npm run test     # vitest passes
+npm run lint     # ESLint with no warnings
 ```
 
 ## Project Structure

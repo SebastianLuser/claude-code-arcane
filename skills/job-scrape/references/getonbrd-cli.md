@@ -1,62 +1,62 @@
 # GetOnBoard Search CLI
 
-Busca ofertas en GetOnBoard (job board tech de LATAM) via su API pública v0. Sin auth, sin API key, **cero dependencias**: solo la stdlib de Python 3. Espejo del contrato de `linkedin_search.py` para que `/job-scrape` pueda usar ambos de forma intercambiable.
+Searches postings on GetOnBoard (LATAM tech job board) via its public v0 API. No auth, no API key, **zero dependencies**: only the Python 3 stdlib. Mirrors the contract of `linkedin_search.py` so `/job-scrape` can use both interchangeably.
 
-El script es `scripts/getonbrd_search.py`. Construido a medida siguiendo el patrón `/add-portal` de MadsLorentzen/ai-job-search (investigar endpoint → scaffold con el mismo contrato → test en vivo), y portado de TypeScript a Python por la regla de lenguaje por capa (`docs/coding-standards.md`); la salida de las dos versiones se comparó campo por campo sobre las mismas queries: identica.
+The script is `scripts/getonbrd_search.py`. Custom-built following the `/add-portal` pattern from MadsLorentzen/ai-job-search (investigate the endpoint → scaffold with the same contract → live test), and ported from TypeScript to Python under the language-per-layer rule (`docs/coding-standards.md`); the output of the two versions was compared field by field over the same queries: identical.
 
-## Uso
+## Usage
 
-### Buscar ofertas
+### Search postings
 
 ```bash
 python .claude/skills/job-scrape/scripts/getonbrd_search.py search -q "<keywords>" [flags]
 ```
 
 Flags:
-- `-q / --query <texto>` - **requerido**, minimo 3 chars. La API hace AND de todos los terminos.
-- `--jobage <dias>` - publicada en los ultimos N dias (filtro client-side sobre `published_at`).
-- `--remote <modo>` - `remote` | `hybrid` | `onsite` (filtro client-side).
-- `--page <n>` - paginacion (20 resultados por pagina).
-- `-n / --limit <n>` - tope de resultados (`0` no emite ninguno).
-- `--brief` - solo en `json`: trunca cada `description` a 300 chars y marca `description_truncated`. Los JD completos son ~80% del payload, asi que para triage conviene `--brief` y despues `detail` del shortlist.
+- `-q / --query <text>` - **required**, minimum 3 chars. The API ANDs all the terms.
+- `--jobage <days>` - published in the last N days (client-side filter on `published_at`).
+- `--remote <mode>` - `remote` | `hybrid` | `onsite` (client-side filter).
+- `--page <n>` - pagination (20 results per page).
+- `-n / --limit <n>` - result cap (`0` emits none).
+- `--brief` - `json` only: truncates each `description` to 300 chars and sets `description_truncated`. Full JDs are ~80% of the payload, so for triage use `--brief` and then `detail` on the shortlist.
 - `--format json|table|plain` - default `json`.
 
-Sin flag `--location`: GetOnBoard es LATAM/remoto por naturaleza; filtrar con `--remote` y leer `countries` en el JSON.
+No `--location` flag: GetOnBoard is LATAM/remote by nature; filter with `--remote` and read `countries` in the JSON.
 
-### Detalle de una oferta
+### Detail of a posting
 
 ```bash
 python .claude/skills/job-scrape/scripts/getonbrd_search.py detail <slug|url> [--format json|plain]
 ```
 
-Acepta el `ID` (slug) de los resultados de search o cualquier URL de getonbrd.com (`/jobs/...` o `/empleos/...`, con o sin categoria). Dos capas:
-1. **Search API** (queries progresivas derivadas del slug): datos completos, incluye `applications_count`.
-2. **Microdata fallback** (pagina SSR, schema.org JobPosting): para ofertas viejas o fuera del indice. Detecta y marca ofertas **CERRADAS**.
+Accepts the `ID` (slug) from the search results or any getonbrd.com URL (`/jobs/...` or `/empleos/...`, with or without a category). Two layers:
+1. **Search API** (progressive queries derived from the slug): full data, includes `applications_count`.
+2. **Microdata fallback** (SSR page, schema.org JobPosting): for old postings or ones outside the index. Detects and flags **CLOSED** postings.
 
-## Datos que devuelve (JSON)
+## Data it returns (JSON)
 
-`id` (slug), `title`, `company`, `location`, `date` (ISO), `url`, `seniority` (Junior/Semi Senior/Senior/Expert), `remote`, `remote_modality` (`remote_local`/`hybrid`/`no_remote`...), `remote_zone`, `countries`, `salary_min_usd_month`/`salary_max_usd_month` (USD/mes cuando esta publicado), `applications_count` (util para la dimension "calidad de la oferta" de la rubrica), `description` (texto plano).
+`id` (slug), `title`, `company`, `location`, `date` (ISO), `url`, `seniority` (Junior/Semi Senior/Senior/Expert), `remote`, `remote_modality` (`remote_local`/`hybrid`/`no_remote`...), `remote_zone`, `countries`, `salary_min_usd_month`/`salary_max_usd_month` (USD/month when published), `applications_count` (useful for the rubric's "posting quality" dimension), `description` (plain text).
 
-## Ejemplos
+## Examples
 
 ```bash
-# Fullstack, ultimas 2 semanas
+# Fullstack, last 2 weeks
 python .claude/skills/job-scrape/scripts/getonbrd_search.py search -q "fullstack developer" --jobage 14 --format table
 
-# Triage barato: estructurado completo, JD truncado
+# Cheap triage: full structured data, truncated JD
 python .claude/skills/job-scrape/scripts/getonbrd_search.py search -q "fullstack developer" --jobage 14 --brief
 
-# .NET remoto
+# Remote .NET
 python .claude/skills/job-scrape/scripts/getonbrd_search.py search -q ".NET developer" --remote remote --format table
 
-# JD completo de una oferta
+# Full JD of a posting
 python .claude/skills/job-scrape/scripts/getonbrd_search.py detail "https://www.getonbrd.com/jobs/programming/full-stack-developer-buildwithin-remote-b1ef" --format plain
 ```
 
-## Notas
+## Notes
 
-- API publica en beta (`api/v0`); si cambia, el fallback de microdata sigue funcionando.
-- Errores a **stderr** como `{ "error": "...", "code": "..." }` con exit code `1`.
-- Volumen bajo por cortesia; la API es publica pero no esta pensada para bulk scraping.
-- Referencia de endpoints: `getonbrd-urls.md`.
-- Tests de los parsers: `tests/job_scrape/test_getonbrd_search.py` en el repo de Arcane.
+- Public API in beta (`api/v0`); if it changes, the microdata fallback keeps working.
+- Errors go to **stderr** as `{ "error": "...", "code": "..." }` with exit code `1`.
+- Low volume out of courtesy; the API is public but not meant for bulk scraping.
+- Endpoint reference: `getonbrd-urls.md`.
+- Parser tests: `tests/job_scrape/test_getonbrd_search.py` in the Arcane repo.

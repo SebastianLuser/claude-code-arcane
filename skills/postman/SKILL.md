@@ -8,7 +8,7 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 # Postman API Manager
 
-Opera via **curl + Postman REST API v10**. Antes de cada comando: `source ~/.config/postman/credentials`.
+Operates via **curl + Postman REST API v10**. Before each command: `source ~/.config/postman/credentials`.
 
 ## Auth
 
@@ -16,7 +16,7 @@ Opera via **curl + Postman REST API v10**. Antes de cada comando: `source ~/.con
 
 ## Workspace & Collections
 
-| Nombre | ID |
+| Name | ID |
 |--------|-----|
 | Sebastian L. \| Educabot.com's Workspace | 580f4465-9064-470b-8c20-38347b608d71 |
 
@@ -73,7 +73,7 @@ Collection with auth (bearer inherited), variables, and items (folders with nest
 
 | Error | Fix |
 |-------|-----|
-| 401 | API key inválida → regenerar en go.postman.com |
-| 404 | UID incorrecto → listar para obtener UIDs actuales |
-| 400 | JSON malformado → validar con `python3 -m json.tool` |
-| Rate limit | 10k calls/mes free → verificar con `/me` |
+| 401 | Invalid API key → regenerate it at go.postman.com |
+| 404 | Wrong UID → list to get the current UIDs |
+| 400 | Malformed JSON → validate with `python3 -m json.tool` |
+| Rate limit | 10k calls/month free → check with `/me` |

@@ -1,37 +1,39 @@
-# GetOnBoard API v0 - referencia de endpoints (verificada 2026-07-13)
+# GetOnBoard API v0 - endpoint reference (verified 2026-07-13)
 
-Base: `https://www.getonbrd.com/api/v0` - sin autenticacion para endpoints publicos. Formato JSON:API.
+Base: `https://www.getonbrd.com/api/v0` - no authentication for public endpoints. JSON:API format.
 
-## Search de ofertas
+## Posting search
 
 ```
 GET /search/jobs?query=<q>&per_page=<n>&page=<n>&expand[]=seniority&expand[]=company
 ```
 
-- `query`: requerido, min 3 chars. Hace AND de todos los terminos (queries largas sobre-restringen).
-- `per_page` / `page`: paginacion; `meta: { page, per_page, total_pages }` en la respuesta.
-- `expand[]`: resuelve las referencias `seniority` y `company` inline (sin expand vienen solo como `{id, type}`).
+- `query`: required, min 3 chars. ANDs all the terms (long queries over-restrict).
+- `per_page` / `page`: pagination; `meta: { page, per_page, total_pages }` in the response.
+- `expand[]`: resolves the `seniority` and `company` references inline (without expand they come only as `{id, type}`).
 
-Respuesta por job (`data[]`): `id` = slug, `links.public_url`, y en `attributes`:
-`title`, `description` (HTML), `functions` (HTML), `desirable` (HTML), `benefits` (HTML), `remote` (bool), `remote_modality` (`remote_local` | `hybrid` | `no_remote` | ...), `remote_zone`, `countries[]`, `min_salary`/`max_salary` (USD/mes, null si no publican), `published_at` (unix), `applications_count`, `seniority.data.attributes.name`, `company.data.attributes.name`, `lang`, `perks[]`.
+Response per job (`data[]`): `id` = slug, `links.public_url`, and in `attributes`:
+`title`, `description` (HTML), `functions` (HTML), `desirable` (HTML), `benefits` (HTML), `remote` (bool), `remote_modality` (`remote_local` | `hybrid` | `no_remote` | ...), `remote_zone`, `countries[]`, `min_salary`/`max_salary` (USD/month, null if not published), `published_at` (unix), `applications_count`, `seniority.data.attributes.name`, `company.data.attributes.name`, `lang`, `perks[]`.
 
-## Catalogos publicos
+## Public catalogs
 
 ```
-GET /seniorities   -> Junior=2, Semi Senior=3, Senior=4, Expert=5, Sin experiencia=1
-GET /categories    -> categorias (programming, design-ux, etc.)
+GET /seniorities   -> Junior=2, Semi Senior=3, Senior=4, Expert=5, Sin experiencia=1 (locale_key no_experience)
+GET /categories    -> categories (programming, design-ux, etc.)
 ```
 
-## Lo que NO es publico
+The API returns the `name` of seniority 1 in Spanish (`Sin experiencia`); match on `locale_key` (`no_experience`), not on the name.
 
-- `GET /jobs/<slug>` devuelve **401** (endpoint privado, requiere API key de cuenta).
-  Por eso `detail` del script usa search + filtro por id exacto, con fallback a microdata.
+## What is NOT public
 
-## Paginas SSR (fallback de detail)
+- `GET /jobs/<slug>` returns **401** (private endpoint, requires an account API key).
+  That is why the script's `detail` uses search + a filter by exact id, with a microdata fallback.
 
-- `https://www.getonbrd.com/jobs/<slug>` redirige 301 a `/jobs/<categoria>/<slug>`.
-- La pagina renderiza microdata schema.org JobPosting via atributos `itemprop`:
+## SSR pages (detail fallback)
+
+- `https://www.getonbrd.com/jobs/<slug>` redirects 301 to `/jobs/<category>/<slug>`.
+- The page renders schema.org JobPosting microdata via `itemprop` attributes:
   `title`, `hiringOrganization > name`, `datePosted`, `baseSalary > minValue/maxValue`,
   `description`, `qualifications` (seniority), `address`.
-- Ofertas cerradas: pierden el `itemtype="http://schema.org/JobPosting"` pero conservan
-  los `itemprop`; la pagina contiene el texto "Closed job" / "No longer accepting".
+- Closed postings: they lose the `itemtype="http://schema.org/JobPosting"` but keep
+  the `itemprop`s; the page contains the text "Closed job" / "No longer accepting".

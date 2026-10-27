@@ -1,32 +1,32 @@
 # 2. Bundle Size Optimization (CRITICAL)
 
 ## 2.1 Avoid Barrel File Imports — CRITICAL
-Los barrels (`index.ts` que re-exportan todo) arrastran miles de módulos sin usar.
+Barrels (`index.ts` files that re-export everything) drag in thousands of unused modules.
 ```ts
-// ✗ import { debounce } from 'lodash';   (todo lodash)
+// ✗ import { debounce } from 'lodash';   (all of lodash)
 // ✓ import debounce from 'lodash/debounce';
 ```
-Configurar `optimizePackageImports` en `next.config.js` para libs grandes.
+Configure `optimizePackageImports` in `next.config.js` for large libs.
 
 ## 2.4 Dynamic Imports for Heavy Components — CRITICAL
 ```tsx
 const Chart = dynamic(() => import('./Chart'), { ssr: false, loading: () => <Skeleton/> });
 ```
-Para charts, editores de texto rico, modales, mapas — todo lo no necesario en el primer render.
+For charts, rich text editors, modals, maps — everything not needed on the first render.
 
 ## 2.5 Prefer Statically Analyzable Paths — HIGH
-Imports con paths literales/mapas explícitos, no construidos en runtime → permite tree-shaking.
+Imports with literal paths/explicit maps, not built at runtime → enables tree-shaking.
 
 ## 2.2 Conditional Module Loading — HIGH
-Cargar data/módulos grandes solo cuando la feature se activa.
+Load large data/modules only when the feature is activated.
 
 ## 2.6 Preload Based on User Intent — MEDIUM
-Precargar el bundle pesado en hover/focus, antes de que se necesite.
+Preload the heavy bundle on hover/focus, before it is needed.
 ```tsx
-<button onMouseEnter={() => import('./HeavyModal')}>Abrir</button>
+<button onMouseEnter={() => import('./HeavyModal')}>Open</button>
 ```
 
 ## 2.3 Defer Non-Critical Third-Party Libraries — MEDIUM
-Analytics, logging, error tracking → cargar después de hydration, no bloquear el bundle inicial (`next/script` con `strategy="afterInteractive"` o `lazyOnload`).
+Analytics, logging, error tracking → load after hydration, do not block the initial bundle (`next/script` with `strategy="afterInteractive"` or `lazyOnload`).
 
 _Ref: https://nextjs.org/docs/app/api-reference/components/script · https://nextjs.org/docs/app/api-reference/config/next-config-js/optimizePackageImports_

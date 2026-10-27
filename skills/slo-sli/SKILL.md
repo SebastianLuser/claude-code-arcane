@@ -8,7 +8,7 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 metadata:
   category: reliability
   stack: Go, TypeScript, Prometheus, GCP Cloud Monitoring, Terraform, Alertmanager
-  business-context: Educabot EdTech LatAm — servicios con peak en horario escolar AM
+  business-context: Educabot EdTech LatAm — services that peak during morning school hours
   sources:
     - Google SRE Handbook (sre.google/sre-book)
     - Google SRE Workbook — Implementing SLOs
@@ -17,80 +17,80 @@ metadata:
 ---
 # SLO / SLI — Reliability Objectives
 
-Definir, medir y alertar SLIs/SLOs en servicios Educabot. Google SRE Workbook + realidad EdTech LatAm (peak escolar AM).
+Define, measure and alert on SLIs/SLOs in Educabot services. Google SRE Workbook + the reality of EdTech in LatAm (morning school peak).
 
-## Cuándo usar / NO usar
+## When to use / NOT use
 
-| Usar | NO usar |
+| Use | Do NOT use |
 |------|---------|
-| Definir objetivos confiabilidad servicio nuevo/existente | Scripts internos, jobs one-shot, prototipos |
-| Alertas por burn rate (reemplazar fixed-threshold) | Métricas infra (CPU/RAM/GC) — son causas, no SLIs |
-| Negociar velocity vs estabilidad con producto | Antes de tener baseline real (≥2-4 semanas métricas) |
-| Review trimestral SLOs | |
-| Justificar feature freeze por error budget agotado | |
+| Define reliability objectives for a new/existing service | Internal scripts, one-shot jobs, prototypes |
+| Burn-rate alerts (replacing fixed thresholds) | Infra metrics (CPU/RAM/GC) — they are causes, not SLIs |
+| Negotiate velocity vs stability with product | Before having a real baseline (≥2-4 weeks of metrics) |
+| Quarterly SLO review | |
+| Justify a feature freeze due to an exhausted error budget | |
 
-## Conceptos
+## Concepts
 
-| Término | Definición | Ejemplo |
+| Term | Definition | Example |
 |---------|-----------|---------|
-| **SLI** | Métrica observable user-facing | Fracción requests con status <500 y latencia <500ms |
-| **SLO** | Target sobre SLI en ventana | 99.9% requests cumplen SLI en 30 días |
-| **SLA** | Compromiso contractual con penalidades | 99.5% uptime mensual en contrato B2B |
-| **Error budget** | `100% - SLO` = downtime permitido | SLO 99.9% → 0.1% → ~43 min/mes |
+| **SLI** | An observable, user-facing metric | Fraction of requests with status <500 and latency <500ms |
+| **SLO** | A target on the SLI over a window | 99.9% of requests meet the SLI over 30 days |
+| **SLA** | A contractual commitment with penalties | 99.5% monthly uptime in a B2B contract |
+| **Error budget** | `100% - SLO` = allowed downtime | SLO 99.9% → 0.1% → ~43 min/month |
 
-**Regla:** `SLA < SLO < SLI real`. SLA tiene colchón sobre SLO, SLO se fija por debajo del desempeño observado.
+**Rule:** `SLA < SLO < actual SLI`. The SLA has a cushion over the SLO, and the SLO is set below the observed performance.
 
-## Buenos SLIs (defaults Educabot)
+## Good SLIs (Educabot defaults)
 
-| Familia | Qué mide | Notas |
+| Family | What it measures | Notes |
 |---------|----------|-------|
-| **Availability** | Fracción requests sin 5xx | Request-based, PromQL rate |
-| **Latency** | p95/p99 bajo umbral | Nunca solo p50 — la cola es donde vive el user pain |
-| **Quality** | Tasa éxito transacciones negocio | login, checkout, grade_submit success/attempts |
-| **Freshness** | Lag último record procesado | Para pipelines de datos: lag <300s |
+| **Availability** | Fraction of requests without 5xx | Request-based, PromQL rate |
+| **Latency** | p95/p99 under a threshold | Never p50 alone — the tail is where user pain lives |
+| **Quality** | Success rate of business transactions | login, checkout, grade_submit success/attempts |
+| **Freshness** | Lag of the last processed record | For data pipelines: lag <300s |
 
-## Tiers de servicio
+## Service tiers
 
-| Tier | Descripción | Availability | Latency p95 |
+| Tier | Description | Availability | Latency p95 |
 |------|-------------|-------------|-------------|
-| **Tier-1** | Login, API core, grading en vivo | 99.95% | <300ms |
-| **Tier-2** | Reportes, dashboards docentes | 99.5% | <1s |
+| **Tier-1** | Login, core API, live grading | 99.95% | <300ms |
+| **Tier-2** | Reports, teacher dashboards | 99.5% | <1s |
 | **Tier-3** | Background jobs, exports, analytics | 99% | N/A (batch) |
 
-**Ventana horaria Educabot:** Tier-1 en horario escolar (07-18 UTC-3, L-V): 99.99%. Fuera: 99.9%. 5min caídos martes 09:00 duele 100x más que domingo 03:00.
+**Educabot time window:** Tier-1 during school hours (07-18 UTC-3, Mon-Fri): 99.99%. Outside: 99.9%. 5 minutes down on a Tuesday at 09:00 hurts 100x more than on a Sunday at 03:00.
 
 ## Error budget policy
 
-| Budget remaining | Acción |
+| Budget remaining | Action |
 |-----------------|--------|
-| >50% | Velocidad normal, features OK |
-| 10-50% | Precaución, reforzar canary/staged rollouts |
-| <10% | **Freeze features**, foco estabilidad |
-| 0% (agotado) | Freeze + postmortem blameless → `/incident` |
+| >50% | Normal velocity, features OK |
+| 10-50% | Caution, reinforce canary/staged rollouts |
+| <10% | **Feature freeze**, focus on stability |
+| 0% (exhausted) | Freeze + blameless postmortem → `/incident` |
 
-Firmado por ingeniería + producto. Sin firma de producto, no hay SLO — hay wishlist.
+Signed by engineering + product. Without product's signature there is no SLO — there is a wishlist.
 
-## Alerting multi-window multi-burn-rate
+## Multi-window multi-burn-rate alerting
 
-Dos alertas por SLO: fast burn (page, 14.4x) + slow burn (ticket, 6x). Prometheus recording rules + Alertmanager.
+Two alerts per SLO: fast burn (page, 14.4x) + slow burn (ticket, 6x). Prometheus recording rules + Alertmanager.
 
-> → Read references/alerting-burn-rate.md for fórmulas, GCP Terraform, dashboard y review trimestral
+> → Read references/alerting-burn-rate.md for formulas, GCP Terraform, the dashboard and the quarterly review
 
-El resto de las alertas, el on-call y los dashboards por servicio:
+The rest of the alerts, on-call and per-service dashboards:
 
-> → Read references/alerting-and-dashboards.md for diseño de alertas (síntoma vs causa, severidad y ruteo), rotación de on-call, revisión mensual de fatiga y el layout de dashboards SLO → RED → dependencias → USE
+> → Read references/alerting-and-dashboards.md for alert design (symptom vs cause, severity and routing), on-call rotation, the monthly fatigue review and the SLO → RED → dependencies → USE dashboard layout
 
 ## Anti-patterns
 
-> → Read references/anti-patterns.md for lista completa (10 items)
+> → Read references/anti-patterns.md for the full list (10 items)
 
 ## Checklist
 
-> → Read references/checklist.md for checklist completo (12 items)
+> → Read references/checklist.md for the full checklist (12 items)
 
-## Delegación
+## Delegation
 
-- `/incident` — postmortem tras budget exhaustion
-- `/audit-dev` — auditoría observabilidad existente
-- `/scaffold-go` — scaffolding Go con Prometheus client
-- `/deploy-check` — pre-deploy que impacte SLO
+- `/incident` — postmortem after budget exhaustion
+- `/audit-dev` — audit of existing observability
+- `/scaffold-go` — Go scaffolding with the Prometheus client
+- `/deploy-check` — pre-deploy check for changes that impact the SLO

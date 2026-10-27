@@ -8,56 +8,56 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task, AskUserQuestion
 ---
 # Meeting Notes → Tasks
 
-Transforma notas/transcripciones en action items estructurados, creando tickets en ClickUp o Jira.
+Turns notes/transcripts into structured action items, creating tickets in ClickUp or Jira.
 
-## Input aceptado
+## Accepted input
 
-Notas manuales (markdown/plain text), transcripciones (Otter/Fireflies/Zoom), email/Slack threads.
+Manual notes (markdown/plain text), transcripts (Otter/Fireflies/Zoom), email/Slack threads.
 
-## Flujo
+## Flow
 
 ### 1. Parse & Extract
 
-Patterns: "X to/will/needs to Y", "[Action]", "- [ ]", verbos de acción + dates. Por cada item: **owner** (match con equipo), **action** (verbo+objeto), **due date** (parsear "by Friday", "next sprint", "EOW"), **context** (1 oración), **priority** (urgent/blocker/ASAP keywords).
+Patterns: "X to/will/needs to Y", "[Action]", "- [ ]", action verbs + dates. For each item: **owner** (match against the team), **action** (verb+object), **due date** (parse "by Friday", "next sprint", "EOW"), **context** (1 sentence), **priority** (urgent/blocker/ASAP keywords).
 
 ### 2. Structure
 
-Separar en: **Decisions** (hechos registrados) + **Action Items** agrupados por owner (checkbox, due date, context, priority).
+Split into: **Decisions** (recorded facts) + **Action Items** grouped by owner (checkbox, due date, context, priority).
 
 ### 3. Confirm
 
-Presentar lista al user: owners correctos? Fechas OK? Agregar/quitar? ¿Tool target? (ClickUp / Jira / ambos).
+Show the list to the user: are the owners right? Dates OK? Anything to add/remove? Target tool? (ClickUp / Jira / both).
 
 ### 4. Create tickets
 
-**ClickUp:** `createTask` con list_id, name, description, assignees, due_date, priority, tags `[from-meeting, date]`.
+**ClickUp:** `createTask` with list_id, name, description, assignees, due_date, priority, tags `[from-meeting, date]`.
 
-**Jira:** POST `/issue` con project, summary, description (ADF), assignee, duedate, priority, labels `[meeting-action, date]`.
+**Jira:** POST `/issue` with project, summary, description (ADF), assignee, duedate, priority, labels `[meeting-action, date]`.
 
 ### 5. Close the loop
 
-Post en Slack/Email summary con links a tickets. Opcional: save a Notion/Coda. Update status.
+Post a Slack/Email summary with links to the tickets. Optional: save to Notion/Coda. Update status.
 
-## Comando
+## Command
 
 `/meeting-to-tasks [--file notes.md | --paste | --transcription file.txt] [--target clickup|jira] [--list-id X]`
 
-## Parsing heurístico
+## Heuristic parsing
 
 - `<Name> will/to/needs to <verb>` → owner + action
-- `- [ ] <task>` → action sin owner (preguntar)
+- `- [ ] <task>` → action without an owner (ask)
 - `@<username>` → owner by handle
 - `ASAP|urgent|blocker` → priority Urgent
-- `by Friday|EOD|tomorrow|next week` → parse fecha relativa
+- `by Friday|EOD|tomorrow|next week` → parse relative date
 
 ## Team mapping
 
-Config en `.claude/config/team.yml`: members con name, email, slack, clickup_id, jira_account_id. Si nombre no matchea → preguntar.
+Config in `.claude/config/team.yml`: members with name, email, slack, clickup_id, jira_account_id. If a name does not match → ask.
 
-## Reglas
+## Rules
 
-- Nunca crear tickets sin confirmación — siempre mostrar lista primero
-- Fechas ambiguas ("soon", "later") → pedir aclaración o sin due date
-- Sin owner → preguntar, no asignar arbitrariamente
-- Deduplicar: si similar a ticket existente abierto → flaggear
-- Privacy: no incluir info sensible del meeting en descriptions públicas
+- Never create tickets without confirmation — always show the list first
+- Ambiguous dates ("soon", "later") → ask for clarification or leave without a due date
+- No owner → ask, do not assign arbitrarily
+- Deduplicate: if similar to an existing open ticket → flag it
+- Privacy: do not include sensitive meeting info in public descriptions

@@ -8,43 +8,43 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
 # API Versioning
 
-Guía para versionar APIs en backends Educabot (Go + TS) consumidas por web (React+Vite) y mobile (React Native).
+Guide to versioning APIs in Educabot backends (Go + TS) consumed by web (React+Vite) and mobile (React Native).
 
-## Estrategias
+## Strategies
 
-| Estrategia | Ejemplo | Veredicto |
+| Strategy | Example | Verdict |
 |---|---|---|
-| **URL path** | `/v1/users` | **Default Educabot** — visible, cacheable, fácil |
-| Header | `API-Version: 2026-01-15` | Complemento opcional (date-based pinning) |
-| Query param | `/users?version=2` | Evitar — ensucia URLs, problemas caché |
-| Content negotiation | `Accept: vnd.educabot.v2+json` | Evitar — over-engineering |
+| **URL path** | `/v1/users` | **Educabot default** — visible, cacheable, easy |
+| Header | `API-Version: 2026-01-15` | Optional complement (date-based pinning) |
+| Query param | `/users?version=2` | Avoid — clutters URLs, caching problems |
+| Content negotiation | `Accept: vnd.educabot.v2+json` | Avoid — over-engineering |
 
-Solo MAJOR cambia URL (`/v1` → `/v2`). MINOR/PATCH transparentes.
+Only MAJOR changes the URL (`/v1` → `/v2`). MINOR/PATCH are transparent.
 
 ## Breaking vs Non-breaking
 
-**Non-breaking** (no requiere v2): agregar campo opcional request/response, nuevo endpoint, nuevo enum value (si clientes toleran desconocidos), relajar validaciones, required → opcional.
+**Non-breaking** (no v2 needed): add an optional request/response field, new endpoint, new enum value (if clients tolerate unknown values), relax validations, required → optional.
 
-**Breaking** (requiere v2): remover campo response, cambiar tipo, renombrar campo/endpoint, cambiar status codes, opcional → required, cambiar formato fechas/IDs/paginación, cambiar semántica, endurecer validaciones.
+**Breaking** (v2 needed): remove a response field, change a type, rename a field/endpoint, change status codes, optional → required, change date/ID/pagination format, change semantics, tighten validations.
 
 ## Deprecation Flow
 
-1. **Anunciar** — changelog, email, ticket de migración
-2. **Headers en runtime** — `Deprecation: true` + `Sunset: <date>` + `Link: <migration-docs>` + `Warning: 299`
-3. **Monitorear uso** — log hits con user-agent/client_id, dashboard quién usa v1
-4. **Recordatorios** — 1 mes y 1 semana antes del sunset
-5. **Apagar** — `410 Gone` con body apuntando a docs
+1. **Announce** — changelog, email, migration ticket
+2. **Runtime headers** — `Deprecation: true` + `Sunset: <date>` + `Link: <migration-docs>` + `Warning: 299`
+3. **Monitor usage** — log hits with user-agent/client_id, dashboard of who uses v1
+4. **Reminders** — 1 month and 1 week before the sunset
+5. **Shut down** — `410 Gone` with a body pointing to the docs
 
-## Ventanas de Soporte
+## Support Windows
 
-| Contexto | Ventana |
+| Context | Window |
 |----------|---------|
-| Web (React) | 6 meses |
-| Mobile (RN) | 12 meses + minimum-version forcing |
-| API externa | 12+ meses |
-| Backend interno | Semanas (coordinando deploys) |
+| Web (React) | 6 months |
+| Mobile (RN) | 12 months + minimum-version forcing |
+| External API | 12+ months |
+| Internal backend | Weeks (coordinating deploys) |
 
-Max 2 majors vivas en paralelo. Nunca 3+.
+Max 2 majors live in parallel. Never 3+.
 
 > → Read references/implementation-by-framework.md for implementation patterns per framework (Go, NestJS, Fastify, OpenAPI, GraphQL, Mobile)
 

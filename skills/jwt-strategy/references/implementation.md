@@ -2,20 +2,20 @@
 
 ## Go
 
-`golang-jwt/jwt/v5` + `keyfunc/v3` para JWKS. Verifier con issuer/audience validation + `WithValidMethods(["RS256", "EdDSA"])`. Middleware Gin: extract Bearer -> parse -> check blacklist -> set user_id/tenant_id en context.
+`golang-jwt/jwt/v5` + `keyfunc/v3` for JWKS. Verifier with issuer/audience validation + `WithValidMethods(["RS256", "EdDSA"])`. Gin middleware: extract Bearer -> parse -> check blacklist -> set user_id/tenant_id in the context.
 
 ## TypeScript
 
-`jose` (NO `jsonwebtoken` legacy). `createRemoteJWKSet` con cache. `jwtVerify` con issuer/audience/algorithms. Emision: `new SignJWT({claims}).setProtectedHeader({alg, kid})`.
+`jose` (NOT the legacy `jsonwebtoken`). `createRemoteJWKSet` with caching. `jwtVerify` with issuer/audience/algorithms. Issuing: `new SignJWT({claims}).setProtectedHeader({alg, kid})`.
 
 ## React (Vite)
 
-Access token in-memory (variable). Refresh en cookie httpOnly+SameSite=Lax+Secure (seteada por backend). **Nunca localStorage/sessionStorage** (XSS = cuenta comprometida). Interceptor axios: 401 -> refresh -> retry once.
+Access token in memory (a variable). Refresh in an httpOnly+SameSite=Lax+Secure cookie (set by the backend). **Never localStorage/sessionStorage** (XSS = compromised account). Axios interceptor: 401 -> refresh -> retry once.
 
 ## React Native (Expo)
 
-`expo-secure-store` -> Keychain (iOS) / Keystore (Android). **Nunca AsyncStorage** (plano, accesible con root). Mismo interceptor + refresh, pero refresh va en body (no cookie).
+`expo-secure-store` -> Keychain (iOS) / Keystore (Android). **Never AsyncStorage** (plain text, accessible with root). Same interceptor + refresh, but the refresh goes in the body (not a cookie).
 
 ## CSRF
 
-Cookie auth -> necesitas CSRF token (double-submit cookie o X-CSRF-Token header). Bearer header -> no hay CSRF (pero XSS expone token in-memory).
+Cookie auth -> you need a CSRF token (double-submit cookie or X-CSRF-Token header). Bearer header -> no CSRF (but XSS exposes the in-memory token).

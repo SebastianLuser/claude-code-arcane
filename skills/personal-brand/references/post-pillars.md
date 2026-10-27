@@ -1,66 +1,66 @@
-# Post Pillars - Ángulos, hooks y formatos
+# Post Pillars - Angles, hooks and formats
 
-Guía para generar ideas con sustancia por cada uno de los 4 pilares. Cada idea final = **hook + ángulo + formato**.
+Guide to generating ideas with substance for each of the 4 pillars. Each final idea = **hook + angle + format**.
 
-## Formatos disponibles
+## Available formats
 
-- **Text post corto** - 1 idea, 3-6 líneas, hook fuerte.
-- **Lista / "X things"** - escaneable, alto guardado.
-- **Carrusel** - paso a paso o framework: `/linkedin-carousel` arma las slides y el PDF.
-- **Hot take / POV** - opinión con tensión, invita a debate.
-- **Story / mini-caso** - situación → acción → resultado (mini-STAR público).
-- **Pregunta** - abre conversación, sube engagement.
+- **Short text post** - 1 idea, 3-6 lines, strong hook.
+- **List / "X things"** - scannable, saved a lot.
+- **Carousel** - step by step or framework: `/linkedin-carousel` builds the slides and the PDF.
+- **Hot take / POV** - an opinion with tension, invites debate.
+- **Story / mini-case** - situation → action → result (a public mini-STAR).
+- **Question** - opens a conversation, raises engagement.
 
-## Pilar 1 - Builder credibility
+## Pillar 1 - Builder credibility
 
-Demostrar que entregás. Ángulos:
-- Un problema real que resolviste + el número de impacto.
-- "Cómo construí X" (decisiones técnicas, trade-offs).
-- Antes/después de un sistema o métrica.
-- Una herramienta/proyecto propio y por qué lo hiciste.
+Show that you deliver. Angles:
+- A real problem you solved + the impact number.
+- "How I built X" (technical decisions, trade-offs).
+- Before/after of a system or a metric.
+- A tool/project of your own and why you made it.
 
-Hooks ejemplo: *"Bajé la latencia de matchmaking 25%. El cambio que más movió la aguja no fue el que esperaba."*
+Example hooks: *"I cut matchmaking latency by 25%. The change that moved the needle most was not the one I expected."*
 
-## Pilar 2 - Lessons from current role
+## Pillar 2 - Lessons from current role
 
-Aprendizajes concretos, no abstractos. Ángulos:
-- Un error que cometiste y qué cambiaste.
-- Algo contraintuitivo que aprendiste este trimestre.
-- Una práctica de equipo que sí funciona (y por qué).
-- "Lo que ojalá hubiera sabido cuando empecé con X".
+Concrete lessons, not abstract ones. Angles:
+- A mistake you made and what you changed.
+- Something counterintuitive you learned this quarter.
+- A team practice that actually works (and why).
+- "What I wish I had known when I started with X".
 
-Hooks ejemplo: *"Pasé 2 años optimizando lo que no importaba. Esto es lo que mido ahora."*
+Example hooks: *"I spent 2 years optimizing what didn't matter. This is what I measure now."*
 
-## Pilar 3 - POVs on your domain
+## Pillar 3 - POVs on your domain
 
-Posicionarte como alguien que piensa el dominio. Ángulos:
-- Una tendencia y por qué estás de acuerdo / en contra.
-- Un mito común de tu campo, desarmado.
-- Predicción fundamentada sobre hacia dónde va X.
-- Comparación honesta entre dos enfoques/herramientas.
+Position yourself as someone who thinks about the domain. Angles:
+- A trend and why you agree / disagree.
+- A common myth in your field, taken apart.
+- A well-founded prediction about where X is heading.
+- An honest comparison between two approaches/tools.
 
-Hooks ejemplo: *"Todos dicen que [tendencia]. En producción, lo que veo es otra cosa."*
+Example hooks: *"Everyone says [trend]. In production, what I see is something else."*
 
-## Pilar 4 - Behind-the-scenes del job search
+## Pillar 4 - Behind-the-scenes of the job search
 
-Cercanía + a veces atrae ofertas directas. Usar con medida (no quejas). Ángulos:
-- Qué buscás y por qué (señal clara para recruiters).
-- Un aprendizaje del proceso de búsqueda/entrevistas.
-- Reflexión sobre qué valorás en un equipo/empresa.
-- Agradecimiento o lección de una entrevista (sin nombres negativos).
+Closeness + sometimes attracts direct offers. Use in moderation (no complaining). Angles:
+- What you are looking for and why (a clear signal for recruiters).
+- A lesson from the search/interview process.
+- A reflection on what you value in a team/company.
+- Thanks or a lesson from an interview (no negative names).
 
-Hooks ejemplo: *"Estoy buscando mi próximo rol como [rol]. Esto es exactamente lo que aporto y lo que busco."*
+Example hooks: *"I'm looking for my next role as [role]. This is exactly what I bring and what I'm looking for."*
 
-## Secuenciación (90 días)
+## Sequencing (90 days)
 
-- **Días 1-30 (autoridad):** ~70% pilares 1-3, ~30% pilar 2. Casi nada de "busco trabajo" todavía - primero construís credibilidad.
-- **Días 31-60 (visibilidad + señal):** introducir pilar 4 (qué buscás), mantener 1-3. Empezar outreach (`/cold-outreach`) apoyado en los posts.
-- **Días 61-90 (conversión):** mezclar los 4, más casos de builder credibility, CTAs suaves hacia conversaciones.
+- **Days 1-30 (authority):** ~70% pillars 1-3, ~30% pillar 2. Almost no "looking for a job" yet - first you build credibility.
+- **Days 31-60 (visibility + signal):** introduce pillar 4 (what you are looking for), keep 1-3. Start outreach (`/cold-outreach`) backed by the posts.
+- **Days 61-90 (conversion):** mix all 4, more builder credibility cases, soft CTAs toward conversations.
 
-## Anti-patrones
+## Anti-patterns
 
-- Clichés de LinkedIn ("I'm humbled/thrilled to announce…").
-- Posts sin punto de vista (solo "compartiendo este artículo").
-- Humblebrag vacío sin aprendizaje ni dato.
-- Quejarse del proceso de búsqueda o de empresas con nombre.
-- Más de una idea por post.
+- LinkedIn clichés ("I'm humbled/thrilled to announce…").
+- Posts without a point of view (just "sharing this article").
+- Empty humblebrag with no lesson or data.
+- Complaining about the search process or about named companies.
+- More than one idea per post.

@@ -1,6 +1,6 @@
 ---
 name: linkedin-carousel
-description: "Build a LinkedIn document post (carousel) for a topic with steps or parts (games, software, LLMs): slide-by-slide copy in the user's voice, the post text above it, and the PDF to upload, checked for overflowing slides; never published. Triggers: carrusel de LinkedIn, carousel, document post, slides para LinkedIn, explicar un tema paso a paso, turn this into a carousel."
+description: "Build a LinkedIn document post (carousel) for a topic with steps or parts (games, software, LLMs): slide-by-slide copy in the user's voice, the post text above it, and the PDF to upload, checked for overflowing slides; never published. Triggers: LinkedIn carousel, carousel, document post, slides for LinkedIn, explain a topic step by step, turn this into a carousel."
 argument-hint: "<topic or list-shaped idea>"
 category: "career"
 user-invocable: true
@@ -13,7 +13,7 @@ A document post is one idea broken into steps the reader swipes through. It fail
 
 ## Phase 1: Is it a carousel?
 
-1. Read the **Voice** section of `01-Perfiles/Perfil Maestro.md` (`/master-profile`), as `/linkedin-post` does. No voice yet: stop and send the user there.
+1. Read the **Voice** section of `01-Profiles/Master Profile.md` (`/master-profile`), as `/linkedin-post` does. No voice yet: stop and send the user there.
 2. The idea needs **sequence**: steps, a progression, a framework with parts, a before and after. One claim, or fewer than four parts, is a text post: say so and hand over to `/linkedin-post`.
 3. A technical topic follows `/linkedin-post` **Explain mode**: one concept, one reader, every claim checked against the primary source before any slide is written.
 
@@ -82,7 +82,7 @@ link:      goes in the first comment
 Reply "yes" to log it, or tell me what to change.
 ```
 
-On "yes", ask "May I append it to `01-Perfiles/LinkedIn Log.md`?" and log the date, the cover and the format.
+On "yes", ask "May I append it to `01-Profiles/LinkedIn Log.md`?" and log the date, the cover and the format.
 
 ## Protocol
 

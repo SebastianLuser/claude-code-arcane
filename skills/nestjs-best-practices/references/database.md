@@ -2,14 +2,14 @@
 
 ## 7.1 Avoid N+1 Query Problems — HIGH
 
-El asesino silencioso de performance. Eager loading con relations o joins.
+The silent performance killer. Eager loading with relations or joins.
 
-**Incorrecto** — 1 query + N queries en loop:
+**Incorrect** — 1 query + N queries in a loop:
 ```ts
 const orders = await this.orderRepo.find();
 for (const o of orders) o.user = await this.userRepo.findOne(o.userId); // N+1
 ```
-**Correcto:**
+**Correct:**
 ```ts
 // Prisma
 prisma.order.findMany({ include: { user: true } });
@@ -19,7 +19,7 @@ this.orderRepo.find({ relations: ['user'] });
 
 ## 7.3 Use Transactions for Multi-Step Operations — MEDIUM-HIGH
 
-Operaciones dependientes en una transacción → consistencia ante fallos.
+Dependent operations in one transaction → consistency on failure.
 ```ts
 await this.prisma.$transaction(async (tx) => {
   await tx.account.update({ where: { id: from }, data: { balance: { decrement: amt } } });
@@ -29,7 +29,7 @@ await this.prisma.$transaction(async (tx) => {
 
 ## 7.2 Use Database Migrations — MEDIUM-HIGH
 
-Versionar cambios de schema con migraciones. **Nunca `synchronize: true` en producción** (puede borrar datos).
+Version schema changes with migrations. **Never `synchronize: true` in production** (it can delete data).
 ```ts
 TypeOrmModule.forRoot({ synchronize: false, migrationsRun: true });
 ```

@@ -1,38 +1,38 @@
-# Decision: {Titulo}
+# Decision: {Title}
 
-- **Fecha:** {YYYY-MM-DD}
-- **Estado:** {Pendiente | Aceptada | Rechazada | Reemplazada}
+- **Date:** {YYYY-MM-DD}
+- **Status:** {Pending | Accepted | Rejected | Superseded}
 
-## Contexto
+## Context
 
-{Por que se necesita tomar esta decision}
+{Why this decision needs to be made}
 
-## Opciones
+## Options
 
-### Opcion 1: {nombre}
+### Option 1: {name}
 
-| Aspecto | Detalle |
-|---------|---------|
+| Aspect | Detail |
+|--------|--------|
 | Pros | {pros} |
-| Contras | {contras} |
-| Costo | {estimacion} |
-| Ejemplo | {referencia o ejemplo} |
+| Cons | {cons} |
+| Cost | {estimate} |
+| Example | {reference or example} |
 
-### Opcion 2: {nombre}
+### Option 2: {name}
 
-| Aspecto | Detalle |
-|---------|---------|
+| Aspect | Detail |
+|--------|--------|
 | Pros | {pros} |
-| Contras | {contras} |
-| Costo | {estimacion} |
-| Ejemplo | {referencia o ejemplo} |
+| Cons | {cons} |
+| Cost | {estimate} |
+| Example | {reference or example} |
 
 ## Decision
 
-**Opcion elegida:** {nombre}
+**Chosen option:** {name}
 
-**Razon:** {justificacion}
+**Reason:** {justification}
 
-## Consecuencias
+## Consequences
 
-- {consecuencia positiva o negativa}
+- {positive or negative consequence}

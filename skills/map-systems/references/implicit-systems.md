@@ -1,10 +1,10 @@
 # Implicit System Inference Patterns
 
-Cada sistema mencionado implica sistemas ocultos. Heurísticas:
+Every system mentioned implies hidden systems. Heuristics:
 
-| Mencionado | Implica |
+| Mentioned | Implies |
 |-----------|---------|
-| Inventory | Item DB, equipment slots, capacity, inventory UI, serialización save/load |
+| Inventory | Item DB, equipment slots, capacity, inventory UI, save/load serialization |
 | Combat | Damage calc, health, hit detection, status effects, enemy AI, combat UI, death/respawn |
 | Open world | Streaming/chunking, LOD, fast travel, minimap, world state persistence |
 | Multiplayer | Networking, lobby/matchmaking, state sync, anti-cheat, network UI |

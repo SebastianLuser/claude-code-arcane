@@ -254,14 +254,14 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 | `clevel` | C-suite advisors, board prep, strategic ops | 28 | clevel |
 | `finance` | Investment analysis, financial modeling, SaaS metrics | 3 | business |
 | `marketing` | Content, growth, SEO/CRO, strategy, analytics | 44 | marketing |
-| `ecommerce` | Commerce end-to-end agnóstico de lenguaje — data model, checkout, inventario, órdenes, pagos, promociones, shipping/tax, listings, analytics, feeds, storefront, suscripciones | 21 | ecommerce |
+| `ecommerce` | Language-agnostic end-to-end commerce — data model, checkout, inventory, orders, payments, promotions, shipping/tax, listings, analytics, feeds, storefront, subscriptions | 21 | ecommerce |
 | `regulatory` | ISO 13485, GDPR, FDA, SOC 2, ISMS, QMS, MDR | 13 | regulatory |
 
 ### Personal
 
 | Profile | Adds | Skills | Agents |
 |---------|------|--------|--------|
-| `second-brain` | Second brain en Obsidian — captura sin fricción, reviews diario/semanal/mensual, notas atómicas y hub files (PARA + Zettelkasten), búsqueda con ranking, caché de contexto entre sesiones, auditoría de salud del vault, sintaxis nativa (markdown, Bases, Canvas) | 14 | — |
+| `second-brain` | Second brain in Obsidian — frictionless capture, daily/weekly/monthly reviews, atomic notes and hub files (PARA + Zettelkasten), ranked search, context cache across sessions, vault health audit, native syntax (markdown, Bases, Canvas) | 14 | — |
 | `job-hunt` | Job search end-to-end — master profile, ATS CV with verification, job scraping with dedup, LinkedIn, portfolio, cover letters, outreach, interview prep, LinkedIn posts/carousels/comments/replies/inbox with an en/es humanizer, registry/CSV traceability, fresh-context review agents | 23 | career |
 | `freelance` | Freelance projects — keyless public-source scanning with dedup, market rate intel, client risk screening, proposals priced above your net floor rate, contracts/SOWs, registry/CSV traceability, kickoff scope validation, delivery and change orders, acquisition-cost pipeline, Fiverr gigs | 17 | freelance |
 

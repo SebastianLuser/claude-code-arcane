@@ -9,13 +9,13 @@ allowed-tools: ["Read", "Bash", "Glob", "Grep", "Write"]
 
 ## Route
 
-| Argumento / Intención | Modo | Qué hace |
+| Argument / Intent | Mode | What it does |
 |----------------------|------|----------|
-| `checklist` / "¿estamos listos para release?", "go/no-go" | CHECKLIST | Ejecuta Pre-Release Checklist completo |
-| `patch-notes` / "generar notas", "release notes", "changelog" | PATCH-NOTES | Genera patch notes desde git log / changelog.md |
-| `both` / (sin argumento) | BOTH | Checklist primero → patch notes al final |
+| `checklist` / "are we ready to release?", "go/no-go" | CHECKLIST | Runs the full Pre-Release Checklist |
+| `patch-notes` / "generate notes", "release notes", "changelog" | PATCH-NOTES | Generates patch notes from git log / changelog.md |
+| `both` / (no argument) | BOTH | Checklist first → patch notes at the end |
 
-**Regla:** si hay blockers en CHECKLIST, reportarlos antes de proceder a PATCH-NOTES.
+**Rule:** if CHECKLIST has blockers, report them before moving on to PATCH-NOTES.
 
 ## Checklist
 

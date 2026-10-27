@@ -1,6 +1,6 @@
 # Educabot Specifics — OWASP
 
-- Datos de menores: A01+A02 son criticos (penal + reputacional)
-- PII alumnos cifrada en reposo + audit log. Logs sin PII de menores en claro
-- LGPD: consentimiento parental <12. COPPA: consentimiento verificable <13
-- IA/chatbots: prohibir aprendizaje de datos de menores sin opt-in parental
+- Minors' data: A01+A02 are critical (criminal + reputational)
+- Student PII encrypted at rest + audit log. Logs without minors' PII in plain text
+- LGPD: parental consent <12. COPPA: verifiable consent <13
+- AI/chatbots: forbid learning from minors' data without parental opt-in

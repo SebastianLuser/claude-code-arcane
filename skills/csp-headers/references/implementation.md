@@ -1,18 +1,18 @@
 # Implementation Details — CSP & Security Headers
 
 ## Go
-Middleware genera nonce (`crypto/rand`), inyecta en context + CSP header (nonce interpolado), setea todos los headers. Template accede nonce via context.
+Middleware generates the nonce (`crypto/rand`), injects it into the context + CSP header (nonce interpolated), sets every header. The template reads the nonce via the context.
 
 ## TS (Express)
-`helmet` con CSP override (useDefaults: false), nonce via `res.locals.cspNonce` (`crypto.randomBytes`), Permissions-Policy manual. `reportOnly` configurable via env.
+`helmet` with a CSP override (useDefaults: false), nonce via `res.locals.cspNonce` (`crypto.randomBytes`), manual Permissions-Policy. `reportOnly` configurable via env.
 
 ## Cloudflare
-Preferir headers desde origin (mas testeable). Si necesario: Transform Rules (estaticos, no nonces) o Workers (nonces per-request + HTMLRewriter para inyectar).
+Prefer headers from the origin (more testable). If needed: Transform Rules (static, no nonces) or Workers (per-request nonces + HTMLRewriter to inject them).
 
 ## Iframes / Embedding
 
-Educabot embebe contenido educativo: `frame-src 'self' youtube-nocookie.com view.genially.com classroom.google.com`. `frame-ancestors 'none'` salvo LMS externo (whitelist explicito).
+Educabot embeds educational content: `frame-src 'self' youtube-nocookie.com view.genially.com classroom.google.com`. `frame-ancestors 'none'` unless there is an external LMS (explicit whitelist).
 
 ## Testing
 
-securityheaders.com (A+), csp-evaluator.withgoogle.com, hstspreload.org, `curl -I | grep`, DevTools Network headers, Console violations en report-only.
+securityheaders.com (A+), csp-evaluator.withgoogle.com, hstspreload.org, `curl -I | grep`, DevTools Network headers, Console violations in report-only.

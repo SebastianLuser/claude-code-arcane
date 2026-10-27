@@ -8,36 +8,36 @@ allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 # Database Diagram Generator
 
-Lee el schema de la base de datos y genera un diagrama ER en Mermaid.
+Reads the database schema and generates an ER diagram in Mermaid.
 
 ## Process
 
-### 1. Detectar fuente del schema
+### 1. Detect the schema source
 
-Buscar en orden de prioridad:
+Search in order of priority:
 
-| Fuente | Ubicación típica |
+| Source | Typical location |
 |--------|-----------------|
 | Migrations SQL | `db/migrations/`, `migrations/`, `prisma/migrations/` |
 | ORM Models | `models/`, `src/core/entities/`, `app/models/` |
 | Prisma Schema | `prisma/schema.prisma` |
 | SQLAlchemy | `models.py`, `models/` |
-| GORM structs | `*.go` con tags `gorm:"..."` |
-| Django Models | `models.py` en cada app |
+| GORM structs | `*.go` with `gorm:"..."` tags |
+| Django Models | `models.py` in each app |
 | TypeORM | `*.entity.ts` |
 | Drizzle | `schema.ts`, `schema/` |
 
-### 2. Parsear tablas y relaciones
+### 2. Parse tables and relationships
 
-Para cada tabla/modelo extraer:
-- Nombre de tabla
-- Columnas: nombre, tipo, nullable, default
+For each table/model extract:
+- Table name
+- Columns: name, type, nullable, default
 - Primary key
-- Foreign keys → tabla referenciada
-- Indexes únicos
-- Relaciones: 1:1, 1:N, N:M
+- Foreign keys → referenced table
+- Unique indexes
+- Relationships: 1:1, 1:N, N:M
 
-### 3. Generar Mermaid ER
+### 3. Generate the Mermaid ER
 
 ```mermaid
 erDiagram
@@ -65,23 +65,23 @@ erDiagram
 
 ### 4. Output
 
-1. Mostrar el diagrama Mermaid en pantalla
-2. Si el usuario quiere guardarlo → escribir en `docs/db-diagram.md` o `docs/schema.md`
-3. Incluir tabla resumen:
+1. Show the Mermaid diagram on screen
+2. If the user wants to save it → write it to `docs/db-diagram.md` or `docs/schema.md`
+3. Include a summary table:
 
 ```markdown
-## Tablas
-| Tabla | Columnas | FK | Descripción |
+## Tables
+| Table | Columns | FK | Description |
 |-------|----------|-----|-------------|
 
-## Relaciones
-| Tabla A | → | Tabla B | Tipo | Via |
+## Relationships
+| Table A | → | Table B | Type | Via |
 |---------|---|---------|------|----|
 ```
 
 ## Rules
-- Si hay múltiples fuentes (migrations + models), preferir migrations como fuente de verdad
-- Agrupar tablas relacionadas visualmente
-- Marcar campos nullable con `?`
-- En español para descripciones, nombres de tabla como están en el código
-- Si el schema es muy grande (>20 tablas), ofrecer generar por módulo/dominio
+- If there are multiple sources (migrations + models), prefer migrations as the source of truth
+- Group related tables visually
+- Mark nullable fields with `?`
+- Descriptions in the user's language, table names as they appear in the code
+- If the schema is very large (>20 tables), offer to generate it per module/domain

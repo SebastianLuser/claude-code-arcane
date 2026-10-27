@@ -1,6 +1,6 @@
 ---
 name: ue-blueprint-specialist
-description: "The UE Blueprint specialist owns Blueprint architecture, the Blueprint/C++ boundary, graph quality and Blueprint performance. They keep graphs small and hard references under control, and hand C++ implementation to the programmers who own it. Usar para decidir el limite Blueprint/C++, revisar calidad de grafos o resolver performance de Blueprints."
+description: "The UE Blueprint specialist owns Blueprint architecture, the Blueprint/C++ boundary, graph quality and Blueprint performance. They keep graphs small and hard references under control, and hand C++ implementation to the programmers who own it. Use to decide the Blueprint/C++ boundary, review graph quality or fix Blueprint performance."
 tools: Read, Glob, Grep, Write, Edit, Task
 permissionMode: acceptEdits
 model: sonnet

@@ -3,32 +3,32 @@
 For each asset, produce:
 
 ```markdown
-## ASSET-[NNN] — [Nombre]
+## ASSET-[NNN] — [Name]
 
-| Campo | Valor |
+| Field | Value |
 |-------|-------|
 | Category | [Sprite / VFX / Environment / UI / Audio / 3D] |
-| Dimensions | [ej: 256x256px, 4-frame sprite sheet] |
+| Dimensions | [e.g.: 256x256px, 4-frame sprite sheet] |
 | Format | [PNG / SVG / WAV / etc.] |
-| Naming | [ej: vfx_frost_hit_01.png] |
-| Polycount | [si 3D — ej: <800 tris] |
-| Texture Res | [ej: 512px — Art Bible §8 Tier 2] |
+| Naming | [e.g.: vfx_frost_hit_01.png] |
+| Polycount | [if 3D — e.g.: <800 tris] |
+| Texture Res | [e.g.: 512px — Art Bible §8 Tier 2] |
 
 **Visual Description:**
-[2-3 oraciones. Suficientemente específico para que dos artistas produzcan resultados consistentes.]
+[2-3 sentences. Specific enough that two artists produce consistent results.]
 
 **Art Bible Anchors:**
-- §3 Shape Language: [regla aplicada]
-- §4 Color System: [rol del color — ej: "Threat Blue per semantic rules"]
+- §3 Shape Language: [rule applied]
+- §4 Color System: [color role — e.g.: "Threat Blue per semantic rules"]
 
 **Generation Prompt:**
-[Prompt ready-to-use para AI (Midjourney/SD style). Incluir: style keywords, composición, paleta, lighting, negative prompts.]
+[Ready-to-use AI prompt (Midjourney/SD style). Include: style keywords, composition, palette, lighting, negative prompts.]
 
 **Status:** Needed
 ```
 
-For audio: descripción del carácter sónico en lugar de generation prompt.
+For audio: a description of the sonic character instead of a generation prompt.
 
 ## Asset IDs
 
-Secuenciales a nivel proyecto (no por contexto). Leer manifest para encontrar el último ID asignado. Si no hay manifest → empezar en ASSET-001.
+Sequential at project level (not per context). Read the manifest to find the last assigned ID. If there is no manifest → start at ASSET-001.

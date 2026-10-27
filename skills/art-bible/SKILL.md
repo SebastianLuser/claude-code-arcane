@@ -8,74 +8,74 @@ allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 # art-bible — Visual Identity Specification
 
-Define la identidad visual del juego. Toda producción de assets se gatean contra este documento.
+Defines the game's visual identity. All asset production is gated against this document.
 
-## Cuándo usar
+## When to use
 
-- Después de tener game concept aprobado, antes de producción de assets
-- Cuando necesitás estandarizar el estilo visual entre artistas
-- Antes de generar asset specs (`/asset-spec`)
+- After the game concept is approved, before asset production
+- When you need to standardize the visual style across artists
+- Before generating asset specs (`/asset-spec`)
 
 ## Input
 
-1. Leer game concept (elevator pitch, pilares, core fantasy)
-2. Preguntar al usuario: scope (full bible / core sections 1-4 / solo asset standards) y referencias visuales (juegos, films, arte)
-3. Si ya existe art bible: detectar secciones completas vs vacías, trabajar solo las incompletas
+1. Read the game concept (elevator pitch, pillars, core fantasy)
+2. Ask the user: scope (full bible / core sections 1-4 / asset standards only) and visual references (games, films, art)
+3. If an art bible already exists: detect complete vs empty sections, work only on the incomplete ones
 
 ---
 
-## Secciones del Art Bible
+## Art Bible sections
 
-### Core (secciones 1-4) — definen el lenguaje visual
+### Core (sections 1-4) — define the visual language
 
-| # | Sección | Qué define | Criterio de calidad |
+| # | Section | What it defines | Quality criterion |
 |---|---------|-----------|-------------------|
-| 1 | **Visual Identity Statement** | Regla visual de 1 línea + 2-3 principios de soporte | Resuelve cualquier ambigüedad visual. Cada principio ancla en un pilar |
-| 2 | **Mood & Atmosphere** | Emotional target por game state (exploración, combate, menú...) | Lighting, temperatura de color, contraste, energía. Cada estado visualmente distinto |
-| 3 | **Shape Language** | Vocabulario geométrico (siluetas, environment geometry, UI shapes) | Readable a thumbnail size. Hero shapes vs supporting shapes |
-| 4 | **Color System** | Paleta primaria (5-7 colores con roles), colores semánticos, UI palette | Cada color tiene significado explícito. Colorblind safety con backup cues |
+| 1 | **Visual Identity Statement** | 1-line visual rule + 2-3 supporting principles | Resolves any visual ambiguity. Each principle anchors to a pillar |
+| 2 | **Mood & Atmosphere** | Emotional target per game state (exploration, combat, menu...) | Lighting, color temperature, contrast, energy. Each state visually distinct |
+| 3 | **Shape Language** | Geometric vocabulary (silhouettes, environment geometry, UI shapes) | Readable at thumbnail size. Hero shapes vs supporting shapes |
+| 4 | **Color System** | Primary palette (5-7 colors with roles), semantic colors, UI palette | Each color has an explicit meaning. Colorblind safety with backup cues |
 
-### Production (secciones 5-8) — reglas concretas para producción
+### Production (sections 5-8) — concrete rules for production
 
-| # | Sección | Qué define |
+| # | Section | What it defines |
 |---|---------|-----------|
-| 5 | **Character Design** | Archetypes, distinguishing features por tipo, expression style, LOD philosophy |
-| 6 | **Environment Design** | Estilo arquitectónico, texture philosophy, prop density, environmental storytelling |
+| 5 | **Character Design** | Archetypes, distinguishing features per type, expression style, LOD philosophy |
+| 6 | **Environment Design** | Architectural style, texture philosophy, prop density, environmental storytelling |
 | 7 | **UI/HUD Direction** | Diegetic vs screen-space, typography, iconography style, animation feel |
-| 8 | **Asset Standards** | Formatos, naming, texture res tiers, polycount budgets, export settings |
+| 8 | **Asset Standards** | Formats, naming, texture res tiers, polycount budgets, export settings |
 
-### Reference (sección 9)
+### Reference (section 9)
 
-| # | Sección | Qué define |
+| # | Section | What it defines |
 |---|---------|-----------|
-| 9 | **References & Prohibitions** | 3-5 referencias con qué tomar y qué evitar de cada una. Style prohibitions explícitas |
+| 9 | **References & Prohibitions** | 3-5 references with what to take and what to avoid from each. Explicit style prohibitions |
 
 ---
 
-## Proceso
+## Process
 
-Para cada sección:
-1. **Draftar** basándose en game concept, pilares y referencias
-2. **Presentar** al usuario para review
-3. **Escribir** a archivo inmediatamente después de aprobación
+For each section:
+1. **Draft** it based on the game concept, pillars and references
+2. **Present** it to the user for review
+3. **Write** it to file immediately after approval
 
-No batchear — escribir cada sección aprobada antes de pasar a la siguiente.
+Do not batch — write each approved section before moving to the next one.
 
-### Conflictos
+### Conflicts
 
-Si hay tensión entre dirección artística y constraints técnicos (ej: art quiere texturas 4K pero performance budget requiere 2K), surfacear el conflicto explícitamente con ambas posiciones. No resolver silenciosamente.
+If there is tension between art direction and technical constraints (e.g. art wants 4K textures but the performance budget requires 2K), surface the conflict explicitly with both positions. Do not resolve it silently.
 
-Si UI direction conflicta con readability/accessibility, surfacear y dejar que el usuario decida.
+If UI direction conflicts with readability/accessibility, surface it and let the user decide.
 
 ---
 
-## Principios
+## Principles
 
-- El art bible es un **documento de restricción**: narrows solution space en favor de coherencia visual
-- Cada sección debe conectar con los pilares del juego
-- Específico > genérico: "dark and foreboding" no alcanza — decir la emoción exacta, lighting, contraste, un elemento visual que carga el mood
-- Para cada referencia: qué tomar Y qué evitar (prevenir el "trying to copy X")
-- Asset standards deben ser producibles — un equipo externo debería poder seguirlas sin briefing adicional
+- The art bible is a **constraint document**: it narrows the solution space in favor of visual coherence
+- Each section must connect to the game's pillars
+- Specific > generic: "dark and foreboding" is not enough — state the exact emotion, lighting, contrast, and one visual element that carries the mood
+- For each reference: what to take AND what to avoid (prevents "trying to copy X")
+- Asset standards must be producible — an external team should be able to follow them without additional briefing
 
 ---
 

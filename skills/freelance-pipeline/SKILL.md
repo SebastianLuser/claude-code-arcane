@@ -1,109 +1,109 @@
 ---
 name: freelance-pipeline
-description: "Diagnose the freelance business, not one proposal: Connects ROI, proposal funnel, real effective hourly rate net of unbilled hours, utilization, client concentration and scope drift on active contracts. Triggers: como va mi pipeline freelance, cuanto gano por hora de verdad, roi de connects, por que no me responden las propuestas, utilizacion, scope creep de un contrato."
-argument-hint: "[--desde YYYY-MM-DD]"
+description: "Diagnose the freelance business, not one proposal: Connects ROI, proposal funnel, real effective hourly rate net of unbilled hours, utilization, client concentration and scope drift on active contracts. Triggers: how is my freelance pipeline doing, how much do I really earn per hour, connects roi, why aren't clients answering my proposals, utilization, scope creep on a contract."
+argument-hint: "[--since YYYY-MM-DD]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, Task
 ---
 
-# Freelance Pipeline - Diagnóstico del negocio
+# Freelance Pipeline - Business diagnosis
 
-Mirás el negocio entero, no la propuesta de mañana. La pregunta que contestás es si esto funciona como negocio, y si no, qué **una** cosa cambiar.
+You look at the whole business, not tomorrow's proposal. The question you answer is whether this works as a business, and if not, which **one** thing to change.
 
-Rutas relativas al career workspace (`--workspace`, env `CAREER_WORKSPACE`, o `./career-workspace/`).
+Paths are relative to the career workspace (`--workspace`, env `CAREER_WORKSPACE`, or `./career-workspace/`).
 
-Ventana: `$ARGUMENTS` (vacío = todo el historial).
+Window: `$ARGUMENTS` (empty = the whole history).
 
 ## Inputs
 
-- `03-Aplicaciones/` con `tipo: freelance` - **todas**, incluidas las `descartado`. Los descartes dicen si tu criterio de selección funciona; sin ellos el diagnóstico está sesgado a las que sí mandaste.
-- `08-Contratos/` - activos y cerrados: estimado contra real, milestones, horas, change orders.
-- El ledger de Connects en `07-Recursos/` - gasto por propuesta y resultado.
-- `01-Perfiles/` - el piso de tarifa neto y la capacidad semanal declarada.
+- `03-Applications/` with `type: freelance` - **all of them**, including the `discarded` ones. The discards tell you whether your selection criteria work; without them the diagnosis is biased toward the ones you did send.
+- `08-Contracts/` - active and closed: estimate versus actual, milestones, hours, change orders.
+- The Connects ledger in `07-Resources/` - spend per proposal and result.
+- `01-Profiles/` - the net rate floor and the declared weekly capacity.
 
-### Los datos duros salen del export, no de la memoria
+### Hard data comes from the export, not from memory
 
-Si el usuario tiene historial en una plataforma, **no le preguntes los montos y las horas**: que baje el CSV y usamos el importador. Nadie recuerda bien cuánto facturó.
+If the user has history on a platform, **do not ask them for amounts and hours**: have them download the CSV and use the importer. Nobody remembers accurately how much they billed.
 
 ```bash
-python .claude/skills/freelance-pipeline/scripts/import_history.py inspect historial.csv
-python .claude/skills/freelance-pipeline/scripts/import_history.py summary historial.csv
+python .claude/skills/freelance-pipeline/scripts/import_history.py inspect history.csv
+python .claude/skills/freelance-pipeline/scripts/import_history.py summary history.csv
 ```
 
-Mismo patrón que `network_map.py` de `+job-hunt`: sin credenciales, sin tocar la cuenta. El usuario exporta, el script lee.
+Same pattern as `network_map.py` in `+job-hunt`: no credentials, no touching the account. The user exports, the script reads.
 
-**Correr `inspect` primero, siempre, y mostrarle el mapeo.** El script detecta las columnas porque los exports no tienen esquema estable, y reporta `columnas_sin_mapear` y `columnas_ambiguas`. Antes de creerle a un total hay que ver qué columna se usó; si eligió mal, se corrige con `--map "Columna=campo"`.
+**Always run `inspect` first and show the user the mapping.** The script detects the columns because exports have no stable schema, and it reports `unmapped_columns` and `ambiguous_columns`. Before trusting a total you have to see which column was used; if it picked the wrong one, fix it with `--map "Column=field"`. The column names and transaction types it knows come from `scripts/columns.en.json` and `scripts/columns.es.json`, all applied at once; a spreadsheet in another language needs `--map` or a new `columns.<lang>.json`.
 
-Dos cosas que el summary te dice y hay que respetar: `tarifa_efectiva_calculable: false` significa que el export no trae horas y **la tarifa efectiva no se estima**, se pide el dato; y `muestra_suficiente: false` significa que no alcanza para hablar de tasas.
+Two things the summary tells you that must be respected: `effective_rate_computable: false` means the export has no hours and **the effective rate is not estimated**, you ask for the data; and `enough_sample: false` means there is not enough to talk about rates.
 
-## El guard de volumen (primero, obligatorio)
+## The volume guard (first, mandatory)
 
-Contar antes de afirmar.
+Count before you claim.
 
-- **Menos de 10 propuestas resueltas:** no hay embudo. Entregar solo lo descriptivo (cuántas, Connects gastados, tiempo de respuesta) y nombrar la hipótesis más barata de testear. **Nada de patrones.**
-- **10 a 25:** tendencias, con la muestra a la vista en cada afirmación ("3 de 14").
-- **25+:** tasas de conversión.
+- **Fewer than 10 resolved proposals:** there is no funnel. Deliver only the descriptive part (how many, Connects spent, response time) and name the cheapest hypothesis to test. **No patterns.**
+- **10 to 25:** trends, with the sample visible in every claim ("3 of 14").
+- **25+:** conversion rates.
 
-Tres propuestas sin respuesta no son un patrón. Tratarlas como tal manda al usuario a bajar la tarifa, que es el peor movimiento posible y el más difícil de revertir.
+Three unanswered proposals are not a pattern. Treating them as one sends the user to lower their rate, which is the worst possible move and the hardest to reverse.
 
-## Las cinco métricas
+## The five metrics
 
-### 1. ROI de Connects
+### 1. Connects ROI
 
-`Connects gastados / contratos ganados` = costo de adquisición. Y el número que más duele: **cuántos Connects se fueron en ofertas que nunca contrataron a nadie**. Esa pérdida es evitable con mejor screening, así que se reporta aparte.
+`Connects spent / contracts won` = acquisition cost. And the number that hurts the most: **how many Connects went to postings that never hired anyone**. That loss is avoidable with better screening, so it is reported separately.
 
-### 2. Embudo
+### 2. Funnel
 
 ```
-oferta vista → screen pasado → propuesta enviada → cliente responde → llamada → contrato
+posting seen → screen passed → proposal sent → client replies → call → contract
 ```
 
-La etapa clave es **enviada → responde**. Cruzarla con el score cambia el diagnóstico:
+The key stage is **sent → replies**. Crossing it with the score changes the diagnosis:
 
-| Sin respuesta + score alto | Sin respuesta + score bajo |
+| No reply + high score | No reply + low score |
 |---|---|
-| Problema de propuesta: apertura, precio, plantilla detectable | Problema de targeting: te postulás a lo que no te corresponde |
-| Va a `/freelance-proposal` | Va a `/freelance-scan` y `/freelance-profile` |
+| Proposal problem: opening, price, detectable template | Targeting problem: you apply to what is not a fit for you |
+| Goes to `/freelance-proposal` | Goes to `/freelance-scan` and `/freelance-profile` |
 
-### 3. Tarifa efectiva real
+### 3. Real effective rate
 
-`total cobrado / (horas facturadas + horas de propuestas + llamadas + admin)`, **neto de comisión**.
+`total collected / (billed hours + proposal hours + calls + admin)`, **net of fees**.
 
-No es la tarifa del contrato y casi siempre es bastante menor. Es el número que dice si el negocio funciona. **Si quedó abajo del piso declarado, ese es el hallazgo principal** y todo lo demás es secundario.
+It is not the contract rate and it is almost always quite a bit lower. It is the number that says whether the business works. **If it came out below the declared floor, that is the main finding** and everything else is secondary.
 
-### 4. Utilización y concentración
+### 4. Utilization and concentration
 
-- Horas facturables contra capacidad declarada. Muy baja = problema de pipeline. Muy alta sostenida = riesgo de burnout y de no tener tiempo para vender, que es cómo se llega al mes siguiente sin nada.
-- **Concentración**: porcentaje de ingresos del cliente más grande. Arriba de la mitad, no es un negocio: es un empleo sin sus protecciones y sin su estabilidad.
+- Billable hours against declared capacity. Very low = pipeline problem. Sustained very high = risk of burnout and of having no time to sell, which is how you reach the next month with nothing.
+- **Concentration**: share of income from the largest client. Above half, it is not a business: it is a job without its protections and without its stability.
 
-### 5. Scope drift en contratos activos
+### 5. Scope drift on active contracts
 
-Contratos donde las horas reales superan lo estimado **sin change order**. Cada uno es trabajo regalado.
+Contracts where actual hours exceed the estimate **without a change order**. Each one is work given away.
 
-El patrón importa más que el caso: si pasa en casi todos, el problema está en cómo se escriben los alcances (va a `/contract-and-proposal-writer`), no en los clientes. Por cada contrato con drift, ofrecer redactar el change order - alcance nuevo, precio nuevo (regla 3 de `freelance-guardrails`).
+The pattern matters more than the case: if it happens in almost all of them, the problem is in how scopes are written (goes to `/contract-and-proposal-writer`), not in the clients. For each contract with drift, offer to draft the change order - new scope, new price (rule 3 of `freelance-guardrails`).
 
-## Proceso
+## Process
 
-1. **Recolectar y contar.** Aplicar el guard de volumen y decir en qué banda estamos.
-2. **Calcular las cinco métricas.** Mostrarlas en el chat con la muestra explícita, antes de interpretar nada.
-3. **Lanzar `pipeline-strategist`** (contexto fresco, read-only) si hay 10+ propuestas resueltas. Devuelve punto de fuga, hipótesis con cómo testearlas, UN cambio recomendado y qué no tocar. Con menos volumen, saltear: el agente lo va a rechazar igual.
-4. **Reporte** en `07-Recursos/Pipeline - YYYY-MM-DD.md`, con approval del usuario sobre las métricas:
-   - Frontmatter: `tipo: pipeline`, `fecha`, `propuestas_analizadas`, `contratos_analizados`, `ventana`.
-   - Las cinco métricas con su muestra.
-   - El punto de fuga y su evidencia, con wikilinks a las notas que lo sostienen.
-   - El cambio recomendado y a qué skill se le pasa.
-   - Si existe un reporte anterior, sección "Desde el último reporte": qué se movió y qué no.
-5. **No editar** notas de propuestas ni de contratos. Solo crear el reporte y, si el usuario lo pide, los change orders de los contratos con drift.
+1. **Collect and count.** Apply the volume guard and say which band we are in.
+2. **Compute the five metrics.** Show them in the chat with the explicit sample, before interpreting anything.
+3. **Launch `pipeline-strategist`** (fresh context, read-only) if there are 10+ resolved proposals. It returns the leak point, hypotheses with how to test them, ONE recommended change and what not to touch. With less volume, skip it: the agent will reject it anyway.
+4. **Report** in `07-Resources/Pipeline - YYYY-MM-DD.md`, with the user's approval on the metrics:
+   - Frontmatter: `type: pipeline`, `date`, `proposals_analyzed`, `contracts_analyzed`, `window`.
+   - The five metrics with their sample.
+   - The leak point and its evidence, with wikilinks to the notes that support it.
+   - The recommended change and which skill it is handed to.
+   - If a previous report exists, a "Since the last report" section: what moved and what did not.
+5. **Do not edit** proposal or contract notes. Only create the report and, if the user asks, the change orders for the contracts with drift.
 
-## Reglas
+## Rules
 
-- **Datos antes que consejos.** Cada afirmación se apoya en un conteo o en una cita del feedback registrado.
-- **UN cambio recomendado, no un plan de 8 puntos.** Si se cambian cinco cosas no se sabe cuál funcionó.
-- **Bajar la tarifa nunca es la primera palanca.** Solo entra si la evidencia dice que el posicionamiento está mal, y con ese fundamento explícito.
-- Nunca fabricar métricas: si falta el dato (horas no registradas, Connects sin anotar), reportar el hueco y qué habría que empezar a registrar.
-- Sin guiones largos, con wikilinks a las notas fuente.
+- **Data before advice.** Every claim rests on a count or on a quote from the recorded feedback.
+- **ONE recommended change, not an 8-point plan.** If five things change, you cannot tell which one worked.
+- **Lowering the rate is never the first lever.** It only comes in if the evidence says the positioning is wrong, and with that reasoning made explicit.
+- Never fabricate metrics: if data is missing (unlogged hours, unrecorded Connects), report the gap and what should start being recorded.
+- No em dashes, with wikilinks to the source notes.
 
 ## Handoff
 
-Reporte COMPLETE en `07-Recursos/`. El siguiente paso es el que salga del punto de fuga: `/freelance-proposal` (propuesta), `/freelance-scan` o `/freelance-profile` (targeting y posicionamiento), `/client-screen` (criterios de descarte), o `/contract-and-proposal-writer` (alcances y change orders).
+Report COMPLETE in `07-Resources/`. The next step is whatever comes out of the leak point: `/freelance-proposal` (proposal), `/freelance-scan` or `/freelance-profile` (targeting and positioning), `/client-screen` (discard criteria), or `/contract-and-proposal-writer` (scopes and change orders).

@@ -1,19 +1,19 @@
 # Zero-downtime: Expand-Contract
 
-Todo breaking change se divide en multiples releases:
+Every breaking change is split across multiple releases:
 
-| Fase | Que | Compatibilidad |
+| Phase | What | Compatibility |
 |------|-----|----------------|
-| **1. Expand** | Agregar nuevo (columna NULLABLE/DEFAULT, tabla, indice CONCURRENTLY) | Codigo viejo funciona |
-| **2. Backfill** | Rellenar datos — job background, idempotente, batcheado | Separado del DDL |
-| **3. Dual-write** | App escribe viejo Y nuevo | Rollback sin perder datos |
-| **4. Migrate reads** | App lee del nuevo, viejo solo-escritura | Validar trafico |
-| **5. Contract** | Drop viejo — minimo 1 release despues | Solo tras validar nadie lee viejo |
+| **1. Expand** | Add the new thing (NULLABLE/DEFAULT column, table, index CONCURRENTLY) | Old code keeps working |
+| **2. Backfill** | Fill in data — background job, idempotent, batched | Separate from the DDL |
+| **3. Dual-write** | The app writes old AND new | Rollback without losing data |
+| **4. Migrate reads** | The app reads from the new one, the old one is write-only | Validate traffic |
+| **5. Contract** | Drop the old one — at least 1 release later | Only after validating nobody reads the old one |
 
-## Breaking changes SIEMPRE multi-step
+## Breaking changes are ALWAYS multi-step
 
 - `DROP COLUMN` — stop-writing -> stop-reading -> drop
-- `ALTER COLUMN TYPE` lossy — nueva columna + backfill + swap
-- `RENAME COLUMN/TABLE` — alias/vista temporal o expand-contract
-- `NOT NULL` existente — check constraint NOT VALID -> validar -> NOT NULL
-- Cambio PK/FK
+- Lossy `ALTER COLUMN TYPE` — new column + backfill + swap
+- `RENAME COLUMN/TABLE` — temporary alias/view or expand-contract
+- `NOT NULL` on an existing column — check constraint NOT VALID -> validate -> NOT NULL
+- PK/FK change

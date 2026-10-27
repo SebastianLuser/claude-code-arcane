@@ -1,6 +1,6 @@
 ---
 name: cold-outreach
-description: "Write cold LinkedIn/email messages from a job-seeker to recruiters, hiring managers and referrals - plus post-application follow-up sequences that get replies. For B2B sales outreach use cold-email instead. Triggers: mensaje en frio recruiter, escribirle a un reclutador, follow up postulacion, networking message, pedir referido, contactar hiring manager."
+description: "Write cold LinkedIn/email messages from a job-seeker to recruiters, hiring managers and referrals - plus post-application follow-up sequences that get replies. For B2B sales outreach use cold-email instead. Triggers: cold message to a recruiter, write to a recruiter, follow up on an application, networking message, ask for a referral, contact a hiring manager."
 argument-hint: "[contact-note | recruiter + company]"
 category: "career"
 user-invocable: true
@@ -9,78 +9,78 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, WebFetch
 
 # Cold Outreach - Job-seeker → Recruiter / Hiring Manager
 
-Escribís mensajes en frío de un **candidato** a recruiters, hiring managers y referidos, y secuencias de **follow-up** post-aplicación que reciben respuesta. Esto NO es venta B2B (para eso está `/cold-email`) - el ángulo es conseguir una conversación o un referido, sin sonar a spam ni a desesperación.
+You write cold messages from a **candidate** to recruiters, hiring managers and referrals, and post-application **follow-up** sequences that get replies. This is NOT B2B sales (that is what `/cold-email` is for) - the angle is landing a conversation or a referral, without sounding like spam or desperation.
 
-## Cuándo usar cada variante
+## When to use each variant
 
-| Situación | Mensaje |
+| Situation | Message |
 |-----------|---------|
-| Recruiter posteó un rol | Mensaje corto con fit + interés explícito |
-| Hiring manager / futuro lead | Mensaje de valor: qué resolvés que a su equipo le importa |
-| Pedir un referido a alguien de la empresa | Cálido, bajo compromiso, fácil de decir que sí |
-| Networking sin rol abierto | Curiosidad genuina + algo en común, sin pedir nada todavía |
-| Follow-up post-aplicación | Recordatorio con valor, no "¿alguna novedad?" |
+| A recruiter posted a role | Short message with fit + explicit interest |
+| Hiring manager / future lead | Value message: what you solve that their team cares about |
+| Asking someone at the company for a referral | Warm, low commitment, easy to say yes to |
+| Networking with no open role | Genuine curiosity + something in common, without asking for anything yet |
+| Post-application follow-up | A reminder with value, not "any news?" |
 
-## Principios
+## Principles
 
-- **Personalizá la primera línea.** Algo real de esa persona/empresa/rol. Si sirve para 100 personas, no sirve para ninguna.
-- **Corto.** LinkedIn: 50-125 palabras. La nota de invitación: hasta 200 caracteres en cuentas gratis (contalos y mostrá el conteo).
-- **Notas de invitación contadas.** Una cuenta gratis puede agregar nota a muy pocas invitaciones por mes (3 según el Help de LinkedIn al revisarlo; LinkedIn lo cambia). Gastalas en las personas que importan; al resto invitá sin nota y escribí el primer mensaje cuando acepten.
-- **Si no hay una razón concreta para escribirle hoy, decilo.** Un mensaje sin razón es el que manda todo el mundo.
-- **Una pregunta / un CTA.** Bajá la fricción de responder.
-- **Vos resolvés algo para ellos**, no "estoy buscando trabajo, ¿me ayudás?". El foco es el valor que aportás al equipo.
-- **Sin paredes de texto, sin CV adjunto en el primer toque** (salvo que lo pidan).
-- **Respetá el "no".** Un follow-up, máximo dos. Nunca insistir agresivo.
+- **Personalize the first line.** Something real about that person/company/role. If it works for 100 people, it works for none.
+- **Short.** LinkedIn: 50-125 words. The invitation note: up to 200 characters on free accounts (count them and show the count).
+- **Invitation notes are limited.** A free account can add a note to very few invitations per month (3 according to LinkedIn Help when last checked; LinkedIn changes it). Spend them on the people who matter; invite everyone else without a note and write the first message when they accept.
+- **If there is no concrete reason to write to them today, say so.** A message with no reason is the one everyone sends.
+- **One question / one CTA.** Lower the friction of replying.
+- **You solve something for them**, not "I'm looking for a job, can you help me?". The focus is the value you bring to the team.
+- **No walls of text, no CV attached on the first touch** (unless they ask for it).
+- **Respect the "no".** One follow-up, two at most. Never push aggressively.
 
-## La nota de invitación
+## The invitation note
 
-`{una referencia concreta a esa persona} + {una línea de quién sos} + {sin pedido}`. La nota no pide nada: existe para que aceptar sea obvio.
+`{a concrete reference to that person} + {one line on who you are} + {no ask}`. The note asks for nothing: it exists to make accepting obvious.
 
 ```
-Vi tu charla sobre migrar el monolito a eventos; nosotros hicimos lo mismo en 2025.
-Soy backend dev en Go. Me gustaría seguir lo que publicás.            [142/200]
+Saw your talk on moving the monolith to events; we did the same in 2025.
+I'm a backend dev working in Go. I'd like to follow what you post.            [139/200]
 ```
 
-## Estructura de un primer mensaje
+## Structure of a first message
 
-Esperá un día después de que acepten. Después:
+Wait a day after they accept. Then:
 
-1. **Gancho personal** (1 línea): por qué *a esta persona*; si hubo nota, retomá lo mismo (la continuidad es la razón de que la nota fuera concreta).
-2. **Quién sos + fit** (1-2 líneas): rol + el logro más relevante para ellos. Dá algo antes de pedir: un dato, una idea sobre su producto, un link útil.
-3. **CTA suave** (1 línea): ¿15 min para charlar? / ¿abierto a una intro? / dejé mi aplicación, encantado de dar contexto. Un solo pedido, chico. **Sin link de calendario en el primer mensaje**: se lee como embudo.
+1. **Personal hook** (1 line): why *this person*; if there was a note, pick up the same thread (continuity is the reason the note was concrete).
+2. **Who you are + fit** (1-2 lines): role + the achievement most relevant to them. Give something before asking: a data point, an idea about their product, a useful link.
+3. **Soft CTA** (1 line): 15 min to chat? / open to an intro? / I applied, happy to give context. A single, small ask. **No calendar link in the first message**: it reads like a funnel.
 
-## Secuencia de follow-up post-aplicación
+## Post-application follow-up sequence
 
-- **Día 0** - aplicación enviada (+ mensaje al recruiter/hiring manager si tenés el contacto).
-- **Día 4-5** - follow-up 1: reafirmá interés + agregá *algo nuevo* (un proyecto relevante, una idea sobre su producto). No "¿novedades?".
-- **Día 10-12** - follow-up 2 (último): breve, profesional, dejá la puerta abierta. Si no hay respuesta, cerrás el loop con dignidad.
+- **Day 0** - application sent (+ a message to the recruiter/hiring manager if you have the contact).
+- **Day 4-5** - follow-up 1: reaffirm interest + add *something new* (a relevant project, an idea about their product). Not "any news?".
+- **Day 10-12** - follow-up 2 (last): brief, professional, leave the door open. If there is no reply, you close the loop with dignity.
 
-Cada follow-up debe tener un **gancho propio** y leerse solo, sin depender de los anteriores. Si no tenés nada nuevo para decir, no hay follow-up. Nunca "solo quería hacer seguimiento". Después del segundo, parás: un tercero no convierte y gasta la relación.
+Every follow-up must have **its own hook** and stand on its own, without depending on the earlier ones. If you have nothing new to say, there is no follow-up. Never "just wanted to follow up". After the second one, stop: a third one does not convert and burns the relationship.
 
-## Nunca
+## Never
 
-- Automatizar invitaciones o mensajes, ni con herramientas de terceros: el User Agreement (sección 8.2) prohíbe bots y métodos automatizados para agregar contactos o mandar mensajes, y LinkedIn restringe las cuentas que lo hacen. LinkedIn también limita cuántas invitaciones podés mandar: pocas y dirigidas.
-- Inventar una conexión en común, una escuela compartida o haber leído algo que el usuario no leyó.
-- Abrir con "Espero que este mensaje te encuentre bien" / "I hope this message finds you well".
+- Automate invitations or messages, not even with third-party tools: the User Agreement (section 8.2) forbids bots and automated methods to add contacts or send messages, and LinkedIn restricts the accounts that do it. LinkedIn also limits how many invitations you can send: few and targeted.
+- Make up a mutual connection, a shared school or having read something the user did not read.
+- Open with "I hope this message finds you well" or its equivalent in any language.
 
-Todo mensaje pasa por `/content-humanizer` (`.claude/skills/content-humanizer/scripts/humanize.py` + `detect.py` de la misma carpeta) antes de mostrarlo. Nota de invitación, primer mensaje y follow-ups adaptados de linkedin-agent-skill de Jake Schincariol (MIT).
+Every message goes through `/content-humanizer` (`.claude/skills/content-humanizer/scripts/humanize.py` + `detect.py` in the same folder) before it is shown. Invitation note, first message and follow-ups adapted from Jake Schincariol's linkedin-agent-skill (MIT).
 
-## Proceso
+## Process
 
-1. Leer la nota de `05-Contactos/` (o crearla) y la de `04-Empresas/`.
-2. Investigar a la persona (rol, equipo, algo reciente) - WebFetch del perfil público si hay URL.
-3. Elegir variante + canal.
-4. Draftear mensaje + 1 variante de apertura.
-5. Registrar en `05-Contactos/` (historial de interacciones) y planificar el follow-up.
+1. Read the note in `05-Contacts/` (or create it) and the one in `04-Companies/`.
+2. Research the person (role, team, something recent) - WebFetch the public profile if there is a URL.
+3. Choose variant + channel.
+4. Draft the message + 1 alternative opening.
+5. Record it in `05-Contacts/` (interaction history) and plan the follow-up.
 
-> Nota: Claude no accede a tu LinkedIn ni envía mensajes - redacta para que vos copies/pegues y registres la interacción.
+> Note: Claude does not access your LinkedIn or send messages - it drafts so you copy/paste and record the interaction.
 
-## Idioma
+## Language
 
-Espejá el idioma de la persona/empresa. Inglés por default para roles internacionales.
+Mirror the language of the person/company. English by default for international roles.
 
-Ver `references/recruiter-playbook.md` para plantillas por situación y la psicología de por qué responden.
+See `references/recruiter-playbook.md` for templates per situation and the psychology of why people reply.
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir en `05-Contactos/`. Cuando el mensaje está READY para copiar/pegar y el follow-up agendado, prepará la conversación con `/interview-prep` si hay respuesta.
+Ask for approval before writing to `05-Contacts/`. When the message is READY to copy/paste and the follow-up is scheduled, prepare the conversation with `/interview-prep` if there is a reply.

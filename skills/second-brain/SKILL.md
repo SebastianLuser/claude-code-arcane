@@ -1,6 +1,6 @@
 ---
 name: second-brain
-description: "Entry point del segundo cerebro en Obsidian. Crea o adopta un vault (PARA + Zettelkasten + hub files), escribe su CLAUDE.md, detecta que plugins hay instalados, conecta otros proyectos al mismo vault y rutea al skill correcto. Triggers: second brain, segundo cerebro, setup vault obsidian, organizar mi vault, empezar vault, adoptar mi vault."
+description: "Entry point for the Obsidian second brain. Creates or adopts a vault (PARA + Zettelkasten + hub files), writes its CLAUDE.md, detects which plugins are installed, connects other projects to the same vault and routes to the right skill. Triggers: second brain, set up obsidian vault, organize my vault, start a vault, adopt my vault."
 argument-hint: "[setup | adopt | status | next | link]"
 category: "pkm"
 user-invocable: true
@@ -9,155 +9,172 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 
 # Second Brain - Vault Orchestrator
 
-Sos el punto de entrada del segundo cerebro. Tu trabajo es: ubicar (o crear) el vault, entender en que estado esta, y rutear al skill correcto. No hacés todo vos, orquestás.
+You are the entry point of the second brain. Your job is: locate (or create) the vault, understand what state it is in, and route to the right skill. You do not do everything yourself, you orchestrate.
 
-Aplica la rule `vault-conventions` en toda escritura.
+Apply the `vault-conventions` rule to every write.
 
-## Idioma
+## Language
 
-Comunicación con el usuario en **español**. Las notas del vault van en el idioma en que el usuario escribe sus dumps: detectalo del contenido existente y no lo cambies.
+Talk to the user in the language they write in. Vault notes go in the language the user writes their dumps in: detect it from the existing content and do not change it.
 
-## Ubicar el vault
+The section headings other skills key on (`## Paths`, `## Current status`, `## Notes`, `## History`, `## Reflection`) and the frontmatter values are part of the vault's contract: write them as the templates do, whatever language the notes are in. A vault set up before the contract moved to English still has the old Spanish names: see [Migrate an existing vault](#migrate-an-existing-vault).
 
-En este orden: flag `--vault <path>`, env `OBSIDIAN_VAULT`, o el directorio actual si contiene `.obsidian/`. Si no hay ninguno, preguntar antes de asumir. Un directorio sin `.obsidian/` no es un vault: es una carpeta con markdown, y hay que avisarlo.
+## Locate the vault
 
-## El vault
+In this order: the `--vault <path>` flag, the `OBSIDIAN_VAULT` env var, or the current directory if it contains `.obsidian/`. If there is none, ask before assuming. A directory without `.obsidian/` is not a vault: it is a folder with markdown, and you have to say so.
+
+## The vault
 
 ```
-CLAUDE.md              contrato del vault: estructura, frontmatter, reglas de link
-hot.md                 cache de contexto reciente, lo reescribe /review-dump
-_inbox/                captura cruda, un archivo por dia (YYYY-MM-DD dump.md)
+CLAUDE.md              the vault's contract: structure, frontmatter, link rules
+hot.md                 recent-context cache, rewritten by /review-dump
+_inbox/                raw capture, one file per day (YYYY-MM-DD dump.md)
 Reflect/
-  Daily/               sintesis del dia, la crea /review-dump
-  Weekly/              retrospectiva semanal
-  Monthly/             patrones y balance del mes
-01_Projects/           con deadline o resultado definido            [PARA]
-02_Areas/              responsabilidades continuas                  [PARA]
-03_Resources/          notas atomicas, plano, sin subcarpetas       [Zettelkasten]
-04_Archive/            cerrado, nunca borrado                       [PARA]
-Hubs/                  una nota por entidad que importa
-Bases/                 vistas .base
-Templates/             plantillas del usuario
+  Daily/               synthesis of the day, created by /review-dump
+  Weekly/              weekly retrospective
+  Monthly/             patterns and balance of the month
+01_Projects/           with a deadline or a defined outcome            [PARA]
+02_Areas/              ongoing responsibilities                        [PARA]
+03_Resources/          atomic notes, flat, no subfolders               [Zettelkasten]
+04_Archive/            closed, never deleted                           [PARA]
+Hubs/                  one note per entity that matters
+Bases/                 .base views
+Templates/             the user's templates
 ```
 
-Ese árbol es el **default del `setup`**, no una imposición: el `## Rutas` del `CLAUDE.md` del vault mapea cada rol (`inbox`, `daily`, `hubs`...) a la carpeta que lo cumple, y los skills leen ese mapeo. Un vault adoptado conserva sus nombres y todo sigue funcionando.
+That tree is the **`setup` default**, not an imposition: the `## Paths` section of the vault's `CLAUDE.md` maps each role (`inbox`, `daily`, `hubs`...) to the folder that fills it, and the skills read that mapping. An adopted vault keeps its names and everything keeps working.
 
-Dos frameworks, dos capas: **PARA es la capa de navegación** (toda nota tiene una casa) y **Zettelkasten es la capa de conocimiento** (las notas atómicas viven planas en `03_Resources/` y se conectan por links). Los **hub files** son el tejido entre las dos: una nota por entidad que importa (persona, herramienta, concepto, empresa) que acumula conocimiento con el tiempo.
+Two frameworks, two layers: **PARA is the navigation layer** (every note has a home) and **Zettelkasten is the knowledge layer** (atomic notes live flat in `03_Resources/` and connect through links). **Hub files** are the tissue between the two: one note per entity that matters (person, tool, concept, company) that accumulates knowledge over time.
 
-Las carpetas agrupan por propósito, los links agrupan por significado: una nota vive en una carpeta y linkea a muchas.
+Folders group by purpose, links group by meaning: a note lives in one folder and links to many.
 
-## Detección de capacidades
+## Capability detection
 
-Antes de generar cualquier vista o sintaxis que dependa de un plugin, leer `.obsidian/core-plugins.json` y `.obsidian/community-plugins.json` y adaptar:
+Before generating any view or syntax that depends on a plugin, read `.obsidian/core-plugins.json` and `.obsidian/community-plugins.json` and adapt:
 
-| Si está | Usar para | Si no está |
+| If present | Use it for | If absent |
 |---|---|---|
-| `bases` (core, Obsidian 1.9+) | dashboards y vistas agregadas (`.base`) | tabla markdown estática en el dashboard |
-| `dataview` | campos inline y texto computado que Bases no expresa | reformular la vista para que la exprese Bases |
-| `obsidian-tasks-plugin` | sintaxis de fechas y prioridad en tareas | checkboxes markdown planos |
-| `templater-obsidian` | templates de alta frecuencia (daily) | los skills escriben el archivo directo |
-| `omnisearch` | ofrecerlo para búsqueda difusa desde la UI de Obsidian | `/vault-recall`, que rankea sin depender de plugins |
+| `bases` (core, Obsidian 1.9+) | dashboards and aggregated views (`.base`) | a static markdown table in the dashboard |
+| `dataview` | inline fields and computed text Bases cannot express | rephrase the view so Bases can express it |
+| `obsidian-tasks-plugin` | date and priority syntax in tasks | plain markdown checkboxes |
+| `templater-obsidian` | high-frequency templates (daily) | the skills write the file directly |
+| `omnisearch` | offer it for fuzzy search from the Obsidian UI | `/vault-recall`, which ranks without depending on plugins |
 
-Nunca mencionar en una nota una sintaxis de un plugin que el usuario no tiene instalado: queda como texto roto en la vista de lectura. Registrar el resultado de la detección en el `CLAUDE.md` del vault para no repetirla cada sesión.
+Never use in a note the syntax of a plugin the user does not have installed: it stays as broken text in reading view. Record the detection result in the vault's `CLAUDE.md` so it is not repeated every session.
 
-## Modos
+## Modes
 
-### `setup` - Crear el vault
-1. Confirmar el path del vault y si ya existe `.obsidian/` (si no existe, avisar que Obsidian tiene que abrirlo una vez para inicializarse).
-2. Correr la detección de capacidades.
-3. Crear el árbol de carpetas.
-4. Copiar los templates de `references/templates/` a `Templates/` del vault.
-5. Escribir el `CLAUDE.md` del vault desde `references/templates/vault-CLAUDE.md`, completando **el `## Rutas`** (rol a carpeta), el contrato de frontmatter y los plugins detectados. El `## Rutas` no es decorativo: es de donde todos los demás skills sacan dónde escribir.
-6. Si hay `bases`, crear `Bases/Dashboard.base` con las vistas de tareas abiertas y notas recientes (delegar la sintaxis a `/obsidian-bases`).
-7. Crear `hot.md` desde `references/templates/hot.md`, vacío. Es el caché que abre las sesiones siguientes (ver abajo).
-8. Si el usuario escribe código, crear `codebases.md` desde su template: es el puente del vault al repo, y lo que evita que la arquitectura se copie al vault.
-9. **Construir el índice** para que la primera búsqueda y el primer review no paguen la indexación completa:
+### `setup` - Create the vault
+1. Confirm the vault path and whether `.obsidian/` already exists (if it does not, warn that Obsidian has to open it once to initialize it).
+2. Run capability detection.
+3. Create the folder tree.
+4. Copy the templates from `references/templates/` to the vault's `Templates/`.
+5. Write the vault's `CLAUDE.md` from `references/templates/vault-CLAUDE.md`, filling in **the `## Paths` section** (role to folder), the frontmatter contract and the detected plugins. `## Paths` is not decorative: it is where every other skill gets where to write.
+6. If `bases` is present, create `Bases/Dashboard.base` with the views for open tasks and recent notes (delegate the syntax to `/obsidian-bases`).
+7. Create `hot.md` from `references/templates/hot.md`, empty. It is the cache that opens the following sessions (see below).
+8. If the user writes code, create `codebases.md` from its template: it is the vault's bridge to the repo, and what keeps the architecture from being copied into the vault.
+9. **Build the index** so the first search and the first review do not pay for full indexing:
    ```bash
    python .claude/skills/vault-recall/scripts/vault_index.py "<vault>" refresh
    ```
-10. **Ofrecer el hook de validación** (opcional, ver abajo).
-11. Verificar que el vault sea un repo git; si no lo es, recomendarlo y explicar por qué (es el undo de cualquier corrida). Preguntar además si el vault se sincroniza y, si la respuesta es sí, aplicar las reglas de sync de abajo **antes** de escribir nada más.
+10. **Offer the validation hook** (optional, see below).
+11. Check that the vault is a git repo; if it is not, recommend it and explain why (it is the undo for any run). Also ask whether the vault is synced and, if the answer is yes, apply the sync rules below **before** writing anything else.
 
-Pedir approval antes de escribir. Verdict: vault READY cuando existen el árbol, los templates y el `CLAUDE.md` con su `## Rutas`.
+Ask for approval before writing. Verdict: vault READY when the tree, the templates and the `CLAUDE.md` with its `## Paths` exist.
 
-### `adopt` - Adoptar un vault existente
-Para un vault ya armado, con o sin estructura coherente. No migra nada por su cuenta.
+### `adopt` - Adopt an existing vault
+For a vault that is already set up, with or without a coherent structure. It does not migrate anything on its own.
 
-1. Mapear lo que hay: `Glob` de carpetas de primer nivel, conteo de notas por carpeta, campos de frontmatter en uso (`Grep`), convención de nombres de las notas periódicas, tags más usados.
-2. **Mapear rol a carpeta**, que es el entregable central de este modo. Para cada rol (`inbox`, `daily`, `weekly`, `monthly`, `atomic`, `hubs`, `projects`, `areas`, `archive`, `templates`), proponer qué carpeta del vault lo cumple hoy, y marcar `(no usa)` los que no existen. Confirmar el mapeo con el usuario item por item: es la traducción de la que dependen todos los demás skills, y un rol mal mapeado hace que escriban en la carpeta equivocada sin error visible.
-3. Correr `/vault-audit` con los flags que salen de ese mapeo (`--exempt` para `templates` y `archive`, `--require` con los campos de frontmatter que el vault ya usa) para tener métricas reales y no hallazgos falsos.
-4. Reportar el mapeo y proponer **una de dos** rutas, con el costo de cada una:
-   - **Adoptar la estructura existente:** escribir el `CLAUDE.md` con el `## Rutas` que acabás de mapear. Cero movimiento de archivos, cero links roto. Es la opción por default.
-   - **Migrar a la estructura de `setup`:** plan explícito de qué carpeta va a dónde, ejecutado por `/vault-tidy` con approval item por item, en un repo git limpio.
-5. Escribir el `CLAUDE.md` de la ruta elegida, con el `## Rutas` completo. Nunca mover archivos en este modo.
-6. Construir el índice (`vault_index.py refresh`) pasando el mapeo: `--role hubs=<carpeta> --role atomic=<carpeta> ...`.
+1. Map what is there: `Glob` of the top-level folders, note count per folder, frontmatter fields in use (`Grep`), naming convention of the periodic notes, most-used tags.
+2. **Map role to folder**, which is the central deliverable of this mode. For each role (`inbox`, `daily`, `weekly`, `monthly`, `atomic`, `hubs`, `projects`, `areas`, `archive`, `templates`), propose which vault folder fills it today, and mark the ones that do not exist as `(unused)`. Confirm the mapping with the user item by item: it is the translation every other skill depends on, and a wrongly mapped role makes them write into the wrong folder with no visible error.
+3. Run `/vault-audit` with the flags that come from that mapping (`--exempt` for `templates` and `archive`, `--require` with the frontmatter fields the vault already uses) to get real metrics and not false findings.
+4. Report the mapping and propose **one of two** paths, with the cost of each:
+   - **Adopt the existing structure:** write the `CLAUDE.md` with the `## Paths` you just mapped. Zero files moved, zero links broken. It is the default option.
+   - **Migrate to the `setup` structure:** an explicit plan of which folder goes where, executed by `/vault-tidy` with item-by-item approval, in a clean git repo.
+5. Write the `CLAUDE.md` for the chosen path, with the full `## Paths`. Never move files in this mode.
+6. Build the index (`vault_index.py refresh`) passing the mapping: `--role hubs=<folder> --role atomic=<folder> ...`.
 
-Verdict: vault READY cuando el `CLAUDE.md` describe las convenciones reales del vault, no las ideales, y su `## Rutas` cubre los diez roles o los marca como no usados.
+Verdict: vault READY when the `CLAUDE.md` describes the vault's real conventions, not the ideal ones, and its `## Paths` covers the ten roles or marks them as unused.
 
-### `status` - Dónde estoy
-1. Leer `hot.md` primero: son 40 líneas y responden "dónde estaba" sin abrir nada más. Si está vacío o desactualizado, seguir igual y decirlo.
-2. Leer el `CLAUDE.md` del vault para resolver los roles.
-3. Correr `vault_index.py "<vault>" inventory --format text`: ya devuelve los dumps sin daily, el último weekly y monthly, y los hubs con sus alias. Es una llamada en vez de varios `Glob`, y no crece con el vault.
-4. Reportar eso más las tareas abiertas y los proyectos sin actividad reciente.
-5. Recomendar la acción de mayor impacto.
+### `status` - Where am I
+1. Read `hot.md` first: it is 40 lines and answers "where was I" without opening anything else. If it is empty or out of date, continue anyway and say so.
+2. Read the vault's `CLAUDE.md` to resolve the roles.
+3. Run `vault_index.py "<vault>" inventory --format text`: it already returns the dumps without a daily, the latest weekly and monthly, and the hubs with their aliases. It is one call instead of several `Glob`s, and it does not grow with the vault.
+4. Report that plus the open tasks and the projects with no recent activity.
+5. Recommend the highest-impact action.
 
-### `next` - Qué hago ahora
-Según el estado, recomendar el skill siguiente (ver routing).
+### `next` - What do I do now
+Depending on the state, recommend the next skill (see routing).
 
-### `link` - Conectar otro proyecto al vault
-Para usar el mismo segundo cerebro desde cualquier repo, sin duplicar notas.
+### `link` - Connect another project to the vault
+To use the same second brain from any repo, without duplicating notes.
 
-1. Confirmar el path del vault y que el proyecto actual no sea el vault mismo.
-2. Leer `references/cross-project.md` y proponer el snippet, con el path real completado.
-3. Con approval, agregarlo al `CLAUDE.md` **del proyecto actual** (crear el archivo si no existe). Nunca se toca el vault en este modo.
-4. Explicar las dos reglas que hacen que esto funcione: la cascada de lectura (`hot.md` → búsqueda → hub → nota) y que **el vault no se lee para preguntas generales de programación**. Sin la segunda, cada consulta paga el costo del vault sin recibir nada.
+1. Confirm the vault path and that the current project is not the vault itself.
+2. Read `references/cross-project.md` and propose the snippet, with the real path filled in.
+3. With approval, add it to the `CLAUDE.md` **of the current project** (create the file if it does not exist). The vault is never touched in this mode.
+4. Explain the two rules that make this work: the read cascade (`hot.md` → search → hub → note) and that **the vault is not read for general programming questions**. Without the second one, every query pays the vault's cost and gets nothing back.
 
-Verdict: proyecto READY cuando su `CLAUDE.md` declara el path, la cascada y el límite de escritura.
+Verdict: project READY when its `CLAUDE.md` declares the path, the cascade and the write limit.
 
-## El puente al código (`repos:`)
+## Migrate an existing vault
 
-Una nota de hub o de proyecto que tenga código declara `repos:` en su frontmatter, y `codebases.md` traduce cada repo a su path local, cómo se corre y si tiene un grafo consultable. Es la dirección inversa de `/second-brain link`: ese modo hace que un repo lea el vault, esto hace que el vault sepa dónde está el repo.
+Vaults set up before the contract moved to English have Spanish section headings, Spanish project statuses and Spanish `.base` view names, and the skills no longer find those sections. `scripts/migrate_vault.py` renames them; the old to new mapping lives in `scripts/legacy_contract.es.json`. Offer it when `status` or any skill finds the old names (for example the paths table under its old heading).
 
-La regla que lo sostiene es **el vault apunta, no copia**: la arquitectura vive en el repo y se desactualiza el día que alguien mergea. Y si el repo tiene un grafo de código, consultarlo es la primera parada antes de mandar subagentes a explorar: un relevamiento cuesta del orden de 100k tokens, una consulta al grafo uno o dos mil.
+```bash
+python .claude/skills/second-brain/scripts/migrate_vault.py "<vault>"            # dry run: the plan per file
+python .claude/skills/second-brain/scripts/migrate_vault.py "<vault>" --apply    # backup, then rewrite
+```
 
-## El caché caliente (`hot.md`)
+It rewrites only: heading lines that match a mapped heading exactly, the `status:` of project notes (`active | paused | closed`), the "why I saved it" label in clips, the vault `CLAUDE.md` section names with its unused-role marker and project status list, and the view names, labels and status filters of `.base` files. The user's templates (the `templates` role, default `Templates/`) are migrated too and listed as such. Any other body text, `.obsidian/`, `.git/` and `.trash/` are never touched.
 
-Un archivo corto en la raíz del vault con dónde estabas: en qué trabajás, qué notas cambiaron, qué hilos siguen abiertos, qué tareas viven. Lo reescribe `/review-dump` al cerrar el día y lo lee `/second-brain status`, además de cualquier otro proyecto conectado con `link`.
+1. Run the dry run and show the plan, including what it reports as not recognized (a project status or a heading it does not know is left as is, never guessed).
+2. Recommend a clean git tree, then run `--apply` with approval. It copies every file it changes into `<vault>/.arcane-migration-backup/<timestamp>/` first (the audit and the index skip that folder; delete it once the vault looks right); a second run plans nothing.
+3. Rebuild the index (`vault_index.py refresh`). Placeholder text inside the old templates stays Spanish: offer to copy the English ones from `references/templates/` if the user wants them.
 
-Idea tomada de `AgriciDaniel/claude-obsidian`, y es la que resuelve el agujero del ciclo: los tres reviews devuelven algo **cuando vos los pedís**. El caché devuelve algo al abrir la sesión, sin pedirlo.
+## The bridge to code (`repos:`)
 
-Cuatro reglas, duras porque es lo único del vault que se reescribe sin preguntar:
+A hub or project note that has code declares `repos:` in its frontmatter, and `codebases.md` translates each repo to its local path, how it runs and whether it has a queryable graph. It is the reverse direction of `/second-brain link`: that mode makes a repo read the vault, this makes the vault know where the repo is.
 
-- **Techo de 40 líneas.** Si no entra, hay que resumir más, no agrandar el techo.
-- **Nada de secretos ni transcripciones crudas**, aunque aparezcan en un dump.
-- **Ninguna afirmación sin su link.** El caché no crea conocimiento, apunta al que existe.
-- **Se reescribe completo.** Un caché al que se le agrega al final es un log, y un log nadie lo lee.
+The rule that holds it up is **the vault points, it does not copy**: the architecture lives in the repo and goes stale the day someone merges. And if the repo has a code graph, querying it is the first stop before sending subagents to explore: a survey costs on the order of 100k tokens, a graph query one or two thousand.
 
-Es descartable por diseño: si contradice una nota, la nota gana, y borrarlo no pierde nada porque se regenera.
+## The hot cache (`hot.md`)
 
-## Sync: dos reglas que evitan el 90% de los problemas
+A short file at the vault root with where you were: what you are working on, which notes changed, which threads are still open, which tasks are alive. `/review-dump` rewrites it when closing the day and `/second-brain status` reads it, as does any other project connected with `link`.
 
-Si el vault se sincroniza (Drive, iCloud, Dropbox, Obsidian Sync, git), dos cosas rompen de forma reproducible:
+Idea taken from `AgriciDaniel/claude-obsidian`, and it is the one that closes the hole in the cycle: the three reviews give something back **when you ask for them**. The cache gives something back when the session opens, without asking.
 
-1. **`.obsidian/` no se sincroniza.** Es config por máquina (plugins, tema, layout) y es la fuente número uno de conflictos. El patrón que lo resuelve es tener la raíz del vault local y meter el contenido compartido adentro por symlink:
+Four rules, hard because it is the only thing in the vault that is rewritten without asking:
+
+- **40-line ceiling.** If it does not fit, summarize more, do not raise the ceiling.
+- **No secrets or raw transcripts**, even if they appear in a dump.
+- **No claim without its link.** The cache does not create knowledge, it points to what exists.
+- **It is rewritten in full.** A cache that gets appended to is a log, and nobody reads a log.
+
+It is disposable by design: if it contradicts a note, the note wins, and deleting it loses nothing because it is regenerated.
+
+## Sync: two rules that prevent 90% of the problems
+
+If the vault is synced (Drive, iCloud, Dropbox, Obsidian Sync, git), two things break reproducibly:
+
+1. **`.obsidian/` is not synced.** It is per-machine config (plugins, theme, layout) and it is the number one source of conflicts. The pattern that solves it is keeping the vault root local and putting the shared content inside it through a symlink:
 
    ```
-   ~/ObsidianVault/          raiz local, nunca se sincroniza
-   ├── .obsidian/            TU config, queda local
-   └── contenido/            symlink a la carpeta sincronizada
+   ~/ObsidianVault/          local root, never synced
+   ├── .obsidian/            YOUR config, stays local
+   └── content/              symlink to the synced folder
    ```
 
-   Obsidian sigue el symlink y lee las notas; la config nunca sale de tu máquina. Si el vault es solo tuyo y usás git, la alternativa es `.gitignore` con `.obsidian/`, `.vault-index.json` y `.trash/`.
+   Obsidian follows the symlink and reads the notes; the config never leaves your machine. If the vault is only yours and you use git, the alternative is a `.gitignore` with `.obsidian/`, `.vault-index.json` and `.trash/`.
 
-2. **Un solo transporte.** Nunca dos mecanismos de sync sobre la misma carpeta (Drive + Obsidian Sync, o iCloud + git con auto-commit): producen reversiones aleatorias que después nadie puede explicar.
+2. **A single transport.** Never two sync mechanisms over the same folder (Drive + Obsidian Sync, or iCloud + git with auto-commit): they produce random reverts nobody can explain afterwards.
 
-Y si el vault se comparte con otras personas: **un escritor por nota**. Ningún sync mergea markdown; el segundo que guarda genera una copia en conflicto. Este profile asume vault personal, y ese es su límite honesto: para equipo hace falta declarar dueño por nota y aceptar que la co-edición no existe.
+And if the vault is shared with other people: **one writer per note**. No sync merges markdown; whoever saves second generates a conflicted copy. This profile assumes a personal vault, and that is its honest limit: for a team you need to declare an owner per note and accept that co-editing does not exist.
 
-## Hook de validación (opcional)
+## Validation hook (optional)
 
-El skill trae un `PostToolUse` que revisa cada nota escrita en el vault: frontmatter presente, `created` y `type` declarados, y al menos un `[[wikilink]]` salvo en los dumps. Avisa por stderr y **nunca bloquea la escritura**.
+The skill ships a `PostToolUse` hook that checks every note written in the vault: frontmatter present, `created` and `type` declared, and at least one `[[wikilink]]` except in dumps. It warns on stderr and **never blocks the write**.
 
-Sirve para lo que los skills no cubren: las notas que escribís a mano o desde otra sesión. Para activarlo, agregar a `.claude/settings.json` **del vault** el contenido de `.claude/skills/second-brain/hooks/hooks.json`:
+It covers what the skills do not: the notes you write by hand or from another session. To enable it, add the content of `.claude/skills/second-brain/hooks/hooks.json` to the **vault's** `.claude/settings.json`:
 
 ```json
 "PostToolUse": [
@@ -170,42 +187,42 @@ Sirve para lo que los skills no cubren: las notas que escribís a mano o desde o
 ]
 ```
 
-Es opt-in a propósito y va en el settings del vault, no en el del repo: un hook que corre en cada `Write` de cualquier proyecto es peso que nadie pidió. Ofrecelo en el `setup`, explicá que es solo un warning, y respetá el no.
+It is opt-in on purpose and goes in the vault's settings, not the repo's: a hook that runs on every `Write` in any project is weight nobody asked for. Offer it during `setup`, explain it is only a warning, and respect a no.
 
 ## Routing
 
-| Situación | Skill |
+| Situation | Skill |
 |---|---|
-| No hay vault | `/second-brain setup` |
-| Vault existente sin `CLAUDE.md` | `/second-brain adopt` |
-| Capturar algo ahora, sin pensar dónde va | `/brain-dump` |
-| Procesar el dump del día y crear el daily | `/review-dump` |
-| Cerrar la semana | `/review-weekly` |
-| Cerrar el mes | `/review-monthly` |
-| Una idea del dump merece nota propia | `/zettel` |
-| Una entidad se repite en varios dumps | `/hub-note` |
-| Guardar un artículo o página web | `/vault-clip` |
-| Encontrar algo que ya escribiste | `/vault-recall` |
-| Usar el vault desde otro proyecto | `/second-brain link` |
-| Saber qué tan sano está el vault | `/vault-audit` |
-| Aplicar los arreglos que propuso el audit | `/vault-tidy` |
-| Dudas de sintaxis Obsidian, Bases o Canvas | `/obsidian-markdown`, `/obsidian-bases`, `/obsidian-canvas` |
+| There is no vault | `/second-brain setup` |
+| Existing vault without `CLAUDE.md` | `/second-brain adopt` |
+| Capture something now, without thinking where it goes | `/brain-dump` |
+| Process the day's dump and create the daily | `/review-dump` |
+| Close the week | `/review-weekly` |
+| Close the month | `/review-monthly` |
+| An idea from the dump deserves its own note | `/zettel` |
+| An entity repeats across several dumps | `/hub-note` |
+| Save an article or web page | `/vault-clip` |
+| Find something you already wrote | `/vault-recall` |
+| Use the vault from another project | `/second-brain link` |
+| Know how healthy the vault is | `/vault-audit` |
+| Apply the fixes the audit proposed | `/vault-tidy` |
+| Obsidian, Bases or Canvas syntax questions | `/obsidian-markdown`, `/obsidian-bases`, `/obsidian-canvas` |
 
-## Ciclo estándar
+## Standard cycle
 
-Durante el día: `/brain-dump` cuantas veces haga falta (o escribir directo en `_inbox/YYYY-MM-DD.md`).
-A la noche: `/review-dump` clasifica, actualiza hubs y crea el daily.
-Fin de semana: `/review-weekly`. Fin de mes: `/review-monthly`.
-Cada tanto: `/vault-audit` y, si hace falta, `/vault-tidy`.
+During the day: `/brain-dump` as many times as needed (or write directly in `_inbox/YYYY-MM-DD.md`).
+At night: `/review-dump` classifies, updates hubs and creates the daily.
+End of the week: `/review-weekly`. End of the month: `/review-monthly`.
+Every so often: `/vault-audit` and, if needed, `/vault-tidy`.
 
-## Reglas
+## Rules
 
-- Nunca reorganizar carpetas ni renombrar notas sin approval: rompe `[[wikilinks]]` en silencio.
-- La captura tiene que quedar sin fricción. Si el usuario tiene que decidir dónde va algo mientras lo escribe, el sistema ya falló.
-- No apilar frameworks. PARA + Zettelkasten + hub files es el techo; agregar GTD o CODE encima es la causa número uno de que estos sistemas se abandonen.
-- Un plugin de más es deuda: no recomendar ninguno que el vault no necesite para lo que el usuario efectivamente hace.
-- Máximo accionable: el usuario siempre termina sabiendo qué skill correr next.
+- Never reorganize folders or rename notes without approval: it silently breaks `[[wikilinks]]`.
+- Capture has to stay frictionless. If the user has to decide where something goes while writing it, the system has already failed.
+- Do not stack frameworks. PARA + Zettelkasten + hub files is the ceiling; adding GTD or CODE on top is the number one reason these systems get abandoned.
+- One plugin too many is debt: do not recommend any the vault does not need for what the user actually does.
+- Maximally actionable: the user always ends up knowing which skill to run next.
 
 ## Handoff
 
-Pedí approval antes de escribir o sobrescribir archivos del vault. Cuando el vault queda READY, el siguiente paso es `/brain-dump` para la primera captura, y `/review-dump` a la noche para cerrar el ciclo completo por primera vez.
+Ask for approval before writing or overwriting vault files. When the vault is READY, the next step is `/brain-dump` for the first capture, and `/review-dump` at night to close the full cycle for the first time.

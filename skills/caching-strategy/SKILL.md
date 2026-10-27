@@ -8,35 +8,35 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
 # caching-strategy — Multi-Layer Caching
 
-**Regla 0:** antes de cachear, medí. Cachear sin profiling esconde problemas.
+**Rule 0:** measure before you cache. Caching without profiling hides problems.
 
-## Cuándo usar / NO usar
+## When to use / NOT use
 
-| Usar | NO usar |
+| Use | Do NOT use |
 |------|---------|
-| Hot path lectura >> escritura | Write-heavy con lectura impredecible |
-| Query cara sin índices posibles | Info financiera/regulatoria (staleness = daño legal) |
-| Respuesta inmutable o slow-changing | Parche de query mal diseñada (arreglá la query) |
-| Alivio DB bajo carga | Prematuramente (primero índices) |
+| Hot path with reads >> writes | Write-heavy with unpredictable reads |
+| Expensive query with no possible indexes | Financial/regulatory info (staleness = legal damage) |
+| Immutable or slow-changing response | Patch for a badly designed query (fix the query) |
+| DB relief under load | Prematurely (indexes first) |
 
-## Capas
+## Layers
 
 ```
 Browser/RN → CDN → API Gateway → App in-memory (LRU) → Redis → Database
 ```
 
-Cada capa: TTL distinto, invalidation distinta. Más cerca del usuario = más caché pero más difícil invalidar.
+Each layer: a different TTL, a different invalidation. Closer to the user = more caching but harder to invalidate.
 
-## Qué cachear dónde
+## What to cache where
 
-| Dato | Cache |
+| Data | Cache |
 |------|-------|
-| Assets estáticos (JS, CSS, img) | CDN + browser (immutable + versioned URLs) |
-| API responses públicas | CDN + Redis |
-| API responses por-user | Redis + cliente |
+| Static assets (JS, CSS, img) | CDN + browser (immutable + versioned URLs) |
+| Public API responses | CDN + Redis |
+| Per-user API responses | Redis + client |
 | Session/token, rate limit counters | Redis |
-| Traducciones / config | In-memory warm on boot |
-| DB query resultado | Redis (cache-aside) |
+| Translations / config | In-memory warm on boot |
+| DB query result | Redis (cache-aside) |
 
 ## HTTP Caching Headers
 
@@ -56,26 +56,26 @@ Cada capa: TTL distinto, invalidation distinta. Más cerca del usuario = más ca
 
 ## Anti-patterns
 
-- Cachear sin medir, TTL infinito sin invalidation, cachear PII sin `no-store`
-- Cachear errores (404/500), cache que falla → app cae (cache debe ser opcional)
-- `KEYS *` en Redis prod (usar SCAN), cache sin namespace, per-user en CDN sin Vary
-- Sin métricas de hit rate
+- Caching without measuring, infinite TTL without invalidation, caching PII without `no-store`
+- Caching errors (404/500), cache fails → app goes down (the cache must be optional)
+- `KEYS *` on prod Redis (use SCAN), cache without a namespace, per-user on a CDN without Vary
+- No hit rate metrics
 
-## Observabilidad
+## Observability
 
-- Métricas: `cache_hits/misses_total`, `cache_latency_seconds`, `cache_evictions_total`
-- Hit rate target: hot >90%, warm >70%. Hit rate <50% sostenido = cache no vale
-- Alertas: evictions creciente, latency p99 >10ms, hit rate cae súbitamente
+- Metrics: `cache_hits/misses_total`, `cache_latency_seconds`, `cache_evictions_total`
+- Hit rate target: hot >90%, warm >70%. Sustained hit rate <50% = the cache is not worth it
+- Alerts: growing evictions, latency p99 >10ms, hit rate drops suddenly
 
 ## Checklist
 
-- [ ] Profiling justifica el cache
-- [ ] Capa correcta elegida (browser/CDN/Redis/memoria)
-- [ ] TTL razonado con trade-off staleness vs carga
-- [ ] Invalidation strategy clara
-- [ ] Stampede protection si hot path
-- [ ] Cache opcional — app funciona si Redis down
-- [ ] Headers HTTP correctos (`private` para PII, `Vary`)
-- [ ] Key naming consistente + namespace
-- [ ] Métricas: hits/misses/latency/evictions
-- [ ] No cacheamos errores
+- [ ] Profiling justifies the cache
+- [ ] Correct layer chosen (browser/CDN/Redis/memory)
+- [ ] TTL reasoned with the staleness vs. load trade-off
+- [ ] Clear invalidation strategy
+- [ ] Stampede protection if hot path
+- [ ] Optional cache — the app works if Redis is down
+- [ ] Correct HTTP headers (`private` for PII, `Vary`)
+- [ ] Consistent key naming + namespace
+- [ ] Metrics: hits/misses/latency/evictions
+- [ ] We do not cache errors

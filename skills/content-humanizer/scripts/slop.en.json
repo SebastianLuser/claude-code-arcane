@@ -1,12 +1,74 @@
 {
   "version": "1.1",
   "language": "en",
-  "note": "Lexicon used by humanize.py and detect.py. Replacements keep the sentence grammatical; \"replace\": null flags the term for a hand rewrite instead. Edit freely - it is meant to be yours. Adapted from Jake Schincariol's linkedin-agent-skill (MIT).",
+  "note": "Lexicon used by humanize.py and detect.py. Replacements keep the sentence grammatical; \"replace\": null flags the term for a hand rewrite instead. Edit freely - it is meant to be yours. Adapted from Jake Schincariol's linkedin-agent-skill (MIT). \"stopwords\" are frequent words of this language that neighbouring languages do not write; humanize.py detects the language by their share of the text. \"examples\" are the pack's spec: tests/humanizer runs them for every pack, so a new pack needs no new test code.",
   "voice": {
     "pronouns": "\\b(i|me|my|mine|we|us|our|you|your)\\b",
     "contractions": "\\b\\w+'(?:s|t|re|ve|ll|d|m)\\b",
     "person_human": 8.0
   },
+  "stopwords": [
+    "the",
+    "and",
+    "of",
+    "to",
+    "is",
+    "in",
+    "that",
+    "it",
+    "for",
+    "you",
+    "with",
+    "on",
+    "this",
+    "was",
+    "are",
+    "but",
+    "not",
+    "have",
+    "be",
+    "at",
+    "we",
+    "they",
+    "our",
+    "your",
+    "from",
+    "by",
+    "an",
+    "or",
+    "will",
+    "can",
+    "has",
+    "been",
+    "were",
+    "which",
+    "their",
+    "if",
+    "so",
+    "what",
+    "about",
+    "would",
+    "there",
+    "he",
+    "she",
+    "his",
+    "her",
+    "its",
+    "my",
+    "them",
+    "all",
+    "more",
+    "how",
+    "when",
+    "who"
+  ],
+  "connectives": [
+    "also",
+    "so",
+    "still",
+    "basically",
+    "in the end"
+  ],
   "invisible": [
     {
       "cp": "U+200B",
@@ -827,5 +889,33 @@
       "name": "Reflex engagement bait",
       "fix": "Ask a question only you could ask, about the specific thing above it."
     }
-  ]
+  ],
+  "examples": {
+    "rewrite": [
+      {
+        "text": "In today's fast-paced world, it's important to note that AI is crucial. We built a robust platform — see https://example.com/robust-docs for details.",
+        "clean": "Right now, AI is important. We built a solid platform, see https://example.com/robust-docs for details.",
+        "flags": []
+      },
+      {
+        "text": "It's not just a tool, it's a movement. We leverage AI to build a robust platform. Agree?",
+        "clean": "It's not just a tool, it's a movement. We use AI to build a solid platform. Agree?",
+        "flags": [
+          "\"It's not just X, it's Y\"",
+          "Reflex engagement bait"
+        ]
+      }
+    ],
+    "keep": [
+      "I shipped the fix on Tuesday. It broke twice, so we rolled back and tried again with a smaller change."
+    ],
+    "pronouns": {
+      "text": "You and I know our team ships on Fridays.",
+      "found": [
+        "You",
+        "I",
+        "our"
+      ]
+    }
+  }
 }

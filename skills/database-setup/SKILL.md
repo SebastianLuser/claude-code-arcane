@@ -8,102 +8,102 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # database-setup — Migrations, Indexing & Schema
 
-## Cuándo usar
+## When to use
 
-Setup DB local (Docker+migrations), crear/correr/rollback migrations, diseñar/auditar índices, generar diagrama ER, cambios schema en producción.
+Local DB setup (Docker+migrations), create/run/roll back migrations, design/audit indexes, generate an ER diagram, schema changes in production.
 
 ## 1. Migrations
 
-### Herramienta
+### Tool
 
-| Stack | Tool | Notas |
+| Stack | Tool | Notes |
 |-------|------|-------|
-| Go | `golang-migrate/migrate` | CLI + librería, SQL puro |
-| TS + Prisma | `prisma migrate` | Integrado con ORM |
+| Go | `golang-migrate/migrate` | CLI + library, plain SQL |
+| TS + Prisma | `prisma migrate` | Integrated with the ORM |
 | TS + Drizzle | `drizzle-kit` | SQL-like, type-safe |
-| TS sin ORM | `node-pg-migrate` | SQL puro |
+| TS without ORM | `node-pg-migrate` | Plain SQL |
 
-No mezclar herramientas en mismo repo.
+Do not mix tools in the same repo.
 
 ### Naming
 
-`YYYYMMDDHHMMSS_description.up.sql` + `.down.sql`. Timestamp UTC, snake_case, verbo al inicio. Nunca editar migration ya mergeada.
+`YYYYMMDDHHMMSS_description.up.sql` + `.down.sql`. UTC timestamp, snake_case, verb first. Never edit an already merged migration.
 
 ### Zero-downtime: expand-contract
 
-| Fase | Qué | Release |
+| Phase | What | Release |
 |------|-----|---------|
-| Expand | Columna NULLABLE/DEFAULT, tabla nueva, índice CONCURRENTLY | N |
-| Backfill | Job async, idempotente, batcheado ~10k, checkpoint | N |
-| Dual-write | App escribe viejo Y nuevo | N+1 |
-| Migrate reads | Lecturas apuntan a nuevo | N+2 |
-| Contract | DROP viejo tras validar (≥1 release estable) | N+3 |
+| Expand | NULLABLE/DEFAULT column, new table, index CONCURRENTLY | N |
+| Backfill | Async job, idempotent, batched ~10k, checkpointed | N |
+| Dual-write | App writes old AND new | N+1 |
+| Migrate reads | Reads point to the new one | N+2 |
+| Contract | DROP the old one after validating (≥1 stable release) | N+3 |
 
-DDL y data SIEMPRE separados. Mezclar causa locks largos y rollbacks imposibles.
+DDL and data ALWAYS separate. Mixing them causes long locks and impossible rollbacks.
 
 ### Locks
 
-`SET lock_timeout = '5s'; SET statement_timeout = '30s';` antes de ALTER. ADD COLUMN con DEFAULT no-volátil instantáneo desde PG 11. NOT NULL existente: ADD CHECK NOT VALID → VALIDATE en migration separada.
+`SET lock_timeout = '5s'; SET statement_timeout = '30s';` before ALTER. ADD COLUMN with a non-volatile DEFAULT is instant since PG 11. Existing NOT NULL: ADD CHECK NOT VALID → VALIDATE in a separate migration.
 
 ### Rollback
 
-| Cambio | Rollback |
+| Change | Rollback |
 |--------|----------|
-| DDL aditivo (ADD/CREATE) | Reversible con DROP |
-| DDL destructivo (DROP, ALTER TYPE lossy) | One-way, documentar |
-| Data transformation lossy | One-way |
+| Additive DDL (ADD/CREATE) | Reversible with DROP |
+| Destructive DDL (DROP, lossy ALTER TYPE) | One-way, document it |
+| Lossy data transformation | One-way |
 
-Siempre `.down.sql` aunque sea vacío documentado. CI: `up → down → up`.
+Always a `.down.sql`, even if it is an empty documented one. CI: `up → down → up`.
 
 ## 2. Indexing
 
-Tipos: B-tree (95% — equality/range/sort), GIN (arrays/jsonb/tsvector), GiST (geo/ranges), BRIN (huge ordered tables).
+Types: B-tree (95% — equality/range/sort), GIN (arrays/jsonb/tsvector), GiST (geo/ranges), BRIN (huge ordered tables).
 
-**Reglas clave:** Composite order = igualdad → rango → ORDER BY. FK child siempre indexado (PG no lo hace automático). `CREATE INDEX CONCURRENTLY` obligatorio en prod. Si el índice queda INVALID → DROP y recrear.
+**Key rules:** Composite order = equality → range → ORDER BY. Child FK always indexed (PG does not do it automatically). `CREATE INDEX CONCURRENTLY` mandatory in prod. If the index ends up INVALID → DROP and recreate.
 
-> Para guía completa (tipos, variantes partial/covering/expression, CONCURRENTLY, JSONB, queries de detección), leer `references/indexing-guide.md`.
+> For the full guide (types, partial/covering/expression variants, CONCURRENTLY, JSONB, detection queries), read `references/indexing-guide.md`.
 
 ## 3. Multi-tenant
 
-`tenant_id` como primera columna en todo composite. RLS como defense in depth. Backfills considerar todos tenant_id. Schema-per-tenant: iterar lista, trackear progreso parcial.
+`tenant_id` as the first column in every composite. RLS as defense in depth. Backfills must consider every tenant_id. Schema-per-tenant: iterate the list, track partial progress.
 
 ## 4. ER Diagram
 
-Escanear migrations SQL / ORM models → generar Mermaid erDiagram. >20 tablas: agrupar por dominio. Marcar nullable, PK, FK. Relaciones: `||--o{` (1:N), `||--||` (1:1), `}o--o{` (N:M).
+Scan SQL migrations / ORM models → generate a Mermaid erDiagram. >20 tables: group by domain. Mark nullable, PK, FK. Relationships: `||--o{` (1:N), `||--||` (1:1), `}o--o{` (N:M).
 
 ## Anti-patterns
 
-- DDL + data en mismo archivo
-- DROP COLUMN sin período gracia
-- CREATE INDEX sin CONCURRENTLY en prod
-- Editar migration mergeada
-- ADD COLUMN NOT NULL con DEFAULT volátil
-- Composite orden incorrecto
-- Indexar baja cardinalidad sola (boolean)
-- No indexar FK child
-- Nunca REINDEX
+- DDL + data in the same file
+- DROP COLUMN without a grace period
+- CREATE INDEX without CONCURRENTLY in prod
+- Editing a merged migration
+- ADD COLUMN NOT NULL with a volatile DEFAULT
+- Wrong composite order
+- Indexing a low-cardinality column alone (boolean)
+- Not indexing the child FK
+- Never running REINDEX
 
 ## Checklist
 
 ### Setup
-- [ ] Docker Compose o script setup local documentado
-- [ ] .env.example con DATABASE_URL
+- [ ] Docker Compose or documented local setup script
+- [ ] .env.example with DATABASE_URL
 
 ### Migrations
-- [ ] Naming YYYYMMDDHHMMSS, un cambio lógico por migration
-- [ ] DDL y data separados
-- [ ] .down.sql existe o documenta one-way
-- [ ] lock_timeout + statement_timeout en ALTER
+- [ ] YYYYMMDDHHMMSS naming, one logical change per migration
+- [ ] DDL and data separate
+- [ ] .down.sql exists or one-way is documented
+- [ ] lock_timeout + statement_timeout on ALTER
 - [ ] CI: up → down → up
-- [ ] Breaking: plan expand-contract documentado
+- [ ] Breaking: expand-contract plan documented
 
 ### Indexing
-- [ ] Query concreta, EXPLAIN muestra Seq Scan
-- [ ] Tipo índice correcto
-- [ ] Composite: igualdad → rango → ORDER BY
-- [ ] CONCURRENTLY fuera de transacción
-- [ ] FKs con índice en child
-- [ ] Post-creación: EXPLAIN ANALYZE confirma plan
+- [ ] Concrete query, EXPLAIN shows a Seq Scan
+- [ ] Correct index type
+- [ ] Composite: equality → range → ORDER BY
+- [ ] CONCURRENTLY outside a transaction
+- [ ] FKs with an index on the child
+- [ ] After creation: EXPLAIN ANALYZE confirms the plan
 
 ### ER
-- [ ] Diagrama actualizado tras cambio schema
+- [ ] Diagram updated after a schema change

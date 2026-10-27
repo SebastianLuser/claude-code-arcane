@@ -8,23 +8,23 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 # ClickUp Manager
 
-Skill que usa el MCP nativo de ClickUp para gestión completa de tasks, docs y tiempo.
+Skill that uses ClickUp's native MCP for full management of tasks, docs and time.
 
-## Tools MCP Disponibles
+## Available MCP Tools
 
-- `mcp__clickup__searchSpaces` — listar spaces accesibles
-- `mcp__clickup__searchTasks` — buscar con filtros
-- `mcp__clickup__getTaskById` — detalle completo
-- `mcp__clickup__createTask` — crear
-- `mcp__clickup__updateTask` — actualizar (status, fields, assignees)
-- `mcp__clickup__addComment` — comentar
-- `mcp__clickup__createDocumentOrPage` — crear doc
-- `mcp__clickup__readDocument` — leer doc
-- `mcp__clickup__updateDocumentPage` — actualizar doc
+- `mcp__clickup__searchSpaces` — list accessible spaces
+- `mcp__clickup__searchTasks` — search with filters
+- `mcp__clickup__getTaskById` — full details
+- `mcp__clickup__createTask` — create
+- `mcp__clickup__updateTask` — update (status, fields, assignees)
+- `mcp__clickup__addComment` — comment
+- `mcp__clickup__createDocumentOrPage` — create a doc
+- `mcp__clickup__readDocument` — read a doc
+- `mcp__clickup__updateDocumentPage` — update a doc
 - `mcp__clickup__createTimeEntry`, `getTimeEntries` — time tracking
-- `mcp__clickup__getListInfo`, `updateListInfo` — gestionar listas
+- `mcp__clickup__getListInfo`, `updateListInfo` — manage lists
 
-## Spaces Conocidos (Educabot)
+## Known Spaces (Educabot)
 
 | Space | ID |
 |-------|-----|
@@ -32,51 +32,51 @@ Skill que usa el MCP nativo de ClickUp para gestión completa de tasks, docs y t
 | VR Game | 901313710103 |
 | Scholar Duel | 901313710122 |
 
-## Comandos
+## Commands
 
-### Crear task
+### Create a task
 ```
-/clickup create [space] "título de la task"
+/clickup create [space] "task title"
 ```
-Preguntá:
-- Lista destino (si hay múltiples en el space)
-- Tipo (feature/bug/task)
+Ask for:
+- Target list (if the space has several)
+- Type (feature/bug/task)
 - Assignee
 - Priority
 - Due date
-- Descripción (markdown soportado)
+- Description (markdown supported)
 
-### Buscar tasks
+### Search tasks
 ```
 /clickup search [query]
 ```
-Filtros posibles:
-- por space, list, assignee, status, priority
-- por texto en title/description
-- por date range (created/updated/due)
+Possible filters:
+- by space, list, assignee, status, priority
+- by text in title/description
+- by date range (created/updated/due)
 
-Devolver tabla:
+Return a table:
 | ID | Title | Status | Assignee | Due |
 
-### Actualizar task
+### Update a task
 ```
 /clickup update <task_id>
 ```
-Cambios comunes:
+Common changes:
 - Status (Open, In Progress, Review, Done, Archived)
-- Assignee (uno o múltiples)
+- Assignee (one or several)
 - Priority (Urgent/High/Normal/Low)
 - Due date
 - Custom fields
 
-### Comentar
+### Comment
 ```
-/clickup comment <task_id> "texto"
+/clickup comment <task_id> "text"
 ```
 
 ### Docs
 ```
-/clickup doc create [space] "título"
+/clickup doc create [space] "title"
 /clickup doc read <doc_id>
 /clickup doc update <doc_id>
 ```
@@ -88,47 +88,47 @@ Cambios comunes:
 /clickup time report [period]
 ```
 
-## Flujos Típicos
+## Typical Flows
 
 ### Daily triage
-1. Listar tasks asignadas a mí en estado "Open" o "In Progress"
-2. Agrupá por priority
-3. Sugerí reordenamiento si hay misalignment
+1. List tasks assigned to me with status "Open" or "In Progress"
+2. Group by priority
+3. Suggest a reordering if there is misalignment
 
-### Crear feature con contexto completo
-1. User describe feature
-2. Detectá space target (por keywords o preguntá)
-3. Buscá tasks similares para evitar duplicados
-4. Generá descripción estructurada:
+### Create a feature with full context
+1. The user describes the feature
+2. Detect the target space (by keywords, or ask)
+3. Search for similar tasks to avoid duplicates
+4. Generate a structured description:
    ```markdown
-   ## Contexto
-   [por qué se necesita]
+   ## Context
+   [why it is needed]
 
-   ## Descripción
-   [qué hace]
+   ## Description
+   [what it does]
 
    ## Acceptance criteria
-   - [ ] Criterio 1
-   - [ ] Criterio 2
+   - [ ] Criterion 1
+   - [ ] Criterion 2
 
-   ## Referencias
-   - [links a docs, designs, tickets relacionados]
+   ## References
+   - [links to related docs, designs, tickets]
    ```
-5. Pedí confirmación antes de crear
-6. Crear task, devolver URL
+5. Ask for confirmation before creating
+6. Create the task, return the URL
 
 ### Bulk update
-Para actualizar múltiples tasks:
-1. Listá las targeteadas (con filtros)
-2. Mostrá preview del cambio
-3. Pedí confirmación
-4. Ejecutá uno por uno con rate limiting
+To update multiple tasks:
+1. List the targeted ones (with filters)
+2. Show a preview of the change
+3. Ask for confirmation
+4. Execute one by one with rate limiting
 
-## Reglas
+## Rules
 
-- **SIEMPRE** confirmar antes de crear/actualizar/eliminar
-- **NO** crear duplicados — buscar primero
-- **NO** cambiar assignees sin saber quién está en el space
-- **Rate limit**: max 10 operaciones consecutivas, después pausar
-- Descripción siempre en markdown estructurado
-- En español
+- **ALWAYS** confirm before creating/updating/deleting
+- **DO NOT** create duplicates — search first
+- **DO NOT** change assignees without knowing who is in the space
+- **Rate limit**: max 10 consecutive operations, then pause
+- Description always in structured markdown
+- Write task content in the user's language

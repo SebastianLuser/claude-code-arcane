@@ -79,7 +79,7 @@ class TestStripCode(unittest.TestCase):
 
 class TestInlineTags(unittest.TestCase):
     def test_matches_tags_and_nested_tags(self):
-        self.assertEqual(va.INLINE_TAG.findall("#work and #area/salud"), ["work", "area/salud"])
+        self.assertEqual(va.INLINE_TAG.findall("#work and #area/health"), ["work", "area/health"])
 
     def test_ignores_headings_url_fragments_and_numbers(self):
         self.assertEqual(va.INLINE_TAG.findall("## Heading"), [])
@@ -139,25 +139,25 @@ class TestResolve(unittest.TestCase):
 
 class TestLinkFindings(VaultFixture):
     def test_separates_orphans_from_notes_that_merely_lack_backlinks(self):
-        self.note("Hubs/Tema.md", "---\ncreated: 2026-07-01\ntype: hub\n---\n[[03_Resources/Idea]]\n")
-        self.note("03_Resources/Idea.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\nlinkeada\n")
-        self.note("03_Resources/Sola.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\nsin nada\n")
+        self.note("Hubs/Topic.md", "---\ncreated: 2026-07-01\ntype: hub\n---\n[[03_Resources/Idea]]\n")
+        self.note("03_Resources/Idea.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\nlinked\n")
+        self.note("03_Resources/Lonely.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\nnothing here\n")
 
         findings = self.audit()["findings"]
 
-        self.assertEqual(findings["orphans"], ["03_Resources/Sola.md"])
-        self.assertEqual(findings["no_backlinks"], ["Hubs/Tema.md"])
+        self.assertEqual(findings["orphans"], ["03_Resources/Lonely.md"])
+        self.assertEqual(findings["no_backlinks"], ["Hubs/Topic.md"])
 
     def test_reports_a_broken_link_with_its_source(self):
-        self.note("A.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\n[[Fantasma]]\n")
+        self.note("A.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\n[[Ghost]]\n")
 
         findings = self.audit()["findings"]
 
-        self.assertEqual(findings["broken_links"], [{"source": "A.md", "target": "Fantasma"}])
+        self.assertEqual(findings["broken_links"], [{"source": "A.md", "target": "Ghost"}])
 
     def test_a_link_inside_a_code_block_is_not_a_broken_link(self):
         self.note("A.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\n"
-                          "usa `[[Sintaxis]]` asi:\n```\n[[Ejemplo]]\n```\n[[Real]]\n")
+                          "use `[[Syntax]]` like this:\n```\n[[Example]]\n```\n[[Real]]\n")
 
         findings = self.audit()["findings"]
 
@@ -176,44 +176,44 @@ class TestLinkFindings(VaultFixture):
 
 class TestNoteFindings(VaultFixture):
     def test_flags_a_note_untouched_past_the_stale_threshold(self):
-        path = self.note("03_Resources/Vieja.md",
-                         "---\ncreated: 2020-01-01\ntype: atomic\n---\n" + "palabra " * 50)
+        path = self.note("03_Resources/Old.md",
+                         "---\ncreated: 2020-01-01\ntype: atomic\n---\n" + "word " * 50)
         old = time.time() - 200 * 86400
         os.utime(path, (old, old))
 
         findings = self.audit("--stale-days", "180")["findings"]
 
-        self.assertEqual([s["path"] for s in findings["stale"]], ["03_Resources/Vieja.md"])
+        self.assertEqual([s["path"] for s in findings["stale"]], ["03_Resources/Old.md"])
         self.assertGreaterEqual(findings["stale"][0]["days"], 199)
 
     def test_hollow_threshold_counts_body_words_only(self):
-        self.note("03_Resources/Corta.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\ntres palabras aca\n")
-        self.note("03_Resources/Larga.md",
-                  "---\ncreated: 2026-07-01\ntype: atomic\n---\n" + "palabra " * 40)
+        self.note("03_Resources/Short.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\nthree words here\n")
+        self.note("03_Resources/Long.md",
+                  "---\ncreated: 2026-07-01\ntype: atomic\n---\n" + "word " * 40)
 
         findings = self.audit("--hollow-words", "30")["findings"]
 
-        self.assertEqual([h["path"] for h in findings["hollow"]], ["03_Resources/Corta.md"])
+        self.assertEqual([h["path"] for h in findings["hollow"]], ["03_Resources/Short.md"])
 
     def test_reports_which_required_frontmatter_field_is_missing(self):
-        self.note("03_Resources/Sin.md", "---\ntype: atomic\n---\ncuerpo\n")
+        self.note("03_Resources/Missing.md", "---\ntype: atomic\n---\nbody\n")
 
         findings = self.audit()["findings"]
 
         self.assertEqual(findings["missing_frontmatter"],
-                         [{"path": "03_Resources/Sin.md", "missing": ["created"]}])
+                         [{"path": "03_Resources/Missing.md", "missing": ["created"]}])
 
     def test_required_fields_are_configurable(self):
-        self.note("03_Resources/Sin.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\ncuerpo\n")
+        self.note("03_Resources/Missing.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\nbody\n")
 
         findings = self.audit("--require", "status")["findings"]
 
         self.assertEqual(findings["missing_frontmatter"],
-                         [{"path": "03_Resources/Sin.md", "missing": ["status"]}])
+                         [{"path": "03_Resources/Missing.md", "missing": ["status"]}])
 
     def test_templates_and_archive_are_scanned_but_kept_out_of_the_findings(self):
         self.note("Templates/Atomic.md", "hollow by design\n")
-        self.note("04_Archive/Cerrada.md", "archived\n")
+        self.note("04_Archive/Closed.md", "archived\n")
 
         report = self.audit()
 
@@ -222,12 +222,12 @@ class TestNoteFindings(VaultFixture):
         self.assertEqual(report["findings"]["orphans"], [])
 
     def test_exempt_folders_are_configurable_for_a_vault_with_its_own_layout(self):
-        self.note("Plantillas/Atomic.md", "hollow by design\n")
+        self.note("Blueprints/Atomic.md", "hollow by design\n")
         self.note("03_Resources/Real.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\nreal\n")
 
-        report = self.audit("--exempt", "Plantillas")
+        report = self.audit("--exempt", "Blueprints")
 
-        self.assertEqual(report["thresholds"]["exempt_dirs"], ["Plantillas"])
+        self.assertEqual(report["thresholds"]["exempt_dirs"], ["Blueprints"])
         self.assertEqual(report["counts"]["notes_audited"], 1)
         self.assertEqual(report["findings"]["orphans"], ["03_Resources/Real.md"])
 
@@ -250,31 +250,31 @@ class TestStatusMaturity(VaultFixture):
         return path
 
     def test_an_evergreen_note_is_not_stale_no_matter_how_old(self):
-        self.aged("03_Resources/Vieja.md",
-                  "---\ncreated: 2020-01-01\ntype: atomic\nstatus: evergreen\n---\n" + "palabra " * 50,
+        self.aged("03_Resources/Old.md",
+                  "---\ncreated: 2020-01-01\ntype: atomic\nstatus: evergreen\n---\n" + "word " * 50,
                   400)
-        self.aged("03_Resources/Otra.md",
-                  "---\ncreated: 2020-01-01\ntype: atomic\n---\n" + "palabra " * 50, 400)
+        self.aged("03_Resources/Other.md",
+                  "---\ncreated: 2020-01-01\ntype: atomic\n---\n" + "word " * 50, 400)
 
         findings = self.audit()["findings"]
 
-        self.assertEqual([s["path"] for s in findings["stale"]], ["03_Resources/Otra.md"])
+        self.assertEqual([s["path"] for s in findings["stale"]], ["03_Resources/Other.md"])
 
     def test_a_seed_is_allowed_to_be_short_but_not_forever(self):
-        self.aged("03_Resources/Reciente.md",
-                  "---\ncreated: 2026-07-01\ntype: atomic\nstatus: seed\n---\ncorta\n", 3)
-        self.aged("03_Resources/Abandonada.md",
-                  "---\ncreated: 2026-01-01\ntype: atomic\nstatus: seed\n---\ncorta\n", 60)
+        self.aged("03_Resources/Recent.md",
+                  "---\ncreated: 2026-07-01\ntype: atomic\nstatus: seed\n---\nshort\n", 3)
+        self.aged("03_Resources/Abandoned.md",
+                  "---\ncreated: 2026-01-01\ntype: atomic\nstatus: seed\n---\nshort\n", 60)
 
         findings = self.audit("--seed-days", "30")["findings"]
 
         self.assertEqual(findings["hollow"], [])  # neither counts as hollow
         self.assertEqual([s["path"] for s in findings["stale_seeds"]],
-                         ["03_Resources/Abandonada.md"])
+                         ["03_Resources/Abandoned.md"])
 
     def test_an_old_seed_is_reported_once_not_as_three_separate_problems(self):
-        self.aged("03_Resources/Abandonada.md",
-                  "---\ncreated: 2026-01-01\ntype: atomic\nstatus: seed\n---\ncorta\n", 400)
+        self.aged("03_Resources/Abandoned.md",
+                  "---\ncreated: 2026-01-01\ntype: atomic\nstatus: seed\n---\nshort\n", 400)
 
         findings = self.audit("--seed-days", "30", "--stale-days", "180")["findings"]
 
@@ -283,8 +283,8 @@ class TestStatusMaturity(VaultFixture):
         self.assertEqual(findings["hollow"], [])
 
     def test_an_archived_note_is_out_of_scope_wherever_it_lives(self):
-        self.note("03_Resources/Cerrada.md",
-                  "---\ncreated: 2026-01-01\ntype: atomic\nstatus: archived\n---\nsin links\n")
+        self.note("03_Resources/Closed.md",
+                  "---\ncreated: 2026-01-01\ntype: atomic\nstatus: archived\n---\nno links\n")
 
         report = self.audit()
 
@@ -292,31 +292,31 @@ class TestStatusMaturity(VaultFixture):
         self.assertEqual(report["findings"]["orphans"], [])
 
     def test_contested_notes_are_listed_so_a_review_can_resolve_them(self):
-        self.note("03_Resources/Discutida.md",
+        self.note("03_Resources/Disputed.md",
                   "---\ncreated: 2026-07-01\ntype: atomic\nstatus: contested\n---\n"
-                  "esto contradice [[Otra]]\n")
+                  "this contradicts [[Other]]\n")
 
         report = self.audit()
 
-        self.assertEqual(report["findings"]["contested"], ["03_Resources/Discutida.md"])
+        self.assertEqual(report["findings"]["contested"], ["03_Resources/Disputed.md"])
         self.assertEqual(report["counts"]["by_status"]["contested"], 1)
 
     def test_a_project_lifecycle_value_is_inert_not_misread_as_maturity(self):
-        # Projects reuse `status` for their own vocabulary (activo|pausado|cerrado).
+        # Projects reuse `status` for their own vocabulary (e.g. active|paused|closed).
         # The audit must treat an unknown value as no value instead of guessing.
-        self.aged("01_Projects/Migracion.md",
-                  "---\ncreated: 2026-01-01\ntype: project\nstatus: activo\n---\n" + "palabra " * 50,
+        self.aged("01_Projects/Migration.md",
+                  "---\ncreated: 2026-01-01\ntype: project\nstatus: active\n---\n" + "word " * 50,
                   400)
 
         findings = self.audit()["findings"]
 
-        self.assertEqual([s["path"] for s in findings["stale"]], ["01_Projects/Migracion.md"])
+        self.assertEqual([s["path"] for s in findings["stale"]], ["01_Projects/Migration.md"])
         self.assertEqual(findings["stale_seeds"], [])
 
     def test_notes_without_a_status_are_counted_as_such(self):
-        self.note("A.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\ncuerpo\n")
+        self.note("A.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\nbody\n")
 
-        self.assertEqual(self.audit()["counts"]["by_status"], {"(sin status)": 1})
+        self.assertEqual(self.audit()["counts"]["by_status"], {"(no status)": 1})
 
 
 class TestTasks(VaultFixture):
@@ -324,8 +324,8 @@ class TestTasks(VaultFixture):
         return time.strftime("%Y-%m-%d", time.localtime(time.time() - days * 86400))
 
     def test_counts_open_and_done_across_the_vault(self):
-        self.note("_inbox/hoy.md", "---\ncreated: 2026-07-01\ntype: dump\n---\n"
-                                   "- [ ] una\n- [x] otra\n- [-] cancelada\n")
+        self.note("_inbox/today.md", "---\ncreated: 2026-07-01\ntype: dump\n---\n"
+                                   "- [ ] one\n- [x] another\n- [-] canceled\n")
 
         counts = self.audit()["counts"]
 
@@ -336,9 +336,9 @@ class TestTasks(VaultFixture):
         # The vault convention cancels a task in place instead of carrying it
         # forward, so an open task in a note from days ago is drift, not backlog.
         self.note("_inbox/{0}.md".format(self.days_ago(10)),
-                  "---\ncreated: 2026-07-01\ntype: dump\n---\n- [ ] quedo abierta\n")
+                  "---\ncreated: 2026-07-01\ntype: dump\n---\n- [ ] left open\n")
         self.note("_inbox/{0}.md".format(self.days_ago(1)),
-                  "---\ncreated: 2026-07-01\ntype: dump\n---\n- [ ] de ayer\n")
+                  "---\ncreated: 2026-07-01\ntype: dump\n---\n- [ ] from yesterday\n")
 
         findings = self.audit("--task-days", "7")["findings"]
 
@@ -348,24 +348,24 @@ class TestTasks(VaultFixture):
 
     def test_a_dated_note_with_no_open_task_is_not_flagged(self):
         self.note("_inbox/{0}.md".format(self.days_ago(30)),
-                  "---\ncreated: 2026-07-01\ntype: dump\n---\n- [x] cerrada\n- [-] cancelada\n")
+                  "---\ncreated: 2026-07-01\ntype: dump\n---\n- [x] closed\n- [-] canceled\n")
 
         self.assertEqual(self.audit()["findings"]["stale_open_tasks"], [])
 
 
 class TestTagsAndMetrics(VaultFixture):
     def test_merges_frontmatter_and_inline_tags_and_finds_single_use(self):
-        self.note("A.md", "---\ncreated: 2026-07-01\ntype: atomic\ntags: [comun]\n---\n#solo\n[[B]]\n")
-        self.note("B.md", "---\ncreated: 2026-07-01\ntype: atomic\ntags: [comun]\n---\ncuerpo\n")
+        self.note("A.md", "---\ncreated: 2026-07-01\ntype: atomic\ntags: [common]\n---\n#single\n[[B]]\n")
+        self.note("B.md", "---\ncreated: 2026-07-01\ntype: atomic\ntags: [common]\n---\nbody\n")
 
         report = self.audit()
 
         self.assertEqual(report["counts"]["tags"], 2)
-        self.assertEqual(report["findings"]["single_use_tags"], ["solo"])
+        self.assertEqual(report["findings"]["single_use_tags"], ["single"])
 
     def test_average_links_per_note_counts_every_note_including_exempt_ones(self):
         self.note("A.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\n[[B]]\n[[B]]\n")
-        self.note("B.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\ncuerpo\n")
+        self.note("B.md", "---\ncreated: 2026-07-01\ntype: atomic\n---\nbody\n")
 
         self.assertEqual(self.audit()["metrics"]["avg_links_per_note"], 1.0)
 

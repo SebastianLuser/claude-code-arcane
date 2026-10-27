@@ -47,14 +47,14 @@ Run all three in one pass when you have enough context. Split them when the clie
 
 ## The Two Scripts
 
-Both run locally with the standard library, upload nothing, and pick the lexicon (`scripts/slop.en.json` or `scripts/slop.es.json`) from the text's language; force it with `--lang en|es`.
+Both run locally with the standard library, upload nothing, and pick the language pack (`scripts/slop.en.json` or `scripts/slop.es.json`; each `slop.<lang>.json` in `scripts/` is one language) from the text's language; force one with `--lang <lang>`. When no pack's stopwords cover enough of the text, the language is `unknown` and the scripts say so: no lexicon is applied, only the language-neutral passes (invisible characters, typography, emoji and hashtag walls, sentence length), and `detect.py` scores SLOP DENSITY and VOICE as not judged (50). A text in a language without a pack is never cleaned with another language's lexicon.
 
 ```bash
 python3 scripts/humanize.py draft.txt -o clean.txt --report   # clean it, show every change
 python3 scripts/detect.py draft.txt clean.txt                 # score both, show the delta
 ```
 
-**`humanize.py` fixes the mechanical tells:** invisible characters (zero-width spaces and joiners, soft hyphens, BOMs, Unicode tag characters, non-breaking spaces), typography (em dash to comma, curly to straight quotes, ellipsis to three dots), and the stock vocabulary in the lexicon, keeping capitalisation and leaving URLs alone. Lexicon entries with `"replace": null` are flagged instead of swapped, because the swap would break the sentence (Spanish gender agreement, mostly). Structural tells ("It's not just X, it's Y", "No es solo X, es Y", triads, staged one-line questions, hashtag walls, reflex engagement bait, uniform sentence length) are reported, never rewritten: that needs judgement, so it is Mode 2's job.
+**`humanize.py` fixes the mechanical tells:** invisible characters (zero-width spaces and joiners, soft hyphens, BOMs, Unicode tag characters, non-breaking spaces), typography (em dash to comma, curly to straight quotes, ellipsis to three dots), and the stock vocabulary in the lexicon, keeping capitalisation and leaving URLs alone. Lexicon entries with `"replace": null` are flagged instead of swapped, because the swap would break the sentence (Spanish gender agreement, mostly). Structural tells ("It's not just X, it's Y" and its equivalent in each pack, triads, staged one-line questions, hashtag walls, reflex engagement bait, uniform sentence length) are reported, never rewritten: that needs judgement, so it is Mode 2's job.
 
 **`detect.py` scores five signals, 0-100, higher is more human:** BURSTINESS (sentence-length variation), SPECIFICITY (numbers and names per 100 words), SLOP DENSITY (lexicon hits), FINGERPRINT (invisible characters, em dashes, curly quotes) and VOICE (personal pronouns, contractions in English, structural tells). The overall weights the mean at 60% and the weakest check at 40%. **PASS** needs 70+ with no check below 55, **REVIEW** is 50+, below that **FLAGGED**.
 
@@ -62,7 +62,7 @@ python3 scripts/detect.py draft.txt clean.txt                 # score both, show
 
 **Say it honestly:** these are local heuristics modelled on the signals public detectors use. They are not GPTZero, Originality or Turnitin and cannot promise their verdict. Never tell the user a text is "undetectable". In Spanish, the raya (em dash) is also a normal mark for asides and dialogue: the typographic pass still turns it into a comma, so check dialogue by hand.
 
-The lexicons are meant to be edited: if the user always says a word the lexicon strips, remove it from the file.
+The lexicons are meant to be edited: if the user always says a word the lexicon strips, remove it from the file. A new language is a new `slop.<lang>.json` with the same keys, including `stopwords` and `examples` (the pack's spec, which the tests run for every pack).
 
 ---
 

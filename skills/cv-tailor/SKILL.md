@@ -1,80 +1,80 @@
 ---
 name: cv-tailor
-description: "Tailor a CV to a specific job description: extract ATS keywords, decide what to emphasize vs downplay, and rewrite achievement bullets in the offer's vocabulary, starting from a role profile. Triggers: adaptar CV, custom CV, tailor resume, CV para esta oferta, optimizar CV para ATS, matchear CV con job description."
+description: "Tailor a CV to a specific job description: extract ATS keywords, decide what to emphasize vs downplay, and rewrite achievement bullets in the offer's vocabulary, starting from a role profile. Triggers: adapt my CV, custom CV, tailor resume, CV for this posting, optimize CV for ATS, match CV to job description."
 argument-hint: "[job-url | path-to-jd | application-note]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, WebFetch, Task
 ---
 
-# CV Tailor - Adaptar el CV a la oferta
+# CV Tailor - Adapt the CV to the posting
 
-Tomás un job description y el perfil base del usuario, y producís un **CV custom** que matchea con los filtros automáticos (ATS) y con la lectura humana del hiring manager. No reescribís la verdad - la reorganizás y la traducís al vocabulario de la oferta.
+You take a job description and the user's base profile, and produce a **custom CV** that matches both the automated filters (ATS) and the hiring manager's human reading. You do not rewrite the truth - you reorganize it and translate it into the posting's vocabulary.
 
 ## Inputs
 
-- **El job description** (URL → usá WebFetch, o texto pegado, o una nota de `03-Aplicaciones/`).
-- **El perfil base**: `01-Perfiles/<Role>.md` (derivado del maestro vía `/master-profile derive`). Si no existe, sugerir crearlo.
-- **Research del contacto/empresa** si existe en `04-Empresas/` y `05-Contactos/`.
+- **The job description** (URL → use WebFetch, or pasted text, or a note in `03-Applications/`).
+- **The base profile**: `01-Profiles/<Role>.md` (derived from the master via `/master-profile derive`). If it does not exist, suggest creating it.
+- **Research on the contact/company** if it exists in `04-Companies/` and `05-Contacts/`.
 
-## Proceso
+## Process
 
-### 1. Analizar la oferta
-- Extraer **keywords literales** del JD: tecnologías, metodologías, responsabilidades, soft skills, seniority. Literal importa - el ATS hace matching de strings (ej: si piden "React.js" no asumas que "React" matchea igual).
-- Detectar **must-have vs nice-to-have**.
-- Detectar **señales de cultura / ángulo** (startup vs enterprise, code-forward, ownership, etc.).
-- Ver `references/ats-keywords.md` para cómo extraer y mapear keywords.
+### 1. Analyze the posting
+- Extract **literal keywords** from the JD: technologies, methodologies, responsibilities, soft skills, seniority. Literal matters - the ATS does string matching (e.g. if they ask for "React.js" do not assume "React" matches the same).
+- Detect **must-have vs nice-to-have**.
+- Detect **culture / angle signals** (startup vs enterprise, code-forward, ownership, etc.).
+- See `references/ats-keywords.md` for how to extract and map keywords.
 
-### 2. Mapear contra el perfil
-- Por cada must-have: ¿qué experiencia/proyecto del perfil lo cubre? Marcar gaps honestos.
-- Decidir **qué resaltar** (lo que más alinea, arriba y con más espacio) y **qué bajar de volumen** (lo irrelevante para este rol).
+### 2. Map against the profile
+- For each must-have: which experience/project in the profile covers it? Mark honest gaps.
+- Decide **what to highlight** (what aligns most, at the top and with more space) and **what to turn down** (what is irrelevant for this role).
 
-### 3. Reescribir
-- Reordenar experiencia y proyectos hacia el rol.
-- Reescribir bullets de logros usando el vocabulario de la oferta, manteniendo número→contexto→resultado.
-- Inyectar keywords de forma natural (en bullets reales, no en un "keyword stuffing" detectable).
-- Ajustar el headline/summary al rol exacto.
+### 3. Rewrite
+- Reorder experience and projects toward the role.
+- Rewrite achievement bullets using the posting's vocabulary, keeping number→context→result.
+- Inject keywords naturally (in real bullets, not as detectable "keyword stuffing").
+- Adjust the headline/summary to the exact role.
 
 ### 4. Score before/after
-- Calcular un **match rate** aproximado: % de keywords/requisitos del JD presentes en el CV, **antes** vs **después** del tailoring.
-- Reportar el delta ("match 48% → 81%") y qué keywords se cubrieron.
-- **Flag de keyword stuffing:** marcar cualquier inserción que a un revisor humano le suene forzada o poco natural - el objetivo es pasar el ATS *y* leer bien para una persona.
+- Compute an approximate **match rate**: % of the JD's keywords/requirements present in the CV, **before** vs **after** the tailoring.
+- Report the delta ("match 48% → 81%") and which keywords were covered.
+- **Keyword stuffing flag:** mark any insertion that would sound forced or unnatural to a human reviewer - the goal is to pass the ATS *and* read well for a person.
 
-### 5. Producir el CV custom
-- Crear/actualizar la nota en `02-CVs/CV - <Empresa> - <Rol>.md` usando el template `CV Custom` (`Templates/CV Custom.md`).
-- Completar frontmatter (`perfil_base`, `aplicacion`, `empresa`, `archivo_pdf`).
-- Documentar las decisiones (keywords, qué se resaltó/bajó) en las secciones del template - sirve para la entrevista y para iterar.
-- El cuerpo del CV en sí debe quedar listo para `/cv-ats-export` (markdown limpio: `# nombre`, `## secciones`, bullets, `---`).
+### 5. Produce the custom CV
+- Create/update the note at `02-CVs/CV - <Company> - <Role>.md` using the `Custom CV` template (`Templates/Custom CV.md`).
+- Fill in the frontmatter (`base_profile`, `application`, `company`, `pdf_file`).
+- Document the decisions (keywords, what was highlighted/turned down) in the template's sections - it helps for the interview and for iterating.
+- The CV body itself must be ready for `/cv-ats-export` (clean markdown: `# name`, `## sections`, bullets, `---`).
 
-### 6. Review antes de exportar (regla drafter-reviewer, obligatorio)
+### 6. Review before exporting (drafter-reviewer rule, mandatory)
 
-Con el `.md` aprobado y **antes** de mandar a `/cv-ats-export`, seguir `.claude/rules/drafter-reviewer.md`: lanzar el agente `cv-reviewer` de contexto fresco con el JD y el borrador inline. Aplicar la Parte A (reemplazos exactos) e incorporar de la Parte B lo que corresponda. Una sola ronda.
+With the `.md` approved and **before** sending it to `/cv-ats-export`, follow `.claude/rules/drafter-reviewer.md`: launch the fresh-context `cv-reviewer` agent with the JD and the draft inline. Apply Part A (exact replacements) and incorporate whatever fits from Part B. A single round.
 
-Si el rol es senior o la postulación importa, lanzar además `hiring-manager` en paralelo - contesta si el CV convence a quien contrata, que es una pregunta distinta.
+If the role is senior or the application matters, also launch `hiring-manager` in parallel - it answers whether the CV convinces whoever hires, which is a different question.
 
-El que redacta no se auto-revisa: no saltear este paso porque el CV "ya quedó bien". Si el usuario decide exportar sin review, avisar que se está saltando la regla y seguir.
+The drafter does not self-review: do not skip this step because the CV "already looks good". If the user decides to export without a review, warn them that the rule is being skipped and continue.
 
-## Formato del CV (ATS-friendly)
+## CV format (ATS-friendly)
 
-- **Una columna.** Sin tablas, sin cajas de texto, sin columnas - los ATS las leen mal.
-- Secciones estándar con headers claros: Summary, Experience, Skills, Projects, Education.
-- Fechas consistentes (MM/YYYY).
-- Sin gráficos ni imágenes para el contenido crítico.
-- Verbos de acción + métricas.
+- **One column.** No tables, no text boxes, no columns - ATSs read them badly.
+- Standard sections with clear headers: Summary, Experience, Skills, Projects, Education.
+- Consistent dates (MM/YYYY).
+- No charts or images for critical content.
+- Action verbs + metrics.
 
-## Idioma
+## Language
 
-CV en **inglés** para roles internacionales/remotos globales; **español** si la oferta/empresa es hispanohablante. Ante la duda, preguntar.
+Write the CV in the language the user chooses for that application (`rules/user-language.md`). English is the usual choice for international/global remote roles; when the posting is in another language, ask.
 
-## Reglas
+## Rules
 
-- Nunca inventar experiencia, fechas o métricas. Tailoring = reorganizar y traducir, no mentir.
-- Rangos de fechas con guion ASCII (`2019-2024`, `Mar 2023 - Presente`), nunca `–` ni `—`: un ATS que separa el rango por `-` pierde la fecha. `/cv-ats-export` lo verifica.
-- No keyword-stuffing: cada keyword debe vivir en un bullet verdadero.
-- Un CV custom por postulación - no pisar el perfil base ni el maestro.
-- Después de generar el `.md`, recordar al usuario correr `/cv-ats-export` para el PDF.
-- No exportar a PDF sin pasar por el review del paso 6.
+- Never make up experience, dates or metrics. Tailoring = reorganizing and translating, not lying.
+- Date ranges with an ASCII hyphen (`2019-2024`, `Mar 2023 - Present`), never `–` or `—`: an ATS that splits the range on `-` loses the date. `/cv-ats-export` checks it.
+- No keyword stuffing: every keyword must live in a true bullet.
+- One custom CV per application - do not overwrite the base profile or the master.
+- After generating the `.md`, remind the user to run `/cv-ats-export` for the PDF.
+- Do not export to PDF without going through the review in step 6.
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir el CV custom. Cuando el `.md` está READY, corré el review del paso 6 (`cv-reviewer`); recién con el feedback aplicado el siguiente paso es `/cv-ats-export` para generar el PDF ATS y `/cover-letter` para el mensaje.
+Ask for approval before writing the custom CV. When the `.md` is READY, run the review in step 6 (`cv-reviewer`); only with the feedback applied is the next step `/cv-ats-export` to generate the ATS PDF and `/cover-letter` for the message.

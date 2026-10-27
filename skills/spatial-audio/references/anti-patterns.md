@@ -1,53 +1,53 @@
-# Audio Espacial — Anti-patterns
+# Spatial Audio — Anti-patterns
 
-## HRTF en todas las fuentes
+## HRTF on every source
 
-50 fuentes × 2 ms = 100 ms de CPU, contra un frame de 16.6 ms a 60 fps. No es costoso: es seis veces imposible. El presupuesto real es 3-5 fuentes con HRTF y el resto por Ambisonics o panning.
+50 sources × 2 ms = 100 ms of CPU, against a 16.6 ms frame at 60 fps. It is not expensive: it is six times impossible. The real budget is 3-5 sources with HRTF and the rest through Ambisonics or panning.
 
-## HRTF en speakers
+## HRTF on speakers
 
-HRTF asume auriculares. En speakers el crosstalk entre canales destruye las claves binaurales y suena peor que un panning honesto. Si no hay auriculares garantizados, hace falta detección de ruta o se descarta.
+HRTF assumes headphones. On speakers the crosstalk between channels destroys the binaural cues and it sounds worse than honest panning. If headphones are not guaranteed, you need output-route detection or it is ruled out.
 
-## Volumen como única clave de distancia
+## Volume as the only distance cue
 
-Un sonido que solo baja de volumen se percibe como "más silencioso", no como "más lejos". Hacen falta los cuatro componentes: volumen, low-pass creciente, spread decreciente y más reverb.
+A sound that only drops in volume is perceived as "quieter", not as "farther away". You need all four components: volume, increasing low-pass, decreasing spread and more reverb.
 
-## Confundir oclusión con obstrucción
+## Confusing occlusion with obstruction
 
-Aplicar oclusión total donde había obstrucción hace que un enemigo detrás de una columna sea inaudible. Obstrucción baja el directo y mantiene el reflejado; oclusión baja los dos.
+Applying full occlusion where there was obstruction makes an enemy behind a column inaudible. Obstruction lowers the direct sound and keeps the reflected one; occlusion lowers both.
 
-## Raycasts sin presupuesto
+## Raycasts without a budget
 
-La parte cara de la oclusión es el raycast, no el filtro. Con 30 fuentes haciendo raycast por frame el costo se dispara. Limitar, repartir entre frames, cachear.
+The expensive part of occlusion is the raycast, not the filter. With 30 sources raycasting every frame the cost skyrockets. Limit, spread across frames, cache.
 
-## Oclusión sin interpolar
+## Occlusion without interpolation
 
-Aplicar el valor de golpe produce un salto muy audible cada vez que el jugador cruza el borde de una geometría. Interpolar siempre hacia el target.
+Applying the value at once produces a very audible jump every time the player crosses the edge of a piece of geometry. Always interpolate toward the target.
 
-## Curvas sin min/max distance
+## Curves without min/max distance
 
-Dejar el default del middleware produce sonidos audibles a 200 m o que desaparecen a 3 m. Los dos valores y la forma de la curva son parte del spec.
+Leaving the middleware default produces sounds audible at 200 m or that disappear at 3 m. Both values and the shape of the curve are part of the spec.
 
-## Reverb de zona con cambio instantáneo
+## Zone reverb with an instant change
 
-El salto de preset se escucha como un corte. Crossfade en la transición, y dejar que la cola anterior termine.
+The preset jump is heard as a cut. Crossfade at the transition, and let the previous tail finish.
 
-## Música y UI espacializadas
+## Spatialized music and UI
 
-No tienen posición en el mundo. Espacializarlas produce paneos raros y costo inútil.
+They have no position in the world. Spatializing them produces odd panning and wasted cost.
 
-## Diálogo tratado como una fuente 3D más
+## Dialogue treated as just another 3D source
 
-Si el diálogo importante se ocluye y se atenúa como cualquier SFX, el jugador pierde información. Suele necesitar un tratamiento pseudo-3D: dirección sí, oclusión no.
+If important dialogue gets occluded and attenuated like any SFX, the player loses information. It usually needs pseudo-3D treatment: direction yes, occlusion no.
 
-## Presupuestar contra la plataforma más alta
+## Budgeting against the highest platform
 
-El modelo entra en PC y no en el target más bajo. El presupuesto se hace contra el piso, no contra el techo.
+The model fits on PC and not on the lowest target. The budget is made against the floor, not the ceiling.
 
-## Ambisonics para fuentes puntuales importantes
+## Ambisonics for important point sources
 
-Ambisonics brilla en campo difuso y ambiente. Para la fuente crítica que el jugador tiene que localizar con precisión, no reemplaza a HRTF.
+Ambisonics shines in diffuse fields and ambience. For the critical source the player has to localize precisely, it does not replace HRTF.
 
-## Ignorar el presupuesto más ajustado de VR
+## Ignoring VR's tighter budget
 
-90 fps deja ~11 ms de frame. Un plan de espacialización calculado para 60 fps no entra.
+90 fps leaves ~11 ms per frame. A spatialization plan calculated for 60 fps does not fit.

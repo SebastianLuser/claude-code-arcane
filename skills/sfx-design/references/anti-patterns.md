@@ -1,53 +1,53 @@
 # SFX Design — Anti-patterns
 
-## Aprobar en aislamiento
+## Approving in isolation
 
-El error más caro. Un sonido perfecto en solo desaparece bajo música y ambiente, o le tapa el ataque a otro. Todo efecto se juzga en contexto y al volumen real de juego.
+The most expensive mistake. A sound that is perfect solo disappears under music and ambience, or masks another sound's attack. Every effect is judged in context and at real game volume.
 
-## Apilar capas hasta que "suene grande"
+## Stacking layers until it "sounds big"
 
-Ocho capas no suenan más grandes que tres: suenan barrosas. La grandeza sale de la separación de bandas y del contraste con el silencio previo, no de la cantidad. Cuatro capas es el techo práctico.
+Eight layers do not sound bigger than three: they sound muddy. Size comes from band separation and from the contrast with the silence before it, not from quantity. Four layers is the practical ceiling.
 
-## Dos capas en la misma banda
+## Two layers in the same band
 
-Si el sub y el punch pelean en 80 Hz, una de las dos está de más. Cada capa, su banda.
+If the sub and the punch fight at 80 Hz, one of them is surplus. Each layer gets its own band.
 
-## Depender del sub para la fuerza
+## Relying on the sub for force
 
-En el speaker de un handheld o en earbuds baratos no hay 40 Hz. Si toda la potencia del impacto vive ahí, en la mitad de los dispositivos el sonido es un chasquido. La fuerza tiene que leerse también en 100-300 Hz.
+A handheld speaker or cheap earbuds have no 40 Hz. If all of the impact's power lives there, on half the devices the sound is a click. The force also has to read at 100-300 Hz.
 
-## Pitch randomization exagerada
+## Exaggerated pitch randomization
 
-±20% no es variación, es otro objeto. El arma parece cambiar de calibre entre disparos. ±2-4% y round-robin.
+±20% is not variation, it is a different object. The weapon seems to change caliber between shots. ±2-4% and round-robin.
 
-## Random puro en vez de round-robin
+## Pure random instead of round-robin
 
-Random repite: con 4 variantes, la probabilidad de escuchar la misma dos veces seguidas es 25%. Y la repetición inmediata es exactamente lo que se quería evitar. Round-robin excluyendo la última.
+Random repeats: with 4 variants, the probability of hearing the same one twice in a row is 25%. And immediate repetition is exactly what you wanted to avoid. Round-robin excluding the last one.
 
-## Una sola variante en eventos frecuentes
+## A single variant for frequent events
 
-Se vuelve audible como sonido a los 20 minutos. Si el evento se dispara seguido, mínimo 4 variantes o layer swapping.
+It becomes audible as a sound after 20 minutes. If the event fires often, at least 4 variants or layer swapping.
 
-## Perseguir realismo
+## Chasing realism
 
-Un disparo real es poco impresionante y una puerta real suena a nada. El efecto comunica función de gameplay, no física. Si dos armas hacen daño distinto, tienen que sonar distinto en peso.
+A real gunshot is unimpressive and a real door sounds like nothing. The effect communicates gameplay function, not physics. If two weapons deal different damage, they have to sound different in weight.
 
-## Attack con pre-roll
+## Attack with pre-roll
 
-50 ms de silencio o de aire antes del transiente hacen que la acción se sienta laggeada aunque el código sea instantáneo. El transiente va en los primeros milisegundos del archivo.
+50 ms of silence or air before the transient makes the action feel laggy even if the code is instant. The transient goes in the first milliseconds of the file.
 
-## Energía gratis en 2-6 kHz
+## Free energy at 2-6 kHz
 
-Es la banda donde el oído es más sensible y la que fatiga más rápido. Sirve para definición y para feedback de UI; usada de más en todos los SFX, el juego se vuelve cansador en sesiones largas.
+It is the band where the ear is most sensitive and the one that fatigues fastest. It serves definition and UI feedback; overused across every SFX, the game becomes tiring in long sessions.
 
-## Reverb bakeado en el asset
+## Reverb baked into the asset
 
-Si la cola trae el espacio grabado, el sonido no se puede reubicar: suena a catedral dentro de un armario. La cola propia va seca y el espacio lo pone el middleware por zona.
+If the tail carries the recorded space, the sound cannot be relocated: it sounds like a cathedral inside a closet. The tail of its own goes dry and the middleware adds the space per zone.
 
-## Tail que ignora el 3D
+## Tail that ignores 3D
 
-Una cola larga en un sonido 3D sigue sonando cuando la fuente ya se alejó, o se corta abrupto al salir del rango. Definir la atenuación considerando la cola, no solo el ataque.
+A long tail on a 3D sound keeps playing when the source has already moved away, or cuts off abruptly when it leaves range. Define the attenuation with the tail in mind, not just the attack.
 
-## Escalar por número de variantes
+## Scaling by variant count
 
-20 samples × 6 superficies × 3 intensidades = 360 archivos y ~180 MB, y aun así se escucha repetición. Cuando el problema tiene varias dimensiones, la respuesta es síntesis, no más grabaciones.
+20 samples × 6 surfaces × 3 intensities = 360 files and ~180 MB, and repetition is still audible. When the problem has several dimensions, the answer is synthesis, not more recordings.

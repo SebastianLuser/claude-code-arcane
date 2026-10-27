@@ -8,42 +8,42 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # Design Handoff Workflow
 
-Figma → spec doc → ticket (ClickUp/Jira) → component code stub → links bidireccionales.
+Figma → spec doc → ticket (ClickUp/Jira) → component code stub → bidirectional links.
 
 `/design-handoff <figma_url> [--target clickup|jira] [--stack react|vue|flutter]`
 
-## Paso a Paso
+## Step by Step
 
-### 1. Inspeccionar Figma
-Usar `figma` skill: GET node data → extraer dimensions, layout, states, interactions, tokens usados, assets a exportar.
+### 1. Inspect Figma
+Use the `figma` skill: GET node data → extract dimensions, layout, states, interactions, tokens used, assets to export.
 
-### 2. Generar Spec
+### 2. Generate the Spec
 
-Documento estructurado con: purpose (1-2 oraciones), anatomy (pseudo-component tree), variants table (variant/description/props), states table (state/description/trigger — default/hover/active/loading/error/empty), design tokens (colors/typography/spacing/radius/shadow), measurements table (element/dimension), interactions (click/hover/keyboard), responsive breakpoints (desktop ≥1024, tablet 768-1023, mobile <768), accessibility (focus visible, ARIA, keyboard nav, contrast 4.5:1, text alternatives), assets to export (file + output dir).
+Structured document with: purpose (1-2 sentences), anatomy (pseudo-component tree), variants table (variant/description/props), states table (state/description/trigger — default/hover/active/loading/error/empty), design tokens (colors/typography/spacing/radius/shadow), measurements table (element/dimension), interactions (click/hover/keyboard), responsive breakpoints (desktop ≥1024, tablet 768-1023, mobile <768), accessibility (focus visible, ARIA, keyboard nav, contrast 4.5:1, text alternatives), assets to export (file + output dir).
 
-### 3. Crear Ticket
+### 3. Create the Ticket
 
-**ClickUp:** createTask con list_id, name `[Component] Implementar X`, spec embebido en description, tags: frontend/component/design-ready.
+**ClickUp:** createTask with list_id, name `[Component] Implement X`, spec embedded in the description, tags: frontend/component/design-ready.
 
-**Jira:** POST issue con project key, summary, ADF description, Task type, labels.
+**Jira:** POST issue with project key, summary, ADF description, Task type, labels.
 
-### 4. Generar Code Stub
+### 4. Generate the Code Stub
 
-React+TS stub: component file (interface con props de variants/states, JSX con semantic HTML, CSS module imports) + CSS module file (tokens como CSS vars). Stub compilable — no pseudo-code.
+React+TS stub: component file (interface with props from variants/states, JSX with semantic HTML, CSS module imports) + CSS module file (tokens as CSS vars). A compilable stub — not pseudo-code.
 
-Assets: export desde Figma al directorio del repo.
+Assets: export from Figma into the repo directory.
 
-### 5. Linkear Todo
+### 5. Link Everything
 
-En ticket: link a spec doc + Figma + PR reference cuando exista.
+In the ticket: link to the spec doc + Figma + PR reference once it exists.
 
 ## Config
 
 `.claude/config/design-handoff.yml`: default_target, default_list_id, stack, components_dir, assets_dir, designers mapping (figma_email → clickup_id/jira_email).
 
-## Reglas
+## Rules
 
-- Spec embebido en ticket — el dev no abre 3 tabs
-- Assets exportados al repo inmediatamente
-- Code stub compilable (`npm run build` funciona)
-- Link bidireccional: spec ↔ Figma ↔ ticket ↔ code
+- Spec embedded in the ticket — the dev does not open 3 tabs
+- Assets exported to the repo immediately
+- Compilable code stub (`npm run build` works)
+- Bidirectional link: spec ↔ Figma ↔ ticket ↔ code

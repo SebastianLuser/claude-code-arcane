@@ -2,9 +2,9 @@
 
 ## 10.1 Multi-Stage Dockerfile, Non-Root User — MEDIUM
 
-Compilar con la imagen SDK y correr sobre la imagen `aspnet` runtime reduce el tamaño y la superficie de ataque. Usar un usuario no-root limita el blast radius.
+Building with the SDK image and running on the `aspnet` runtime image reduces size and attack surface. Using a non-root user limits the blast radius.
 
-**Correcto:**
+**Correct:**
 ```dockerfile
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
@@ -20,9 +20,9 @@ ENTRYPOINT ["dotnet", "Api.dll"]
 
 ## 10.2 Health Checks (Liveness/Readiness) — MEDIUM
 
-Los orquestadores (Kubernetes) necesitan endpoints separados: liveness (¿está vivo?) y readiness (¿puede recibir tráfico?, p. ej. DB conectada).
+Orchestrators (Kubernetes) need separate endpoints: liveness (is it alive?) and readiness (can it take traffic?, e.g. DB connected).
 
-**Correcto:**
+**Correct:**
 ```csharp
 builder.Services.AddHealthChecks().AddNpgSql(conn, tags: ["ready"]);
 app.MapHealthChecks("/health/live", new() { Predicate = _ => false });
@@ -31,9 +31,9 @@ app.MapHealthChecks("/health/ready", new() { Predicate = c => c.Tags.Contains("r
 
 ## 10.3 Structured Logging (Serilog JSON) — MEDIUM
 
-Logs en JSON son parseables por agregadores (Loki, ELK). Serilog con sink de consola en formato compacto facilita la observabilidad.
+JSON logs can be parsed by aggregators (Loki, ELK). Serilog with a console sink in compact format makes observability easier.
 
-**Correcto:**
+**Correct:**
 ```csharp
 builder.Host.UseSerilog((ctx, cfg) =>
     cfg.WriteTo.Console(new Serilog.Formatting.Compact.CompactJsonFormatter()));
@@ -41,9 +41,9 @@ builder.Host.UseSerilog((ctx, cfg) =>
 
 ## 10.4 OpenTelemetry for Traces & Metrics — MEDIUM
 
-OpenTelemetry instrumenta traces y métricas de forma estándar y exportable a cualquier backend OTLP.
+OpenTelemetry instruments traces and metrics in a standard way, exportable to any OTLP backend.
 
-**Correcto:**
+**Correct:**
 ```csharp
 builder.Services.AddOpenTelemetry()
     .WithTracing(t => t.AddAspNetCoreInstrumentation().AddOtlpExporter())
@@ -52,19 +52,19 @@ builder.Services.AddOpenTelemetry()
 
 ## 10.5 Config per Environment & Graceful Shutdown — LOW-MEDIUM
 
-Nunca hardcodear secrets ni connection strings: usar `appsettings.{Environment}.json` y variables de entorno. Registrar limpieza ante el shutdown con `IHostApplicationLifetime`.
+Never hardcode secrets or connection strings: use `appsettings.{Environment}.json` and environment variables. Register shutdown cleanup with `IHostApplicationLifetime`.
 
-**Correcto:**
+**Correct:**
 ```csharp
-var conn = builder.Configuration.GetConnectionString("Default"); // env / appsettings, no hardcoded
+var conn = builder.Configuration.GetConnectionString("Default"); // env / appsettings, not hardcoded
 app.Lifetime.ApplicationStopping.Register(() => Log.Information("Draining connections..."));
 ```
 
 ## 10.6 CI: build, test, format — LOW
 
-El pipeline debe fallar ante código que no compila, tests rojos o formato inconsistente.
+The pipeline must fail on code that does not compile, red tests or inconsistent formatting.
 
-**Correcto:**
+**Correct:**
 ```yaml
 steps:
   - run: dotnet restore

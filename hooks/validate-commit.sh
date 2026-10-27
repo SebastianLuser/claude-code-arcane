@@ -31,10 +31,10 @@ main() {
   validate_3d_exports
 }
 
-# Gate de exports 3D. No-op salvo que el perfil blender este instalado y haya
-# .glb/.gltf staged: bloquea solo fallas inequivocas (contenedor roto, sin UVs,
-# escala de conversion sin aplicar, texturas fuera del .glb). El presupuesto de
-# tris es por proyecto, asi que aca no se pasa y queda como aviso, no como block.
+# 3D export gate. No-op unless the blender profile is installed and there are
+# staged .glb/.gltf files: blocks only unambiguous failures (broken container, no UVs,
+# unapplied conversion scale, textures outside the .glb). The tris budget is
+# per project, so it is not passed here and stays a warning, not a block.
 validate_3d_exports() {
   local VALIDATOR=".claude/skills/blender-export/scripts/validate_gltf.py"
   [[ -f "$VALIDATOR" ]] || return 0
@@ -57,9 +57,9 @@ validate_3d_exports() {
   done <<< "$STAGED"
 
   if [[ -n "$FAILED" ]]; then
-    echo "BLOCK: hay exports 3D staged que no pasan la validacion." >&2
+    echo "BLOCK: staged 3D exports fail validation." >&2
     echo "$FAILED" >&2
-    echo "Corregir en Blender y volver a exportar (ver /blender-export), o sacar el archivo del stage." >&2
+    echo "Fix it in Blender and re-export (see /blender-export), or unstage the file." >&2
     exit 2
   fi
 }

@@ -1,49 +1,49 @@
-# PAS Format — Problema-Analisis-Solucion
+# PAS Format — Problem-Analysis-Solution
 
-Para decisiones de diseño, cambios de balance, evaluación de mecánicas, feedback de playtest.
+For design decisions, balance changes, mechanic evaluation, playtest feedback.
 
-## Formato
+## Format
 
 ```markdown
-# [Título conciso]
+# [Concise title]
 
-## Problema
-**Qué pasa:**
-- [Hecho concreto — qué no funciona o falta]
+## Problem
+**What happens:**
+- [Concrete fact — what doesn't work or is missing]
 
-**Impacto en el jugador:**
-- [Experiencia negativa concreta]
+**Impact on the player:**
+- [Concrete negative experience]
 
-## Análisis
-**Por qué pasa:**
-- [Causa raíz]
+## Analysis
+**Why it happens:**
+- [Root cause]
 
-**Variables que influyen:**
-- [Variable]: [valor actual] → [efecto]
+**Variables involved:**
+- [Variable]: [current value] → [effect]
 
-## Opciones
-### A: [Nombre]
-[1 oración] — Pro: [ventaja] / Contra: [desventaja] / Esfuerzo: [bajo|medio|alto]
+## Options
+### A: [Name]
+[1 sentence] — Pro: [advantage] / Con: [disadvantage] / Effort: [low|medium|high]
 
-### B: [Nombre]
-[1 oración] — Pro / Contra / Esfuerzo
+### B: [Name]
+[1 sentence] — Pro / Con / Effort
 
-## Decisión
-**Elegimos: Opción [X]**
-**Justificación:** [1-2 oraciones]
-**Cambios concretos:** [valores exactos]
-**Status:** Decidido / Pendiente / [TBD]
+## Decision
+**We choose: Option [X]**
+**Rationale:** [1-2 sentences]
+**Concrete changes:** [exact values]
+**Status:** Decided / Pending / [TBD]
 ```
 
-## Cuándo usar PAS
+## When to use PAS
 
-- Mecánicas problemáticas
-- Propuestas de cambio de balance
-- Decisiones de diseño (nueva feature, cambio de sistema)
-- Evaluación de feedback de playtest
+- Problematic mechanics
+- Balance change proposals
+- Design decisions (new feature, system change)
+- Evaluating playtest feedback
 
-## Cuándo NO
+## When NOT to
 
-- GDD completo → usar sección GDD
-- Spec técnica → RFC/ADR
+- Full GDD → use the GDD section
+- Technical spec → RFC/ADR
 - Bug report → issue tracker

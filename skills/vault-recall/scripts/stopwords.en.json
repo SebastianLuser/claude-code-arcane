@@ -1,0 +1,8 @@
+{
+  "language": "en",
+  "note": "Stopwords vault_index.py drops from English notes and queries. Terms are stored lowercase, as normalize_term leaves them. Every stopwords.<lang>.json next to the script applies at once, because one vault mixes languages.",
+  "words": [
+    "the", "a", "an", "and", "or", "of", "to", "in", "on", "for", "with", "is",
+    "are", "was", "were", "be", "it", "this", "that", "as", "at", "by", "from"
+  ]
+}

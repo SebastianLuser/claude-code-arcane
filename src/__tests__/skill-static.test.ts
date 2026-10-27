@@ -12,7 +12,7 @@ import yaml from "js-yaml";
  * anyone noticing - and 288 of those failures came from one rule written for a gamedev
  * framework where every skill was a gate: "every skill emits PASS/FAIL". Most skills
  * never judge anything, and several that do say it in their own words (CLEAN / WARNINGS
- * / CRITICAL, SALUDABLE / NECESITA ATENCIÓN / CRÍTICO).
+ * / CRITICAL, HEALTHY / NEEDS ATTENTION / CRITICAL).
  *
  * The rules here are the ones that can be decided mechanically. The judgment calls
  * (ask before writing, next-step handoff, fork complexity, argument hint vs. modes)

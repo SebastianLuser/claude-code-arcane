@@ -1,53 +1,53 @@
-# Música Adaptativa — Anti-patterns
+# Adaptive Music — Anti-patterns
 
-## Crossfade como única transición
+## Crossfade as the only transition
 
-Fundir dos piezas en tonalidades o tempos distintos suena a error, no a transición. El crossfade solo funciona si el material comparte armonía y grid. Si no, hace falta sync point + segmento de transición.
+Blending two pieces in different keys or tempos sounds like an error, not a transition. A crossfade only works if the material shares harmony and grid. If not, you need a sync point + a transition segment.
 
-## Transiciones inmediatas por default
+## Immediate transitions by default
 
-Cortar al instante es responsivo y musicalmente destructivo. Reservarlo para muerte del jugador y cortes deliberados. El default sano es siguiente compás.
+Cutting instantly is responsive and musically destructive. Reserve it for player death and deliberate cuts. The sane default is next bar.
 
-## Umbrales sin histéresis
+## Thresholds without hysteresis
 
-El caso clásico: el jugador camina en el borde de un radio de detección y la música de combate entra y sale seis veces en diez segundos. Umbrales asimétricos + tiempo mínimo en estado + debounce. Siempre.
+The classic case: the player walks along the edge of a detection radius and the combat music comes in and out six times in ten seconds. Asymmetric thresholds + minimum time in state + debounce. Always.
 
-## Capas que dependen entre sí
+## Layers that depend on each other
 
-Si la capa de melodía se escribió asumiendo que la de armonía suena, al quitar la armonía la melodía queda flotando sin contexto. Cada capa tiene que funcionar sola y con cualquier subconjunto de las de abajo.
+If the melody layer was written assuming the harmony layer is playing, removing the harmony leaves the melody floating without context. Each layer has to work alone and with any subset of the layers below it.
 
-## Stingers en la tonalidad equivocada
+## Stingers in the wrong key
 
-El error más audible del sistema. Si el fondo modula y el stinger es tonal y fijo, va a chocar. Versiones por tonalidad, o stingers tonalmente neutros.
+The most audible error in the system. If the background modulates and the stinger is tonal and fixed, it will clash. Per-key versions, or tonally neutral stingers.
 
-## Stingers sin cooldown
+## Stingers without cooldown
 
-Cinco kills en dos segundos disparan cinco stingers superpuestos. Suena a bug.
+Five kills in two seconds fire five overlapping stingers. It sounds like a bug.
 
-## Contar los stems y no la memoria
+## Counting stems and not memory
 
-Ocho stems estéreo a 48 kHz sonando simultáneos es mucho más que "ocho archivos". Si van descomprimidos en memoria, el número crece rápido. Verificar el budget antes de comprometer la arquitectura vertical.
+Eight stereo stems at 48 kHz playing simultaneously is much more than "eight files". If they are decompressed in memory, the number grows fast. Verify the budget before committing to the vertical architecture.
 
-## Diseñar el sistema después de componer
+## Designing the system after composing
 
-Si el compositor entregó una pieza lineal de tres minutos con clímax, convertirla en capas es imposible sin rehacerla. El sistema se diseña primero y define la restricción compositiva.
+If the composer delivered a linear three-minute piece with a climax, turning it into layers is impossible without redoing it. The system is designed first and defines the compositional constraint.
 
-## Un estado por situación
+## One state per situation
 
-Veinte estados de música para veinte situaciones de gameplay produce una matriz de transiciones de 400 celdas que nadie va a autorear bien. Agrupar situaciones por emotional target: la mayoría de los juegos vive bien con 4-6 estados.
+Twenty music states for twenty gameplay situations produce a 400-cell transition matrix nobody will author well. Group situations by emotional target: most games live well with 4-6 states.
 
-## Loop que cierra con cadencia auténtica
+## A loop that closes with an authentic cadence
 
-Cada vuelta suena a arranque forzado. Cerrar abierto: semicadencia, pedal, cadencia plagal.
+Every repetition sounds like a forced restart. Close open: half cadence, pedal, plagal cadence.
 
-## Música ocupando el rango del diálogo
+## Music occupying the dialogue range
 
-Si el arreglo vive en 500 Hz-2 kHz y hay VO, uno de los dos pierde, y el ducking agresivo se escucha. Se resuelve en el arreglo, no en el mix.
+If the arrangement lives in 500 Hz-2 kHz and there is VO, one of the two loses, and aggressive ducking is audible. It is solved in the arrangement, not in the mix.
 
-## Ignorar el estado inicial y el retorno
+## Ignoring the initial state and the return
 
-Se diseña explore → combat con cuidado y se olvida combat → explore. El retorno es la transición que el jugador escucha más veces.
+Explore → combat is designed carefully and combat → explore is forgotten. The return is the transition the player hears the most.
 
-## Probar solo en el editor
+## Testing only in the editor
 
-El editor de middleware permite disparar estados a mano, en el orden correcto, sin ruido. El jugador real dispara transiciones en secuencias imposibles. Probar con gameplay, no con botones.
+The middleware editor lets you fire states by hand, in the right order, with no noise. A real player fires transitions in impossible sequences. Test with gameplay, not with buttons.

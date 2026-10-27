@@ -1,39 +1,39 @@
 ---
 name: obsidian-bases
-description: "Crea y edita archivos .base de Obsidian: vistas table/cards/list/map, filtros, formulas y summaries sobre las propiedades de las notas. Incluye migracion desde queries de Dataview. Triggers: obsidian bases, archivo .base, base de datos en obsidian, vista de notas, dashboard obsidian, migrar dataview."
-argument-hint: "[create <descripcion> | explain <archivo.base> | migrate <query dataview>]"
+description: "Creates and edits Obsidian .base files: table/cards/list/map views, filters, formulas and summaries over note properties. Includes migration from Dataview queries. Triggers: obsidian bases, .base file, database in obsidian, notes view, obsidian dashboard, migrate dataview."
+argument-hint: "[create <description> | explain <file.base> | migrate <dataview query>]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 
-# Obsidian Bases - Vistas nativas
+# Obsidian Bases - Native views
 
-Bases es el core plugin de Obsidian (1.9+) que convierte las propiedades de las notas en tablas y cards vivas. No se instala nada. Adaptado de `kepano/obsidian-skills` al formato de este repo.
+Bases is the Obsidian core plugin (1.9+) that turns note properties into live tables and cards. Nothing to install. Adapted from `kepano/obsidian-skills` to this repo's format.
 
-Modo: `$ARGUMENTS`
+Mode: `$ARGUMENTS`
 
-La referencia completa de sintaxis está en `references/bases-syntax.md`. Leela antes de escribir un `.base`: la mitad de los errores son de quoting de YAML, no de lógica.
+The full syntax reference is in `references/bases-syntax.md`. Read it before writing a `.base`: half the errors are YAML quoting, not logic.
 
-## Fase 1 - Verificar que Bases esté disponible
+## Phase 1 - Check that Bases is available
 
-Leer `.obsidian/core-plugins.json` del vault. Si `bases` no está habilitado, decirlo y ofrecer las dos salidas: habilitarlo (es core, no requiere instalar) o resolver la vista con una tabla markdown estática. **Nunca escribir un `.base` en un vault que no lo tiene habilitado:** queda como un archivo que Obsidian muestra en crudo.
+Read the vault's `.obsidian/core-plugins.json`. If `bases` is not enabled, say so and offer the two ways out: enable it (it is core, nothing to install) or solve the view with a static markdown table. **Never write a `.base` in a vault that does not have it enabled:** it ends up as a file Obsidian shows raw.
 
-## Fase 2 - Modos
+## Phase 2 - Modes
 
-### `create` - Vista nueva
-1. Entender qué pregunta responde la vista. Una vista sin pregunta concreta termina siendo una tabla de todo el vault que nadie mira.
-2. **Verificar que las propiedades existan**: `Grep` en el frontmatter del vault por los campos que vas a filtrar. Filtrar por una propiedad que ninguna nota declara produce una vista vacía y parece un bug de Bases.
-3. Escribir el `.base` en `Bases/`, con approval antes de crear el archivo.
-4. Avisar que hay que abrirlo en Obsidian para confirmar que renderiza: la sintaxis se valida ahí, no acá.
+### `create` - New view
+1. Understand what question the view answers. A view without a concrete question ends up as a table of the whole vault that nobody looks at.
+2. **Check that the properties exist**: `Grep` the vault's frontmatter for the fields you are going to filter on. Filtering by a property no note declares produces an empty view and looks like a Bases bug.
+3. Write the `.base` in `Bases/`, with approval before creating the file.
+4. Say that it has to be opened in Obsidian to confirm it renders: the syntax is validated there, not here.
 
-### `explain` - Leer un `.base` existente
-Traducir el archivo a lenguaje llano: qué notas entran, qué columnas muestra, qué calcula cada fórmula. Read-only.
+### `explain` - Read an existing `.base`
+Translate the file into plain language: which notes go in, which columns it shows, what each formula computes. Read-only.
 
-### `migrate` - Desde Dataview
-Traducir la query, y **decir explícitamente qué no se puede traducir**. Bases no cubre campos inline (`campo:: valor` en medio de la nota) ni texto computado ni `dataviewjs`. Si la query depende de eso, la respuesta honesta es que se quede en Dataview: una migración a medias deja al usuario con una vista que miente.
+### `migrate` - From Dataview
+Translate the query, and **say explicitly what cannot be translated**. Bases does not cover inline fields (`field:: value` in the middle of the note), computed text or `dataviewjs`. If the query depends on those, the honest answer is that it stays in Dataview: a half-done migration leaves the user with a view that lies.
 
-## Estructura de un `.base`
+## Structure of a `.base`
 
 ```yaml
 filters:
@@ -42,44 +42,44 @@ filters:
     - 'type == "atomic"'
 
 formulas:
-  edad_dias: '(now() - file.mtime).days'
+  age_days: '(now() - file.mtime).days'
 
 properties:
-  formula.edad_dias:
-    displayName: "Dias sin tocar"
+  formula.age_days:
+    displayName: "Days untouched"
 
 views:
   - type: table
-    name: "Notas atomicas"
+    name: "Atomic notes"
     filters:
       not:
-        - file.hasTag("archivada")
+        - file.hasTag("archived")
     order:
       - file.name
       - created
-      - formula.edad_dias
+      - formula.age_days
     summaries:
-      formula.edad_dias: Average
+      formula.age_days: Average
 ```
 
-Los cinco bloques top-level son `filters`, `formulas`, `properties`, `summaries` y `views`. Los filtros globales aplican a todas las vistas; cada vista puede agregar los suyos.
+The five top-level blocks are `filters`, `formulas`, `properties`, `summaries` and `views`. Global filters apply to every view; each view can add its own.
 
-## Los tres errores que se repiten
+## The three recurring mistakes
 
-1. **Quoting de YAML.** Cualquier expresión con `:`, `{`, `}`, `[`, `]` va entre comillas. Si la expresión ya tiene comillas dobles adentro, el string va en comillas simples: `'if(done, "Si", "No")'`.
-2. **Duraciones.** Restar dos fechas da una `Duration`, no un número: hay que acceder al campo antes de operar (`.days`, `.hours`). `round(now() - file.mtime)` falla; `(now() - file.mtime).days` funciona.
-3. **Nulls.** Una propiedad ausente rompe la fórmula. Envolver en `if(propiedad, ...)` cuando el campo puede faltar, que en un vault real es casi siempre.
+1. **YAML quoting.** Any expression with `:`, `{`, `}`, `[`, `]` goes in quotes. If the expression already has double quotes inside, the string goes in single quotes: `'if(done, "Yes", "No")'`.
+2. **Durations.** Subtracting two dates gives a `Duration`, not a number: access the field before operating on it (`.days`, `.hours`). `round(now() - file.mtime)` fails; `(now() - file.mtime).days` works.
+3. **Nulls.** A missing property breaks the formula. Wrap it in `if(property, ...)` when the field can be missing, which in a real vault is almost always.
 
-Una fórmula referenciada en `order` que no está declarada en `formulas` falla en silencio: la columna simplemente no aparece.
+A formula referenced in `order` that is not declared in `formulas` fails silently: the column simply does not appear.
 
-## Reglas
+## Rules
 
-- `file.backlinks` es caro: no lo pongas en una vista que se abre seguido.
-- No crear una vista que dependa de una propiedad que el vault todavía no usa: primero se agrega al contrato de frontmatter del `CLAUDE.md`.
-- Un `.base` por pregunta. Un archivo con ocho vistas es un dashboard que nadie lee.
-- Pedí approval antes de escribir o sobrescribir un `.base`.
-- Sin guiones largos.
+- `file.backlinks` is expensive: do not put it in a view that is opened often.
+- Do not create a view that depends on a property the vault does not use yet: first add it to the frontmatter contract in `CLAUDE.md`.
+- One `.base` per question. A file with eight views is a dashboard nobody reads.
+- Ask for approval before writing or overwriting a `.base`.
+- No long dashes.
 
 ## Handoff
 
-Base READY cuando el archivo existe y el usuario confirmó que renderiza en Obsidian. Si la vista necesitaba campos que las notas no tienen, el siguiente paso es actualizar el contrato de frontmatter con `/second-brain` y completar las notas con `/vault-tidy frontmatter`.
+Base READY when the file exists and the user confirmed it renders in Obsidian. If the view needed fields the notes do not have, the next step is to update the frontmatter contract with `/second-brain` and fill in the notes with `/vault-tidy frontmatter`.

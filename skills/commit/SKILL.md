@@ -1,6 +1,6 @@
 ---
 name: commit
-description: "Crea un git commit siguiendo conventional commit format. Revisa diffs, sugiere type/scope, escribe mensaje conciso. No hace push."
+description: "Creates a git commit in conventional commit format. Reviews diffs, suggests type/scope, writes a concise message. Does not push."
 category: "workflow"
 argument-hint: ""
 user-invocable: true

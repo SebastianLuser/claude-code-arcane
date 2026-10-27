@@ -6,24 +6,24 @@ tags: []
 
 # {{date:YYYY}}-W{{date:ww}}
 
-Dailies de la semana: <links a los dailies existentes>
+Dailies of the week: <links to the existing dailies>
 
-## Temas de la semana
+## Themes of the week
 
-<Los 3 a 5 temas que se repitieron, cada uno con los dailies donde aparece.>
+<The 3 to 5 themes that repeated, each with the dailies where it appears.>
 
-## Hilos abiertos
+## Open threads
 
-<Lo que quedó sin cerrar y sigue vivo. Distinto de una tarea: es una pregunta o decisión pendiente.>
+<What was left unclosed and is still alive. Different from a task: it is a pending question or decision.>
 
-## Tareas: hechas y no hechas
+## Tasks: done and not done
 
-<Conteo y detalle. Las no hechas se nombran, no se esconden.>
+<Count and detail. The ones not done are named, not hidden.>
 
-## Notas que crecieron
+## Notes that grew
 
-<Hub files y notas atómicas que recibieron contenido esta semana.>
+<Hub files and atomic notes that received content this week.>
 
-## Reflexión
+## Reflection
 
-<Esta sección la escribe el usuario.>
+<The user writes this section.>

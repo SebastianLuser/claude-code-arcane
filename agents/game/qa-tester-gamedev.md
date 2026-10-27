@@ -1,6 +1,6 @@
 ---
 name: qa-tester-gamedev
-description: "QA Tester especializado en videojuegos. Test cases de gameplay, balance, exploits, smoke checks, regression de mecánicas, cert de plataformas. Usar para testing de juegos, no de software."
+description: "QA Tester specialized in video games. Gameplay test cases, balance, exploits, smoke checks, mechanics regression, platform cert. Use for testing games, not general software."
 tools: Read, Glob, Grep, Write, Edit, Bash
 permissionMode: acceptEdits
 model: sonnet

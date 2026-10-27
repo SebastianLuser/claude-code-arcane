@@ -1,14 +1,14 @@
 # Anti-patterns - RBAC / ABAC
 
-| # | No hacer | Hacer en cambio |
+| # | Don't | Do instead |
 |---|----------|-----------------|
-| 1 | Check de permisos solo en frontend | Backend valida siempre; frontend es UX solamente |
-| 2 | `role.includes("admin")` match parcial | Comparacion exacta: `role === "tenant_admin"` |
-| 3 | Super admin sin audit log | Logging intenso + alerta + aprobacion dual para ops destructivas |
-| 4 | Sin tenant scoping en endpoints | `RequireScope` middleware en cada ruta con recursos de tenant |
-| 5 | Permisos hardcodeados en codigo | Tabla `permissions` en DB, configurable sin deploy |
-| 6 | Roles como permisos (`can_edit_grades` como rol) | Naming `resource:action` — roles agrupan permisos, no son permisos |
-| 7 | Ownership check en middleware (sin contexto) | Ownership siempre en capa de servicio donde hay contexto de negocio |
-| 8 | RLS habilitado sin setear GUC | `SET LOCAL app.tenant_id = ?` en cada transaction |
-| 9 | Cache de permisos sin invalidacion | Invalidar Redis key en cambio de rol, revoke o cambio de membership |
-| 10 | JWT sin `tenant_id` en claims | `tenant_id` obligatorio en claims; validar en middleware |
+| 1 | Permission checks only in the frontend | The backend always validates; the frontend is UX only |
+| 2 | `role.includes("admin")` partial match | Exact comparison: `role === "tenant_admin"` |
+| 3 | Super admin without an audit log | Heavy logging + alert + dual approval for destructive ops |
+| 4 | No tenant scoping on endpoints | `RequireScope` middleware on every route with tenant resources |
+| 5 | Permissions hardcoded in code | `permissions` table in the DB, configurable without a deploy |
+| 6 | Roles as permissions (`can_edit_grades` as a role) | `resource:action` naming — roles group permissions, they are not permissions |
+| 7 | Ownership check in middleware (no context) | Ownership always in the service layer, where there is business context |
+| 8 | RLS enabled without setting the GUC | `SET LOCAL app.tenant_id = ?` in every transaction |
+| 9 | Permission cache without invalidation | Invalidate the Redis key on role change, revoke or membership change |
+| 10 | JWT without `tenant_id` in the claims | `tenant_id` mandatory in the claims; validate it in middleware |

@@ -1,76 +1,76 @@
 ---
 name: vault-tidy
-description: "Aplica los arreglos que reporto /vault-audit con approval item por item: linkear huerfanas, resolver nombres duplicados, cancelar tareas arrastradas, completar frontmatter y archivar. Nunca borra. Triggers: limpiar el vault, arreglar huerfanas, vault tidy, aplicar el audit, ordenar el vault, resolver links roto."
+description: "Applies the fixes /vault-audit reported, with item-by-item approval: link orphans, resolve duplicate names, cancel carried-over tasks, complete frontmatter and archive. Never deletes. Triggers: clean up the vault, fix orphans, vault tidy, apply the audit, tidy the vault, resolve broken links."
 argument-hint: "[orphans | broken | duplicates | tasks | frontmatter | archive | all]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 
-# Vault Tidy - Aplicar los arreglos
+# Vault Tidy - Apply the fixes
 
-Sos la única skill del profile que edita notas existentes en volumen, y por eso la más peligrosa. Cada cambio se propone y se aprueba: no hay modo batch, no hay "arreglo todo y te cuento después".
+You are the only skill in the profile that edits existing notes in bulk, and therefore the most dangerous one. Every change is proposed and approved: there is no batch mode, no "I fix everything and tell you afterwards".
 
-Categoría a arreglar: `$ARGUMENTS` (default: preguntar cuál, nunca `all` por omisión)
+Category to fix: `$ARGUMENTS` (default: ask which one, never `all` by omission)
 
-Aplica la rule `vault-conventions`.
+The `vault-conventions` rule applies.
 
-**Rutas por rol:** los destinos se nombran por rol y la ruta real de cada uno sale del `## Rutas` del `CLAUDE.md` del vault. Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+**Paths by role:** destinations are named by role, and each one's real path comes from the `## Paths` section of the vault's `CLAUDE.md`. The defaults in parentheses only apply if the vault does not declare otherwise.
 
-## Fase 1 - Antes de tocar nada
+## Phase 1 - Before touching anything
 
-1. **Ubicar el vault** y leer su `CLAUDE.md`: el contrato de frontmatter y la estructura salen de ahí, no de tus defaults.
-2. **Verificar git.** Si el vault es un repo y el árbol está sucio, parar y pedir commit primero. Esta skill es la que más justifica tener git: es el único undo real de una corrida de 30 ediciones.
-3. **Correr `/vault-audit`** y trabajar sobre esos hallazgos. Nunca decidir a ojo qué arreglar.
-4. **Acotar la corrida.** Si el usuario pidió `all`, proponer partirla por categoría y arrancar por la de mayor impacto. Una corrida de 200 ediciones no se puede revisar y por lo tanto no se puede aprobar de verdad.
+1. **Locate the vault** and read its `CLAUDE.md`: the frontmatter contract and the structure come from there, not from your defaults.
+2. **Check git.** If the vault is a repo and the tree is dirty, stop and ask for a commit first. This skill is the one that most justifies having git: it is the only real undo for a run of 30 edits.
+3. **Run `/vault-audit`** and work from those findings. Never decide by eye what to fix.
+4. **Bound the run.** If the user asked for `all`, propose splitting it by category and start with the highest-impact one. A run of 200 edits cannot be reviewed and therefore cannot really be approved.
 
-## Fase 2 - Los arreglos, por categoría
+## Phase 2 - The fixes, by category
 
-### `duplicates` - Nombres duplicados
-El más urgente: dos archivos con el mismo nombre hacen que todo `[[link corto]]` a ese nombre resuelva impredecible.
+### `duplicates` - Duplicate names
+The most urgent: two files with the same name make every `[[short link]]` to that name resolve unpredictably.
 
-Para cada par: mostrar las dos notas y proponer renombrar la menos linkeada, o fusionarlas si son la misma cosa. **El rename lo hace el usuario en Obsidian**, no vos: Obsidian actualiza los wikilinks cuando el rename pasa dentro de la app, y desde el filesystem se rompen en silencio. Tu entregable acá es la lista de renames a hacer y el orden.
+For each pair: show both notes and propose renaming the less-linked one, or merging them if they are the same thing. **The user does the rename in Obsidian**, not you: Obsidian updates wikilinks when the rename happens inside the app, and from the filesystem they break silently. Your deliverable here is the list of renames to make and their order.
 
-### `orphans` - Huérfanas
-Para cada huérfana: leerla, proponer el hub o la nota desde donde linkearla, y agregar el link **en el hub**, no en la huérfana. El link entrante es el que la hace encontrable.
+### `orphans` - Orphans
+For each orphan: read it, propose the hub or note to link it from, and add the link **in the hub**, not in the orphan. The incoming link is what makes it findable.
 
-Si varias huérfanas son del mismo tema, el arreglo no es linkearlas una por una: es crear el hub que falta con `/hub-note` y linkearlas desde ahí. Decilo antes de empezar a parchear.
+If several orphans are on the same topic, the fix is not to link them one by one: it is to create the missing hub with `/hub-note` and link them from there. Say so before you start patching.
 
-### `broken` - Links roto
-Clasificar cada uno antes de tocarlo:
+### `broken` - Broken links
+Classify each one before touching it:
 
-- **Typo:** el target existe con otro nombre. Corregir el link.
-- **Intención:** la nota no existe todavía y el link es un recordatorio. **Se deja.** Un link roto intencional es una nota pendiente, no un error, y borrarlo destruye información.
-- **Basura:** link a algo que ya no aplica. Quitar el link, dejar el texto.
+- **Typo:** the target exists under another name. Fix the link.
+- **Intent:** the note does not exist yet and the link is a reminder. **Leave it.** An intentional broken link is a pending note, not an error, and deleting it destroys information.
+- **Junk:** a link to something that no longer applies. Remove the link, keep the text.
 
-Preguntá cuál es cuando no se pueda deducir del contexto. No adivines.
+Ask which it is when it cannot be inferred from context. Do not guess.
 
-### `tasks` - Tareas arrastradas
-Para cada tarea abierta en un día que ya cerró: marcarla `- [-]` en su día original y preguntar si sigue vigente. Si sigue, crearla en la nota del proyecto o en el dump de hoy. Nunca mover la original.
+### `tasks` - Carried-over tasks
+For each task left open on a day that already closed: mark it `- [-]` on its original day and ask whether it is still relevant. If it is, create it in the project's note or in today's dump. Never move the original.
 
-### `frontmatter` - Contrato
-Completar los campos ausentes del contrato del vault. `created` se deduce del nombre del archivo si tiene fecha, o del mtime; `type` se deduce de la carpeta. Si no se puede deducir, preguntar. **Nunca sobrescribir un `created` que ya existe**, aunque parezca incorrecto: es dato histórico.
+### `frontmatter` - Contract
+Fill in the fields missing from the vault's contract. `created` is inferred from the file name if it has a date, or from the mtime; `type` is inferred from the folder. If it cannot be inferred, ask. **Never overwrite a `created` that already exists**, even if it looks wrong: it is historical data.
 
-### `archive` - Archivar
-Mover al rol `archive` (default `04_Archive/`) lo que el usuario confirme cerrado, preservando el nombre. **Nunca borrar nada.** El movimiento va con la misma advertencia que el rename: si hay notas que linkean a la que se mueve, avisar cuáles y dejar que el usuario lo haga desde Obsidian.
+### `archive` - Archive
+Move to the `archive` role (default `04_Archive/`) what the user confirms is closed, keeping the name. **Never delete anything.** The move carries the same warning as the rename: if there are notes linking to the one being moved, say which ones and let the user do it from Obsidian.
 
-## Fase 3 - Aplicar y reportar
+## Phase 3 - Apply and report
 
-1. Proponer los cambios en una tabla: nota, qué cambia, por qué. Agrupar los mecánicos idénticos para no hacer 40 preguntas, y preguntar uno por uno los que requieren criterio.
-2. Aplicar solo lo aprobado, con `Edit` sobre citas textuales para no tocar nada alrededor.
-3. Reportar qué se cambió y qué quedó pendiente, y recordar el commit.
+1. Propose the changes in a table: note, what changes, why. Group identical mechanical changes so you do not ask 40 questions, and ask one by one about the ones that need judgment.
+2. Apply only what was approved, with `Edit` on verbatim quotes so nothing around them is touched.
+3. Report what changed and what is still pending, and remind the user to commit.
 
-Tidy COMPLETE cuando los cambios aprobados están aplicados y el resto quedó explícitamente pendiente, no olvidado.
+Tidy COMPLETE when the approved changes are applied and the rest is explicitly pending, not forgotten.
 
-## Reglas
+## Rules
 
-- **Nunca borrar una nota.** Archivar.
-- **Nunca renombrar ni mover desde el filesystem** sin avisar que rompe wikilinks: proponé que lo haga el usuario desde Obsidian.
-- Nada de ediciones en masa sin approval, ni siquiera las triviales.
-- No tocar el rol `templates` (default `Templates/`) ni `.obsidian/`.
-- No reescribir contenido del usuario: agregás links y frontmatter, no editás su prosa.
-- Sin guiones largos.
+- **Never delete a note.** Archive it.
+- **Never rename or move from the filesystem** without warning that it breaks wikilinks: propose that the user do it from Obsidian.
+- No bulk edits without approval, not even trivial ones.
+- Do not touch the `templates` role (default `Templates/`) or `.obsidian/`.
+- Do not rewrite the user's content: you add links and frontmatter, you do not edit their prose.
+- No long dashes.
 
 ## Handoff
 
-Con los arreglos aplicados, volver a correr `/vault-audit` para confirmar que los números se movieron: si un hallazgo sigue igual, el arreglo no era el correcto. Si la corrida dejó al descubierto temas sin hub, el siguiente paso es `/hub-note`.
+With the fixes applied, run `/vault-audit` again to confirm the numbers moved: if a finding is unchanged, the fix was not the right one. If the run exposed topics without a hub, the next step is `/hub-note`.

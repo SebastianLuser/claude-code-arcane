@@ -1,6 +1,6 @@
 ---
 name: fix-issue
-description: "Fetch un GitHub issue por número, entiende el problema, localiza el código, implementa fix mínimo y commitea referenciando el issue."
+description: "Fetches a GitHub issue by number, understands the problem, locates the code, implements a minimal fix and commits referencing the issue."
 category: "workflow"
 argument-hint: "<issue-number>"
 user-invocable: true

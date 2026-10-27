@@ -8,39 +8,39 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # secret-management — Secrets & Credentials
 
-Regla de oro: **si está en git, está comprometido**.
+Golden rule: **if it is in git, it is compromised**.
 
-## Qué es un Secret
+## What is a Secret
 
-**Sí:** API keys, DB passwords, JWT signing keys, OAuth client secrets, SA JSON, private keys, session secrets, webhook signing, encryption keys, payment tokens. **No:** URLs públicas, feature names, env name, log levels. **Regla:** si comprometido causa daño → secret.
+**Yes:** API keys, DB passwords, JWT signing keys, OAuth client secrets, SA JSON, private keys, session secrets, webhook signing, encryption keys, payment tokens. **No:** public URLs, feature names, env name, log levels. **Rule:** if compromising it causes harm → secret.
 
 ## Provider Decision
 
-| Provider | Cuándo |
+| Provider | When |
 |----------|--------|
-| **GCP Secret Manager** | **Default Educabot** (runtime GCP), IAM fine-grained, versioning, audit |
-| AWS Secrets Manager | Stack AWS, rotación automática RDS |
+| **GCP Secret Manager** | **Educabot default** (GCP runtime), fine-grained IAM, versioning, audit |
+| AWS Secrets Manager | AWS stack, automatic RDS rotation |
 | HashiCorp Vault | Enterprise multi-cloud, dynamic secrets |
-| Doppler / 1Password | Equipos chicos, DX simple |
-| **SOPS + KMS** | **Default Educabot** (infra en git cifrada), diffeables |
+| Doppler / 1Password | Small teams, simple DX |
+| **SOPS + KMS** | **Educabot default** (encrypted infra in git), diffable |
 | sealed-secrets | k8s GitOps (Argo/Flux) |
 
-## Reglas Inviolables
+## Inviolable Rules
 
-1. Nunca commitear `.env`, `*.pem`, `*.key`, `service-account.json`
-2. `.env.example` en git con valores dummy/vacíos
+1. Never commit `.env`, `*.pem`, `*.key`, `service-account.json`
+2. `.env.example` in git with dummy/empty values
 3. `.gitignore`: `.env`, `.env.*`, `!*.example`, `*.key`, `*.pem`, `secrets/`
-4. Pre-commit hook: **gitleaks** o trufflehog
-5. Rotar en cuanto se sospeche leak — no esperar
-6. Un secret = un valor único por env (nunca compartir prod/dev)
-7. Acceso prod: mínimo necesario + audit log
-8. CI: secrets masked en logs
+4. Pre-commit hook: **gitleaks** or trufflehog
+5. Rotate as soon as a leak is suspected — do not wait
+6. One secret = a unique value per env (never share prod/dev)
+7. Prod access: the minimum needed + audit log
+8. CI: secrets masked in logs
 
-## Setup por Stack
+## Setup per Stack
 
-**Go:** `cloud.google.com/go/secretmanager/apiv1` → `AccessSecretVersion` con project/name/latest. Cache en memoria con TTL 5-15min.
+**Go:** `cloud.google.com/go/secretmanager/apiv1` → `AccessSecretVersion` with project/name/latest. In-memory cache with a 5-15min TTL.
 
-**TS:** `@google-cloud/secret-manager` → `accessSecretVersion`. Mismo cache pattern.
+**TS:** `@google-cloud/secret-manager` → `accessSecretVersion`. Same cache pattern.
 
 > → Read references/implementation-details.md for envelope encryption, dev local, CI/CD, k8s, rotation, leak detection, leak response, and mobile details
 

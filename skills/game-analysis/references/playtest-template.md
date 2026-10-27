@@ -2,27 +2,27 @@
 
 ## Template Sections (`playtest new`)
 
-| Sección | Campos |
+| Section | Fields |
 |---------|--------|
-| **Session info** | Fecha, build/version, duración, tester, plataforma, input method, tipo de sesión |
-| **Test focus** | Qué features/flows se testean |
-| **First impressions** (5 min) | Entendió goal? Controles? Respuesta emocional |
-| **Gameplay flow** | Qué funcionó, pain points (con severity), puntos de confusión, momentos de deleite |
-| **Bugs** | Tabla: descripción, severity, reproducible |
-| **Feature feedback** | Por feature: entendió propósito? Engaging? Sugerencias |
-| **Quantitative** | Deaths, tiempo por área, items usados, features descubiertas vs missed |
-| **Overall** | Jugaría de nuevo? Dificultad, pacing, duración de sesión preferida |
-| **Top 3 prioridades** | Los 3 findings más importantes |
+| **Session info** | Date, build/version, duration, tester, platform, input method, session type |
+| **Test focus** | Which features/flows are being tested |
+| **First impressions** (5 min) | Did they understand the goal? Controls? Emotional response |
+| **Gameplay flow** | What worked, pain points (with severity), points of confusion, moments of delight |
+| **Bugs** | Table: description, severity, reproducible |
+| **Feature feedback** | Per feature: did they understand the purpose? Engaging? Suggestions |
+| **Quantitative** | Deaths, time per area, items used, features discovered vs missed |
+| **Overall** | Would they play again? Difficulty, pacing, preferred session length |
+| **Top 3 priorities** | The 3 most important findings |
 
-## Modo análisis (`playtest analyze [path]`)
+## Analysis mode (`playtest analyze [path]`)
 
-Leer notas raw, cross-referenciar con GDDs, estructurar en el template. Flaggear observaciones que contradicen la intención de diseño.
+Read the raw notes, cross-reference them with the GDDs, structure them into the template. Flag observations that contradict the design intent.
 
-## Categorización de findings
+## Findings categorization
 
-| Categoría | Qué | Siguiente paso |
+| Category | What | Next step |
 |-----------|-----|---------------|
-| **Design changes** | Fun issues, confusión del jugador, mecánicas rotas | Actualizar GDD, evaluar impacto downstream |
-| **Balance adjustments** | Números incorrectos, difficulty spikes/dips | Correr `/game-analysis balance [system]` |
-| **Bug reports** | Defectos de implementación reproducibles | Issue tracker |
-| **Polish items** | Fricción, feel issues, no bloquean progreso | Backlog para fase de polish |
+| **Design changes** | Fun issues, player confusion, broken mechanics | Update the GDD, assess downstream impact |
+| **Balance adjustments** | Wrong numbers, difficulty spikes/dips | Run `/game-analysis balance [system]` |
+| **Bug reports** | Reproducible implementation defects | Issue tracker |
+| **Polish items** | Friction, feel issues, they do not block progress | Backlog for the polish phase |

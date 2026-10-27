@@ -1,6 +1,6 @@
 ---
 name: websocket-realtime-rooms
-description: "Realtime multi-tenant via WebSocket/Centrifugo/Socket.IO para apps Educabot (Go/TS + React/RN): rooms, presence, broadcast, auth, reconnect, rate limit, idempotencia, observabilidad."
+description: "Multi-tenant realtime via WebSocket/Centrifugo/Socket.IO for Educabot apps (Go/TS + React/RN): rooms, presence, broadcast, auth, reconnect, rate limit, idempotency, observability."
 category: "backend"
 argument-hint: "[stack: go|ts] [provider: centrifugo|socketio|raw]"
 user-invocable: true
@@ -8,36 +8,36 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
 # websocket-realtime-rooms — Realtime Rooms
 
-## Cuándo usar / no usar
+## When to use / not use
 
-| Usar | No usar |
+| Use | Do not use |
 |------|---------|
-| Chat tiempo real, presence, live quiz, pizarra colaborativa, notificaciones in-app, dashboard live | Polling >10s → HTTP+SWR. Broadcast 1-way → SSE. Video/audio → WebRTC. Mobile cerrada → FCM/APNs |
+| Realtime chat, presence, live quiz, collaborative whiteboard, in-app notifications, live dashboard | Polling >10s → HTTP+SWR. 1-way broadcast → SSE. Video/audio → WebRTC. Closed mobile app → FCM/APNs |
 
 ## Stack Decision
 
-| Opción | Pros | Cons | Cuándo |
+| Option | Pros | Cons | When |
 |--------|------|------|--------|
-| **Centrifugo** | Rooms/presence/history nativos, JWT, scale out of box | Servidor aparte | **Default Educabot multi-tenant** |
-| **Socket.IO** | DX alto, fallback polling, Redis adapter | Protocolo propio, Node only | Stack Node puro, rooms simples |
-| **gorilla/websocket** | Maduro, lean, control total | Sin rooms/presence | Backend Go custom, pocas salas |
-| **nhooyr.io/websocket** | API moderna, context-aware | Menos adoption | Go moderno |
+| **Centrifugo** | Native rooms/presence/history, JWT, scale out of the box | Separate server | **Educabot multi-tenant default** |
+| **Socket.IO** | Great DX, polling fallback, Redis adapter | Own protocol, Node only | Pure Node stack, simple rooms |
+| **gorilla/websocket** | Mature, lean, full control | No rooms/presence | Custom Go backend, few rooms |
+| **nhooyr.io/websocket** | Modern API, context-aware | Less adoption | Modern Go |
 
-## Arquitectura
+## Architecture
 
 ```
-Cliente (React/RN) ──WSS──► LB sticky ──► WS node(s) ──► Redis Pub/Sub (backplane)
+Client (React/RN) ──WSS──► sticky LB ──► WS node(s) ──► Redis Pub/Sub (backplane)
 Room = tenant:{id}:class:{classId}
-Publish: HTTP → Backend (valida ACL + guarda DB) → Centrifugo/broadcast
+Publish: HTTP → Backend (validates ACL + saves to DB) → Centrifugo/broadcast
 ```
 
-**Principios:** Room namespaced con tenant. Join requiere auth+authorization. Broadcast solo a room. Presence con TTL en Redis. Backplane obligatorio para scale horizontal.
+**Principles:** Room namespaced with the tenant. Join requires auth+authorization. Broadcast only to the room. Presence with TTL in Redis. Backplane mandatory for horizontal scaling.
 
-> → Read references/auth-security.md for auth JWT, ACL, TLS, rate limit, sanitization details
+> → Read references/auth-security.md for JWT auth, ACL, TLS, rate limit, sanitization details
 
-## Idempotencia
+## Idempotency
 
-Cliente genera UUID v4 por mensaje (`client_msg_id`). Backend usa como dedup key con `UNIQUE (room_id, client_msg_id)` en DB. En conflicto P2002 → retornar existente.
+The client generates a UUID v4 per message (`client_msg_id`). The backend uses it as the dedup key with `UNIQUE (room_id, client_msg_id)` in the DB. On a P2002 conflict → return the existing one.
 
 > → Read references/heartbeat-reconnect-backpressure.md for heartbeat, reconnect backoff, backpressure, rate limiting details
 

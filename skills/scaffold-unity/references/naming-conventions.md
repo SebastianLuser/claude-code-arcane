@@ -1,6 +1,6 @@
 # Naming Conventions
 
-| Elemento | Convencion | Ejemplo |
+| Element | Convention | Example |
 |----------|-----------|---------|
 | Classes/Structs | PascalCase | `DiceBag`, `PlayerState` |
 | ScriptableObjects | PascalCase + Data | `EnemyData`, `WeaponData` |

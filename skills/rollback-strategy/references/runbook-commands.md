@@ -1,22 +1,22 @@
-# Runbook — Comandos de Rollback
+# Runbook — Rollback Commands
 
 ## Cloud Run
 
 ```bash
-# 1. Listar revisions disponibles
+# 1. List available revisions
 gcloud run revisions list --service=<service-name> --region=<region> \
   --format="table(name,status.observedGeneration,spec.containerConcurrency)"
 
-# 2. Ver tráfico actual
+# 2. Show current traffic
 gcloud run services describe <service-name> --region=<region> \
   --format="value(status.traffic)"
 
-# 3. Rollback a revision anterior (redirigir 100% del tráfico)
+# 3. Roll back to the previous revision (redirect 100% of traffic)
 gcloud run services update-traffic <service-name> \
   --region=<region> \
   --to-revisions=<revision-name>=100
 
-# 4. Verificar
+# 4. Verify
 gcloud run services describe <service-name> --region=<region> \
   --format="value(status.traffic)"
 curl https://<service-url>/health
@@ -25,24 +25,24 @@ curl https://<service-url>/health
 ## GKE / Kubernetes
 
 ```bash
-# 1. Ver historial de rollouts
+# 1. Show rollout history
 kubectl rollout history deployment/<deployment-name> -n <namespace>
 
-# 2. Rollback a versión anterior (revision - 1)
+# 2. Roll back to the previous version (revision - 1)
 kubectl rollout undo deployment/<deployment-name> -n <namespace>
 
-# 3. Rollback a revision específica
+# 3. Roll back to a specific revision
 kubectl rollout undo deployment/<deployment-name> -n <namespace> --to-revision=<N>
 
-# 4. Monitorear rollback
+# 4. Monitor the rollback
 kubectl rollout status deployment/<deployment-name> -n <namespace>
 
-# 5. Verificar pods
+# 5. Check pods
 kubectl get pods -n <namespace> -l app=<app-name>
 kubectl logs -n <namespace> -l app=<app-name> --tail=50
 ```
 
-## Feature Flag (kill switch inmediato sin redeploy)
+## Feature Flag (immediate kill switch, no redeploy)
 
 ```bash
 # Unleash
@@ -58,7 +58,7 @@ curl -X PATCH https://app.launchdarkly.com/api/v2/flags/<project>/<flag-key> \
   -d '[{"op": "replace", "path": "/environments/<env>/on", "value": false}]'
 ```
 
-## GitHub Actions — Workflow de Rollback
+## GitHub Actions — Rollback Workflow
 
 ```yaml
 # .github/workflows/rollback.yml
@@ -76,7 +76,7 @@ on:
 jobs:
   rollback:
     runs-on: ubuntu-latest
-    environment: production  # approval gate requerido
+    environment: production  # approval gate required
     steps:
       - name: Deploy previous image
         run: |
@@ -91,25 +91,25 @@ jobs:
         uses: slackapi/slack-github-action@v1
         with:
           payload: |
-            {"text": "🔴 ROLLBACK ejecutado en ${{ inputs.service }} → SHA ${{ inputs.revision_sha }} por ${{ github.actor }}"}
+            {"text": "🔴 ROLLBACK run on ${{ inputs.service }} → SHA ${{ inputs.revision_sha }} by ${{ github.actor }}"}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_OPS_WEBHOOK }}
 ```
 
-## Post-rollback — Pasos inmediatos
+## Post-rollback — Immediate steps
 
 ```bash
-# 1. Capturar logs del período malo (antes de rotación)
+# 1. Capture logs of the bad period (before rotation)
 gcloud logging read \
   "resource.type=cloud_run_revision AND timestamp>=\"$(date -u -d '30 minutes ago' +%Y-%m-%dT%H:%M:%SZ)\"" \
   --limit=500 \
   --format=json > incident-logs-$(date +%Y%m%d-%H%M%S).json
 
-# 2. Verificar health
+# 2. Check health
 curl -sf https://<service-url>/health || echo "STILL DOWN"
 curl -sf https://<service-url>/ready || echo "NOT READY"
 
-# 3. Monitorear error rate (primeros 10 min post-rollback)
+# 3. Monitor error rate (first 10 min after the rollback)
 watch -n 30 'gcloud logging read "resource.type=cloud_run_revision AND httpRequest.status>=500" \
   --freshness=5m --format="value(httpRequest.status)" | wc -l'
 ```
@@ -117,21 +117,21 @@ watch -n 30 'gcloud logging read "resource.type=cloud_run_revision AND httpReque
 ## DB Data — PITR (Point-in-Time Recovery)
 
 ```bash
-# Cloud SQL — restaurar a timestamp específico
+# Cloud SQL — restore to a specific timestamp
 gcloud sql instances clone <instance-name> <new-instance-name> \
   --point-in-time=$(date -u -d '15 minutes ago' +%Y-%m-%dT%H:%M:%SZ)
 
-# Verificar restore
+# Verify the restore
 gcloud sql instances describe <new-instance-name> --format="value(state)"
 
-# Tiempo estimado: 30min–2h según tamaño. Documentar en runbook del servicio.
-# Luego: reconciliar writes entre restore point y now.
+# Estimated time: 30min–2h depending on size. Document it in the service runbook.
+# Then: reconcile writes between the restore point and now.
 ```
 
-## Cache y CDN post-rollback
+## Cache and CDN after rollback
 
 ```bash
-# Redis — invalidar todas las keys de app (si es necesario)
+# Redis — invalidate all app keys (if needed)
 redis-cli -h <host> --scan --pattern "app:*" | xargs redis-cli -h <host> DEL
 
 # Cloud CDN

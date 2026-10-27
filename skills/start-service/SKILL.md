@@ -1,6 +1,6 @@
 ---
 name: start-service
-description: "Detecta el tipo de proyecto y arranca el servicio: make run, npm dev, go run, docker-compose up. Verifica deps y env files antes."
+description: "Detects the project type and starts the service: make run, npm dev, go run, docker-compose up. Checks deps and env files first."
 category: "workflow"
 argument-hint: ""
 user-invocable: true
@@ -10,7 +10,7 @@ allowed-tools: Read, Glob, Grep, Bash
 # Skill: start-service
 
 ## Trigger
-When the user says "start", "run", "levantar el server", "arrancar", or similar.
+When the user says "start", "run", "spin up the server", "boot it up", or similar.
 
 ## Workflow
 

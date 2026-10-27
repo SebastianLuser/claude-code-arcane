@@ -320,13 +320,13 @@ The same MIT notice above applies.
 Adapted into the `job-hunt` and `freelance` profiles, rewritten as Arcane skills (Spanish
 steps, the career workspace in Obsidian, `seen_jobs.json`) instead of its commands:
 
-- `job-aplicar` from `/apply`, `job-outcome` from `/outcome`, `job-upskill` from the
+- `job-apply` from `/apply`, `job-outcome` from `/outcome`, `job-upskill` from the
   `upskill` skill, and `job-scrape` from the `job-scraper` skill and the `linkedin-search`
   CLI (ported from TypeScript to `scripts/linkedin_search.py`).
 - `cv-ats-export/scripts/verify_pdf.py` from `tools/verify_pdf.py`, including its text
   normalization for `--contains` and the `--ascii-dates` check.
 - `job-scrape/scripts/job_key.py` from `tools/job_key.py`, rewritten for Arcane's
-  `empresa|titulo` key (legal suffixes and modality qualifiers dropped) and its
+  `company|title` key (legal suffixes and modality qualifiers dropped) and its
   `seen_jobs.json` schema.
 - `job-scrape/scripts/posting_guard.py` (copied to `freelance-scan/scripts/`) from
   `tools/posting_guard.py`, with Spanish verdicts and instruction patterns, called from

@@ -1,24 +1,24 @@
 ---
 name: pgvector-search
-description: "Búsqueda semántica con Postgres + pgvector: embeddings, schema con columna vector, índices HNSW/IVFFlat, queries de similitud y RAG. Usar para implementar semantic search o retrieval sobre Postgres."
+description: "Semantic search with Postgres + pgvector: embeddings, schema with a vector column, HNSW/IVFFlat indexes, similarity queries and RAG. Use to implement semantic search or retrieval on Postgres."
 category: "backend"
 argument-hint: "[setup|index|query|rag]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-# pgvector-search — Búsqueda semántica con Postgres
+# pgvector-search — Semantic search with Postgres
 
 ## MANDATORY WORKFLOW
 
-**Antes de generar o modificar código/schema, completar estos pasos en orden.**
+**Before generating or modifying code/schema, complete these steps in order.**
 
 ### Step 0: Gather Requirements
-1. **Modelo de embeddings** y dimensión (ej: OpenAI `text-embedding-3-small` = 1536; Cohere = 1024)
-2. **Volumen** de vectores (define el índice: HNSW para alta recall, IVFFlat para datasets grandes/escritura frecuente)
-3. **Métrica de distancia:** cosine (`<=>`, default para texto) / L2 (`<->`) / inner product (`<#>`)
-4. ¿Es para RAG (retrieval + LLM) o solo ranking de similitud?
+1. **Embedding model** and dimension (e.g. OpenAI `text-embedding-3-small` = 1536; Cohere = 1024)
+2. **Volume** of vectors (decides the index: HNSW for high recall, IVFFlat for large datasets/frequent writes)
+3. **Distance metric:** cosine (`<=>`, default for text) / L2 (`<->`) / inner product (`<#>`)
+4. Is it for RAG (retrieval + LLM) or just similarity ranking?
 
-### Step 1: Habilitar extensión + schema
+### Step 1: Enable the extension + schema
 ```sql
 CREATE EXTENSION IF NOT EXISTS vector;
 CREATE TABLE documents (
@@ -29,39 +29,39 @@ CREATE TABLE documents (
 );
 ```
 
-### Step 2: Índice
+### Step 2: Index
 ```sql
--- HNSW: mejor recall/latencia, recomendado por defecto
+-- HNSW: best recall/latency, recommended by default
 CREATE INDEX ON documents USING hnsw (embedding vector_cosine_ops);
--- IVFFlat (alternativa para datasets muy grandes): definir lists ≈ rows/1000
+-- IVFFlat (alternative for very large datasets): set lists ≈ rows/1000
 ```
 
-### Step 3: Insertar embeddings
-Generar el embedding del `content` con el modelo y guardarlo. (Si usás Next + AI SDK, ver skill `ai-sdk-setup`.)
+### Step 3: Insert embeddings
+Generate the embedding of `content` with the model and store it. (If you use Next + AI SDK, see the `ai-sdk-setup` skill.)
 ```ts
 const { embedding } = await embed({ model, value: content });
 await sql`INSERT INTO documents (content, embedding) VALUES (${content}, ${JSON.stringify(embedding)})`;
 ```
 
-### Step 4: Query de similitud
+### Step 4: Similarity query
 ```sql
 SELECT content, 1 - (embedding <=> $1) AS similarity
 FROM documents
-ORDER BY embedding <=> $1   -- usa el índice
+ORDER BY embedding <=> $1   -- uses the index
 LIMIT 5;
 ```
 
-### Step 5: Buenas prácticas
-- **Chunking** del contenido antes de embeddear (no documentos enteros)
-- Filtrar por `metadata` (jsonb) + similitud para hybrid search
-- `SET hnsw.ef_search` para tunear recall vs latencia
-- Re-embeddear si cambia el modelo (la dimensión debe matchear)
-- No mezclar embeddings de modelos distintos en la misma columna
+### Step 5: Good practices
+- **Chunk** the content before embedding (not whole documents)
+- Filter by `metadata` (jsonb) + similarity for hybrid search
+- `SET hnsw.ef_search` to tune recall vs latency
+- Re-embed if the model changes (the dimension must match)
+- Do not mix embeddings from different models in the same column
 
-## Cierre
+## Wrap-up
 
-Verificar que el índice se usa (`EXPLAIN ANALYZE` debe mostrar Index Scan, no Seq Scan) y medir recall/latencia con queries reales. Schema + índice + query validados → setup **READY**. Confirmar cambios de schema con el usuario antes de aplicarlos. Siguiente paso: skill `ai-sdk-setup` para generar embeddings, o `database-indexing` para tuning.
+Verify the index is used (`EXPLAIN ANALYZE` must show Index Scan, not Seq Scan) and measure recall/latency with real queries. Schema + index + query validated → setup **READY**. Confirm schema changes with the user before applying them. Next step: the `ai-sdk-setup` skill to generate embeddings, or `database-indexing` for tuning.
 
 ---
 
-_Inspirado en `postgres-semantic-search` de [laguagu/claude-code-nextjs-skills](https://github.com/laguagu/claude-code-nextjs-skills). Adaptado al formato Arcane. Relacionado: skill `database-indexing`._
+_Inspired by `postgres-semantic-search` from [laguagu/claude-code-nextjs-skills](https://github.com/laguagu/claude-code-nextjs-skills). Adapted to the Arcane format. Related: the `database-indexing` skill._

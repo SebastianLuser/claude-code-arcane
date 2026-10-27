@@ -1,10 +1,10 @@
 # Meshy Assets
 
-Reglas que tienen que estar presentes antes de cualquier llamada a Meshy, aunque no se toque ningun archivo: cada llamada gasta creditos. Estructura en disco, ledger, ejes, rigging y Git estan en `.claude/rules/meshy-files.md`, que se carga al tocar `assets/3d/`.
+Rules that must be in place before any Meshy call, even if no file is touched: every call spends credits. On-disk structure, ledger, axes, rigging and Git are in `.claude/rules/meshy-files.md`, which loads when `assets/3d/` is touched.
 
-## Creditos — cada llamada cuesta plata real
+## Credits — every call costs real money
 
-| Operacion | Creditos |
+| Operation | Credits |
 |---|---|
 | `meshy_analyze_printability` | **0** |
 | `meshy_check_balance`, `meshy_get_task_status`, `meshy_list_tasks`, `meshy_download_model` | **0** |
@@ -19,24 +19,24 @@ Reglas que tienen que estar presentes antes de cualquier llamada a Meshy, aunque
 | `meshy_creative_lab` | 36 |
 | Print multicolor | 40 |
 
-### Reglas duras
+### Hard rules
 
-1. **Nunca generar sin confirmacion explicita.** Preguntar siempre, incluso si el pedido parece obvio. Informar el costo estimado **antes** de la llamada.
-2. **Preview primero.** `meshy_text_to_3d_refine` solo con el preview aprobado por el usuario.
-3. **Nunca en batch.** Un asset por vez, con confirmacion por asset.
-4. **Chequear el ledger antes de generar.** Grepear `assets/3d/*/meshy.json` buscando un prompt equivalente. Si existe, avisar y **no** generar.
-5. **Las operaciones de 0 creditos no necesitan confirmacion.** `analyze_printability`, `check_balance`, `get_task_status`, `list_tasks`, `download_model` corren libres.
+1. **Never generate without explicit confirmation.** Always ask, even if the request looks obvious. Report the estimated cost **before** the call.
+2. **Preview first.** `meshy_text_to_3d_refine` only with the preview approved by the user.
+3. **Never in batch.** One asset at a time, with confirmation per asset.
+4. **Check the ledger before generating.** Grep `assets/3d/*/meshy.json` for an equivalent prompt. If one exists, warn and do **not** generate.
+5. **0-credit operations need no confirmation.** `analyze_printability`, `check_balance`, `get_task_status`, `list_tasks`, `download_model` run freely.
 
-Ante cualquier duda sobre si una operacion gasta, correr `meshy_check_balance` antes y despues y reportar el delta real.
+If in any doubt about whether an operation spends credits, run `meshy_check_balance` before and after and report the real delta.
 
-## Antes de gastar
+## Before spending
 
-- Ningun target se genera desde el prompt: todos salen del master con `meshy_convert` (1).
-- Nunca usar `remesh` (5) cuando `convert` (1) alcanza, ni para LODs de web: `gltf-transform` los hace gratis.
-- `meshy_rig` (5) es solo para humanoides: con otro modelo se gastan los creditos y no sirve.
-- Si existe un art bible en el proyecto, el prompt de generacion se deriva de ahi, no se inventa.
-- `meshy_analyze_printability` (gratis) **siempre** antes de `meshy_repair_printability` (10). Print (20 white / 40 multicolor): doble confirmacion.
+- No target is generated from the prompt: all of them come from the master with `meshy_convert` (1).
+- Never use `remesh` (5) when `convert` (1) is enough, not even for web LODs: `gltf-transform` makes them for free.
+- `meshy_rig` (5) is for humanoids only: with any other model the credits are spent and the result is useless.
+- If the project has an art bible, the generation prompt is derived from it, not invented.
+- `meshy_analyze_printability` (free) **always** before `meshy_repair_printability` (10). Print (20 white / 40 multicolor): double confirmation.
 
-## Secretos
+## Secrets
 
-`MESHY_API_KEY` (formato `msy_...`) va en `.env`, **nunca** en el repo ni en un SKILL.md.
+`MESHY_API_KEY` (format `msy_...`) goes in `.env`, **never** in the repo or in a SKILL.md.

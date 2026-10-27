@@ -1,16 +1,16 @@
 # Anti-patterns — JWT Strategy
 
-| # | No hacer | Hacer en cambio |
+| # | Don't | Do instead |
 |---|----------|-----------------|
-| 1 | `alg: none` o HS256 en multi-service | RS256 / EdDSA con JWKS publico |
-| 2 | Access token con exp >1h | Access <=15 min, refresh 7-30 dias rotado |
-| 3 | Refresh sin rotacion ni deteccion de reuse | Rotar en cada uso + revocar family si se detecta reuse |
-| 4 | Public key hardcodeada | JWKS endpoint `/.well-known/jwks.json` con 2 kids activos |
-| 5 | No validar `aud` / `iss` | Validar siempre — impide aceptar tokens de otro servicio |
-| 6 | PII (email, nombre, DNI) en claims | Solo `sub` (UUID) + `tenant_id` + roles; nunca PII de menores |
-| 7 | `jwt-decode` en cliente para logica | Solo para UI (display); validacion siempre server-side |
-| 8 | Sin plan de revocacion | Blacklist jti en Redis o user_version en claims |
-| 9 | `jsonwebtoken` en TS | Usar `jose` (soporte JWKS, async, modern) |
-| 10 | Tokens en localStorage / AsyncStorage | In-memory (SPA) / HttpOnly cookie / SecureStore (RN) |
-| 11 | `tenant_id` por query param o body | Siempre en claims del JWT; backend valida |
-| 12 | Rotar JWKS sin overlap | Mantener 2 kids activos 90 dias; emitir con nueva, validar con ambas |
+| 1 | `alg: none` or HS256 across multiple services | RS256 / EdDSA with a public JWKS |
+| 2 | Access token with exp >1h | Access <=15 min, refresh 7-30 days rotated |
+| 3 | Refresh without rotation or reuse detection | Rotate on every use + revoke the family if reuse is detected |
+| 4 | Hardcoded public key | JWKS endpoint `/.well-known/jwks.json` with 2 active kids |
+| 5 | Not validating `aud` / `iss` | Always validate — prevents accepting another service's tokens |
+| 6 | PII (email, name, DNI) in claims | Only `sub` (UUID) + `tenant_id` + roles; never minors' PII |
+| 7 | `jwt-decode` on the client for logic | Only for UI (display); validation is always server-side |
+| 8 | No revocation plan | jti blacklist in Redis or user_version in the claims |
+| 9 | `jsonwebtoken` in TS | Use `jose` (JWKS support, async, modern) |
+| 10 | Tokens in localStorage / AsyncStorage | In-memory (SPA) / HttpOnly cookie / SecureStore (RN) |
+| 11 | `tenant_id` as a query param or in the body | Always in the JWT claims; the backend validates |
+| 12 | Rotating JWKS without overlap | Keep 2 active kids for 90 days; issue with the new one, validate with both |

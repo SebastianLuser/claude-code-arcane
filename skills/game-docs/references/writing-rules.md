@@ -1,17 +1,17 @@
-# Writing Rules (ambos formatos)
+# Writing Rules (both formats)
 
-1. **NO divagar** — cada oración aporta info nueva
-2. **Bullet points > párrafos** — siempre
-3. **Números concretos > descripciones vagas** — "100 HP, 2 AP" no "vida moderada"
-4. **NO preguntas retóricas ni recomendaciones genéricas**
-5. **NO repetir información** entre secciones
-6. **Máximo 2-3 oraciones** por descripción de sistema. Si necesita más → tabla
-7. **Decisiones pendientes** → marcar [TBD] y listar en sección 16
-8. **Glosario** → usar términos definidos consistentemente en todo el doc
-9. **PAS: máximo 6 bullets** en Problema, **2-4 opciones**, **2 oraciones** de justificación
+1. **NO rambling** — every sentence adds new info
+2. **Bullet points > paragraphs** — always
+3. **Concrete numbers > vague descriptions** — "100 HP, 2 AP", not "moderate health"
+4. **NO rhetorical questions or generic recommendations**
+5. **NO repeating information** across sections
+6. **At most 2-3 sentences** per system description. If it needs more → table
+7. **Pending decisions** → mark [TBD] and list them in section 16
+8. **Glossary** → use the defined terms consistently throughout the doc
+9. **PAS: at most 6 bullets** in Problem, **2-4 options**, **2 sentences** of rationale
 
-### Ejemplo bien vs mal
+### Good vs bad example
 
-**Mal:** "El sistema de combate presenta algunos desafíos interesantes que vale la pena analizar. Cuando el jugador se enfrenta a enemigos..."
+**Bad:** "The combat system presents some interesting challenges worth analyzing. When the player faces enemies..."
 
-**Bien:** "El jugador falla 60%+ de ataques en Floor 1 con dados d6 base. El threshold de Goblin (4) es demasiado alto para el loadout inicial (4xd6)."
+**Good:** "The player misses 60%+ of attacks on Floor 1 with base d6 dice. The Goblin threshold (4) is too high for the starting loadout (4xd6)."

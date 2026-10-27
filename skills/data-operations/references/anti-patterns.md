@@ -2,16 +2,16 @@
 
 ## Queries
 
-- Optimizar sin EXPLAIN
-- SELECT * en queries calientes
-- OFFSET tablas grandes
-- N+1 no detectado
-- COUNT(*) sin cache
+- Optimizing without EXPLAIN
+- SELECT * in hot queries
+- OFFSET on large tables
+- Undetected N+1
+- COUNT(*) without a cache
 
 ## Seeding
 
-- Seeds en produccion (falta guardrail)
-- No idempotentes
-- PII real en fixtures
-- Dump prod sin anonimizar
-- IDs hardcodeados
+- Seeds in production (missing guardrail)
+- Not idempotent
+- Real PII in fixtures
+- Prod dump without anonymization
+- Hardcoded IDs

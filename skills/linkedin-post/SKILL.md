@@ -1,6 +1,6 @@
 ---
 name: linkedin-post
-description: "Write a LinkedIn post from one raw idea or a topic to explain (games, software, LLMs), in the user's own voice: three hook options from 21 formulas, one full draft with technical claims checked against primary sources, humanized and scored before the user sees it, never published. Triggers: post de LinkedIn, escribir un post, hook LinkedIn, post explicando un tema, post educativo, turn this into a LinkedIn post, draft for the feed."
+description: "Write a LinkedIn post from one raw idea or a topic to explain (games, software, LLMs), in the user's own voice: three hook options from 21 formulas, one full draft with technical claims checked against primary sources, humanized and scored before the user sees it, never published. Triggers: LinkedIn post, write a post, LinkedIn hook, post explaining a topic, educational post, turn this into a LinkedIn post, draft for the feed."
 argument-hint: "<idea> | explain <topic> | write <day from the plan>"
 category: "career"
 user-invocable: true
@@ -13,8 +13,8 @@ Turns one idea into a post that sounds like the person who will publish it. The 
 
 ## Phase 1: Context
 
-1. Read the **Voice** section of `01-Perfiles/Perfil Maestro.md` in the career workspace (`/master-profile`). No voice yet: ask for three of the user's own past posts, infer it from them and offer to save it there. Never invent a voice.
-2. Read `01-Perfiles/Personal Brand.md` if `/personal-brand` wrote a plan: the slot gives the type, the angle and the hook number.
+1. Read the **Voice** section of `01-Profiles/Master Profile.md` in the career workspace (`/master-profile`). No voice yet: ask for three of the user's own past posts, infer it from them and offer to save it there. Never invent a voice.
+2. Read `01-Profiles/Personal Brand.md` if `/personal-brand` wrote a plan: the slot gives the type, the angle and the hook number.
 3. A thin idea ("post about AI") gets one batched question, not padding: what happened, to whom, and what did it cost or return. A post needs one specific true thing.
 4. A topic to explain rather than something that happened ("explain the KV cache", "why physics goes in FixedUpdate") goes through **Explain mode** below before Phase 2.
 
@@ -26,7 +26,7 @@ For a post that teaches one concept from games, software or LLMs. The specific t
 2. **Check every technical claim before drafting** against the primary source: official docs, the spec, the source code or the paper. A version-dependent fact names the version (Unity 6, UE 5.6, the model name). A claim no source backs gets cut or asked about, never written from memory. Training data goes stale fastest on exactly these topics.
 3. **Build it around one concrete example:** a number, a code fragment of three lines or fewer, or a moment in a game or tool the reader knows. An analogy comes after the precise statement, never instead of it.
 4. **Shape:** the hook, the mechanism in plain words, the example, what the reader can do with it today, the close. Myth Bust (#11), The Comparison (#12), Curiosity Gap (#19) and The Direct Value (#21) fit teaching best.
-5. **The user's own use beats theory.** One line on where they used it ("we hit this in our VR build") does more than a paragraph of background, and it comes from `01-Perfiles/Perfil Maestro.md` or the user, never invented.
+5. **The user's own use beats theory.** One line on where they used it ("we hit this in our VR build") does more than a paragraph of background, and it comes from `01-Profiles/Master Profile.md` or the user, never invented.
 6. **Four or more steps or parts** are a carousel, not a post: hand over to `/linkedin-carousel`.
 
 The receipt adds a `sources:` line with what each claim was checked against. The links go in the first comment, and each one is the primary page (the docs, arXiv, the repo), never a mirror or a summary site.
@@ -50,7 +50,7 @@ Close     one specific question, or one instruction; never both
 - **Length:** 900-1,300 characters is the working range; the hard limit is 3,000. Under 400 reads as a thought.
 - **One idea per post.** Two ideas are two posts: say so.
 - **Numbers over adjectives.** No number given: ask, or leave `{{your number}}` and flag it.
-- **No engagement bait** ("Thoughts?", "Agree?", "¿Qué opinan?"). The closing question is one only this post could ask.
+- **No engagement bait** ("Thoughts?", "Agree?", "What do you all think?"). The closing question is one only this post could ask.
 - **Three hashtags at most**, at the bottom, only real categories people follow.
 - **Links in the first comment**, not the body. LinkedIn has not confirmed that links reduce reach, but it is common practice; tell the user in the receipt.
 - **Language:** the one the user's audience reads (the Voice section says it).
@@ -83,7 +83,7 @@ link:      goes in the first comment
 Reply "yes" to log it, or tell me what to change.
 ```
 
-On "yes", ask "May I append it to `01-Perfiles/LinkedIn Log.md`?" and log the date, the hook and the first line, so the next plan does not repeat a theme.
+On "yes", ask "May I append it to `01-Profiles/LinkedIn Log.md`?" and log the date, the hook and the first line, so the next plan does not repeat a theme.
 
 ## Protocol
 

@@ -8,45 +8,45 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # CSP & Security Headers
 
-Default deny, nonces en CSP, report-only antes de enforce. Stack: Go + TS backends, React+Vite frontends, Cloudflare CDN.
+Default deny, nonces in CSP, report-only before enforce. Stack: Go + TS backends, React+Vite frontends, Cloudflare CDN.
 
-## Headers Críticos
+## Critical Headers
 
-| Header | Objetivo | Criticidad |
+| Header | Goal | Criticality |
 |---|---|---|
-| `Content-Security-Policy` | Prevenir XSS, data exfiltration | ALTA |
-| `Strict-Transport-Security` | Forzar HTTPS | ALTA |
-| `X-Content-Type-Options: nosniff` | Evitar MIME sniffing | MEDIA |
-| `Referrer-Policy: strict-origin-when-cross-origin` | No leak URLs | MEDIA |
-| `Permissions-Policy` | Deshabilitar APIs no usadas (cam/mic/geo) | MEDIA |
-| `Cross-Origin-Opener-Policy: same-origin` | Aislar browsing context | MEDIA |
-| `X-Frame-Options: DENY` | Clickjacking (legacy; CSP frame-ancestors lo supera) | MEDIA |
+| `Content-Security-Policy` | Prevent XSS, data exfiltration | HIGH |
+| `Strict-Transport-Security` | Force HTTPS | HIGH |
+| `X-Content-Type-Options: nosniff` | Avoid MIME sniffing | MEDIUM |
+| `Referrer-Policy: strict-origin-when-cross-origin` | Do not leak URLs | MEDIUM |
+| `Permissions-Policy` | Disable unused APIs (cam/mic/geo) | MEDIUM |
+| `Cross-Origin-Opener-Policy: same-origin` | Isolate the browsing context | MEDIUM |
+| `X-Frame-Options: DENY` | Clickjacking (legacy; CSP frame-ancestors supersedes it) | MEDIUM |
 
-`X-XSS-Protection` está **deprecado** — solo CSP.
+`X-XSS-Protection` is **deprecated** — CSP only.
 
 ## CSP Default Educabot
 
 `default-src 'self'` + `script-src 'self' 'nonce-{RANDOM}' 'strict-dynamic'` + `style-src 'self' 'nonce-{RANDOM}'` + img/font/connect whitelists + `frame-ancestors 'none'` + `base-uri 'self'` + `form-action 'self'` + `upgrade-insecure-requests` + `report-uri`.
 
-**Nonces:** 128-bit crypto-random por request. Inyectar en `<script nonce>` y `<style nonce>` server-side. NUNCA `unsafe-inline` junto con nonce.
+**Nonces:** 128-bit crypto-random per request. Inject into `<script nonce>` and `<style nonce>` server-side. NEVER `unsafe-inline` together with a nonce.
 
-**strict-dynamic:** scripts con nonce cargan otros dinámicamente. Reemplaza whitelist de dominios (débil contra JSONP bypass).
+**strict-dynamic:** scripts with a nonce load others dynamically. Replaces the domain whitelist (weak against JSONP bypass).
 
-**Vite SPA (sin SSR):** `vite-plugin-csp-guard` (hashes SHA256 en build time), o proxy que inyecta nonce, o SSR con nonce por request.
+**Vite SPA (no SSR):** `vite-plugin-csp-guard` (SHA256 hashes at build time), or a proxy that injects the nonce, or SSR with a per-request nonce.
 
 ## Report-Only → Enforce
 
-1. **Report-only 2-4 semanas:** `Content-Security-Policy-Report-Only` + endpoint `/csp-report`
-2. **Analizar:** agrupar por blocked-uri/violated-directive → whitelist/remover/mover
+1. **Report-only for 2-4 weeks:** `Content-Security-Policy-Report-Only` + endpoint `/csp-report`
+2. **Analyze:** group by blocked-uri/violated-directive → whitelist/remove/move
 3. **Enforce:** `Content-Security-Policy`
 
 ## HSTS
 
-`max-age=63072000; includeSubDomains; preload`. Empezar con max-age corto (300s), escalar. Preload: difícil salir (meses). Submit en hstspreload.org.
+`max-age=63072000; includeSubDomains; preload`. Start with a short max-age (300s), then scale up. Preload: hard to get out of (months). Submit at hstspreload.org.
 
 ## Permissions-Policy
 
-Default: `camera=(), microphone=(), geolocation=(), interest-cohort=()`. Apps educativas con webcam: `camera=(self), microphone=(self)`.
+Default: `camera=(), microphone=(), geolocation=(), interest-cohort=()`. Educational apps with a webcam: `camera=(self), microphone=(self)`.
 
 > → Read references/implementation.md for Go, TS, Cloudflare implementation details, iframe/embedding config, testing tools
 

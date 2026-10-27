@@ -1,6 +1,6 @@
 ---
 name: owasp-top10-check
-description: "Auditoría OWASP Top 10 (2021) para stack Educabot (Go + TS, React + Vite, PostgreSQL). Datos de menores → LGPD/COPPA obligatorio."
+description: "OWASP Top 10 (2021) audit for the Educabot stack (Go + TS, React + Vite, PostgreSQL). Minors' data → LGPD/COPPA mandatory."
 category: "security"
 argument-hint: "[category 1-10 | all]"
 user-invocable: true
@@ -15,90 +15,90 @@ metadata:
 ---
 # OWASP Top 10 Check — Educabot
 
-Auditoría contra OWASP Top 10 2021. Go backend + TS/React frontend. Datos de menores → compliance LGPD/COPPA obligatorio.
+Audit against the OWASP Top 10 2021. Go backend + TS/React frontend. Minors' data → LGPD/COPPA compliance is mandatory.
 
-## Categorías
+## Categories
 
 ### A01: Broken Access Control
-- Middleware auth explícito en todos los endpoints
-- Ownership check (`resource.user_id == session.user_id`) o RBAC/ABAC
-- RLS en tablas con PII de alumnos. Frontend nunca es autoridad
-- Delegar diseño permisos a `/rbac-abac`
+- Explicit auth middleware on every endpoint
+- Ownership check (`resource.user_id == session.user_id`) or RBAC/ABAC
+- RLS on tables with student PII. The frontend is never the authority
+- Delegate permission design to `/rbac-abac`
 
 ### A02: Cryptographic Failures
-- TLS 1.2+ obligatorio (1.3 preferido). HSTS habilitado
-- Passwords: Argon2id o bcrypt cost≥10. Nunca MD5/SHA1/SHA256 plano
-- JWT: RS256/EdDSA, no HS256 compartido. Secretos en Secret Manager
-- PII de menores cifrada en reposo. Cookies: Secure+HttpOnly+SameSite
-- Delegar a `/secret-management`, `/jwt-strategy`
+- TLS 1.2+ mandatory (1.3 preferred). HSTS enabled
+- Passwords: Argon2id or bcrypt cost≥10. Never plain MD5/SHA1/SHA256
+- JWT: RS256/EdDSA, not a shared HS256. Secrets in a Secret Manager
+- Minors' PII encrypted at rest. Cookies: Secure+HttpOnly+SameSite
+- Delegate to `/secret-management`, `/jwt-strategy`
 
 ### A03: Injection
-- Siempre prepared statements/parametrización. Nunca `fmt.Sprintf` para queries
-- ORM correcto — cuidado con `db.Raw()`, `$queryRawUnsafe`
-- Input validation en boundary con structs tipados + validators (zod, go-playground/validator)
-- OS commands con argv separado. No `dangerouslySetInnerHTML` sin sanitize
+- Always prepared statements/parameterization. Never `fmt.Sprintf` for queries
+- Correct ORM use — careful with `db.Raw()`, `$queryRawUnsafe`
+- Input validation at the boundary with typed structs + validators (zod, go-playground/validator)
+- OS commands with a separate argv. No `dangerouslySetInnerHTML` without sanitizing
 
 ### A04: Insecure Design
-- Threat model antes de implementar features sensibles
-- Rate limit en endpoints unauth. Respuestas genéricas en auth (sin enumeración)
-- Kill switches / feature flags. Datos distintos entre ambientes
-- Delegar a `/rate-limiting`
+- Threat model before implementing sensitive features
+- Rate limit on unauthenticated endpoints. Generic responses in auth (no enumeration)
+- Kill switches / feature flags. Different data per environment
+- Delegate to `/rate-limiting`
 
 ### A05: Security Misconfiguration
-- `NODE_ENV=production`, `GIN_MODE=release`. CORS whitelist estricta
+- `NODE_ENV=production`, `GIN_MODE=release`. Strict CORS whitelist
 - Security headers: CSP, X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy
-- Buckets privados, URLs firmadas cortas. Debug endpoints deshabilitados en prod
-- Docker: non-root, distroless/alpine, sin secrets en layers
-- Delegar a `/csp-headers`
+- Private buckets, short-lived signed URLs. Debug endpoints disabled in prod
+- Docker: non-root, distroless/alpine, no secrets in layers
+- Delegate to `/csp-headers`
 
 ### A06: Vulnerable Components
-- `govulncheck ./...` + `pnpm audit --audit-level=high` limpios
-- Dependabot/Renovate habilitado. Lockfiles commiteados
-- `trivy image` sin CRITICAL. Imágenes pinneadas por digest
-- Delegar a `/deps-audit`
+- `govulncheck ./...` + `pnpm audit --audit-level=high` clean
+- Dependabot/Renovate enabled. Lockfiles committed
+- `trivy image` without CRITICAL. Images pinned by digest
+- Delegate to `/deps-audit`
 
 ### A07: Auth Failures
-- Rate limit agresivo en login/register/reset (5/min IP, 10/hora usuario)
-- MFA para admin/docente (TOTP mínimo). Password ≥12 chars + leaked check
-- Session IDs CSPRNG, regenerar post-login. Reset tokens one-time ≤30min
-- Menores: sin social login sin consentimiento parental
-- Delegar a `/mfa-setup`, `/oauth-setup`, `/jwt-strategy`
+- Aggressive rate limit on login/register/reset (5/min per IP, 10/hour per user)
+- MFA for admin/teacher (TOTP at minimum). Password ≥12 chars + leaked check
+- CSPRNG session IDs, regenerated after login. One-time reset tokens ≤30min
+- Minors: no social login without parental consent
+- Delegate to `/mfa-setup`, `/oauth-setup`, `/jwt-strategy`
 
 ### A08: Integrity Failures
-- Artefactos firmados (cosign). `npm ci` en CI (no `npm install`)
-- No eval/Function() sobre input externo. Webhooks firmados HMAC
-- Docker pinneado por digest. Branch protection + required reviewers
+- Signed artifacts (cosign). `npm ci` in CI (not `npm install`)
+- No eval/Function() over external input. HMAC-signed webhooks
+- Docker pinned by digest. Branch protection + required reviewers
 
 ### A09: Logging & Monitoring
-- Auth events loggeados. Audit log inmutable para acciones sensibles
-- Structured JSON logs con trace_id. Nunca loggear passwords/tokens/PII
-- Alertas: spikes 5xx, login fallidos masivos, geo inusuales
-- Delegar a `/logging-setup`, `/audit-log`, `/error-tracking`
+- Auth events logged. Immutable audit log for sensitive actions
+- Structured JSON logs with trace_id. Never log passwords/tokens/PII
+- Alerts: 5xx spikes, mass failed logins, unusual geos
+- Delegate to `/logging-setup`, `/audit-log`, `/error-tracking`
 
 ### A10: SSRF
-- Whitelist dominios para outbound con user input
-- Bloquear IPs privadas (10/172.16/192.168/127/169.254). Validar IP resuelta, no hostname
-- Deshabilitar schemes peligrosos (file://, gopher://). Limitar redirects
+- Domain whitelist for outbound calls with user input
+- Block private IPs (10/172.16/192.168/127/169.254). Validate the resolved IP, not the hostname
+- Disable dangerous schemes (file://, gopher://). Limit redirects
 
-## Herramientas
+## Tools
 
-> → Read references/tools.md for tabla completa de herramientas SAST/Deps/Container/DAST/Secrets por stack
+> → Read references/tools.md for the full table of SAST/Deps/Container/DAST/Secrets tools per stack
 
-## Reporte Output
+## Report Output
 
-Formato: Resumen ejecutivo (hallazgos por severidad y veredicto: **FAIL** si hay algún hallazgo Critical o High, **CONCERNS** si quedan solo Medium o Low, **PASS** si no hay nada accionable) → Hallazgos por categoría (archivo:línea, descripción, PoC, remediación, ticket Jira) → Plan priorizado → Herramientas ejecutadas.
+Format: Executive summary (findings by severity and verdict: **FAIL** if there is any Critical or High finding, **CONCERNS** if only Medium or Low remain, **PASS** if there is nothing actionable) → Findings per category (file:line, description, PoC, remediation, Jira ticket) → Prioritized plan → Tools executed.
 
 ## Educabot Specifics
 
-Datos de menores: A01+A02 son críticos. LGPD/COPPA compliance obligatorio.
+Minors' data: A01+A02 are critical. LGPD/COPPA compliance is mandatory.
 
-> → Read references/educabot-specifics.md for reglas PII menores, LGPD, COPPA, IA
+> → Read references/educabot-specifics.md for the rules on minors' PII, LGPD, COPPA, AI
 
 ## Anti-patterns
 
-> → Read references/anti-patterns.md for tabla completa (13 items) con remediación por categoría OWASP
+> → Read references/anti-patterns.md for the full table (13 items) with remediation per OWASP category
 
-OWASP Top 10 es piso, no techo. Servicios críticos: complementar con ASVS Level 2+, threat modeling, pentest externo anual.
+OWASP Top 10 is a floor, not a ceiling. Critical services: complement it with ASVS Level 2+, threat modeling, an annual external pentest.
 
 ## Checklist
 

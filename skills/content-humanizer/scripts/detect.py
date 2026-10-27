@@ -14,8 +14,11 @@ numbers too - but the only honest claim is the one on this line.
 
 Each check returns a HUMAN score from 0 to 100. Higher is better.
 
-The language (en, es) is detected from the text unless --lang is given; the
-lexicon's "voice" block holds the pronouns and contractions for that language.
+The language is detected from the text unless --lang is given (see
+humanize.py: one slop.<lang>.json pack per language); the pack's "voice" block
+holds the pronouns and contractions for that language. When no pack fits, the
+language is "unknown": SLOP DENSITY and VOICE are not judged (scored 50) and
+the other three checks, which need no language, run as usual.
 
 Adapted from Jake Schincariol's linkedin-agent-skill (MIT).
 
@@ -36,7 +39,7 @@ import unicodedata
 
 # python -I (3.11+) leaves the script's folder off sys.path; the sibling module lives there.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from humanize import LANGS, detect_lang, load_lexicon, term_pattern
+from humanize import LANGS, UNKNOWN, detect_lang, load_lexicon, term_pattern, unknown_note
 
 SENT_RE = re.compile(r"[^.!?\n]+[.!?]*")
 WORD_RE = re.compile(r"[^\W\d_]+(?:'[^\W\d_]+)*")
@@ -91,6 +94,8 @@ def check_slop(text, lex):
     w = words(text)
     if not w:
         return 50.0, "empty"
+    if not lex["words"] and not lex["phrases"]:
+        return 50.0, "not judged: no lexicon for this language"
     hits, found = 0, []
     for entry in lex["words"] + lex["phrases"]:
         n = len(term_pattern(entry["find"]).findall(text))
@@ -125,11 +130,13 @@ def check_voice(text, lex):
     w = words(text)
     if len(w) < 25:
         return 50.0, "too short to judge"
+    if not lex.get("voice"):
+        return 50.0, "not judged: no language pack for this text"
     per100 = 100 / len(w)
     voice = lex["voice"]
     human = voice.get("person_human", 8.0)
     person = len(re.findall(voice["pronouns"], text, re.IGNORECASE)) * per100
-    # Spanish has no contractions to count: its weight moves to person.
+    # A pack with no contractions to count (Spanish) moves their weight to person.
     contractions = (len(re.findall(voice["contractions"], text, re.IGNORECASE)) * per100
                     if voice.get("contractions") else None)
     tells = 0
@@ -220,6 +227,8 @@ def main():
     # One lexicon for both inputs, so a before/after delta compares like with like.
     lang = detect_lang(targets[0][1]) if args.lang == "auto" else args.lang
     lex = load_lexicon(lang, args.lexicon)
+    if lex.get("language") == UNKNOWN:
+        print(unknown_note(), file=sys.stderr)
 
     payload = []
     for name, text in targets:

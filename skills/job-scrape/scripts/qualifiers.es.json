@@ -1,0 +1,6 @@
+{
+  "language": "es",
+  "note": "Words job_key.py drops from LatAm and Spanish postings when it builds a seen_jobs.json key: legal suffixes at the end of a company name (S.A. de C.V. leaves sa, de and cv), and work-mode qualifiers in parentheses in a title. Every qualifiers.<lang>.json next to the script applies at once, because one board mixes languages. Entries are lowercase ASCII without dots, as the slug leaves them.",
+  "legal_suffixes": ["ltda", "sa", "sas", "sl", "srl", "spa", "sapi", "sac", "cv", "de"],
+  "qualifiers": ["remoto", "remota", "hibrido", "hibrida", "presencial"]
+}

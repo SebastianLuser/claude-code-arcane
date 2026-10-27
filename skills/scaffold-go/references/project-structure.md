@@ -10,6 +10,6 @@
 - `src/mocks/providers/` — {feature}.go (MockProvider testify)
 - `src/app/web/` — mapping.go (ConfigureMappings)
 - `db/migrations/` — 000001_create_{feature}_tables up+down SQL
-- `docs/rfc-{project}/` — decisiones/, epicas/, operaciones/
+- `docs/rfc-{project}/` — decisions/, epics/, operations/
 - `.github/workflows/ci.yml`
 - Root: go.mod, Dockerfile (multi-stage golang:1.26-alpine->alpine:3.19), docker-compose.yml (PG 16), Makefile, .air.toml, .golangci.yml, .env.example, .gitignore, .pre-commit-config.yaml, README.md, TESTING.md, CLAUDE.md

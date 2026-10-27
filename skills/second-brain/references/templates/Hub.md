@@ -5,18 +5,18 @@ tags: []
 aliases: []
 ---
 
-# <Nombre de la entidad>
+# <Entity name>
 
-<Qué es y por qué tiene una nota propia, en una o dos líneas.>
+<What it is and why it has its own note, in one or two lines.>
 
-## Estado actual
+## Current status
 
-<Lo que hay que saber hoy sobre esto. Esta sección se reescribe, no se acumula.>
+<What you need to know about this today. This section is rewritten, not accumulated.>
 
-## Notas
+## Notes
 
-<Links a las notas atómicas y proyectos de este tema. Acá sí se acumula.>
+<Links to the atomic notes and projects on this topic. This one does accumulate.>
 
-## Historial
+## History
 
-<Línea por evento, formato `- YYYY-MM-DD - qué pasó`, agregado por /review-dump cuando la entidad aparece en un dump. Lo más nuevo arriba.>
+<One line per event, format `- YYYY-MM-DD - what happened`, added by /review-dump when the entity appears in a dump. Newest at the top.>

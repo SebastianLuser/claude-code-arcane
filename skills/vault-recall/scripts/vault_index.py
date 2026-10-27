@@ -11,8 +11,8 @@ Two problems this solves, both of which show up around a thousand notes:
              BM25, folds accents, and expands the query with the aliases any note
              declares, so searching "postgres" also reaches the notes that only
              ever said "PG". It is lexical retrieval with vault-derived synonyms,
-             NOT embeddings: it will not connect "indices parciales" to
-             "performance de queries" unless some note ties those words together.
+             NOT embeddings: it will not connect "partial indexes" to
+             "query performance" unless some note ties those words together.
              Teaching it a synonym is one frontmatter line.
 
   related    Notes closest to one note by tf-idf cosine over shared vocabulary.
@@ -26,7 +26,7 @@ Two problems this solves, both of which show up around a thousand notes:
              compact listing from the cache.
 
 Folder roles are resolved from flags, not assumed: --role hubs=People lets an
-adopted vault keep its own structure (see the ## Rutas contract in its CLAUDE.md).
+adopted vault keep its own structure (see the ## Paths contract in its CLAUDE.md).
 
 Usage:
     python vault_index.py <vault> refresh [--role name=path ...]
@@ -52,6 +52,7 @@ INDEX_VERSION = 1
 SKIP_DIRS = {
     ".obsidian", ".git", ".trash", ".stfolder", ".stversions",
     "node_modules", "__pycache__", ".smart-env",
+    ".arcane-migration-backup",  # migrate_vault.py backups: copies of notes, not notes
 }
 
 DEFAULT_ROLES = {
@@ -74,18 +75,25 @@ K1 = 1.5
 B = 0.75
 
 # A term in the title is worth this many occurrences in the body: a note called
-# "Indices parciales" is about that, a note mentioning it once is not.
+# "Partial indexes" is about that, a note mentioning it once is not.
 TITLE_BOOST = 3
 
 MIN_TERM_LEN = 2
 
-STOPWORDS = {
-    "de", "la", "el", "los", "las", "un", "una", "unos", "unas", "y", "o", "que",
-    "en", "con", "por", "para", "del", "al", "se", "su", "sus", "lo", "es", "son",
-    "como", "mas", "pero", "sin", "sobre", "este", "esta", "esto", "estos", "estas",
-    "the", "a", "an", "and", "or", "of", "to", "in", "on", "for", "with", "is",
-    "are", "was", "were", "be", "it", "this", "that", "as", "at", "by", "from",
-}
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def load_stopwords():
+    """Union of every stopwords.<lang>.json next to this script: one vault mixes languages."""
+    words = set()
+    for name in sorted(os.listdir(HERE)):
+        if name.startswith("stopwords.") and name.endswith(".json"):
+            with open(os.path.join(HERE, name), encoding="utf-8") as fh:
+                words.update(json.load(fh)["words"])
+    return words
+
+
+STOPWORDS = load_stopwords()
 
 FENCED_CODE = re.compile(r"^```.*?^```", re.DOTALL | re.MULTILINE)
 WIKILINK = re.compile(r"!?\[\[([^\[\]\n]+?)\]\]")
@@ -299,7 +307,7 @@ def alias_map(cache, roles):
     having, and it means teaching the vault a synonym is one frontmatter line.
 
     Hubs are where this normally lives, but not exclusively: an atomic note that
-    declares `aliases: [OKR, objetivos y resultados]` is teaching the same thing.
+    declares `aliases: [OKR, objectives and key results]` is teaching the same thing.
     """
     groups = []
     for record in cache["docs"].values():

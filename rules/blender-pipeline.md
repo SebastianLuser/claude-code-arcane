@@ -1,33 +1,33 @@
 # Blender Pipeline
 
-Reglas que tienen que estar presentes antes de operar Blender, por MCP o headless, aunque todavia no se haya tocado un `.blend`. Ejes, topologia, materiales, animacion y Git estan en `.claude/rules/blender-files.md`, que se carga al tocar un `.blend` o un archivo exportado.
+Rules that must be in place before operating Blender, through MCP or headless, even if no `.blend` has been touched yet. Axes, topology, materials, animation and Git are in `.claude/rules/blender-files.md`, which loads when a `.blend` or an exported file is touched.
 
-## El MCP es opcional, el headless no
+## MCP is optional, headless is not
 
-Hay dos formas de operar Blender desde Claude, y no son equivalentes:
+There are two ways to operate Blender from Claude, and they are not equivalent:
 
 | | MCP | Headless (`--background`) |
 |---|---|---|
-| Necesita Blender abierto | Si, con el addon conectado | No |
-| Reproducible en CI | No | Si |
-| Ve el estado de la escena | Si | Solo lo que el script consulta |
-| Deja rastro en el repo | No | Si — el script queda versionado |
+| Needs Blender open | Yes, with the addon connected | No |
+| Reproducible in CI | No | Yes |
+| Sees the scene state | Yes | Only what the script queries |
+| Leaves a trace in the repo | No | Yes — the script stays versioned |
 
-**Default: headless.** Un `.py` versionado que corre con `blender --background --python` es
-auditable, repetible y no depende de que alguien tenga la ventana abierta. El MCP sirve para
-explorar una escena que ya existe y para iterar visualmente, no para el paso automatizable.
+**Default: headless.** A versioned `.py` run with `blender --background --python` is
+auditable, repeatable and does not depend on someone having the window open. MCP is for
+exploring a scene that already exists and for iterating visually, not for the automatable step.
 
-Los dos MCP recomendados estan en `/blender-context`. **Ninguno de los dos se instala desde este
-repo**: son addons de la instalacion de Blender del usuario.
+The two recommended MCPs are in `/blender-context`. **Neither of them is installed from this
+repo**: they are addons of the user's Blender installation.
 
-## Ejecuta Python sin sandbox
+## It runs Python without a sandbox
 
-Tanto el MCP de la comunidad como el oficial corren el Python que genera el LLM **sin ninguna
-barrera**. Consecuencias que no son negociables:
+Both the community MCP and the official one run the Python the LLM generates **without any
+barrier**. Consequences that are not negotiable:
 
-1. **Nunca correrlo con cambios sin commitear** en el repo del proyecto. Si algo se rompe, la
-   unica marcha atras es git.
-2. Guardar el `.blend` antes de la primera operacion de la sesion.
-3. No apuntarlo a una maquina con material sensible ni a credenciales.
-4. Un script que borra (`bpy.data.*.remove`, `object.delete`) se muestra al usuario **antes** de
-   correrlo, siempre, incluso si lo pidio.
+1. **Never run it with uncommitted changes** in the project repo. If something breaks, the
+   only way back is git.
+2. Save the `.blend` before the first operation of the session.
+3. Do not point it at a machine with sensitive material or at credentials.
+4. A script that deletes (`bpy.data.*.remove`, `object.delete`) is shown to the user **before**
+   running it, always, even if they asked for it.

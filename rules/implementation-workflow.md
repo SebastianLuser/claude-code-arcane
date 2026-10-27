@@ -5,39 +5,39 @@ Before starting a non-trivial implementation task, present the user with work mo
 ## When to trigger
 
 Present work mode options when the user:
-- Asks to implement a new feature ("agregá X", "implementá Y", "hacé Z")
+- Asks to implement a new feature ("add X", "implement Y", "do Z")
 - Describes a task involving multiple files or architectural decisions
 - Asks for a refactor, migration, or significant change
-- Says "quiero hacer", "necesito", "hay que" followed by implementation work
+- Says "I want to", "I need", "we have to" followed by implementation work
 
 ## When NOT to trigger
 
 Skip the work mode selection when:
-- The user asks a question ("¿qué hace esto?", "¿cómo funciona?")
+- The user asks a question ("what does this do?", "how does it work?")
 - The task is a small fix (typo, 1-3 line change, obvious bug)
-- The user explicitly says "directo", "sin plan", "ya sé qué hacer", "just do it"
+- The user explicitly says "direct", "no plan", "I already know what to do", "just do it"
 - A plan or goal is already active in the current conversation
 - The user is running a specific skill (/commit, /check, /quality-review, etc.)
 - It's an emergency or hotfix scenario
 
 ## The question
 
-Use AskUserQuestion exactly like this:
+Use AskUserQuestion exactly like this, worded in the user's language:
 
-- Question: "¿Cómo querés encarar esta tarea?"
+- Question: "How do you want to approach this task?"
 - Header: "Work mode"
 - Options (4):
-  1. **Plan + Goal (Recommended)** — "Plan detallado de CÓMO + goal de HASTA DÓNDE llegar. Lo más completo: el plan guía la ejecución, el goal define cuándo frenar y qué validar."
-  2. **Action Plan** — "Solo plan paso a paso. Sin goal de sesión — implementamos hasta terminar el plan."
-  3. **Goal-driven** — "Solo objetivo verificable con checkpoints. Sin plan formal."
-  4. **Directo** — "Arrancamos sin ceremonia. Para tareas claras y rápidas."
+  1. **Plan + Goal (Recommended)** — "Detailed plan of HOW + goal of HOW FAR to go. The most complete: the plan guides execution, the goal defines when to stop and what to validate."
+  2. **Action Plan** — "Step-by-step plan only. No session goal — we implement until the plan is done."
+  3. **Goal-driven** — "Verifiable goal with checkpoints only. No formal plan."
+  4. **Direct** — "We start without ceremony. For clear, quick tasks."
 
 ## After selection
 
 - **Plan + Goal:** First define the verifiable session goal with validation criteria. Then EnterPlanMode and design the implementation plan linked to the goal. Plan includes explicit stop conditions (goal met, blocker, scope creep). After approval, create tasks and execute. After each significant step, check progress against the goal. When goal is met, STOP and run the goal review below.
 - **Action Plan:** Use EnterPlanMode, design the approach, get approval, create tasks, then implement step by step. No formal goal — implement until the plan is done.
 - **Goal-driven:** Help the user define a verifiable goal statement and 2-4 checkpoints, create tasks, implement toward each checkpoint. No formal plan. When the last checkpoint is met, run the goal review below.
-- **Directo:** Proceed immediately without ceremony.
+- **Direct:** Proceed immediately without ceremony.
 
 ## Progress file
 
@@ -61,7 +61,7 @@ Next: <the next concrete step>
 Not verified: <what has not been checked yet>
 ```
 
-Directo and Action Plan tasks do not need it.
+Direct and Action Plan tasks do not need it.
 
 ## Goal review
 
@@ -95,7 +95,7 @@ In every mode, search in this order and take the first option that fully works:
 ## Key principles
 
 - One question, not a wall of text — present options and wait
-- Respect the user's choice — if they pick "directo", do not add planning overhead
+- Respect the user's choice — if they pick "Direct", do not add planning overhead
 - Plans should be concise — 10-15 lines max, not a document
 - Goals must be verifiable — "login works with OAuth" not "improve login"
 - Never block urgent work — bugs in production skip this flow entirely

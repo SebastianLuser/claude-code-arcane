@@ -1,6 +1,6 @@
 ---
 name: linkedin-comment
-description: "Write comments on other people's LinkedIn posts that read as a person with an opinion: nine comment types chosen by what the post is, two options per post, humanized, never posted for the user. Also batches an engagement round. Triggers: comentar un post de LinkedIn, qué comento acá, comment on this, engagement round."
+description: "Write comments on other people's LinkedIn posts that read as a person with an opinion: nine comment types chosen by what the post is, two options per post, humanized, never posted for the user. Also batches an engagement round. Triggers: comment on a LinkedIn post, what should I comment here, comment on this, engagement round."
 argument-hint: "<pasted post> | batch"
 category: "career"
 user-invocable: true
@@ -13,7 +13,7 @@ A comment under a post with hundreds of reactions is seen by more people than mo
 
 ## Phase 1: Input
 
-The user pastes the post text (plus the author's name and role if they have it), or a screenshot. A URL that cannot be opened: ask for the text. Never guess what the post said, and never scrape the feed with a browser. Read the **Voice** section of `01-Perfiles/Perfil Maestro.md`.
+The user pastes the post text (plus the author's name and role if they have it), or a screenshot. A URL that cannot be opened: ask for the text. Never guess what the post said, and never scrape the feed with a browser. Read the **Voice** section of `01-Profiles/Master Profile.md`.
 
 ## Phase 2: Pick the type
 
@@ -34,7 +34,7 @@ Choose by what the post actually is. Never default to the one-liner.
 ## Phase 3: Write
 
 - **2 to 4 sentences, one idea.** Longer reads as a hijack, two points read as a blog attempt.
-- **Never open with** "Great post", "Love this", "So true", "Couldn't agree more", "This resonates", "Gran post", "Excelente aporte", or the author's name with an exclamation mark. No emoji as the first character.
+- **Never open with** "Great post", "Love this", "So true", "Couldn't agree more", "This resonates", "Awesome post", "Excellent contribution", or the author's name with an exclamation mark. No emoji as the first character.
 - **Never restate the post.** Say the specific thing: a comment that fits any post on the topic is noise.
 - The data, receipts and experiences are the user's own. Ask when they are missing; never invent them.
 
@@ -58,7 +58,7 @@ Post the first: it is your own data and it concedes a failure, which is what peo
 
 ## Batch mode
 
-For an engagement round, ask for the 5-10 posts as pasted text in one message and return one comment each in a single block. Keep a running list of who the user commented on this week in `01-Perfiles/LinkedIn Log.md` (ask before writing): commenting on the same three people every day is visible.
+For an engagement round, ask for the 5-10 posts as pasted text in one message and return one comment each in a single block. Keep a running list of who the user commented on this week in `01-Profiles/LinkedIn Log.md` (ask before writing): commenting on the same three people every day is visible.
 
 ## Protocol
 

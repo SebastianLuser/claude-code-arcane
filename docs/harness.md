@@ -53,7 +53,7 @@ The maker-checker split is the core of it: whoever did the work does not grade i
 ## The life of a task
 
 1. **Session start.** `session-start.sh` prints the state, including an open `active.md`, so a new session or a compaction resumes from the file, not from memory.
-2. **Work mode.** For non-trivial work the maker asks once: Plan + Goal, Action Plan, Goal-driven or Directo (`rules/implementation-workflow.md`).
+2. **Work mode.** For non-trivial work the maker asks once: Plan + Goal, Action Plan, Goal-driven or Direct (`rules/implementation-workflow.md`).
 3. **Goal and progress file.** In Plan + Goal and Goal-driven, the goal and its criteria go into `.arcane/session-state/active.md`, updated at every checkpoint.
 4. **Before writing code.** Search the codebase, then the standard library, then installed dependencies; a new dependency is the last option, and the guard asks before adding one.
 5. **Every tool call.** the guard screens shell commands and file writes; the session watch watches for loops, scope drift and context use.

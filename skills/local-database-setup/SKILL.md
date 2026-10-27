@@ -1,6 +1,6 @@
 ---
 name: local-database-setup
-description: "Configura la base de datos local del proyecto: levanta Docker/Postgres, corre setup script, ejecuta migrations pendientes."
+description: "Sets up the project's local database: starts Docker/Postgres, runs the setup script, applies pending migrations."
 category: "database"
 argument-hint: ""
 user-invocable: true
@@ -10,7 +10,7 @@ allowed-tools: Read, Glob, Grep, Bash
 # Skill: local-database-setup
 
 ## Trigger
-When the user says "setup database", "configurar base", "levantar la db", "inicializar db", or similar.
+When the user says "setup database", "configure the database", "spin up the db", "initialize db", or similar.
 
 ## Workflow
 

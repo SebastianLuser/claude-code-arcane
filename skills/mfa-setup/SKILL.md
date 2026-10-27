@@ -15,93 +15,93 @@ metadata:
 ---
 # MFA Setup — Educabot
 
-MFA para productos Educabot (docentes, admins, alumnos). WebAuthn/Passkeys preferido, TOTP universal, SMS solo recovery.
+MFA for Educabot products (teachers, admins, students). WebAuthn/Passkeys preferred, TOTP universal, SMS for recovery only.
 
-## Cuándo usar / NO usar
+## When to use / NOT use
 
-| Usar | NO usar |
+| Use | Do NOT use |
 |------|---------|
-| Agregar 2FA a backend Go o Node/TS | Solo login social (OAuth) sin factor adicional |
-| Integrar Passkeys en web (React+Vite) o mobile (RN) | Apps consumer alumnos menores sin datos sensibles |
-| Diseñar enrolamiento, verificación, recovery | Magic links como único factor (passwordless ≠ MFA) |
-| Schema DB para credenciales MFA | |
-| Step-up auth en endpoints sensibles | |
+| Add 2FA to a Go or Node/TS backend | Social login only (OAuth) with no additional factor |
+| Integrate Passkeys in web (React+Vite) or mobile (RN) | Consumer apps for underage students with no sensitive data |
+| Design enrollment, verification, recovery | Magic links as the only factor (passwordless ≠ MFA) |
+| DB schema for MFA credentials | |
+| Step-up auth on sensitive endpoints | |
 
-## Factores
+## Factors
 
-| Factor | Recomendado | Riesgo | Librería |
+| Factor | Recommended | Risk | Library |
 |--------|-------------|--------|----------|
-| **WebAuthn/Passkeys** | Sí (preferido 2026+) | Bajo | `@simplewebauthn/server`, `go-webauthn/webauthn` |
-| **TOTP (RFC 6238)** | Sí (default universal) | Medio (phishable) | `otplib` (Node), `pquerna/otp` (Go) |
-| **SMS OTP** | Solo recovery | Alto (SIM swap) | Twilio Verify, MessageBird |
-| **Backup codes** | Obligatorio | Bajo si hash correcto | custom + Argon2id |
+| **WebAuthn/Passkeys** | Yes (preferred 2026+) | Low | `@simplewebauthn/server`, `go-webauthn/webauthn` |
+| **TOTP (RFC 6238)** | Yes (universal default) | Medium (phishable) | `otplib` (Node), `pquerna/otp` (Go) |
+| **SMS OTP** | Recovery only | High (SIM swap) | Twilio Verify, MessageBird |
+| **Backup codes** | Mandatory | Low if hashed correctly | custom + Argon2id |
 
-**Regla Educabot:** admins+docentes MFA obligatorio (mínimo TOTP/Passkey). Alumnos adultos opcional. Menores: NO SMS, solo TOTP/Passkey parental.
+**Educabot rule:** MFA mandatory for admins+teachers (minimum TOTP/Passkey). Optional for adult students. Minors: NO SMS, only TOTP/parental Passkey.
 
 ## TOTP
 
-- **Enrolamiento:** generar secret BASE32, guardar encriptado (AES-256-GCM + KMS, nunca en claro). Generar `otpauth://` URI → QR. Confirmar enrolamiento solo cuando user ingrese código válido.
-- **Go:** `pquerna/otp` — `totp.Generate()` con Issuer "Educabot", Period 30, DigitsSix, AlgorithmSHA1 (compatible Google Authenticator)
+- **Enrollment:** generate a BASE32 secret, store it encrypted (AES-256-GCM + KMS, never in plaintext). Generate the `otpauth://` URI → QR. Confirm enrollment only when the user enters a valid code.
+- **Go:** `pquerna/otp` — `totp.Generate()` with Issuer "Educabot", Period 30, DigitsSix, AlgorithmSHA1 (Google Authenticator compatible)
 - **TS:** `otplib` — `authenticator.generateSecret()` + `keyuri()` + QR via `qrcode`
-- **Verificación:** window ±1 step (30s) por drift. NO mayor.
+- **Verification:** window ±1 step (30s) for drift. NO larger.
 
 ## WebAuthn / Passkeys
 
-- **Registro:** `generateRegistrationOptions` (rpName "Educabot", rpID "educabot.com", attestationType "none", residentKey "preferred"). Guardar challenge en sesión/Redis TTL 5min. Verificar response → guardar credentialID, publicKey, counter.
-- **Login:** `generateAuthenticationOptions` + `verifyAuthenticationResponse`. Actualizar counter cada uso (detecta clonado).
-- **Cross-device:** Passkeys sincronizan vía iCloud Keychain / Google Password Manager. Solo guardar public key + credentialID.
+- **Registration:** `generateRegistrationOptions` (rpName "Educabot", rpID "educabot.com", attestationType "none", residentKey "preferred"). Store the challenge in the session/Redis with TTL 5min. Verify the response → store credentialID, publicKey, counter.
+- **Login:** `generateAuthenticationOptions` + `verifyAuthenticationResponse`. Update the counter on every use (detects cloning).
+- **Cross-device:** Passkeys sync via iCloud Keychain / Google Password Manager. Store only the public key + credentialID.
 
-## SMS OTP (solo recovery)
+## SMS OTP (recovery only)
 
-Twilio Verify para envío/verificación. Nunca factor primario. Nunca menores. Rate limit: 3 SMS/hora por número.
+Twilio Verify for sending/verifying. Never the primary factor. Never for minors. Rate limit: 3 SMS/hour per number.
 
 ## Backup codes
 
-Generar 10 códigos, mostrar UNA VEZ. Guardar solo hash Argon2id. Al usar: verificar hash, marcar `used_at`, invalidar. Si quedan <3 → avisar para regenerar.
+Generate 10 codes, show them ONCE. Store only the Argon2id hash. On use: verify the hash, set `used_at`, invalidate. If fewer than 3 remain → prompt to regenerate.
 
 ## Recovery flow
 
-1. "No tengo acceso a mi 2FA" → email + 1 backup code válido
-2. Link recovery al email (TTL 15min, single-use)
-3. Confirma → desactivar MFA → forzar re-enrolamiento
-- NO preguntas secretas. Log detallado + alerta seguridad. Sin backup ni email → validación identidad manual (institución admin).
+1. "I can't access my 2FA" → email + 1 valid backup code
+2. Recovery link to the email (TTL 15min, single-use)
+3. Confirms → disable MFA → force re-enrollment
+- NO secret questions. Detailed log + security alert. No backup and no email → manual identity validation (institution admin).
 
 ## Step-up auth
 
-Requerir MFA aunque sesión activa para: cambio email/password/phone, export datos (LGPD/GDPR), eliminación cuenta, cambios permisos, acceso PII alumnos. Middleware verifica `lastMfaTimestamp` contra `maxAge`.
+Require MFA even with an active session for: email/password/phone change, data export (LGPD/GDPR), account deletion, permission changes, access to student PII. Middleware checks `lastMfaTimestamp` against `maxAge`.
 
 ## Rate limiting
 
-Rate limit en todos los endpoints MFA con Redis sliding window.
+Rate limit every MFA endpoint with a Redis sliding window.
 
-> → Read references/rate-limiting.md for límites y lockout por endpoint
+> → Read references/rate-limiting.md for limits and lockout per endpoint
 
-## Schema DB
+## DB schema
 
-Tablas: `user_mfa`, `mfa_backup_codes`, `mfa_events`.
+Tables: `user_mfa`, `mfa_backup_codes`, `mfa_events`.
 
-> → Read references/schema-db.md for esquema detallado de cada tabla
+> → Read references/schema-db.md for the detailed schema of each table
 
-## Reglas por rol
+## Rules per role
 
-Admins+docentes obligatorio, alumnos adultos opcional, menores nunca SMS.
+Mandatory for admins+teachers, optional for adult students, never SMS for minors.
 
-> → Read references/role-rules.md for tabla detallada por rol con métodos y step-up maxAge
+> → Read references/role-rules.md for the detailed per-role table with methods and step-up maxAge
 
 ## Anti-patterns
 
-> → Read references/anti-patterns.md for lista completa (13 items)
+> → Read references/anti-patterns.md for the full list (13 items)
 
-## Delegación
+## Delegation
 
-- `/scaffold-go` — scaffold endpoints Go
-- `/doc-rfc` — documentar decisión técnica
-- `/deploy-check` — checklist pre-deploy
-- `/audit-dev` — auditar seguridad del flujo
+- `/scaffold-go` — scaffold Go endpoints
+- `/doc-rfc` — document the technical decision
+- `/deploy-check` — pre-deploy checklist
+- `/audit-dev` — audit the flow's security
 
 ## Checklist
 
-> → Read references/checklist.md for checklist completo (15 items)
+> → Read references/checklist.md for the full checklist (15 items)
 
 - [ ] Factor selection justified per user role (WebAuthn preferred, TOTP universal, SMS recovery-only)
 - [ ] Recovery flow designed with backup codes and email verification

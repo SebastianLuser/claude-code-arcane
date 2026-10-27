@@ -1,93 +1,93 @@
 ---
 name: freelance-profile
-description: "Build the Upwork profile that decides whether clients ever open your proposal: title, the first 250 visible characters of the overview, specialized profiles, portfolio items and rate. Triggers: perfil de upwork, optimizar perfil freelance, titulo de upwork, overview upwork, specialized profile, que tarifa pongo en upwork."
+description: "Build the Upwork profile that decides whether clients ever open your proposal: title, the first 250 visible characters of the overview, specialized profiles, portfolio items and rate. Triggers: upwork profile, optimize freelance profile, upwork title, upwork overview, specialized profile, what rate should I set on upwork."
 argument-hint: "[audit | title | overview | portfolio | rate]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, WebFetch
 ---
 
-# Upwork Profile - El perfil de la plataforma
+# Upwork Profile - The platform profile
 
-Construís el perfil de Upwork desde el perfil maestro. No es un CV: el CV lo lee alguien que ya decidió considerarte, el perfil de Upwork lo lee alguien que está barriendo una lista de 40 freelancers o revisando propuestas.
+You build the Upwork profile from the master profile. It is not a CV: the CV is read by someone who already decided to consider you, the Upwork profile is read by someone scanning a list of 40 freelancers or reviewing proposals.
 
-Rutas relativas al career workspace (`--workspace`, env `CAREER_WORKSPACE`, o `./career-workspace/`).
+Paths are relative to the career workspace (`--workspace`, env `CAREER_WORKSPACE`, or `./career-workspace/`).
 
-Modo: `$ARGUMENTS`
+Mode: `$ARGUMENTS`
 
 ## Inputs
 
-- **El perfil maestro** de `01-Perfiles/` - la fuente de verdad. Si no existe, correr `/master-profile` primero.
-- **El perfil actual de Upwork**, si ya existe: URL pública → WebFetch, o pegado.
-- **Contratos cerrados** de `08-Contratos/` para los portfolio items con resultados reales.
+- **The master profile** in `01-Profiles/` - the source of truth. If it does not exist, run `/master-profile` first.
+- **The current Upwork profile**, if it already exists: public URL → WebFetch, or pasted.
+- **Closed contracts** in `08-Contracts/` for portfolio items with real results.
 
-## Modos
+## Modes
 
-### `audit` - Revisar el perfil actual
+### `audit` - Review the current profile
 
-Recorrer los cinco elementos de abajo y reportar qué falta o qué está flojo, priorizado por impacto. Empezar siempre por título y las primeras 250 caracteres del overview: son los únicos que se ven sin hacer click.
+Go through the five elements below and report what is missing or weak, prioritized by impact. Always start with the title and the first 250 characters of the overview: they are the only things visible without clicking.
 
-### `title` - El título
+### `title` - The title
 
-Lo primero y a veces lo único que se lee. Reglas:
+The first and sometimes the only thing that gets read. Rules:
 
-- **Nicho específico, no rol genérico.** "Full Stack Developer" compite con 200 mil personas. "Unity Developer - Gameplay & Multiplayer for Mobile" compite con pocas y aparece en las búsquedas que importan.
-- Incluir la tecnología o el resultado que el cliente busca en sus palabras, no en las tuyas.
-- Sin "Ninja", "Rockstar", "Guru".
-- Sin declaraciones de disponibilidad ("Available now") - ocupan lugar y caducan.
+- **Specific niche, not a generic role.** "Full Stack Developer" competes with 200 thousand people. "Unity Developer - Gameplay & Multiplayer for Mobile" competes with few and shows up in the searches that matter.
+- Include the technology or the outcome the client is looking for in their words, not yours.
+- No "Ninja", "Rockstar", "Guru".
+- No availability statements ("Available now") - they take up space and go stale.
 
-### `overview` - Los primeros 250 caracteres
+### `overview` - The first 250 characters
 
-El overview se corta en la vista previa. Todo lo que importa va en el primer bloque.
+The overview gets cut off in the preview. Everything that matters goes in the first block.
 
-Estructura:
+Structure:
 
-1. **Primera línea**: a quién ayudás y con qué resultado. No "I am a developer with 5 years of experience" - eso describe tu currículum, no el problema del cliente.
-2. **Segundo bloque**: la prueba más fuerte, con número.
-3. **Después del corte**: stack, cómo trabajás, tipos de proyecto que tomás, y qué **no** tomás. Decir qué no hacés filtra clientes malos y sube la tasa de respuesta de los buenos.
-4. **Cierre**: un CTA simple.
+1. **First line**: who you help and with what outcome. Not "I am a developer with 5 years of experience" - that describes your résumé, not the client's problem.
+2. **Second block**: the strongest proof, with a number.
+3. **After the cut**: stack, how you work, the kinds of projects you take, and what you do **not** take. Saying what you do not do filters out bad clients and raises the response rate of the good ones.
+4. **Close**: a simple CTA.
 
-Escribir en primera persona y en el idioma de tu mercado objetivo. Si apuntás a clientes de EEUU, en inglés.
+Write in the first person and in the language of your target market. If you target US clients, in English.
 
-### `portfolio` - Los items
+### `portfolio` - The items
 
-- Cada item es **un problema, lo que hiciste y el resultado con número**. No una captura de pantalla linda sin contexto.
-- Priorizar los que se parecen a los trabajos que querés conseguir, no los que más te gustaron.
-- Sacar los que no representan el nicho del título: un portfolio disperso comunica "hago cualquier cosa", que es lo contrario de lo que querés.
-- Nunca subir trabajo de un cliente sin permiso, ni material bajo NDA. Si no se puede mostrar, se describe el problema y el resultado sin identificar al cliente.
+- Each item is **a problem, what you did and the result with a number**. Not a nice screenshot with no context.
+- Prioritize the ones that resemble the work you want to get, not the ones you liked most.
+- Remove the ones that do not represent the niche in the title: a scattered portfolio says "I do anything", which is the opposite of what you want.
+- Never upload a client's work without permission, nor material under NDA. If it cannot be shown, describe the problem and the result without identifying the client.
 
-### `rate` - La tarifa publicada
+### `rate` - The published rate
 
-- Se deriva del **piso neto** de `01-Perfiles/` más la comisión de la plataforma, no de lo que cobran otros.
-- La tarifa publicada es un filtro, no un compromiso: filtra el tráfico que llega, y podés cotizar distinto por proyecto en cada propuesta.
-- Poner una tarifa muy baja para "arrancar" atrae clientes que buscan precio bajo, que son los que más problemas dan y peor califican. Subirla después es más difícil que empezar bien.
-- Si el usuario está arrancando sin historial, la palanca correcta es acotar el nicho, no bajar el precio.
+- It is derived from the **net floor** in `01-Profiles/` plus the platform fee, not from what others charge.
+- The published rate is a filter, not a commitment: it filters the traffic that arrives, and you can quote differently per project in each proposal.
+- Setting a very low rate to "get started" attracts clients looking for a low price, who cause the most problems and rate worst. Raising it later is harder than starting right.
+- If the user is starting with no history, the right lever is narrowing the niche, not lowering the price.
 
 ## Specialized profiles
 
-Upwork permite perfiles especializados además del general. Sirven cuando el usuario tiene dos nichos con vocabulario distinto (ej. "Unity gameplay" y "backend .NET"): cada uno se presenta a su búsqueda sin diluir al otro.
+Upwork allows specialized profiles in addition to the general one. They are useful when the user has two niches with different vocabulary (e.g. "Unity gameplay" and "backend .NET"): each one is presented to its own search without diluting the other.
 
-Si hay un solo nicho, no crear especializados: sumar superficie vacía baja la señal.
+If there is a single niche, do not create specialized profiles: adding empty surface lowers the signal.
 
-## Lo que el perfil no controla
+## What the profile does not control
 
-El **Job Success Score** y el badge no se editan: salen de cómo terminaron los contratos. Por eso `freelance-guardrails` dice que rechazar es una acción del pipeline - la protección del JSS se hace eligiendo trabajos, no escribiendo el perfil. Si el usuario está arrancando, no tiene JSS, y ahí el portfolio y el nicho cargan todo el peso.
+The **Job Success Score** and the badge cannot be edited: they come from how contracts ended. That is why `freelance-guardrails` says declining is a pipeline action - JSS protection happens by choosing jobs, not by writing the profile. If the user is starting out, they have no JSS, and then the portfolio and the niche carry all the weight.
 
-## Proceso
+## Process
 
-1. Leer el perfil maestro y el perfil actual de Upwork si existe.
-2. Correr el modo pedido (o `audit` si no se indicó ninguno).
-3. Proponer los textos como borradores en el chat, con **2 variantes de título** para elegir.
-4. Con approval, guardar el resultado en `01-Perfiles/Upwork.md` (derivado del maestro, no reemplazo). El usuario copia y pega en la plataforma - este skill nunca toca la cuenta.
-5. Registrar la fecha del último ajuste, para poder correlacionar cambios de perfil con cambios en la tasa de respuesta desde `/freelance-pipeline`.
+1. Read the master profile and the current Upwork profile if it exists.
+2. Run the requested mode (or `audit` if none was given).
+3. Propose the texts as drafts in the chat, with **2 title variants** to choose from.
+4. With approval, save the result in `01-Profiles/Upwork.md` (derived from the master, not a replacement). The user copies and pastes it into the platform - this skill never touches the account.
+5. Record the date of the last adjustment, so profile changes can be correlated with changes in the response rate from `/freelance-pipeline`.
 
-## Reglas
+## Rules
 
-- Nunca inventar experiencia, clientes ni números.
-- Nunca publicar trabajo bajo NDA ni de un cliente sin permiso.
-- La tarifa nunca se deriva de la competencia; se deriva del piso.
-- Sin guiones largos en los textos generados.
+- Never invent experience, clients or numbers.
+- Never publish work under NDA or a client's work without permission.
+- The rate is never derived from the competition; it is derived from the floor.
+- No em dashes in the generated texts.
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir `01-Perfiles/Upwork.md`. Perfil READY cuando título, overview y al menos dos portfolio items están completos. El siguiente paso es `/freelance-scan` para armar la primera cola de ofertas, o `/portfolio-site` si el usuario quiere un portfolio propio fuera de la plataforma.
+Ask for approval before writing `01-Profiles/Upwork.md`. Profile READY when the title, overview and at least two portfolio items are complete. The next step is `/freelance-scan` to build the first queue of postings, or `/portfolio-site` if the user wants their own portfolio outside the platform.

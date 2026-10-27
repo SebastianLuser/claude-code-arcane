@@ -11,50 +11,50 @@ paths:
 
 # Next.js Code Rules
 
-Reglas de performance y arquitectura para Next.js App Router (RSC, data fetching, caching). Ordenadas por impacto. Catálogo completo + ejemplos: skill `nextjs-best-practices`.
+Performance and architecture rules for the Next.js App Router (RSC, data fetching, caching). Ordered by impact. Full catalog + examples: the `nextjs-best-practices` skill.
 
-## CRITICAL — Eliminar waterfalls
+## CRITICAL — Eliminate waterfalls
 
-- **Server Components por defecto.** `'use client'` solo cuando se necesita interactividad/estado/efectos/browser APIs. Empujar el boundary client lo más abajo posible en el árbol.
-- **Fetch paralelo, no secuencial.** Operaciones independientes con `Promise.all()`. Nunca `await` en serie cuando no hay dependencia entre llamadas.
-- **Iniciar promesas temprano, await tarde.** En route handlers y RSC, disparar el fetch independiente al inicio y await recién donde se usa el dato.
-- **Composición para fetch paralelo.** Reestructurar componentes para que fetches independientes corran simultáneamente; fetches dependientes se anidan dentro de la promesa de cada item, no en serie global.
-- **Suspense boundaries estratégicos.** Envolver subárboles con `<Suspense>` para mostrar shell rápido mientras streamea el contenido.
+- **Server Components by default.** `'use client'` only when you need interactivity/state/effects/browser APIs. Push the client boundary as far down the tree as possible.
+- **Parallel fetch, not sequential.** Independent operations with `Promise.all()`. Never `await` serially when there is no dependency between calls.
+- **Start promises early, await late.** In route handlers and RSC, fire the independent fetch at the start and await it only where the data is used.
+- **Composition for parallel fetch.** Restructure components so independent fetches run at the same time; dependent fetches nest inside each item's promise, not in a global series.
+- **Strategic Suspense boundaries.** Wrap subtrees in `<Suspense>` to show a fast shell while the content streams.
 
 ## CRITICAL — Bundle size
 
-- **No barrel imports.** Importar directo del archivo fuente (`lodash/debounce`, no `lodash`); los barrels (`index.ts` que re-exportan todo) arrastran miles de módulos sin usar.
-- **`next/dynamic` para componentes pesados** no necesarios en el render inicial (charts, editores, modales).
-- **Diferir libs third-party no críticas** (analytics, logging, error tracking) a post-hydration; no bloquear el bundle inicial.
-- **Paths estáticamente analizables.** Imports con paths literales/mapas explícitos, no construidos dinámicamente.
+- **No barrel imports.** Import straight from the source file (`lodash/debounce`, not `lodash`); barrels (`index.ts` files that re-export everything) drag in thousands of unused modules.
+- **`next/dynamic` for heavy components** not needed in the initial render (charts, editors, modals).
+- **Defer non-critical third-party libs** (analytics, logging, error tracking) until after hydration; do not block the initial bundle.
+- **Statically analyzable paths.** Imports with literal paths/explicit maps, not built dynamically.
 
 ## HIGH — Server
 
-- **Autenticar cada Server Action como un API route.** Verificar auth/authz dentro de la action, no confiar solo en middleware.
-- **No module-level mutable state para datos de request.** Mantener datos de request locales al árbol de render; las variables a nivel módulo se comparten entre requests → data leaks.
-- **Minimizar serialización en boundaries RSC→Client.** Pasar solo los campos que el cliente realmente usa, no el objeto entero.
-- **`React.cache()` para dedupe por request**; LRU cache para datos compartidos entre requests dentro de una ventana de tiempo.
-- **`after()` para trabajo no bloqueante** (logging, analytics, cleanup) que corre después de enviar la respuesta.
-- **Hoist I/O estático a nivel módulo** para evitar lecturas redundantes en cada request.
+- **Authenticate every Server Action like an API route.** Check auth/authz inside the action, do not rely on middleware alone.
+- **No module-level mutable state for request data.** Keep request data local to the render tree; module-level variables are shared between requests → data leaks.
+- **Minimize serialization at RSC→Client boundaries.** Pass only the fields the client actually uses, not the whole object.
+- **`React.cache()` for per-request dedupe**; an LRU cache for data shared between requests within a time window.
+- **`after()` for non-blocking work** (logging, analytics, cleanup) that runs after the response is sent.
+- **Hoist static I/O to module level** to avoid redundant reads on every request.
 
 ## HIGH — Rendering & data
 
-- **`generateMetadata` para todo el SEO** (title, description, OG, canonical). Nunca tags manuales en el body.
-- **`next/image` siempre** — width/height explícitos, `priority` para LCP, formatos modernos.
-- **Caching explícito.** Conocer y declarar `fetch` cache (`force-cache` / `no-store` / `revalidate`), `revalidatePath`/`revalidateTag` para invalidación.
-- **`content-visibility: auto`** para listas largas off-screen.
-- **Resource hints** (`preload`, `preconnect`) para recursos críticos.
+- **`generateMetadata` for all SEO** (title, description, OG, canonical). Never manual tags in the body.
+- **Always `next/image`** — explicit width/height, `priority` for LCP, modern formats.
+- **Explicit caching.** Know and declare the `fetch` cache (`force-cache` / `no-store` / `revalidate`), `revalidatePath`/`revalidateTag` for invalidation.
+- **`content-visibility: auto`** for long off-screen lists.
+- **Resource hints** (`preload`, `preconnect`) for critical resources.
 
 ## Anti-Patterns
 
-- `'use client'` en la raíz del árbol (mata todo el beneficio de RSC)
-- `useEffect` + `fetch` en el cliente para datos que podían venir del server
-- Fetches en cascada (cada componente espera al padre sin necesidad)
-- `export *` barrel files en libs internas
-- Pasar objetos de DB crudos como props a Client Components
-- Hardcodear `revalidate`/cache sin entender la estrategia
-- Secrets o lógica sensible en código que cruza a `'use client'`
+- `'use client'` at the root of the tree (kills all the benefit of RSC)
+- `useEffect` + `fetch` on the client for data that could have come from the server
+- Cascading fetches (each component needlessly waits for its parent)
+- `export *` barrel files in internal libs
+- Passing raw DB objects as props to Client Components
+- Hardcoding `revalidate`/cache without understanding the strategy
+- Secrets or sensitive logic in code that crosses into `'use client'`
 
 ---
 
-_Derivado de [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) (react-best-practices, MIT). Condensado al formato Arcane._
+_Derived from [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) (react-best-practices, MIT). Condensed into the Arcane format._

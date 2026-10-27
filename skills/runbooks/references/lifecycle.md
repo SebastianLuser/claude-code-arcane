@@ -1,14 +1,14 @@
-# Ciclo de Vida de Runbooks
+# Runbook Lifecycle
 
 ## Review
-- Review obligatorio tras cada incident que uso el runbook
-- Audit trimestral: stale (>6 meses sin commit), URLs rotas, comandos que no corren
-- Drills trimestrales: simular escenario, medir si sirve
+- Mandatory review after every incident that used the runbook
+- Quarterly audit: stale (>6 months without a commit), broken URLs, commands that do not run
+- Quarterly drills: simulate the scenario, measure whether it helps
 
-## Automatizacion Progresiva
+## Progressive Automation
 
 ```
-runbook manual -> script en repo -> cronjob -> auto-remediation (alerta -> webhook -> accion)
+manual runbook -> script in the repo -> cronjob -> auto-remediation (alert -> webhook -> action)
 ```
 
-Aunque se automatice, el runbook describe el "por que" para cuando el script falle.
+Even once automated, the runbook describes the "why" for when the script fails.

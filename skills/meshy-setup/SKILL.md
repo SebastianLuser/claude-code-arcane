@@ -1,64 +1,64 @@
 ---
 name: meshy-setup
-description: "Conecta Claude Code con Meshy AI: API key, registro del MCP oficial de Meshy, verificacion de balance y estructura de assets. Usar para: setup meshy, conectar meshy, mcp meshy, meshy api key."
+description: "Connects Claude Code to Meshy AI: API key, registration of the official Meshy MCP, balance check and asset structure. Use for: setup meshy, connect meshy, mcp meshy, meshy api key."
 category: "gamedev"
 argument-hint: "[--verify]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-# meshy-setup — Conectar Meshy AI
+# meshy-setup — Connect Meshy AI
 
-Deja el proyecto listo para generar assets 3D con Meshy. **Este repo no trae el MCP server** — es un paquete npm de Meshy que se registra en el cliente. Esta skill lo cablea, verifica y reporta; no vendoriza nada.
+Gets the project ready to generate 3D assets with Meshy. **This repo does not ship the MCP server** — it is a Meshy npm package that is registered in the client. This skill wires it up, verifies it and reports; it vendors nothing.
 
-`--verify` salta la configuracion y corre solo la Phase 4.
+`--verify` skips the configuration and runs only Phase 4.
 
 ---
 
 ## Phase 1: API key
 
-La key vive en el entorno, nunca en el repo.
+The key lives in the environment, never in the repo.
 
 ```bash
-echo "${MESHY_API_KEY:0:4}"   # esperado: msy_
+echo "${MESHY_API_KEY:0:4}"   # expected: msy_
 ```
 
-- **Si esta**: confirmar el prefijo `msy_` y seguir. No imprimir la key completa nunca.
-- **Si falta**: pedirsela al usuario y guardarla en `.env` del proyecto. Verificar que `.env` este en `.gitignore` **antes** de escribir — si no esta, agregarlo primero.
+- **If it is there**: confirm the `msy_` prefix and continue. Never print the full key.
+- **If it is missing**: ask the user for it and save it in the project's `.env`. Verify that `.env` is in `.gitignore` **before** writing — if it is not, add it first.
 
-Se saca de meshy.ai → Settings → API Keys. Requiere plan pago para la API.
+It comes from meshy.ai → Settings → API Keys. The API requires a paid plan.
 
-> Si el usuario pega la key en el chat, escribirla a `.env` y avisarle que rote esa key si el transcript se comparte.
+> If the user pastes the key into the chat, write it to `.env` and tell them to rotate that key if the transcript gets shared.
 
 ---
 
-## Phase 2: Registrar el MCP
+## Phase 2: Register the MCP
 
-Chequear si ya esta registrado antes de tocar nada — es idempotente, nunca duplicar:
+Check whether it is already registered before touching anything — it is idempotent, never duplicate:
 
 ```bash
 claude mcp list | grep -i meshy
 ```
 
-Si no aparece, mostrar el comando y **pedir aprobacion antes de correrlo**:
+If it does not show up, show the command and **ask for approval before running it**:
 
 ```bash
 claude mcp add-json meshy '{"command":"npx","args":["-y","@meshy-ai/meshy-mcp-server"],"env":{"MESHY_API_KEY":"msy_YOUR_API_KEY"}}'
 ```
 
-- Paquete: `@meshy-ai/meshy-mcp-server` (npm, oficial de Meshy).
-- Requiere Node. Si falta `node --version`, avisar y no abortar el resto.
-- Sustituir `msy_YOUR_API_KEY` por la key real. Si el usuario prefiere no dejarla en la config del cliente, registrar el server sin `env` y exportar `MESHY_API_KEY` desde el shell.
+- Package: `@meshy-ai/meshy-mcp-server` (npm, official from Meshy).
+- Requires Node. If `node --version` fails, warn and do not abort the rest.
+- Replace `msy_YOUR_API_KEY` with the real key. If the user prefers not to leave it in the client config, register the server without `env` and export `MESHY_API_KEY` from the shell.
 
-El server expone 24 tools `mcp__meshy__*`: generacion (`text_to_3d`, `image_to_3d`, `multi_image_to_3d`, `creative_lab`), post-proceso (`remesh`, `retexture`, `rig`, `animate`), conversion (`convert`, `resize`, `uv_unwrap`), imagen (`text_to_image`, `image_to_image`), tasks (`get_task_status`, `list_tasks`, `cancel_task`, `download_model`, `list_models`), impresion (`analyze_printability`, `repair_printability`, `process_multicolor`, `send_to_slicer`) y `check_balance`.
+The server exposes 24 `mcp__meshy__*` tools: generation (`text_to_3d`, `image_to_3d`, `multi_image_to_3d`, `creative_lab`), post-processing (`remesh`, `retexture`, `rig`, `animate`), conversion (`convert`, `resize`, `uv_unwrap`), image (`text_to_image`, `image_to_image`), tasks (`get_task_status`, `list_tasks`, `cancel_task`, `download_model`, `list_models`), printing (`analyze_printability`, `repair_printability`, `process_multicolor`, `send_to_slicer`) and `check_balance`.
 
 ---
 
-## Phase 3: Estructura del proyecto
+## Phase 3: Project structure
 
-Crear si no existen — todo idempotente:
+Create if missing — everything idempotent:
 
-1. `assets/3d/` con un `.gitkeep`.
-2. Entradas de **Git LFS** en `.gitattributes`. Verificar `git lfs version` primero; si LFS no esta instalado, avisar y **no** escribir las entradas (peor que no tenerlas es tenerlas sin LFS):
+1. `assets/3d/` with a `.gitkeep`.
+2. **Git LFS** entries in `.gitattributes`. Check `git lfs version` first; if LFS is not installed, warn and do **not** write the entries (having them without LFS is worse than not having them):
    ```
    *.glb  filter=lfs diff=lfs merge=lfs -text
    *.fbx  filter=lfs diff=lfs merge=lfs -text
@@ -66,51 +66,51 @@ Crear si no existen — todo idempotente:
    *.stl  filter=lfs diff=lfs merge=lfs -text
    *.3mf  filter=lfs diff=lfs merge=lfs -text
    ```
-   `meshy.json` y `thumb.png` quedan fuera de LFS a proposito: son chicos y son lo que hace grepeable el catalogo.
-3. `.env` en `.gitignore`.
+   `meshy.json` and `thumb.png` stay out of LFS on purpose: they are small and they are what makes the catalog greppable.
+3. `.env` in `.gitignore`.
 
-Mostrar el diff de `.gitattributes` y `.gitignore` y pedir aprobacion antes de escribir.
+Show the diff of `.gitattributes` and `.gitignore` and ask for approval before writing.
 
-Para derivados web gratis hace falta `gltf-transform`. No instalarlo: se usa via `npx` on-demand.
+Free web derivatives need `gltf-transform`. Do not install it: it is used via `npx` on demand.
 
 ---
 
-## Phase 4: Verificar
+## Phase 4: Verify
 
 ```bash
 claude mcp list
 ```
 
-Con el server conectado, confirmar credenciales y balance con la tool gratis:
+With the server connected, confirm the credentials and balance with the free tool:
 
 ```
 mcp__meshy__check_balance
 ```
 
-Reportar el balance en creditos. **Si el server no esta conectado, avisar explicitamente** y aclarar que ninguna operacion de generacion esta disponible — no asumir exito.
+Report the balance in credits. **If the server is not connected, say so explicitly** and make clear that no generation operation is available — do not assume success.
 
 ---
 
-## Phase 5: Resumen
+## Phase 5: Summary
 
-Reportar:
-- Origen de la API key (`.env` nueva vs ya presente en el entorno). Nunca el valor.
-- Si el MCP se registro ahora o ya estaba.
-- Que se creo o modifico: `assets/3d/`, `.gitattributes`, `.gitignore`.
-- Balance de creditos actual.
+Report:
+- Origin of the API key (new `.env` vs already present in the environment). Never the value.
+- Whether the MCP was registered now or was already there.
+- What was created or modified: `assets/3d/`, `.gitattributes`, `.gitignore`.
+- Current credit balance.
 
 **Verdict:**
-- **READY** — MCP conectado en `claude mcp list` y `check_balance` respondio.
-- **PENDING** — config escrita pero el server no conecta todavia (tipico: Node ausente, o hay que reiniciar Claude Code para que levante el server). Aclarar que generar **aun no** esta disponible.
-- **BLOCKED** — falta la API key, el plan no tiene acceso a la API, o `.gitignore` no se pudo asegurar. Indicar el fix concreto.
+- **READY** — MCP connected in `claude mcp list` and `check_balance` responded.
+- **PENDING** — config written but the server does not connect yet (typical: Node missing, or Claude Code has to be restarted to start the server). Make clear that generation is **not yet** available.
+- **BLOCKED** — the API key is missing, the plan has no API access, or `.gitignore` could not be secured. State the concrete fix.
 
 ## Next Steps
 
-- `/meshy-generate` para el primer asset (leer el gate de creditos antes)
-- `/meshy-derive` para sacar targets de un master existente
-- `/meshy-print` si el destino es impresion 3D
-- Si ya hay art bible, `/asset-spec` primero: los prompts se derivan de ahi, no se inventan
+- `/meshy-generate` for the first asset (read the credits gate first)
+- `/meshy-derive` to get targets out of an existing master
+- `/meshy-print` if the target is 3D printing
+- If there is already an art bible, `/asset-spec` first: the prompts are derived from it, not invented
 
 ---
 
-> Las reglas de gasto, estructura de `assets/3d/`, ledger `meshy.json` y tabla de derivados estan en `.claude/rules/meshy-assets.md` y `.claude/rules/meshy-files.md`. Leerlas antes de cualquier operacion que gaste creditos.
+> The spending rules, the `assets/3d/` structure, the `meshy.json` ledger and the derivatives table are in `.claude/rules/meshy-assets.md` and `.claude/rules/meshy-files.md`. Read them before any operation that spends credits.

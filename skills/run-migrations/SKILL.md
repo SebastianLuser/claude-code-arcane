@@ -1,6 +1,6 @@
 ---
 name: run-migrations
-description: "Quick-reference para golang-migrate: crea migration up/down, corre pending, rollback last. Para schema design, zero-downtime, multi-tenant ver /data-migrations."
+description: "Quick reference for golang-migrate: creates up/down migrations, runs pending ones, rolls back the last one. For schema design, zero-downtime and multi-tenant see /data-migrations."
 category: "database"
 argument-hint: "[create <name> | up | down [N]]"
 user-invocable: true
@@ -11,11 +11,11 @@ allowed-tools: Read, Bash
 
 ## Trigger
 
-When the user says "run migrations", "migrate", "crear migracion", "nueva migracion", "rollback migration", or similar.
+When the user says "run migrations", "migrate", "create migration", "new migration", "rollback migration", or similar.
 
 ## Workflow
 
-### Modo: create new migration
+### Mode: create new migration
 
 1. Ask for the migration name if not provided
 2. Generate the migration files:
@@ -28,7 +28,7 @@ When the user says "run migrations", "migrate", "crear migracion", "nueva migrac
 4. Help the user write the SQL for both files
 5. Remind the user to consult `/data-migrations` if the change affects production tables (zero-downtime patterns, locks, batching, online DDL)
 
-### Modo: run migrations
+### Mode: run migrations
 
 1. Check the database connection string from `.env.local` or environment
 2. Run pending migrations:
@@ -37,7 +37,7 @@ When the user says "run migrations", "migrate", "crear migracion", "nueva migrac
    ```
 3. Verify success — query `schema_migrations` table to confirm version
 
-### Modo: rollback
+### Mode: rollback
 
 1. Confirm with user before destructive rollback
 2. To rollback the last migration:

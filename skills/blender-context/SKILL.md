@@ -1,6 +1,6 @@
 ---
 name: blender-context
-description: "Foundation de Blender: version instalada, MCP recomendado (comunidad vs oficial), modo headless, unidades y ejes, estructura de assets. Los demas blender-* dependen de este. Usar para: setup blender, contexto blender, mcp blender, blender headless."
+description: "Blender foundation: installed version, recommended MCP (community vs official), headless mode, units and axes, asset structure. The other blender-* skills depend on this one. Use for: blender setup, blender context, blender mcp, headless blender."
 category: "gamedev"
 argument-hint: "[--verify]"
 user-invocable: true
@@ -8,138 +8,138 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 # blender-context — Foundation
 
-Deja claro con que Blender se esta trabajando y como se lo va a manejar, **antes** de tocar
-geometria. Todos los demas skills `blender-*` asumen que esto ya corrio.
+Makes it clear which Blender is being used and how it will be driven, **before** touching
+geometry. Every other `blender-*` skill assumes this already ran.
 
-`--verify` salta la Phase 3 y solo reporta el estado actual.
+`--verify` skips Phase 3 and only reports the current state.
 
 ---
 
-## Phase 1: Detectar Blender
+## Phase 1: Detect Blender
 
 ```bash
 blender --version
 ```
 
-Si `blender` no esta en el PATH, buscar la instalacion antes de darla por perdida:
+If `blender` is not on the PATH, look for the installation before giving it up for lost:
 
-| Plataforma | Ruta tipica |
+| Platform | Typical path |
 |---|---|
 | Windows | `C:\Program Files\Blender Foundation\Blender <ver>\blender.exe` |
 | macOS | `/Applications/Blender.app/Contents/MacOS/Blender` |
-| Linux | `/usr/bin/blender`, o el AppImage donde lo dejo el usuario |
+| Linux | `/usr/bin/blender`, or the AppImage wherever the user put it |
 
-Anotar la version mayor: define que features existen y que MCP sirve. Si hay varias instalaciones,
-preguntar cual es la del proyecto — no elegir la mas nueva por default.
+Note the major version: it defines which features exist and which MCP works. If there are several installations,
+ask which one belongs to the project — do not pick the newest by default.
 
-**Si no hay Blender**, reportar BLOCKED y parar. Ningun otro `blender-*` puede correr sin binario.
+**If there is no Blender**, report BLOCKED and stop. No other `blender-*` can run without the binary.
 
 ---
 
-## Phase 2: Estructura del proyecto
+## Phase 2: Project structure
 
-Buscar `.blend` en el arbol (excluir `*.blend1` y `*.blend2`, que son backups):
+Look for `.blend` files in the tree (exclude `*.blend1` and `*.blend2`, which are backups):
 
-- **Si hay**: listar donde estan y confirmar cual es el archivo de trabajo.
-- **Si no hay**: preguntar si se arranca de cero o si los fuentes viven afuera del repo.
+- **If there are some**: list where they are and confirm which one is the working file.
+- **If there are none**: ask whether this starts from scratch or the sources live outside the repo.
 
-La convencion que asume el resto del perfil:
+The convention the rest of the profile assumes:
 
 ```
 assets/3d/<asset-slug>/
-├── source.blend        # el archivo de trabajo, por LFS
-├── textures/           # fuentes de textura
-└── export/             # lo que consume el engine (glb/fbx), por LFS
+├── source.blend        # the working file, via LFS
+├── textures/           # texture sources
+└── export/             # what the engine consumes (glb/fbx), via LFS
 ```
 
-Si el proyecto ya usa `meshy-setup`, esta estructura ya existe y el `.blend` de `meshy-derive`
-entra como `source.blend`. **No crear una estructura paralela.**
+If the project already uses `meshy-setup`, this structure already exists and the `.blend` from `meshy-derive`
+comes in as `source.blend`. **Do not create a parallel structure.**
 
-Verificar `.gitignore` y `.gitattributes`: `*.blend1` ignorado, binarios por LFS. Mostrar el diff
-y pedir aprobacion antes de escribir.
+Check `.gitignore` and `.gitattributes`: `*.blend1` ignored, binaries via LFS. Show the diff
+and ask for approval before writing.
 
 ---
 
-## Phase 3: Elegir como operar Blender
+## Phase 3: Choose how to operate Blender
 
-### Headless — el default
+### Headless — the default
 
 ```bash
-blender --background <archivo.blend> --python <script.py>
+blender --background <file.blend> --python <script.py>
 ```
 
-Reproducible, versionable, corre en CI, no necesita ventana abierta. **Es el camino por default
-para cualquier paso automatizable.** Los scripts van a `assets/3d/_scripts/` o al lado del skill
-que los usa, nunca inline en el chat.
+Reproducible, versionable, runs in CI, needs no open window. **It is the default path
+for any step that can be automated.** Scripts go to `assets/3d/_scripts/` or next to the skill
+that uses them, never inline in the chat.
 
-### MCP — para explorar e iterar
+### MCP — for exploring and iterating
 
-Dos opciones. **Ninguna se instala desde este repo**: el addon vive en la instalacion de Blender
-del usuario, y la decision es suya.
+Two options. **Neither is installed from this repo**: the addon lives in the user's Blender
+installation, and the decision is theirs.
 
-| | Comunidad (`ahujasid/blender-mcp`) | Oficial (Blender Lab) |
+| | Community (`ahujasid/blender-mcp`) | Official (Blender Lab) |
 |---|---|---|
-| Estado | Estandar de facto, MIT, mantenido | v1.0.0, **experimental, sin roadmap de release** |
-| Blender | 3.0+ | 5.x (el addon viene con el engine en las versiones nuevas) |
-| Para que sirve | Autoria: crear y modificar objetos, materiales, correr Python | Inspeccion: interfaz en lenguaje natural a la Python API, entender escenas |
-| Extras | Poly Haven (assets, texturas, HDRIs), Sketchfab, Hyper3D | Ninguno, es deliberadamente minimo |
+| Status | De facto standard, MIT, maintained | v1.0.0, **experimental, no release roadmap** |
+| Blender | 3.0+ | 5.x (the addon ships with the engine in newer versions) |
+| What it is for | Authoring: create and modify objects, materials, run Python | Inspection: natural-language interface to the Python API, understanding scenes |
+| Extras | Poly Haven (assets, textures, HDRIs), Sketchfab, Hyper3D | None, it is deliberately minimal |
 | Repo | `github.com/ahujasid/blender-mcp` | `projects.blender.org/lab/blender_mcp` |
 
-Recomendacion: **el de la comunidad** si el trabajo es producir assets; el oficial si lo que se
-quiere es entender o debuggear una escena ajena.
+Recommendation: **the community one** if the work is producing assets; the official one if the goal
+is to understand or debug someone else's scene.
 
-> Los dos ejecutan el Python generado por el LLM **sin sandbox**. Antes de la primera operacion:
-> commit limpio en el repo y `.blend` guardado. Las reglas completas estan en
+> Both run the Python generated by the LLM **without a sandbox**. Before the first operation:
+> a clean commit in the repo and the `.blend` saved. The full rules are in
 > `.claude/rules/blender-pipeline.md`.
 
-Si el usuario quiere el MCP, darle el comando y **no correrlo sin aprobacion**:
+If the user wants the MCP, give them the command and **do not run it without approval**:
 
 ```bash
 claude mcp add blender -- uvx blender-mcp
 ```
 
-Necesita `uv` (`winget install astral-sh.uv`) y el addon: `uvx blender-mcp install-addon`, despues
-habilitarlo en las preferencias de Blender. En el viewport se conecta desde el panel `N` →
-pestana BlenderMCP.
+It needs `uv` (`winget install astral-sh.uv`) and the addon: `uvx blender-mcp install-addon`, then
+enable it in Blender's preferences. In the viewport it connects from the `N` panel →
+BlenderMCP tab.
 
 ---
 
-## Phase 4: Unidades y ejes
+## Phase 4: Units and axes
 
-Confirmar con el usuario el destino del asset y anotarlo. La tabla completa esta en la rule; lo
-que hay que fijar ahora es una sola linea: **destino, eje up, y factor de escala**.
+Confirm the asset's destination with the user and write it down. The full table is in the rule; what
+has to be pinned down now is a single line: **destination, up axis, and scale factor**.
 
-Si el destino es Unity o UE5 y el proyecto tiene un `blender-context` previo con otro destino,
-avisar del cambio en lugar de sobrescribirlo en silencio.
+If the destination is Unity or UE5 and the project has a previous `blender-context` with another destination,
+warn about the change instead of silently overwriting it.
 
 ---
 
-## Phase 5: Resumen
+## Phase 5: Summary
 
-Reportar:
-- Version de Blender y ruta del binario.
-- Archivos `.blend` encontrados y cual es el de trabajo.
-- Modo de operacion elegido (headless siempre disponible; MCP si esta conectado y cual).
-- Destino, eje up y escala.
-- Que se creo o modifico en el repo (`.gitignore`, `.gitattributes`, estructura de carpetas).
+Report:
+- Blender version and binary path.
+- `.blend` files found and which one is the working file.
+- Chosen operating mode (headless always available; MCP if connected, and which one).
+- Destination, up axis and scale.
+- What was created or modified in the repo (`.gitignore`, `.gitattributes`, folder structure).
 
 **Verdict:**
-- **READY** — Blender detectado, estructura en su lugar, destino definido. Los demas `blender-*`
-  pueden correr.
-- **PENDING** — todo definido pero el MCP no conecta. Aclarar que el camino headless **si** esta
-  disponible y que solo falta la parte interactiva.
-- **BLOCKED** — no hay binario de Blender, o el destino del asset no se pudo definir. Indicar el
-  fix concreto.
+- **READY** — Blender detected, structure in place, destination defined. The other `blender-*`
+  skills can run.
+- **PENDING** — everything defined but the MCP does not connect. Make clear that the headless path **is**
+  available and that only the interactive part is missing.
+- **BLOCKED** — no Blender binary, or the asset's destination could not be defined. State the
+  concrete fix.
 
 ## Next Steps
 
-- `/blender-modeling` para topologia, modifiers y presupuesto de tris
-- `/blender-materials` para shader nodes, UVs y bake
-- `/blender-animation` para rigging, keyframes y retargeting
-- `/blender-export` cuando el asset esta listo para el engine
-- Si el asset viene de Meshy, `/meshy-derive` primero para bajar el `.blend`
+- `/blender-modeling` for topology, modifiers and tri budget
+- `/blender-materials` for shader nodes, UVs and bake
+- `/blender-animation` for rigging, keyframes and retargeting
+- `/blender-export` when the asset is ready for the engine
+- If the asset comes from Meshy, `/meshy-derive` first to download the `.blend`
 
 ---
 
-> → Las reglas de ejes, escala, topologia, color space y Git estan en
-> `.claude/rules/blender-pipeline.md`. Leerlas antes de la primera operacion.
+> → The rules for axes, scale, topology, color space and Git are in
+> `.claude/rules/blender-pipeline.md`. Read them before the first operation.

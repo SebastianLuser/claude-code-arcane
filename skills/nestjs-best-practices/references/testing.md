@@ -2,7 +2,7 @@
 
 ## 6.3 Use Testing Module for Unit Tests — HIGH
 
-Entorno aislado con `Test.createTestingModule` y dependencias mockeadas.
+An isolated environment with `Test.createTestingModule` and mocked dependencies.
 ```ts
 const moduleRef = await Test.createTestingModule({
   providers: [
@@ -15,11 +15,11 @@ const service = moduleRef.get(OrdersService);
 
 ## 6.2 Mock External Services in Tests — HIGH
 
-Nunca llamar APIs o DBs reales en tests. Mockear todas las dependencias externas con escenarios realistas (éxito, error, timeout).
+Never call real APIs or DBs in tests. Mock every external dependency with realistic scenarios (success, error, timeout).
 
 ## 6.1 Use Supertest for E2E Testing — HIGH
 
-Probar el ciclo completo request/response incluyendo middleware, guards y pipes. Setup/teardown apropiados.
+Test the full request/response cycle including middleware, guards and pipes. Proper setup/teardown.
 ```ts
 const app = moduleRef.createNestApplication();
 await app.init();

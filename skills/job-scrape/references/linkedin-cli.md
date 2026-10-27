@@ -1,64 +1,64 @@
 # LinkedIn Search CLI
 
-Busca ofertas en el job board publico de LinkedIn (endpoints `jobs-guest`) para cualquier pais/region y remoto. Sin autenticacion, sin API key, **cero dependencias**: solo la stdlib de Python 3.
+Searches postings on LinkedIn's public job board (`jobs-guest` endpoints) for any country/region and remote. No authentication, no API key, **zero dependencies**: only the Python 3 stdlib.
 
-El script es `scripts/linkedin_search.py`. Portado del CLI en TypeScript vendoreado de [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search) (`.agents/skills/linkedin-search/`): los scripts de skill corren en el proyecto del usuario sin build step, y TypeScript ahi implica exigir Node 24+ para el type stripping nativo (ver `docs/coding-standards.md`). La traduccion se verifico comparando la salida de las dos versiones sobre el mismo HTML y el mismo detalle: identica.
+The script is `scripts/linkedin_search.py`. Ported from the vendored TypeScript CLI in [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search) (`.agents/skills/linkedin-search/`): skill scripts run in the user's project without a build step, and TypeScript there means requiring Node 24+ for native type stripping (see `docs/coding-standards.md`). The translation was verified by comparing the output of the two versions over the same HTML and the same detail: identical.
 
-Diferencias respecto del upstream, todas deliberadas:
-- `normalize_id` acepta el slash final: la URL del boton de compartir es `/jobs/view/<id>/?refId=...` y el regex original solo anclaba en `?`.
-- Warning `NO_CARDS_PARSED` a stderr cuando la respuesta trae contenido pero se parsean 0 cards (cambio de markup vs "no hay ofertas").
-- `&nbsp;` se normaliza a espacio comun: U+00A0 es invisible y rompe el matching de keywords en el JD.
-- Salida UTF-8 forzada: en Windows `stdout` es cp1252 y cualquier acento del JD reventaba al redirigir.
+Differences from upstream, all deliberate:
+- `normalize_id` accepts the trailing slash: the share-button URL is `/jobs/view/<id>/?refId=...` and the original regex only anchored on `?`.
+- `NO_CARDS_PARSED` warning to stderr when the response has content but 0 cards are parsed (markup change vs "no postings").
+- `&nbsp;` is normalized to a regular space: U+00A0 is invisible and breaks keyword matching in the JD.
+- Forced UTF-8 output: on Windows `stdout` is cp1252 and any accent in the JD blew up when redirecting.
 
-## ⚠️ Uso personal, volumen bajo
+## ⚠️ Personal use, low volume
 
-Lee paginas publicas de LinkedIn; el acceso automatizado va contra sus Terms of Service. **Mantener volumen bajo** (busquedas puntuales, no barridos masivos ni uso comercial). El script reintenta 429/5xx con backoff exponencial. `/job-scrape` pide confirmacion explicita antes de la primera corrida de la sesion.
+It reads public LinkedIn pages; automated access goes against their Terms of Service. **Keep volume low** (occasional searches, no mass sweeps or commercial use). The script retries 429/5xx with exponential backoff. `/job-scrape` asks for explicit confirmation before the first run of the session.
 
-## Comandos
+## Commands
 
-### Buscar ofertas
+### Search postings
 
 ```bash
-python .claude/skills/job-scrape/scripts/linkedin_search.py search -l "<lugar>" [flags]
+python .claude/skills/job-scrape/scripts/linkedin_search.py search -l "<place>" [flags]
 ```
 
 Flags:
-- `-l / --location <texto>` - **requerido.** Place string de LinkedIn: `"Spain"`, `"European Union"`, `"Remote"`, `"Berlin, Germany"`.
-- `-q / --query <texto>` - keywords (titulo, skill, rol). Recomendado.
-- `--jobage <dias>` - publicado en los ultimos `1`, `7`, `14` o `30` dias.
-- `--remote <modo>` - `remote`, `hybrid` u `onsite`.
-- `--page <n>` - paginacion (10 resultados por pagina).
-- `-n / --limit <n>` - tope de resultados emitidos (`0` no emite ninguno).
+- `-l / --location <text>` - **required.** LinkedIn place string: `"Spain"`, `"European Union"`, `"Remote"`, `"Berlin, Germany"`.
+- `-q / --query <text>` - keywords (title, skill, role). Recommended.
+- `--jobage <days>` - posted in the last `1`, `7`, `14` or `30` days.
+- `--remote <mode>` - `remote`, `hybrid` or `onsite`.
+- `--page <n>` - pagination (10 results per page).
+- `-n / --limit <n>` - cap on emitted results (`0` emits none).
 - `--format json|table|plain` - default `json`.
 
-### Detalle completo de una oferta
+### Full detail of a posting
 
 ```bash
 python .claude/skills/job-scrape/scripts/linkedin_search.py detail <id|url> [--format json|plain]
 ```
 
-Acepta el ID numerico del search, una URL `jobs/view/...` (con o sin slash final y query params, como la que da el boton de compartir) o un URN. Devuelve descripcion completa, seniority, tipo de empleo, industrias y link.
+Accepts the numeric ID from search, a `jobs/view/...` URL (with or without a trailing slash and query params, like the one the share button gives) or a URN. Returns the full description, seniority, employment type, industries and link.
 
-## Ejemplos
+## Examples
 
 ```bash
-# Fullstack remoto en un pais, ultima semana
+# Remote fullstack in a country, last week
 python .claude/skills/job-scrape/scripts/linkedin_search.py search -q "full stack developer" -l "Spain" --remote remote --jobage 7 --format table
 
-# Backend .NET remoto en una region
+# Remote .NET backend in a region
 python .claude/skills/job-scrape/scripts/linkedin_search.py search -q ".NET developer" -l "European Union" --remote remote --jobage 14 --format table
 
-# Game developer remoto global
+# Global remote game developer
 python .claude/skills/job-scrape/scripts/linkedin_search.py search -q "game developer" -l "Remote" --jobage 30 --format table
 
-# JD completo de una oferta
+# Full JD of a posting
 python .claude/skills/job-scrape/scripts/linkedin_search.py detail 4434569000 --format plain
 ```
 
-## Notas
+## Notes
 
-- Errores van a **stderr** como `{ "error": "...", "code": "..." }` con exit code `1`. Los diagnosticos no fatales usan la misma forma con clave `warning` (ej. `NO_CARDS_PARSED`) y no cambian el exit code.
-- El search de LinkedIn **no es determinista**: dos corridas seguidas con los mismos parametros pueden devolver ofertas distintas. No asumir que "no aparece" significa "no existe"; el dedup de `/job-scrape` esta justamente para eso.
-- `--format json` sirve para encadenar: sacar IDs y pasarlos a `detail`, o scorear ofertas contra los criterios (`match_score`) antes de crear notas en `03-Aplicaciones/` del career workspace.
-- Referencia de como se construyen las URLs upstream: `linkedin-urls.md`.
-- Tests de los parsers: `tests/job_scrape/test_linkedin_search.py` en el repo de Arcane.
+- Errors go to **stderr** as `{ "error": "...", "code": "..." }` with exit code `1`. Non-fatal diagnostics use the same shape with a `warning` key (e.g. `NO_CARDS_PARSED`) and do not change the exit code.
+- LinkedIn search **is not deterministic**: two consecutive runs with the same parameters can return different postings. Do not assume "does not appear" means "does not exist"; `/job-scrape`'s dedup exists precisely for that.
+- `--format json` is meant for chaining: pull IDs and pass them to `detail`, or score postings against the criteria (`match_score`) before creating notes in the career workspace's `03-Applications/`.
+- Reference for how the upstream URLs are built: `linkedin-urls.md`.
+- Parser tests: `tests/job_scrape/test_linkedin_search.py` in the Arcane repo.

@@ -51,7 +51,7 @@ Match developer terminology to user searches:
 Type seed keywords into App Store/Play Store search and record suggestions:
 
 ```
-"todo" → todo list, todo app, todo list app, todolist widget
+"to-do" → to-do list, to-do app, to-do list app, todolist widget
 "task" → task manager, task planner, task list, tasks to do
 "remind" → reminder app, reminder, reminders widget, remind me
 ```
@@ -64,21 +64,21 @@ Extract keywords from top 10 competitors in category (detailed in section below)
 
 **Expansion Techniques:**
 
-| Technique | Example (seed: "todo") |
+| Technique | Example (seed: "to-do") |
 |-----------|------------------------|
-| Add modifiers | free todo, best todo, simple todo |
-| Add actions | make todo list, create todo, organize todo |
-| Add platforms | todo app iphone, todo for mac, todo widget |
-| Add audiences | todo for students, business todo, family todo |
-| Add features | todo with reminders, todo calendar, todo sync |
-| Add problems | forgot tasks todo, procrastination todo |
+| Add modifiers | free to-do, best to-do, simple to-do |
+| Add actions | make to-do list, create to-do, organize to-do |
+| Add platforms | to-do app iphone, to-do for mac, to-do widget |
+| Add audiences | to-do for students, business to-do, family to-do |
+| Add features | to-do with reminders, to-do calendar, to-do sync |
+| Add problems | forgot tasks to-do, procrastination to-do |
 
 **Keyword Matrix Template:**
 
 | Core Term | Modifier 1 | Modifier 2 | Full Keyword |
 |-----------|------------|------------|--------------|
-| todo | free | app | free todo app |
-| todo | best | iphone | best todo iphone |
+| to-do | free | app | free to-do app |
+| to-do | best | iphone | best to-do iphone |
 | task | manager | simple | simple task manager |
 | reminder | daily | widget | daily reminder widget |
 | planner | weekly | calendar | weekly planner calendar |

@@ -1,6 +1,6 @@
-# Comunicacion durante Rollback
+# Communication during a Rollback
 
 - Status page update (Statuspage / Instatus)
-- Slack #incidents: que, cuando, impacto, ETA, responsable
-- Email stakeholders si user-facing
-- Horario escolar LatAm: escalada inmediata
+- Slack #incidents: what, when, impact, ETA, owner
+- Email stakeholders if user-facing
+- LatAm school hours: escalate immediately
