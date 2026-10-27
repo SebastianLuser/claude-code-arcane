@@ -32,6 +32,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+from posting_guard import check
+
 API_BASE = "https://www.getonbrd.com/api/v0"
 SEARCH_URL = f"{API_BASE}/search/jobs"
 PUBLIC_JOB_URL = "https://www.getonbrd.com/jobs"
@@ -86,22 +88,20 @@ def html_fetch(url):
     return _fetch(url, "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8") or ""
 
 
-BR_RE = re.compile(r"<\s*br\s*/?>", re.I)
-BLOCK_END_RE = re.compile(r"</(p|li|ul|ol|div|h\d)>", re.I)
 LI_OPEN_RE = re.compile(r"<li[^>]*>", re.I)
-TAG_RE = re.compile(r"<[^>]+>")
 
 
 def html_to_text(markup):
-    """HTML -> plain text, preserving paragraph/list breaks as newlines."""
+    """HTML -> (plain text, integrity): hidden content removed, list items as "- " lines.
+
+    The description is third-party text read next to the user's profile, so it
+    goes through posting_guard: what a browser would not show never reaches the
+    session, and the verdict travels with the record.
+    """
     if not markup:
-        return None
-    with_breaks = LI_OPEN_RE.sub("- ", BLOCK_END_RE.sub("\n", BR_RE.sub("\n", markup)))
-    text = html.unescape(TAG_RE.sub("", with_breaks)).replace("\xa0", " ")
-    text = re.sub(r"[ \t]+", " ", text)
-    text = re.sub(r" ?\n ?", "\n", text)
-    text = re.sub(r"\n{3,}", "\n\n", text).strip()
-    return text or None
+        return None, None
+    text, integrity = check(LI_OPEN_RE.sub(lambda m: m.group(0) + "- ", markup))
+    return text or None, integrity
 
 
 def unix_to_iso_date(unix):
@@ -128,6 +128,7 @@ def normalize_job(record):
         f"\nDeseable:\n{attrs['desirable']}" if attrs.get("desirable") else "",
     ]
 
+    description, integrity = html_to_text("\n".join(p for p in description_parts if p))
     return {
         "id": str(record.get("id")),
         "title": attrs.get("title") or "(untitled)",
@@ -144,7 +145,8 @@ def normalize_job(record):
         "salary_min_usd_month": attrs.get("min_salary"),
         "salary_max_usd_month": attrs.get("max_salary"),
         "applications_count": attrs.get("applications_count"),
-        "description": html_to_text("\n".join(p for p in description_parts if p)),
+        "description": description,
+        "integrity": integrity,
     }
 
 
@@ -348,7 +350,7 @@ def detail_via_microdata(slug):
     org_match = re.search(r'itemprop="hiringOrganization"', markup, re.I)
     company = micro_prop(markup, "name", org_match.start()) if org_match else None
 
-    description = None
+    description = integrity = None
     desc_match = re.search(r'itemprop="description"', markup, re.I)
     if desc_match:
         # Slice from after the closing ">" of the tag that carries the itemprop,
@@ -359,7 +361,7 @@ def detail_via_microdata(slug):
             found = re.search(marker, markup[start:], re.I)
             if found and found.start() > 0:
                 end = min(end, start + found.start())
-        description = html_to_text(markup[start:end])
+        description, integrity = html_to_text(markup[start:end])
 
     date_posted = micro_prop(markup, "datePosted")
 
@@ -380,6 +382,7 @@ def detail_via_microdata(slug):
         "salary_max_usd_month": micro_number(markup, "maxValue"),
         "applications_count": None,
         "description": description,
+        "integrity": integrity,
     }
 
 

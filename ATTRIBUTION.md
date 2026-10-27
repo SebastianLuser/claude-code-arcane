@@ -312,3 +312,43 @@ New skills: `linkedin-post` (with its 21 hook formulas in `references/hooks.json
 into `personal-brand`, and the voice template into the Voice section of `master-profile`.
 Platform limits were re-checked against LinkedIn Help and corrected where they differed.
 The same MIT notice above applies.
+
+## Job search pieces from ai-job-search
+
+**[ai-job-search-dev/ai-job-search](https://github.com/ai-job-search-dev/ai-job-search)**
+(formerly MadsLorentzen/ai-job-search), MIT License, Copyright (c) 2026 Mads Lorentzen.
+Adapted into the `job-hunt` and `freelance` profiles, rewritten as Arcane skills (Spanish
+steps, the career workspace in Obsidian, `seen_jobs.json`) instead of its commands:
+
+- `job-aplicar` from `/apply`, `job-outcome` from `/outcome`, `job-upskill` from the
+  `upskill` skill, and `job-scrape` from the `job-scraper` skill and the `linkedin-search`
+  CLI (ported from TypeScript to `scripts/linkedin_search.py`).
+- `cv-ats-export/scripts/verify_pdf.py` from `tools/verify_pdf.py`.
+- `job-scrape/scripts/posting_guard.py` (copied to `freelance-scan/scripts/`) from
+  `tools/posting_guard.py`, with Spanish verdicts and instruction patterns, called from
+  inside the portal CLIs; its spec from `tests/test_posting_guard.py`. The trust-boundary
+  rule in `rules/untrusted-content.md` follows its `09-web-research.md`.
+
+```
+MIT License
+
+Copyright (c) 2026 Mads Lorentzen
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```

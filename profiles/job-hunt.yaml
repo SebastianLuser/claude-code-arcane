@@ -30,6 +30,7 @@ skills:
 rules:
   universal:
     - drafter-reviewer
+    - untrusted-content
   gamedev:
     []
 
@@ -38,6 +39,8 @@ agents:
 
 permissions:
   allow:
+    - "Bash(python *posting_guard.py*)"
+    - "Bash(python3 *posting_guard.py*)"
     - "Bash(python *career_registry.py*)"
     - "Bash(python3 *career_registry.py*)"
     - "Bash(python *cv_export.py*)"

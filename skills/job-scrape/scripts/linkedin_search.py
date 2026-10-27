@@ -31,6 +31,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+from posting_guard import check
+
 SEARCH_URL = "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search"
 DETAIL_URL = "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting"
 
@@ -196,8 +198,6 @@ DETAIL_CRITERIA_RE = re.compile(
     re.I | re.S,
 )
 DETAIL_APPLY_RE = re.compile(r'class="topcard__link[^"]*"[^>]*href="([^"]+)"', re.I)
-BR_RE = re.compile(r"<\s*br\s*/?>", re.I)
-BLOCK_END_RE = re.compile(r"</(p|li|ul|ol|div|h\d)>", re.I)
 
 
 def parse_job_detail(markup, job_id):
@@ -210,12 +210,13 @@ def parse_job_detail(markup, job_id):
     loc_match = DETAIL_LOCATION_RE.search(markup)
     location = (clean(loc_match.group(1)) or None) if loc_match else None
 
-    # Rich description block. Keep paragraph/line breaks as newlines.
-    description = None
+    # Rich description block, through posting_guard: hidden markup and invisible
+    # characters never reach the session, and the verdict travels with the job.
+    description = integrity = None
     desc_match = DETAIL_DESC_RE.search(markup)
     if desc_match:
-        with_breaks = BLOCK_END_RE.sub("\n", BR_RE.sub("\n", desc_match.group(1)))
-        description = re.sub(r"\n{3,}", "\n\n", unescape(strip_tags(with_breaks))).strip() or None
+        description, integrity = check(desc_match.group(1))
+        description = description or None
 
     # Job-criteria items: subheader label -> text value.
     criteria = {
@@ -234,6 +235,7 @@ def parse_job_detail(markup, job_id):
         "date": None,
         "url": f"https://www.linkedin.com/jobs/view/{job_id}",
         "description": description,
+        "integrity": integrity,
         "seniority": criteria.get("seniority level"),
         "employmentType": criteria.get("employment type"),
         "jobFunction": criteria.get("job function"),
@@ -353,6 +355,8 @@ def run_detail(args):
                 f"Industries: {job['industries']}" if job["industries"] else "",
                 "",
                 job["description"] or "(no description)",
+                "",
+                job["integrity"]["verdict"] if job["integrity"] else "",
                 "",
                 f"URL: {job['url']}",
                 f"Apply: {job['applyUrl']}" if job["applyUrl"] else "",
