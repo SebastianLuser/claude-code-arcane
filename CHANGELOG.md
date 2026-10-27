@@ -1,3 +1,10 @@
+## [2.29.7](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.6...v2.29.7) (2026-10-27)
+
+
+### Bug Fixes
+
+* **skills:** repair broken scripts and references, wire up what nothing named ([2693ec6](https://github.com/SebastianLuser/claude-code-arcane/commit/2693ec628c10cc76e2480dbe232bc5cc5f39b5e1))
+
 ## [2.29.6](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.29.5...v2.29.6) (2026-10-26)
 
 
