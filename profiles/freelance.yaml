@@ -27,6 +27,7 @@ skills:
 rules:
   universal:
     - freelance-guardrails
+    - untrusted-content
   gamedev:
     []
 
@@ -37,6 +38,8 @@ permissions:
   allow:
     - "Bash(python *import_history.py*)"
     - "Bash(python3 *import_history.py*)"
+    - "Bash(python *posting_guard.py*)"
+    - "Bash(python3 *posting_guard.py*)"
     - "Bash(python *career_registry.py*)"
     - "Bash(python3 *career_registry.py*)"
     - "Bash(python *humanize.py*)"

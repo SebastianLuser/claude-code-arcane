@@ -45,7 +45,6 @@ from __future__ import annotations
 
 import argparse
 import collections
-import html
 import json
 import os
 import re
@@ -54,6 +53,8 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+
+from posting_guard import check, guard
 
 UA = "Mozilla/5.0 (compatible; claude-code-arcane/freelance-scan; +https://github.com/SebastianLuser/claude-code-arcane)"
 TIMEOUT = 30
@@ -215,9 +216,8 @@ def fetch_json(url: str):
 
 
 def strip_html(raw: str) -> str:
-    text = re.sub(r"<p>", "\n", raw or "")
-    text = re.sub(r"<[^>]+>", "", text)
-    return html.unescape(text).strip()
+    """Texto visible de un aviso: posting_guard saca lo oculto y los caracteres invisibles."""
+    return guard(raw or "", "html")[0]
 
 
 # Comas y espacios separan terminos. Solo espacios no alcanza: "typescript,backend"
@@ -298,6 +298,11 @@ def record(**kw):
         "salary_min": None, "salary_max": None, "tags": [], "excerpt": None,
     }
     base.update(kw)
+    # El aviso es texto de terceros: el veredicto de posting_guard viaja con el
+    # registro solo si alarma, para no sumar un campo a cada resultado limpio.
+    _, integrity = check("\n".join(str(base.get(k) or "") for k in ("title", "excerpt", "description")), "text")
+    if "flags" in integrity:
+        base["integrity"] = integrity
     return base
 
 
@@ -377,6 +382,7 @@ def getonbrd_detail(job_id: str):
     payload = fetch_json("{0}/jobs/{1}".format(GETONBRD_API, urllib.parse.quote(str(job_id))))
     data = payload.get("data") or {}
     attrs = data.get("attributes") or {}
+    _, integrity = check("\n".join(attrs.get(k) or "" for k in ("description", "functions", "desirable")))
     return {
         "source": "getonbrd",
         "id": str(data.get("id") or job_id),
@@ -390,6 +396,7 @@ def getonbrd_detail(job_id: str):
         "max_salary": attrs.get("max_salary"),
         "remote_modality": attrs.get("remote_modality"),
         "tags": attrs.get("tags") or [],
+        "integrity": integrity,
     }
 
 
