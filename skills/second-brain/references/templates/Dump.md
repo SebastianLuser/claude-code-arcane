@@ -6,6 +6,6 @@ tags: []
 
 # {{date:YYYY-MM-DD}} dump
 
-<!-- Tirá todo acá. Sin tags, sin decidir dónde va, sin orden. Una línea por cosa.
-     Tareas como `- [ ] ...`. Lo clasifica /review-dump a la noche. -->
+<!-- Throw everything here. No tags, no deciding where it goes, no order. One line per thing.
+     Tasks as `- [ ] ...`. /review-dump classifies it at night. -->
 

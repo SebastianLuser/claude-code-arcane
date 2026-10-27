@@ -1,65 +1,65 @@
 # Audio Mix — Anti-patterns
 
-## Mezclar en aislamiento
+## Mixing in isolation
 
-Aprobar cada categoría por separado y esperar que el conjunto funcione. El mix se valida jugando el caso peor: máxima densidad, con diálogo, con música de combate, en el dispositivo más chico.
+Approving each category separately and hoping the whole works. The mix is validated by playing the worst case: maximum density, with dialogue, with combat music, on the smallest device.
 
-## Release de ducking demasiado corto
+## Ducking release too short
 
-La música sube y baja a cada palabra y se escucha el bombeo. El release siempre más largo que el attack: 300-500 ms para diálogo.
+The music rises and falls with every word and the pumping is audible. Release always longer than attack: 300-500 ms for dialogue.
 
-## Ducking como solución al masking
+## Ducking as the fix for masking
 
-Si la música y el diálogo viven los dos en 500 Hz-2 kHz, hay que duckear tanto que el efecto es audible. Eso se resuelve en el arreglo, dejando el rango libre. El ducking es ajuste fino.
+If music and dialogue both live in 500 Hz-2 kHz, you have to duck so much that the effect is audible. That is solved in the arrangement, by leaving the range free. Ducking is fine adjustment.
 
-## Todo duckea a todo
+## Everything ducks everything
 
-Barks duckeando música, UI duckeando SFX, ambiente duckeando barks. El resultado es un mix que respira todo el tiempo y nunca está quieto. Definir qué duckea a qué, y que sea poco.
+Barks ducking music, UI ducking SFX, ambience ducking barks. The result is a mix that breathes all the time and is never still. Define what ducks what, and keep it to a few.
 
-## Un solo bus de SFX
+## A single SFX bus
 
-Con 40 enemigos, el feedback de la acción del jugador se pierde entre el resto. Separar `Player` de `World` es lo que permite protegerlo.
+With 40 enemies, the feedback for the player's action gets lost among the rest. Separating `Player` from `World` is what lets you protect it.
 
-## Diálogo y barks en el mismo bus
+## Dialogue and barks on the same bus
 
-Cada bark de combate duckea la música. Separarlos permite duckear por diálogo importante nada más.
+Every combat bark ducks the music. Separating them lets you duck for important dialogue only.
 
-## UI dentro de SFX
+## UI inside SFX
 
-El UI tiene otro nivel (−18 a −24 dB) y suele necesitar control de usuario propio. Metido en SFX, hereda un volumen que no le corresponde.
+UI has a different level (−18 to −24 dB) and usually needs its own user control. Placed inside SFX, it inherits a volume that does not belong to it.
 
-## Mix states que saltan
+## Mix states that jump
 
-Cambiar de snapshot instantáneamente se escucha como un corte. Interpolar 200-500 ms según el cambio.
+Switching snapshots instantly sounds like a cut. Interpolate 200-500 ms depending on the change.
 
-## Estados sin prioridad
+## States without priority
 
-Combat y Low health quieren activarse a la vez y el resultado depende del orden de evaluación. Prioridad explícita.
+Combat and Low health want to activate at once and the result depends on evaluation order. Explicit priority.
 
-## EQ correctivo en todo
+## Corrective EQ on everything
 
-Adelgazar cada fuente con EQ hasta que dejen de pelear produce un mix delgado y sin peso. El problema de raíz es la asignación de bandas, o hay demasiadas fuentes sonando.
+Thinning every source with EQ until they stop fighting produces a thin mix with no weight. The root problem is band allocation, or too many sources playing.
 
-## Confundir "suena chico" con problema de EQ
+## Mistaking "sounds small" for an EQ problem
 
-Cuando todo suena chico, casi siempre hay demasiadas voces activas y ninguna tiene lugar. Es un problema de voice count, y el EQ no lo arregla.
+When everything sounds small, there are almost always too many active voices and none has room. It is a voice count problem, and EQ does not fix it.
 
-## Nada de headroom
+## No headroom
 
-Mezclar apuntando al caso promedio y clippear cuando coinciden explosión, música y diálogo. El margen se calcula contra el peor caso.
+Mixing for the average case and clipping when an explosion, music and dialogue coincide. The margin is calculated against the worst case.
 
-## Medir loudness en un asset aislado
+## Measuring loudness on an isolated asset
 
-Los targets de LUFS son del programa completo en gameplay representativo. Medir un archivo no dice nada del cumplimiento.
+LUFS targets apply to the full program in representative gameplay. Measuring one file says nothing about compliance.
 
-## Asumir un target sin verificar
+## Assuming a target without verifying it
 
-Los targets de plataforma se revisan. Confirmar el vigente antes de certificación en vez de confiar en un número memorizado.
+Platform targets get revised. Confirm the current one before certification instead of trusting a memorized number.
 
-## Ignorar el true peak
+## Ignoring true peak
 
-Un mix que llega a 0 dBFS en PCM puede generar picos por encima al codificarse en lossy. −1 dBTP existe por eso.
+A mix that reaches 0 dBFS in PCM can produce higher peaks once encoded to lossy. −1 dBTP exists for that reason.
 
-## Mezclar solo con auriculares buenos
+## Mixing only on good headphones
 
-El mix suena perfecto en los monitores del sound designer y se cae en el speaker de un handheld. Validar en el dispositivo más chico del target.
+The mix sounds perfect on the sound designer's monitors and falls apart on a handheld speaker. Validate on the smallest target device.

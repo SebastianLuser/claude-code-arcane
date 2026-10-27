@@ -1,144 +1,145 @@
-# Vault Conventions Rule (second brain en Obsidian)
+# Vault Conventions Rule (second brain in Obsidian)
 
-Reglas que gobiernan toda escritura dentro de un vault de Obsidian. Existen porque un agente que escribe notas sin restricciones degrada el vault mas rapido de lo que lo construye: linkea todo con todo, arrastra tareas en silencio y renombra archivos rompiendo `[[wikilinks]]`.
+Rules that govern every write inside an Obsidian vault. They exist because an agent writing notes without constraints degrades the vault faster than it builds it: it links everything to everything, silently carries tasks forward and renames files, breaking `[[wikilinks]]`.
 
-Las rutas son relativas al vault (`--vault`, env `OBSIDIAN_VAULT`, o el directorio actual si contiene `.obsidian/`).
+Paths are relative to the vault (`--vault`, env `OBSIDIAN_VAULT`, or the current directory if it contains `.obsidian/`).
 
-## Cuando aplica
+## When it applies
 
-- Cualquier skill del profile `second-brain` que cree o edite notas.
-- Cualquier escritura en un directorio que contenga `.obsidian/`, incluso desde otro skill.
-- NO aplica a los archivos de configuracion del vault (`.obsidian/**`): no se tocan nunca sin pedido explicito del usuario.
+- Any skill in the `second-brain` profile that creates or edits notes.
+- Any write in a directory that contains `.obsidian/`, even from another skill.
+- It does NOT apply to the vault's configuration files (`.obsidian/**`): those are never touched without an explicit request from the user.
 
-## Quién escribe cada archivo
+## Who writes each file
 
-Antes de tocar cualquier cosa, la pregunta es de quién es ese archivo. Hay tres clases y el permiso de escritura es distinto en cada una. Adaptado de la distinción **autorado / proyectado** de la base de conocimiento de producto de Educabot, que es la que hace que un agente y una persona escriban en el mismo repositorio sin pisarse.
+Before touching anything, the question is whose file it is. There are three classes and the write permission differs for each. Adapted from the **authored / projected** distinction in Educabot's product knowledge base, which is what lets an agent and a person write in the same repository without stepping on each other.
 
-| Clase | Quién escribe | Qué puede hacer el agente | Ejemplos |
+| Class | Who writes | What the agent may do | Examples |
 |---|---|---|---|
-| **Autorado** | La persona. Cambia lento | **Nada sin approval.** Ni reformatear, ni "mejorar" | Dumps, notas atómicas, hubs, clips, proyectos, el `CLAUDE.md` del vault, la sección `## Reflexión` de los reviews |
-| **Sintetizado** | El agente, con approval, y queda como nota permanente | Proponer y escribir tras el OK. Idempotente: correr dos veces no duplica | Dailies, weeklies, monthlies, el `## Historial` de un hub |
-| **Proyectado** | El agente, sin preguntar. Derivado y descartable | Reescribir completo cuando corresponda | `hot.md`, el índice `.vault-index.json`, las vistas `.base` |
+| **Authored** | The person. Changes slowly | **Nothing without approval.** No reformatting, no "improving" | Dumps, atomic notes, hubs, clips, projects, the vault's `CLAUDE.md`, the `## Reflection` section of the reviews |
+| **Synthesized** | The agent, with approval, and it stays as a permanent note | Propose, and write after the OK. Idempotent: running twice does not duplicate | Dailies, weeklies, monthlies, a hub's `## History` |
+| **Projected** | The agent, without asking. Derived and disposable | Rewrite it in full when appropriate | `hot.md`, the `.vault-index.json` index, the `.base` views |
 
-Tres consecuencias que resuelven las dudas que aparecen en la práctica:
+Three consequences that settle the questions that come up in practice:
 
-- **Lo proyectado no se edita a mano.** Si el usuario lo edita, el próximo review lo pisa. Por eso `hot.md` lleva la advertencia adentro.
-- **Lo proyectado no es fuente de verdad.** Si contradice a una nota, la nota gana. Se puede borrar sin perder nada.
-- **Lo autorado no se toca ni para arreglarlo.** Si una nota del usuario tiene el frontmatter roto, se propone el arreglo; no se aplica solo. La excepción son las categorías que `/vault-tidy` aplica con approval item por item.
+- **Projected files are not edited by hand.** If the user edits one, the next review overwrites it. That is why `hot.md` carries the warning inside.
+- **Projected files are not a source of truth.** If one contradicts a note, the note wins. It can be deleted without losing anything.
+- **Authored files are not touched, not even to fix them.** If one of the user's notes has broken frontmatter, propose the fix; do not apply it on your own. The exception is the categories `/vault-tidy` applies with item-by-item approval.
 
-Si no sabés en qué clase cae un archivo, es autorado. El default es no escribir.
+If you do not know which class a file falls into, it is authored. The default is not to write.
 
-## El vault apunta, no copia
+## The vault points, it does not copy
 
-Cuando algo ya tiene una fuente de verdad afuera, el vault guarda **el puntero y el porqué**, nunca una copia:
+When something already has a source of truth outside, the vault keeps **the pointer and the why**, never a copy:
 
-| Contenido | Fuente de verdad | En el vault |
+| Content | Source of truth | In the vault |
 |---|---|---|
-| Código y arquitectura | El repo | `repos:` en el frontmatter, y `codebases.md` con el path local |
-| Tickets, estados, sprints | Jira, ClickUp, Linear | Link, y la decisión que salió de ahí |
-| Diseños | Figma | Link en la nota del tema |
-| Artículos, papers | La web | El clip, con `source:` y **tu** resumen |
+| Code and architecture | The repo | `repos:` in the frontmatter, and `codebases.md` with the local path |
+| Tickets, statuses, sprints | Jira, ClickUp, Linear | Link, and the decision that came out of it |
+| Designs | Figma | Link in the topic's note |
+| Articles, papers | The web | The clip, with `source:` and **your** summary |
 
-Una copia se desactualiza en silencio y después hay dos verdades y ninguna gana. Lo que sí acumula el vault es lo que ninguna de esas fuentes tiene: **qué decidiste, por qué, y qué aprendiste**. Eso no vive en Jira ni en el código.
+A copy goes stale silently, and then there are two truths and neither wins. What the vault does accumulate is what none of those sources has: **what you decided, why, and what you learned**. That does not live in Jira or in the code.
 
-## Resolución de rutas: roles, no carpetas
+## Path resolution: roles, not folders
 
-Ningún skill escribe en una ruta literal. Escribe en un **rol**, y el `## Rutas` del `CLAUDE.md` del vault dice qué carpeta es ese rol en este vault. Es lo que hace que un vault adoptado con otra estructura funcione sin tocar los skills.
+No skill writes to a literal path. It writes to a **role**, and the `## Paths` section of the vault's `CLAUDE.md` says which folder that role is in this vault. That is what lets an adopted vault with a different structure work without touching the skills.
 
-| Rol | Qué contiene | Default del `setup` |
+| Role | What it holds | `setup` default |
 |---|---|---|
-| `inbox` | captura cruda del día | `_inbox` |
-| `daily` | síntesis diaria | `Reflect/Daily` |
-| `weekly` | retrospectiva semanal | `Reflect/Weekly` |
-| `monthly` | balance mensual | `Reflect/Monthly` |
-| `atomic` | notas atómicas | `03_Resources` |
-| `hubs` | hub files por entidad | `Hubs` |
-| `projects` | proyectos con deadline | `01_Projects` |
-| `areas` | responsabilidades continuas | `02_Areas` |
-| `archive` | cerrado, nunca borrado | `04_Archive` |
-| `templates` | plantillas del usuario | `Templates` |
+| `inbox` | the day's raw capture | `_inbox` |
+| `daily` | daily synthesis | `Reflect/Daily` |
+| `weekly` | weekly retrospective | `Reflect/Weekly` |
+| `monthly` | monthly review | `Reflect/Monthly` |
+| `atomic` | atomic notes | `03_Resources` |
+| `hubs` | hub files per entity | `Hubs` |
+| `projects` | projects with a deadline | `01_Projects` |
+| `areas` | ongoing responsibilities | `02_Areas` |
+| `archive` | closed, never deleted | `04_Archive` |
+| `templates` | the user's templates | `Templates` |
 
-Orden de resolución, sin excepciones:
+Resolution order, no exceptions:
 
-1. El `## Rutas` del `CLAUDE.md` del vault.
-2. Si el vault no lo declara, el default de la tabla, **avisándole al usuario que se está asumiendo**.
-3. Si el rol no existe en este vault (no todos tienen `areas`), preguntar antes de crear la carpeta.
+1. The `## Paths` section of the vault's `CLAUDE.md`.
+2. If the vault does not declare it, the table's default, **telling the user it is being assumed**.
+3. If the role does not exist in this vault (not every vault has `areas`), ask before creating the folder.
 
-Los scripts reciben el mapeo por flag (`--role hubs=People`), nunca lo adivinan. **Si el `CLAUDE.md` del vault declara rutas distintas del default y un skill escribe en el default igual, eso es un bug del skill, no una preferencia.**
+Scripts receive the mapping by flag (`--role hubs=People`), they never guess it. **If the vault's `CLAUDE.md` declares paths that differ from the default and a skill writes to the default anyway, that is a bug in the skill, not a preference.**
 
-## Las tres reglas de estructura
+## The three structure rules
 
-### 1. Los links van hacia arriba, nunca hacia abajo
+### 1. Links go up, never down
 
-Cada nota linkea a su contexto, no a su detalle:
+Each note links to its context, not to its detail:
 
-| Desde | Linkea a | Nunca a |
+| From | Links to | Never to |
 |---|---|---|
-| Nota de `_inbox/` (dump) | hub files, proyectos, areas | otros dumps |
-| Daily | el dump del dia, notas creadas ese dia | otros dailies |
-| Weekly | los dailies de la semana | notas atomicas sueltas |
-| Monthly | los weeklies del mes | dailies |
-| Hub file | notas atomicas y proyectos del tema | dumps ni dailies |
+| Note in `_inbox/` (dump) | hub files, projects, areas | other dumps |
+| Daily | the day's dump, notes created that day | other dailies |
+| Weekly | the week's dailies | loose atomic notes |
+| Monthly | the month's weeklies | dailies |
+| Hub file | atomic notes and projects on the topic | dumps or dailies |
 
-Sin esta regla el agente crea links bidireccionales en todas las direcciones y el grafo se vuelve ruido: cada nota apunta a todo y ninguna relacion significa nada. Los backlinks de Obsidian ya dan la direccion inversa gratis, no hay que escribirla.
+Without this rule the agent creates bidirectional links in every direction and the graph turns into noise: every note points to everything and no relationship means anything. Obsidian's backlinks already give you the reverse direction for free; there is no need to write it.
 
-### 2. Ninguna nota se cierra sin al menos un `[[wikilink]]`
+### 2. No note is closed without at least one `[[wikilink]]`
 
-Es la unica regla que previene las huerfanas de raiz. Si al terminar una nota no hay a que linkearla, esa es la senal de que falta un hub file: crear el hub (ver `/hub-note`) antes de cerrar la nota, o dejarla en `_inbox/` en vez de archivarla en `03_Resources/`.
+This is the only rule that prevents orphans at the root. If, when a note is finished, there is nothing to link it to, that is the signal a hub file is missing: create the hub (see `/hub-note`) before closing the note, or leave it in `_inbox/` instead of filing it in `03_Resources/`.
 
-Excepcion: los dumps crudos de `_inbox/` pueden nacer sin links, porque los agrega `/review-dump`.
+Exception: raw dumps in `_inbox/` may be born without links, because `/review-dump` adds them.
 
-### 3. Las tareas no hechas no se arrastran en silencio
+### 3. Undone tasks are not carried forward silently
 
-Una tarea abierta en el dump del lunes que sigue abierta el martes **se queda en el lunes**, marcada como cancelada (`- [-]`), y se crea de nuevo en el martes. No se mueve.
+A task open in Monday's dump that is still open on Tuesday **stays on Monday**, marked as cancelled (`- [-]`), and is created again on Tuesday. It is not moved.
 
-No haber hecho algo un dia determinado es informacion. Arrastrar la tarea hacia adelante produce una lista limpia y una historia falsa.
+Not having done something on a given day is information. Carrying the task forward produces a clean list and a false history.
 
-## Que no puede hacer el agente
+## What the agent may not do
 
-- **Nunca borrar una nota.** Mover a `04_Archive/` preservando el nombre. El borrado es decision del usuario, siempre.
-- **Nunca renombrar ni mover una nota sin approval explicito.** Rompe `[[wikilinks]]` en silencio: Obsidian solo los actualiza cuando el rename ocurre dentro de la app.
-- **Nunca editar en masa.** Una corrida toca las notas de esa corrida. Los cambios que afectan a muchas notas se proponen como plan y los aplica `/vault-tidy` con approval item por item.
-- **Nunca tocar `Templates/`** salvo pedido explicito: son el contrato del usuario, no del agente.
-- **Nunca reescribir la seccion de reflexion del usuario.** Los reviews sintetizan hechos; la interpretacion la escribe el usuario.
+- **Never delete a note.** Move it to `04_Archive/`, keeping its name. Deleting is always the user's decision.
+- **Never rename or move a note without explicit approval.** It silently breaks `[[wikilinks]]`: Obsidian only updates them when the rename happens inside the app.
+- **Never edit in bulk.** A run touches that run's notes. Changes that affect many notes are proposed as a plan and applied by `/vault-tidy` with item-by-item approval.
+- **Never touch `Templates/`** unless explicitly asked: they are the user's contract, not the agent's.
+- **Never rewrite the user's reflection section.** Reviews synthesize facts; the user writes the interpretation.
 
-## Contrato de frontmatter
+## Frontmatter contract
 
-Todo campo que un skill escriba tiene que estar declarado en el `CLAUDE.md` del vault. Un campo que no esta en el contrato no se inventa: se propone y se agrega al contrato primero.
+Every field a skill writes must be declared in the vault's `CLAUDE.md`. A field that is not in the contract is not invented: it is proposed and added to the contract first.
 
-Minimo por tipo de nota:
+Minimum per note type:
 
 ```yaml
 ---
-created: 2026-07-27        # ISO, nunca se reescribe
+created: 2026-07-27        # ISO, never rewritten
 type: daily                # daily | weekly | monthly | dump | atomic | hub | project | area | clip
 tags: []
 ---
 ```
 
-Los tipos con campos propios (`status` en proyectos, `source` en clips) los declara el skill que los crea.
+Types with their own fields (`status` in projects, `source` in clips) are declared by the skill that creates them.
 
-## Convenciones de escritura
+## Writing conventions
 
-- Nada de guiones largos: si un texto generado trae em-dash o en-dash, normalizar a `-` antes de escribir.
-- `[[wikilinks]]` para todo lo interno, `[texto](url)` solo para URLs externas. Obsidian trackea renames de wikilinks, no de markdown links.
-- Fechas ISO (`YYYY-MM-DD`) en frontmatter y en nombres de archivo de notas periodicas.
-- Una idea por nota atomica. Si una nota necesita dos titulos de nivel `##` que no se relacionan, son dos notas.
+- No long dashes: if generated text contains an em-dash or en-dash, normalize it to `-` before writing.
+- `[[wikilinks]]` for everything internal, `[text](url)` only for external URLs. Obsidian tracks renames of wikilinks, not of markdown links.
+- ISO dates (`YYYY-MM-DD`) in frontmatter and in the file names of periodic notes.
+- One idea per atomic note. If a note needs two unrelated `##` headings, it is two notes.
+- Section headings and frontmatter values are written exactly as the templates have them, whatever language the note is in: the skills find sections by name. If the vault still uses the pre-English names, offer the migration in `/second-brain` instead of writing a mix.
 
-## La estructura no la sostiene este archivo
+## This file does not hold the structure up
 
-Una convención que solo vive en un documento se muere en tres meses. Lo que la sostiene es lo que corre:
+A convention that only lives in a document dies within three months. What holds it up is what runs:
 
-| Convención | Qué la hace cumplir |
+| Convention | What enforces it |
 |---|---|
-| Frontmatter completo, notas con al menos un link | El hook `PostToolUse` de `second-brain`, al escribir, si lo activaste en el `setup` (es opt-in) |
-| Huérfanas, links roto, nombres duplicados, semillas que no crecen | `/vault-audit`, cada vez que se corre |
-| Contradicciones sin resolver | `status: contested`, que el audit lista y el monthly mira |
-| Rutas por rol | El `## Rutas` del contrato, que los skills leen antes de escribir |
-| Tareas que no se arrastran | El paso de tareas de `/review-dump`, y `stale_open_tasks` en el audit |
+| Complete frontmatter, notes with at least one link | The `second-brain` `PostToolUse` hook, on write, if you enabled it during `setup` (it is opt-in) |
+| Orphans, broken links, duplicate names, seeds that do not grow | `/vault-audit`, every time it runs |
+| Unresolved contradictions | `status: contested`, which the audit lists and the monthly looks at |
+| Paths by role | The contract's `## Paths` section, which the skills read before writing |
+| Tasks that are not carried forward | The task step of `/review-dump`, and `stale_open_tasks` in the audit |
 
-Si una regla nueva de este archivo no tiene una columna derecha, es una intención, no una regla. Antes de agregarla, preguntá qué la va a hacer cumplir.
+If a new rule in this file has no right-hand column, it is an intention, not a rule. Before adding it, ask what is going to enforce it.
 
-## Git como red de seguridad
+## Git as a safety net
 
-El vault deberia ser un repo git. Antes de una corrida que escribe varias notas (`/review-dump`, `/vault-tidy`), verificar que el arbol este limpio y avisar al usuario si no lo esta. Es lo que permite deshacer una corrida completa sin revisar nota por nota.
+The vault should be a git repo. Before a run that writes several notes (`/review-dump`, `/vault-tidy`), check that the tree is clean and tell the user if it is not. That is what lets you undo a whole run without reviewing note by note.

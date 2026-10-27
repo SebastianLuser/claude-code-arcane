@@ -475,10 +475,10 @@ Class: UInputModifierSwizzleAxis : public UInputModifier
 | Value | Result | Description |
 |---|---|---|
 | `YXZ` | Output=(Y,X,Z) | Swap X and Y. Maps a 1D W/S key into the Y component of an Axis2D action. |
-| `ZYX` | Output=(Z,Y,X) | Swap X and Z |
-| `XZY` | Output=(X,Z,Y) | Swap Y and Z |
-| `YZX` | Output=(Y,Z,X) | Rotate all axes Y-first |
-| `ZXY` | Output=(Z,X,Y) | Rotate all axes Z-first |
+| `ZYX` | Output=(Z,Y,X) | Swap the X and Z axes |
+| `XZY` | Output=(X,Z,Y) | Swap the Y and Z axes |
+| `YZX` | Output=(Y,Z,X) | Rotate all the axes, Y first |
+| `ZXY` | Output=(Z,X,Y) | Rotate all the axes, Z first |
 
 **Use for:** The canonical WASD-to-Axis2D mapping. W produces a 1D value of 1.0 on X.
 Adding `SwizzleAxis(YXZ)` converts it to Y=1.0, which is forward in the Axis2D Move action.

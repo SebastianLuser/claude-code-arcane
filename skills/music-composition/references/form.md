@@ -1,57 +1,57 @@
-# Forma
+# Form
 
-## El principio
+## The principle
 
-La forma administra **atención**. Cada sección existe para contrastar con la anterior. Si dos secciones consecutivas tienen la misma densidad, registro y ritmo armónico, funcionalmente son una sola.
+Form manages **attention**. Each section exists to contrast with the previous one. If two consecutive sections have the same density, register and harmonic rhythm, functionally they are one.
 
-## Palancas de contraste
+## Contrast levers
 
-Para diferenciar secciones, en orden de eficacia:
+To differentiate sections, in order of effectiveness:
 
-1. **Densidad** — cuántos elementos suenan a la vez
-2. **Registro** — dónde vive la melodía
-3. **Ritmo armónico** — velocidad de cambio de acorde
-4. **Textura** — homofónica, polifónica, monofónica
-5. **Instrumentación** — quién toca
-6. **Dinámica** — la más obvia y la más débil por sí sola
+1. **Density** — how many elements play at once
+2. **Register** — where the melody lives
+3. **Harmonic rhythm** — speed of chord change
+4. **Texture** — homophonic, polyphonic, monophonic
+5. **Instrumentation** — who plays
+6. **Dynamics** — the most obvious and the weakest on its own
 
-Un estribillo que solo es "más fuerte" no es un estribillo. Uno que sube el registro, dobla el ritmo armónico y agrega dos capas, sí.
+A chorus that is only "louder" is not a chorus. One that raises the register, doubles the harmonic rhythm and adds two layers is.
 
-## Formas populares
+## Popular forms
 
-| Forma | Esquema | Nota |
+| Form | Scheme | Note |
 |---|---|---|
-| Estrofa-estribillo | A B A B (C) B | Estándar; el puente C aporta el contraste que evita la fatiga |
-| AABA | A A B A | Estándar de jazz/musical; el B es el "bridge" |
-| Verso-pre-estribillo-estribillo | A A' B A B | El pre-estribillo hace el trabajo de tensión |
-| Through-composed | sin repetición | Narrativo; costoso de escuchar dos veces |
-| Loop con capas | un solo material, capas entrando/saliendo | La forma nativa de música de juego |
+| Verse-chorus | A B A B (C) B | Standard; the C bridge provides the contrast that prevents fatigue |
+| AABA | A A B A | Jazz/musical theater standard; the B is the "bridge" |
+| Verse-pre-chorus-chorus | A A' B A B | The pre-chorus does the tension work |
+| Through-composed | no repetition | Narrative; costly to listen to twice |
+| Layered loop | a single material, layers entering/leaving | The native form of game music |
 
-## Formas clásicas
+## Classical forms
 
-- **Binaria / ternaria** — AB, ABA. Base de todo
-- **Sonata** — exposición (dos temas en tonalidades distintas), desarrollo (fragmentación y modulación), reexposición (los dos temas en la tónica). El motor es el conflicto tonal
-- **Tema y variaciones** — un material, N transformaciones. La forma más directamente aplicable a juegos
-- **Rondó** — ABACA. El retorno del A da estabilidad, los episodios dan variedad
-- **Passacaglia / chacona** — bajo obstinado con variación arriba. Loop infinito que no aburre
+- **Binary / ternary** — AB, ABA. The basis of everything
+- **Sonata** — exposition (two themes in different keys), development (fragmentation and modulation), recapitulation (both themes in the tonic). The engine is the tonal conflict
+- **Theme and variations** — one material, N transformations. The form most directly applicable to games
+- **Rondo** — ABACA. The return of A gives stability, the episodes give variety
+- **Passacaglia / chaconne** — ostinato bass with variation above. An infinite loop that does not bore
 
-## Transiciones
+## Transitions
 
-Lo que hace que dos secciones se peguen o se choquen:
+What makes two sections stick together or crash:
 
-| Recurso | Efecto |
+| Device | Effect |
 |---|---|
-| **Anacrusa** | Anticipar la sección con una figura antes del downbeat |
-| **Turnaround** | 1-2 compases de armonía que devuelven a la tónica |
-| **Fill / break** | Silencio o solo percusión antes de la entrada |
-| **Pedal** | Sostener una nota mientras cambia todo arriba |
-| **Corte seco** | Sin preparación. Efectivo una vez por pieza |
-| **Riser / crescendo de densidad** | Sumar capas hacia el punto de cambio |
+| **Anacrusis** | Anticipate the section with a figure before the downbeat |
+| **Turnaround** | 1-2 bars of harmony that lead back to the tonic |
+| **Fill / break** | Silence or percussion alone before the entrance |
+| **Pedal** | Sustain one note while everything above changes |
+| **Hard cut** | No preparation. Effective once per piece |
+| **Riser / density crescendo** | Add layers toward the point of change |
 
-La transición incómoda casi siempre es un cambio de tonalidad o textura sin ninguno de estos.
+The awkward transition is almost always a key or texture change with none of these.
 
-## Narrativa formal
+## Formal narrative
 
-Una pieza tiene un arco, y el arco tiene un punto de máxima información. Ubicarlo entre el 60% y el 75% de la duración: suficientemente tarde para haber construido, suficientemente temprano para tener resolución.
+A piece has an arc, and the arc has a point of maximum information. Place it between 60% and 75% of the duration: late enough to have built up, early enough to have a resolution.
 
-La **reducción** funciona mejor que la adición para señalizar un momento importante. Sacar todo y dejar una voz llama más atención que sumar la décima capa.
+**Reduction** works better than addition to signal an important moment. Stripping everything and leaving one voice draws more attention than adding the tenth layer.

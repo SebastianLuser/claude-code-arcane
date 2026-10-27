@@ -1,6 +1,6 @@
 ---
 name: check
-description: "Auditoría rápida de calidad y seguridad: lint, type-check, tests, secrets, deps vulnerables. Reporta findings con severidad."
+description: "Quick quality and security audit: lint, type-check, tests, secrets, vulnerable deps. Reports findings with severity."
 category: "workflow"
 argument-hint: ""
 user-invocable: true

@@ -1,6 +1,6 @@
 ---
 name: game-analysis
-description: "Balance analysis y playtest reports: DPS, economía, progresión, outliers, estrategias degeneradas."
+description: "Balance analysis and playtest reports: DPS, economy, progression, outliers, degenerate strategies."
 category: "gamedev"
 argument-hint: "[balance [system]|playtest [new|analyze path]]"
 user-invocable: true
@@ -8,44 +8,44 @@ allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 # game-analysis — Balance + Playtesting
 
-Dos modos: análisis de balance numérico y reportes de playtesting.
+Two modes: numeric balance analysis and playtesting reports.
 
 ---
 
 ## 1. Balance Check
 
-### Identificar dominio
+### Identify the domain
 
-Del argumento o preguntando al usuario:
+From the argument or by asking the user:
 
-| Dominio | Qué analizar |
+| Domain | What to analyze |
 |---------|-------------|
-| **Combat** | DPS por tier, time-to-kill, opciones dominantes, estados unkillable, interacciones damage/resistance |
-| **Economy** | Faucets/sinks con flow rates, acumulación en el tiempo, loops infinitos, gold sinks vs generación, items que nunca vale comprar |
-| **Progression** | Curva XP/power, dead zones (sin progresión útil), power spikes, content gates vs player power, skip/grind exploits |
-| **Loot** | Tiempo esperado por rarity tier, pity timer math, loot inútil en algún stage, inventory pressure vs acquisition rate |
+| **Combat** | DPS per tier, time-to-kill, dominant options, unkillable states, damage/resistance interactions |
+| **Economy** | Faucets/sinks with flow rates, accumulation over time, infinite loops, gold sinks vs generation, items never worth buying |
+| **Progression** | XP/power curve, dead zones (no useful progression), power spikes, content gates vs player power, skip/grind exploits |
+| **Loot** | Expected time per rarity tier, pity timer math, useless loot at some stage, inventory pressure vs acquisition rate |
 
-### Proceso
+### Process
 
-1. Leer data files (`assets/data/`, `design/balance/`, SO assets)
-2. Leer GDD del sistema para entender targets de diseño
-3. Correr análisis domain-specific (tablas arriba)
-4. Comparar valores actuales vs intención del GDD
+1. Read the data files (`assets/data/`, `design/balance/`, SO assets)
+2. Read the system's GDD to understand the design targets
+3. Run the domain-specific analysis (tables above)
+4. Compare current values against the GDD's intent
 
-> → Read references/balance-report-format.md for [output format del reporte de balance]
+> → Read references/balance-report-format.md for [the balance report output format]
 
 ### Fix & verify
 
-Después del reporte: ofrecer corregir valores. Después de cada fix, re-correr checks relevantes para verificar que no se introdujeron nuevos outliers.
+After the report: offer to fix the values. After each fix, re-run the relevant checks to verify that no new outliers were introduced.
 
 ---
 
 ## 2. Playtest Report
 
-### Modo template (`playtest new`) / Modo análisis (`playtest analyze [path]`)
+### Template mode (`playtest new`) / Analysis mode (`playtest analyze [path]`)
 
-> → Read references/playtest-template.md for [template de secciones, modo análisis y categorización de findings]
+> → Read references/playtest-template.md for [the section template, analysis mode and findings categorization]
 
 ---
 
-> → Read references/anti-patterns-checklist.md for [anti-patterns y checklist de validación]
+> → Read references/anti-patterns-checklist.md for [anti-patterns and the validation checklist]

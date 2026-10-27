@@ -1,6 +1,6 @@
 ---
 name: rollback-strategy
-description: "Rollback strategy: todo deploy reversible en <5min. Code/config/data/infra, canary, auto-rollback, Cloud Run, GKE, mobile."
+description: "Rollback strategy: every deploy reversible in <5min. Code/config/data/infra, canary, auto-rollback, Cloud Run, GKE, mobile."
 category: "operations"
 argument-hint: "[code|config|data|infra]"
 user-invocable: true
@@ -8,57 +8,57 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # Rollback Strategy
 
-> **Todo deploy debe ser reversible en <5 minutos. Si no lo es, es un deploy peligroso.**
+> **Every deploy must be reversible in <5 minutes. If it is not, it is a dangerous deploy.**
 
-## Cuándo usar / NO usar
+## When to use / NOT use
 
-| Usar | NO usar |
+| Use | Do NOT use |
 |------|---------|
-| Planificar rollback **antes** de deployar | Fix forward simple (typo, log) — a veces hotfix más rápido |
-| Incidente en producción | Datos corruptos ya escritos — rollback código no arregla datos |
-| Diseñar CI/CD pipelines | Post-compatibility window con schema irreversible |
-| Validar camino de reversa en breaking changes | Estáticos en CDN — purgar + redeploy puede ser más directo |
-| DR drills trimestrales | |
+| Plan the rollback **before** deploying | Simple fix forward (typo, log) — sometimes a hotfix is faster |
+| Production incident | Corrupt data already written — rolling back code does not fix data |
+| Design CI/CD pipelines | Past the compatibility window with an irreversible schema |
+| Validate the reverse path on breaking changes | Static assets on a CDN — purge + redeploy can be more direct |
+| Quarterly DR drills | |
 
-Cada release necesita: comando concreto de rollback escrito antes, responsable que lo ejecuta, criterio claro de cuándo (SLO, error rate), prueba de que funciona.
+Every release needs: a concrete rollback command written beforehand, an owner who runs it, a clear criterion for when (SLO, error rate), proof that it works.
 
-## Tipos de rollback
+## Rollback types
 
-| Tipo | Qué | Dificultad |
+| Type | What | Difficulty |
 |------|-----|------------|
-| **Code** | Redeploy imagen Docker versión anterior | Simple si versioning correcto |
-| **Config** | Revertir feature flag o env var — instantáneo sin redeploy | Preferir siempre |
-| **Data** | Revertir migración DB — `DROP COLUMN` no vuelve sin restore | Difícil/imposible. Ver `/data-migrations` |
-| **Infra** | `terraform apply` versión anterior del state | Requiere state limpio, revisar drift |
+| **Code** | Redeploy the previous Docker image version | Simple if versioning is right |
+| **Config** | Revert a feature flag or env var — instant, no redeploy | Always prefer |
+| **Data** | Revert a DB migration — `DROP COLUMN` does not come back without a restore | Hard/impossible. See `/data-migrations` |
+| **Infra** | `terraform apply` the previous state version | Requires a clean state, check drift |
 
-## Estrategia por layer
+## Strategy per layer
 
 ### Stateless (Cloud Run, GKE)
-Rollback = redeploy imagen anterior. GKE: `kubectl rollout undo`. Cloud Run: cambiar tráfico a revision previa con `gcloud run services update-traffic`.
+Rollback = redeploy the previous image. GKE: `kubectl rollout undo`. Cloud Run: shift traffic to the previous revision with `gcloud run services update-traffic`.
 
 ### DB migrations — expand/contract
-Nunca drops irreversibles en misma release que código. 4 fases: expand (agregar nuevo backward-compatible) → migrate data + dual-write → cutover (leer de nuevo) → contract (drop viejo una release después). Ver `/data-migrations`.
+Never irreversible drops in the same release as the code. 4 phases: expand (add the new, backward-compatible) → migrate data + dual-write → cutover (read from the new) → contract (drop the old one release later). See `/data-migrations`.
 
 ### Feature flags
-Toggle off instantáneo sin redeploy. Regla: toda feature user-facing va detrás de flag con kill switch server-side.
+Instant toggle off without a redeploy. Rule: every user-facing feature goes behind a flag with a server-side kill switch.
 
-## Versioning de artefactos
+## Artifact versioning
 
-- Tag por **git SHA**: `gcr.io/educabot/service:$GIT_SHA`. NUNCA `:latest` en prod
-- Retener mínimo **10 imágenes** (lifecycle policy Artifact Registry)
-- Mapear SHA ↔ release ↔ ticket Jira (auditoría)
+- Tag by **git SHA**: `gcr.io/educabot/service:$GIT_SHA`. NEVER `:latest` in prod
+- Retain at least **10 images** (Artifact Registry lifecycle policy)
+- Map SHA ↔ release ↔ Jira ticket (audit)
 
 ## DB compatibility window
 
-Código N-1 debe funcionar con schema N, y código N con schema N-1, por al menos una release. Nunca mergear breaking schema + código en mismo PR. Separar: PR1=expand, PR2=código, PR3=contract.
+Code N-1 must work with schema N, and code N with schema N-1, for at least one release. Never merge a breaking schema + code in the same PR. Split: PR1=expand, PR2=code, PR3=contract.
 
-## Runbook rollback manual
+## Manual rollback runbook
 
 > → Read references/runbook-commands.md for exact rollback commands (Cloud Run, GKE, feature flags, GitHub Actions, post-rollback, PITR, cache/CDN)
 
 ## References
 
-> → Read references/blue-green.md for blue-green on Cloud Run, Vercel and ECS, cuándo conviene frente a canary o rolling, y las reglas de DB compartida y workers
+> → Read references/blue-green.md for blue-green on Cloud Run, Vercel and ECS, when it beats canary or rolling, and the rules for a shared DB and workers
 > → Read references/canary-auto-rollback.md for canary progression and auto-rollback triggers
 > → Read references/anti-patterns.md for common rollback anti-patterns
 > → Read references/pre-deploy-checklist.md for the pre-deploy validation checklist
@@ -67,15 +67,15 @@ Código N-1 debe funcionar con schema N, y código N con schema N-1, por al meno
 
 ## Post-rollback
 
-1. Crear incident con `/incident`
-2. Capturar logs del período malo antes de rotación (ver runbook)
-3. Capturar métricas (Grafana/Cloud Monitoring)
+1. Create an incident with `/incident`
+2. Capture the logs of the bad period before rotation (see runbook)
+3. Capture metrics (Grafana/Cloud Monitoring)
 4. RCA (5 whys, fishbone)
-5. Fix forward: arreglar, testear, redeployar — no quedar en versión vieja indefinidamente
+5. Fix forward: fix, test, redeploy — do not stay on the old version indefinitely
 
-## Delegación
+## Delegation
 
-- `/data-migrations` — expand/contract, migraciones reversibles
-- `/deploy-check` — checklist pre-deploy completa
-- `/incident` — post-mortem + ticket Jira
-- `/audit-dev` — auditar pipelines y runbooks
+- `/data-migrations` — expand/contract, reversible migrations
+- `/deploy-check` — full pre-deploy checklist
+- `/incident` — post-mortem + Jira ticket
+- `/audit-dev` — audit pipelines and runbooks

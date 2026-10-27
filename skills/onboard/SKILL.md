@@ -8,116 +8,116 @@ allowed-tools: Read, Glob, Grep, Bash, Write
 ---
 # Onboarding Guide Generator
 
-Genera una guía completa para que un dev nuevo pueda arrancar a trabajar en el proyecto.
+Generates a complete guide so a new dev can start working on the project.
 
 ## Process
 
-### 1. Escanear proyecto
+### 1. Scan the project
 
-Leer en paralelo:
+Read in parallel:
 - README.md, CONTRIBUTING.md, CLAUDE.md
 - Package manager config (go.mod, package.json, pyproject.toml, etc.)
 - Docker config (Dockerfile, docker-compose.yml)
 - CI config (.github/workflows/)
 - .env.example
 - Makefile / scripts/
-- Estructura de carpetas (2-3 niveles)
+- Folder structure (2-3 levels)
 
-### 2. Generar guía
+### 2. Generate the guide
 
 ```markdown
-# Guía de Onboarding — [Proyecto]
-**Última actualización:** [fecha]
+# Onboarding Guide — [Project]
+**Last updated:** [date]
 
-## Qué es este proyecto
-[1-2 párrafos: qué hace, para quién, por qué existe]
+## What this project is
+[1-2 paragraphs: what it does, who it is for, why it exists]
 
-## Stack tecnológico
-| Componente | Tecnología | Versión |
+## Tech stack
+| Component | Technology | Version |
 |------------|------------|---------|
-| Lenguaje | Go 1.26 | 1.26.1 |
+| Language | Go 1.26 | 1.26.1 |
 | Framework | Gin | 1.12.0 |
-| Base de datos | PostgreSQL | 16 |
+| Database | PostgreSQL | 16 |
 | ORM | GORM | 1.31.1 |
 
-## Prerequisitos
-- [ ] [Tool 1] instalado (link a docs)
-- [ ] [Tool 2] instalado
-- [ ] Acceso a [servicio] (pedir a [persona])
+## Prerequisites
+- [ ] [Tool 1] installed (link to docs)
+- [ ] [Tool 2] installed
+- [ ] Access to [service] (ask [person])
 
-## Setup paso a paso
+## Step-by-step setup
 
-### 1. Clonar y configurar
+### 1. Clone and configure
 ```bash
 git clone [repo-url]
-cd [proyecto]
+cd [project]
 cp .env.example .env
-# Editar .env con tus valores
+# Edit .env with your values
 ```
 
-### 2. Levantar servicios
+### 2. Start services
 ```bash
-[comando para DB, docker, etc.]
+[command for DB, docker, etc.]
 ```
 
-### 3. Instalar dependencias
+### 3. Install dependencies
 ```bash
 [go mod download / npm install / etc.]
 ```
 
-### 4. Correr migrations
+### 4. Run migrations
 ```bash
-[comando de migrations]
+[migrations command]
 ```
 
-### 5. Arrancar el servidor
+### 5. Start the server
 ```bash
-[comando para development server]
+[command for development server]
 ```
 
-### 6. Verificar que funciona
+### 6. Check that it works
 ```bash
 curl http://localhost:[port]/health
-# Debe responder: {"status": "ok"}
+# Should respond: {"status": "ok"}
 ```
 
-## Estructura del proyecto
+## Project structure
 ```
-[árbol de directorios con descripción de cada carpeta]
+[directory tree with a description of each folder]
 ```
 
-## Convenciones de código
-- [Naming, estructura de archivos, patrones usados]
+## Code conventions
+- [Naming, file structure, patterns used]
 
-## Comandos útiles
-| Comando | Qué hace |
+## Useful commands
+| Command | What it does |
 |---------|----------|
-| `make test` | Correr tests |
+| `make test` | Run tests |
 | `make lint` | Lint |
 | `make build` | Build |
 
 ## Git workflow
-- Branches: [convención]
-- Commits: [formato]
-- PRs: [proceso]
+- Branches: [convention]
+- Commits: [format]
+- PRs: [process]
 
-## Links útiles
+## Useful links
 - Jira: [link]
 - Figma: [link]
 - Staging: [link]
 - Docs: [link]
 
-## Contactos
-| Área | Persona | Contacto |
+## Contacts
+| Area | Person | Contact |
 |------|---------|----------|
 ```
 
 ### 3. Output
 
-Guardar como `docs/ONBOARDING.md` o `ONBOARDING.md` en la raíz.
+Save as `docs/ONBOARDING.md` or `ONBOARDING.md` at the root.
 
 ## Rules
-- Solo incluir info que se puede verificar del código actual
-- Si falta info (como links a staging), dejar placeholder con [TODO]
-- Probar mentalmente que los pasos de setup funcionan en orden
-- En español
+- Only include info that can be verified from the current code
+- If info is missing (like staging links), leave a placeholder with [TODO]
+- Mentally walk through the setup steps to make sure they work in order
+- Write the guide in the user's language

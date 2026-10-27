@@ -1,0 +1,7 @@
+{
+  "language": "en",
+  "note": "Words job_key.py drops when it builds a seen_jobs.json key: legal suffixes at the end of a company name, and work-mode or region qualifiers in parentheses in a title. Includes the international company forms English postings carry (GmbH, AG, BV). Every qualifiers.<lang>.json next to the script applies at once, because one board mixes languages. Entries are lowercase ASCII without dots, as the slug leaves them.",
+  "legal_suffixes": ["inc", "llc", "ltd", "corp", "co", "plc", "gmbh", "ag", "bv", "limited", "corporation", "company"],
+  "qualifiers": ["remote", "latam", "hybrid", "onsite", "on-site", "full-time", "part-time", "contract", "contractor",
+                 "freelance", "worldwide", "anywhere", "global", "usa", "us", "eu", "emea", "americas"]
+}

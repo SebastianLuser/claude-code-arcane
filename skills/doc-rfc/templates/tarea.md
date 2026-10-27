@@ -1,37 +1,37 @@
-# T-{N}.{M}.{P} — {Titulo}
+# T-{N}.{M}.{P} — {Title}
 
-{One-liner: que hace esta tarea}
+{One-liner: what this task does}
 
-- **Historia:** [HU-{N}.{M} — {titulo-hu}]({link-relativo})
-- **Criterio de aceptacion:** {1 oracion verificable}
+- **Story:** [HU-{N}.{M} — {story-title}]({relative-link})
+- **Acceptance criterion:** {1 verifiable sentence}
 
-## Archivos Afectados
+## Affected Files
 
 - `{path/to/file}`
 - `{path/to/file}`
 
-## Pasos
+## Steps
 
-1. {paso accionable}
-2. {paso accionable}
-3. {paso accionable}
+1. {actionable step}
+2. {actionable step}
+3. {actionable step}
 
-## Codigo Referencia
+## Reference Code
 
 ```{lang}
-{codigo relevante o ejemplo}
+{relevant code or example}
 ```
 
 ## Tests
 
-### Unitarios
+### Unit
 
-- [ ] {test unitario}
+- [ ] {unit test}
 
-### Integracion
+### Integration
 
-- [ ] {test integracion}
+- [ ] {integration test}
 
-## Notas / Edge Cases
+## Notes / Edge Cases
 
-- {nota o edge case}
+- {note or edge case}

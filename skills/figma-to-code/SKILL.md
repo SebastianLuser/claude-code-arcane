@@ -8,73 +8,73 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # Figma to Code
 
-Convierte diseños de Figma en código adaptado al stack del proyecto actual.
+Converts Figma designs into code adapted to the current project's stack.
 
 ## Input
 
-El usuario proporciona:
-1. **URL de Figma** (obligatorio) — `figma.com/design/{fileKey}/{fileName}?node-id={nodeId}`
-2. **Qué implementar** (opcional) — componente específico, pantalla, sección
-3. **Stack override** (opcional) — si quiere algo distinto al stack del proyecto
+The user provides:
+1. **Figma URL** (required) — `figma.com/design/{fileKey}/{fileName}?node-id={nodeId}`
+2. **What to implement** (optional) — a specific component, screen, section
+3. **Stack override** (optional) — if they want something other than the project's stack
 
 ## Process
 
-### 1. Parsear URL y obtener diseño
+### 1. Parse the URL and get the design
 
-Extraer `fileKey` y `nodeId` de la URL:
-- `figma.com/design/:fileKey/:fileName?node-id=:nodeId` → convertir `-` a `:` en nodeId
-- `figma.com/design/:fileKey/branch/:branchKey/:fileName` → usar branchKey como fileKey
+Extract `fileKey` and `nodeId` from the URL:
+- `figma.com/design/:fileKey/:fileName?node-id=:nodeId` → convert `-` to `:` in nodeId
+- `figma.com/design/:fileKey/branch/:branchKey/:fileName` → use branchKey as the fileKey
 
-Llamar a `get_design_context` con fileKey y nodeId para obtener:
-- Código de referencia (React+Tailwind por default)
-- Screenshot del diseño
-- Hints contextuales (Code Connect, tokens, annotations)
+Call `get_design_context` with fileKey and nodeId to get:
+- Reference code (React+Tailwind by default)
+- Screenshot of the design
+- Contextual hints (Code Connect, tokens, annotations)
 
-### 2. Detectar stack del proyecto
+### 2. Detect the project's stack
 
-Detectar framework (Next.js, React, Vue, Svelte, Flutter, SwiftUI, RN) y UI library (shadcn, MUI, Chakra, Tailwind, Styled Components) del proyecto.
+Detect the project's framework (Next.js, React, Vue, Svelte, Flutter, SwiftUI, RN) and UI library (shadcn, MUI, Chakra, Tailwind, Styled Components).
 
 > → Read references/stack-detection.md for detection tables and adaptation rules
 
-### 3. Buscar componentes existentes
+### 3. Look for existing components
 
-Antes de generar código nuevo, buscar en el proyecto:
-- Componentes UI reutilizables que matcheen con el diseño
-- Tokens de diseño (colores, spacing, typography) ya definidos
-- Patrones de layout existentes
+Before generating new code, search the project for:
+- Reusable UI components that match the design
+- Design tokens (colors, spacing, typography) already defined
+- Existing layout patterns
 
 ```bash
-# Buscar componentes UI
+# Find UI components
 find src/components -name "*.tsx" -o -name "*.vue" -o -name "*.svelte" 2>/dev/null
 ```
 
-### 4. Adaptar código al stack
+### 4. Adapt the code to the stack
 
-El output de `get_design_context` es React+Tailwind de referencia. Adaptar al stack detectado (shadcn, CSS Modules, Styled Components, Vue, Svelte, Flutter).
+The output of `get_design_context` is reference React+Tailwind. Adapt it to the detected stack (shadcn, CSS Modules, Styled Components, Vue, Svelte, Flutter).
 
 > → Read references/stack-detection.md for stack adaptation mapping table
 
-### 5. Generar código
+### 5. Generate code
 
-Para cada componente/pantalla:
+For each component/screen:
 
-1. **Crear archivo(s)** siguiendo la convención del proyecto
-2. **Reutilizar** componentes existentes donde sea posible
-3. **Mapear** colores/fonts a tokens del proyecto
-4. **Responsive** — si el diseño tiene breakpoints, implementarlos
-5. **Accesibilidad** — aria labels, semantic HTML, keyboard nav
-6. **Estados** — hover, active, disabled, loading, empty, error
+1. **Create the file(s)** following the project's convention
+2. **Reuse** existing components wherever possible
+3. **Map** colors/fonts to the project's tokens
+4. **Responsive** — if the design has breakpoints, implement them
+5. **Accessibility** — aria labels, semantic HTML, keyboard nav
+6. **States** — hover, active, disabled, loading, empty, error
 
-### 6. Checklist post-generación & Output
+### 6. Post-generation checklist & Output
 
 > → Read references/checklist-and-output.md for 7-item quality checklist and output template format
 
 ## Rules
-- SIEMPRE leer el diseño de Figma antes de generar código
-- NUNCA generar código sin antes buscar componentes existentes en el proyecto
-- Preferir reutilización sobre creación nueva
-- Si el diseño usa componentes que no existen → crearlos siguiendo el design system
-- Responsive por default
-- Accesibilidad por default
-- No generar archivos de test para componentes UI (a menos que se pida)
-- En español para comentarios, en inglés para código
+- ALWAYS read the Figma design before generating code
+- NEVER generate code without first looking for existing components in the project
+- Prefer reuse over creating something new
+- If the design uses components that do not exist → create them following the design system
+- Responsive by default
+- Accessibility by default
+- Do not generate test files for UI components (unless asked)
+- Code and code comments in English (or the project's existing convention)

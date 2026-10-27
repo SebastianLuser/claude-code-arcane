@@ -13,7 +13,7 @@ A comment under a post with hundreds of reactions is seen by more people than mo
 
 ## Phase 1: Input
 
-The user pastes the post text (plus the author's name and role if they have it), or a screenshot. A URL that cannot be opened: ask for the text. Never guess what the post said, and never scrape the feed with a browser. Read the **Voice** section of `01-Perfiles/Perfil Maestro.md`.
+The user pastes the post text (plus the author's name and role if they have it), or a screenshot. A URL that cannot be opened: ask for the text. Never guess what the post said, and never scrape the feed with a browser. Read the **Voice** section of `01-Profiles/Master Profile.md`.
 
 ## Phase 2: Pick the type
 
@@ -58,7 +58,7 @@ Post the first: it is your own data and it concedes a failure, which is what peo
 
 ## Batch mode
 
-For an engagement round, ask for the 5-10 posts as pasted text in one message and return one comment each in a single block. Keep a running list of who the user commented on this week in `01-Perfiles/LinkedIn Log.md` (ask before writing): commenting on the same three people every day is visible.
+For an engagement round, ask for the 5-10 posts as pasted text in one message and return one comment each in a single block. Keep a running list of who the user commented on this week in `01-Profiles/LinkedIn Log.md` (ask before writing): commenting on the same three people every day is visible.
 
 ## Protocol
 

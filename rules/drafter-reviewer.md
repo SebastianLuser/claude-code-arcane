@@ -1,52 +1,52 @@
-# Drafter-Reviewer Rule (CVs y covers)
+# Drafter-Reviewer Rule (CVs and cover letters)
 
-Adaptado del workflow `/apply` de MadsLorentzen/ai-job-search. Todo CV custom o cover letter para una aplicación pasa por un reviewer de contexto fresco ANTES de exportarse a PDF. El que redacta no se auto-revisa.
+Adapted from the `/apply` workflow in MadsLorentzen/ai-job-search. Every custom CV or cover letter for an application goes through a fresh-context reviewer BEFORE being exported to PDF. The drafter does not self-review.
 
-Las rutas son relativas al career workspace (`./career-workspace/` o env `CAREER_WORKSPACE`).
+Paths are relative to the career workspace (`./career-workspace/` or env `CAREER_WORKSPACE`).
 
-## Cuándo aplica
+## When it applies
 
-- Al terminar el borrador de un CV custom (flujo cv-tailor) o de una cover / mensaje de aplicación (flujo cover-letter) destinado a una postulación concreta.
-- NO aplica a ediciones menores de un CV ya revisado (typos, cambiar una fecha) ni a los CVs base de `02-CVs/` fuera de una postulación.
+- When the draft of a custom CV (cv-tailor flow) or of a cover letter / application message (cover-letter flow) meant for a specific application is finished.
+- It does NOT apply to minor edits of an already reviewed CV (typos, changing a date) or to the base CVs in `02-CVs/` outside an application.
 
-Quién la ejecuta: `/job-aplicar` (paso 7, obligatorio), y `/cv-tailor` y `/cover-letter` cuando se corren sueltos. Los tres declaran `Task` en `allowed-tools` justamente para poder cumplirla - un skill sin `Task` no puede aplicar esta regla, y ahí la regla sería solo una intención.
+Who runs it: `/job-apply` (step 7, mandatory), and `/cv-tailor` and `/cover-letter` when run on their own. All three declare `Task` in `allowed-tools` precisely so they can comply - a skill without `Task` cannot apply this rule, and there the rule would be only an intention.
 
-## El paso reviewer
+## The reviewer step
 
-Lanzar UN agente **`cv-reviewer`** de contexto fresco vía el Agent tool. El agente ya trae la persona, el límite de lectura y el contrato de salida; el prompt solo tiene que aportar lo que el agente no puede saber:
+Launch ONE fresh-context **`cv-reviewer`** agent via the Agent tool. The agent already carries the persona, the read limit and the output contract; the prompt only has to provide what the agent cannot know:
 
-1. El texto completo de la job description.
-2. El borrador del CV y/o cover, verbatim.
-3. Cuál es el perfil usado, para que sepa qué archivo de `01-Perfiles/` puede leer.
+1. The full text of the job description.
+2. The CV and/or cover letter draft, verbatim.
+3. Which profile was used, so it knows which `01-Profiles/` file it may read.
 
-Va inline en el prompt para que no dependa de leer archivos de la conversación.
+It goes inline in the prompt so it does not depend on reading files from the conversation.
 
-Si el agente `cv-reviewer` no está instalado (perfil `+job-hunt` sin su directorio de agentes), usar un `general-purpose` y pasarle en el prompt las cuatro restricciones: lectura acotada a `01-Perfiles/<perfil usado>.md`, prohibido leer templates y el resto del workspace, research web breve de la empresa, y el contrato de salida de abajo.
+If the `cv-reviewer` agent is not installed (`+job-hunt` profile without its agents directory), use a `general-purpose` agent and give it the four constraints in the prompt: reading limited to `01-Profiles/<profile used>.md`, forbidden to read templates and the rest of the workspace, brief web research on the company, and the output contract below.
 
-El reviewer devuelve dos partes:
+The reviewer returns two parts:
 
-- **Parte A - reemplazos mecánicos:** lista JSON de objetos `{ "old_string": "<texto exacto del borrador>", "new_string": "<reemplazo>", "motivo": "<una línea>" }`. El `old_string` debe ser cita textual para aplicarse con Edit sin ambigüedad.
-- **Parte B - sugerencias narrativas**, agrupadas por categoría:
-  - Keywords ATS de la JD que faltan o aparecen solo como sinónimo
-  - Ángulos de empresa no aprovechados (del research)
-  - Bullets que se pueden reformular como logro medible
-  - Tono / estilo (registro, longitud, muletillas)
+- **Part A - mechanical replacements:** JSON list of objects `{ "old_string": "<exact text from the draft>", "new_string": "<replacement>", "reason": "<one line>" }`. The `old_string` must be a verbatim quote so Edit can apply it without ambiguity.
+- **Part B - narrative suggestions**, grouped by category:
+  - ATS keywords from the JD that are missing or appear only as a synonym
+  - Company angles not used (from the research)
+  - Bullets that can be rewritten as a measurable achievement
+  - Tone / style (register, length, filler words)
 
-## Segunda lente (opcional): `hiring-manager`
+## Second lens (optional): `hiring-manager`
 
-`cv-reviewer` contesta "¿pasa el filtro?". Un CV puede pasar con match del 85% y morir igual en el escritorio de quien contrata, por una razón distinta: **no hay evidencia de que la persona ya hizo el trabajo**.
+`cv-reviewer` answers "does it pass the filter?". A CV can pass with an 85% match and still die on the hiring person's desk, for a different reason: **there is no evidence that the person has already done the job**.
 
-Cuándo vale el segundo agente: postulación que importa, rol senior, o racha de rechazos post-CV. Se lanza **en paralelo** con `cv-reviewer` (no en cadena: son lentes independientes y encadenarlos solo suma latencia). Devuelve veredicto, evidencia faltante y las 3 preguntas que haría, que además son material de `/interview-prep`.
+When the second agent is worth it: an application that matters, a senior role, or a streak of post-CV rejections. It is launched **in parallel** with `cv-reviewer` (not chained: they are independent lenses and chaining them only adds latency). It returns a verdict, the missing evidence and the 3 questions it would ask, which are also material for `/interview-prep`.
 
-No es obligatorio. Para una aplicación de rutina, `cv-reviewer` solo alcanza.
+It is not mandatory. For a routine application, `cv-reviewer` alone is enough.
 
-## Reglas de aplicación del feedback
+## Rules for applying the feedback
 
-- **Una sola ronda.** El drafter aplica la Parte A, incorpora de la Parte B lo que corresponda, y sigue. Sin ida y vuelta iterativo.
-- **Never stuff keywords:** si una keyword de la JD es un gap real del candidato, NO se agrega al CV; se reconoce honestamente en el cover si vale la pena.
-- Nada de guiones largos en el resultado final: si el reviewer sugiere texto con em-dash o en-dash, se normaliza a `-` al aplicarlo.
-- Recién después de aplicar el feedback se exporta: `python .claude/skills/cv-ats-export/scripts/cv_export.py "<CV>"` (o la copia instalada en `<workspace>/tools/`; incluye verificación ATS automática de la capa de texto).
+- **A single round.** The drafter applies Part A, incorporates whatever fits from Part B, and moves on. No iterative back and forth.
+- **Never stuff keywords:** if a JD keyword is a real gap for the candidate, it is NOT added to the CV; it is acknowledged honestly in the cover letter if worth it.
+- No long dashes in the final result: if the reviewer suggests text with an em dash or en dash, it is normalized to `-` when applied.
+- Only after applying the feedback is it exported: `python .claude/skills/cv-ats-export/scripts/cv_export.py "<CV>"` (or the copy installed in `<workspace>/tools/`; it includes automatic ATS verification of the text layer).
 
-## Registro
+## Record
 
-En la nota de aplicación (`03-Aplicaciones/`), dejar en `## Notas` un resumen de 3-5 decisiones de tailoring (qué se enfatizó, qué ángulo de empresa se usó, qué gap se reconoció). Sirve para calibrar futuras aplicaciones y para el prep de entrevista.
+In the application note (`03-Applications/`), leave in `## Notes` a summary of 3-5 tailoring decisions (what was emphasized, which company angle was used, which gap was acknowledged). It helps calibrate future applications and prepare for the interview.

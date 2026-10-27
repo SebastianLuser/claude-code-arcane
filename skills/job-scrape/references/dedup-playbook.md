@@ -1,25 +1,25 @@
-# seen_jobs - estado de deduplicacion de /job-scrape
+# seen_jobs - /job-scrape deduplication state
 
-`seen_jobs.json` registra todas las ofertas vistas por `/job-scrape` para no volver a presentarlas en corridas siguientes. Schema formal en `seen_jobs.schema.json` (junto a este archivo). Vive en `<workspace>/tools/job_scraper/` (no entre las notas) porque es dato de maquina, no nota: el vault/Obsidian no lo indexa.
+`seen_jobs.json` records every posting seen by `/job-scrape` so they are not presented again in later runs. Formal schema in `seen_jobs.schema.json` (next to this file). It lives in `<workspace>/tools/job_scraper/` (not among the notes) because it is machine data, not a note: the vault/Obsidian does not index it.
 
-## Matriz de fuente de verdad (regla anti-divergencia)
+## Source-of-truth matrix (anti-divergence rule)
 
-| Dato | Fuente de verdad | Quien escribe |
+| Data | Source of truth | Who writes |
 |---|---|---|
-| "Ya vi esta oferta" + triage + descartes pre-nota | `seen_jobs.json` | `/job-scrape` (y `/job-aplicar` al crear o descartar) |
-| Estado del pipeline (`interesado -> aplicado -> ...`), match_score definitivo | Frontmatter de la nota en `03-Aplicaciones/` | `/job-aplicar` crea; `/job-outcome` actualiza |
-| Vista humana de la cola | `00-Dashboard.md` | Derivado de las notas; `/job-aplicar` y `/job-outcome` fila a fila |
+| "I already saw this posting" + triage + pre-note discards | `seen_jobs.json` | `/job-scrape` (and `/job-apply` when creating or discarding) |
+| Pipeline status (`interested -> applied -> ...`), final match_score | Frontmatter of the note in `03-Applications/` | `/job-apply` creates; `/job-outcome` updates |
+| Human view of the queue | `00-Dashboard.md` | Derived from the notes; `/job-apply` and `/job-outcome` row by row |
 
-El flujo es **unidireccional**: seen_jobs -> nota -> dashboard. Cuando una entrada pasa a `status: nota_creada` se congela (solo conserva el puntero `nota`); el pipeline sigue en la nota y NUNCA se sincroniza de vuelta. Por eso no existe el estado `aplicado` en este archivo.
+The flow is **one-way**: seen_jobs -> note -> dashboard. When an entry moves to `status: note_created` it is frozen (it only keeps the `note` pointer); the pipeline continues in the note and is NEVER synced back. That is why the `applied` status does not exist in this file.
 
-## Claves de dedup
+## Dedup keys
 
-1. **URL canonica** (por fuente): sin utm/tracking params; LinkedIn reducido a `linkedin.com/jobs/view/<id>`; GetOnBoard `/empleos/` -> `/jobs/`.
-2. **`job_key`** = `slug(empresa)|slug(titulo)`, calculada siempre con `scripts/job_key.py` (la regla escrita solo en prosa daba claves distintas para la misma oferta segun la corrida): lowercase, sin acentos, palabras unidas con `-`, conserva el `.` interno (coderslab.io; `.NET` queda `net`), sin sufijos legales (inc, llc, s.a....), sin calificadores de modalidad o region entre parentesis ("(remote)", "(latam)"; "(OT/IoT)" se queda). Un slug largo se acota con un hash del completo, y un nombre en otro alfabeto usa el id numerico de la URL o un hash. Detecta la misma oferta publicada en dos fuentes con URLs distintas; se agrega a `sources[]` de la entrada existente en vez de duplicar. `job_key.py --audit` revisa un `seen_jobs.json` existente.
-3. Matching blando (misma empresa + alto solapamiento de tokens del titulo) = **warning** en `/job-scrape`, nunca dedup automatico (una empresa puede tener dos roles parecidos legitimos, o el mismo rol con titulo traducido).
+1. **Canonical URL** (per source): without utm/tracking params; LinkedIn reduced to `linkedin.com/jobs/view/<id>`; GetOnBoard `/empleos/` -> `/jobs/`.
+2. **`job_key`** = `slug(company)|slug(title)`, always computed with `scripts/job_key.py` (the rule written only in prose produced different keys for the same posting depending on the run): lowercase, without accents, words joined with `-`, keeps the internal `.` (coderslab.io; `.NET` becomes `net`), without legal suffixes (inc, llc, s.a....), without parenthesized work-mode or region qualifiers ("(remote)", "(latam)"; "(OT/IoT)" stays). A long slug is shortened with a hash of the full one, and a name in another alphabet uses the numeric id from the URL or a hash. It detects the same posting published on two sources with different URLs; it is added to the existing entry's `sources[]` instead of duplicating. `job_key.py --audit` reviews an existing `seen_jobs.json`.
+3. Soft matching (same company + high overlap of title tokens) = **warning** in `/job-scrape`, never automatic dedup (a company can have two legitimately similar roles, or the same role with a translated title).
 
-## Mantenimiento
+## Maintenance
 
-- **Punteros rotos:** `/job-scrape` valida al arrancar que toda entrada `nota_creada` apunte a una nota existente y reporta las rotas.
-- **Poda (opt-in):** entradas `new`/`descartado` con `last_seen` de mas de 90 dias se pueden borrar. Solo a pedido del usuario, nunca automatico. Las `nota_creada` no se podan (son el historial de dedup contra aplicaciones reales).
-- **Primer run:** el archivo arranca vacio (esqueleto del schema). Si ya existen notas en `03-Aplicaciones/`, `/job-scrape` ofrece backfillearlas como `nota_creada` (con `quick_score: null` y `url: "nota://<archivo>"` si la nota no tiene `link_oferta`).
+- **Broken pointers:** at startup `/job-scrape` validates that every `note_created` entry points to an existing note and reports the broken ones.
+- **Pruning (opt-in):** `new`/`discarded` entries with a `last_seen` older than 90 days can be deleted. Only at the user's request, never automatic. `note_created` entries are not pruned (they are the dedup history against real applications).
+- **First run:** the file starts empty (the schema skeleton). If notes already exist in `03-Applications/`, `/job-scrape` offers to backfill them as `note_created` (with `quick_score: null` and `url: "note://<file>"` if the note has no `posting_url`).

@@ -1,164 +1,164 @@
 # Coordination Rules
 
-Cómo coordinan los agentes entre sí y con la main session. Aplica a software y gamedev.
+How agents coordinate with each other and with the main session. Applies to software and gamedev.
 
 ---
 
-## Regla #1 — Main Session Owns All Writes
+## Rule #1 — Main Session Owns All Writes
 
-Los agentes NUNCA escriben archivos directamente. Devuelven análisis/propuestas al main session, que presenta al usuario y ejecuta los writes después de aprobación.
+Agents NEVER write files directly. They return analyses/proposals to the main session, which presents them to the user and performs the writes after approval.
 
-**Excepciones:** Solo los orchestrators del sistema GSD (gsd-executor, gsd-planner) pueden escribir después de un workflow explícito con aprobación del usuario.
+**Exceptions:** Only the GSD system orchestrators (gsd-executor, gsd-planner) may write, after an explicit workflow approved by the user.
 
-## Regla #2 — Agents Ask Before Writing
+## Rule #2 — Agents Ask Before Writing
 
-Si un agente tiene permiso de Write, debe preguntar:
-> "¿Puedo escribir esto en `src/auth/middleware.ts`?"
+If an agent has Write permission, it must ask:
+> "May I write this to `src/auth/middleware.ts`?"
 
-Esperar respuesta antes de ejecutar. Ver `collaborative-design.md` para el protocolo completo.
+Wait for the answer before executing. See `collaborative-design.md` for the full protocol.
 
-## Regla #3 — Delegation Chain
+## Rule #3 — Delegation Chain
 
-La cadena típica:
+The typical chain:
 ```
 User → Main Session → Lead Agent → Specialist Agent(s)
                                  → (returns analysis)
       ← (returns analysis)
 ```
 
-NO delegar lateralmente entre specialists. Si un specialist necesita input de otro, escalar al lead.
+Do NOT delegate laterally between specialists. If a specialist needs input from another, escalate to the lead.
 
-## Regla #4 — Vertical Delegation Only
+## Rule #4 — Vertical Delegation Only
 
-Leaders delegan **hacia abajo** en el tier (director → lead → specialist). Nunca saltar tiers para decisiones complejas.
+Leaders delegate **downward** in the tier (director → lead → specialist). Never skip tiers for complex decisions.
 
-**Horizontal Consultation:** Agentes del mismo tier pueden consultarse pero no tomar decisiones vinculantes fuera de su dominio.
+**Horizontal Consultation:** Agents in the same tier may consult each other but may not make binding decisions outside their domain.
 
-**Conflict Resolution:** Si dos agentes disagree, escalar al parent compartido. Si no hay parent compartido, escalar al director correspondiente del dominio (software → CTO, gamedev → creative-director o technical-director).
+**Conflict Resolution:** If two agents disagree, escalate to their shared parent. If there is no shared parent, escalate to the domain's director (software → CTO, gamedev → creative-director or technical-director).
 
-**Change Propagation:** Cuando un cambio afecta múltiples dominios, un agente coordinador (producer/program-director/technical-director) propaga.
+**Change Propagation:** When a change affects multiple domains, a coordinating agent (producer/program-director/technical-director) propagates it.
 
-**No Cross-Domain File Modifications:** Un agente nunca modifica archivos fuera de sus paths asignados sin delegación explícita.
+**No Cross-Domain File Modifications:** An agent never modifies files outside its assigned paths without explicit delegation.
 
-## Regla #5 — Gate Verdicts
+## Rule #5 — Gate Verdicts
 
-Cuando un agente es invocado como "gate" (approval gate), debe empezar la respuesta con:
+When an agent is invoked as a "gate" (approval gate), it must start its response with:
 ```
 [GATE-ID]: APPROVE | CONCERNS | REJECT
 ```
 
-Luego el rationale. El token en la primera línea permite que el skill orquestador lo parsee.
+Then the rationale. The token on the first line lets the orchestrating skill parse it.
 
-**Escalation:** Cuando múltiples gates corren en paralelo, aplica el verdict más estricto — un REJECT override cualquier APPROVE.
+**Escalation:** When multiple gates run in parallel, the strictest verdict applies — a REJECT overrides any APPROVE.
 
-## Regla #6 — Cross-Division Collaboration
+## Rule #6 — Cross-Division Collaboration
 
-Para tareas que cruzan divisiones:
-1. El lead de la división solicitante invoca al lead de la otra
-2. Si hay conflicto → escalar a los directors
-3. Si los directors no acuerdan → escalar al user
+For tasks that span divisions:
+1. The lead of the requesting division invokes the lead of the other
+2. If there is a conflict → escalate to the directors
+3. If the directors do not agree → escalate to the user
 
-## Regla #7 — No Autonomous Commits
+## Rule #7 — No Autonomous Commits
 
-Ningún agente hace commits sin instrucción explícita del user. Ni siquiera el gsd-executor.
+No agent commits without an explicit instruction from the user. Not even the gsd-executor.
 
-## Regla #8 — Document Decisions
+## Rule #8 — Document Decisions
 
-- Decisiones arquitectónicas → ADR en `docs/architecture/adr-XXXX.md`
-- Decisiones de producto → PRD en `design/product/`
-- Decisiones de diseño de juego → sección "Decisions" en el GDD relevante
-- Decisiones de UI/UX → spec en `design/ux/`
+- Architecture decisions → ADR in `docs/architecture/adr-XXXX.md`
+- Product decisions → PRD in `design/product/`
+- Game design decisions → "Decisions" section in the relevant GDD
+- UI/UX decisions → spec in `design/ux/`
 
-## Regla #9 — Session State
+## Rule #9 — Session State
 
-Actualizar `.arcane/session-state/active.md` cuando:
-- Se completa un section/phase
-- Se toma una decisión significativa
-- Se cambia de división/agente
-- Se alcanza un checkpoint
+Update `.arcane/session-state/active.md` when:
+- A section/phase is completed
+- A significant decision is made
+- The division/agent changes
+- A checkpoint is reached
 
-## Regla #10 — Confidential First
+## Rule #10 — Confidential First
 
-Si un agente detecta datos sensibles (secrets, PII, credentials) en archivos que debe leer/modificar:
-1. Flaggear inmediatamente al user
-2. No procesar el contenido sensible
-3. Sugerir remediación (.gitignore, secret manager, etc.)
+If an agent detects sensitive data (secrets, PII, credentials) in files it must read/modify:
+1. Flag it to the user immediately
+2. Do not process the sensitive content
+3. Suggest remediation (.gitignore, secret manager, etc.)
 
-## Regla #11 — Context Budget
+## Rule #11 — Context Budget
 
-Cada agente tiene un budget de contexto. Si se acerca al límite:
-1. Resumir y devolver al main session
-2. Sugerir spawn de nuevo agent con contexto limpio
-3. Nunca tomar decisiones apresuradas por budget
+Each agent has a context budget. If it is approaching the limit:
+1. Summarize and return to the main session
+2. Suggest spawning a new agent with a clean context
+3. Never make rushed decisions because of the budget
 
 ---
 
 ## Model Tier Assignment
 
-Skills y agentes se asignan a model tiers según complejidad:
+Skills and agents are assigned to model tiers by complexity:
 
-| Tier | Model | Cuándo usar |
+| Tier | Model | When to use |
 |------|-------|-------------|
-| **Haiku** | `claude-haiku-4-5-20251001` | Status checks read-only, formatting, lookups simples — sin juicio creativo |
-| **Sonnet** | `claude-sonnet-4-6` | Implementación, authoring de diseño, análisis de sistemas individuales — default |
-| **Opus** | `claude-opus-4-6` | Síntesis multi-doc, phase-gates críticos, review holístico cross-system |
+| **Haiku** | `claude-haiku-4-5-20251001` | Read-only status checks, formatting, simple lookups — no creative judgment |
+| **Sonnet** | `claude-sonnet-4-6` | Implementation, design authoring, analysis of individual systems — default |
+| **Opus** | `claude-opus-4-6` | Multi-doc synthesis, critical phase-gates, holistic cross-system review |
 
-**Guía para asignar:**
-- **Haiku** si el skill solo lee y formatea (status reports, changelog, onboard, scope-check)
-- **Opus** si debe sintetizar 5+ documentos con output de alto impacto (architecture-review, gate-check, audit multi-sistema)
-- **Sonnet** — default para el resto
+**Assignment guide:**
+- **Haiku** if the skill only reads and formats (status reports, changelog, onboard, scope-check)
+- **Opus** if it must synthesize 5+ documents with high-impact output (architecture-review, gate-check, multi-system audit)
+- **Sonnet** — default for the rest
 
-Ejemplos actuales:
+Current examples:
 - Haiku: `/changelog`, `/patch-notes`, `/onboard`, `/what-next`
 - Opus: `/architecture-review`, `/gate-check`, `/audit-game`, `/audit-dev`
-- Sonnet: todo el resto
+- Sonnet: everything else
 
 ---
 
 ## Subagents vs Agent Teams
 
-Dos patrones distintos de multi-agente:
+Two distinct multi-agent patterns:
 
-### Subagents (actual, siempre activo)
+### Subagents (current, always on)
 
-Spawned vía `Task` dentro de una sola sesión de Claude Code. Los `team-*` skills y orchestrators usan esto. Los subagents comparten el permission context de la sesión, corren secuenciales o en paralelo dentro de la sesión, y devuelven resultados al parent.
+Spawned via `Task` inside a single Claude Code session. The `team-*` skills and orchestrators use this. Subagents share the session's permission context, run sequentially or in parallel within the session, and return results to the parent.
 
-**Cuándo spawn en paralelo:** si dos subagents tienen inputs independientes (ninguno necesita el output del otro para arrancar), spawneá ambos `Task` simultáneamente en vez de esperar. Ejemplo: revisar dos GDDs que no dependen entre sí.
+**When to spawn in parallel:** if two subagents have independent inputs (neither needs the other's output to start), spawn both `Task` calls at once instead of waiting. Example: reviewing two GDDs that do not depend on each other.
 
 ### Agent Teams (experimental — opt-in)
 
-Múltiples sesiones independientes de Claude Code corriendo simultáneamente, coordinadas por una task list compartida. Cada sesión tiene su propio context window y token budget. Requiere `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`.
+Multiple independent Claude Code sessions running at the same time, coordinated by a shared task list. Each session has its own context window and token budget. Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`.
 
-**Usar agent teams cuando:**
-- Trabajo cruza múltiples subsystems que no tocan los mismos archivos
-- Cada workstream tomaría >30 min y se beneficia de paralelismo real
-- Un agente senior (technical-director, program-director) coordina 3+ specialists trabajando en épicas diferentes simultáneamente
+**Use agent teams when:**
+- The work spans multiple subsystems that do not touch the same files
+- Each workstream would take >30 min and benefits from real parallelism
+- A senior agent (technical-director, program-director) coordinates 3+ specialists working on different epics at the same time
 
-**NO usar agent teams cuando:**
-- El output de una sesión es input de otra (usar subagents secuenciales)
-- La tarea cabe en una sola sesión (usar subagents)
-- Costo es preocupación — cada team member quema tokens independientemente
+**Do NOT use agent teams when:**
+- One session's output is another's input (use sequential subagents)
+- The task fits in a single session (use subagents)
+- Cost is a concern — each team member burns tokens independently
 
 ---
 
 ## Parallel Task Protocol
 
-Cuando un skill orchestrator spawnea múltiples agents independientes:
+When an orchestrator skill spawns multiple independent agents:
 
-1. Emitir **todos** los Task calls antes de esperar cualquier resultado
-2. Collect todos los results antes de proceder a fases dependientes
-3. Si cualquier agent está BLOCKED, surface inmediatamente — no skippear en silencio
-4. Siempre producir un partial report si algunos completan y otros bloquean
+1. Issue **all** the Task calls before waiting for any result
+2. Collect all the results before moving on to dependent phases
+3. If any agent is BLOCKED, surface it immediately — do not skip it silently
+4. Always produce a partial report if some complete and others block
 
-**Ejemplo de spawn paralelo:**
+**Parallel spawn example:**
 ```
-Fase 2 — review paralelo:
-  Spawn simultáneo:
-    - backend-architect → review de API design
-    - security-architect → review de threat model
-    - qa-lead → review de testability
+Phase 2 — parallel review:
+  Spawn at once:
+    - backend-architect → API design review
+    - security-architect → threat model review
+    - qa-lead → testability review
   
-  Esperar los 3 verdicts.
-  Si algún REJECT → resolver antes de continuar.
-  Si todos APPROVE → proceder a Fase 3.
+  Wait for all 3 verdicts.
+  If any REJECT → resolve before continuing.
+  If all APPROVE → move on to Phase 3.
 ```

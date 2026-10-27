@@ -1,6 +1,6 @@
 ---
 name: master-profile
-description: "Build and maintain the master professional profile - the single source of truth (experience, skills with levels, projects, education, references, bios) that every CV, LinkedIn profile and portfolio derives from. Triggers: perfil maestro, master resume, cronologia laboral, single source of truth CV, mi experiencia profesional."
+description: "Build and maintain the master professional profile - the single source of truth (experience, skills with levels, projects, education, references, bios) that every CV, LinkedIn profile and portfolio derives from. Triggers: master profile, master resume, work history timeline, single source of truth CV, my professional experience."
 argument-hint: "[build | update | derive <role>]"
 category: "career"
 user-invocable: true
@@ -9,62 +9,62 @@ allowed-tools: Read, Glob, Grep, Write, Edit
 
 # Master Profile - Single Source of Truth
 
-Construís y mantenés el **perfil maestro**: el documento del que derivan todos los CVs, el LinkedIn y el portfolio. La regla de oro: **si algo cambia, se cambia acá primero** y de acá se sincroniza al resto.
+You build and maintain the **master profile**: the document every CV, the LinkedIn profile and the portfolio derive from. The golden rule: **if something changes, it changes here first** and syncs from here to the rest.
 
-Vive en `01-Perfiles/Perfil Maestro.md` dentro del career workspace. Los perfiles por rol (`Backend.md`, `Frontend.md`, etc.) son **vistas filtradas** del maestro, no fuentes independientes.
+It lives in `01-Profiles/Master Profile.md` inside the career workspace. The per-role profiles (`Backend.md`, `Frontend.md`, etc.) are **filtered views** of the master, not independent sources.
 
-## Por qué existe
+## Why it exists
 
-Mantener N CVs sincronizados a mano es la causa #1 de errores (fechas que no coinciden, logros que faltan en una versión). Con un maestro: editás un lado, derivás el resto. `/cv-tailor`, `/linkedin-optimize`, `/portfolio-site` y las skills de LinkedIn (sección Voice) consumen este archivo.
+Keeping N CVs in sync by hand is the #1 cause of errors (dates that do not match, achievements missing from one version). With a master: you edit one side, you derive the rest. `/cv-tailor`, `/linkedin-optimize`, `/portfolio-site` and the LinkedIn skills (Voice section) consume this file.
 
-## Estructura del perfil maestro
+## Master profile structure
 
-Generá el archivo con estas secciones (todas las que apliquen):
+Generate the file with these sections (all that apply):
 
-1. **Personal info** - nombre, display name, headline actual, ubicación, email público vs personal, teléfono, LinkedIn, GitHub, portfolio. (El email *público* puede diferir del personal.)
-2. **Bios** - tres largos: corto (hero/one-liner), medio (2-3 oraciones para "About"), largo (about page completo).
-3. **Work experience** (más reciente primero) - por cada rol: empresa, período, ubicación/modalidad, producto, stack, manager/referencia, y **bullets de logros con número→contexto→resultado**.
-4. **Education** - institución, período, foco.
-5. **Certifications** - nombre, año, estado (completo/in progress).
-6. **Skills consolidados con nivel** - agrupados (lenguajes, frameworks, infra, tooling) con nivel (Expert/Advanced/Proficient/…) y opcionalmente % para el portfolio.
-7. **Projects** - tech, rol, highlights, link en vivo.
-8. **Achievements / highlights** - premios, showcases, hitos.
-9. **Languages** - idioma + nivel.
-10. **References** - nombre, rol, relación, contacto.
-11. **Voice** - cómo escribe el usuario en LinkedIn y en mensajes: para quién escribe, idioma de la audiencia, palabras que usa y que nunca usaría, largo de oración, emoji (nunca / poco / libre), 3-5 posiciones que sostiene y parte de su audiencia no comparte, temas y nombres off-limits (NDA, empleador), y la prueba que puede firmar (números e historias reales). La leen `/linkedin-post`, `/linkedin-comment`, `/linkedin-reply`, `/linkedin-inbox` y `/cold-outreach`. Si el usuario prefiere no completarla a mano, pedile tres posts suyos y derivala de ahí.
+1. **Personal info** - name, display name, current headline, location, public vs personal email, phone, LinkedIn, GitHub, portfolio. (The *public* email can differ from the personal one.)
+2. **Bios** - three lengths: short (hero/one-liner), medium (2-3 sentences for "About"), long (full about page).
+3. **Work experience** (most recent first) - for each role: company, period, location/work mode, product, stack, manager/reference, and **achievement bullets with number→context→result**.
+4. **Education** - institution, period, focus.
+5. **Certifications** - name, year, status (complete/in progress).
+6. **Consolidated skills with level** - grouped (languages, frameworks, infra, tooling) with a level (Expert/Advanced/Proficient/…) and optionally a % for the portfolio.
+7. **Projects** - tech, role, highlights, live link.
+8. **Achievements / highlights** - awards, showcases, milestones.
+9. **Languages** - language + level.
+10. **References** - name, role, relationship, contact.
+11. **Voice** - how the user writes on LinkedIn and in messages: who they write for, the audience's language, words they use and would never use, sentence length, emoji (never / sparingly / freely), 3-5 positions they hold that part of their audience does not share, off-limits topics and names (NDA, employer), and the proof they can sign off on (real numbers and stories). Read by `/linkedin-post`, `/linkedin-comment`, `/linkedin-reply`, `/linkedin-inbox` and `/cold-outreach`. If the user prefers not to fill it in by hand, ask for three of their posts and derive it from there.
 
-## Modos
+## Modes
 
-### `build` - Crear el maestro desde cero
-1. Si no existe el workspace, sugerir `/job-hunt setup` primero.
-2. Recolectar info por sección - preferí **entrevistar al usuario por bloques** (no un cuestionario gigante). Empezá por experiencia y skills.
-3. Para cada logro, empujar a la forma **cuantificable**: "¿qué número podés ponerle? ¿comparado con qué? ¿qué resultado tuvo?". Un bullet sin métrica es una oportunidad perdida.
-4. Escribir `01-Perfiles/Perfil Maestro.md`.
-5. Sugerir derivar el primer perfil por rol: `/master-profile derive <role>`.
+### `build` - Create the master from scratch
+1. If the workspace does not exist, suggest `/job-hunt setup` first.
+2. Collect info per section - prefer **interviewing the user in blocks** (not a giant questionnaire). Start with experience and skills.
+3. For each achievement, push toward the **quantifiable** form: "what number can you put on it? compared with what? what result did it have?". A bullet without a metric is a missed opportunity.
+4. Write `01-Profiles/Master Profile.md`.
+5. Suggest deriving the first per-role profile: `/master-profile derive <role>`.
 
-### `update` - Mantener al día
-1. Leer el maestro actual.
-2. Aplicar el cambio (nuevo rol, nuevo logro, ascenso, proyecto).
-3. **Avisar qué derivados quedan desactualizados** (CVs por rol, LinkedIn, portfolio) y ofrecer re-derivarlos.
+### `update` - Keep it current
+1. Read the current master.
+2. Apply the change (new role, new achievement, promotion, project).
+3. **Warn which derivatives are now outdated** (per-role CVs, LinkedIn, portfolio) and offer to re-derive them.
 
-### `derive <role>` - Vista por rol
-1. Leer el maestro.
-2. Crear/actualizar `01-Perfiles/<Role>.md` con el template `Perfil` (ver `Templates/Perfil.md`): filtrar y reordenar la experiencia/skills/proyectos hacia ese rol, definir keywords objetivo, score mínimo y mercado.
-3. Este perfil por rol es el `perfil_base` que después usa `/cv-tailor`.
+### `derive <role>` - Per-role view
+1. Read the master.
+2. Create/update `01-Profiles/<Role>.md` with the `Profile` template (see `Templates/Profile.md`): filter and reorder the experience/skills/projects toward that role, define target keywords, minimum score and market.
+3. This per-role profile is the `base_profile` that `/cv-tailor` uses later.
 
-## Principios de redacción
+## Writing principles
 
-- **Logros, no responsabilidades.** "Reduje latencia de servidor 25%" > "Encargado del servidor".
-- **Verbos de acción + métrica + impacto.** Owned, shipped, led, reduced, increased, scaled.
-- **Verdad verificable.** Nada que no puedas defender en una entrevista.
-- **Inglés para roles internacionales**, español cuando aplique. El maestro puede tener los valores en inglés (van directo a CV/portfolio) y las meta-notas en español.
+- **Achievements, not responsibilities.** "Cut server latency by 25%" > "In charge of the server".
+- **Action verbs + metric + impact.** Owned, shipped, led, reduced, increased, scaled.
+- **Verifiable truth.** Nothing you cannot defend in an interview.
+- **English for international roles**, the local language when it applies. The master can keep its values in English (they go straight to the CV/portfolio) and its meta-notes in the user's language.
 
-## Reglas
+## Rules
 
-- Una sola fuente de verdad: no dejar que un CV por rol "evolucione" por fuera del maestro.
-- No inventar logros ni métricas - si el usuario no tiene el número, marcarlo como pendiente, no fabricarlo.
-- Separar email público de personal; no exponer datos sensibles en archivos que vayan a un remoto.
+- A single source of truth: do not let a per-role CV "evolve" outside the master.
+- Do not invent achievements or metrics - if the user does not have the number, mark it as pending, do not fabricate it.
+- Separate the public email from the personal one; do not expose sensitive data in files that go to a remote.
 
 ## Handoff
 
-Confirmá con el usuario (approval) antes de escribir el perfil maestro o pisar derivados. Cuando el maestro está READY, derivá perfiles por rol y seguí con `/cv-tailor`, `/linkedin-optimize` o `/portfolio-site`.
+Confirm with the user (approval) before writing the master profile or overwriting derivatives. When the master is READY, derive per-role profiles and continue with `/cv-tailor`, `/linkedin-optimize` or `/portfolio-site`.

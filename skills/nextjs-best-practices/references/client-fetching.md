@@ -1,20 +1,20 @@
 # 4. Client-Side Data Fetching (MEDIUM-HIGH)
 
 ## 4.3 Use SWR for Automatic Deduplication — MEDIUM-HIGH
-Dedup de requests, caching y revalidación entre instancias de componente.
+Request dedup, caching and revalidation across component instances.
 ```ts
-const { data } = useSWR(`/api/user/${id}`, fetcher); // mismo key = 1 request
+const { data } = useSWR(`/api/user/${id}`, fetcher); // same key = 1 request
 ```
 
 ## 4.2 Use Passive Event Listeners for Scrolling — MEDIUM
 ```ts
-el.addEventListener('touchstart', handler, { passive: true }); // scroll inmediato
+el.addEventListener('touchstart', handler, { passive: true }); // immediate scroll
 ```
 
 ## 4.4 Version and Minimize localStorage Data — MEDIUM
-Prefijo de versión en las keys (`app:v2:prefs`) y guardar solo campos necesarios → evita conflictos y reduce tamaño.
+Version prefix on the keys (`app:v2:prefs`) and store only the needed fields → avoids conflicts and reduces size.
 
 ## 4.1 Deduplicate Global Event Listeners — LOW
-Compartir listeners globales entre instancias con un `Map` + `useSWRSubscription()` en vez de uno por componente.
+Share global listeners across instances with a `Map` + `useSWRSubscription()` instead of one per component.
 
 _Ref: https://swr.vercel.app_

@@ -1,6 +1,6 @@
 ---
 name: audio-spec
-description: "SFX spec sheets y audio event lists: trigger, prioridad, concurrencia, cooldown, variaciones, propiedades espaciales. Usar para: especificar sonidos, event list por sistema, brief para sound designer."
+description: "SFX spec sheets and audio event lists: trigger, priority, concurrency, cooldown, variations, spatial properties. Use to: specify sounds, build an event list per system, write a brief for a sound designer."
 category: "audio"
 argument-hint: "[system-name | all | events]"
 user-invocable: true
@@ -8,92 +8,92 @@ allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 # audio-spec — SFX Specs & Event Lists
 
-Convierte dirección sonora en especificaciones que un sound designer externo puede producir sin más briefing, y en event lists que un programador puede implementar sin adivinar.
+Turns sound direction into specifications an external sound designer can produce without further briefing, and into event lists a programmer can implement without guessing.
 
-Dos entregables distintos y complementarios:
-- **Spec sheet** — describe *el sonido*: cómo suena, cuánto dura, cuántas variantes
-- **Event list** — describe *el contrato*: qué lo dispara, con qué prioridad, cuántas instancias, qué parámetros recibe
+Two distinct, complementary deliverables:
+- **Spec sheet** — describes *the sound*: what it sounds like, how long it lasts, how many variants
+- **Event list** — describes *the contract*: what triggers it, at what priority, how many instances, which parameters it takes
 
-## Cuándo usar
+## When to use
 
-- Después de `/audio-bible` (la dirección tiene que existir primero)
-- Cuando vas a tercerizar producción de SFX y necesitás un brief cerrado
-- Cuando el código necesita saber qué eventos postear antes de que existan los assets
-- Antes de `/middleware-integration` — la event list es su input
+- After `/audio-bible` (the direction has to exist first)
+- When you are going to outsource SFX production and need a closed brief
+- When the code needs to know which events to post before the assets exist
+- Before `/middleware-integration` — the event list is its input
 
-## Modos
+## Modes
 
-| Modo | Qué hace |
+| Mode | What it does |
 |---|---|
-| `system-name` | Especifica un sistema concreto: spec sheets + event list de, por ejemplo, `combat` |
-| `all` | Barre todos los sistemas del proyecto, uno por vez |
-| `events` | Solo la event list, sin spec sheets. Para cuando el código necesita el contrato antes de que existan los assets |
+| `system-name` | Specifies one concrete system: spec sheets + event list for, say, `combat` |
+| `all` | Sweeps every system in the project, one at a time |
+| `events` | Event list only, no spec sheets. For when the code needs the contract before the assets exist |
 
 ## Input
 
-1. Leer audio bible (paleta, frequency allocation, mix hierarchy, standards). Si no existe, avisar y ofrecer `/audio-bible` primero
-2. Identificar el sistema a especificar (combate, locomoción, UI, ambiente, props...) o `all`
-3. Leer el código/GDD del sistema para extraer los momentos que piden sonido
-4. Preguntar al usuario: nivel de detalle (spec completo vs event list sola) y si hay assets existentes que reusar
+1. Read the audio bible (palette, frequency allocation, mix hierarchy, standards). If it doesn't exist, say so and offer `/audio-bible` first
+2. Identify the system to specify (combat, locomotion, UI, ambience, props...) or `all`
+3. Read the system's code/GDD to extract the moments that call for sound
+4. Ask the user: level of detail (full spec vs event list only) and whether there are existing assets to reuse
 
 ---
 
-## Spec sheet — campos obligatorios
+## Spec sheet — required fields
 
-Cada sonido lleva estos campos. Un campo vacío es una decisión que alguien va a tomar por vos:
+Every sound carries these fields. An empty field is a decision someone else will make for you:
 
-| Campo | Qué define | Ejemplo |
+| Field | What it defines | Example |
 |---|---|---|
-| **ID** | Nombre canónico, matchea naming del bible | `sfx_weapon_shotgun_fire` |
-| **Descripción** | Qué es, en una línea funcional | Disparo de escopeta de doble caño, seco, sin cola de reverb |
-| **Referencias** | 1-3 sonidos concretos con qué tomar de cada uno | — |
-| **Carácter frecuencial** | Dónde vive, contra la allocation del bible | Sub-punch 50-70 Hz + crack 3-5 kHz, vacío en mids |
-| **Duración** | Rango, no valor único | 180-260 ms |
-| **Envolvente** | Attack / body / tail explícitos | Attack <5 ms, body 60 ms, tail 120 ms |
-| **Rango de volumen** | Nivel relativo a la categoría | −6 dB a −3 dB del bus SFX |
-| **Propiedades espaciales** | 2D/3D, curva de atenuación, min/max distance | 3D, 2-40 m, log |
-| **Variaciones** | Cuántas variantes y qué randomización | 5 variantes, pitch ±3%, volumen ±1.5 dB |
-| **Prioridad** | Qué se cae primero bajo presión de voces | Alta (feedback de acción del jugador) |
+| **ID** | Canonical name, matches the bible's naming | `sfx_weapon_shotgun_fire` |
+| **Description** | What it is, in one functional line | Double-barrel shotgun shot, dry, no reverb tail |
+| **References** | 1-3 concrete sounds and what to take from each | — |
+| **Frequency character** | Where it lives, against the bible's allocation | Sub-punch 50-70 Hz + crack 3-5 kHz, empty mids |
+| **Duration** | A range, not a single value | 180-260 ms |
+| **Envelope** | Explicit attack / body / tail | Attack <5 ms, body 60 ms, tail 120 ms |
+| **Volume range** | Level relative to the category | −6 dB to −3 dB of the SFX bus |
+| **Spatial properties** | 2D/3D, attenuation curve, min/max distance | 3D, 2-40 m, log |
+| **Variations** | How many variants and what randomization | 5 variants, pitch ±3%, volume ±1.5 dB |
+| **Priority** | What drops first under voice pressure | High (player action feedback) |
 
-## Event list — campos obligatorios
+## Event list — required fields
 
-| Campo | Qué define |
+| Field | What it defines |
 |---|---|
-| **Evento** | Nombre que postea el código |
-| **Trigger** | Condición exacta de gameplay que lo dispara |
-| **Sonidos** | Qué IDs de spec resuelve (uno o un container) |
-| **Concurrencia** | Máximo de instancias simultáneas + qué hacer al exceder (drop oldest / drop newest / reject) |
-| **Cooldown** | Mínimo entre disparos, para eventos que pueden spamearse |
-| **Parámetros** | RTPCs que recibe, con rango normalizado |
-| **Stop condition** | Cómo termina: one-shot, loop con stop explícito, o fade |
+| **Event** | Name the code posts |
+| **Trigger** | Exact gameplay condition that fires it |
+| **Sounds** | Which spec IDs it resolves (one or a container) |
+| **Concurrency** | Max simultaneous instances + what to do when exceeded (drop oldest / drop newest / reject) |
+| **Cooldown** | Minimum time between triggers, for events that can be spammed |
+| **Parameters** | RTPCs it takes, with normalized range |
+| **Stop condition** | How it ends: one-shot, loop with explicit stop, or fade |
 
-**Concurrencia y cooldown no son opcionales.** Son la diferencia entre un sistema que sobrevive 40 enemigos en pantalla y uno que satura el voice budget. Todo evento que puede dispararse más de una vez por frame necesita ambos.
+**Concurrency and cooldown are not optional.** They are the difference between a system that survives 40 enemies on screen and one that saturates the voice budget. Every event that can fire more than once per frame needs both.
 
 ---
 
-## Proceso
+## Process
 
-1. **Barrer el sistema** — listar cada momento que pide sonido, incluyendo los negativos (dónde el silencio es la decisión)
-2. **Agrupar** — sonidos que comparten carácter van juntos; identificar qué puede ser variación de un mismo asset en vez de asset nuevo
-3. **Draftar** specs y event list del grupo
-4. **Presentar** al usuario para review
-5. **Escribir** — preguntar "¿Escribo el spec de `<sistema>` a `<path>`?" antes de usar Write
+1. **Sweep the system** — list every moment that calls for sound, including the negatives (where silence is the decision)
+2. **Group** — sounds that share a character go together; identify what can be a variation of the same asset instead of a new asset
+3. **Draft** the group's specs and event list
+4. **Present** them to the user for review
+5. **Write** — ask "Should I write the `<system>` spec to `<path>`?" before using Write
 
-No batchear sistemas: cerrar uno antes de abrir el siguiente.
+Don't batch systems: close one before opening the next.
 
-### Reducción de assets
+### Asset reduction
 
-Antes de especificar N sonidos nuevos, preguntar si el caso se resuelve con variación o con síntesis. El caso canónico: 20 samples × 6 superficies × 3 intensidades = 360 archivos (~180 MB) vs footsteps procedurales (~50 KB) con variación infinita. Si el sistema es de alta frecuencia y muchas dimensiones, derivar a `/procedural-audio` antes de escribir el spec.
+Before specifying N new sounds, ask whether the case is solved with variation or with synthesis. The canonical case: 20 samples × 6 surfaces × 3 intensities = 360 files (~180 MB) vs procedural footsteps (~50 KB) with infinite variation. If the system is high-frequency and has many dimensions, hand off to `/procedural-audio` before writing the spec.
 
 ---
 
 ## Verdict
 
-Por sistema especificado:
+Per specified system:
 
-- **READY** — todo sonido tiene los 10 campos, todo evento tiene concurrencia y cooldown. Un externo puede producir y un programador puede implementar
-- **CONCERNS** — hay campos vacíos o eventos sin límites; listar cuáles
-- **BLOCKED** — falta el audio bible, o el sistema de gameplay no está definido lo suficiente para saber qué momentos existen
+- **READY** — every sound has the 10 fields, every event has concurrency and cooldown. An external party can produce and a programmer can implement
+- **CONCERNS** — there are empty fields or events without limits; list which
+- **BLOCKED** — the audio bible is missing, or the gameplay system isn't defined enough to know which moments exist
 
 ## Anti-patterns
 
@@ -101,7 +101,7 @@ Por sistema especificado:
 
 ## Next steps
 
-- `/middleware-integration` para implementar la event list en Wwise/FMOD
-- `/procedural-audio` para los sistemas de alta frecuencia que no conviene samplear
-- `/sfx-design` para profundizar el diseño de los sonidos hero
-- `/audio-audit` para verificar los assets entregados contra el spec
+- `/middleware-integration` to implement the event list in Wwise/FMOD
+- `/procedural-audio` for high-frequency systems that are not worth sampling
+- `/sfx-design` to go deeper on the design of the hero sounds
+- `/audio-audit` to check delivered assets against the spec

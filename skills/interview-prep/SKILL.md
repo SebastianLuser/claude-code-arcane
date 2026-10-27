@@ -1,77 +1,77 @@
 ---
 name: interview-prep
-description: "Prepare for a job interview: company research, likely question bank by role, STAR answers built from your real experience, smart questions to ask, and red flags to watch for. Triggers: preparar entrevista, interview prep, preguntas de entrevista, respuestas STAR, que preguntar en una entrevista, mock interview, red flags entrevista."
+description: "Prepare for a job interview: company research, likely question bank by role, STAR answers built from your real experience, smart questions to ask, and red flags to watch for. Triggers: prepare for an interview, interview prep, interview questions, STAR answers, what to ask in an interview, mock interview, interview red flags."
 argument-hint: "[application-note | company + role + round]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, WebFetch, Task
 ---
 
-# Interview Prep - Preparación de entrevista
+# Interview Prep - Interview preparation
 
-Preparás al usuario para una entrevista concreta: research de la empresa, banco de preguntas probable según rol y ronda, respuestas **STAR** construidas desde su experiencia real, preguntas inteligentes para hacer, y red flags a detectar. El output queda en una nota de `06-Entrevistas/`.
+You prepare the user for a specific interview: company research, a likely question bank by role and round, **STAR** answers built from their real experience, smart questions to ask, and red flags to detect. The output lands in a note in `06-Interviews/`.
 
 ## Inputs
 
-- **Aplicación / empresa / rol** (`03-Aplicaciones/`, `04-Empresas/`) y la **ronda** (recruiter screen, técnica, system design, hiring manager, cultural, final).
-- **Perfil maestro** (`01-Perfiles/`) - de ahí salen las historias para las respuestas STAR.
-- **Entrevistadores** si se conocen (research de background ayuda).
+- **Application / company / role** (`03-Applications/`, `04-Companies/`) and the **round** (recruiter screen, technical, system design, hiring manager, culture, final).
+- **Master profile** (`01-Profiles/`) - the stories for the STAR answers come from there.
+- **Interviewers** if known (background research helps).
 
-## Qué producís
+## What you produce
 
-### 1. Research de la empresa
-- Qué hacen, producto, modelo de negocio, etapa, tamaño.
-- Cultura y valores (de su sitio, blog, reviews).
-- Noticias recientes / financiación / lanzamientos.
-- Stack técnico conocido.
-- Cómo conectar tu perfil con su contexto.
+### 1. Company research
+- What they do, product, business model, stage, size.
+- Culture and values (from their site, blog, reviews).
+- Recent news / funding / launches.
+- Known tech stack.
+- How to connect your profile to their context.
 
-### 2. Banco de preguntas por ronda
-- **Recruiter screen:** motivación, expectativas salariales, disponibilidad, "contame de vos".
-- **Técnica:** según stack del JD - fundamentos, problemas, debugging, code review.
-- **System design** (si aplica): patrones, trade-offs, escala.
-- **Hiring manager / comportamiento:** liderazgo, conflicto, fracaso, impacto.
-- **Cultural:** valores, formas de trabajo, por qué esta empresa.
-- Marcar las **3-5 más probables** para este rol específico.
+### 2. Question bank by round
+- **Recruiter screen:** motivation, salary expectations, availability, "tell me about yourself".
+- **Technical:** based on the JD's stack - fundamentals, problems, debugging, code review.
+- **System design** (if applicable): patterns, trade-offs, scale.
+- **Hiring manager / behavioral:** leadership, conflict, failure, impact.
+- **Culture:** values, ways of working, why this company.
+- Mark the **3-5 most likely** for this specific role.
 
-### 3. Respuestas STAR
-- Construir respuestas con el método **STAR** (Situación, Tarea, Acción, Resultado) usando logros reales del perfil maestro.
-- Cada respuesta: concreta, con métrica, 60-90 segundos hablada.
-- Ver `references/star-framework.md`.
+### 3. STAR answers
+- Build answers with the **STAR** method (Situation, Task, Action, Result) using real achievements from the master profile.
+- Each answer: concrete, with a metric, 60-90 seconds spoken.
+- See `references/star-framework.md`.
 
-### 4. Preguntas para hacer
-- 5-7 preguntas inteligentes que demuestran research y filtran si la empresa te conviene (equipo, expectativas de los primeros 90 días, cómo miden éxito, deuda técnica, proceso).
+### 4. Questions to ask
+- 5-7 smart questions that show research and filter whether the company is right for you (team, expectations for the first 90 days, how they measure success, tech debt, process).
 
-### 5. Red flags a detectar
-- Señales de mala empresa/equipo durante la entrevista (proceso caótico, evasión sobre cultura/turnover, expectativas irreales, falta de claridad de rol, hostilidad).
-- Qué preguntar para sacarlas a la luz.
+### 5. Red flags to detect
+- Signs of a bad company/team during the interview (chaotic process, evasion about culture/turnover, unrealistic expectations, unclear role, hostility).
+- What to ask to bring them to light.
 
-## Salario / negociación (si la ronda lo toca)
+## Salary / negotiation (if the round touches it)
 
-- No dar número primero si se puede evitar; preguntar rango.
-- Anclar en research de mercado + tu valor (logros).
-- Tener un rango (mínimo aceptable / objetivo / ambicioso) listo.
+- Do not give a number first if you can avoid it; ask for the range.
+- Anchor on market research + your value (achievements).
+- Have a range (minimum acceptable / target / ambitious) ready.
 
-## Proceso
+## Process
 
-1. Leer aplicación + empresa + perfil. WebFetch del sitio/notas de la empresa.
-2. Crear nota en `06-Entrevistas/` con el template `Entrevista`.
-3. Llenar research, banco de preguntas (marcando las top), STAR de las 3-5 historias clave, preguntas a hacer, red flags.
-4. Ofrecer un **mock** con el agente `mock-interviewer` (ver abajo).
-5. Post-entrevista: ayudar a registrar feedback y definir próximo paso / follow-up (con `/cold-outreach`).
+1. Read application + company + profile. WebFetch the company's site/notes.
+2. Create a note in `06-Interviews/` with the `Interview` template.
+3. Fill in research, the question bank (marking the top ones), STAR for the 3-5 key stories, questions to ask, red flags.
+4. Offer a **mock** with the `mock-interviewer` agent (see below).
+5. Post-interview: help record feedback and define the next step / follow-up (with `/cold-outreach`).
 
-## El mock va en un agente, no en esta sesión
+## The mock runs in an agent, not in this session
 
-El mock lo corre el agente `mock-interviewer`, no vos. La razón es dura: vos acabás de escribir las respuestas STAR del usuario, así que ibas a preguntar exactamente lo que preparó, iba a salir perfecto, y el usuario iba a entrar a la entrevista real con confianza falsa.
+The mock is run by the `mock-interviewer` agent, not by you. The reason is hard: you just wrote the user's STAR answers, so you would ask exactly what they prepared, it would go perfectly, and the user would walk into the real interview with false confidence.
 
-Al lanzarlo, pasale **inline**: el JD, la ronda, y el CV que se mandó. **No** le pases el perfil maestro ni la nota de `06-Entrevistas/` con las respuestas preparadas - eso invalida el simulacro, y el agente tiene instrucción de rechazarlos.
+When you launch it, pass it **inline**: the JD, the round, and the CV that was sent. Do **not** pass it the master profile or the `06-Interviews/` note with the prepared answers - that invalidates the drill, and the agent is instructed to reject them.
 
-Cuando devuelve el feedback, tu trabajo es registrarlo: agregá en la nota de `06-Entrevistas/` qué respuestas hay que rehacer y por qué. Ese es el valor que queda para la próxima ronda.
+When it returns the feedback, your job is to record it: add to the `06-Interviews/` note which answers need to be redone and why. That is the value that remains for the next round.
 
-## Idioma
+## Language
 
-En el idioma de la entrevista. Preparar respuestas en inglés si el rol es internacional, aunque la prep se converse en español.
+In the language of the interview. Prepare answers in English if the role is international, even if the prep is discussed in another language.
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir la nota en `06-Entrevistas/`. Cuando la prep está READY, ofrecé el mock con `mock-interviewer` y registrá su feedback; post-entrevista, seguí con `/cold-outreach` para el follow-up.
+Ask for approval before writing the note in `06-Interviews/`. When the prep is READY, offer the mock with `mock-interviewer` and record its feedback; post-interview, continue with `/cold-outreach` for the follow-up.

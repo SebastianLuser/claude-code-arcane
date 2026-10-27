@@ -2,25 +2,25 @@
 
 ## Anti-patterns
 
-- `unsafe-inline`/`unsafe-eval` en script-src, `*` en directivas
-- CSP solo en `<meta>` (bypasseable), HSTS sin includeSubDomains
-- Headers solo en algunas rutas (debe ser middleware global)
-- No monitorear reports, enforce sin report-only phase
-- `X-XSS-Protection: 1; mode=block` (deprecado)
-- Whitelist dominios en vez de strict-dynamic, nonces con Math.random
-- Mismo nonce entre requests, report-uri sin endpoint real
+- `unsafe-inline`/`unsafe-eval` in script-src, `*` in directives
+- CSP only in `<meta>` (bypassable), HSTS without includeSubDomains
+- Headers only on some routes (must be global middleware)
+- Not monitoring reports, enforcing without a report-only phase
+- `X-XSS-Protection: 1; mode=block` (deprecated)
+- Domain whitelist instead of strict-dynamic, nonces with Math.random
+- Same nonce across requests, report-uri without a real endpoint
 
 ## Checklist
 
-- [ ] CSP report-only 2-4 semanas antes de enforce
-- [ ] Endpoint /csp-report existe con dashboard/alertas
-- [ ] Nonces CSPRNG, sin unsafe-inline/unsafe-eval
-- [ ] strict-dynamic en vez de whitelist dominios
-- [ ] HSTS includeSubDomains + preload (si aplica)
+- [ ] CSP report-only for 2-4 weeks before enforce
+- [ ] /csp-report endpoint exists with a dashboard/alerts
+- [ ] CSPRNG nonces, no unsafe-inline/unsafe-eval
+- [ ] strict-dynamic instead of a domain whitelist
+- [ ] HSTS includeSubDomains + preload (if applicable)
 - [ ] X-Content-Type-Options: nosniff
 - [ ] Referrer-Policy, Permissions-Policy, frame-ancestors
-- [ ] Headers como middleware global
-- [ ] Score A+ en securityheaders.com
-- [ ] X-XSS-Protection removido
-- [ ] Cloudflare no duplica/pisa headers origin
-- [ ] Dev/staging mismos headers que prod (solo report-only cambia)
+- [ ] Headers as global middleware
+- [ ] A+ score on securityheaders.com
+- [ ] X-XSS-Protection removed
+- [ ] Cloudflare does not duplicate/overwrite origin headers
+- [ ] Dev/staging have the same headers as prod (only report-only changes)

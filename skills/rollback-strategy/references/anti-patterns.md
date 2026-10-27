@@ -1,14 +1,14 @@
-# Anti-patterns de Rollback
+# Rollback Anti-patterns
 
-- `:latest` en prod — rollback imposible
-- Schema breaking + codigo breaking en misma release
-- Nunca probar rollback — descubris que no funciona cuando lo necesitas
-- DB restore sin drill previo
-- Rollback sin post-mortem
-- "Deshacer merge en git" sin plan real de redeploy
-- Flag sin kill switch server-side
-- Sin runbook — nadie sabe comandos a las 3am
-- Sin invalidar cache/CDN
-- No retener imagenes viejas (10 minimo)
-- Rollback workflow sin approval gate
-- Ignorar mobile en la estrategia
+- `:latest` in prod — rollback impossible
+- Breaking schema + breaking code in the same release
+- Never testing the rollback — you find out it does not work when you need it
+- DB restore without a prior drill
+- Rollback without a post-mortem
+- "Undo the merge in git" with no real redeploy plan
+- Flag without a server-side kill switch
+- No runbook — nobody knows the commands at 3am
+- Not invalidating cache/CDN
+- Not retaining old images (10 minimum)
+- Rollback workflow without an approval gate
+- Ignoring mobile in the strategy

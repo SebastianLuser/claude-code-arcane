@@ -6,36 +6,36 @@ argument-hint: "[problem or decision title]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 ---
-# Game Design Document — Formato PAS
+# Game Design Document — PAS Format
 
-Genera documentación de diseño de videojuegos usando el framework PAS: Problema → Análisis → Opciones → Decisión.
+Generates video game design documentation using the PAS framework: Problem → Analysis → Options → Decision.
 
-## REGLAS DE ESCRITURA (CRÍTICAS)
+## WRITING RULES (CRITICAL)
 
-1. **NO divagar.** Cada oración debe aportar información nueva. Si se puede decir en 1 oración, no usar 3.
-2. **NO hacer preguntas retóricas.** Afirmar, no preguntar.
-3. **NO dar contexto innecesario.** El lector ya conoce el juego.
-4. **NO listar "recomendaciones generales".** Solo soluciones concretas al problema específico.
-5. **NO repetir información** entre secciones.
-6. **Máximo 2-3 oraciones por punto.** Si necesita más, es que no está suficientemente destilado.
-7. **Bullet points > párrafos.** Siempre.
-8. **Números concretos > descripciones vagas.** "Reducir HP de 100 a 70" > "ajustar la vida del enemigo".
+1. **Do NOT ramble.** Every sentence must add new information. If it can be said in 1 sentence, do not use 3.
+2. **Do NOT ask rhetorical questions.** State, do not ask.
+3. **Do NOT give unnecessary context.** The reader already knows the game.
+4. **Do NOT list "general recommendations".** Only concrete solutions to the specific problem.
+5. **Do NOT repeat information** across sections.
+6. **At most 2-3 sentences per point.** If it needs more, it is not distilled enough.
+7. **Bullet points > paragraphs.** Always.
+8. **Concrete numbers > vague descriptions.** "Reduce HP from 100 to 70" > "tweak the enemy's health".
 
 ## Input
 
-El usuario describe un problema de diseño, una mecánica a evaluar, o un cambio propuesto. Argumento opcional: `$ARGUMENTS`
+The user describes a design problem, a mechanic to evaluate, or a proposed change. Optional argument: `$ARGUMENTS`
 
-## Formato de salida
+## Output format
 
-> → Read references/output-format-template.md for [template PAS completo con estructura Problema/Análisis/Opciones/Decisión]
+> → Read references/output-format-template.md for [full PAS template with the Problem/Analysis/Options/Decision structure]
 
-> → Read references/examples-and-usage.md for [ejemplos bien vs mal, cuándo usar y cuándo NO usar este formato]
+> → Read references/examples-and-usage.md for [good vs bad examples, when to use and when NOT to use this format]
 
 ## Rules
-- Siempre en español
-- CONCISO. Si la sección "Problema" tiene más de 6 bullet points, está mal.
-- Las opciones deben ser mínimo 2, máximo 4. Más = no se destilaron bien.
-- La decisión debe caber en 2 oraciones de justificación.
-- Si no hay decisión todavía, marcar [TBD] y dejar las opciones claras.
-- Si el usuario pide "analizar" o "evaluar" algo → usar este formato automáticamente.
-- Incluir números concretos siempre que sea posible.
+- Write the document in the user's language
+- CONCISE. If the "Problem" section has more than 6 bullet points, it is wrong.
+- Options must be at least 2, at most 4. More = they were not distilled well.
+- The decision must fit in 2 sentences of justification.
+- If there is no decision yet, mark it [TBD] and leave the options clear.
+- If the user asks to "analyze" or "evaluate" something → use this format automatically.
+- Include concrete numbers whenever possible.

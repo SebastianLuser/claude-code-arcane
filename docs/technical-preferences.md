@@ -1,61 +1,61 @@
 # Technical Preferences
 
-Preferencias técnicas globales. Override en proyectos específicos via su propio `CLAUDE.md`.
+Global technical preferences. Override them in specific projects via their own `CLAUDE.md`.
 
-## Lenguajes Preferidos por Dominio
+## Preferred Languages by Domain
 
-| Dominio | Primera opción | Segunda | Por qué |
+| Domain | First choice | Second | Why |
 |---------|---------------|---------|---------|
-| Backend (servicios) | Go | Node/TS | Performance, simplicidad, typing estricto |
-| Backend (AI/ML) | Python | - | Ecosystem madurez |
-| Frontend web | TypeScript + React/Next | Vue | Typing, ecosystem |
+| Backend (services) | Go | Node/TS | Performance, simplicity, strict typing |
+| Backend (AI/ML) | Python | - | Ecosystem maturity |
+| Web frontend | TypeScript + React/Next | Vue | Typing, ecosystem |
 | Mobile | Flutter | React Native | Single codebase, performance |
-| Game dev | C# (Unity) | C++ (Unreal) | Depende del engine |
-| Scripts/tooling | Python / Bash | Go | Simple, rápido de escribir |
+| Game dev | C# (Unity) | C++ (Unreal) | Depends on the engine |
+| Scripts/tooling | Python / Bash | Go | Simple, fast to write |
 
-## Frameworks Preferidos
+## Preferred Frameworks
 
 - **Go:** Gin (via team-ai-toolkit), GORM, Viper
-- **Node:** NestJS (Clean Arch) o Fastify (performance)
+- **Node:** NestJS (Clean Arch) or Fastify (performance)
 - **Python:** FastAPI (APIs), Django (full-stack), SQLAlchemy
 - **React:** Next.js 15+ (App Router, RSC)
 - **Mobile:** Flutter + Riverpod
 
 ## Databases
 
-- **Relacional:** PostgreSQL (primera opción siempre)
+- **Relational:** PostgreSQL (always the first choice)
 - **Cache:** Redis
-- **NoSQL doc:** MongoDB (solo si hay razón clara)
+- **NoSQL doc:** MongoDB (only if there is a clear reason)
 - **Search:** Elasticsearch / Meilisearch
 - **Time series:** TimescaleDB
 
 ## Infra
 
-- **Cloud:** GCP (preferido), AWS (secundario)
-- **Contenedores:** Docker + Kubernetes (GKE)
+- **Cloud:** GCP (preferred), AWS (secondary)
+- **Containers:** Docker + Kubernetes (GKE)
 - **CI/CD:** GitHub Actions
 - **IaC:** Terraform
 - **Monitoring:** Grafana + Prometheus + Loki
-- **APM:** Datadog o Sentry
+- **APM:** Datadog or Sentry
 
 ## Game Engines
 
 - **2D/indie:** Unity 6
-- **AAA/3D complejo:** Unreal Engine 5
+- **AAA/complex 3D:** Unreal Engine 5
 - **VR:** Unity 6 (OpenXR)
 
-## Herramientas de Equipo
+## Team Tools
 
-- **Project management:** ClickUp (Educabot) + Jira (para proyectos ALZ/TICH/TUNI/VIA)
+- **Project management:** ClickUp (Educabot) + Jira (for the ALZ/TICH/TUNI/VIA projects)
 - **Docs:** Google Docs + Coda
 - **Design:** Figma
 - **API testing:** Postman
 - **Communication:** Slack
 
-## Anti-Patterns a Evitar
+## Anti-Patterns to Avoid
 
-- **Microservicios prematuros.** Empezar con monolito bien modulado.
-- **GraphQL porque sí.** Usar REST si el shape de datos es estable.
-- **ORMs pesados en hot paths.** Raw SQL cuando la performance importa.
-- **State management global en todo.** Context/props primero, Redux/Zustand solo cuando se necesita.
-- **DDD en CRUD apps.** Overkill.
+- **Premature microservices.** Start with a well-modularized monolith.
+- **GraphQL just because.** Use REST if the data shape is stable.
+- **Heavy ORMs in hot paths.** Raw SQL when performance matters.
+- **Global state management for everything.** Context/props first, Redux/Zustand only when needed.
+- **DDD in CRUD apps.** Overkill.

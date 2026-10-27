@@ -1,32 +1,32 @@
 # Checklist & Output Template
 
-## Checklist post-generacion
+## Post-generation checklist
 
-- [ ] Usa componentes existentes del proyecto (no reinventa)
-- [ ] Tokens de color mapeados a variables del proyecto
-- [ ] Typography consistente con el design system
-- [ ] Responsive en los breakpoints del proyecto
-- [ ] Sin valores hardcodeados (usa tokens/variables)
-- [ ] Accesible (semantic HTML, aria labels)
-- [ ] Estados de interaccion implementados
+- [ ] Uses the project's existing components (does not reinvent them)
+- [ ] Color tokens mapped to the project's variables
+- [ ] Typography consistent with the design system
+- [ ] Responsive at the project's breakpoints
+- [ ] No hardcoded values (uses tokens/variables)
+- [ ] Accessible (semantic HTML, aria labels)
+- [ ] Interaction states implemented
 
 ## Output Template
 
 ```markdown
-## Componentes generados
+## Generated components
 
-| Archivo | Qué es | Componentes reutilizados |
+| File | What it is | Reused components |
 |---------|--------|------------------------|
-| `src/components/FeatureName.tsx` | Componente principal | Button, Card |
+| `src/components/FeatureName.tsx` | Main component | Button, Card |
 
-## Tokens mapeados
-| Figma | Proyecto |
+## Mapped tokens
+| Figma | Project |
 |-------|---------|
 | #3B82F6 | `--color-primary` / `text-blue-500` |
 
-## Decisiones tomadas
-- [Decisión 1: por qué se usó X en vez de Y]
+## Decisions made
+- [Decision 1: why X was used instead of Y]
 
 ## TODOs
-- [ ] [Algo que necesita input del diseñador/usuario]
+- [ ] [Something that needs input from the designer/user]
 ```

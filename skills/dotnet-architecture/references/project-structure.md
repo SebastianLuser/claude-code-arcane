@@ -1,78 +1,78 @@
-# Estructura de Directorios
+# Directory Structure
 
-Dos formas válidas de estructurar un backend .NET 10 / ASP.NET Core. Elegí según
-complejidad del dominio (ver `when-to-use` en la SKILL).
+Two valid ways to structure a .NET 10 / ASP.NET Core backend. Choose by
+domain complexity (see `when-to-use` in the SKILL).
 
-## Vertical Slice Architecture (un proyecto)
+## Vertical Slice Architecture (one project)
 
-Cada feature es un folder autocontenido: request, handler, validator y endpoint
-viven juntos. Tocás un caso de uso → tocás un solo archivo/carpeta.
+Each feature is a self-contained folder: request, handler, validator and endpoint
+live together. You touch a use case → you touch a single file/folder.
 
 ```
 src/
   Features/
     Orders/
-      CreateOrder.cs          ← record Command + Handler + Validator juntos
-      GetOrders.cs            ← record Query + Handler (paginación/proyección)
+      CreateOrder.cs          ← record Command + Handler + Validator together
+      GetOrders.cs            ← record Query + Handler (pagination/projection)
       OrderEndpoints.cs       ← MapGroup("/orders") + TypedResults
     Customers/
       RegisterCustomer.cs
       CustomerEndpoints.cs
   Common/
     Behaviors/                ← ValidationBehavior, LoggingBehavior, TxBehavior
-    Result.cs                 ← Result<T> / Error compartido
+    Result.cs                 ← shared Result<T> / Error
   Infrastructure/
-    AppDbContext.cs           ← EF Core DbContext (DbSet<> por entidad)
-    Migrations/               ← migraciones versionadas en git
+    AppDbContext.cs           ← EF Core DbContext (DbSet<> per entity)
+    Migrations/               ← migrations versioned in git
   Program.cs                  ← composition root: DI, pipeline, MapEndpoints
 appsettings.json
 ```
 
-- Cada slice depende de `Common` e `Infrastructure`, no de otros slices.
-- Un slice nuevo = un archivo nuevo; borrarlo no rompe a los demás (bajo acoplamiento).
-- El `DbContext` es compartido; cada handler usa solo los `DbSet<>` que necesita.
+- Each slice depends on `Common` and `Infrastructure`, not on other slices.
+- A new slice = a new file; deleting it does not break the others (low coupling).
+- The `DbContext` is shared; each handler uses only the `DbSet<>`s it needs.
 
-## Clean Architecture (cuatro proyectos)
+## Clean Architecture (four projects)
 
-Separación por capa técnica. Las dependencias apuntan **hacia adentro**: el dominio
-no conoce a nadie; la infraestructura y la API dependen de las capas internas.
+Separation by technical layer. Dependencies point **inward**: the domain
+knows nobody; infrastructure and the API depend on the inner layers.
 
 ```
 src/
-  MyApp.Domain/             ← Entidades, value objects, domain events, reglas
-    Entities/Order.cs       ← cero deps externas (ni EF, ni ASP.NET)
+  MyApp.Domain/             ← Entities, value objects, domain events, rules
+    Entities/Order.cs       ← zero external deps (no EF, no ASP.NET)
     ValueObjects/Money.cs
     Common/Entity.cs
-  MyApp.Application/        ← Casos de uso (handlers), DTOs, interfaces
+  MyApp.Application/        ← Use cases (handlers), DTOs, interfaces
     Orders/CreateOrder.cs
-    Common/IApplicationDbContext.cs   ← expone DbSet<> + SaveChangesAsync
+    Common/IApplicationDbContext.cs   ← exposes DbSet<> + SaveChangesAsync
     Common/Behaviors/
-  MyApp.Infrastructure/     ← EF Core, Identity, servicios externos
+  MyApp.Infrastructure/     ← EF Core, Identity, external services
     Persistence/AppDbContext.cs       ← : DbContext, IApplicationDbContext
     Persistence/Migrations/
     Services/EmailSender.cs
     DependencyInjection.cs
-  MyApp.Api/                ← Endpoints, Program.cs, wiring de DI
+  MyApp.Api/                ← Endpoints, Program.cs, DI wiring
     Endpoints/OrderEndpoints.cs
     Program.cs
 ```
 
-### Dirección de las referencias (`.csproj`)
+### Reference direction (`.csproj`)
 
 ```
-MyApp.Api            → referencia → MyApp.Infrastructure, MyApp.Application
-MyApp.Infrastructure → referencia → MyApp.Application
-MyApp.Application    → referencia → MyApp.Domain
-MyApp.Domain         → referencia → (NADA)
+MyApp.Api            → references → MyApp.Infrastructure, MyApp.Application
+MyApp.Infrastructure → references → MyApp.Application
+MyApp.Application    → references → MyApp.Domain
+MyApp.Domain         → references → (NOTHING)
 ```
 
-- `Domain.csproj` no tiene ningún `<ProjectReference>` ni paquete de framework.
-- `Application` define `IApplicationDbContext`; `Infrastructure` lo implementa.
-  Así la lógica de negocio depende de una abstracción, no de EF Core directamente.
-- La inversión de dependencias se logra en `Api/Program.cs`, que es el único lugar
-  que conoce a las cuatro capas y arma el grafo de DI.
+- `Domain.csproj` has no `<ProjectReference>` or framework package at all.
+- `Application` defines `IApplicationDbContext`; `Infrastructure` implements it.
+  That way business logic depends on an abstraction, not on EF Core directly.
+- Dependency inversion happens in `Api/Program.cs`, the only place
+  that knows all four layers and builds the DI graph.
 
-> Regla de oro: si una flecha de dependencia apunta hacia afuera del dominio, la
-> arquitectura está rota. El dominio es el centro estable.
+> Golden rule: if a dependency arrow points out of the domain, the
+> architecture is broken. The domain is the stable center.
 
 _Ref: https://github.com/ardalis/CleanArchitecture · https://github.com/nadirbad/VerticalSliceArchitecture · https://www.milanjovanovic.tech/blog/vertical-slice-architecture-dotnet_

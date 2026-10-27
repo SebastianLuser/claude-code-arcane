@@ -1,66 +1,66 @@
 ---
 name: job-upskill
-description: "Aggregate skill gaps across all scored job applications, weigh them by lost match points, and build a prioritized study plan with real resources. Triggers: analizar mis gaps, plan de estudio, que me falta aprender, upskill, en que skills invertir, gaps de las postulaciones, heatmap de skills."
-argument-hint: "[url | nota de aplicación]"
+description: "Aggregate skill gaps across all scored job applications, weigh them by lost match points, and build a prioritized study plan with real resources. Triggers: analyze my gaps, study plan, what do I need to learn, upskill, which skills to invest in, gaps from my applications, skills heatmap."
+argument-hint: "[url | application note]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash, WebFetch, WebSearch, Task
 ---
 
-# /job-upskill - Análisis de gaps y plan de estudio
+# /job-upskill - Gap analysis and study plan
 
-Detecta qué skills te están costando puntos de match en las ofertas reales y arma un plan de estudio priorizado. Adaptado del /upskill de MadsLorentzen/ai-job-search: en vez de un CSV, la evidencia sale del frontmatter y las secciones de las notas de `03-Aplicaciones/` del career workspace (rutas relativas al workspace: `--workspace`, env `CAREER_WORKSPACE`, o `./career-workspace/`).
+Detects which skills are costing you match points on real postings and builds a prioritized study plan. Adapted from the /upskill in MadsLorentzen/ai-job-search: instead of a CSV, the evidence comes from the frontmatter and the sections of the notes in the career workspace's `03-Applications/` (paths relative to the workspace: `--workspace`, env `CAREER_WORKSPACE`, or `./career-workspace/`).
 
-Argumento: `$ARGUMENTS` (vacío = modo agregado; URL o nota = modo targeted)
+Argument: `$ARGUMENTS` (empty = aggregate mode; URL or note = targeted mode)
 
-## Antes del plan: ¿el gap es real o de presentación?
+## Before the plan: is the gap real or a presentation gap?
 
-Este skill asume que la respuesta es estudiar. A veces no lo es: si la experiencia está en el perfil maestro pero no llega al CV, el plan de estudio manda al usuario a aprender meses lo que ya sabe.
+This skill assumes the answer is to study. Sometimes it is not: if the experience is in the master profile but does not reach the CV, the study plan sends the user to spend months learning what they already know.
 
-En **modo agregado con 10+ aplicaciones resueltas**, lanzar primero el agente `career-strategist` (contexto fresco, read-only). Diagnostica el embudo completo y separa gap real de gap de presentación. Si el punto de fuga no es la etapa técnica, decílo antes del heatmap: el plan de estudio no es la palanca y conviene ir a `/cv-tailor` o `/interview-prep`.
+In **aggregate mode with 10+ resolved applications**, first launch the `career-strategist` agent (fresh context, read-only). It diagnoses the full funnel and separates real gaps from presentation gaps. If the leak point is not the technical stage, say so before the heatmap: the study plan is not the lever and it is better to go to `/cv-tailor` or `/interview-prep`.
 
-Con menos de 10 resueltas, saltear: no hay volumen para un embudo y el propio agente lo va a rechazar. Seguí directo al modo agregado.
+With fewer than 10 resolved, skip it: there is not enough volume for a funnel and the agent itself will reject it. Go straight to aggregate mode.
 
-## Modo agregado (sin argumento)
+## Aggregate mode (no argument)
 
-1. **Recolectar evidencia.** Grep de `match_score:` en `03-Aplicaciones/*.md` (excluir `_index`; aceptar también el campo legacy `score:` de notas viejas). De cada nota leer: `match_score`, `estado`, `perfil`, y los gaps mencionados en las secciones "Match con mi perfil" / "Gaps reales" y los gaps reconocidos en `## Notas`.
+1. **Collect evidence.** Grep `match_score:` in `03-Applications/*.md` (exclude `_index`; also accept the legacy `score:` field from old notes). From each note read: `match_score`, `status`, `profile`, and the gaps mentioned in the "Match with my profile" / "Real gaps" sections and the gaps acknowledged in `## Notes`.
 
-2. **Canonicalizar.** Unificar sinónimos antes de agregar ("AWS" = "Amazon Web Services"; "K8s" = "Kubernetes"; "GCP" = "Google Cloud"). Un término canónico por gap.
+2. **Canonicalize.** Unify synonyms before aggregating ("AWS" = "Amazon Web Services"; "K8s" = "Kubernetes"; "GCP" = "Google Cloud"). One canonical term per gap.
 
-3. **Ponderar.** `peso(gap) = Σ (100 - match_score)/100` sobre las notas que lo mencionan (la frecuencia queda implícita en la suma). Boost x1.5 por cada nota con `estado: rechazado` que lo mencione (señal real de mercado). Ofertas con score bajo exponen más gaps y pesan más.
+3. **Weigh.** `weight(gap) = Σ (100 - match_score)/100` over the notes that mention it (frequency is implicit in the sum). x1.5 boost for each note with `status: rejected` that mentions it (a real market signal). Postings with a low score expose more gaps and weigh more.
 
-4. **Clasificar** cada gap: `[tooling]` (frameworks, infra, CI/CD), `[domain]` (industria, arquitectura), `[soft]` (comunicación, liderazgo, idiomas), `[credential]` (títulos, certificaciones).
+4. **Classify** each gap: `[tooling]` (frameworks, infra, CI/CD), `[domain]` (industry, architecture), `[soft]` (communication, leadership, languages), `[credential]` (degrees, certifications).
 
-5. **Heatmap.** Ordenar por peso y cortar en Critical / High / Medium / Low por cuartiles (documentar los umbrales usados en el reporte). Mostrar el heatmap en el chat antes de seguir.
+5. **Heatmap.** Sort by weight and cut into Critical / High / Medium / Low by quartiles (document the thresholds used in the report). Show the heatmap in the chat before continuing.
 
-6. **Plan de estudio** solo para Critical y High (sumar Medium si hay menos de 5 gaps):
-   - WebSearch por gap **incluyendo el año actual** en la query (ej. "best NestJS course 2026").
-   - 2-3 recursos reales por gap, priorizando gratuitos/oficiales/hands-on. **Nunca inventar recursos: solo citar lo encontrado en resultados reales.**
-   - Horas estimadas a proficiencia útil (rangos realistas, ej. "~20h") considerando la base existente del perfil (no arrancar de cero si ya hay fundamentos).
-   - Secuenciar por ROI (peso/horas) y dependencias (prerequisitos primero, quick wins temprano).
+6. **Study plan** only for Critical and High (add Medium if there are fewer than 5 gaps):
+   - WebSearch per gap **including the current year** in the query (e.g. "best NestJS course 2026").
+   - 2-3 real resources per gap, prioritizing free/official/hands-on. **Never invent resources: only cite what was found in real results.**
+   - Estimated hours to useful proficiency (realistic ranges, e.g. "~20h") considering the profile's existing foundation (do not start from zero if the fundamentals are already there).
+   - Sequence by ROI (weight/hours) and dependencies (prerequisites first, quick wins early).
 
-7. **Reporte** en `07-Recursos/Upskill - YYYY-MM-DD.md`, previo approval del usuario sobre el heatmap:
-   - Frontmatter: `tipo: upskill`, `fecha`, `aplicaciones_analizadas` (número), `perfiles` (lista).
-   - Heatmap con peso y clasificación por gap.
-   - Evidencia: por cada gap Critical/High, wikilinks a las notas de aplicación que lo mencionan.
-   - Plan de estudio secuenciado con recursos, horas y dependencias.
-   - Si existe un reporte anterior en `07-Recursos/`, sección "Desde el último reporte": gaps cerrados vs nuevos.
+7. **Report** in `07-Resources/Upskill - YYYY-MM-DD.md`, after the user's approval on the heatmap:
+   - Frontmatter: `type: upskill`, `date`, `applications_analyzed` (number), `profiles` (list).
+   - Heatmap with weight and classification per gap.
+   - Evidence: for each Critical/High gap, wikilinks to the application notes that mention it.
+   - Sequenced study plan with resources, hours and dependencies.
+   - If a previous report exists in `07-Resources/`, a "Since the last report" section: closed gaps vs new ones.
 
-8. **No edita** notas de aplicaciones, perfiles ni dashboard. Solo crea el reporte.
+8. **It does not edit** application notes, profiles or the dashboard. It only creates the report.
 
-## Modo targeted (`/job-upskill <url|nota>`)
+## Targeted mode (`/job-upskill <url|note>`)
 
-1. Obtener el JD: nota existente → leer su "Match con mi perfil"; URL → `detail` del script que corresponda (`.claude/skills/job-scrape/scripts/getonbrd_search.py` o `linkedin_search.py`; si job-scrape no está instalado, WebFetch).
-2. Comparar contra el perfil de `01-Perfiles/` que corresponda: gaps solo de esa oferta, clasificados.
-3. Mini-plan: 1-2 recursos por gap (WebSearch, año actual), horas estimadas.
-4. **Responder en el chat.** Guardar como `07-Recursos/Upskill - YYYY-MM-DD - <Empresa>.md` solo si el usuario lo pide (no llenar Recursos de reportes de una sola oferta).
+1. Get the JD: existing note → read its "Match with my profile"; URL → `detail` from the matching script (`.claude/skills/job-scrape/scripts/getonbrd_search.py` or `linkedin_search.py`; if job-scrape is not installed, WebFetch).
+2. Compare against the matching profile in `01-Profiles/`: gaps from that posting only, classified.
+3. Mini-plan: 1-2 resources per gap (WebSearch, current year), estimated hours.
+4. **Answer in the chat.** Save as `07-Resources/Upskill - YYYY-MM-DD - <Company>.md` only if the user asks (do not fill Resources with single-posting reports).
 
-## Reglas
+## Rules
 
-- Nunca fabricar recursos ni estadísticas; todo sale de WebSearch real o de las notas.
-- Reporte en el idioma de las notas del workspace, sin guiones largos, con wikilinks a las notas fuente.
-- Los gaps `[credential]` (ej. título universitario) se reportan pero no entran al plan de estudio salvo pedido explícito (son decisiones de otra escala, no items de estudio semanal).
+- Never fabricate resources or statistics; everything comes from real WebSearch or from the notes.
+- Report in the user's language, without em dashes, with wikilinks to the source notes.
+- `[credential]` gaps (e.g. a university degree) are reported but do not enter the study plan unless explicitly requested (they are decisions of another scale, not weekly study items).
 
 ## Handoff
 
-Reporte COMPLETE en `07-Recursos/`. Retomar el pipeline con `/job-aplicar` en las ofertas abiertas, o `/job-scrape` para una corrida nueva apuntando a los gaps que ya se están cerrando. Si el `career-strategist` ubicó la fuga fuera de la etapa técnica, el siguiente paso es ese (`/cv-tailor`, `/interview-prep` o `/job-search`), no el plan de estudio.
+Report COMPLETE in `07-Resources/`. Resume the pipeline with `/job-apply` on the open postings, or `/job-scrape` for a new run targeting the gaps that are already closing. If `career-strategist` placed the leak outside the technical stage, the next step is that one (`/cv-tailor`, `/interview-prep` or `/job-search`), not the study plan.

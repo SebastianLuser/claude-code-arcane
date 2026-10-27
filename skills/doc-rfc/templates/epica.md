@@ -1,68 +1,68 @@
-# {NN} — {Titulo}: {one-liner}
+# {NN} — {Title}: {one-liner}
 
-- **Estado:** {Pendiente | En progreso | Completada}
-- **Fase:** {fase}
-- **Proyecto:** {nombre-proyecto}
+- **Status:** {Pending | In progress | Done}
+- **Phase:** {phase}
+- **Project:** {project-name}
 
-## Problema
+## Problem
 
-### Contexto
+### Context
 
-{Contexto del problema}
+{Problem context}
 
 ### Pain Point
 
-{Dolor actual que motiva esta epica}
+{Current pain that motivates this epic}
 
-## Objetivos
+## Goals
 
-{Objetivos medibles}
+{Measurable goals}
 
-1. {objetivo medible}
-2. {objetivo medible}
+1. {measurable goal}
+2. {measurable goal}
 
-## Alcance MVP
+## MVP Scope
 
-### Incluye
+### Includes
 
-- {funcionalidad}
+- {functionality}
 
-### No incluye
+### Does not include
 
-- {funcionalidad fuera de scope}
+- {out-of-scope functionality}
 
-## Stack Tecnologico
+## Tech Stack
 
-| Componente | Tecnologia | Justificacion |
+| Component | Technology | Justification |
 |-----------|------------|---------------|
-| {componente} | {tech} | {por que} |
+| {component} | {tech} | {why} |
 
-## Arquitectura
+## Architecture
 
 ```
-{diagrama ASCII o referencia mermaid}
+{ASCII diagram or mermaid reference}
 ```
 
-## Historias de Usuario
+## User Stories
 
-| ID | Titulo | Descripcion | Fase | Tareas |
+| ID | Title | Description | Phase | Tasks |
 |----|--------|-------------|------|--------|
-| HU-{N}.1 | {titulo} | {descripcion} | {fase} | {count} |
+| HU-{N}.1 | {title} | {description} | {phase} | {count} |
 
-## Decisiones Tecnicas
+## Technical Decisions
 
-| Decision | Opcion Elegida | Razon |
+| Decision | Chosen Option | Reason |
 |----------|---------------|-------|
-| {decision} | {opcion} | {razon} |
+| {decision} | {option} | {reason} |
 
-## Principios de Diseno
+## Design Principles
 
-- {principio}
+- {principle}
 
-## Epicas Relacionadas
+## Related Epics
 
-- [{NN} — {titulo}]({link-relativo})
+- [{NN} — {title}]({relative-link})
 
 ## Test Cases
 
-- [ ] {caso de prueba verificable}
+- [ ] {verifiable test case}

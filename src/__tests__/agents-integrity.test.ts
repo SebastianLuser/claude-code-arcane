@@ -230,9 +230,9 @@ describe("agent definitions", () => {
     // The description is the only thing that decides whether an agent gets
     // picked or ignored. A description that only says what the agent *is*
     // leaves that decision to chance.
-    // "Usar para / cuando / como / antes de …" all count, as do the English
-    // forms. What does not count is a description that never says when.
-    const trigger = /\busar\b|us[aá] este agente|use (when|this agent)|trigger:/i;
+    // "Use when / for / as / before / to …" all count. What does not count is
+    // a description that never says when.
+    const trigger = /\buse (when|for|as|before|after|to|this agent|it)\b|trigger:/i;
     const silent = agents
       .filter((a) => !trigger.test(a.fm.description ?? ""))
       .map((a) => a.file);

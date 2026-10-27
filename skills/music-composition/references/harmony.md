@@ -1,82 +1,82 @@
-# Armonía
+# Harmony
 
-## Armonía funcional
+## Functional harmony
 
-Tres funciones, y todo lo demás es sustitución o adorno:
+Three functions, and everything else is substitution or ornament:
 
-| Función | Grados (mayor) | Efecto |
+| Function | Degrees (major) | Effect |
 |---|---|---|
-| **Tónica** | I, vi, iii | Reposo, llegada |
-| **Subdominante** | IV, ii | Salida, preparación |
-| **Dominante** | V, vii° | Tensión, exige resolución |
+| **Tonic** | I, vi, iii | Rest, arrival |
+| **Subdominant** | IV, ii | Departure, preparation |
+| **Dominant** | V, vii° | Tension, demands resolution |
 
-El movimiento fuerte es subdominante → dominante → tónica. Todo lo demás es demorar, sustituir o negar esa expectativa.
+The strong motion is subdominant → dominant → tonic. Everything else is delaying, substituting or denying that expectation.
 
-**Ritmo armónico** — la velocidad de cambio de acorde es una palanca independiente de la progresión. La misma secuencia a un acorde por compás vs dos por compás cambia la urgencia sin cambiar una nota.
+**Harmonic rhythm** — the speed of chord change is a lever independent of the progression. The same sequence at one chord per bar vs two per bar changes the urgency without changing a note.
 
-## Cadencias
+## Cadences
 
-| Cadencia | Movimiento | Efecto |
+| Cadence | Motion | Effect |
 |---|---|---|
-| Auténtica perfecta | V → I, con tónica en soprano y bajo | Cierre total |
-| Auténtica imperfecta | V → I invertido o sin tónica arriba | Cierre débil, sigue |
-| Plagal | IV → I | Reposo sin tensión previa; sabor modal/himno |
-| Semicadencia | → V | Pausa abierta, pregunta |
-| Rota | V → vi | Sorpresa, evita el cierre esperado |
-| Suspendida (picardía inversa) | resolución a menor donde se esperaba mayor | Ensombrece |
+| Perfect authentic | V → I, with the tonic in soprano and bass | Full closure |
+| Imperfect authentic | V → I inverted or without the tonic on top | Weak closure, continues |
+| Plagal | IV → I | Rest without prior tension; modal/hymn flavor |
+| Half cadence | → V | Open pause, a question |
+| Deceptive | V → vi | Surprise, avoids the expected closure |
+| Inverse Picardy | resolution to minor where major was expected | Darkens |
 
-## Armonía modal
+## Modal harmony
 
-Cuando la progresión no quiere funcionalidad, el modo aporta color por su grado característico:
+When the progression does not want functionality, the mode brings color through its characteristic degree:
 
-| Modo | Grado característico | Carácter |
+| Mode | Characteristic degree | Character |
 |---|---|---|
-| Jónico | — | Neutro, brillante |
-| Dórico | ♮6 (sobre menor) | Menor sin tragedia; folk, aventura |
-| Frigio | ♭2 | Tensión oscura, MENA/flamenco |
-| Lidio | ♯4 | Suspensión luminosa, asombro |
-| Mixolidio | ♭7 | Rock/folk, menos gravedad que jónico |
-| Eólico | ♭6 natural | Menor estándar |
-| Locrio | ♭2 y ♭5 | Inestable, casi inusable como centro |
+| Ionian | — | Neutral, bright |
+| Dorian | ♮6 (over minor) | Minor without tragedy; folk, adventure |
+| Phrygian | ♭2 | Dark tension, MENA/flamenco |
+| Lydian | ♯4 | Luminous suspension, wonder |
+| Mixolydian | ♭7 | Rock/folk, less gravity than Ionian |
+| Aeolian | natural ♭6 | Standard minor |
+| Locrian | ♭2 and ♭5 | Unstable, almost unusable as a center |
 
-En modal, evitar el V mayor: reintroduce función dominante y colapsa el modo a mayor/menor.
+In modal writing, avoid the major V: it reintroduces dominant function and collapses the mode into major/minor.
 
-## Armonía cromática
+## Chromatic harmony
 
-- **Acordes prestados** — tomar del menor paralelo en un contexto mayor (♭VI, ♭VII, iv). Ensombrece sin modular
-- **Dominantes secundarias** — V/x tonicaliza cualquier grado. `C - E7 - Am` hace de Am un centro momentáneo
-- **Sustitución tritonal** — reemplazar V7 por el ♭II7. `G7 → D♭7` antes de C: mismo tritono, bajo cromático
-- **Napolitana (♭II)** — color dramático de aproximación a la dominante
-- **Acordes de sexta aumentada** — resolución cromática doble hacia V, muy tensa
+- **Borrowed chords** — take from the parallel minor in a major context (♭VI, ♭VII, iv). Darkens without modulating
+- **Secondary dominants** — V/x tonicizes any degree. `C - E7 - Am` makes Am a momentary center
+- **Tritone substitution** — replace V7 with ♭II7. `G7 → D♭7` before C: same tritone, chromatic bass
+- **Neapolitan (♭II)** — dramatic color approaching the dominant
+- **Augmented sixth chords** — double chromatic resolution toward V, very tense
 
-## Modulación
+## Modulation
 
-De más suave a más abrupta:
+From smoothest to most abrupt:
 
-1. **Directa a tonalidad cercana** (relativo, dominante, subdominante): casi imperceptible
-2. **Por pivote** — un acorde común a las dos tonalidades reinterpretado. La técnica más limpia
-3. **Por dominante secundaria** — introducir el V de la nueva tonalidad
-4. **Cromática por bajo** — mover el bajo por semitonos hasta el nuevo centro
-5. **Enarmónica** — reinterpretar un acorde ambiguo (disminuido, sexta aumentada) hacia otro lado
-6. **Truncada / directa lejana** — cortar y arrancar en la nueva tonalidad. Efecto de corte cinematográfico
+1. **Direct to a closely related key** (relative, dominant, subdominant): almost imperceptible
+2. **By pivot** — a chord common to both keys, reinterpreted. The cleanest technique
+3. **By secondary dominant** — introduce the V of the new key
+4. **Chromatic via the bass** — move the bass by semitones to the new center
+5. **Enharmonic** — reinterpret an ambiguous chord (diminished, augmented sixth) in another direction
+6. **Truncated / direct to a distant key** — cut and start in the new key. A cinematic cut effect
 
-Para juegos, la modulación por pivote es la única que sobrevive a un cambio de estado en tiempo real sin sonar a error.
+For games, pivot modulation is the only one that survives a real-time state change without sounding like a mistake.
 
 ## Voice leading
 
-- Mover cada voz lo mínimo posible; la conducción suave es lo que hace que una progresión "funcione"
-- Resolver las tensiones: 7ª baja por grado, 4ª suspendida baja a 3ª
-- Evitar 5ªs y 8ªs paralelas entre voces exteriores en contexto tonal tradicional (en pop/rock son idiomáticas)
-- Evitar el salto de la voz más aguda junto con el bajo en la misma dirección al llegar a una cadencia
-- Doblar la tónica antes que la 5ª, y la 5ª antes que la 3ª
+- Move each voice as little as possible; smooth voice leading is what makes a progression "work"
+- Resolve the tensions: the 7th steps down, the suspended 4th falls to the 3rd
+- Avoid parallel 5ths and octaves between the outer voices in a traditional tonal context (in pop/rock they are idiomatic)
+- Avoid the top voice leaping together with the bass in the same direction when arriving at a cadence
+- Double the tonic before the 5th, and the 5th before the 3rd
 
-## Reharmonización
+## Reharmonization
 
-Palancas, de menor a mayor impacto:
+Levers, from lowest to highest impact:
 
-1. Cambiar inversiones — mismo acorde, bajo distinto
-2. Agregar extensiones (7, 9, 11, 13) — color sin cambiar función
-3. Sustituir por función equivalente — I → vi, V → iii
-4. Insertar dominantes secundarias entre acordes existentes
-5. Cambiar el modo del acorde — mayor por menor
-6. Reemplazar la progresión entera manteniendo la melodía: cada nota melódica admite varios acordes
+1. Change inversions — same chord, different bass
+2. Add extensions (7, 9, 11, 13) — color without changing function
+3. Substitute an equivalent function — I → vi, V → iii
+4. Insert secondary dominants between existing chords
+5. Change the chord's mode — major for minor
+6. Replace the whole progression while keeping the melody: each melodic note admits several chords

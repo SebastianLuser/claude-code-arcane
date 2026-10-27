@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Valida un .glb / .gltf exportado desde Blender contra el presupuesto del proyecto.
+"""Validate a .glb / .gltf exported from Blender against the project budget.
 
-Chequea lo que se rompe siempre y no se ve hasta que el asset ya esta en el engine:
-triangulos fuera de presupuesto, UVs ausentes, lightmap UV1 faltante, escalas sin
-aplicar, texturas que no son potencia de dos, imagenes externas dentro de un .glb,
-y materiales de sobra.
+Checks what always breaks and goes unseen until the asset is already in the engine:
+triangles over budget, missing UVs, missing lightmap UV1, unapplied scales,
+textures that are not a power of two, external images inside a .glb,
+and surplus materials.
 
-Solo stdlib: corre en el proyecto del usuario sin instalar nada.
+Stdlib only: runs in the user's project without installing anything.
 
     python validate_gltf.py export/prop.glb --budget-tris 2000 --target unity
     python validate_gltf.py export/hero.glb --budget-tris 40000 --require-uv1 --json
@@ -23,8 +23,8 @@ CHUNK_JSON = 0x4E4F534A  # 'JSON'
 CHUNK_BIN = 0x004E4942  # 'BIN\0'
 MODE_TRIANGLES = 4
 
-# Escalas que delatan una conversion de unidades sin aplicar en lugar de una
-# decision de diseno.
+# Scales that betray an unapplied unit conversion rather than a
+# design decision.
 SUSPICIOUS_SCALES = (100.0, 0.01)
 SCALE_TOLERANCE = 0.001
 
@@ -56,7 +56,7 @@ class Report:
 
 
 def load_gltf(path):
-    """Devuelve (json_dict, bin_chunk_or_None). Acepta .glb y .gltf."""
+    """Return (json_dict, bin_chunk_or_None). Accepts .glb and .gltf."""
     with open(path, "rb") as handle:
         head = handle.read(4)
         handle.seek(0)
@@ -68,9 +68,9 @@ def load_gltf(path):
 def _load_glb(handle):
     magic, version, total = struct.unpack("<III", handle.read(12))
     if magic != GLB_MAGIC:
-        raise ValueError("no es un GLB: falta el magic 'glTF'")
+        raise ValueError("not a GLB: the 'glTF' magic is missing")
     if version != 2:
-        raise ValueError("version de GLB no soportada: %d (se espera 2)" % version)
+        raise ValueError("unsupported GLB version: %d (expected 2)" % version)
 
     doc = None
     binary = None
@@ -85,12 +85,12 @@ def _load_glb(handle):
         elif kind == CHUNK_BIN:
             binary = payload
     if doc is None:
-        raise ValueError("el GLB no tiene chunk JSON")
+        raise ValueError("the GLB has no JSON chunk")
     return doc, binary
 
 
 def image_size(blob):
-    """Dimensiones de un PNG o JPEG en bytes, o None si no se reconoce."""
+    """Dimensions of a PNG or JPEG given as bytes, or None if unrecognized."""
     if blob[:8] == b"\x89PNG\r\n\x1a\n" and len(blob) >= 24:
         width, height = struct.unpack(">II", blob[16:24])
         return width, height
@@ -101,7 +101,7 @@ def image_size(blob):
                 offset += 1
                 continue
             marker = blob[offset + 1]
-            # SOF0-3, SOF5-7, SOF9-11, SOF13-15 llevan las dimensiones.
+            # SOF0-3, SOF5-7, SOF9-11, SOF13-15 carry the dimensions.
             if marker in (0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7,
                           0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF):
                 height, width = struct.unpack(">HH", blob[offset + 5:offset + 9])
@@ -119,7 +119,7 @@ def is_power_of_two(value):
 
 
 def count_triangles(doc):
-    """(tris, primitivas_no_triangulo) sumando todas las meshes del documento."""
+    """(tris, non_triangle_primitives) summed over every mesh in the document."""
     accessors = doc.get("accessors", [])
     tris = 0
     non_triangles = 0
@@ -138,13 +138,13 @@ def count_triangles(doc):
 
 
 def node_scale(node):
-    """Escala de un nodo, venga como 'scale' o dentro de 'matrix'."""
+    """Scale of a node, whether it comes as 'scale' or inside 'matrix'."""
     if "scale" in node:
         return [float(v) for v in node["scale"]]
     matrix = node.get("matrix")
     if not matrix:
         return [1.0, 1.0, 1.0]
-    # glTF guarda la matriz por columnas; la norma de las 3 primeras es la escala.
+    # glTF stores the matrix column-major; the norm of the first 3 columns is the scale.
     return [
         (matrix[i] ** 2 + matrix[i + 1] ** 2 + matrix[i + 2] ** 2) ** 0.5
         for i in (0, 4, 8)
@@ -154,24 +154,24 @@ def node_scale(node):
 def check_geometry(doc, report, budget):
     tris, non_triangles = count_triangles(doc)
     if budget is None:
-        report.warn("presupuesto", "%d tris, sin presupuesto declarado (--budget-tris)" % tris)
+        report.warn("budget", "%d tris, no budget declared (--budget-tris)" % tris)
     elif tris > budget:
-        report.fail("presupuesto", "%d tris contra un presupuesto de %d (+%d)" % (tris, budget, tris - budget))
+        report.fail("budget", "%d tris against a budget of %d (+%d)" % (tris, budget, tris - budget))
     else:
-        report.ok("presupuesto", "%d tris dentro del presupuesto de %d" % (tris, budget))
+        report.ok("budget", "%d tris within the budget of %d" % (tris, budget))
 
     if non_triangles:
-        report.warn("primitivas", "%d primitivas no triangulares (lines/points) - el engine puede ignorarlas" % non_triangles)
+        report.warn("primitives", "%d non-triangle primitives (lines/points) - the engine may ignore them" % non_triangles)
 
     if not doc.get("meshes"):
-        report.fail("meshes", "el archivo no tiene ninguna mesh")
+        report.fail("meshes", "the file has no mesh")
 
 
 def check_uvs(doc, report, require_uv1):
     missing_uv0 = []
     missing_uv1 = []
     for mesh in doc.get("meshes", []):
-        name = mesh.get("name", "<sin nombre>")
+        name = mesh.get("name", "<unnamed>")
         for prim in mesh.get("primitives", []):
             attrs = prim.get("attributes", {})
             if "TEXCOORD_0" not in attrs:
@@ -180,15 +180,15 @@ def check_uvs(doc, report, require_uv1):
                 missing_uv1.append(name)
 
     if missing_uv0:
-        report.fail("uv0", "sin UV0, no se puede texturizar: %s" % ", ".join(sorted(set(missing_uv0))[:5]))
+        report.fail("uv0", "no UV0, cannot be textured: %s" % ", ".join(sorted(set(missing_uv0))[:5]))
     else:
-        report.ok("uv0", "todas las primitivas tienen UV0")
+        report.ok("uv0", "every primitive has UV0")
 
     if require_uv1:
         if missing_uv1:
-            report.fail("uv1", "sin UV1 para lightmap: %s" % ", ".join(sorted(set(missing_uv1))[:5]))
+            report.fail("uv1", "no UV1 for the lightmap: %s" % ", ".join(sorted(set(missing_uv1))[:5]))
         else:
-            report.ok("uv1", "todas las primitivas tienen UV1")
+            report.ok("uv1", "every primitive has UV1")
 
 
 def check_scales(doc, report):
@@ -197,13 +197,13 @@ def check_scales(doc, report):
         scale = node_scale(node)
         for value in scale:
             if any(abs(value - s) < SCALE_TOLERANCE for s in SUSPICIOUS_SCALES):
-                offenders.append((node.get("name", "<sin nombre>"), scale))
+                offenders.append((node.get("name", "<unnamed>"), scale))
                 break
     if offenders:
         detail = ", ".join("%s=%s" % (name, [round(v, 4) for v in scale]) for name, scale in offenders[:5])
-        report.fail("escala", "escala sin aplicar (conversion de unidades): %s" % detail)
+        report.fail("scale", "unapplied scale (unit conversion): %s" % detail)
     else:
-        report.ok("escala", "sin escalas de conversion sin aplicar")
+        report.ok("scale", "no unapplied conversion scales")
 
 
 def check_materials(doc, report, max_materials):
@@ -212,20 +212,20 @@ def check_materials(doc, report, max_materials):
     autogen = [m["name"] for m in materials if m.get("name", "").split(".")[-1].isdigit()]
 
     if max_materials is not None and len(materials) > max_materials:
-        report.fail("materiales", "%d materiales contra un maximo de %d (= draw calls)" % (len(materials), max_materials))
+        report.fail("materials", "%d materials against a maximum of %d (= draw calls)" % (len(materials), max_materials))
     else:
-        report.ok("materiales", "%d materiales" % len(materials))
+        report.ok("materials", "%d materials" % len(materials))
 
     if unnamed:
-        report.warn("materiales", "%d materiales sin nombre" % len(unnamed))
+        report.warn("materials", "%d unnamed materials" % len(unnamed))
     if autogen:
-        report.warn("materiales", "nombres autogenerados sin renombrar: %s" % ", ".join(autogen[:5]))
+        report.warn("materials", "autogenerated names not renamed: %s" % ", ".join(autogen[:5]))
 
 
 def check_images(doc, binary, report, base_dir, is_glb):
     images = doc.get("images", [])
     if not images:
-        report.warn("texturas", "el archivo no trae texturas")
+        report.warn("textures", "the file has no textures")
         return
 
     buffer_views = doc.get("bufferViews", [])
@@ -244,7 +244,7 @@ def check_images(doc, binary, report, base_dir, is_glb):
                 continue
             path = os.path.join(base_dir, uri)
             if not os.path.exists(path):
-                external.append("%s (no existe)" % label)
+                external.append("%s (does not exist)" % label)
                 continue
             with open(path, "rb") as handle:
                 blob = handle.read(32)
@@ -265,13 +265,13 @@ def check_images(doc, binary, report, base_dir, is_glb):
 
     if external:
         level = report.fail if is_glb else report.warn
-        level("texturas", "imagenes fuera del archivo: %s" % ", ".join(external[:5]))
+        level("textures", "images outside the file: %s" % ", ".join(external[:5]))
     if not_pot:
-        report.warn("texturas", "no son potencia de dos: %s" % ", ".join(not_pot[:5]))
+        report.warn("textures", "not a power of two: %s" % ", ".join(not_pot[:5]))
     if unreadable:
-        report.warn("texturas", "%d imagenes cuyo tamano no se pudo leer (formato no PNG/JPEG)" % unreadable)
+        report.warn("textures", "%d images whose size could not be read (not PNG/JPEG)" % unreadable)
     if not external and not not_pot and not unreadable:
-        report.ok("texturas", "%d texturas, todas embebidas y potencia de dos" % len(images))
+        report.ok("textures", "%d textures, all embedded and power of two" % len(images))
 
 
 def check_animations(doc, report):
@@ -280,14 +280,14 @@ def check_animations(doc, report):
         return
     autogen = [a.get("name", "") for a in animations if a.get("name", "").split(".")[-1].isdigit()]
     unnamed = sum(1 for a in animations if not a.get("name"))
-    report.ok("animaciones", "%d clips: %s" % (
+    report.ok("animations", "%d clips: %s" % (
         len(animations),
-        ", ".join(a.get("name") or "<sin nombre>" for a in animations[:8]),
+        ", ".join(a.get("name") or "<unnamed>" for a in animations[:8]),
     ))
     if unnamed:
-        report.warn("animaciones", "%d clips sin nombre - llegan al engine como Animation_N" % unnamed)
+        report.warn("animations", "%d unnamed clips - they reach the engine as Animation_N" % unnamed)
     if autogen:
-        report.warn("animaciones", "nombres autogenerados: %s" % ", ".join(autogen[:5]))
+        report.warn("animations", "autogenerated names: %s" % ", ".join(autogen[:5]))
 
 
 def check_target(doc, report, target):
@@ -295,33 +295,33 @@ def check_target(doc, report, target):
         if doc.get("materials"):
             report.warn(
                 "target ue5",
-                "glTF trae normal maps OpenGL (+Y) y UE5 espera DirectX (-Y): invertir el canal "
-                "verde o marcarlo en el import",
+                "glTF carries OpenGL normal maps (+Y) and UE5 expects DirectX (-Y): flip the green "
+                "channel or flag it on import",
             )
-        report.warn("target ue5", "UE5 usa centimetros: verificar el factor de escala en el import")
+        report.warn("target ue5", "UE5 uses centimeters: check the scale factor on import")
     elif target == "web":
-        report.warn("target web", "para web, correr draco/meshopt sobre el .glb antes de publicar")
+        report.warn("target web", "for web, run draco/meshopt over the .glb before publishing")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Valida un .glb/.gltf exportado desde Blender.")
-    parser.add_argument("path", help="archivo .glb o .gltf")
-    parser.add_argument("--budget-tris", type=int, default=None, help="presupuesto de triangulos")
-    parser.add_argument("--max-materials", type=int, default=None, help="maximo de materiales (= draw calls)")
-    parser.add_argument("--require-uv1", action="store_true", help="exigir UV1 para lightmap")
+    parser = argparse.ArgumentParser(description="Validate a .glb/.gltf exported from Blender.")
+    parser.add_argument("path", help=".glb or .gltf file")
+    parser.add_argument("--budget-tris", type=int, default=None, help="triangle budget")
+    parser.add_argument("--max-materials", type=int, default=None, help="maximum materials (= draw calls)")
+    parser.add_argument("--require-uv1", action="store_true", help="require UV1 for the lightmap")
     parser.add_argument("--target", choices=("unity", "ue5", "web"), default=None)
-    parser.add_argument("--json", action="store_true", help="salida JSON en lugar de texto")
+    parser.add_argument("--json", action="store_true", help="JSON output instead of text")
     args = parser.parse_args()
 
     if not os.path.exists(args.path):
-        print("no existe: %s" % args.path, file=sys.stderr)
+        print("does not exist: %s" % args.path, file=sys.stderr)
         return 2
 
     report = Report()
     try:
         doc, binary = load_gltf(args.path)
     except (ValueError, KeyError, struct.error, json.JSONDecodeError) as error:
-        report.fail("contenedor", "no se pudo leer: %s" % error)
+        report.fail("container", "could not be read: %s" % error)
         emit(report, args, None)
         return 1
 
@@ -342,7 +342,7 @@ def main():
 
 
 def emit(report, args, doc):
-    generator = (doc or {}).get("asset", {}).get("generator", "desconocido")
+    generator = (doc or {}).get("asset", {}).get("generator", "unknown")
     if args.json:
         print(json.dumps({
             "file": args.path,

@@ -1,43 +1,43 @@
 # Job Scoring Rubric
 
-Score ponderado 0-100 para decidir dónde invertir esfuerzo. El objetivo no es aplicar a todo: es concentrarte en ofertas con match real. Umbral default **≥75** (configurable por perfil en `match_score_minimo`).
+Weighted 0-100 score to decide where to invest effort. The goal is not to apply to everything: it is to focus on postings with a real match. Default threshold **≥75** (configurable per profile in `min_match_score`).
 
-## Dimensiones y pesos (default)
+## Dimensions and weights (default)
 
-| Dimensión | Peso | Cómo puntuar |
+| Dimension | Weight | How to score |
 |---|---:|---|
-| **Match de stack/skills** | 30 | % de must-haves que cumplís. 30 si cubrís todos los core; baja proporcional. |
-| **Seniority** | 15 | 15 si el nivel encaja. Penalizar over-qualified (aburrimiento/rechazo) y under-qualified (filtro). |
-| **Modalidad + elegibilidad** | 20 | Remoto/híbrido/presencial según preferencia; zona horaria; visa/eligibility. Si hay bloqueo duro de elegibilidad → cap fuerte al score. |
-| **Salario** | 15 | 15 si ≥ tu objetivo; proporcional hasta tu mínimo; 0 si por debajo del mínimo. Si no publican, neutro (≈8) y marcar. |
-| **Empresa/cultura/etapa** | 10 | Encaje con preferencia (startup vs enterprise, producto vs consultora, valores). |
-| **Calidad de la oferta** | 10 | Claridad del JD, recencia (fresca > vieja), pocos aplicantes, proceso definido. |
+| **Stack/skills match** | 30 | % of must-haves you meet. 30 if you cover all the core ones; proportionally lower otherwise. |
+| **Seniority** | 15 | 15 if the level fits. Penalize over-qualified (boredom/rejection) and under-qualified (filter). |
+| **Work mode + eligibility** | 20 | Remote/hybrid/onsite by preference; time zone; visa/eligibility. If there is a hard eligibility blocker → strong cap on the score. |
+| **Salary** | 15 | 15 if ≥ your target; proportional down to your minimum; 0 if below the minimum. If not published, neutral (≈8) and flag it. |
+| **Company/culture/stage** | 10 | Fit with preference (startup vs enterprise, product vs consultancy, values). |
+| **Posting quality** | 10 | JD clarity, recency (fresh > old), few applicants, defined process. |
 
-Sumá las dimensiones → score 0-100.
+Add up the dimensions → 0-100 score.
 
-## Ajustes / banderas
+## Adjustments / flags
 
-- **Frase gatillo positiva** (ej. "code-forward", "high autonomy", stack que amás): +2-5 si refuerza tu fit.
-- **Red flag en el JD** (ego, "rockstar", scope imposible, "trabajamos como familia"): −5-10 y nota de cautela.
-- **Cierre inminente:** no cambia el score, pero sube la **prioridad** de acción.
-- **Elegibilidad bloqueada** (visa que no tenés, zona horaria incompatible obligatoria): cap el score a <50 aunque el resto sea perfecto.
+- **Positive trigger phrase** (e.g. "code-forward", "high autonomy", a stack you love): +2-5 if it reinforces your fit.
+- **Red flag in the JD** (ego, "rockstar", impossible scope, "we're like a family"): −5-10 and a note of caution.
+- **Imminent closing:** it does not change the score, but it raises the action **priority**.
+- **Blocked eligibility** (a visa you do not have, a mandatory incompatible time zone): cap the score at <50 even if the rest is perfect.
 
-## De score a acción
+## From score to action
 
-| Score | Acción |
+| Score | Action |
 |---|---|
-| **≥85** | Prioridad alta. Aplicar con CV custom + cover letter + outreach. |
-| **75-84** | Aplicar; CV custom sí, outreach si hay contacto fácil. |
-| **60-74** | Borderline. Aplicar solo si hay tiempo o un ángulo fuerte (referido). |
-| **<60** | Skip salvo razón estratégica. |
+| **≥85** | High priority. Apply with custom CV + cover letter + outreach. |
+| **75-84** | Apply; custom CV yes, outreach if there is an easy contact. |
+| **60-74** | Borderline. Apply only if there is time or a strong angle (referral). |
+| **<60** | Skip unless there is a strategic reason. |
 
-## Prioridad (distinta del score)
+## Priority (different from the score)
 
-`prioridad` en el frontmatter combina score + urgencia + elegibilidad:
-- **alta:** score ≥85, o ≥75 con cierre inminente / referido caliente.
-- **media:** 75-84 sin urgencia.
-- **baja:** borderline o a la espera de validar requisitos.
+`priority` in the frontmatter combines score + urgency + eligibility:
+- **high:** score ≥85, or ≥75 with imminent closing / warm referral.
+- **medium:** 75-84 without urgency.
+- **low:** borderline or waiting to validate requirements.
 
-## Registro
+## Record
 
-Guardá el `score` en el frontmatter de la nota de `03-Aplicaciones/` y reflejá las activas en `00-Dashboard.md` agrupadas por prioridad. Anotá el breakdown si el score fue borderline - ayuda a decidir y a re-evaluar después.
+Save the `score` in the frontmatter of the `03-Applications/` note and reflect the active ones in `00-Dashboard.md` grouped by priority. Write down the breakdown if the score was borderline - it helps decide and re-evaluate later.

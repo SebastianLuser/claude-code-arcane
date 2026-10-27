@@ -1,48 +1,48 @@
 ---
 name: blender-modeling
-description: "Modelado en Blender para assets de juego: presupuesto de triangulos, topologia (quads, edge loops, poles), stack de modifiers, booleans, LODs y retopo, bmesh via script. Usar para: modelar en blender, topologia, modifiers, retopo, LOD, decimate."
+description: "Blender modeling for game assets: triangle budget, topology (quads, edge loops, poles), modifier stack, booleans, LODs and retopo, bmesh via script. Use for: modeling in blender, topology, modifiers, retopo, LOD, decimate."
 category: "gamedev"
 argument-hint: "[asset-slug] [--budget <tris>] [--lod]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-# blender-modeling — Geometria
+# blender-modeling — Geometry
 
-Modela o corrige geometria con destino a un engine. Lo que sale de aca tiene que deformar bien,
-entrar en presupuesto y exportar sin sorpresas.
+Models or fixes geometry headed for an engine. What comes out of here has to deform well,
+fit the budget and export without surprises.
 
-> Requiere `/blender-context`. Si no corrio, correrlo primero: sin destino definido el presupuesto
-> de tris y los ejes son adivinanza.
+> Requires `/blender-context`. If it has not run, run it first: without a defined destination the tri budget
+> and the axes are guesswork.
 
 ---
 
-## Phase 1: Presupuesto antes de modelar
+## Phase 1: Budget before modeling
 
-El presupuesto se declara primero y se mide despues. Al reves no funciona: nadie borra la mitad de
-un asset terminado.
+The budget is declared first and measured afterwards. The other way around does not work: nobody deletes half of
+a finished asset.
 
-| Rol del asset | Rango de tris | Nota |
+| Asset role | Tri range | Note |
 |---|---|---|
-| Prop de fondo, mobile | 300 - 2k | Un solo material |
-| Prop interactivo | 2k - 8k | |
-| Personaje mobile / VR | 8k - 20k | VR paga doble: se renderiza dos veces |
-| Personaje desktop | 20k - 60k | |
-| Hero / cinematica | 60k+ | Necesita LODs propios |
+| Background prop, mobile | 300 - 2k | A single material |
+| Interactive prop | 2k - 8k | |
+| Mobile / VR character | 8k - 20k | VR pays double: it renders twice |
+| Desktop character | 20k - 60k | |
+| Hero / cinematic | 60k+ | Needs its own LODs |
 
-Si el usuario da un numero, ese manda. Si no, proponer el rango segun rol y destino y **pedir
-confirmacion** — no elegir en silencio.
+If the user gives a number, that number rules. If not, propose the range by role and destination and **ask for
+confirmation** — do not pick silently.
 
-En UE5 los static meshes van a Nanite y el presupuesto de tris deja de importar; los **skeletal
-meshes no van a Nanite** y siguen necesitando LODs. Distinguirlo antes de dar un numero.
+In UE5 static meshes go to Nanite and the tri budget stops mattering; **skeletal
+meshes do not go to Nanite** and still need LODs. Tell them apart before giving a number.
 
 ---
 
-## Phase 2: Diagnostico de la malla
+## Phase 2: Mesh diagnosis
 
-Sobre un asset que ya existe, medir antes de opinar. Headless:
+On an asset that already exists, measure before giving an opinion. Headless:
 
 ```bash
-blender --background <archivo.blend> --python-expr "
+blender --background <file.blend> --python-expr "
 import bpy
 for o in bpy.data.objects:
     if o.type != 'MESH': continue
@@ -54,107 +54,107 @@ for o in bpy.data.objects:
 "
 ```
 
-Que se mira, en este orden:
+What to look at, in this order:
 
-1. **Escala distinta de 1** → conversion de unidades sin aplicar. Se arregla antes que nada.
-2. **N-gons en geometria que deforma** → se resuelven, no se documentan.
-3. **Tris fuera de presupuesto** → decidir si se reduce o si se sube el presupuesto, con el usuario.
-4. **Cero UV layers** → el asset no puede texturizarse; es trabajo de `/blender-materials`.
-5. **Muchos materiales** → cada uno es un draw call.
+1. **Scale other than 1** → unapplied unit conversion. Fix it before anything else.
+2. **N-gons in deforming geometry** → they get resolved, not documented.
+3. **Tris over budget** → decide with the user whether to reduce or raise the budget.
+4. **Zero UV layers** → the asset cannot be textured; that is work for `/blender-materials`.
+5. **Many materials** → each one is a draw call.
 
 ---
 
-## Phase 3: Topologia
+## Phase 3: Topology
 
-Reglas que no se negocian en geometria que deforma:
+Non-negotiable rules for deforming geometry:
 
-- **Quads.** Tris solo en estatico, n-gons en nada.
-- **Edge loops en articulaciones**: hombro, codo, rodilla, mandibula. Sin loops no hay deformacion
-  posible, y eso no se arregla con weights.
-- **Poles de 5 aristas o menos.** Un pole de 6+ pincha el shading.
-- Densidad proporcional a la deformacion: la cara lleva mas malla que el torso.
+- **Quads.** Tris only on static geometry, n-gons nowhere.
+- **Edge loops at joints**: shoulder, elbow, knee, jaw. Without loops no deformation is
+  possible, and weights will not fix that.
+- **Poles of 5 edges or fewer.** A 6+ pole pinches the shading.
+- Density proportional to deformation: the face carries more mesh than the torso.
 
-En geometria estatica lo unico que importa es la silueta y la eficiencia. Un cubo con 12 tris esta
-perfecto; subdividirlo "por prolijidad" es desperdicio.
+On static geometry the only things that matter are the silhouette and efficiency. A cube with 12 tris is
+perfect; subdividing it "for tidiness" is waste.
 
 ---
 
 ## Phase 4: Modifiers
 
-El stack es no destructivo y **el orden cambia el resultado**. Orden que funciona casi siempre:
+The stack is non-destructive and **the order changes the result**. An order that works almost always:
 
 ```
-Mirror → Array → Solidify → Bevel → Subdivision Surface → Triangulate (solo al exportar)
+Mirror → Array → Solidify → Bevel → Subdivision Surface → Triangulate (only on export)
 ```
 
-- **Mirror antes de Subdivision**, nunca al reves: si no, la costura queda subdividida dos veces.
-- **Bevel antes de Subdivision** para bordes duros; con `Harden Normals` si el destino no tiene
-  soporte de custom normals.
-- **Triangulate no va en el stack de trabajo.** El exporter triangula solo; tenerlo puesto solo
-  ensucia la edicion.
-- No aplicar el stack "para dejarlo limpio". Se aplica cuando hace falta editar el resultado, y
-  ahi se pierde la vuelta atras.
+- **Mirror before Subdivision**, never the other way around: otherwise the seam gets subdivided twice.
+- **Bevel before Subdivision** for hard edges; with `Harden Normals` if the destination has no
+  custom normals support.
+- **Triangulate does not belong in the working stack.** The exporter triangulates on its own; keeping it on only
+  clutters editing.
+- Do not apply the stack "to leave it clean". Apply it when you need to edit the result, and
+  at that point you lose the way back.
 
-Booleans: solver `Exact` para precision, `Fast` para volumen. Los dos dejan basura — despues de un
-boolean va limpieza de topologia, siempre. Un boolean sin limpiar en algo que deforma es un bug
-esperando.
+Booleans: `Exact` solver for precision, `Fast` for volume. Both leave garbage — a topology cleanup
+always follows a boolean. An uncleaned boolean on something that deforms is a bug
+waiting to happen.
 
 ---
 
-## Phase 5: LODs y reduccion
+## Phase 5: LODs and reduction
 
-| Metodo | Cuando | Que rompe |
+| Method | When | What it breaks |
 |---|---|---|
-| Decimate `Collapse` | LOD1/LOD2 de props | Topologia; no sirve para deformar |
-| Decimate `Planar` | Geometria dura, superficies planas | Detalle en curvas |
-| Retopo a mano | Heroes, cualquier cosa que deforme | Nada, cuesta tiempo |
-| Remesh (o `meshy_remesh`) | Escaneos y salidas de IA con topologia inservible | UVs, hay que rehacerlas |
+| Decimate `Collapse` | LOD1/LOD2 of props | Topology; useless for deformation |
+| Decimate `Planar` | Hard geometry, flat surfaces | Detail on curves |
+| Manual retopo | Heroes, anything that deforms | Nothing, it costs time |
+| Remesh (or `meshy_remesh`) | Scans and AI outputs with unusable topology | UVs, they must be redone |
 
-Cadena tipica de LODs: 100% → 50% → 25%. Verificar la silueta a distancia de juego, no en el
-viewport de cerca.
+Typical LOD chain: 100% → 50% → 25%. Check the silhouette at gameplay distance, not up close in the
+viewport.
 
-**Un Decimate no es un LOD terminado**, es un borrador. Para heroes se dice explicitamente que
-hace falta retopo y no se entrega como final.
-
----
-
-## Phase 6: Scripting con bmesh
-
-Para ediciones programaticas, `bmesh` sobre `bpy.ops`:
-
-- `bpy.ops.*` depende del contexto (modo, seleccion, area activa) y en `--background` falla o hace
-  otra cosa.
-- `bmesh.from_edit_mesh(me)` / `bmesh.new()` + `bm.to_mesh(me)` es determinista.
-- **Nunca `bpy.ops` dentro de un loop**: cada llamada revalida la escena entera y el costo es
-  cuadratico.
-
-Todo script que borra datos (`bpy.data.meshes.remove`, `objects.remove`) se le muestra al usuario
-antes de correrlo. Sin excepcion.
-
-Los scripts se versionan en el repo. **Pedir aprobacion antes de escribir** cualquier `.py` nuevo o
-de modificar uno existente, mostrando que va a hacer.
+**A Decimate is not a finished LOD**, it is a draft. For heroes, state explicitly that
+retopo is needed and do not deliver it as final.
 
 ---
 
-## Phase 7: Resumen
+## Phase 6: Scripting with bmesh
 
-Reportar por objeto: verts, tris, n-gons, materiales, escala, y tris contra el presupuesto.
+For programmatic edits, `bmesh` over `bpy.ops`:
+
+- `bpy.ops.*` depends on context (mode, selection, active area) and under `--background` it fails or does
+  something else.
+- `bmesh.from_edit_mesh(me)` / `bmesh.new()` + `bm.to_mesh(me)` is deterministic.
+- **Never `bpy.ops` inside a loop**: each call revalidates the whole scene and the cost is
+  quadratic.
+
+Every script that deletes data (`bpy.data.meshes.remove`, `objects.remove`) is shown to the user
+before running it. No exceptions.
+
+Scripts are versioned in the repo. **Ask for approval before writing** any new `.py` or
+modifying an existing one, showing what it will do.
+
+---
+
+## Phase 7: Summary
+
+Report per object: verts, tris, n-gons, materials, scale, and tris against the budget.
 
 **Verdict:**
-- **PASS** — dentro de presupuesto, sin n-gons donde importa, escala aplicada.
-- **CONCERNS** — entra pero con deuda: n-gons en estatico, materiales de sobra, LOD por Decimate
-  en algo que deforma. Listar cada punto.
-- **FAIL** — fuera de presupuesto, n-gons en geometria que deforma, o escala sin aplicar.
-  Indicar el fix por objeto.
+- **PASS** — within budget, no n-gons where it matters, scale applied.
+- **CONCERNS** — it fits but carries debt: n-gons on static geometry, spare materials, a Decimate LOD
+  on something that deforms. List each point.
+- **FAIL** — over budget, n-gons in deforming geometry, or unapplied scale.
+  State the fix per object.
 
 ## Next Steps
 
-- `/blender-materials` para UVs, shader nodes y bake
-- `/blender-animation` si el asset lleva rig
-- `/blender-export` cuando la geometria esta cerrada
-- `/asset-audit` para validar el resultado ya integrado en el proyecto
+- `/blender-materials` for UVs, shader nodes and bake
+- `/blender-animation` if the asset carries a rig
+- `/blender-export` when the geometry is closed
+- `/asset-audit` to validate the result once integrated into the project
 
 ---
 
-> → Topologia, presupuestos, ejes y las reglas de scripts destructivos estan en
+> → Topology, budgets, axes and the rules for destructive scripts are in
 > `.claude/rules/blender-files.md`.

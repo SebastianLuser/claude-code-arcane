@@ -15,7 +15,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."
 const SKILLS = path.join(repoRoot, "skills");
 
 /** Links that are Markdown syntax examples, not references. */
-const EXAMPLES = new Set(["skills/obsidian-markdown/SKILL.md -> Nota.md"]);
+const EXAMPLES = new Set(["skills/obsidian-markdown/SKILL.md -> Note.md"]);
 
 /** Skill -> another profile's skill, left as a pointer (see "skills in every other profile"). */
 const CROSS_PROFILE_POINTERS = [
@@ -43,7 +43,7 @@ const CROSS_PROFILE_POINTERS = [
   "career-registry -> contract-and-proposal-writer",
   "career-registry -> freelance-hunt",
   "career-registry -> freelance-pipeline",
-  "career-registry -> job-aplicar",
+  "career-registry -> job-apply",
   "career-registry -> job-hunt",
   "career-registry -> job-scrape",
   "cdn-setup -> cloudflare",

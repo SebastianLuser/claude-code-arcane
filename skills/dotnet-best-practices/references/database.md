@@ -2,14 +2,14 @@
 
 ## 7.1 Avoid N+1 with Include or Projection — HIGH
 
-Acceder a relaciones en un loop dispara una query por fila. Usar `Include` o proyectar a un DTO con `Select` resuelve todo en una sola query.
+Accessing relationships in a loop fires one query per row. Using `Include` or projecting to a DTO with `Select` resolves everything in a single query.
 
-**Incorrecto:**
+**Incorrect:**
 ```csharp
 var orders = await db.Orders.ToListAsync();
 foreach (var o in orders) o.Customer = await db.Customers.FindAsync(o.CustomerId); // N+1
 ```
-**Correcto:**
+**Correct:**
 ```csharp
 var orders = await db.Orders
     .Select(o => new OrderDto(o.Id, o.Customer.Name, o.Total))
@@ -18,46 +18,46 @@ var orders = await db.Orders
 
 ## 7.2 AsNoTracking for Read-Only Queries — HIGH
 
-El change tracker añade overhead innecesario en lecturas. `AsNoTracking()` evita las snapshots y reduce allocations.
+The change tracker adds unnecessary overhead on reads. `AsNoTracking()` skips the snapshots and reduces allocations.
 
-**Correcto:**
+**Correct:**
 ```csharp
 var products = await db.Products.AsNoTracking().Where(p => p.Active).ToListAsync();
 ```
 
 ## 7.3 DbContext is the Unit of Work — MEDIUM-HIGH
 
-`DbContext` ya implementa Unit of Work + Repository. Envolverlo en un repositorio genérico oculta `Include`, proyecciones y `SaveChanges`, añadiendo abstracción sin valor.
+`DbContext` already implements Unit of Work + Repository. Wrapping it in a generic repository hides `Include`, projections and `SaveChanges`, adding abstraction with no value.
 
-**Incorrecto:**
+**Incorrect:**
 ```csharp
-public class GenericRepository<T> { Task<T> GetById(int id); /* envuelve DbSet sin necesidad */ }
+public class GenericRepository<T> { Task<T> GetById(int id); /* wraps DbSet needlessly */ }
 ```
-**Correcto:**
+**Correct:**
 ```csharp
-// Inyectar AppDbContext (o un servicio de dominio que lo use) directamente
-public sealed class OrderService(AppDbContext db) { /* usa db.Orders, db.SaveChangesAsync */ }
+// Inject AppDbContext (or a domain service that uses it) directly
+public sealed class OrderService(AppDbContext db) { /* uses db.Orders, db.SaveChangesAsync */ }
 ```
 
 ## 7.4 Versioned Migrations, Never EnsureCreated in Prod — MEDIUM-HIGH
 
-`EnsureCreated()` no usa migraciones y no es upgradeable: hay que migrar el schema versionado con la CLI de EF.
+`EnsureCreated()` does not use migrations and is not upgradeable: migrate the versioned schema with the EF CLI.
 
-**Incorrecto:**
+**Incorrect:**
 ```csharp
-await db.Database.EnsureCreatedAsync(); // no migrable, pierde historial de schema
+await db.Database.EnsureCreatedAsync(); // not migratable, loses the schema history
 ```
-**Correcto:**
+**Correct:**
 ```bash
 dotnet ef migrations add AddOrderIndex
-dotnet ef database update    # en deploy: db.Database.MigrateAsync()
+dotnet ef database update    # on deploy: db.Database.MigrateAsync()
 ```
 
 ## 7.5 Connection Resiliency & Split Queries — MEDIUM
 
-Habilitar reintentos ante fallos transitorios y `AsSplitQuery()` para `Include` grandes evita la explosión cartesiana de un único JOIN.
+Enabling retries on transient failures, plus `AsSplitQuery()` for large `Include`s, avoids the cartesian explosion of a single JOIN.
 
-**Correcto:**
+**Correct:**
 ```csharp
 builder.Services.AddDbContext<AppDbContext>(o =>
     o.UseNpgsql(conn, npgsql => npgsql.EnableRetryOnFailure()));

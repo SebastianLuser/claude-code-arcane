@@ -1,66 +1,66 @@
 ---
 name: zettel
-description: "Crea una nota atomica en el vault a partir de una idea, un fragmento del dump o una nota de proyecto, con el criterio de cuando algo merece nota propia y a que linkearla. Triggers: nota atomica, zettel, esto merece nota propia, crear nota permanente, graduar esta idea, nota de concepto."
-argument-hint: "[idea | ruta#seccion | dump YYYY-MM-DD]"
+description: "Creates an atomic note in the vault from an idea, a dump fragment or a project note, with the criteria for when something deserves its own note and what to link it to. Triggers: atomic note, zettel, this deserves its own note, create permanent note, graduate this idea, concept note."
+argument-hint: "[idea | path#section | dump YYYY-MM-DD]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 
-# Zettel - Nota atómica
+# Zettel - Atomic note
 
-Creás una nota que contiene **una** idea, escrita para que se entienda sola en dos años y linkeada al resto del vault. La mitad del trabajo es decidir si la nota tiene que existir.
+You create a note that holds **one** idea, written so it stands on its own two years from now and linked to the rest of the vault. Half the work is deciding whether the note should exist.
 
-Idea o fuente: `$ARGUMENTS`
+Idea or source: `$ARGUMENTS`
 
-Aplica la rule `vault-conventions`.
+The `vault-conventions` rule applies.
 
-**Rutas por rol:** los destinos se nombran por rol y la ruta real de cada uno sale del `## Rutas` del `CLAUDE.md` del vault (leelo antes de escribir). Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+**Paths by role:** destinations are named by role, and each one's real path comes from the `## Paths` section of the vault's `CLAUDE.md` (read it before writing). The defaults in parentheses only apply if the vault doesn't declare something else.
 
-## Fase 1 - Decidir si merece nota propia
+## Phase 1 - Decide whether it deserves its own note
 
-Una idea merece nota atómica propia cuando pasa **las tres**:
+An idea deserves its own atomic note when it passes **all three**:
 
-1. **Es verdadera fuera del contexto que la produjo.** Si solo tiene sentido dentro del proyecto donde apareció, es una nota de proyecto y se queda ahí.
-2. **La linkearías desde otra nota.** Si no se te ocurre ni un lugar desde donde apuntar a esto, todavía no es conocimiento: es un registro.
-3. **El título puede afirmar algo.** "Los índices parciales pagan en tablas con lecturas sesgadas" es una idea. "Postgres" es un tema, y los temas son hub files, no notas atómicas.
+1. **It is true outside the context that produced it.** If it only makes sense inside the project where it appeared, it is a project note and it stays there.
+2. **You would link to it from another note.** If you can't think of a single place to point to it from, it isn't knowledge yet: it is a record.
+3. **The title can assert something.** "Partial indexes pay off on tables with skewed reads" is an idea. "Postgres" is a topic, and topics are hub files, not atomic notes.
 
-Si falla alguna, decirlo y proponer el destino real: se queda en el dump, va a la nota del proyecto, o va al `## Historial` de un hub. Verdict de esta fase: PASS solo si las tres se cumplen. No crear la nota para no dejar al usuario con las manos vacías: una nota atómica de más ensucia el grafo para siempre.
+If any fails, say so and propose the real destination: it stays in the dump, goes to the project note, or goes to a hub's `## History`. Verdict for this phase: PASS only if all three hold. Don't create the note just to avoid leaving the user empty-handed: one atomic note too many pollutes the graph forever.
 
-## Fase 2 - Buscar duplicados
+## Phase 2 - Look for duplicates
 
-Antes de escribir, buscar duplicados con `/vault-recall` si está disponible (rankea, y encuentra la nota que usó otro nombre), o `Grep` en `<atomic>` (default `03_Resources/`) por los términos del título y sus sinónimos obvios. Si ya hay una nota que cubre la idea:
+Before writing, look for duplicates with `/vault-recall` if available (it ranks, and finds the note that used another name), or `Grep` in `<atomic>` (default `03_Resources/`) for the title's terms and their obvious synonyms. If there is already a note that covers the idea:
 
-- **Misma idea:** proponer ampliar la nota existente en vez de crear otra. Es el caso más frecuente y el que evita el vault con cinco notas del mismo concepto bajo cinco nombres.
-- **Idea relacionada pero distinta:** crear la nueva y linkear ambas explícitamente, con una línea de por qué se distinguen.
+- **Same idea:** propose expanding the existing note instead of creating another. It is the most frequent case, and the one that prevents a vault with five notes on the same concept under five names.
+- **Related but different idea:** create the new one and link both explicitly, with a line on how they differ.
 
-## Fase 3 - Escribir
+## Phase 3 - Write
 
-Con approval sobre el título y el destino, crear la nota en `<atomic>` (default `03_Resources/`) desde `<templates>/Atomic.md`:
+With approval on the title and destination, create the note in `<atomic>` (default `03_Resources/`) from `<templates>/Atomic.md`:
 
-- **Título como afirmación**, no como etiqueta. Es el nombre del archivo y lo que vas a ver en el autocompletado de links dentro de tres años.
-- **La idea en las palabras del usuario**, no en las de la fuente. Si es una cita, va entre comillas con su fuente; el cuerpo de la nota es la reformulación.
-- **Sección `## Por qué me importa`:** una o dos líneas sobre qué problema del usuario toca. Es lo que separa una nota atómica de un resumen de Wikipedia. Si el usuario no lo dijo, preguntar en una línea, no inventarlo.
-- **Sección `## Relacionado`:** al menos un `[[wikilink]]`, siempre. Si no hay a qué linkear, falta el hub del tema: crearlo con `/hub-note` antes de cerrar esta nota.
-- **Sección `## Fuente`:** el clip, el libro, la conversación, o "propia" si salió del usuario.
-- **`status` del frontmatter:** `seed` si la nota queda como semilla a propósito, `provisional` si ya tiene cuerpo. **Nunca pongas `evergreen` vos:** eso lo decide el usuario cuando la nota deja de moverse, y es lo que hace que el audit no la reporte como stale.
+- **Title as an assertion**, not as a label. It is the filename and what you will see in link autocomplete three years from now.
+- **The idea in the user's words**, not the source's. If it is a quote, it goes in quotation marks with its source; the body of the note is the reformulation.
+- **`## Why it matters` section:** one or two lines on which of the user's problems this touches. It is what separates an atomic note from a Wikipedia summary. If the user didn't say, ask in one line, don't invent it.
+- **`## Related` section:** at least one `[[wikilink]]`, always. If there is nothing to link to, the topic's hub is missing: create it with `/hub-note` before closing this note.
+- **`## Source` section:** the clip, the book, the conversation, or "own" if it came from the user.
+- **Frontmatter `status`:** `seed` if the note is left as a seed on purpose, `provisional` if it already has a body. **Never set `evergreen` yourself:** the user decides that when the note stops moving, and it is what keeps the audit from reporting it as stale.
 
-Si la idea vino de una nota de proyecto o de un dump, **la fuente no se vacía**: la línea original se queda donde estaba y se le agrega el link a la nota nueva.
+If the idea came from a project note or a dump, **the source is not emptied**: the original line stays where it was and gets the link to the new note added.
 
-## Fase 4 - Conectar
+## Phase 4 - Connect
 
-1. Linkear la nota desde el hub del tema (sección `## Notas` del hub). El link del hub a la nota es el que la hace encontrable.
-2. Si la nota discute o contradice otra nota atómica, linkearlas entre sí con una línea de por qué. Las conexiones entre notas atómicas son laterales y sí son bidireccionales: es el único caso donde la regla de "links hacia arriba" no aplica, porque acá no hay jerarquía.
+1. Link the note from the topic's hub (the hub's `## Notes` section). The link from the hub to the note is what makes it findable.
+2. If the note argues with or contradicts another atomic note, link them to each other with a line on why. Connections between atomic notes are lateral and are bidirectional: it is the only case where the "links go upward" rule doesn't apply, because there is no hierarchy here.
 
-Nota COMPLETE cuando existe, tiene al menos un link entrante desde un hub y al menos uno saliente.
+Note COMPLETE when it exists, has at least one incoming link from a hub and at least one outgoing link.
 
-## Reglas
+## Rules
 
-- Una idea por nota. Si necesitás dos `##` que no se relacionan, son dos notas.
-- Nunca vaciar la fuente de la que salió la idea.
-- No crear la nota si falla el criterio de graduación, aunque el usuario lo haya pedido: explicá por qué y proponé el destino correcto. Si insiste, se crea.
-- Sin guiones largos.
+- One idea per note. If you need two `##` sections that don't relate, they are two notes.
+- Never empty the source the idea came from.
+- Don't create the note if it fails the graduation criteria, even if the user asked for it: explain why and propose the right destination. If they insist, it gets created.
+- No em dashes.
 
 ## Handoff
 
-Con la nota creada, el siguiente paso es `/hub-note` si el tema todavía no tiene hub, o volver a `/review-dump` si esto salió en medio de procesar un día. Al cierre de la semana `/review-weekly` va a levantar la nota como parte de lo que creció.
+With the note created, the next step is `/hub-note` if the topic doesn't have a hub yet, or back to `/review-dump` if this came up in the middle of processing a day. At the end of the week `/review-weekly` will pick up the note as part of what grew.

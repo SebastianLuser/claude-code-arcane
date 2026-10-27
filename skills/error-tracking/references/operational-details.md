@@ -1,9 +1,9 @@
 # Error Tracking Operational Details
 
 ## User Context & Breadcrumbs
-- `setUser(id)` — **no email de menores**. `addMetadata('tenant', {id, plan})`
-- Breadcrumbs auto (navigation, fetch, console) + manuales en flows criticos
-- Ultimos 50 eventos antes del error = oro para debugging
+- `setUser(id)` — **no minors' email**. `addMetadata('tenant', {id, plan})`
+- Automatic breadcrumbs (navigation, fetch, console) + manual ones in critical flows
+- The last 50 events before the error = gold for debugging
 
 ## PII Scrubbing
 
@@ -11,28 +11,28 @@
 redactedKeys: ['password', 'token', 'authorization', 'cookie', /dni/i, /cuit/i, /cpf/i, /credit.?card/i]
 ```
 
-- Menores: solo `user.id` interno, no email/nombre real
-- Respetar consent: si usuario rechazo crash reporting -> `pauseSession()`
+- Minors: only the internal `user.id`, no real email/name
+- Respect consent: if the user declined crash reporting -> `pauseSession()`
 
-## Sampling & Ruido
-- Errors: **100% siempre** (no samplear)
-- Filtrar ruido: ResizeObserver, chrome-extension, Non-Error promise rejection
-- Dedupe burst: mismo error <5s -> skip
+## Sampling & Noise
+- Errors: **always 100%** (do not sample)
+- Filter noise: ResizeObserver, chrome-extension, Non-Error promise rejection
+- Burst dedupe: same error <5s -> skip
 
 ## Grouping
-Default por stack+message. Override con `groupingHash` cuando agrupa mal (network errors con URL variable, validation con mensaje dinamico).
+Default by stack+message. Override with `groupingHash` when it groups badly (network errors with a variable URL, validation with a dynamic message).
 
-## Alertas & Routing
+## Alerts & Routing
 
-| Evento | Destino |
+| Event | Destination |
 |--------|---------|
 | New issue production | Slack #alerts-prod |
-| Regression (resolved reaparecio) | Slack + reopen ticket |
-| Spike >10x en 5min | PagerDuty on-call |
-| Stability <99.5% mobile | Alert weekly |
+| Regression (resolved issue reappeared) | Slack + reopen ticket |
+| Spike >10x in 5min | PagerDuty on-call |
+| Stability <99.5% mobile | Weekly alert |
 
-Anti-fatiga: no alertar info a on-call, staging solo Slack.
+Anti-fatigue: do not alert on-call for info, staging goes to Slack only.
 
 ## Triage Workflow
-**Diario:** inbox new 24h -> clasificar (bug/noise/regression) -> asignar -> Jira si >1h
-**Weekly:** top 10 frecuencia, top 10 users afectados, stability por release
+**Daily:** inbox new 24h -> classify (bug/noise/regression) -> assign -> Jira if >1h
+**Weekly:** top 10 by frequency, top 10 by users affected, stability per release

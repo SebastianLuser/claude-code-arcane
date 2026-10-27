@@ -1,42 +1,42 @@
 # Cross-Reference Criteria
 
-## A. Contradicciones (CRITICAL)
-- **Doc vs Doc**: Comparar secciones del GDD contra spec docs. Flaggear donde describan la misma mecánica de forma diferente (fórmulas, valores, flujo, terminología).
-- **Doc vs Code**: Comparar comportamiento documentado vs implementado. Flaggear donde el código hace algo diferente a lo que dicen los docs.
-- **Contradicciones internas**: Flaggear donde el MISMO documento dice dos cosas diferentes sobre la misma mecánica.
+## A. Contradictions (CRITICAL)
+- **Doc vs Doc**: Compare GDD sections against spec docs. Flag where they describe the same mechanic differently (formulas, values, flow, terminology).
+- **Doc vs Code**: Compare documented vs implemented behavior. Flag where the code does something different from what the docs say.
+- **Internal contradictions**: Flag where the SAME document says two different things about the same mechanic.
 
-Para cada contradicción:
+For each contradiction:
 ```
-| Aspecto | Fuente A dice | Fuente B dice | Severidad | Recomendación |
+| Aspect | Source A says | Source B says | Severity | Recommendation |
 ```
 
-## B. Gaps y contenido faltante (HIGH)
-- Secciones con [TBD], vacías o placeholder
-- Mecánicas referenciadas pero nunca definidas
-- Sistemas que dependen de decisiones no tomadas (dependencias bloqueantes)
-- Fórmulas, valores o números de balance faltantes
-- Items/enemigos/bosses listados sin stats concretos
+## B. Gaps and missing content (HIGH)
+- Sections with [TBD], empty or placeholder
+- Mechanics referenced but never defined
+- Systems that depend on decisions not yet made (blocking dependencies)
+- Missing formulas, values or balance numbers
+- Items/enemies/bosses listed without concrete stats
 
-Clasificar cada gap:
-- **Bloqueante**: No se puede implementar sin esta decisión
-- **Importante**: Debe definirse antes del vertical slice / milestone actual
-- **Nice to have**: Puede esperar
+Classify each gap:
+- **Blocking**: Cannot be implemented without this decision
+- **Important**: Must be defined before the vertical slice / current milestone
+- **Nice to have**: Can wait
 
-## C. Coherencia y lógica (MEDIUM)
-- El sistema tiene sentido lógico? (mecánica que contradice pilares del juego)
-- Edge cases no cubiertos? ("qué pasa cuando X Y Z al mismo tiempo?")
-- Las fórmulas producen valores razonables? Correr math mental con escenarios ejemplo
-- Terminología consistente? (mismo concepto con nombres diferentes en distintos lugares)
-- Las curvas de dificultad tienen sentido?
+## C. Coherence and logic (MEDIUM)
+- Does the system make logical sense? (a mechanic that contradicts the game's pillars)
+- Edge cases not covered? ("what happens when X, Y and Z happen at the same time?")
+- Do the formulas produce reasonable values? Run mental math with example scenarios
+- Consistent terminology? (the same concept with different names in different places)
+- Do the difficulty curves make sense?
 
 ## D. Balance Red Flags (MEDIUM)
-- Estrategias dominantes sin counterplay
-- Opciones inútiles que son estrictamente peores que alternativas
-- Mecánicas de snowball / death spiral
-- Economía rota (items muy baratos/caros relativo al income)
-- Ratios de daño/HP que hacen combates muy rápidos o muy lentos
+- Dominant strategies without counterplay
+- Useless options that are strictly worse than the alternatives
+- Snowball / death spiral mechanics
+- Broken economy (items too cheap/expensive relative to income)
+- Damage/HP ratios that make fights too fast or too slow
 
-## E. Completitud para milestone actual (HIGH)
-- El scope del milestone/prototype lista todo lo necesario?
-- Todos los sistemas en scope están definidos en el doc?
-- Hay dependencias ocultas (Sistema A necesita Sistema B que no está en scope)?
+## E. Completeness for the current milestone (HIGH)
+- Does the milestone/prototype scope list everything needed?
+- Are all in-scope systems defined in the doc?
+- Are there hidden dependencies (System A needs System B, which is not in scope)?

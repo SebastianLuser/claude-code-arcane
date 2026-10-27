@@ -1,6 +1,6 @@
 ---
 name: audio-bible
-description: "Audio Bible authoring: sonic palette, emotional targets per game state, frequency allocation, mix hierarchy, audio standards. Usar para: direccion de audio, paleta sonora, identidad sonora del juego."
+description: "Audio Bible authoring: sonic palette, emotional targets per game state, frequency allocation, mix hierarchy, audio standards. Use for: audio direction, sonic palette, the game's sonic identity."
 category: "audio"
 argument-hint: "[full|core|standards]"
 user-invocable: true
@@ -8,92 +8,92 @@ allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 # audio-bible — Sonic Identity Specification
 
-Define la identidad sonora del juego. Toda produccion de audio se gatea contra este documento — es el equivalente auditivo de `/art-bible`.
+Defines the game's sonic identity. All audio production is gated against this document — it is the auditory equivalent of `/art-bible`.
 
-## Cuándo usar
+## When to use
 
-- Después de tener game concept aprobado, antes de producir un solo sonido
-- Cuando necesitás estandarizar el criterio sonoro entre sound designers y compositores
-- Antes de escribir specs de SFX (`/audio-spec`) o diseñar el sistema de música (`/adaptive-music`)
+- After the game concept is approved, before producing a single sound
+- When you need to standardize sonic judgment across sound designers and composers
+- Before writing SFX specs (`/audio-spec`) or designing the music system (`/adaptive-music`)
 
 ## Input
 
-1. Leer game concept (elevator pitch, pilares, core fantasy) y art bible si existe
-2. Preguntar al usuario: scope (full bible / core secciones 1-4 / solo standards), plataformas target, y referencias sonoras (juegos, films, discos)
-3. Si ya existe audio bible: detectar secciones completas vs vacías, trabajar solo las incompletas
+1. Read the game concept (elevator pitch, pillars, core fantasy) and the art bible if one exists
+2. Ask the user: scope (full bible / core sections 1-4 / standards only), target platforms, and sonic references (games, films, records)
+3. If an audio bible already exists: detect complete vs empty sections, work only on the incomplete ones
 
 ---
 
-## Secciones del Audio Bible
+## Audio Bible sections
 
-### Core (secciones 1-4) — definen el lenguaje sonoro
+### Core (sections 1-4) — define the sonic language
 
-| # | Sección | Qué define | Criterio de calidad |
+| # | Section | What it defines | Quality bar |
 |---|---------|-----------|-------------------|
-| 1 | **Sonic Identity Statement** | Regla sonora de 1 línea + 2-3 principios de soporte | Resuelve cualquier ambigüedad sonora. Cada principio ancla en un pilar del juego |
-| 2 | **Emotional Targets por Game State** | Qué debe sentir el jugador en exploración, combate, tensión, victoria, menú | Cada estado auditivamente distinto sin mirar la pantalla |
-| 3 | **Sonic Palette** | Fuentes y texturas: acústico vs sintético, orgánico vs procesado, época/lugar, vocabulario tímbrico | Un sonido nuevo se puede aceptar o rechazar leyendo esto |
-| 4 | **Frequency Allocation** | Qué categoría es dueña de qué banda — evita masking antes de que exista el mix | Diálogo, música, SFX y ambiente no compiten por la misma banda |
+| 1 | **Sonic Identity Statement** | One-line sonic rule + 2-3 supporting principles | Resolves any sonic ambiguity. Each principle anchors in a game pillar |
+| 2 | **Emotional Targets per Game State** | What the player should feel in exploration, combat, tension, victory, menu | Each state is audibly distinct without looking at the screen |
+| 3 | **Sonic Palette** | Sources and textures: acoustic vs synthetic, organic vs processed, era/place, timbral vocabulary | A new sound can be accepted or rejected by reading this |
+| 4 | **Frequency Allocation** | Which category owns which band — prevents masking before the mix exists | Dialogue, music, SFX and ambience do not compete for the same band |
 
-### Production (secciones 5-8) — reglas concretas
+### Production (sections 5-8) — concrete rules
 
-| # | Sección | Qué define |
+| # | Section | What it defines |
 |---|---------|-----------|
-| 5 | **Mix Hierarchy** | Prioridad entre categorías, qué duckea a qué, qué nunca se pisa |
-| 6 | **Music Direction** | Instrumentación, escalas/modos, tempo range, rol del silencio, estrategia adaptativa |
-| 7 | **SFX Direction** | Filosofía de impacto, realismo vs estilización, tratamiento del feedback de UI, uso de variación |
-| 8 | **Audio Standards** | Sample rate, bit depth, formatos, naming, targets de loudness, budgets de memoria y voces por plataforma |
+| 5 | **Mix Hierarchy** | Priority between categories, what ducks what, what is never stepped on |
+| 6 | **Music Direction** | Instrumentation, scales/modes, tempo range, role of silence, adaptive strategy |
+| 7 | **SFX Direction** | Impact philosophy, realism vs stylization, treatment of UI feedback, use of variation |
+| 8 | **Audio Standards** | Sample rate, bit depth, formats, naming, loudness targets, memory and voice budgets per platform |
 
-### Reference (sección 9)
+### Reference (section 9)
 
-| # | Sección | Qué define |
+| # | Section | What it defines |
 |---|---------|-----------|
-| 9 | **References & Prohibitions** | 3-5 referencias con qué tomar y qué evitar de cada una. Prohibiciones sonoras explícitas |
+| 9 | **References & Prohibitions** | 3-5 references with what to take and what to avoid from each. Explicit sonic prohibitions |
 
 ---
 
-## Frequency allocation — el punto que más se saltea
+## Frequency allocation — the step most often skipped
 
-La mayoría de los mixes de juego se rompen porque nadie asignó bandas antes de producir. Definir dueño primario por banda evita rehacer assets:
+Most game mixes break because nobody allocated bands before production. Defining a primary owner per band avoids redoing assets:
 
-| Banda | Dueño primario | Nota |
+| Band | Primary owner | Note |
 |---|---|---|
-| Sub (20-60 Hz) | Impactos, explosiones | Reservado, no lo llenes de música |
-| Low (60-250 Hz) | Música (bajo, kick), body de impactos | Zona de masking más frecuente |
-| Low-mid (250-500 Hz) | Ambiente, body de props | Acumula barro si no se controla |
-| Mid (500 Hz-2 kHz) | **Diálogo** — intocable | El resto cede acá |
-| High-mid (2-6 kHz) | Feedback de UI, transientes, definición | Fatiga rápido; usar con precisión |
-| High (6-20 kHz) | Aire, detalle, brillo | Primero en irse en compresión lossy |
+| Sub (20-60 Hz) | Impacts, explosions | Reserved, do not fill it with music |
+| Low (60-250 Hz) | Music (bass, kick), body of impacts | Most frequent masking zone |
+| Low-mid (250-500 Hz) | Ambience, body of props | Builds up mud if not controlled |
+| Mid (500 Hz-2 kHz) | **Dialogue** — untouchable | Everything else yields here |
+| High-mid (2-6 kHz) | UI feedback, transients, definition | Fatigues fast; use with precision |
+| High (6-20 kHz) | Air, detail, brilliance | First to go under lossy compression |
 
-Cuando un asset nuevo pelea una banda que no le corresponde, la solución es de diseño (cambiar la fuente), no de EQ.
-
----
-
-## Proceso
-
-Para cada sección:
-1. **Draftar** basándose en game concept, pilares y referencias
-2. **Presentar** al usuario para review
-3. **Escribir** a archivo inmediatamente después de aprobación — preguntar "¿Escribo esta sección a `<path>`?" antes de usar Write
-
-No batchear — escribir cada sección aprobada antes de pasar a la siguiente.
-
-### Conflictos
-
-Si hay tensión entre dirección de audio y constraints técnicos (ej: música en stems para adaptatividad, pero el budget de memoria no da), surfacear el conflicto explícitamente con ambas posiciones. No resolver silenciosamente.
-
-Si la dirección sonora conflictúa con accesibilidad (ej: información crítica solo por audio), surfacear y dejar que el usuario decida.
+When a new asset fights for a band it does not own, the fix is a design one (change the source), not EQ.
 
 ---
 
-## Principios
+## Process
 
-- El audio bible es un **documento de restricción**: narrows solution space en favor de coherencia sonora
-- Cada sección debe conectar con los pilares del juego
-- Específico > genérico: "dark and tense" no alcanza — decir la emoción exacta, la fuente tímbrica, el rango de frecuencia, un elemento sonoro que carga el mood
-- Para cada referencia: qué tomar Y qué evitar
-- El silencio es una decisión de diseño, no la ausencia de una — documentarlo
-- Los standards deben ser producibles: un contractor externo debería poder entregar assets válidos sin briefing adicional
+For each section:
+1. **Draft** based on the game concept, pillars and references
+2. **Present** it to the user for review
+3. **Write** to file immediately after approval — ask "Should I write this section to `<path>`?" before using Write
+
+Do not batch — write each approved section before moving to the next.
+
+### Conflicts
+
+If there is tension between audio direction and technical constraints (e.g. music in stems for adaptivity, but the memory budget does not allow it), surface the conflict explicitly with both positions. Do not resolve it silently.
+
+If the sonic direction conflicts with accessibility (e.g. critical information conveyed only through audio), surface it and let the user decide.
+
+---
+
+## Principles
+
+- The audio bible is a **constraint document**: it narrows the solution space in favor of sonic coherence
+- Each section must connect to the game pillars
+- Specific > generic: "dark and tense" is not enough — state the exact emotion, the timbral source, the frequency range, one sonic element that carries the mood
+- For each reference: what to take AND what to avoid
+- Silence is a design decision, not the absence of one — document it
+- Standards must be producible: an external contractor should be able to deliver valid assets without additional briefing
 
 ---
 
@@ -103,17 +103,17 @@ Si la dirección sonora conflictúa con accesibilidad (ej: información crítica
 
 ## Verdict
 
-Al cerrar el documento, emitir un verdict por sección:
+When closing the document, issue a verdict per section:
 
-- **READY** — la sección resuelve ambigüedades y es accionable para producción
-- **CONCERNS** — está escrita pero es genérica o no ancla en pilares; listar qué falta
-- **BLOCKED** — falta input upstream (game concept, plataformas, budget) que no se puede inventar
+- **READY** — the section resolves ambiguities and is actionable for production
+- **CONCERNS** — it is written but generic or does not anchor in pillars; list what is missing
+- **BLOCKED** — upstream input is missing (game concept, platforms, budget) and cannot be invented
 
-Si alguna sección Core (1-4) queda en BLOCKED, el bible no habilita producción todavía.
+If any Core section (1-4) stays BLOCKED, the bible does not unlock production yet.
 
 ## Next steps
 
-- `/audio-spec` para bajar la dirección a spec sheets de SFX y event lists
-- `/adaptive-music` para diseñar el sistema de música contra los emotional targets de la sección 2
-- `/audio-mix` para implementar la mix hierarchy de la sección 5
-- `/audio-audit` para verificar assets producidos contra los standards de la sección 8
+- `/audio-spec` to turn the direction into SFX spec sheets and event lists
+- `/adaptive-music` to design the music system against the emotional targets of section 2
+- `/audio-mix` to implement the mix hierarchy of section 5
+- `/audio-audit` to verify produced assets against the standards of section 8

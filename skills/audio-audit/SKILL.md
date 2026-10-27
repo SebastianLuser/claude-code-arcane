@@ -1,156 +1,156 @@
 ---
 name: audio-audit
-description: "Auditoria de audio: voice count, CPU, memoria, streaming, compliance de loudness (ASWG-R001), conformidad de assets contra spec y checklist por plataforma. Usar para: QA de audio, performance de audio, verificar loudness, revisar assets, pre-certificacion."
+description: "Audio audit: voice count, CPU, memory, streaming, loudness compliance (ASWG-R001), asset conformance against the spec, and a per-platform checklist. Use for: audio QA, audio performance, verifying loudness, reviewing assets, pre-certification."
 category: "audio"
 argument-hint: "[full | perf | loudness | assets | platform]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 ---
-# audio-audit — QA y Compliance de Audio
+# audio-audit — Audio QA and Compliance
 
-Verifica que el audio del proyecto cumple: performance dentro del presupuesto, assets conformes al spec, y loudness dentro del target de plataforma.
+Verifies that the project's audio meets: performance within budget, assets conforming to the spec, and loudness within the platform target.
 
-## Cuándo usar
+## When to use
 
-- Antes de una milestone o de certificación
-- El audio se corta, se satura o come demasiado CPU
-- Verificar assets entregados por un contractor
-- Auditar loudness para cumplir requisitos de plataforma
-- Después de integrar un sistema nuevo, para medir su costo real
+- Before a milestone or certification
+- Audio cuts out, clips or eats too much CPU
+- Verifying assets delivered by a contractor
+- Auditing loudness to meet platform requirements
+- After integrating a new system, to measure its real cost
 
 ## Input
 
-1. Leer audio bible (sección 8, standards) y los specs de `/audio-spec`
-2. Determinar plataformas target, y cuál es la más baja
-3. Preguntar al usuario: alcance (`full` / solo perf / solo loudness / solo assets) y si hay captura de profiler disponible
+1. Read the audio bible (section 8, standards) and the `/audio-spec` specs
+2. Determine the target platforms, and which one is the lowest
+3. Ask the user: scope (`full` / perf only / loudness only / assets only) and whether a profiler capture is available
 
 ---
 
 ## 1. Performance
 
-**Presupuesto:** el audio dispone del **5-10% del frame time**. A 60 fps el frame son 16.6 ms, así que el audio tiene ~0.8-1.7 ms. A 90 fps (VR) el frame son ~11 ms y el margen es menor.
+**Budget:** audio gets **5-10% of the frame time**. At 60 fps the frame is 16.6 ms, so audio has ~0.8-1.7 ms. At 90 fps (VR) the frame is ~11 ms and the margin is smaller.
 
-| Métrica | Cómo se mide | Verdict |
+| Metric | How it is measured | Verdict |
 |---|---|---|
-| **CPU de audio** | Profiler del middleware, en gameplay real | FAIL si supera el 10% del frame sostenido |
-| **Voces activas** | Pico vs límite configurado | CONCERNS si el pico toca el límite; FAIL si hay descartes de sonidos de prioridad alta |
-| **Memoria de audio** | Por bank y total, vs budget del proyecto | FAIL si supera el budget en la plataforma más baja |
-| **Accesos de streaming** | Contador de streaming del profiler | CONCERNS si hay starvation |
-| **Game objects registrados** | Contador, medido a lo largo de una sesión larga | FAIL si crece monótonamente (leak) |
+| **Audio CPU** | Middleware profiler, in real gameplay | FAIL if it sustains more than 10% of the frame |
+| **Active voices** | Peak vs configured limit | CONCERNS if the peak hits the limit; FAIL if high-priority sounds get dropped |
+| **Audio memory** | Per bank and total, vs the project budget | FAIL if it exceeds the budget on the lowest platform |
+| **Streaming accesses** | Profiler streaming counter | CONCERNS if there is starvation |
+| **Registered game objects** | Counter, measured over a long session | FAIL if it grows monotonically (leak) |
 
-**Medir en gameplay real, no en el editor.** El editor dispara eventos en orden, uno por vez, sin ruido. El jugador produce combinaciones que nadie planificó. Y medir en la **plataforma más baja** del target: el presupuesto que cierra en PC no dice nada de un handheld.
+**Measure in real gameplay, not in the editor.** The editor fires events in order, one at a time, with no noise. The player produces combinations nobody planned. And measure on the **lowest platform** in the target: a budget that fits on PC says nothing about a handheld.
 
-**El leak de game objects es el hallazgo más frecuente.** Si el contador de objetos registrados crece durante una sesión de dos horas y nunca baja, hay des-registros faltantes. Se ve solo en sesiones largas.
+**The game object leak is the most frequent finding.** If the registered-object counter grows during a two-hour session and never drops, unregistrations are missing. It only shows up in long sessions.
 
-### Costos de referencia
+### Reference costs
 
-Para saber si un número medido es razonable:
+To tell whether a measured number is reasonable:
 
-| Operación | Costo esperado por fuente |
+| Operation | Expected cost per source |
 |---|---|
-| Convolución HRTF (512 taps) | ~2 ms |
-| Encode ambisónico | ~0.1 ms |
-| Decode ambisónico a binaural | ~1 ms total |
-| Footstep procedural | ~1-2 ms |
-| Síntesis de viento | ~0.5 ms/frame |
-| Panning + atenuación | despreciable |
+| HRTF convolution (512 taps) | ~2 ms |
+| Ambisonic encode | ~0.1 ms |
+| Ambisonic to binaural decode | ~1 ms total |
+| Procedural footstep | ~1-2 ms |
+| Wind synthesis | ~0.5 ms/frame |
+| Panning + attenuation | negligible |
 
-Si lo medido se desvía mucho del esperado, la causa suele ser configuración (más taps, más fuentes espacializadas de las previstas) antes que el motor.
+If the measurement deviates a lot from the expected value, the cause is usually configuration (more taps, more spatialized sources than planned) rather than the engine.
 
 ## 2. Loudness
 
-Referencia de industria en juegos: **ASWG-R001** (Sony), la única especificación publicada por una plataforma mayor.
+Industry reference for games: **ASWG-R001** (Sony), the only specification published by a major platform.
 
-| Contexto | Loudness promedio | True peak máximo |
+| Context | Average loudness | Maximum true peak |
 |---|---|---|
-| Consola / home | **−23 LUFS** (±2) | **−1 dBTP** |
+| Console / home | **−23 LUFS** (±2) | **−1 dBTP** |
 | Portable / handheld | **−18 LUFS** | −1 dBTP |
 
-**Cómo medir bien:**
+**How to measure properly:**
 
-- Se mide el **programa completo en gameplay representativo**, no un asset aislado. Medir un `.wav` no dice nada sobre cumplimiento
-- Sesión de duración suficiente para promediar: al menos varios minutos cubriendo exploración, combate y diálogo
-- Medir el **true peak**, no el peak de sample: la codificación lossy puede generar picos por encima del valor medido en PCM
-- **Confirmar el target vigente** de cada plataforma antes de certificación. Las recomendaciones se revisan — el promedio de ASWG también se citó como −24 LKFS, así que no confiar en un número memorizado
+- Measure the **full program in representative gameplay**, not an isolated asset. Measuring a `.wav` says nothing about compliance
+- A session long enough to average: at least several minutes covering exploration, combat and dialogue
+- Measure **true peak**, not sample peak: lossy encoding can produce peaks above the value measured in PCM
+- **Confirm each platform's current target** before certification. Recommendations get revised — the ASWG average has also been quoted as −24 LKFS, so do not trust a memorized number
 
-**Verdict:** COMPLIANT dentro del target con su tolerancia; NON-COMPLIANT fuera, o con true peak por encima de −1 dBTP.
+**Verdict:** COMPLIANT within the target and its tolerance; NON-COMPLIANT outside it, or with a true peak above −1 dBTP.
 
-## 3. Conformidad de assets
+## 3. Asset conformance
 
-Verificación mecánica contra los standards del bible. Esto se automatiza:
+Mechanical verification against the bible's standards. This gets automated:
 
-| Chequeo | Falla típica |
+| Check | Typical failure |
 |---|---|
-| Sample rate | Mezcla de 44.1 y 48 kHz en el mismo proyecto |
-| Bit depth | 24-bit donde el pipeline espera 16 |
-| Canales | Estéreo en un asset que se usa como fuente 3D mono |
-| Naming | No sigue el patrón; rompe batch y automatización de banks |
-| DC offset | Produce clicks al concatenar |
-| Silencio al inicio | Retrasa el ataque; se percibe como lag |
-| Clipping | Picos a 0 dBFS en el asset crudo |
-| Duración vs spec | Fuera del rango especificado |
-| Loudness por categoría | Assets de la misma categoría con niveles dispares |
+| Sample rate | A mix of 44.1 and 48 kHz in the same project |
+| Bit depth | 24-bit where the pipeline expects 16 |
+| Channels | Stereo on an asset used as a mono 3D source |
+| Naming | Does not follow the pattern; breaks batching and bank automation |
+| DC offset | Produces clicks when concatenating |
+| Leading silence | Delays the attack; perceived as lag |
+| Clipping | Peaks at 0 dBFS in the raw asset |
+| Duration vs spec | Outside the specified range |
+| Loudness per category | Assets in the same category at mismatched levels |
 
-**Fuente 3D en estéreo es el hallazgo más común y el más silencioso:** el middleware la trata distinto o la colapsa, y la localización espacial se degrada sin que nadie vea un error.
+**A stereo 3D source is the most common and the quietest finding:** the middleware treats it differently or collapses it, and spatial localization degrades without anyone seeing an error.
 
-La skill trae el verificador: `scripts/check_assets.py`, stdlib-only (módulo `wave`), recursivo sobre una carpeta.
+The skill ships the checker: `scripts/check_assets.py`, stdlib-only (`wave` module), recursive over a folder.
 
 ```bash
 python skills/audio-audit/scripts/check_assets.py assets/audio \
   --rate 48000 --bits 16 --mono-3d --naming '^(sfx|vo|mus)_'
 ```
 
-Chequea sample rate, bit depth, canales, naming, clipping, DC offset, silencio inicial, archivos vacíos o silenciosos, y avisa cuando el sample rate obliga a un resampleo costoso. Emite `[FAIL]` / `[WARN]` / `[SKIP]` por hallazgo y cierra con COMPLIANT / CONCERNS / NON-COMPLIANT; exit code 1 solo si hay FAIL, para usarlo en CI.
+It checks sample rate, bit depth, channels, naming, clipping, DC offset, leading silence, empty or silent files, and warns when the sample rate forces an expensive resample. It emits `[FAIL]` / `[WARN]` / `[SKIP]` per finding and ends with COMPLIANT / CONCERNS / NON-COMPLIANT; exit code 1 only when there is a FAIL, so it can be used in CI.
 
-Lo que necesita una herramienta externa (loudness integrado, análisis espectral) se reporta como `[SKIP]` en vez de abortar la corrida.
+Whatever needs an external tool (integrated loudness, spectral analysis) is reported as `[SKIP]` instead of aborting the run.
 
-## 4. Checklist por plataforma
+## 4. Per-platform checklist
 
-| Ítem | Aplica a |
+| Item | Applies to |
 |---|---|
-| Loudness dentro del target del contexto | Todas |
-| True peak ≤ −1 dBTP | Todas |
-| Manejo de interrupciones (llamada, alarma) | Móvil |
-| Manejo de cambio de ruta (auriculares) | Móvil, consola |
-| Respeto del switch de silencio | iOS |
-| Comportamiento en background | Móvil |
-| Mezcla con audio de terceros | Móvil |
-| Audio no rompe al perder foco | Todas |
-| Memoria dentro del budget de la plataforma | Todas |
-| Se puede mutear todo desde opciones | Todas |
-| Controles separados: música / SFX / voz / UI | Todas |
-| Información crítica no exclusivamente por audio | Todas (accesibilidad) |
-| Subtítulos para todo el diálogo | Todas (accesibilidad) |
+| Loudness within the context's target | All |
+| True peak ≤ −1 dBTP | All |
+| Interruption handling (call, alarm) | Mobile |
+| Route change handling (headphones) | Mobile, console |
+| Respecting the silent switch | iOS |
+| Background behavior | Mobile |
+| Mixing with third-party audio | Mobile |
+| Audio does not break on focus loss | All |
+| Memory within the platform budget | All |
+| Everything can be muted from options | All |
+| Separate controls: music / SFX / voice / UI | All |
+| Critical information not conveyed by audio alone | All (accessibility) |
+| Subtitles for all dialogue | All (accessibility) |
 
-El comportamiento en background y el switch de silencio en iOS son causas concretas de rechazo de store, no recomendaciones.
+Background behavior and the iOS silent switch are concrete causes of store rejection, not recommendations.
 
 ---
 
-## Proceso
+## Process
 
-1. **Determinar el alcance** y la plataforma más baja del target
-2. **Capturar** con el profiler del middleware en gameplay representativo, no en el editor
-3. **Medir performance** contra el presupuesto y comparar con los costos de referencia
-4. **Medir loudness** del programa completo, con true peak
-5. **Verificar assets** contra los standards, automatizado si el volumen lo justifica
-6. **Recorrer el checklist** de plataforma
-7. **Reportar** con severidad por hallazgo y, si el usuario lo pide, preguntar "¿Escribo el reporte a `<path>`?" antes de usar Write
+1. **Determine the scope** and the lowest platform in the target
+2. **Capture** with the middleware profiler in representative gameplay, not in the editor
+3. **Measure performance** against the budget and compare with the reference costs
+4. **Measure loudness** of the full program, with true peak
+5. **Verify assets** against the standards, automated if the volume justifies it
+6. **Walk through the platform checklist**
+7. **Report** with a severity per finding and, if the user asks for it, ask "Shall I write the report to `<path>`?" before using Write
 
-### Formato del reporte
+### Report format
 
-Por hallazgo: qué se midió, valor medido, valor esperado, severidad, y dónde está el problema. Un hallazgo sin número medido no es un hallazgo, es una impresión.
+Per finding: what was measured, measured value, expected value, severity, and where the problem is. A finding without a measured number is not a finding, it is an impression.
 
 ---
 
 ## Verdict
 
-Global, y por sección:
+Global, and per section:
 
-- **COMPLIANT** — performance dentro del presupuesto en la plataforma más baja, loudness dentro del target, assets conformes, checklist completo
-- **CONCERNS** — hay desvíos que no bloquean: pico de voces tocando el límite, assets con naming inconsistente, loudness en el borde de la tolerancia
-- **NON-COMPLIANT** — CPU o memoria fuera de presupuesto, loudness fuera del target, leak de game objects, o un ítem de checklist que es causa de rechazo de plataforma
+- **COMPLIANT** — performance within budget on the lowest platform, loudness within the target, assets conforming, checklist complete
+- **CONCERNS** — there are non-blocking deviations: voice peak hitting the limit, assets with inconsistent naming, loudness at the edge of the tolerance
+- **NON-COMPLIANT** — CPU or memory over budget, loudness outside the target, a game object leak, or a checklist item that causes platform rejection
 
-Un NON-COMPLIANT en cualquier sección bloquea certificación.
+A NON-COMPLIANT in any section blocks certification.
 
 ## Anti-patterns
 
@@ -158,7 +158,7 @@ Un NON-COMPLIANT en cualquier sección bloquea certificación.
 
 ## Next steps
 
-- `/spatial-audio` si el costo de espacialización está fuera de presupuesto
-- `/audio-mix` si el problema es loudness o balance entre categorías
-- `/middleware-integration` si hay leaks, banks mal organizados o descartes de voces
-- `/procedural-audio` si la memoria no cierra por cantidad de samples
+- `/spatial-audio` if the spatialization cost is over budget
+- `/audio-mix` if the problem is loudness or balance between categories
+- `/middleware-integration` if there are leaks, badly organized banks or dropped voices
+- `/procedural-audio` if memory does not fit because of the number of samples

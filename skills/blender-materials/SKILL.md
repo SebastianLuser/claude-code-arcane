@@ -1,165 +1,165 @@
 ---
 name: blender-materials
-description: "Materiales y texturas en Blender para assets de juego: Principled BSDF, UVs y lightmap UV1, bake de procedurales a textura, color space, normal maps OpenGL vs DirectX, atlas y draw calls. Usar para: materiales blender, texturas, UV unwrap, bake, shader nodes, normal map."
+description: "Materials and textures in Blender for game assets: Principled BSDF, UVs and lightmap UV1, baking procedurals to texture, color space, OpenGL vs DirectX normal maps, atlases and draw calls. Use for: blender materials, textures, UV unwrap, bake, shader nodes, normal map."
 category: "gamedev"
 argument-hint: "[asset-slug] [--bake] [--target unity|ue5|web]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-# blender-materials — Materiales y texturas
+# blender-materials — Materials and textures
 
-Deja el asset con materiales que **sobreviven al export**. La mitad de los bugs de look en el
-engine se originan aca, y casi todos son color space o convencion de normal map.
+Leaves the asset with materials that **survive the export**. Half of the look bugs in the
+engine originate here, and almost all of them are color space or normal map convention.
 
-> Requiere `/blender-context`. El destino (Unity / UE5 / web) cambia decisiones concretas de este
-> skill, no es un detalle.
+> Requires `/blender-context`. The target (Unity / UE5 / web) changes concrete decisions in this
+> skill; it is not a detail.
 
 ---
 
-## Phase 1: Que sobrevive al export
+## Phase 1: What survives the export
 
-| En Blender | glTF / FBX | Que hacer |
+| In Blender | glTF / FBX | What to do |
 |---|---|---|
-| Principled BSDF con texturas | **Sobrevive** | Es el camino |
-| Principled BSDF con valores planos | Sobrevive | Ok para assets sin textura |
-| Nodos procedurales (Noise, Voronoi, Musgrave) | **No sobrevive** | Bakear a textura |
-| Node groups custom | No sobrevive | Bakear |
-| Shader mixes, Geometry / Object Info | No sobrevive | Bakear |
-| Emission | Sobrevive (canal propio) | |
-| Displacement real | No sobrevive | Bakear a normal, o meterlo en la malla |
+| Principled BSDF with textures | **Survives** | This is the way |
+| Principled BSDF with flat values | Survives | Ok for untextured assets |
+| Procedural nodes (Noise, Voronoi, Musgrave) | **Does not survive** | Bake to texture |
+| Custom node groups | Does not survive | Bake |
+| Shader mixes, Geometry / Object Info | Does not survive | Bake |
+| Emission | Survives (own channel) | |
+| True displacement | Does not survive | Bake to normal, or put it in the mesh |
 
-Regla practica: **si no es Principled BSDF alimentado por Image Textures, no existe fuera de
-Blender.** Antes de pulir un shader procedural, decidir si se bakea; si no se bakea, es tiempo
-tirado.
+Rule of thumb: **if it is not a Principled BSDF fed by Image Textures, it does not exist outside
+Blender.** Before polishing a procedural shader, decide whether it gets baked; if it does not, it is
+wasted time.
 
 ---
 
 ## Phase 2: UVs
 
-Diagnostico headless:
+Headless diagnosis:
 
 ```bash
-blender --background <archivo.blend> --python-expr "
+blender --background <file.blend> --python-expr "
 import bpy
 for o in bpy.data.objects:
     if o.type != 'MESH': continue
     uvs = [l.name for l in o.data.uv_layers]
-    print(f'{o.name}: uv_layers={uvs or \"NINGUNA\"} materials={len(o.material_slots)}')
+    print(f'{o.name}: uv_layers={uvs or \"NONE\"} materials={len(o.material_slots)}')
 "
 ```
 
-- **Sin UVs no hay texturas.** Es lo primero que se resuelve.
-- **UV0**: el mapa de texturas. Puede solaparse si la textura es tileable; **no puede solaparse si
-  se va a bakear**.
-- **UV1**: lightmaps. Unity y UE5 lo esperan **sin solapamiento y con margen** entre islas. Si el
-  asset va a recibir luz bakeada y no tiene UV1, el lightmap sale con manchas y nadie sabe por que.
-- Texel density consistente dentro de un mismo set de assets. Un prop con el doble de densidad que
-  el de al lado se nota mas que un prop con menos poligonos.
-- Margen entre islas proporcional a la resolucion: 2px a 1K, 4px a 2K. Menos margen = bleeding.
+- **No UVs, no textures.** It is the first thing to fix.
+- **UV0**: the texture map. It can overlap if the texture is tileable; **it cannot overlap if it
+  is going to be baked**.
+- **UV1**: lightmaps. Unity and UE5 expect it **without overlap and with margin** between islands. If the
+  asset will receive baked lighting and has no UV1, the lightmap comes out blotchy and nobody knows why.
+- Consistent texel density within the same set of assets. A prop with twice the density of
+  the one next to it is more noticeable than a prop with fewer polygons.
+- Island margin proportional to resolution: 2px at 1K, 4px at 2K. Less margin = bleeding.
 
 ---
 
-## Phase 3: Color space — el bug silencioso
+## Phase 3: Color space — the silent bug
 
-Esto no es preferencia, es correcto o incorrecto:
+This is not a preference, it is right or wrong:
 
-| Textura | Color space |
+| Texture | Color space |
 |---|---|
 | Base Color / Albedo / Emission | **sRGB** |
 | Normal | **Non-Color** |
 | Roughness / Metallic / AO / Displacement / Mask | **Non-Color** |
 
-Un Roughness en sRGB se ve *casi* bien en Blender y **mal** en el engine, con un error que no
-parece de textura. Verificar antes de exportar:
+A Roughness in sRGB looks *almost* right in Blender and **wrong** in the engine, with an error that does not
+look like a texture issue. Verify before exporting:
 
 ```bash
-blender --background <archivo.blend> --python-expr "
+blender --background <file.blend> --python-expr "
 import bpy
 for img in bpy.data.images:
     print(f'{img.name}: colorspace={img.colorspace_settings.name} size={tuple(img.size)}')
 "
 ```
 
-Y de paso: resoluciones potencia de dos. Una textura de 1000x1000 no se comprime igual que una de
-1024x1024 y en mobile la diferencia es real.
+And while you are at it: power-of-two resolutions. A 1000x1000 texture does not compress the same as a
+1024x1024 one, and on mobile the difference is real.
 
 ---
 
 ## Phase 4: Normal maps
 
-| Destino | Convencion | Canal verde |
+| Target | Convention | Green channel |
 |---|---|---|
-| Blender | OpenGL (+Y) | Como sale |
-| glTF / GLB | OpenGL (+Y) | Como sale |
-| Unity | OpenGL (+Y) | Como sale |
-| **UE5** | **DirectX (-Y)** | **Invertido** |
+| Blender | OpenGL (+Y) | As is |
+| glTF / GLB | OpenGL (+Y) | As is |
+| Unity | OpenGL (+Y) | As is |
+| **UE5** | **DirectX (-Y)** | **Inverted** |
 
-Si el destino es UE5, hay dos salidas: invertir el canal verde en la textura, o marcarlo en el
-import del engine. **Elegir una y anotarla** — el sintoma de tenerlo mal es iluminacion que parece
-venir del lado opuesto, y se diagnostica tarde.
+If the target is UE5, there are two ways out: invert the green channel in the texture, or flag it on
+engine import. **Pick one and write it down** — the symptom of getting it wrong is lighting that seems
+to come from the opposite side, and it gets diagnosed late.
 
-El nodo Normal Map en Blender necesita el Image Texture en Non-Color y su propio `Strength`. Un
-Strength distinto de 1 no se exporta como tal: se hornea o se pierde.
+The Normal Map node in Blender needs the Image Texture in Non-Color and its own `Strength`. A
+Strength other than 1 is not exported as such: it gets baked or lost.
 
 ---
 
 ## Phase 5: Bake
 
-Cuando hay procedurales que hay que conservar:
+When there are procedurals that must be kept:
 
-1. **UV0 sin solapamiento** (requisito, no sugerencia).
-2. Crear la Image Texture destino con la resolucion final.
-3. Bake en Cycles (EEVEE no bakea todo). Tipos utiles: `Diffuse` sin luces para albedo,
-   `Normal`, `Roughness`, `AO`, `Combined` solo si se quiere luz pegada a la textura.
-4. **Margen** de bake para evitar costuras.
-5. Si se bakea de high-poly a low-poly: `Selected to Active` con **cage** y `Extrusion` ajustada.
-   Sin cage, los bordes salen sucios.
-6. Guardar la imagen a disco. Una imagen bakeada que quedo solo en memoria se pierde al cerrar y
-   no avisa.
+1. **UV0 without overlap** (a requirement, not a suggestion).
+2. Create the target Image Texture at the final resolution.
+3. Bake in Cycles (EEVEE does not bake everything). Useful types: `Diffuse` without lights for albedo,
+   `Normal`, `Roughness`, `AO`, `Combined` only if you want lighting stuck to the texture.
+4. Bake **margin** to avoid seams.
+5. If baking from high-poly to low-poly: `Selected to Active` with a **cage** and adjusted `Extrusion`.
+   Without a cage, the edges come out dirty.
+6. Save the image to disk. A baked image that stayed only in memory is lost on close and
+   gives no warning.
 
-Despues del bake, reemplazar los procedurales por las Image Textures y **verificar que el look no
-cambio**. Si cambio, el bake esta mal, no el shader.
+After the bake, replace the procedurals with the Image Textures and **verify the look did not
+change**. If it changed, the bake is wrong, not the shader.
 
-Un bake escribe imagenes al repo y puede pisar texturas existentes. **Pedir aprobacion antes de
-escribir**, listando los archivos destino, y nunca sobrescribir una textura fuente sin confirmarlo.
-
----
-
-## Phase 6: Materiales y draw calls
-
-Cantidad de materiales = cantidad de draw calls por objeto. Antes de sumar un material:
-
-- ¿Se puede resolver con una mascara en la misma textura?
-- ¿Se puede atlasear con los assets del mismo set?
-
-Un prop con 6 materiales y uno con 1 material atlaseado se ven igual y cuestan distinto. En mobile
-y VR la diferencia es la que decide si el frame entra.
-
-Nombrar los materiales igual que el asset (`M_<asset>_<parte>`); un `Material.001` que llega al
-engine es imposible de rastrear despues.
+A bake writes images to the repo and can overwrite existing textures. **Ask for approval before
+writing**, listing the target files, and never overwrite a source texture without confirming it.
 
 ---
 
-## Phase 7: Resumen
+## Phase 6: Materials and draw calls
 
-Reportar por objeto: UV layers, materiales con nombre, texturas con su color space y resolucion,
-que se bakeo, y convencion de normal map elegida.
+Number of materials = number of draw calls per object. Before adding a material:
+
+- Can it be solved with a mask in the same texture?
+- Can it be atlased with the assets of the same set?
+
+A prop with 6 materials and one with 1 atlased material look the same and cost differently. On mobile
+and VR the difference is what decides whether the frame fits.
+
+Name materials after the asset (`M_<asset>_<part>`); a `Material.001` that reaches the
+engine is impossible to trace later.
+
+---
+
+## Phase 7: Summary
+
+Report per object: UV layers, named materials, textures with their color space and resolution,
+what was baked, and the chosen normal map convention.
 
 **Verdict:**
-- **PASS** — UVs presentes, color space correcto, sin procedurales sin bakear, potencias de dos.
-- **CONCERNS** — funciona pero con deuda: falta UV1 y el asset recibe luz bakeada, materiales de
-  sobra, texturas no potencia de dos. Listar cada punto.
-- **FAIL** — sin UVs, color space invertido, procedurales sin bakear que el look necesita, o
-  normal map con la convencion equivocada para el destino. Indicar el fix.
+- **PASS** — UVs present, correct color space, no unbaked procedurals, powers of two.
+- **CONCERNS** — works but with debt: UV1 missing and the asset receives baked lighting, extra
+  materials, non-power-of-two textures. List each point.
+- **FAIL** — no UVs, inverted color space, unbaked procedurals the look needs, or
+  a normal map with the wrong convention for the target. State the fix.
 
 ## Next Steps
 
-- `/blender-animation` si el asset lleva rig
-- `/blender-export` cuando materiales y UVs estan cerrados
-- `/asset-audit` para validar naming y formatos ya integrado
-- `/shader-dev` si el look necesita un shader propio en el engine, no una textura
+- `/blender-animation` if the asset has a rig
+- `/blender-export` when materials and UVs are closed
+- `/asset-audit` to validate naming and formats once integrated
+- `/shader-dev` if the look needs a custom shader in the engine, not a texture
 
 ---
 
-> → Color space, convenciones de normal map y presupuesto de materiales estan en
+> → Color space, normal map conventions and material budget are in
 > `.claude/rules/blender-files.md`.

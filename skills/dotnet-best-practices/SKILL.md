@@ -1,30 +1,30 @@
 ---
 name: dotnet-best-practices
-description: "ASP.NET Core / C# production best practices: 40 reglas en 10 categorías (arquitectura, DI, errores, seguridad, performance, async, EF Core, testing, API, devops) priorizadas por impacto. Usar al escribir/revisar código .NET backend."
+description: "ASP.NET Core / C# production best practices: 40 rules in 10 categories (architecture, DI, errors, security, performance, async, EF Core, testing, API, devops) prioritized by impact. Use when writing/reviewing .NET backend code."
 category: "backend"
 argument-hint: "[architecture|di|errors|security|performance|async|database|testing|api|all]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-# dotnet-best-practices — Guía priorizada por impacto
+# dotnet-best-practices — Guide prioritized by impact
 
-40 reglas para aplicaciones ASP.NET Core (.NET 10) production-ready, organizadas en 10 categorías y priorizadas de **CRITICAL** a **LOW-MEDIUM**. Cada regla del catálogo (en `references/`) trae impacto, ejemplo incorrecto, ejemplo correcto y link a docs.
+40 rules for production-ready ASP.NET Core (.NET 10) applications, organized into 10 categories and prioritized from **CRITICAL** to **LOW-MEDIUM**. Each rule in the catalog (in `references/`) comes with its impact, an incorrect example, a correct example and a link to the docs.
 
 ## MANDATORY WORKFLOW
 
-**No aplicar las 40 reglas a ciegas. Diagnosticar primero, priorizar por impacto.**
+**Do not apply the 40 rules blindly. Diagnose first, prioritize by impact.**
 
-### Step 0: Determinar scope
+### Step 0: Determine scope
 
-1. **¿Código nuevo o auditoría de existente?** Si es auditoría, leer primero el feature/proyecto objetivo.
-2. **¿Qué categoría aplica?** Mapear el área del problema (ver tabla) o usar `all` para review completa.
-3. **¿Hay síntomas concretos?** (deadlocks, N+1, 500 inconsistentes, leaks) → ir directo a la categoría relevante.
+1. **New code or an audit of existing code?** If it is an audit, read the target feature/project first.
+2. **Which category applies?** Map the problem area (see table) or use `all` for a full review.
+3. **Are there concrete symptoms?** (deadlocks, N+1, inconsistent 500s, leaks) → go straight to the relevant category.
 
-### Step 1: Priorizar por impacto
+### Step 1: Prioritize by impact
 
-Aplicar en este orden — no bajar de nivel hasta resolver el anterior:
+Apply in this order — do not drop a level until the previous one is resolved:
 
-| Prioridad | Categoría | Impacto | Reference |
+| Priority | Category | Impact | Reference |
 |-----------|-----------|---------|-----------|
 | 1 | Architecture | CRITICAL | `references/architecture.md` |
 | 2 | Dependency Injection | CRITICAL | `references/dependency-injection.md` |
@@ -37,40 +37,40 @@ Aplicar en este orden — no bajar de nivel hasta resolver el anterior:
 | 9 | API Design | MEDIUM | `references/api-design.md` |
 | 10 | DevOps & Deployment | LOW-MEDIUM | `references/devops.md` |
 
-### Step 2: Aplicar + verificar
+### Step 2: Apply + verify
 
-Para cada regla relevante: leer el ejemplo correcto en el reference, aplicarlo, y verificar contra el checklist de cierre.
+For each relevant rule: read the correct example in the reference, apply it, and verify against the closing checklist.
 
-### Step 3: Checklist de cierre
+### Step 3: Closing checklist
 
-- [ ] `<Nullable>enable</Nullable>` + warnings as errors; cero `#nullable disable`
-- [ ] Async end-to-end con `CancellationToken`; cero `.Result`/`.Wait()`/`.GetAwaiter().GetResult()`
-- [ ] DI por constructor con scope correcto; sin `BuildServiceProvider()` manual ni service locator
-- [ ] Errores vía `ProblemDetails` (RFC 7807); sin stack traces expuestos
-- [ ] Sin N+1 en EF Core (`Include`/projection); `AsNoTracking()` en lecturas
-- [ ] Migraciones versionadas; nunca `EnsureCreated()` en prod
-- [ ] AuthZ por policies declarativas; secrets en secret manager (no en `appsettings.json`)
+- [ ] `<Nullable>enable</Nullable>` + warnings as errors; zero `#nullable disable`
+- [ ] Async end-to-end with `CancellationToken`; zero `.Result`/`.Wait()`/`.GetAwaiter().GetResult()`
+- [ ] Constructor DI with the correct scope; no manual `BuildServiceProvider()` or service locator
+- [ ] Errors via `ProblemDetails` (RFC 7807); no exposed stack traces
+- [ ] No N+1 in EF Core (`Include`/projection); `AsNoTracking()` on reads
+- [ ] Versioned migrations; never `EnsureCreated()` in prod
+- [ ] AuthZ through declarative policies; secrets in a secret manager (not in `appsettings.json`)
 - [ ] Structured logging (Serilog JSON) + health checks
-- [ ] Tests con xUnit; integración contra Postgres real (Testcontainers), no mocks de DbContext
+- [ ] Tests with xUnit; integration against a real Postgres (Testcontainers), not DbContext mocks
 
-Si todo el checklist pasa → código **COMPLIANT**. Antes de escribir cambios significativos, confirmar el approach con el usuario (Question → Decision → Approval).
+If the whole checklist passes → the code is **COMPLIANT**. Before writing significant changes, confirm the approach with the user (Question → Decision → Approval).
 
-## Tabla de mapeo síntoma → categoría
+## Symptom → category mapping table
 
-| Síntoma | Categoría |
+| Symptom | Category |
 |---------|-----------|
-| Deadlocks / thread pool starvation / app cuelga | Async, Performance |
-| Lentitud en endpoints, muchas queries | Performance, Database |
-| `InvalidOperationException` de DI / scopes / captured dependency | DI, Architecture |
-| Errores 500 inconsistentes / leaks de stack traces | Error Handling |
-| Endpoints expuestos / brute force / data sensible en logs | Security |
-| Tests frágiles o que pegan a servicios/DB reales sin control | Testing |
-| Respuestas inconsistentes / over-fetching de entidades | API Design |
+| Deadlocks / thread pool starvation / app hangs | Async, Performance |
+| Slow endpoints, many queries | Performance, Database |
+| DI `InvalidOperationException` / scopes / captured dependency | DI, Architecture |
+| Inconsistent 500 errors / stack trace leaks | Error Handling |
+| Exposed endpoints / brute force / sensitive data in logs | Security |
+| Brittle tests, or tests that hit real services/DB without control | Testing |
+| Inconsistent responses / entity over-fetching | API Design |
 
-## Próximos pasos
+## Next steps
 
-Para estructurar el proyecto → `/dotnet-architecture`. Para iniciar un backend nuevo con estos defaults → `/dotnet-scaffold`.
+To structure the project → `/dotnet-architecture`. To start a new backend with these defaults → `/dotnet-scaffold`.
 
 ---
 
-_Adaptado de [github/awesome-copilot](https://github.com/github/awesome-copilot) (dotnet-best-practices), [dotnet/skills](https://github.com/dotnet/skills) y [Aaronontheweb/dotnet-skills](https://github.com/Aaronontheweb/dotnet-skills). Reorganizado al formato skill+references de Arcane._
+_Adapted from [github/awesome-copilot](https://github.com/github/awesome-copilot) (dotnet-best-practices), [dotnet/skills](https://github.com/dotnet/skills) and [Aaronontheweb/dotnet-skills](https://github.com/Aaronontheweb/dotnet-skills). Reorganized into Arcane's skill+references format._

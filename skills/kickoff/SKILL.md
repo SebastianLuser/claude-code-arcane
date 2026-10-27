@@ -8,173 +8,173 @@ allowed-tools: Read, Glob, Grep, Bash, AskUserQuestion, EnterPlanMode, TaskCreat
 ---
 # Kickoff — Session & Task Mode Selector
 
-Punto de entrada interactivo para sesiones nuevas o tareas de implementación. Presenta opciones de modo de trabajo y guía la preparación antes de codear.
+Interactive entry point for new sessions or implementation tasks. Presents work-mode options and guides preparation before coding.
 
-## Trigger automático
+## Automatic trigger
 
-Esta skill DEBE ejecutarse automáticamente cuando:
-- El usuario arranca una sesión nueva y pide implementar algo
-- El usuario describe una tarea de implementación no trivial (nueva feature, refactor grande, migración)
-- El usuario dice "quiero hacer X" donde X implica cambios de código significativos
+This skill MUST run automatically when:
+- The user starts a new session and asks to implement something
+- The user describes a non-trivial implementation task (new feature, large refactor, migration)
+- The user says "I want to do X" where X implies significant code changes
 
-NO ejecutar cuando:
-- El usuario hace una pregunta simple ("¿qué hace esta función?")
-- El usuario pide un fix puntual de 1-3 líneas
-- El usuario explícitamente dice "sin plan" o "directo"
-- Ya hay un plan activo en la conversación
+Do NOT run when:
+- The user asks a simple question ("what does this function do?")
+- The user asks for a targeted 1-3 line fix
+- The user explicitly says "no plan" or "go direct"
+- There is already an active plan in the conversation
 
-## Paso 1: Presentar modos de trabajo
+## Step 1: Present the work modes
 
-Usar AskUserQuestion con estas opciones:
+Use AskUserQuestion with these options:
 
-**Pregunta:** "¿Cómo querés encarar esta tarea?"
+**Question:** "How do you want to approach this task?"
 **Header:** "Work mode"
 
-| Opción | Descripción |
+| Option | Description |
 |--------|-------------|
-| **Plan + Goal (Recomendado)** | Combo completo: un plan detallado de CÓMO implementar + un goal claro de HASTA DÓNDE llegar en esta sesión y cómo validarlo. Lo más potente para features y refactors. |
-| **Action Plan** | Solo plan paso a paso. Sin goal de sesión — implementamos hasta que se termine o el usuario corte. |
-| **Goal-driven** | Solo objetivo verificable con checkpoints. Sin plan formal — vamos resolviendo sobre la marcha. |
-| **Directo** | Arrancamos a implementar ya. Para fixes rápidos o cuando ya sabés exactamente qué hacer. |
+| **Plan + Goal (Recommended)** | The full combo: a detailed plan of HOW to implement + a clear goal of HOW FAR to get in this session and how to validate it. The most powerful option for features and refactors. |
+| **Action Plan** | Step-by-step plan only. No session goal — we implement until it is done or the user stops. |
+| **Goal-driven** | Verifiable goal with checkpoints only. No formal plan — we work it out as we go. |
+| **Direct** | We start implementing right away. For quick fixes or when you already know exactly what to do. |
 
-## Paso 2A: Plan + Goal (si eligió combo, recomendado)
+## Step 2A: Plan + Goal (if they chose the combo, recommended)
 
-Este es el flujo más completo. Tiene 2 fases: primero seteamos el goal de la sesión, después el plan de implementación.
+This is the most complete flow. It has 2 phases: first we set the session goal, then the implementation plan.
 
-### Fase 1 — Definir el goal de la sesión
+### Phase 1 — Define the session goal
 
-1. Preguntar: "¿Cuál es el objetivo verificable de esta sesión?"
-2. Reformular como statement verificable (qué tiene que ser cierto al terminar):
-   - MAL: "Mejorar el login"
-   - BIEN: "Al terminar esta sesión, OAuth Google funciona end-to-end en dev y tiene 2 tests pasando"
-3. Definir criterio de validación: cómo sabemos que el goal se cumplió
-4. Presentar al usuario para confirmar
+1. Ask: "What is the verifiable goal of this session?"
+2. Rephrase it as a verifiable statement (what has to be true at the end):
+   - BAD: "Improve the login"
+   - GOOD: "By the end of this session, Google OAuth works end-to-end in dev and has 2 passing tests"
+3. Define the validation criterion: how we know the goal was met
+4. Present it to the user to confirm
 
 ```
 ## Session Goal
-[Goal verificable]
+[Verifiable goal]
 
 ## Validation
-- [ ] Cómo verificamos que está hecho (comando, test, observación)
-- [ ] Cómo verificamos que está hecho bien (criterio de calidad)
+- [ ] How we verify it is done (command, test, observation)
+- [ ] How we verify it is done well (quality criterion)
 ```
 
-### Fase 2 — Armar el plan de implementación
+### Phase 2 — Build the implementation plan
 
-1. Usar EnterPlanMode
-2. Dentro del plan:
-   - Explorar el codebase relevante
-   - Identificar archivos a modificar
-   - Diseñar el approach
-   - Listar pasos concretos con criterio de "done" por paso
-   - Identificar riesgos o decisiones pendientes
-3. Presentar el plan al usuario para aprobación, vinculado al goal
+1. Use EnterPlanMode
+2. Inside the plan:
+   - Explore the relevant codebase
+   - Identify the files to modify
+   - Design the approach
+   - List concrete steps with a "done" criterion per step
+   - Identify risks or pending decisions
+3. Present the plan to the user for approval, tied to the goal
 
 ```
-## Goal (de Fase 1)
-[Goal verificable]
+## Goal (from Phase 1)
+[Verifiable goal]
 
 ## Implementation Plan
-1. [ ] Paso concreto — criterio de done
-2. [ ] Paso concreto — criterio de done
+1. [ ] Concrete step — done criterion
+2. [ ] Concrete step — done criterion
 ...
 
 ## Stop Conditions
-- ✅ Goal cumplido y validado → frenar y reportar
-- ⚠️ Bloqueo no resuelto → frenar y pedir decisión
-- ⚠️ Scope creep detectado → frenar y reconfirmar
+- ✅ Goal met and validated → stop and report
+- ⚠️ Unresolved blocker → stop and ask for a decision
+- ⚠️ Scope creep detected → stop and reconfirm
 
 ## Risks
-- [Decisiones que podrían cambiar el approach]
+- [Decisions that could change the approach]
 ```
 
-### Fase 3 — Ejecutar
+### Phase 3 — Execute
 
-1. Crear TaskCreate por cada paso del plan
-2. Implementar paso a paso, marcando completado cada uno
-3. **Después de cada paso significativo**, verificar contra el goal:
-   - "¿Estamos más cerca del goal?"
-   - "¿Apareció algo que cambia el plan?"
-4. **Al cumplir el goal**, FRENAR. No seguir agregando features.
-5. Correr la validación definida en Fase 1
-6. Reportar al usuario:
-   - Qué se hizo
-   - Validación: pasa / no pasa
-   - Qué quedó pendiente fuera del goal (si algo)
+1. Create a TaskCreate for each step of the plan
+2. Implement step by step, marking each one completed
+3. **After each significant step**, check against the goal:
+   - "Are we closer to the goal?"
+   - "Did something come up that changes the plan?"
+4. **When the goal is met**, STOP. Do not keep adding features.
+5. Run the validation defined in Phase 1
+6. Report to the user:
+   - What was done
+   - Validation: passes / does not pass
+   - What is left outside the goal (if anything)
 
-## Paso 2B: Action Plan (si eligió solo plan)
+## Step 2B: Action Plan (if they chose plan only)
 
-1. Pedir al usuario que describa qué quiere lograr en 1-2 oraciones
-2. Usar EnterPlanMode
-3. Dentro del plan:
-   - Explorar el codebase relevante
-   - Identificar archivos a modificar
-   - Diseñar el approach
-   - Listar pasos concretos con criterio de "done"
-   - Identificar riesgos o decisiones pendientes
-4. Presentar el plan al usuario para aprobación
-5. Una vez aprobado, crear TaskCreate por cada paso
-6. Implementar paso a paso, marcando completado cada uno
+1. Ask the user to describe what they want to achieve in 1-2 sentences
+2. Use EnterPlanMode
+3. Inside the plan:
+   - Explore the relevant codebase
+   - Identify the files to modify
+   - Design the approach
+   - List concrete steps with a "done" criterion
+   - Identify risks or pending decisions
+4. Present the plan to the user for approval
+5. Once approved, create a TaskCreate for each step
+6. Implement step by step, marking each one completed
 
-**Template de plan:**
+**Plan template:**
 ```
 ## Goal
-[Qué queremos lograr]
+[What we want to achieve]
 
 ## Context
-[Por qué hace falta, qué problema resuelve]
+[Why it is needed, what problem it solves]
 
 ## Steps
-1. [ ] Paso concreto con criterio de done
-2. [ ] Paso concreto con criterio de done
+1. [ ] Concrete step with a done criterion
+2. [ ] Concrete step with a done criterion
 ...
 
 ## Risks
-- [Decisiones que podrían cambiar el approach]
+- [Decisions that could change the approach]
 
 ## Verification
-- [ ] Cómo sabemos que está bien hecho
+- [ ] How we know it is done right
 ```
 
-## Paso 2C: Goal-driven (si eligió solo goal)
+## Step 2C: Goal-driven (if they chose goal only)
 
-1. Preguntar al usuario con AskUserQuestion:
-   - **"¿Cuál es el objetivo de esta sesión?"** (free text)
+1. Ask the user with AskUserQuestion:
+   - **"What is the goal of this session?"** (free text)
    
-2. Reformular el goal como un statement verificable:
-   - MAL: "Mejorar el login"
-   - BIEN: "Al terminar esta sesión, el login soporta OAuth con Google y tiene tests"
+2. Rephrase the goal as a verifiable statement:
+   - BAD: "Improve the login"
+   - GOOD: "By the end of this session, the login supports Google OAuth and has tests"
 
-3. Presentar el goal reformulado para confirmación
+3. Present the rephrased goal for confirmation
 
-4. Definir checkpoints intermedios (2-4):
+4. Define intermediate checkpoints (2-4):
    ```
    ## Session Goal
-   [Goal verificable]
+   [Verifiable goal]
    
    ## Checkpoints
-   - [ ] Checkpoint 1: [milestone parcial]
-   - [ ] Checkpoint 2: [milestone parcial]
-   - [ ] Checkpoint 3: [goal alcanzado]
+   - [ ] Checkpoint 1: [partial milestone]
+   - [ ] Checkpoint 2: [partial milestone]
+   - [ ] Checkpoint 3: [goal reached]
    ```
 
-5. Crear TaskCreate por cada checkpoint
+5. Create a TaskCreate for each checkpoint
 
-6. Trabajar hacia cada checkpoint, validando progreso
+6. Work toward each checkpoint, validating progress
 
-7. Al completar cada checkpoint, reportar status:
-   - "Checkpoint 1 completado. Progreso: 33%. Siguiente: [checkpoint 2]"
+7. When each checkpoint is completed, report status:
+   - "Checkpoint 1 completed. Progress: 33%. Next: [checkpoint 2]"
 
-## Paso 2D: Directo (si eligió directo)
+## Step 2D: Direct (if they chose direct)
 
-Proceder con la implementación inmediatamente. Sin plan formal, sin goal tracking.
-Solo decir: "Perfecto, arrancamos." y empezar a trabajar.
+Proceed with the implementation immediately. No formal plan, no goal tracking.
+Just say: "Great, let's start." and get to work.
 
-## Reglas
+## Rules
 
-- **Nunca asumir el modo** — siempre preguntar excepto si el usuario ya lo indicó
-- **Respetar "directo"** — si el usuario quiere ir sin plan, no insistir
-- **Plan ≠ burocracia** — el plan debe ser conciso y útil, no un documento largo
-- **Goals verificables** — un goal que no se puede verificar no sirve
-- **Escape hatch** — en cualquier momento el usuario puede decir "saltemos el plan" y se procede directo
-- **No bloquear fixes urgentes** — si el usuario reporta un bug en producción, no pedir plan
+- **Never assume the mode** — always ask unless the user already said which
+- **Respect "direct"** — if the user wants to go without a plan, do not insist
+- **Plan ≠ bureaucracy** — the plan must be concise and useful, not a long document
+- **Verifiable goals** — a goal that cannot be verified is useless
+- **Escape hatch** — at any moment the user can say "let's skip the plan" and you proceed directly
+- **Do not block urgent fixes** — if the user reports a production bug, do not ask for a plan

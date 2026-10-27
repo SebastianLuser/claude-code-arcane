@@ -1,6 +1,6 @@
 ---
 name: job-scheduling
-description: "Background jobs y scheduling para apps Educabot (Go/TS): BullMQ, asynq, cron, priority queues, retries, DLQ, graceful shutdown, observabilidad."
+description: "Background jobs and scheduling for Educabot apps (Go/TS): BullMQ, asynq, cron, priority queues, retries, DLQ, graceful shutdown, observability."
 category: "backend"
 argument-hint: "[stack: go|ts] [provider: bullmq|asynq|cron]"
 user-invocable: true
@@ -8,100 +8,100 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
 # job-scheduling — Background Jobs & Scheduling
 
-**Default Educabot:** BullMQ (TS) y asynq (Go) sobre Redis. DB separada de cache.
+**Educabot default:** BullMQ (TS) and asynq (Go) on Redis. A DB separate from the cache.
 
-## Cuándo usar / NO usar
+## When to use / NOT use
 
-| Usar | NO usar |
+| Use | Do NOT use |
 |------|---------|
-| Work que no debe bloquear HTTP (email, push, img) | Operaciones síncronas <100ms |
-| Operaciones caras (exports, reports) | Single-instance cron → k8s CronJob |
-| Fan-out de eventos, retry con backoff | Pipelines datos grandes → Dataflow/Airflow |
-| Scheduled (digest, cleanup, billing) | Queue ligerísimo in-process → Go `chan` |
+| Work that must not block HTTP (email, push, img) | Synchronous operations <100ms |
+| Expensive operations (exports, reports) | Single-instance cron → k8s CronJob |
+| Event fan-out, retry with backoff | Large data pipelines → Dataflow/Airflow |
+| Scheduled (digest, cleanup, billing) | Very light in-process queue → Go `chan` |
 
 ## Stack Decision
 
-| Tool | Stack | Cuándo |
+| Tool | Stack | When |
 |------|-------|--------|
-| **BullMQ** | TS/Node | **Default TS** — maduro, UI, scheduler |
-| **asynq** | Go | **Default Go** — API clean, retry flexible |
-| **River** | Go + Postgres | Todo en PG, sin Redis |
-| **Temporal** | Multi | Workflows long-running durables |
-| **k8s CronJob** | Any | Scheduled tasks simples sin deps |
+| **BullMQ** | TS/Node | **TS default** — mature, UI, scheduler |
+| **asynq** | Go | **Go default** — clean API, flexible retry |
+| **River** | Go + Postgres | Everything in PG, no Redis |
+| **Temporal** | Multi | Durable long-running workflows |
+| **k8s CronJob** | Any | Simple scheduled tasks with no deps |
 
-## Arquitectura
+## Architecture
 
 ```
 Producer → Redis queue → Worker pod(s) → Success/Fail → retry/DLQ
 ```
 
-Separar queues por criticidad: `critical` (auth, payments) / `default` (user-facing) / `bulk` (imports) / `scheduled` (cron). Worker pods distintos por queue crítica.
+Split queues by criticality: `critical` (auth, payments) / `default` (user-facing) / `bulk` (imports) / `scheduled` (cron). Separate worker pods per critical queue.
 
 ## Retry Strategy
 
-- **Attempts:** 5 general, 3 idempotentes caros, 10 para providers flakey
-- **Backoff:** exponencial base 30s + jitter ±25%
-- Network errors/5xx/timeouts → retry. 4xx → NO retry, a DLQ
-- BullMQ: `UnrecoverableError` para no reintentar
+- **Attempts:** 5 in general, 3 for expensive idempotent ones, 10 for flaky providers
+- **Backoff:** exponential, 30s base + ±25% jitter
+- Network errors/5xx/timeouts → retry. 4xx → NO retry, to the DLQ
+- BullMQ: `UnrecoverableError` to skip retries
 
-## Idempotencia
+## Idempotency
 
-- `jobId` como dedup key (BullMQ rechaza si existe en waiting/active)
-- Lógica idempotente: check estado antes de ejecutar (`if order.status === 'paid' return`)
-- Effects externos: pasar Idempotency-Key al provider (Stripe, SendGrid)
+- `jobId` as the dedup key (BullMQ rejects it if it exists in waiting/active)
+- Idempotent logic: check the state before executing (`if order.status === 'paid' return`)
+- External effects: pass an Idempotency-Key to the provider (Stripe, SendGrid)
 
 ## Rate Limiting Workers
 
-- BullMQ: `limiter: { max: 100, duration: 1000 }` en Worker
-- Protege downstream (Stripe, OpenAI). Alt: token bucket Redis antes de la llamada
+- BullMQ: `limiter: { max: 100, duration: 1000 }` on the Worker
+- Protects downstream (Stripe, OpenAI). Alt: a Redis token bucket before the call
 
 ## Concurrency Control
 
-- Por job type: `concurrency: N` en Worker
-- Por entidad: Redis lock `SET NX` con TTL → delay y reencolar si locked
+- Per job type: `concurrency: N` on the Worker
+- Per entity: Redis lock `SET NX` with a TTL → delay and requeue if locked
 
 ## Graceful Shutdown
 
-- `SIGTERM` → `worker.close()` (deja de tomar, espera in-flight) → `process.exit(0)`
+- `SIGTERM` → `worker.close()` (stops taking jobs, waits for in-flight ones) → `process.exit(0)`
 - k8s: `terminationGracePeriodSeconds: 60`
-- Jobs largos: diseñar para resumir (persistir progreso en DB)
+- Long jobs: design them to resume (persist progress in the DB)
 
 ## Scheduled vs k8s CronJob
 
-| Uso | Herramienta |
+| Use | Tool |
 |-----|-------------|
-| Cron app-aware, necesita worker pool | BullMQ/asynq scheduler |
-| Cron script independiente | k8s CronJob (`concurrencyPolicy: Forbid`) |
-| Workflow multi-step durable | Temporal |
+| App-aware cron that needs the worker pool | BullMQ/asynq scheduler |
+| Standalone cron script | k8s CronJob (`concurrencyPolicy: Forbid`) |
+| Durable multi-step workflow | Temporal |
 
 ## Dead Letter & Dashboard
 
-- Tras agotar retries: BullMQ → `failed` set, asynq → `archived`
-- **Bull Board** / **asynqmon**: waiting/active/completed/failed/delayed, retry manual
+- After exhausting retries: BullMQ → `failed` set, asynq → `archived`
+- **Bull Board** / **asynqmon**: waiting/active/completed/failed/delayed, manual retry
 - Alert: failed count/min > threshold → page on-call
 
-## Observabilidad
+## Observability
 
-- Métricas: `job_enqueued/completed/duration/retry_count`, `queue_depth{state}`, `worker_concurrency_active`
-- Correlation ID: propagar `traceId` en payload → worker lo ata al trace
+- Metrics: `job_enqueued/completed/duration/retry_count`, `queue_depth{state}`, `worker_concurrency_active`
+- Correlation ID: propagate `traceId` in the payload → the worker ties it to the trace
 - Dashboard: queue depth, duration p95, retry rate, failed count
 
 ## Anti-patterns
 
-- Handler sin idempotencia, sin graceful shutdown, queue única para todo
-- Retry infinito, payload >MB en Redis (usar referencia), secret en payload
-- Sin DLQ, concurrency=100 sin rate limit, scheduled en todos los pods sin lock
-- Logs sin correlation ID, `removeOnComplete: true` en jobs importantes
+- Handler without idempotency, without graceful shutdown, a single queue for everything
+- Infinite retry, payload >MB in Redis (use a reference), secret in the payload
+- No DLQ, concurrency=100 without a rate limit, scheduled jobs on every pod without a lock
+- Logs without a correlation ID, `removeOnComplete: true` on important jobs
 
 ## Checklist
 
-- [ ] Queue por criticidad (critical/default/bulk)
-- [ ] Attempts + backoff + jitter configurados
-- [ ] Idempotencia (jobId + lógica)
-- [ ] Timeout por job razonable
-- [ ] Graceful shutdown implementado
-- [ ] Rate limit si llama APIs externas
-- [ ] DLQ con alerta
-- [ ] Métricas + dashboard
-- [ ] Correlation ID en logs
-- [ ] Payload sin PII/secrets
+- [ ] Queue per criticality (critical/default/bulk)
+- [ ] Attempts + backoff + jitter configured
+- [ ] Idempotency (jobId + logic)
+- [ ] Reasonable per-job timeout
+- [ ] Graceful shutdown implemented
+- [ ] Rate limit if it calls external APIs
+- [ ] DLQ with an alert
+- [ ] Metrics + dashboard
+- [ ] Correlation ID in logs
+- [ ] Payload without PII/secrets

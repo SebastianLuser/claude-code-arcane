@@ -8,13 +8,13 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 # Figma Tokens → Code
 
-Extrae tokens desde Figma y los convierte a formatos usables por el stack.
+Extracts tokens from Figma and converts them into formats the stack can use.
 
-## Fuentes en Figma
+## Sources in Figma
 
-| Fuente | API | Notas |
+| Source | API | Notes |
 |--------|-----|-------|
-| **Variables** (moderna, preferida) | `GET /v1/files/$KEY/variables/local` | Primitives, aliases, modes (light/dark) |
+| **Variables** (modern, preferred) | `GET /v1/files/$KEY/variables/local` | Primitives, aliases, modes (light/dark) |
 | **Styles** (legacy) | `GET /v1/files/$KEY/styles` | Color, text, effect styles |
 
 ## Token Categories
@@ -37,19 +37,19 @@ Extrae tokens desde Figma y los convierte a formatos usables por el stack.
 | **SwiftUI** | `extension Color { static let primary500 = ... }` | camelCase |
 | **Flutter (Dart)** | `class AppColors { static const primary500 = Color(0xFF...) }` | camelCase |
 
-## Comando
+## Command
 
 `/figma-tokens <figma_url> [--output css|tailwind|json|style-dictionary|swift|flutter]`
 
-Flujo: pedir formato (default: Tailwind web, JSON multi-platform) → extraer variables → categorizar → generar output → preguntar ubicación (Next.js→`tailwind.config.ts`, Vue→`src/styles/tokens.css`, Swift→`Sources/DesignSystem/Tokens.swift`, Flutter→`lib/design/tokens.dart`).
+Flow: ask for the format (default: Tailwind for web, JSON for multi-platform) → extract variables → categorize → generate output → ask for the location (Next.js→`tailwind.config.ts`, Vue→`src/styles/tokens.css`, Swift→`Sources/DesignSystem/Tokens.swift`, Flutter→`lib/design/tokens.dart`).
 
 ## Naming Conventions
 
-Figma `Primary/500` → `primary-500`. Convertir: CSS kebab-case (`--color-primary-500`), Tailwind nested (`primary.500`), Swift camelCase (`primary500`).
+Figma `Primary/500` → `primary-500`. Convert: CSS kebab-case (`--color-primary-500`), Tailwind nested (`primary.500`), Swift camelCase (`primary500`).
 
-## Reglas
+## Rules
 
-- Preservar modes (light/dark) si existen en Figma
-- Aliases semánticos > primitives: exportar ambos, priorizar aliases en uso
-- Validar coherencia: alias sin valor → flaggear
-- Versionar tokens: git commit cada regeneración
+- Preserve modes (light/dark) if they exist in Figma
+- Semantic aliases > primitives: export both, prefer aliases in usage
+- Validate consistency: alias without a value → flag it
+- Version the tokens: git commit every regeneration

@@ -1,57 +1,57 @@
-# Un vault, todos los proyectos
+# One vault, every project
 
-El vault no sirve solo cuando estás sentado en él. Sirve cuando estás en otro repo y necesitás algo que ya pensaste. Esta es la receta para que cualquier proyecto lea el mismo segundo cerebro, sin duplicar nada.
+The vault is not only useful when you are sitting in it. It is useful when you are in another repo and need something you already thought through. This is the recipe for any project to read the same second brain, without duplicating anything.
 
-Adaptado del patrón de `AgriciDaniel/claude-obsidian` (MIT), con la cascada de lectura y la regla de exclusión que son la parte que importa.
+Adapted from the `AgriciDaniel/claude-obsidian` pattern (MIT), with the read cascade and the exclusion rule, which are the parts that matter.
 
-## El snippet
+## The snippet
 
-Pegar esto en el `CLAUDE.md` **del otro proyecto**, con el path real:
+Paste this into the `CLAUDE.md` **of the other project**, with the real path:
 
 ```markdown
-## Segundo cerebro
+## Second brain
 
-Vault: `~/ruta/al/vault`
+Vault: `~/path/to/vault`
 
-Cuando necesites contexto que no está en este repo, en este orden y parando en
-cuanto alcance:
+When you need context that is not in this repo, go in this order and stop as
+soon as it is enough:
 
-1. `hot.md` del vault: caché de contexto reciente, corto por diseño.
-2. `python <vault>/.claude/skills/vault-recall/scripts/vault_index.py "<vault>" search "<consulta>"`
-   para encontrar las notas relevantes por relevancia, no por keyword.
-3. El hub del tema en `Hubs/`, y de ahí a las notas que linkea.
-4. Solo entonces, la nota específica.
+1. The vault's `hot.md`: recent-context cache, short by design.
+2. `python <vault>/.claude/skills/vault-recall/scripts/vault_index.py "<vault>" search "<query>"`
+   to find the relevant notes by relevance, not by keyword.
+3. The topic's hub in `Hubs/`, and from there the notes it links to.
+4. Only then, the specific note.
 
-NO leas el vault para preguntas generales de programación. Es memoria personal,
-no documentación técnica: si la respuesta está en los docs del lenguaje o en este
-repo, el vault no aporta y solo gasta contexto.
+Do NOT read the vault for general programming questions. It is personal memory,
+not technical documentation: if the answer is in the language docs or in this
+repo, the vault adds nothing and only spends context.
 
-Nunca escribas en el vault desde este proyecto sin que yo lo pida explícitamente.
+Never write to the vault from this project unless I explicitly ask for it.
 ```
 
-## Por qué la cascada, y por qué en ese orden
+## Why the cascade, and why in that order
 
-Cada escalón es más caro que el anterior. `hot.md` son 40 líneas y cubre "qué estaba haciendo". La búsqueda cuesta una llamada y devuelve rutas, no contenido. El hub cuesta una lectura y te da el mapa del tema. La nota específica es lo único que trae texto completo.
+Each step is more expensive than the previous one. `hot.md` is 40 lines and covers "what was I doing". The search costs one call and returns paths, not content. The hub costs one read and gives you the map of the topic. The specific note is the only thing that brings full text.
 
-Sin la cascada, un agente con acceso al vault hace lo que haría cualquiera sin instrucciones: `Glob` de todo y leer lo que parezca relacionado. En un vault de mil notas eso es la sesión entera gastada antes de empezar.
+Without the cascade, an agent with access to the vault does what anyone without instructions would: `Glob` everything and read whatever looks related. In a vault of a thousand notes that is the whole session spent before starting.
 
-## Por qué la regla de exclusión es la línea más importante
+## Why the exclusion rule is the most important line
 
-`NO leas el vault para preguntas generales de programación`.
+`Do NOT read the vault for general programming questions`.
 
-Sin eso, el vault se convierte en un lugar más donde buscar antes de responder cualquier cosa, y cada consulta paga el costo sin recibir nada. El vault aporta cuando la respuesta depende de **tu** historia: una decisión que tomaste, una persona con la que hablaste, algo que ya te pasó. Para saber cómo funciona un `Promise.all`, no.
+Without it, the vault becomes one more place to search before answering anything, and every query pays the cost without getting anything back. The vault helps when the answer depends on **your** history: a decision you made, a person you talked to, something that already happened to you. To learn how a `Promise.all` works, it does not.
 
-## Escritura desde otro proyecto
+## Writing from another project
 
-Por default, **solo lectura**. Un proyecto que escribe en el vault sin que se lo pidas mete notas sin frontmatter, sin links y sin que nadie las revise, que es exactamente el material del que están hechas las huérfanas.
+By default, **read-only**. A project that writes to the vault without being asked adds notes with no frontmatter, no links and nobody reviewing them, which is exactly the material orphans are made of.
 
-Cuando quieras capturar algo al vault desde otro repo, hay dos caminos:
+When you want to capture something into the vault from another repo, there are two ways:
 
-- **Recomendado:** `/brain-dump` con `--vault <path>`. Va al dump del día, sin clasificar, y lo procesa el review a la noche como cualquier otra captura.
-- **Si te molesta pasar el path:** un servidor MCP de Obsidian (por ejemplo `@bitbonsai/mcpvault`) te deja tocar el vault desde cualquier sesión. Cuesta una dependencia y latencia, y hay que aclarar en el `CLAUDE.md` del proyecto que solo se usa para capturar, no para reorganizar.
+- **Recommended:** `/brain-dump` with `--vault <path>`. It goes into the day's dump, unclassified, and the review processes it at night like any other capture.
+- **If passing the path bothers you:** an Obsidian MCP server (for example `@bitbonsai/mcpvault`) lets you touch the vault from any session. It costs a dependency and latency, and the project's `CLAUDE.md` has to state that it is only used to capture, not to reorganize.
 
-## Lo que no hay que hacer
+## What not to do
 
-- **No copiar notas del vault al repo.** Dos copias divergen y ninguna gana.
-- **No apuntar el proyecto a una subcarpeta del vault** para "acotar". Rompe la resolución de `[[wikilinks]]`, que es global al vault.
-- **No dejar que un proyecto corra `/vault-tidy` ni `/review-dump`.** Esos escriben en volumen y necesitan al usuario mirando. Desde otro repo, el vault se lee.
+- **Do not copy vault notes into the repo.** Two copies diverge and neither wins.
+- **Do not point the project at a vault subfolder** to "narrow it down". It breaks `[[wikilinks]]` resolution, which is global to the vault.
+- **Do not let a project run `/vault-tidy` or `/review-dump`.** Those write in bulk and need the user watching. From another repo, the vault is read.

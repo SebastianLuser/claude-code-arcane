@@ -1,7 +1,7 @@
 # 3. Server-Side Performance (HIGH)
 
 ## 3.1 Authenticate Server Actions Like API Routes — CRITICAL
-Cada Server Action verifica auth/authz adentro, no solo confía en middleware.
+Every Server Action checks auth/authz inside, it does not just trust middleware.
 ```ts
 'use server';
 export async function deletePost(id: string) {
@@ -13,35 +13,35 @@ export async function deletePost(id: string) {
 ```
 
 ## 3.7 Parallel Data Fetching with Component Composition — CRITICAL
-Componer para que fetches independientes corran a la vez (cada uno en su `<Suspense>`).
+Compose so independent fetches run at the same time (each in its own `<Suspense>`).
 
 ## 3.8 Parallel Nested Data Fetching — CRITICAL
-Encadenar fetches dependientes dentro de la promesa de cada item → un item lento no bloquea a los demás.
+Chain dependent fetches inside each item's promise → one slow item does not block the others.
 
 ## 3.3 Avoid Shared Module State for Request Data — HIGH
-Variables mutables a nivel módulo se comparten entre requests → data leaks. Mantener datos de request locales al árbol de render.
+Mutable module-level variables are shared across requests → data leaks. Keep request data local to the render tree.
 
 ## 3.5 Hoist Static I/O to Module Level — HIGH
-Lecturas estáticas (config, archivos) a nivel módulo, no en cada request.
+Static reads (config, files) at module level, not on every request.
 
 ## 3.6 Minimize Serialization at RSC Boundaries — HIGH
-Pasar solo los campos que el cliente usa, no el objeto entero.
+Pass only the fields the client uses, not the whole object.
 
 ## 3.4 Cross-Request LRU Caching — HIGH
-LRU cache para datos compartidos entre requests dentro de una ventana de tiempo.
+LRU cache for data shared across requests within a time window.
 
 ## 3.9 Per-Request Deduplication with React.cache() — MEDIUM
 ```ts
-export const getUser = cache(async (id) => db.user.find(id)); // dedup mismo arg en el request
+export const getUser = cache(async (id) => db.user.find(id)); // dedups the same arg within the request
 ```
 
 ## 3.10 Use after() for Non-Blocking Operations — MEDIUM
 ```ts
 import { after } from 'next/server';
-after(() => logAnalytics(event)); // corre tras enviar la respuesta
+after(() => logAnalytics(event)); // runs after the response is sent
 ```
 
 ## 3.2 Avoid Duplicate Serialization in RSC Props — LOW
-Transformar en el cliente cuando evita duplicar referencias serializadas.
+Transform on the client when it avoids duplicating serialized references.
 
 _Ref: https://nextjs.org/docs/app/building-your-application/data-fetching · https://react.dev/reference/react/cache_

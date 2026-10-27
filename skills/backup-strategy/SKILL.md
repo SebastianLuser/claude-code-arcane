@@ -1,6 +1,6 @@
 ---
 name: backup-strategy
-description: "Estrategia backups Educabot: Postgres (pg_dump, PITR), MySQL, MongoDB, Redis, object storage, retention, restore testing, 3-2-1, RTO/RPO, disaster recovery."
+description: "Educabot backup strategy: Postgres (pg_dump, PITR), MySQL, MongoDB, Redis, object storage, retention, restore testing, 3-2-1, RTO/RPO, disaster recovery."
 category: "operations"
 argument-hint: "[postgres|mysql|mongodb|redis|object-storage|dr]"
 user-invocable: true
@@ -8,102 +8,102 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # backup-strategy — Backups & Disaster Recovery
 
-**Regla 0:** backup sin restore probado = no tenés backup.
+**Rule 0:** a backup without a tested restore = you have no backup.
 
-## Regla 3-2-1
+## 3-2-1 Rule
 
-3 copias, 2 medios distintos (disk + object storage), 1 off-site (otra región).
+3 copies, 2 different media (disk + object storage), 1 off-site (another region).
 
 ## RTO / RPO
 
-| Métrica | Significado | Target Educabot |
+| Metric | Meaning | Educabot target |
 |---------|-------------|-----------------|
-| **RPO** | Cuánto dato podés perder | 5 min (PITR) |
-| **RTO** | Cuánto tardás en volver | 1h (crítico), 4h (general) |
+| **RPO** | How much data you can lose | 5 min (PITR) |
+| **RTO** | How long it takes to come back | 1h (critical), 4h (general) |
 
-Definir antes de diseñar. Acordar con producto/legal.
+Define them before designing. Agree on them with product/legal.
 
-## Postgres — 3 capas
+## Postgres — 3 layers
 
-| Capa | Qué | Retention |
+| Layer | What | Retention |
 |------|-----|-----------|
-| Managed snapshots (Cloud SQL) | Snapshot diario + PITR | 7-30d snapshots, 7d WAL |
-| pg_dump lógico | Export off-provider a GCS multi-region | 30d daily, 3m weekly, 1y monthly |
-| WAL archiving | Continuo a GCS (si RPO <1h) | 7d |
+| Managed snapshots (Cloud SQL) | Daily snapshot + PITR | 7-30d snapshots, 7d WAL |
+| Logical pg_dump | Off-provider export to multi-region GCS | 30d daily, 3m weekly, 1y monthly |
+| WAL archiving | Continuous to GCS (if RPO <1h) | 7d |
 
-Bucket: versioning + object lock + multi-region + IAM write-only para job.
+Bucket: versioning + object lock + multi-region + write-only IAM for the job.
 
-## Restore — Testing Mensual
+## Restore — Monthly Testing
 
-1. Crear instancia destino (staging-restore)
-2. PITR clone o `pg_restore --jobs=4`
-3. Smoke test: row counts, últimas transacciones, integridad
-4. **Sin restore testing mensual → backup es teatro**
+1. Create a target instance (staging-restore)
+2. PITR clone or `pg_restore --jobs=4`
+3. Smoke test: row counts, latest transactions, integrity
+4. **Without monthly restore testing → the backup is theater**
 
-## MySQL y MongoDB
+## MySQL and MongoDB
 
-Mismas tres capas que Postgres: backups del proveedor con PITR (binlogs en MySQL, continuous backup en Atlas), una copia lógica fuera del proveedor y restore mensual. En MongoDB sharded, `mongodump` no es consistente entre shards.
+Same three layers as Postgres: provider backups with PITR (binlogs in MySQL, continuous backup in Atlas), a logical copy outside the provider, and a monthly restore. In sharded MongoDB, `mongodump` is not consistent across shards.
 
-> → Read references/mysql-mongodb.md for `mysqldump --single-transaction`, MySQL Shell dump/load, PITR con binlogs, `mongodump --oplog`, Atlas y clusters sharded
+> → Read references/mysql-mongodb.md for `mysqldump --single-transaction`, MySQL Shell dump/load, PITR with binlogs, `mongodump --oplog`, Atlas and sharded clusters
 
 ## Redis
 
-- Cache puro: no backup (reconstruible)
-- Sessions/queue: RDB + AOF. Copiar a GCS diariamente. Managed: snapshots automáticos
+- Pure cache: no backup (rebuildable)
+- Sessions/queue: RDB + AOF. Copy to GCS daily. Managed: automatic snapshots
 
 ## Object Storage (uploads)
 
-- Versioning habilitado (soft-delete 30d). Cross-region replication
-- Object Lock (inmutabilidad) contra ransomware/borrado malicioso
+- Versioning enabled (30d soft-delete). Cross-region replication
+- Object Lock (immutability) against ransomware/malicious deletion
 
 ## Secrets / IaC
 
-- Secret Manager con versioning + export periódico encriptado
-- Terraform state en bucket con versioning + object lock
-- Infra reconstruible desde git — backup es git
+- Secret Manager with versioning + periodic encrypted export
+- Terraform state in a bucket with versioning + object lock
+- Infra rebuildable from git — the backup is git
 
 ## DR Scenarios
 
-| Escenario | Estrategia | RTO |
+| Scenario | Strategy | RTO |
 |-----------|-----------|-----|
-| Drop accidental tabla | PITR T-1min → dump tabla → import | 15-30min |
-| Corrupción por bug | PITR → cutover | 1h |
-| Región caída | Failover réplica o bootstrap export off-region | 2-4h |
-| Account comprometido | Rebuild desde IaC + backups off-provider | 24-48h |
-| Ransomware/wipe | Object Lock inmutable + rotar creds + restore | Variable |
+| Accidental table drop | PITR T-1min → dump table → import | 15-30min |
+| Corruption from a bug | PITR → cutover | 1h |
+| Region down | Replica failover or bootstrap from off-region export | 2-4h |
+| Compromised account | Rebuild from IaC + off-provider backups | 24-48h |
+| Ransomware/wipe | Immutable Object Lock + rotate creds + restore | Variable |
 
-> → Read references/dr-strategies-and-tests.md for backup/restore vs pilot light vs warm standby vs active/active por RTO y costo, y el calendario de pruebas de DR (tabletop, failover de componente, game day)
+> → Read references/dr-strategies-and-tests.md for backup/restore vs pilot light vs warm standby vs active/active by RTO and cost, and the DR test calendar (tabletop, component failover, game day)
 
 ## Monitoring
 
-- `backup_last_success_timestamp` → alertar si `now() - last > 25h`
-- `backup_size < 50% promedio 7d` → backup vacío/corrupto
-- `restore_test_last_success > 45d` → recordatorio
-- Alertar si job **no corrió** (no solo si falló)
+- `backup_last_success_timestamp` → alert if `now() - last > 25h`
+- `backup_size < 50% of the 7d average` → empty/corrupt backup
+- `restore_test_last_success > 45d` → reminder
+- Alert if the job **did not run** (not only if it failed)
 
 ## Security
 
-- Encriptación at-rest (KMS) + in-transit (TLS)
-- IAM mínimo privilegio (write-only para job). Cuenta separada para backups
-- Object Lock/WORM para capa crítica. Audit log acceso a dumps
-- Backup con PII → mismas obligaciones GDPR que la DB. Retention alineada
+- Encryption at rest (KMS) + in transit (TLS)
+- Least-privilege IAM (write-only for the job). Separate account for backups
+- Object Lock/WORM for the critical layer. Audit log of access to dumps
+- Backups with PII → same GDPR obligations as the DB. Aligned retention
 
 ## Anti-patterns
 
-- "Tenemos backups" sin haber restaurado, backup en misma región/cuenta
-- Sin encriptación, retention infinita por inercia, retention muy corta
-- Solo alertar si job falla (no correr ≠ fallar), sin RTO/RPO formales
-- Snapshot del provider como única estrategia
+- "We have backups" without ever having restored, backup in the same region/account
+- No encryption, infinite retention out of inertia, retention that is too short
+- Alerting only if the job fails (not running ≠ failing), no formal RTO/RPO
+- The provider's snapshot as the only strategy
 
 ## Checklist
 
-- [ ] RTO/RPO documentados y acordados
-- [ ] 3-2-1 cumplido
-- [ ] Backups automatizados (CronJob)
-- [ ] Encriptados at-rest + in-transit
-- [ ] Off-provider copy (cross-cloud o cross-region)
-- [ ] Restore testing mensual automatizado
-- [ ] Runbook DR actualizado y probado en game-day
-- [ ] Alertas: last_success staleness
-- [ ] Retention alineada con compliance
-- [ ] IAM mínimo privilegio + Object Lock
+- [ ] RTO/RPO documented and agreed
+- [ ] 3-2-1 met
+- [ ] Automated backups (CronJob)
+- [ ] Encrypted at rest + in transit
+- [ ] Off-provider copy (cross-cloud or cross-region)
+- [ ] Automated monthly restore testing
+- [ ] DR runbook up to date and tested in a game day
+- [ ] Alerts: last_success staleness
+- [ ] Retention aligned with compliance
+- [ ] Least-privilege IAM + Object Lock

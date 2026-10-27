@@ -1,41 +1,41 @@
 # 1. Eliminating Waterfalls (CRITICAL)
 
-El factor #1 de TTFB lento. Operaciones que esperan en serie cuando podrían correr en paralelo.
+The #1 cause of slow TTFB. Operations that wait in series when they could run in parallel.
 
 ## 1.5 Promise.all() for Independent Operations — CRITICAL
 ```ts
-// ✗ secuencial: 300ms + 300ms
+// ✗ sequential: 300ms + 300ms
 const user = await getUser(id);
 const posts = await getPosts(id);
-// ✓ paralelo: 300ms
+// ✓ parallel: 300ms
 const [user, posts] = await Promise.all([getUser(id), getPosts(id)]);
 ```
 
 ## 1.4 Prevent Waterfall Chains in API Routes — CRITICAL
-Iniciar operaciones independientes inmediatamente, await recién al usarlas.
+Start independent operations immediately, await only when using them.
 ```ts
-const userP = getUser(id);          // arranca ya
-const settingsP = getSettings(id);  // arranca ya
+const userP = getUser(id);          // starts now
+const settingsP = getSettings(id);  // starts now
 return { user: await userP, settings: await settingsP };
 ```
 
 ## 1.3 Dependency-Based Parallelization — CRITICAL
-Cuando hay dependencias parciales, arrancar cada tarea en el momento más temprano posible (libs como `better-all` lo automatizan). No serializar todo por una sola dependencia.
+When there are partial dependencies, start each task at the earliest possible moment (libs like `better-all` automate it). Do not serialize everything because of a single dependency.
 
 ## 1.7/3.7 Parallel Data Fetching with Component Composition — CRITICAL
-Reestructurar componentes para que fetches independientes corran simultáneamente en vez de anidados.
+Restructure components so independent fetches run simultaneously instead of nested.
 
 ## 1.6 Strategic Suspense Boundaries — HIGH
 ```tsx
 <Suspense fallback={<Skeleton/>}>
-  <SlowData />   {/* streamea; el shell se muestra ya */}
+  <SlowData />   {/* streams; the shell shows right away */}
 </Suspense>
 ```
 
 ## 1.1 Check Cheap Conditions Before Async Flags — HIGH
-Evaluar guards síncronos antes de operaciones async para saltar trabajo en cold paths.
+Evaluate synchronous guards before async operations to skip work on cold paths.
 
 ## 1.2 Defer Await Until Needed — HIGH
-Mover el `await` a la rama donde realmente se usa, no bloquear ramas que no lo necesitan.
+Move the `await` into the branch where it is actually used, do not block branches that do not need it.
 
 _Ref: https://react.dev/reference/react/Suspense_

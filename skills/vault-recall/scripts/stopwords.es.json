@@ -1,0 +1,9 @@
+{
+  "language": "es",
+  "note": "Stopwords vault_index.py drops from Spanish notes and queries. Terms are stored folded (no accents) and lowercase, as normalize_term leaves them. Every stopwords.<lang>.json next to the script applies at once, because one vault mixes languages.",
+  "words": [
+    "de", "la", "el", "los", "las", "un", "una", "unos", "unas", "y", "o", "que",
+    "en", "con", "por", "para", "del", "al", "se", "su", "sus", "lo", "es", "son",
+    "como", "mas", "pero", "sin", "sobre", "este", "esta", "esto", "estos", "estas"
+  ]
+}

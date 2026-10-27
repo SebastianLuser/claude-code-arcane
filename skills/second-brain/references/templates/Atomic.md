@@ -4,19 +4,19 @@ type: atomic
 tags: []
 ---
 
-# <Título que afirma la idea, no que la nombra>
+# <Title that states the idea, not one that names it>
 
-<La idea en tus palabras, en un párrafo. Si necesitás dos títulos `##` que no se relacionan, son dos notas.>
+<The idea in your own words, in one paragraph. If you need two `##` headings that are unrelated, they are two notes.>
 
-## Por qué me importa
+## Why it matters
 
-<Una o dos líneas: qué problema tuyo toca esto. Es lo que hace que la nota sea tuya y no un resumen.>
+<One or two lines: which problem of yours this touches. It is what makes the note yours and not a summary.>
 
-## Relacionado
+## Related
 
-- [[Hub del tema]]
-- <otras notas atómicas con las que discute o a las que refuerza>
+- [[Topic hub]]
+- <other atomic notes it argues with or reinforces>
 
-## Fuente
+## Source
 
-<Link al clip, al libro, a la conversación. Si salió de tu cabeza, decilo.>
+<Link to the clip, the book, the conversation. If it came out of your head, say so.>

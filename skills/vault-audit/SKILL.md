@@ -1,72 +1,72 @@
 ---
 name: vault-audit
-description: "Reporte de salud del vault de Obsidian via script Python: huerfanas, links roto, notas stale, tag sprawl, nombres duplicados y frontmatter fuera de contrato. Read-only, no escribe nada. Triggers: auditar el vault, salud del vault, notas huerfanas, links roto, vault audit, que tan sano esta mi vault."
+description: "Obsidian vault health report via a Python script: orphans, broken links, stale notes, tag sprawl, duplicate names and frontmatter outside the contract. Read-only, writes nothing. Triggers: audit the vault, vault health, orphan notes, broken links, vault audit, how healthy is my vault."
 argument-hint: "[--vault <path>] [--stale-days N] [--seed-days N] [--exempt <dir>] [-n 0]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash
 ---
 
-# Vault Audit - Salud del vault
+# Vault Audit - Vault health
 
-Medís el estado real del vault y explicás qué significan los números. **Este skill es read-only:** no escribe ni una línea en el vault. Los arreglos necesitan approval del usuario y los aplica `/vault-tidy`.
+You measure the real state of the vault and explain what the numbers mean. **This skill is read-only:** it does not write a single line in the vault. Fixes need the user's approval and are applied by `/vault-tidy`.
 
 Flags: `$ARGUMENTS`
 
-## Fase 1 - Correr el script
+## Phase 1 - Run the script
 
-El conteo lo hace Python, no vos: leer nota por nota para contar links cuesta cientos de miles de tokens en un vault real y da números peores.
+Python does the counting, not you: reading note by note to count links costs hundreds of thousands of tokens on a real vault and gives worse numbers.
 
 ```bash
 python .claude/skills/vault-audit/scripts/vault_audit.py "<vault>" --format json
 ```
 
-Flags útiles: `--stale-days N` (default 180), `--hollow-words N` (default 30), `--task-days N` (default 7), `--seed-days N` (default 30), `--require <campo>` (repetible, default `created` y `type`), `--exempt <carpeta>` (repetible, default `Templates` y `04_Archive`), `-n 0` para no truncar listas, `--audit-all` para auditar también las carpetas exentas.
+Useful flags: `--stale-days N` (default 180), `--hollow-words N` (default 30), `--task-days N` (default 7), `--seed-days N` (default 30), `--require <field>` (repeatable, default `created` and `type`), `--exempt <folder>` (repeatable, default `Templates` and `04_Archive`), `-n 0` to not truncate lists, `--audit-all` to also audit the exempt folders.
 
-El script solo lee el filesystem: sin dependencias, corre sobre miles de notas en segundos.
+The script only reads the filesystem: no dependencies, it runs over thousands of notes in seconds.
 
-**Los defaults no son la verdad del vault: el `CLAUDE.md` lo es.** Antes de correr, leer su contrato y traducirlo a flags: los campos de frontmatter a `--require`, y los roles `templates` y `archive` a `--exempt`. Auditar un vault adoptado con los defaults produce hallazgos falsos (sus plantillas aparecen como huérfanas huecas) y esconde los reales.
+**The defaults are not the vault's truth: the `CLAUDE.md` is.** Before running, read its contract and translate it into flags: the frontmatter fields into `--require`, and the `templates` and `archive` roles into `--exempt`. Auditing an adopted vault with the defaults produces false findings (its templates show up as hollow orphans) and hides the real ones.
 
-## Fase 2 - Interpretar
+## Phase 2 - Interpret
 
-Un hallazgo no es un problema hasta que sabés por qué está ahí. Las lecturas que importan:
+A finding is not a problem until you know why it is there. The readings that matter:
 
-| Hallazgo | Qué suele significar | Cuándo NO es un problema |
+| Finding | What it usually means | When it is NOT a problem |
 |---|---|---|
-| `orphans` | Notas que nadie linkea y que no linkean nada: el síntoma del vault-cementerio | Casi nunca. Es el hallazgo que más vale atacar. |
-| `no_backlinks` | Nada apunta a la nota, aunque ella sí apunta a otras | Notas de entrada (dashboards, hubs de primer nivel) |
-| `broken_links` | Link a una nota que no existe. Los `aliases` del frontmatter ya se resuelven, igual que en Obsidian, así que un `[[Nacho]]` que apunta al hub "Ignacio Martinez" no aparece acá | **Un link roto es muchas veces una intención, no un error:** es la nota que el usuario todavía no escribió. Distinguí typo de intención antes de proponer nada. |
-| `ambiguous_names` | Dos archivos con el mismo nombre en carpetas distintas | Nunca: hace que todo `[[link corto]]` a ese nombre resuelva de forma impredecible. Es el hallazgo más urgente aunque parezca menor. |
-| `stale` | Sin tocar en 180 días o más. Las `evergreen` **no** aparecen acá: ya dijeron lo que tenían que decir | Referencia que ya hizo su trabajo pero que nadie marcó `evergreen` todavía |
-| `stale_seeds` | Notas en `seed` hace más de 30 días | Casi nunca. Es la falla clásica del vault: las semillas nunca maduran. Es más grave que una huérfana porque no se ve. |
-| `contested` | Notas marcadas como contradictorias y sin resolver | Nunca es un error del vault: es el vault haciendo su trabajo. Va al `/review-monthly`, no a `/vault-tidy`. |
-| `hollow` | Menos de 30 palabras | Semilla reciente. Dejala crecer. |
-| `single_use_tags` | Tags usados una sola vez | Inocuo salvo que sean cientos: ahí hay confusión de vocabulario, no organización. |
-| `stale_open_tasks` | Tareas abiertas en un día que ya cerró | Es la regla de arrastre incumplida: había que cancelarlas en su día. |
-| `missing_frontmatter` | Campos del contrato ausentes | Notas viejas anteriores al contrato |
-| `orphan_attachments` | Imágenes y PDFs que nadie embebe | Ocupan espacio, no rompen nada |
+| `orphans` | Notes nobody links to and that link to nothing: the symptom of the vault-graveyard | Almost never. It is the finding most worth tackling. |
+| `no_backlinks` | Nothing points to the note, although it does point to others | Entry notes (dashboards, top-level hubs) |
+| `broken_links` | A link to a note that does not exist. Frontmatter `aliases` are already resolved, just like in Obsidian, so a `[[Nacho]]` pointing to the hub "Ignacio Martinez" does not show up here | **A broken link is often an intention, not an error:** it is the note the user has not written yet. Tell a typo from an intention before proposing anything. |
+| `ambiguous_names` | Two files with the same name in different folders | Never: it makes every `[[short link]]` to that name resolve unpredictably. It is the most urgent finding even if it looks minor. |
+| `stale` | Untouched for 180 days or more. `evergreen` notes do **not** show up here: they already said what they had to say | A reference that already did its job but nobody has marked `evergreen` yet |
+| `stale_seeds` | Notes in `seed` for more than 30 days | Almost never. It is the classic vault failure: seeds never mature. It is worse than an orphan because it is not visible. |
+| `contested` | Notes marked as contradictory and unresolved | It is never a vault error: it is the vault doing its job. It goes to `/review-monthly`, not to `/vault-tidy`. |
+| `hollow` | Fewer than 30 words | A recent seed. Let it grow. |
+| `single_use_tags` | Tags used only once | Harmless unless there are hundreds: then it is vocabulary confusion, not organization. |
+| `stale_open_tasks` | Open tasks on a day that has already closed | The carry-over rule was broken: they should have been cancelled on their day. |
+| `missing_frontmatter` | Contract fields missing | Old notes that predate the contract |
+| `orphan_attachments` | Images and PDFs nobody embeds | They take up space, they break nothing |
 
-El campo `status` del contrato (`seed | provisional | evergreen | contested | archived`) es lo que hace accionables a `stale` y `hollow`: sin él, una nota de referencia que ya cumplió y un stub abandonado se reportan igual. `counts.by_status` te dice cuánto del vault está declarado y cuánto no.
+The contract's `status` field (`seed | provisional | evergreen | contested | archived`) is what makes `stale` and `hollow` actionable: without it, a reference note that already did its job and an abandoned stub are reported the same. `counts.by_status` tells you how much of the vault is declared and how much is not.
 
-Dos métricas de tendencia valen más que cualquier lista: **`avg_links_per_note`** (si es baja, el vault es un archivo de documentos, no una red de ideas) y **`orphan_rate`**. Compará contra el monthly anterior si existe.
+Two trend metrics are worth more than any list: **`avg_links_per_note`** (if it is low, the vault is a document archive, not a network of ideas) and **`orphan_rate`**. Compare against the previous monthly if there is one.
 
-## Fase 3 - Reportar
+## Phase 3 - Report
 
-1. Los conteos primero, en una tabla corta. Sin adornos.
-2. Los 3 a 5 hallazgos que valen la pena, ordenados por impacto real: `ambiguous_names` y `orphans` arriba, `hollow` y `single_use_tags` abajo o directamente omitidos si son ruido.
-3. **Si el reporte trae `truncated`, decirlo con el total real.** Un reporte truncado que no se anuncia se lee como un vault sano, y esa es la única mentira que este skill no puede cometer.
-4. Cerrar con una recomendación concreta: qué arreglaría primero y por qué.
+1. The counts first, in a short table. No embellishment.
+2. The 3 to 5 findings worth it, sorted by real impact: `ambiguous_names` and `orphans` at the top, `hollow` and `single_use_tags` at the bottom or left out entirely if they are noise.
+3. **If the report has `truncated`, say so with the real total.** A truncated report that is not announced reads as a healthy vault, and that is the one lie this skill cannot tell.
+4. Close with a concrete recommendation: what you would fix first and why.
 
-Audit COMPLETE cuando el usuario sabe los números, cuáles importan y cuál es el primer arreglo.
+Audit COMPLETE when the user knows the numbers, which ones matter and what the first fix is.
 
-## Reglas
+## Rules
 
-- No escribir en el vault. Ni una nota, ni un frontmatter, ni un link. Para eso está `/vault-tidy`.
-- No dramatizar los números: un vault de 2000 notas con 40 huérfanas está sano.
-- No proponer plugins como solución a un problema de higiene: menos plugins es más sano.
-- No sugerir borrar nada. El vocabulario es archivar.
-- Sin guiones largos en el reporte.
+- Do not write to the vault. Not a note, not a frontmatter field, not a link. That is what `/vault-tidy` is for.
+- Do not dramatize the numbers: a 2000-note vault with 40 orphans is healthy.
+- Do not propose plugins as the solution to a hygiene problem: fewer plugins is healthier.
+- Do not suggest deleting anything. The vocabulary is archiving.
+- No em dashes in the report.
 
 ## Handoff
 
-Con el reporte listo, el siguiente paso es `/vault-tidy` para aplicar los arreglos elegidos con approval item por item. Si el audit muestra muchas huérfanas del mismo tema, el arreglo real es `/hub-note` para el hub que falta. `/review-monthly` corre este audit como parte del cierre del mes.
+With the report ready, the next step is `/vault-tidy` to apply the chosen fixes with item-by-item approval. If the audit shows many orphans on the same topic, the real fix is `/hub-note` for the missing hub. `/review-monthly` runs this audit as part of closing the month.

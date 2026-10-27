@@ -22,10 +22,10 @@ Workspace resolution order:
     4. the current working directory
 
 Output path:
-    - If frontmatter has `archivo_pdf`, the PDF is written to that path
-      relative to the CVs folder (<workspace>/02-CVs/<archivo_pdf>).
+    - If frontmatter has `pdf_file`, the PDF is written to that path
+      relative to the CVs folder (<workspace>/02-CVs/<pdf_file>).
     - Otherwise it goes to <workspace>/02-CVs/exports/<name>.pdf, where
-      <name> is the frontmatter field `archivo_final` if present, else the
+      <name> is the frontmatter field `final_file` if present, else the
       .md filename with the "CV - " prefix stripped.
 
 Supported Markdown (what CVs use):
@@ -248,10 +248,10 @@ def export(md_path, browser, cv_dir, export_dir, check_ats=True):
     text = md_path.read_text(encoding="utf-8")
     fm, body = strip_frontmatter(text)
 
-    if fm.get("archivo_pdf"):
-        pdf_path = cv_dir / fm["archivo_pdf"]
+    if fm.get("pdf_file"):
+        pdf_path = cv_dir / fm["pdf_file"]
     else:
-        name = fm.get("archivo_final") or md_path.stem.replace("CV - ", "")
+        name = fm.get("final_file") or md_path.stem.replace("CV - ", "")
         pdf_path = export_dir / f"{name}.pdf"
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
 

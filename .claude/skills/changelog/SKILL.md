@@ -1,6 +1,6 @@
 ---
 name: changelog
-description: "Genera changelog desde git log entre dos tags/commits, agrupado por tipo (feat/fix/refactor/docs/test/chore). Usar cuando se mencione: changelog, release notes, qué cambió, historial de cambios."
+description: "Generates a changelog from git log between two tags/commits, grouped by type (feat/fix/refactor/docs/test/chore). Use when the user mentions: changelog, release notes, what changed, change history."
 category: "documentation"
 argument-hint: "[range: vX..vY | vX | last-week | N | empty]"
 user-invocable: true
@@ -8,104 +8,104 @@ allowed-tools: Read, Glob, Grep, Bash, Write
 ---
 # Changelog Generator
 
-Genera un changelog profesional desde el historial de git.
+Generates a professional changelog from the git history.
 
 ## Input
 
-Argumento opcional: `$ARGUMENTS`
+Optional argument: `$ARGUMENTS`
 
-Formatos aceptados:
-- `v1.0.0..v1.1.0` — entre dos tags
-- `v1.2.0` — desde ese tag hasta HEAD
-- `last-week` / `last-month` — por fecha
-- `10` — últimos N commits
-- (vacío) — desde el último tag hasta HEAD
+Accepted formats:
+- `v1.0.0..v1.1.0` — between two tags
+- `v1.2.0` — from that tag to HEAD
+- `last-week` / `last-month` — by date
+- `10` — last N commits
+- (empty) — from the last tag to HEAD
 
 ## Process
 
-### 1. Determinar rango
+### 1. Determine the range
 
 ```bash
-# Si hay tags
+# If there are tags
 git tag --sort=-v:refname | head -5
 
-# Si no hay tags, usar los últimos 20 commits
+# If there are no tags, use the last 20 commits
 git log --oneline -20
 ```
 
-### 2. Extraer commits
+### 2. Extract commits
 
 ```bash
-git log [rango] --pretty=format:"%h|%s|%an|%ad" --date=short
+git log [range] --pretty=format:"%h|%s|%an|%ad" --date=short
 ```
 
-### 3. Clasificar por tipo
+### 3. Classify by type
 
-Parsear el prefijo del mensaje de commit (conventional commits):
+Parse the commit message prefix (conventional commits):
 
-| Prefijo | Categoría |
+| Prefix | Category |
 |---------|-----------|
-| `feat:` / `feature:` | Nueva funcionalidad |
-| `fix:` / `bugfix:` | Corrección de bugs |
-| `refactor:` | Refactorización |
-| `docs:` | Documentación |
+| `feat:` / `feature:` | New features |
+| `fix:` / `bugfix:` | Bug fixes |
+| `refactor:` | Refactoring |
+| `docs:` | Documentation |
 | `test:` | Tests |
-| `chore:` / `ci:` / `build:` | Mantenimiento |
+| `chore:` / `ci:` / `build:` | Maintenance |
 | `perf:` | Performance |
-| `style:` | Estilo de código |
-| `BREAKING CHANGE` | Cambios que rompen compatibilidad |
-| Sin prefijo | Otros |
+| `style:` | Code style |
+| `BREAKING CHANGE` | Changes that break compatibility |
+| No prefix | Other |
 
-### 4. Generar changelog
+### 4. Generate the changelog
 
-Formato de salida:
+Output format:
 
 ```markdown
-# Changelog — [proyecto] — [fecha]
-**Rango:** [tag1] → [tag2/HEAD]
+# Changelog — [project] — [date]
+**Range:** [tag1] → [tag2/HEAD]
 **Commits:** [N total]
 
 ## Breaking Changes
-- [hash] descripción (@autor)
+- [hash] description (@author)
 
-## Nueva funcionalidad
-- [hash] descripción (@autor)
+## New features
+- [hash] description (@author)
 
-## Correcciones
-- [hash] descripción (@autor)
+## Fixes
+- [hash] description (@author)
 
-## Refactorización
-- [hash] descripción (@autor)
+## Refactoring
+- [hash] description (@author)
 
 ## Performance
-- [hash] descripción (@autor)
+- [hash] description (@author)
 
-## Documentación
-- [hash] descripción (@autor)
+## Documentation
+- [hash] description (@author)
 
 ## Tests
-- [hash] descripción (@autor)
+- [hash] description (@author)
 
-## Mantenimiento
-- [hash] descripción (@autor)
+## Maintenance
+- [hash] description (@author)
 
-## Otros
-- [hash] descripción (@autor)
+## Other
+- [hash] description (@author)
 
 ---
-**Estadísticas:**
-- X archivos modificados
-- +Y líneas / -Z líneas
-- N contribuidores
+**Statistics:**
+- X files changed
+- +Y lines / -Z lines
+- N contributors
 ```
 
 ### 5. Output
 
-- Mostrar en pantalla
-- Si el usuario pide guardarlo → escribir en `CHANGELOG.md` (append al inicio)
+- Show it on screen
+- If the user asks to save it → write to `CHANGELOG.md` (prepend at the top)
 
 ## Rules
-- Omitir categorías vacías
-- Si no usa conventional commits, intentar clasificar por contenido del mensaje
-- Incluir link al commit si el repo tiene remote configurado
-- En español
+- Omit empty categories
+- If the repo does not use conventional commits, try to classify by message content
+- Include a link to each commit if the repo has a remote configured
+- Write it in the user's language

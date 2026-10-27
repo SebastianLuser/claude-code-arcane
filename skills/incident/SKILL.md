@@ -8,110 +8,110 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # Incident Post-Mortem Generator
 
-Genera un reporte de post-mortem estructurado y crea tickets de seguimiento.
+Generates a structured post-mortem report and creates follow-up tickets.
 
 ## Input
 
-El usuario describe el incidente. Argumento opcional: `$ARGUMENTS`
+The user describes the incident. Optional argument: `$ARGUMENTS`
 
-Si no da suficiente info, preguntar:
-1. Qué pasó?
-2. Cuándo empezó y cuándo se resolvió?
-3. Qué sistemas se vieron afectados?
-4. Cómo se detectó? (alerta, usuario, casualidad)
-5. Cómo se resolvió?
-6. Qué proyecto? (para crear tickets en Jira)
+If they do not give enough info, ask:
+1. What happened?
+2. When did it start and when was it resolved?
+3. Which systems were affected?
+4. How was it detected? (alert, user, chance)
+5. How was it resolved?
+6. Which project? (to create tickets in Jira)
 
 ## Process
 
-### 1. Recopilar contexto
+### 1. Gather context
 
-Si estamos en un repo git:
+If we are in a git repo:
 ```bash
-# Commits recientes (posible causa)
+# Recent commits (possible cause)
 git log --oneline --since="24 hours ago"
 
-# Deploys recientes
+# Recent deploys
 gh run list --limit 5
 ```
 
-### 2. Generar post-mortem
+### 2. Generate the post-mortem
 
 ```markdown
-# Post-Mortem: [Título del incidente]
-**Fecha:** [fecha del incidente]
-**Severidad:** [SEV1-critico / SEV2-alto / SEV3-medio / SEV4-bajo]
-**Duración:** [X horas/minutos]
-**Autor:** [quien escribe]
+# Post-Mortem: [Incident title]
+**Date:** [incident date]
+**Severity:** [SEV1-critical / SEV2-high / SEV3-medium / SEV4-low]
+**Duration:** [X hours/minutes]
+**Author:** [who writes it]
 
-## Resumen
-[2-3 oraciones: qué pasó, qué impacto tuvo, cómo se resolvió]
+## Summary
+[2-3 sentences: what happened, what impact it had, how it was resolved]
 
 ## Timeline
-| Hora | Evento |
+| Time | Event |
 |------|--------|
-| HH:MM | Se detecta el problema via [método] |
-| HH:MM | Se identifica la causa |
-| HH:MM | Se aplica el fix |
-| HH:MM | Se confirma resolución |
+| HH:MM | The problem is detected via [method] |
+| HH:MM | The cause is identified |
+| HH:MM | The fix is applied |
+| HH:MM | Resolution is confirmed |
 
-## Impacto
-- **Usuarios afectados:** [N / todos / segmento]
-- **Funcionalidad afectada:** [qué dejó de funcionar]
-- **Datos perdidos:** [si/no, detalle]
-- **SLA/SLO impactado:** [si aplica]
+## Impact
+- **Affected users:** [N / all / segment]
+- **Affected functionality:** [what stopped working]
+- **Data lost:** [yes/no, detail]
+- **SLA/SLO impacted:** [if applicable]
 
-<!-- Solo si el incidente involucra una feature con LLM -->
-## Feature de IA
-- **Clase:** [disponibilidad / calidad / seguridad / exposición de datos / costo]
-- **Versiones:** modelo [id], prompt [versión], índice de retrieval [fecha de build]
-- **Evals:** score antes vs. durante el incidente (`/llm-evals`)
-- **Costo extra:** [USD y tokens por encima del baseline]
-- **Por qué no lo frenó un guardrail:** [qué control faltó o falló]
+<!-- Only if the incident involves an LLM feature -->
+## AI feature
+- **Class:** [availability / quality / safety / data exposure / cost]
+- **Versions:** model [id], prompt [version], retrieval index [build date]
+- **Evals:** score before vs. during the incident (`/llm-evals`)
+- **Extra cost:** [USD and tokens above baseline]
+- **Why no guardrail stopped it:** [which control was missing or failed]
 
 ## Root Cause
-[Explicación técnica de la causa raíz. Ser específico: archivo, línea, configuración, etc.]
+[Technical explanation of the root cause. Be specific: file, line, configuration, etc.]
 
-## Resolución
-[Qué se hizo para resolver. Incluir commits, PRs, config changes.]
+## Resolution
+[What was done to resolve it. Include commits, PRs, config changes.]
 
-## Factores contribuyentes
-- [Factor 1: por qué no se detectó antes]
-- [Factor 2: por qué el blast radius fue tan grande]
-- [Factor 3: qué faltaba en monitoreo/alertas]
+## Contributing factors
+- [Factor 1: why it was not detected earlier]
+- [Factor 2: why the blast radius was so large]
+- [Factor 3: what was missing in monitoring/alerts]
 
-## Lecciones aprendidas
-### Qué salió bien
-- [Algo que funcionó correctamente en la respuesta]
+## Lessons learned
+### What went well
+- [Something that worked correctly in the response]
 
-### Qué salió mal
-- [Algo que empeoró la situación o retrasó la resolución]
+### What went wrong
+- [Something that made the situation worse or delayed the resolution]
 
 ## Action Items
-| # | Acción | Prioridad | Owner | Ticket |
+| # | Action | Priority | Owner | Ticket |
 |---|--------|-----------|-------|--------|
-| 1 | [Fix permanente] | ALTA | [quien] | [PROJ-XXX] |
-| 2 | [Mejorar monitoreo] | MEDIA | [quien] | [PROJ-XXX] |
-| 3 | [Agregar test] | MEDIA | [quien] | [PROJ-XXX] |
-| 4 | [Documentar runbook] | BAJA | [quien] | [PROJ-XXX] |
+| 1 | [Permanent fix] | HIGH | [who] | [PROJ-XXX] |
+| 2 | [Improve monitoring] | MEDIUM | [who] | [PROJ-XXX] |
+| 3 | [Add a test] | MEDIUM | [who] | [PROJ-XXX] |
+| 4 | [Document a runbook] | LOW | [who] | [PROJ-XXX] |
 ```
 
-### 3. Crear tickets en Jira (si el usuario quiere)
+### 3. Create tickets in Jira (if the user wants)
 
-Para cada action item, crear un ticket tipo "Tarea" usando la skill de jira-tickets:
+For each action item, create a ticket of issue type "Tarea" (the workspace's Task type) using the jira-tickets skill:
 - Summary: "[POST-MORTEM] Action item description"
-- Priority: según la prioridad del action item
+- Priority: according to the action item's priority
 - Labels: ["post-mortem", "incident"]
 
-### 4. Guardar
+### 4. Save
 
-Guardar en `docs/incidents/[fecha]-[titulo-slug].md`
+Save to `docs/incidents/[date]-[title-slug].md`
 
-Para la respuesta en curso (contener, playbooks y avisos a usuarios o clientes), ver `/incident-response`.
+For the ongoing response (containment, playbooks and notices to users or customers), see `/incident-response`.
 
 ## Rules
-- Sin culpas personales — el post-mortem es sobre el sistema, no las personas
-- Ser específico en el root cause (no "error humano" — qué permitió que el error pasara)
-- Cada action item debe ser accionable y tener owner
-- En español
-- Si el incidente está en curso → enfocarse en resolución, post-mortem después
+- No personal blame — the post-mortem is about the system, not the people
+- Be specific about the root cause (not "human error" — what allowed the error to get through)
+- Every action item must be actionable and have an owner
+- Write it in the user's language
+- If the incident is ongoing → focus on resolution, post-mortem afterwards

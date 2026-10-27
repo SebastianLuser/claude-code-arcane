@@ -24,6 +24,7 @@ import argparse
 import calendar
 import html
 import json
+import os
 import random
 import re
 import sys
@@ -50,10 +51,18 @@ PER_PAGE = 20
 # Chars of description kept per result under --brief.
 BRIEF_DESCRIPTION_CHARS = 300
 
-STOPWORDS = {
-    "y", "de", "e", "la", "el", "los", "las", "en", "para", "con", "a",
-    "and", "the", "of", "at", "in", "remote", "hybrid",
-}
+def load_stopwords():
+    """Union of every stopwords.<lang>.json next to this script: GetOnBoard slugs mix languages."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    words = set()
+    for name in sorted(os.listdir(here)):
+        if name.startswith("stopwords.") and name.endswith(".json"):
+            with open(os.path.join(here, name), encoding="utf-8") as handle:
+                words.update(json.load(handle)["words"])
+    return words
+
+
+STOPWORDS = load_stopwords()
 
 
 def write_error(error, code):
@@ -124,8 +133,8 @@ def normalize_job(record):
 
     description_parts = [
         attrs.get("description") or "",
-        f"\nFunciones:\n{attrs['functions']}" if attrs.get("functions") else "",
-        f"\nDeseable:\n{attrs['desirable']}" if attrs.get("desirable") else "",
+        f"\nFunctions:\n{attrs['functions']}" if attrs.get("functions") else "",
+        f"\nDesirable:\n{attrs['desirable']}" if attrs.get("desirable") else "",
     ]
 
     description, integrity = html_to_text("\n".join(p for p in description_parts if p))
@@ -241,7 +250,7 @@ def render_table(jobs):
 
 def render_plain(jobs):
     return "\n\n".join(
-        f"{j['title']}\n  {j['company'] or '-'} · {j['location'] or '-'} · {salary_col(j)} USD/mes"
+        f"{j['title']}\n  {j['company'] or '-'} · {j['location'] or '-'} · {salary_col(j)} USD/month"
         f" · {j['seniority'] or '-'} · {j['date'] or '-'}\n  id: {j['id']}\n  {j['url']}"
         for j in jobs
     )
@@ -405,20 +414,20 @@ def run_detail(args):
 
         if args.format == "plain":
             salary = (
-                f"{salary_col(job)} USD/mes"
+                f"{salary_col(job)} USD/month"
                 if job["salary_min_usd_month"] is not None or job["salary_max_usd_month"] is not None
                 else None
             )
             lines = [
                 job["title"],
                 f"{job['company'] or '-'} · {job['location'] or '-'}",
-                "⚠ CERRADA - ya no acepta postulaciones" if job.get("closed") else "",
+                "⚠ CLOSED - no longer accepting applications" if job.get("closed") else "",
                 "",
                 f"Seniority: {job['seniority']}" if job["seniority"] else "",
-                f"Salario: {salary}" if salary else "",
-                f"Aplicantes: {job['applications_count']}"
+                f"Salary: {salary}" if salary else "",
+                f"Applicants: {job['applications_count']}"
                 if job["applications_count"] is not None else "",
-                f"Publicada: {job['date']}" if job["date"] else "",
+                f"Published: {job['date']}" if job["date"] else "",
                 "",
                 job["description"] or "(no description)",
                 "",

@@ -1,52 +1,52 @@
-# HU-{N}.{M} — {Titulo}
+# HU-{N}.{M} — {Title}
 
-> Como {rol}, necesito {feature}, para {beneficio}.
+> As a {role}, I need {feature}, so that {benefit}.
 
-- **Epica:** [{NN} — {titulo-epica}]({link-relativo})
-- **Fase:** {fase}
-- **Prioridad:** {Alta | Media | Baja}
-- **Estimacion:** {estimacion}
+- **Epic:** [{NN} — {epic-title}]({relative-link})
+- **Phase:** {phase}
+- **Priority:** {High | Medium | Low}
+- **Estimate:** {estimate}
 
-## Criterios de Aceptacion
+## Acceptance Criteria
 
-- [ ] {criterio verificable si/no}
-- [ ] {criterio verificable si/no}
-- [ ] {criterio verificable si/no}
+- [ ] {yes/no verifiable criterion}
+- [ ] {yes/no verifiable criterion}
+- [ ] {yes/no verifiable criterion}
 
-## Diseno Tecnico
+## Technical Design
 
 ### Endpoints
 
-| Metodo | Ruta | Descripcion |
+| Method | Route | Description |
 |--------|------|-------------|
-| {GET/POST/PUT/DELETE} | {/api/v1/resource} | {descripcion} |
+| {GET/POST/PUT/DELETE} | {/api/v1/resource} | {description} |
 
-### Modelos de Datos
-
-```
-{esquema o modelo}
-```
-
-### Flujo
+### Data Models
 
 ```
-{diagrama de flujo ASCII o mermaid}
+{schema or model}
 ```
 
-## Tareas
+### Flow
 
-| ID | Titulo | Archivos | Estado |
+```
+{ASCII or mermaid flow diagram}
+```
+
+## Tasks
+
+| ID | Title | Files | Status |
 |----|--------|----------|--------|
-| T-{N}.{M}.1 | {titulo} | {archivos afectados} | {Pendiente} |
+| T-{N}.{M}.1 | {title} | {affected files} | {Pending} |
 
-## Dependencias
+## Dependencies
 
-- {HU-X.Y o "Ninguna"}
+- {HU-X.Y or "None"}
 
 ## Test Cases
 
-- [ ] {caso de prueba verificable}
+- [ ] {verifiable test case}
 
-## Notas del Implementador
+## Implementer Notes
 
-{Notas tecnicas, edge cases, consideraciones}
+{Technical notes, edge cases, considerations}

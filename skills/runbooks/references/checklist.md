@@ -1,16 +1,16 @@
-# Checklist de Runbook
+# Runbook Checklist
 
-- [ ] Alert name en H1 matchea Alertmanager
-- [ ] 10 secciones presentes en orden
-- [ ] Comandos copypasteables (proyecto, region, servicio hardcodeados)
-- [ ] Criterios de decision numericos
-- [ ] Escalation path con nombres + canales + tiempos
-- [ ] Links a dashboards funcionan
-- [ ] Rollback plan distinto del fix
+- [ ] Alert name in the H1 matches Alertmanager
+- [ ] All 10 sections present, in order
+- [ ] Copy-pasteable commands (project, region, service hardcoded)
+- [ ] Numeric decision criteria
+- [ ] Escalation path with names + channels + times
+- [ ] Dashboard links work
+- [ ] Rollback plan distinct from the fix
 - [ ] Frontmatter: owner, service, last_reviewed
-- [ ] Alertmanager tiene `runbook_url`
-- [ ] Espanol LatAm, sin jerga sin explicar
-- [ ] Validado en drill o por alguien que no lo escribio
-- [ ] Cada paso que cambia algo tiene resultado esperado y qué hacer si no se cumple
-- [ ] Verificación final con las mismas señales que dispararon la alerta
-- [ ] Frontmatter con `last_tested` y cómo se probó
+- [ ] Alertmanager has `runbook_url`
+- [ ] In the on-call team's language, no unexplained jargon
+- [ ] Validated in a drill or by someone who did not write it
+- [ ] Every step that changes something has an expected result and what to do if it is not met
+- [ ] Final verification with the same signals that fired the alert
+- [ ] Frontmatter with `last_tested` and how it was tested

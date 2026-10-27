@@ -1,57 +1,57 @@
 # UI Sound Design — Anti-patterns
 
-## Sonidos de UI al nivel del gameplay
+## UI sounds at gameplay level
 
-Un click a −3 dB compite con la acción del juego y agota en minutos. El UI va entre −18 y −24 dB. Es el error más frecuente y el más fácil de arreglar.
+A click at −3 dB competes with the game action and becomes exhausting within minutes. UI sits between −18 and −24 dB. It is the most frequent mistake and the easiest one to fix.
 
-## Todo al mismo nivel
+## Everything at the same level
 
-Si el hover y el error de transacción suenan igual de importantes, no hay jerarquía y el usuario deja de prestar atención a los dos. Nivel y duración proporcionales a la importancia del evento.
+If the hover and the transaction error sound equally important, there is no hierarchy and the user stops paying attention to both. Level and duration proportional to the event's importance.
 
-## Todo duckea
+## Everything ducks
 
-Si cada navegación de menú baja la música, la música desaparece. Solo el nivel crítico duckea.
+If every menu navigation lowers the music, the music disappears. Only the critical level ducks.
 
-## Sin cooldown en navegación
+## No cooldown on navigation
 
-Recorrer un menú rápido con el stick dispara el mismo tick veinte veces en 300 ms. Suena a glitch. Cooldown mínimo en todo evento de navegación.
+Scrolling through a menu quickly with the stick fires the same tick twenty times in 300 ms. It sounds like a glitch. A minimum cooldown on every navigation event.
 
-## Tonos sostenidos en 2-6 kHz
+## Sustained tones at 2-6 kHz
 
-Es la banda más sensible del oído y la que más fatiga. Un tono sostenido ahí cansa en una sesión. Transientes cortos.
+It is the ear's most sensitive band and the one that fatigues most. A sustained tone there tires the user within a session. Short transients.
 
-## Ignorar la sesión de audio en móvil
+## Ignoring the audio session on mobile
 
-Entra una llamada, la app pierde el audio y no lo recupera. O el juego suena con el switch de silencio activado. Los dos son rechazo de store. Manejar interrupciones y cambios de ruta explícitamente.
+A call comes in, the app loses its audio and never gets it back. Or the game plays with the silent switch on. Both are store rejections. Handle interruptions and route changes explicitly.
 
-## Forzar volumen por encima del sistema
+## Forcing volume above the system's
 
-Normalizar hacia arriba o imponer un piso de volumen ignora una decisión explícita del usuario. Nunca.
+Normalizing upward or imposing a volume floor ignores an explicit decision by the user. Never.
 
-## Éxito y error que solo se distinguen por timbre
+## Success and error that differ only by timbre
 
-Con pérdida de agudos, en un speaker malo o con el volumen bajo, los dos suenan igual. La diferencia tiene que estar en el contorno: ascendente para éxito, descendente para error.
+With high-frequency hearing loss, on a bad speaker or at low volume, the two sound the same. The difference has to be in the contour: rising for success, falling for error.
 
-## Audio como único canal de información crítica
+## Audio as the only channel for critical information
 
-Un usuario con hipoacusia, con el sonido apagado o en un lugar ruidoso pierde la información. Siempre acompañado de señal visual.
+A user with hearing loss, with the sound off or in a noisy place loses the information. Always paired with a visual signal.
 
-## Haptic y audio desfasados
+## Haptic and audio out of sync
 
-Arriba de ~30 ms se perciben como dos eventos y se siente roto. Y si el haptic está desactivado, el evento no puede quedarse sin ningún feedback.
+Above ~30 ms they are perceived as two events and it feels broken. And if the haptic is turned off, the event cannot be left without any feedback.
 
-## Duplicar información entre audio y haptic
+## Duplicating information between audio and haptic
 
-Si el haptic ya comunica intensidad, subir el audio para "reforzar" solo agrega molestia.
+If the haptic already communicates intensity, raising the audio to "reinforce" it only adds annoyance.
 
-## Depender del grave en dispositivos chicos
+## Relying on the lows on small devices
 
-Un sonido de UI cuyo peso vive en 80 Hz no existe en el speaker de un teléfono. Con haptics, el grave es trabajo del haptic; sin haptics, el sonido tiene que leerse en medios.
+A UI sound whose weight lives at 80 Hz does not exist on a phone speaker. With haptics, the lows are the haptic's job; without haptics, the sound has to read in the mids.
 
-## Un set sin toggle
+## A set without a toggle
 
-Los sonidos de navegación repetitivos tienen que poder apagarse, y apagarlos no debe silenciar los críticos. Controles de volumen separados de música y SFX.
+Repetitive navigation sounds must be able to be turned off, and turning them off must not silence the critical ones. Volume controls separate from music and SFX.
 
-## Diseñar el set sin probar navegación real
+## Designing the set without testing real navigation
 
-Un sonido aprobado clic por clic se vuelve insoportable cuando el usuario recorre seis pantallas en cuatro segundos. Probar con flujos reales, a velocidad real.
+A sound approved click by click becomes unbearable when the user goes through six screens in four seconds. Test with real flows, at real speed.

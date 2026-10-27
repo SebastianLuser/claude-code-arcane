@@ -84,7 +84,7 @@ describe("documented counts match the filesystem", () => {
     // This file claimed a 143-agent roster while 109 shipped. The 34 that were
     // never written are where 62 dead delegation references came from.
     const hierarchy = read("docs/agent-hierarchy.md");
-    expect(stated(hierarchy, "agent-hierarchy roster", /## Roster Completo \((\d+) Agentes\)/)).toBe(
+    expect(stated(hierarchy, "agent-hierarchy roster", /## Full Roster \((\d+) Agents\)/)).toBe(
       real.agents,
     );
   });
@@ -115,11 +115,11 @@ describe("documented counts match the filesystem", () => {
 
   it("SKILLS-CATALOG intro", () => {
     const catalog = read("docs/SKILLS-CATALOG.md");
-    expect(stated(catalog, "catalog intro", /Los (\d+) skills disponibles/)).toBe(real.skills);
+    expect(stated(catalog, "catalog intro", /The (\d+) skills available/)).toBe(real.skills);
     // The table is knowingly incomplete; the stated coverage has to stay true too.
     const rows = (catalog.match(/^\| `\//gm) ?? []).length;
-    expect(stated(catalog, "catalog coverage", /La tabla cubre (\d+)/)).toBe(rows);
-    expect(stated(catalog, "catalog gap", /hay (\d+) skills instalables/)).toBe(real.skills - rows);
+    expect(stated(catalog, "catalog coverage", /The table covers (\d+)/)).toBe(rows);
+    expect(stated(catalog, "catalog gap", /there are (\d+) installable skills/)).toBe(real.skills - rows);
   });
 });
 

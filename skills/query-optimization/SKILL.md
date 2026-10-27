@@ -1,6 +1,6 @@
 ---
 name: query-optimization
-description: "Optimización queries SQL en PostgreSQL 15+. EXPLAIN ANALYZE, pg_stat_statements, N+1, paginación, índices, CTEs, LATERAL joins. Stack Educabot Go+TS."
+description: "SQL query optimization on PostgreSQL 15+. EXPLAIN ANALYZE, pg_stat_statements, N+1, pagination, indexes, CTEs, LATERAL joins. Educabot Go+TS stack."
 category: "database"
 argument-hint: "[path-to-sql-or-migration, or query]"
 user-invocable: true
@@ -8,100 +8,100 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
 # Query Optimization (PostgreSQL)
 
-**Regla:** sin EXPLAIN ANALYZE, no hay optimización. Todo cambio validado contra plan real.
+**Rule:** without EXPLAIN ANALYZE, there is no optimization. Every change is validated against the real plan.
 
-## EXPLAIN ANALYZE — Qué buscar
+## EXPLAIN ANALYZE — What to look for
 
-| Señal | Problema | Acción |
+| Signal | Problem | Action |
 |-------|----------|--------|
-| `Seq Scan` en tabla grande | Falta índice | Crear índice compuesto |
-| `Nested Loop` con muchas inner rows | Mal plan de join | Índice en columna de join |
-| `rows=` estimado vs actual >10x | Estadísticas desactualizadas | `ANALYZE tabla;` |
-| `Buffers: read >> hit` | Working set > shared_buffers | Índice faltante |
-| `Rows Removed by Filter: N` alto | Filtro post-scan | Índice parcial o reescritura |
+| `Seq Scan` on a large table | Missing index | Create a composite index |
+| `Nested Loop` with many inner rows | Bad join plan | Index on the join column |
+| Estimated vs actual `rows=` >10x | Stale statistics | `ANALYZE my_table;` |
+| `Buffers: read >> hit` | Working set > shared_buffers | Missing index |
+| High `Rows Removed by Filter: N` | Post-scan filter | Partial index or rewrite |
 
-Herramientas: `pg_stat_statements` (top queries), Cloud SQL Query Insights, `auto_explain`, pgbadger.
+Tools: `pg_stat_statements` (top queries), Cloud SQL Query Insights, `auto_explain`, pgbadger.
 
-## Patrones Comunes y Fix
+## Common Patterns and Fixes
 
 ### N+1
 
-Loop en ORM → batch con `WHERE curso_id = ANY($1::bigint[])`. TS/Prisma: `include: {}` o DataLoader.
+ORM loop → batch with `WHERE course_id = ANY($1::bigint[])`. TS/Prisma: `include: {}` or DataLoader.
 
 ### SELECT *
 
-Rompe index-only scans, más I/O. Siempre columnas explícitas.
+Breaks index-only scans, more I/O. Always explicit columns.
 
-### OFFSET grande (paginación)
+### Large OFFSET (pagination)
 
-`OFFSET 100000` = escanear y descartar 100k rows. Usar **keyset pagination**:
+`OFFSET 100000` = scan and discard 100k rows. Use **keyset pagination**:
 `WHERE (created_at, id) < ($1, $2) ORDER BY created_at DESC, id DESC LIMIT 20`
 
-### COUNT(*) exacto en tablas grandes
+### Exact COUNT(*) on large tables
 
-Alternativa: `reltuples` de `pg_class` para estimación. O índice covering.
+Alternative: `reltuples` from `pg_class` for an estimate. Or a covering index.
 
 ### LIKE '%foo%'
 
-B-tree no sirve. Usar `pg_trgm` + GIN para substring, o `tsvector` para full-text.
+B-tree does not help. Use `pg_trgm` + GIN for substrings, or `tsvector` for full-text.
 
-### Funciones en WHERE
+### Functions in WHERE
 
-`WHERE date(created_at) = '...'` no usa índice. Usar range: `WHERE created_at >= X AND created_at < Y`
+`WHERE date(created_at) = '...'` does not use the index. Use a range: `WHERE created_at >= X AND created_at < Y`
 
-### OR con columnas distintas
+### OR across different columns
 
-Reescribir como `UNION ALL`.
+Rewrite as `UNION ALL`.
 
-### Subqueries correlacionadas
+### Correlated subqueries
 
-Reescribir como `JOIN + GROUP BY`.
+Rewrite as `JOIN + GROUP BY`.
 
 ## Join Planning
 
-- Postgres reordena joins hasta 8 tablas (`join_collapse_limit`). Más allá, orden escrito gana
-- CTEs: `MATERIALIZED` = barrera (se ejecuta 1 vez), `NOT MATERIALIZED` = inline
-- `LATERAL` join para top N por grupo (e.g. últimas 3 calificaciones por alumno)
-- Parallel query: verificar `Gather` en EXPLAIN. Si no aparece → funciones VOLATILE o config
+- Postgres reorders joins up to 8 tables (`join_collapse_limit`). Beyond that, the written order wins
+- CTEs: `MATERIALIZED` = barrier (runs once), `NOT MATERIALIZED` = inline
+- `LATERAL` join for top N per group (e.g. last 3 grades per student)
+- Parallel query: check for `Gather` in EXPLAIN. If it does not appear → VOLATILE functions or config
 
-## Estadísticas
+## Statistics
 
-- `ANALYZE tablename;` tras bulk loads. Autovacuum normalmente alcanza
-- Multi-column statistics para columnas correlacionadas: `CREATE STATISTICS stx ON col1, col2 FROM tabla;`
+- `ANALYZE tablename;` after bulk loads. Autovacuum is usually enough
+- Multi-column statistics for correlated columns: `CREATE STATISTICS stx ON col1, col2 FROM my_table;`
 
 ## Materialized Views
 
-Para reportes agregados pesados no-realtime. `REFRESH CONCURRENTLY` requiere índice único.
+For heavy, non-realtime aggregate reports. `REFRESH CONCURRENTLY` requires a unique index.
 
 ## Connection Pooling
 
-- Go: `pgxpool` (tamaño: `num_cpus * 2` a `4`). TS: `pg.Pool` o Prisma
-- Muchas conexiones cortas → PgBouncer transaction mode
-- Más conexiones ≠ más throughput
+- Go: `pgxpool` (size: `num_cpus * 2` to `4`). TS: `pg.Pool` or Prisma
+- Many short connections → PgBouncer transaction mode
+- More connections ≠ more throughput
 
 ## Multi-tenant
 
-- Siempre filtrar por `tenant_id` primero
-- Índices compuestos que empiezan por `tenant_id`: `(tenant_id, curso_id)`
-- RLS como red de seguridad
+- Always filter by `tenant_id` first
+- Composite indexes starting with `tenant_id`: `(tenant_id, course_id)`
+- RLS as a safety net
 
 ## Anti-patterns
 
-- Optimizar sin EXPLAIN ANALYZE, agregar índice sin verificar cambio de plan
-- ORM `findAll()` + filtrar en memoria, `SELECT *`, OFFSET grande
-- `COUNT(*)` exacto cuando UI solo necesita "más de 10k"
-- N+1 invisible, sin `ANALYZE` post bulk load, no monitorear `pg_stat_statements`
-- Pool sin tunear, funciones sobre columnas indexadas, queries sin `tenant_id`
+- Optimizing without EXPLAIN ANALYZE, adding an index without verifying the plan changed
+- ORM `findAll()` + filtering in memory, `SELECT *`, large OFFSET
+- Exact `COUNT(*)` when the UI only needs "more than 10k"
+- Invisible N+1, no `ANALYZE` after a bulk load, not monitoring `pg_stat_statements`
+- Untuned pool, functions over indexed columns, queries without `tenant_id`
 
 ## Checklist
 
-- [ ] EXPLAIN ANALYZE baseline capturado
-- [ ] Nodos problemáticos identificados (Seq Scan, Nested Loop, Rows Removed)
-- [ ] Estimado vs actual rows verificado (>10x → ANALYZE)
-- [ ] Índice diseñado (composite, partial, covering, funcional)
-- [ ] Patrones anti reescritos (SELECT *, OFFSET, N+1, subquery correlacionada)
-- [ ] Nuevo EXPLAIN ANALYZE validado — plan cambió como esperado
-- [ ] Mejora medida en ms
-- [ ] No rompió otras queries
-- [ ] Query crítica agregada a observabilidad
-- [ ] PR documentado: query antes/después, plan, impacto
+- [ ] EXPLAIN ANALYZE baseline captured
+- [ ] Problematic nodes identified (Seq Scan, Nested Loop, Rows Removed)
+- [ ] Estimated vs actual rows checked (>10x → ANALYZE)
+- [ ] Index designed (composite, partial, covering, functional)
+- [ ] Anti-patterns rewritten (SELECT *, OFFSET, N+1, correlated subquery)
+- [ ] New EXPLAIN ANALYZE validated — the plan changed as expected
+- [ ] Improvement measured in ms
+- [ ] Other queries not broken
+- [ ] Critical query added to observability
+- [ ] PR documented: query before/after, plan, impact

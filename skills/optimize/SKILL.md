@@ -1,6 +1,6 @@
 ---
 name: optimize
-description: "Analiza performance del proyecto: hot paths, N+1 queries, re-renders, missing indexes, memory leaks. Propone fixes con impacto medible."
+description: "Analyzes project performance: hot paths, N+1 queries, re-renders, missing indexes, memory leaks. Proposes fixes with measurable impact."
 category: "workflow"
 argument-hint: "[file-path | empty for whole project]"
 user-invocable: true

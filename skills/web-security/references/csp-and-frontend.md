@@ -22,15 +22,15 @@ Strict baseline: `default-src 'self'; script-src 'self' 'nonce-{N}' 'strict-dyna
 
 | # | Don't | Do instead |
 |---|-------|------------|
-| 1 | `unsafe-inline` o `unsafe-eval` en `script-src` | Nonces CSPRNG por request o hashes SHA256 en build-time |
-| 2 | `*` en cualquier directiva de CSP | Orígenes explícitos + `strict-dynamic` |
-| 3 | CSP solo en `<meta>` tag | Header HTTP para que aplique a todos los recursos |
-| 4 | CORS `*` con credentials | Whitelist explícita de orígenes; nunca `*` con credenciales |
-| 5 | JWT en `localStorage` | In-memory (SPA) o HttpOnly cookie con SameSite=Lax |
-| 6 | Nonces reutilizados entre requests | Nuevo nonce CSPRNG (128-bit) por cada request |
-| 7 | Headers de seguridad solo en algunas rutas | Middleware global — nunca per-route |
-| 8 | Secrets en el bundle del cliente | Solo `VITE_`-prefix para vars no sensibles; secrets en backend |
-| 9 | `eval()` / `Function()` sobre input externo | Eliminar por diseño; si inevitable, sandbox estricto |
-| 10 | Auth solo en frontend | Backend valida siempre; frontend es UX solamente |
-| 11 | Loggear tokens, passwords o PII | Structured logging sin datos sensibles; usar trace_id |
-| 12 | Enforced CSP directo en producción sin prueba | report-only 2-4 semanas → analizar → enforced |
+| 1 | `unsafe-inline` or `unsafe-eval` in `script-src` | Per-request CSPRNG nonces or build-time SHA256 hashes |
+| 2 | `*` in any CSP directive | Explicit origins + `strict-dynamic` |
+| 3 | CSP only in a `<meta>` tag | HTTP header so it applies to every resource |
+| 4 | CORS `*` with credentials | Explicit origin whitelist; never `*` with credentials |
+| 5 | JWT in `localStorage` | In-memory (SPA) or HttpOnly cookie with SameSite=Lax |
+| 6 | Nonces reused across requests | A new CSPRNG nonce (128-bit) for every request |
+| 7 | Security headers only on some routes | Global middleware — never per-route |
+| 8 | Secrets in the client bundle | `VITE_` prefix only for non-sensitive vars; secrets in the backend |
+| 9 | `eval()` / `Function()` on external input | Remove it by design; if unavoidable, a strict sandbox |
+| 10 | Auth only in the frontend | The backend always validates; the frontend is UX only |
+| 11 | Logging tokens, passwords or PII | Structured logging without sensitive data; use trace_id |
+| 12 | Enforced CSP straight to production without testing | report-only for 2-4 weeks → analyze → enforced |

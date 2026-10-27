@@ -8,18 +8,18 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # observability-setup — Observability Stack
 
-3 pilares + error tracking: **OpenTelemetry** (instrumentación) → **Prometheus + Loki + Tempo** (storage) → **Grafana** (UI) + **Sentry** (errores). Correlación vía `trace_id`.
+3 pillars + error tracking: **OpenTelemetry** (instrumentation) → **Prometheus + Loki + Tempo** (storage) → **Grafana** (UI) + **Sentry** (errors). Correlation via `trace_id`.
 
-## Stack Educabot
+## Educabot stack
 
-| Capa | Herramienta |
+| Layer | Tool |
 |------|-------------|
-| Instrumentación | OpenTelemetry SDK |
+| Instrumentation | OpenTelemetry SDK |
 | Logs | Loki (structured JSON) |
 | Metrics | Prometheus (pull, kube-native) |
 | Traces | Tempo |
-| UI unificada | Grafana (dashboards + alerts + correlation) |
-| Errors | Sentry (crash reporting con contexto) |
+| Unified UI | Grafana (dashboards + alerts + correlation) |
+| Errors | Sentry (crash reporting with context) |
 | Alerting | Alertmanager → PagerDuty/Slack |
 
 ## Grafana Dashboard — RED Metrics
@@ -27,18 +27,18 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 - Request Rate: `sum(rate(http_requests_total{service="$svc"}[5m]))`
 - Error Rate: 5xx / total
 - Latency p50/p95/p99: `histogram_quantile`
-- Saturation: CPU + memory por pod
+- Saturation: CPU + memory per pod
 
-## Alertas Base
+## Base Alerts
 
-| Alerta | Expr | Severity |
+| Alert | Expr | Severity |
 |--------|------|----------|
-| HighErrorRate | 5xx rate > 5% por 10min | critical |
-| HighLatencyP95 | p95 > 1s por 10min | warning |
-| PodCrashLooping | restarts > 0 por 15min | critical |
-| PodMemoryNearLimit | memory > 90% limit por 10min | warning |
+| HighErrorRate | 5xx rate > 5% for 10min | critical |
+| HighLatencyP95 | p95 > 1s for 10min | warning |
+| PodCrashLooping | restarts > 0 for 15min | critical |
+| PodMemoryNearLimit | memory > 90% limit for 10min | warning |
 
-Las reglas reales (YAML), alertas de bases de datos y el ruteo de Alertmanager:
+The real rules (YAML), database alerts and Alertmanager routing:
 
 > → Read references/prometheus-alert-rules.md for rule files with `for:`, aggregation and runbook links, database alerts from the exporters, Alertmanager routing and inhibition, and `promtool`/`amtool` checks
 

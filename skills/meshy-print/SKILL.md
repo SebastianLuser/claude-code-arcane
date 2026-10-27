@@ -1,108 +1,108 @@
 ---
 name: meshy-print
-description: "Prepara un asset para impresion 3D con Meshy: analyze printability (gratis) -> repair -> resize a mm reales -> STL/3MF. Usar para: imprimir 3d, printability, stl, resize mm, reparar malla para impresion."
+description: "Prepares an asset for 3D printing with Meshy: analyze printability (free) -> repair -> resize to real mm -> STL/3MF. Use for: 3d print, printability, stl, resize mm, repair mesh for printing."
 category: "gamedev"
 argument-hint: "<slug> [--height-mm <n>] [--multicolor]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-# meshy-print — Preparar para impresion 3D
+# meshy-print — Prepare for 3D printing
 
-El flujo esta ordenado por costo a proposito: lo gratis primero, y lo caro solo si el diagnostico lo justifica.
+The flow is ordered by cost on purpose: free steps first, and the expensive ones only if the diagnosis justifies them.
 
 ## Input
 
-- `<slug>` (requerido). Sin argumento → mostrar el uso y parar.
-- `--height-mm <n>` (opcional): altura real de la pieza. Sin esto no se puede escalar bien.
-- `--multicolor` (opcional): salida `3mf` en vez de `stl`.
+- `<slug>` (required). No argument → show usage and stop.
+- `--height-mm <n>` (optional): real height of the piece. Without it, scaling cannot be done right.
+- `--multicolor` (optional): `3mf` output instead of `stl`.
 
-Requiere `assets/3d/<slug>/master.glb`. Si no existe, parar: "Corre `/meshy-generate <slug>` primero."
+Requires `assets/3d/<slug>/master.glb`. If it does not exist, stop: "Run `/meshy-generate <slug>` first."
 
 ---
 
-## Phase 1: Analyze — gratis, siempre
+## Phase 1: Analyze — free, always
 
 ```
 mcp__meshy__analyze_printability
 ```
 
-Cuesta **0 creditos**. Correrlo siempre, sin pedir confirmacion, antes que cualquier otra cosa.
+Costs **0 credits**. Always run it, without asking for confirmation, before anything else.
 
-Reportar el diagnostico al usuario en concreto: non-manifold, normals invertidas, paredes finas, geometria flotante, self-intersections. Este reporte es el que decide si vale la pena gastar en repair.
+Report the diagnosis to the user concretely: non-manifold, flipped normals, thin walls, floating geometry, self-intersections. This report is what decides whether repair is worth paying for.
 
-**Si el analisis sale limpio, saltar la Phase 2 entera.** Diez creditos de `repair` sobre una malla sana son diez creditos tirados.
+**If the analysis comes back clean, skip Phase 2 entirely.** Ten credits of `repair` on a healthy mesh are ten credits thrown away.
 
 ---
 
-## Phase 2: Repair — 10 creditos, solo si hace falta
+## Phase 2: Repair — 10 credits, only if needed
 
-Presentar el gate antes de llamar:
+Present the gate before calling:
 
 | | |
 |---|---|
-| Operacion | `repair_printability` |
-| Costo | 10 creditos |
-| Problemas que resuelve | (los que listo la Phase 1) |
-| Balance actual | (de `check_balance`) |
+| Operation | `repair_printability` |
+| Cost | 10 credits |
+| Problems it fixes | (the ones Phase 1 listed) |
+| Current balance | (from `check_balance`) |
 
-Con confirmacion explicita, llamar `mcp__meshy__repair_printability` y pollear con `get_task_status`.
+With explicit confirmation, call `mcp__meshy__repair_printability` and poll with `get_task_status`.
 
-Despues del repair, **volver a correr `analyze_printability`** (gratis) para confirmar que quedo resuelto. No asumir que el repair funciono.
+After the repair, **run `analyze_printability` again** (free) to confirm it was fixed. Do not assume the repair worked.
 
-Si hay problemas que el repair no arregla, decirlo: algunos requieren edicion manual en Blender y no tiene sentido gastar dos veces.
-
----
-
-## Phase 3: Escala real — 1 credito
-
-Los modelos de Meshy vienen en unidades arbitrarias. Sin escalar, el slicer imprime cualquier cosa.
-
-- **Con `--height-mm`**: `mcp__meshy__resize` a esa altura.
-- **Sin `--height-mm`**: preguntar la altura antes de seguir. No adivinar.
-
-Anotar la altura final en el ledger — es lo que evita reimprimir a la escala equivocada.
-
-Chequear la altura contra el volumen de la impresora del usuario si lo sabemos; si no, avisar que lo verifique en el slicer.
+If there are problems the repair does not fix, say so: some need manual editing in Blender and there is no point paying twice.
 
 ---
 
-## Phase 4: Exportar — 1 credito
+## Phase 3: Real scale — 1 credit
 
-`mcp__meshy__convert` a `stl` (o `3mf` con `--multicolor`, que preserva color por cara). Salida: `assets/3d/<slug>/targets/print.stl` (o `.3mf`).
+Meshy models come in arbitrary units. Without scaling, the slicer prints anything.
 
-`mcp__meshy__send_to_slicer` esta disponible si el usuario lo pide explicitamente.
+- **With `--height-mm`**: `mcp__meshy__resize` to that height.
+- **Without `--height-mm`**: ask for the height before continuing. Do not guess.
+
+Record the final height in the ledger — it is what prevents reprinting at the wrong scale.
+
+Check the height against the user's printer volume if we know it; if not, tell them to verify it in the slicer.
 
 ---
 
-## Phase 5: Print via Meshy — solo si lo piden
+## Phase 4: Export — 1 credit
 
-Meshy puede imprimir y enviar la pieza fisica. Es lo mas caro del catalogo:
+`mcp__meshy__convert` to `stl` (or `3mf` with `--multicolor`, which preserves per-face color). Output: `assets/3d/<slug>/targets/print.stl` (or `.3mf`).
 
-| | Creditos |
+`mcp__meshy__send_to_slicer` is available if the user explicitly asks for it.
+
+---
+
+## Phase 5: Print via Meshy — only if asked
+
+Meshy can print and ship the physical piece. It is the most expensive item in the catalog:
+
+| | Credits |
 |---|---|
 | White model | 20 |
 | Multicolor (`process_multicolor`) | 40 |
 
-**Doble confirmacion**: mostrar el costo, esperar confirmacion, repetir el costo y el destino, esperar de nuevo. No entrar a esta fase por iniciativa propia — solo si el usuario la pidio.
+**Double confirmation**: show the cost, wait for confirmation, repeat the cost and the destination, wait again. Never enter this phase on your own initiative — only if the user asked for it.
 
 ---
 
-## Phase 6: Ledger y resumen
+## Phase 6: Ledger and summary
 
-Agregar cada task a `meshy.json` con sus creditos, sumar a `credits_total`, agregar el STL/3MF a `derived[]`, anotar la altura en mm. Mostrar el diff y **pedir aprobacion antes de escribir**.
+Add each task to `meshy.json` with its credits, add them to `credits_total`, add the STL/3MF to `derived[]`, record the height in mm. Show the diff and **ask for approval before writing**.
 
-Reportar: veredicto del analisis inicial, si hubo repair y si el re-analisis quedo limpio, altura final, archivo generado, y **creditos gastados reales** (delta de `check_balance`).
+Report: verdict of the initial analysis, whether there was a repair and whether the re-analysis came back clean, final height, generated file, and **actual credits spent** (delta from `check_balance`).
 
 **Verdict:**
-- **PRINT-READY** — analisis limpio, escala aplicada, archivo en disco.
-- **NEEDS-MANUAL** — quedan defectos que el repair no resuelve. Listarlos y decir que hace falta en Blender.
-- **BLOCKED** — falta el master, o falta la altura y el usuario no la dio.
+- **PRINT-READY** — clean analysis, scale applied, file on disk.
+- **NEEDS-MANUAL** — defects remain that the repair does not fix. List them and say what is needed in Blender.
+- **BLOCKED** — the master is missing, or the height is missing and the user did not give it.
 
 ## Next Steps
 
-- Verificar la pieza en el slicer antes de imprimir: soportes, orientacion, volumen
-- `/meshy-derive <slug> game` si el mismo asset ademas va al juego — el master es el mismo, los targets son independientes
+- Check the piece in the slicer before printing: supports, orientation, volume
+- `/meshy-derive <slug> game` if the same asset also goes into the game — the master is the same, the targets are independent
 
 ---
 
-> Tabla de creditos completa y reglas de gasto: `.claude/rules/meshy-assets.md`. La regla de "gratis antes que pago" de este flujo esta ahi tambien.
+> Full credit table and spend rules: `.claude/rules/meshy-assets.md`. This flow's "free before paid" rule lives there too.

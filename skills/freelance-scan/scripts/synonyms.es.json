@@ -1,0 +1,13 @@
+{
+  "language": "es",
+  "note": "Query expansion for freelance_search.py search in Spanish: GetOnBrd is a LatAm board, users search in Spanish and postings are written in Spanish. Every synonyms.<lang>.json next to the script applies at once, in file-name order; a key in several packs gets their values appended in that order. Keys are lowercase.",
+  "synonyms": {
+    "tienda": ["shopify", "woocommerce", "vtex", "tiendanube"],
+    "sitio": ["wordpress", "webflow", "astro", "landing"],
+    "api": ["integracion"],
+    "integraciones": ["api", "webhook", "erp", "crm", "salesforce", "middleware"],
+    "database": ["migracion"],
+    "migracion": ["legacy", "refactor", "modernizacion", "migration"],
+    "automatizacion": ["zapier", "n8n", "make", "airflow", "automation"]
+  }
+}

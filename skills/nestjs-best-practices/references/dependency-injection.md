@@ -2,7 +2,7 @@
 
 ## 2.4 Prefer Constructor Injection — CRITICAL
 
-Visibilidad, type safety y testabilidad. Siempre.
+Visibility, type safety and testability. Always.
 ```ts
 @Injectable()
 export class OrdersService {
@@ -12,22 +12,22 @@ export class OrdersService {
 
 ## 2.1 Avoid Service Locator Anti-Pattern — HIGH
 
-**Incorrecto:**
+**Incorrect:**
 ```ts
-const svc = this.moduleRef.get(UsersService); // dependencia oculta, no testeable
+const svc = this.moduleRef.get(UsersService); // hidden dependency, not testable
 ```
-**Correcto:** inyectar por constructor (2.4). `ModuleRef` solo para casos dinámicos justificados.
+**Correct:** inject through the constructor (2.4). `ModuleRef` only for justified dynamic cases.
 
 ## 2.5 Understand Provider Scopes — CRITICAL
 
-`DEFAULT` (singleton) por defecto. `REQUEST` scope tiene costo de performance (instancia por request) → usar solo cuando se necesita contexto de request real.
+`DEFAULT` (singleton) by default. `REQUEST` scope has a performance cost (one instance per request) → use it only when real request context is needed.
 ```ts
-@Injectable({ scope: Scope.REQUEST }) // solo si es necesario
+@Injectable({ scope: Scope.REQUEST }) // only if necessary
 ```
 
 ## 2.6 Use Injection Tokens for Interfaces — HIGH
 
-Las interfaces de TS no existen en runtime → no se pueden inyectar. Usar símbolo o abstract class como token.
+TS interfaces do not exist at runtime → they cannot be injected. Use a symbol or an abstract class as the token.
 ```ts
 export const USER_REPO = Symbol('USER_REPO');
 @Module({ providers: [{ provide: USER_REPO, useClass: PrismaUserRepository }] })
@@ -36,10 +36,10 @@ export const USER_REPO = Symbol('USER_REPO');
 
 ## 2.2 Interface Segregation — HIGH
 
-Interfaces chicas y enfocadas, no "fat interfaces" que fuerzan dependencias sin usar.
+Small, focused interfaces, not "fat interfaces" that force unused dependencies.
 
 ## 2.3 Liskov Substitution — HIGH
 
-Toda implementación de una interfaz honra el contrato idéntico → intercambiables sin romper consumidores.
+Every implementation of an interface honors the identical contract → interchangeable without breaking consumers.
 
 _Ref: https://docs.nestjs.com/fundamentals/custom-providers · https://docs.nestjs.com/fundamentals/injection-scopes_

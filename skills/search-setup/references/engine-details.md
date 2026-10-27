@@ -2,14 +2,14 @@
 
 ## Postgres FTS
 
-- Columna `tsvector GENERATED ALWAYS AS` con `setweight` por campo (A=title, B=description, C=tags)
-- GIN index para FTS + GIN trigram para typo/ILIKE
-- Multilingue: columna `language` -> dictionary correcto, o `simple` como generico
-- Limitaciones: typo flojo, faceting manual con GROUP BY, highlighting basico
+- `tsvector GENERATED ALWAYS AS` column with `setweight` per field (A=title, B=description, C=tags)
+- GIN index for FTS + GIN trigram for typos/ILIKE
+- Multilingual: a `language` column -> the right dictionary, or `simple` as a generic one
+- Limitations: weak typo handling, manual faceting with GROUP BY, basic highlighting
 
 ## Meilisearch
 
-- Docker self-host, `MEILI_MASTER_KEY` solo en backend
-- Search-only keys con `tenantTokenFilter` por tenant, nunca master key en frontend
-- `searchableAttributes` ordenados por importancia, `filterableAttributes` para facets
-- Stopwords es/pt, synonyms cross-language, typo tolerance configurable
+- Docker self-host, `MEILI_MASTER_KEY` only in the backend
+- Search-only keys with a per-tenant `tenantTokenFilter`, never the master key in the frontend
+- `searchableAttributes` ordered by importance, `filterableAttributes` for facets
+- es/pt stopwords, cross-language synonyms, configurable typo tolerance

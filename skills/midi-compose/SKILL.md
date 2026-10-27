@@ -1,45 +1,45 @@
 ---
 name: midi-compose
-description: "Genera archivos MIDI (.mid) desde un spec JSON con scripts Python stdlib-only. Sin dependencias: escribe el Standard MIDI File binario directo. Usar para: exportar una composicion a MIDI, bocetar stems, generar loops o capas para middleware."
+description: "Generates MIDI files (.mid) from a JSON spec with stdlib-only Python scripts. No dependencies: writes the binary Standard MIDI File directly. Use for: exporting a composition to MIDI, sketching stems, generating loops or layers for middleware."
 category: "audio"
 argument-hint: "[spec-path | new | validate]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 ---
-# midi-compose — Composición a MIDI
+# midi-compose — Composition to MIDI
 
-Baja decisiones musicales a un `.mid` real. Las decisiones las toma `/music-composition`; esta skill las escribe.
+Turns musical decisions into a real `.mid`. `/music-composition` makes the decisions; this skill writes them.
 
-**Sin dependencias.** El Standard MIDI File es un formato binario documentado y `scripts/compose_midi.py` lo emite con la stdlib de Python. No hay que instalar `midiutil`, `music21` ni nada. Corre en la máquina del usuario tal como se copia.
+**No dependencies.** The Standard MIDI File is a documented binary format and `scripts/compose_midi.py` emits it with the Python stdlib. There is no need to install `midiutil`, `music21` or anything else. It runs on the user's machine exactly as copied.
 
-## Alcance
+## Scope
 
-**Sí:** escribir `.mid` multipista con tempo, compás, tonalidad, programas General MIDI, velocities y percusión.
+**Yes:** write multitrack `.mid` files with tempo, time signature, key, General MIDI programs, velocities and percussion.
 
-**No:** renderizar a audio (requiere FluidSynth + soundfonts, dependencias de sistema fuera de scope), tomar decisiones musicales (→ `/music-composition`), notación.
+**No:** rendering to audio (requires FluidSynth + soundfonts, system dependencies out of scope), making musical decisions (→ `/music-composition`), notation.
 
-## Cuándo usar
+## When to use
 
-- Ya hay material decidido (progresión, melodía, groove) y hace falta el archivo
-- Bocetar stems para un sistema de capas de `/adaptive-music`
-- Generar variantes de un tema por transformación (aumentación, cambio de modo)
-- Entregar MIDI a un compositor o importarlo a un DAW/middleware
+- The material is already decided (progression, melody, groove) and the file is needed
+- Sketch stems for a `/adaptive-music` layering system
+- Generate variants of a theme by transformation (augmentation, mode change)
+- Hand MIDI to a composer or import it into a DAW/middleware
 
 ---
 
-## Modos
+## Modes
 
-| Modo | Qué hace |
+| Mode | What it does |
 |---|---|
-| `spec-path` | Genera el `.mid` desde un spec JSON existente |
-| `new` | Arma el spec desde cero a partir de material musical, y después genera |
-| `validate` | Solo valida el spec y reporta, sin escribir nada |
+| `spec-path` | Generates the `.mid` from an existing JSON spec |
+| `new` | Builds the spec from scratch from musical material, then generates |
+| `validate` | Only validates the spec and reports, without writing anything |
 
 ## Workflow
 
-### 1. Armar el spec
+### 1. Build the spec
 
-Un objeto JSON. Todos los tiempos están en **beats** (negras), no en ticks — el script convierte.
+A JSON object. All times are in **beats** (quarter notes), not ticks — the script converts.
 
 ```json
 {
@@ -62,75 +62,75 @@ Un objeto JSON. Todos los tiempos están en **beats** (negras), no en ticks — 
 }
 ```
 
-Hay un ejemplo completo de tres pistas en `templates/example-composition.json`.
+There is a complete three-track example in `templates/example-composition.json`.
 
-**Campos del spec**
+**Spec fields**
 
-| Campo | Default | Notas |
+| Field | Default | Notes |
 |---|---|---|
-| `name` | `"untitled"` | Va al meta de nombre de secuencia |
+| `name` | `"untitled"` | Goes to the sequence name meta event |
 | `tempo` | `120` | BPM, 1-600 |
-| `ppq` | `480` | Ticks por negra, 24-32767 |
-| `time_signature` | `[4, 4]` | Denominador potencia de 2 |
-| `key` / `mode` | `"C"` / `"major"` | Solo para el meta de tonalidad; no transpone |
-| `tracks[].channel` | índice del track | 0-15, único por track |
-| `tracks[].program` | `0` | Programa General MIDI 0-127 |
-| `tracks[].drums` | `false` | Declaralo en el track del canal 9 |
+| `ppq` | `480` | Ticks per quarter note, 24-32767 |
+| `time_signature` | `[4, 4]` | Denominator is a power of 2 |
+| `key` / `mode` | `"C"` / `"major"` | Only for the key signature meta event; does not transpose |
+| `tracks[].channel` | track index | 0-15, unique per track |
+| `tracks[].program` | `0` | General MIDI program 0-127 |
+| `tracks[].drums` | `false` | Declare it on the channel 9 track |
 | `notes[].pitch` | — | `60`, `"C4"`, `"F#3"`, `"Bb5"`. C4 = 60 |
-| `notes[].start` | `0` | En beats desde el inicio |
-| `notes[].duration` | `1` | En beats, > 0 |
+| `notes[].start` | `0` | In beats from the start |
+| `notes[].duration` | `1` | In beats, > 0 |
 | `notes[].velocity` | `90` | 1-127 |
 
-### 2. Validar antes de escribir
+### 2. Validate before writing
 
 ```bash
 python skills/midi-compose/scripts/compose_midi.py spec.json --validate
 ```
 
-Salida `[PASS]` con el resumen, más `[WARN]` por cada problema no fatal. Un `[FAIL]` nombra el track y la nota exactos.
+Outputs `[PASS]` with the summary, plus a `[WARN]` for each non-fatal problem. A `[FAIL]` names the exact track and note.
 
-### 3. Generar
+### 3. Generate
 
 ```bash
-python skills/midi-compose/scripts/compose_midi.py spec.json -o salida.mid
+python skills/midi-compose/scripts/compose_midi.py spec.json -o output.mid
 ```
 
-Antes de escribir el `.mid` o el spec a disco, preguntar al usuario "¿Escribo esto a `<path>`?" — sobre todo si el archivo ya existe.
+Before writing the `.mid` or the spec to disk, ask the user "Should I write this to `<path>`?" — especially if the file already exists.
 
 ---
 
-## Límites de MIDI que importan
+## MIDI limits that matter
 
-- **16 canales.** El canal 9 (10 en base 1) está reservado a percusión por General MIDI, así que quedan **15 pistas melódicas**. Si necesitás más, son varios archivos.
-- **Un programa por canal a la vez.** Cambiar de instrumento a mitad de pista pide otro canal.
-- **Velocity no es volumen.** Es intensidad de ataque; el sampler decide qué hacer con ella.
-- **MIDI no lleva timbre.** El programa GM es una sugerencia; cómo suena depende del soundfont o del instrumento del DAW.
-- **`pitch` en el canal de percusión es el instrumento**, no una altura: 36 = bombo, 38 = redoblante, 42 = hi-hat cerrado, 46 = hi-hat abierto.
+- **16 channels.** Channel 9 (10 in 1-based numbering) is reserved for percussion by General MIDI, which leaves **15 melodic tracks**. If you need more, use several files.
+- **One program per channel at a time.** Changing instrument mid-track needs another channel.
+- **Velocity is not volume.** It is attack intensity; the sampler decides what to do with it.
+- **MIDI carries no timbre.** The GM program is a suggestion; how it sounds depends on the soundfont or the DAW instrument.
+- **`pitch` on the percussion channel is the instrument**, not a pitch: 36 = kick, 38 = snare, 42 = closed hi-hat, 46 = open hi-hat.
 
-## Feel y microtiming
+## Feel and microtiming
 
-El spec acepta `start` fraccional, así que el feel se escribe directo: para atrasar un backbeat 15 ms a 84 BPM, `15 / (60000 / 84 / 1) ≈ 0.021` beats. Un desvío de 10-30 ms es feel; arriba de ~50 ms se percibe como error. Ver `references/smf-format.md` para la relación tick/ms.
+The spec accepts fractional `start`, so feel is written directly: to delay a backbeat by 15 ms at 84 BPM, `15 / (60000 / 84 / 1) ≈ 0.021` beats. A deviation of 10-30 ms is feel; above ~50 ms it is perceived as a mistake. See `references/smf-format.md` for the tick/ms relationship.
 
-## Formato
+## Format
 
-> → Read references/smf-format.md para la estructura binaria del SMF, el encoding VLQ y la tabla de programas GM más usados
+> → Read references/smf-format.md for the SMF binary structure, the VLQ encoding and the table of the most used GM programs
 
 ---
 
 ## Verdict
 
-- **COMPLETE** — el `.mid` se escribió y la verificación de estructura pasa
-- **CONCERNS** — se escribió pero hay `[WARN]`: contenido melódico en el canal de percusión, o pistas cerca del límite de 15
-- **FAIL** — el spec no valida; el mensaje nombra el track y la nota
+- **COMPLETE** — the `.mid` was written and the structure check passes
+- **CONCERNS** — it was written but there are `[WARN]`s: melodic content on the percussion channel, or tracks close to the 15 limit
+- **FAIL** — the spec does not validate; the message names the track and the note
 
-Verificación rápida de que el archivo es un SMF:
+Quick check that the file is an SMF:
 
 ```bash
-python -c "print(open('salida.mid','rb').read(4) == b'MThd')"   # True
+python -c "print(open('output.mid','rb').read(4) == b'MThd')"   # True
 ```
 
 ## Next steps
 
-- `/music-composition` si el material musical todavía no está decidido
-- `/adaptive-music` para armar el sistema de capas que consume estos stems
-- `/middleware-integration` para importar los segmentos a Wwise/FMOD
+- `/music-composition` if the musical material is not decided yet
+- `/adaptive-music` to build the layering system that consumes these stems
+- `/middleware-integration` to import the segments into Wwise/FMOD

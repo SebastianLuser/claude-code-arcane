@@ -1,6 +1,6 @@
 ---
 name: create-test-user
-description: "Crea un usuario de prueba en el proyecto: anónimo, autenticado o admin. Usa seed scripts, endpoints de admin, o inserts directos."
+description: "Creates a test user in the project: anonymous, authenticated or admin. Uses seed scripts, admin endpoints, or direct inserts."
 category: "testing"
 argument-hint: "[user-type: anonymous | student | admin]"
 user-invocable: true
@@ -10,7 +10,7 @@ allowed-tools: Read, Glob, Grep, Bash
 # Skill: create-test-user
 
 ## Trigger
-When the user says "create test user", "crear usuario de prueba", "test user", or similar.
+When the user says "create test user", "seed a test user", "test user", or similar.
 
 ## Workflow
 

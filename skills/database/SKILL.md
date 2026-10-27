@@ -1,6 +1,6 @@
 ---
 name: database
-description: "Schema design, migrations y data operations para Postgres + Prisma/GORM. Setup, indexing, queries, seeds, backups."
+description: "Schema design, migrations and data operations for Postgres + Prisma/GORM. Setup, indexing, queries, seeds, backups."
 category: "database"
 argument-hint: "[setup|schema|migrations|operations|full]"
 user-invocable: true
@@ -13,16 +13,16 @@ metadata:
 
 ## Route
 
-| Intención del usuario | Modo | Secciones relevantes |
+| User intent | Mode | Relevant sections |
 |----------------------|------|---------------------|
-| "diseñar schema", "nueva tabla", "relación", "índice" | SCHEMA | → 2. Schema Design, 3. Migrations |
-| "query lenta", "EXPLAIN", "N+1", "optimizar" | QUERY | → 5. Query Patterns |
+| "design schema", "new table", "relation", "index" | SCHEMA | → 2. Schema Design, 3. Migrations |
+| "slow query", "EXPLAIN", "N+1", "optimize" | QUERY | → 5. Query Patterns |
 | "migration", "ALTER TABLE", "expand-contract", "rollback" | MIGRATION | → 3. Migrations |
-| "sin datos", "seed", "fixtures", "datos demo" | SEED | → 7. Seed Data |
-| "conexiones", "pool", "timeout", "PgBouncer" | CONNECTIONS | → 4. Connection Management |
+| "no data", "seed", "fixtures", "demo data" | SEED | → 7. Seed Data |
+| "connections", "pool", "timeout", "PgBouncer" | CONNECTIONS | → 4. Connection Management |
 | "backup", "restore", "recovery", "PITR" | OPS | → 8. Backup & Recovery |
 
-**Regla:** si el argumento es `full`, ejecutar Checklist completo. Si la intención es ambigua, preguntar.
+**Rule:** if the argument is `full`, run the full Checklist. If the intent is ambiguous, ask.
 
 ---
 

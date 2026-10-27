@@ -1,8 +1,8 @@
 # Anti-patterns
 
-- Art bible sin connection a pilares del juego — restricciones arbitrarias
-- Color system sin semántica — hex codes sin explicar qué significa cada color
-- Asset standards vagos ("high quality textures") en lugar de números (512px tier 2)
-- Referencias sin especificar qué tomar de cada una — "like Hades" no dice nada
-- Ignorar colorblind safety
-- Secciones core no completadas antes de empezar production sections
+- Art bible with no connection to the game's pillars — arbitrary constraints
+- Color system without semantics — hex codes without explaining what each color means
+- Vague asset standards ("high quality textures") instead of numbers (512px tier 2)
+- References without stating what to take from each one — "like Hades" says nothing
+- Ignoring colorblind safety
+- Core sections not completed before starting the production sections

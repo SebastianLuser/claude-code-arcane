@@ -1,95 +1,106 @@
 ---
 name: career-registry
-description: "Traceability across the whole career workspace: check whether you already applied somewhere before spending another application, export everything to CSV, and audit the registry for gaps and drift. Covers job applications, freelance proposals and contracts. Triggers: ya me postule a, ya aplique aca, exportar postulaciones a csv, registro de aplicaciones, trazabilidad, historial de postulaciones, cuantas mande, planilla de postulaciones, auditar el registro."
-argument-hint: "[check <empresa|url> | export | stats | audit]"
+description: "Traceability across the whole career workspace: check whether you already applied somewhere before spending another application, export everything to CSV, and audit the registry for gaps and drift. Covers job applications, freelance proposals and contracts. Triggers: did I already apply to, I already applied here, export applications to csv, application registry, traceability, application history, how many did I send, applications spreadsheet, audit the registry."
+argument-hint: "[check <company|url> | export | stats | audit]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 
-# Career Registry - Trazabilidad y registro
+# Career Registry - Traceability and records
 
-Contestás la pregunta que grepear a mano contesta mal: **¿ya me postulé acá?** Y das el registro completo en CSV para mirarlo en una planilla.
+You answer the question that grepping by hand answers badly: **did I already apply here?** And you provide the full registry as CSV to look at in a spreadsheet.
 
-Sirve a los dos perfiles: `+job-hunt` (empleo) y `+freelance` (proyectos). Rutas relativas al career workspace (`--workspace`, env `CAREER_WORKSPACE`, o `./career-workspace/`).
+It serves both profiles: `+job-hunt` (jobs) and `+freelance` (projects). Paths are relative to the career workspace (`--workspace`, env `CAREER_WORKSPACE`, or `./career-workspace/`).
 
-Modo: `$ARGUMENTS`
+Mode: `$ARGUMENTS`
 
-## La regla que sostiene todo esto
+## The rule that holds all of this up
 
-**Las notas son la fuente de verdad. El CSV se deriva de ellas, siempre.**
+**The notes are the source of truth. The CSV is derived from them, always.**
 
-No hay una segunda base que mantener sincronizada, y no la va a haber: una segunda base diverge en dos semanas y después nadie sabe cuál miente. Es el mismo flujo unidireccional que el dedup de `/job-scrape` (`seen_jobs` → nota → vista, nunca de vuelta).
+There is no second database to keep in sync, and there will not be one: a second database diverges within two weeks and then nobody knows which one is lying. It is the same one-way flow as the `/job-scrape` dedup (`seen_jobs` → note → view, never back).
 
-Consecuencia práctica: si el CSV está mal, se arregla la nota, no el CSV. Y si el usuario pide "guardame el CSV para editarlo a mano", avisale que en la próxima corrida se pisa.
+Practical consequence: if the CSV is wrong, the note gets fixed, not the CSV. And if the user asks "save the CSV so I can edit it by hand", warn them that the next run overwrites it.
 
-## Los cuatro modos
+## The four modes
 
 ```bash
 python .claude/skills/career-registry/scripts/career_registry.py check "Acme"
 python .claude/skills/career-registry/scripts/career_registry.py check "https://www.linkedin.com/jobs/view/123"
-python .claude/skills/career-registry/scripts/career_registry.py export --csv registro.csv
+python .claude/skills/career-registry/scripts/career_registry.py export --csv registry.csv
 python .claude/skills/career-registry/scripts/career_registry.py stats
 python .claude/skills/career-registry/scripts/career_registry.py audit
 ```
 
-### `check` - antes de gastar otra postulación
+### `check` - before spending another application
 
-Busca por **tres claves** porque el usuario pega cualquiera de las tres: nombre de la contraparte, URL de la oferta, o título de la nota.
+It searches by **three keys** because the user pastes any of the three: counterpart name, posting URL, or note title.
 
-Es tolerante donde importa: `acme` encuentra a "Acme Inc" (ignora sufijos legales), `tecnologia latam` encuentra a "Tecnología Latam SA" (ignora acentos), y una URL con `?utm_source=...` distinto encuentra la misma oferta (canoniza el link, igual que el dedup).
+It is tolerant where it matters: `acme` finds "Acme Inc" (ignores legal suffixes), `zurich labs` finds "Zürich Labs GmbH" (ignores accents), and a URL with a different `?utm_source=...` finds the same posting (it canonicalizes the link, like the dedup does).
 
-Devuelve un veredicto de tres valores, y la diferencia entre los dos primeros importa:
+It returns a three-value verdict, and the difference between the first two matters:
 
-| Veredicto | Qué significa |
+| Verdict | What it means |
 |---|---|
-| `YA TE POSTULASTE` | Hay una nota en estado enviado. No repitas |
-| `YA LO VISTE, NO TE POSTULASTE` | Hay nota o entrada de dedup, pero nunca se envió. Vale revisarla antes de descartarla de nuevo |
-| `SIN REGISTRO` | Nunca apareció |
+| `ALREADY APPLIED` | There is a note in a sent status. Do not repeat |
+| `SEEN, NOT APPLIED` | There is a note or a dedup entry, but it was never sent. Worth reviewing before discarding it again |
+| `NO RECORD` | It never showed up |
 
-Cuándo correrlo: **antes de `/client-screen` o `/job-aplicar`**, cuando el nombre suena conocido. Un screen sobre algo que ya descartaste hace tres meses es trabajo repetido, y peor, te hace repetir el descarte sin recordar por qué.
+When to run it: **before `/client-screen` or `/job-apply`**, when the name sounds familiar. A screen on something you discarded three months ago is repeated work, and worse, it makes you repeat the discard without remembering why.
 
-### `export` - el CSV
+### `export` - the CSV
 
-Una fila por nota, con `tipo` discriminando empleo / freelance / contrato. Columnas: contraparte, título, estado, si está abierta, plataforma, `match_score`, riesgo del cliente, perfil usado, bid o monto, costo de postularse, fechas, **días sin movimiento**, link y la ruta de la nota.
+One row per note, with `type` telling job / freelance / contract apart. Columns: counterpart, title, status, whether it is open, platform, `match_score`, client risk, profile used, bid or amount, cost of applying, dates, **days idle**, link and the note path.
 
-Sin `--csv` va a stdout; con `--csv <archivo>` lo escribe en UTF-8 con BOM para que Excel no rompa los acentos. `--tipo` filtra a un solo tipo.
+Without `--csv` it goes to stdout; with `--csv <file>` it is written as UTF-8 with BOM so Excel does not break accented characters. `--type` filters to a single type.
 
-`dias_sin_movimiento` es la columna más útil de la planilla: ordenando por ahí aparece lo que quedó colgado.
+`days_idle` is the most useful column in the spreadsheet: sorting by it surfaces what was left hanging.
 
-### `stats` - conteos
+### `stats` - counts
 
-Total y abiertas por tipo, desglose por estado, cuántas se enviaron y el costo de postulaciones registrado.
+Total and open per type, breakdown by status, how many were sent and the recorded cost of applications.
 
-Trae `muestra_suficiente_para_tasas`: **con menos de 10 enviadas es `false`, y ahí no hay que calcular tasas de conversión**. Diez rechazos no son un patrón, y tratarlos como tal manda al usuario a arreglar lo que no estaba roto.
+It includes `enough_sample_for_rates`: **with fewer than 10 sent it is `false`, and then no conversion rates should be computed**. Ten rejections are not a pattern, and treating them as one sends the user to fix what was not broken.
 
-### `audit` - las divergencias
+### `audit` - the drift
 
-Lo que hace que la trazabilidad sea real y no una intención:
+What makes traceability real and not an intention:
 
-- Notas sin `estado` o sin contraparte
-- Enviadas sin fecha de envío (rompe cualquier cálculo de tiempos)
-- **Abiertas frenadas hace 21+ días** - candidatas a follow-up con `/cold-outreach` o a cerrar como `sin_respuesta`
-- Posibles duplicados: misma contraparte, mismo título, dos notas
-- **Contratos con horas reales arriba de lo estimado**, con el exceso en horas y en porcentaje. Cada uno es trabajo regalado si no hubo change order
-- Punteros del dedup que apuntan a notas que ya no existen
+- Notes without `status` or without a counterpart
+- Sent without a sent date (breaks any timing calculation)
+- **Open and stalled for 21+ days** - candidates for a follow-up with `/cold-outreach` or for closing as `no_response`
+- Possible duplicates: same counterpart, same title, two notes
+- **Contracts with actual hours above the estimate**, with the excess in hours and as a percentage. Each one is work given away if there was no change order
+- Dedup pointers that point to notes that no longer exist
 
-## Proceso
+### Workspaces from before the English contract
 
-1. Correr el modo pedido. Si el workspace no existe, el script lo dice y sugiere `/freelance-hunt setup` o `/job-hunt setup`.
-2. **Mostrar el resultado en el chat, no solo el JSON crudo.** Para `check`, el veredicto y una línea por coincidencia con su estado. Para `audit`, agrupado por severidad: primero lo que cuesta plata (horas de más, enviadas sin fecha), después lo cosmético.
-3. Para cada hallazgo de `audit`, ofrecer la acción concreta: follow-up, cerrar como `sin_respuesta`, change order, o completar el campo que falta.
-4. Los arreglos se hacen **en la nota** con approval del usuario, una por una. Nunca en masa.
+A workspace created before the English data contract reads as empty, and the result carries a "pre-English layout" problem. The migration ships here, so freelance-only installs get it too: `scripts/migrate_workspace.py` rewrites folders, fixed note names, frontmatter and `seen_jobs.json`, with every old name taken from `scripts/legacy_contract.es.json` (the same pack `career_registry.py` reads to spot the old layout).
 
-## Reglas
+```bash
+python .claude/skills/career-registry/scripts/migrate_workspace.py            # dry run: prints the plan, changes nothing
+python .claude/skills/career-registry/scripts/migrate_workspace.py --apply    # backs up the workspace next to it, then migrates
+```
 
-- **Nunca editar el CSV como si fuera la fuente de verdad.** Se regenera; los cambios van a la nota.
-- **No editar notas en masa.** Cada arreglo se muestra y se aprueba.
-- Nunca inventar un dato que falta: si una nota no tiene fecha de envío, se pregunta o se deja el hueco reportado.
-- No cambiar `estado`: eso lo hace `/job-outcome`, que es el único que mueve el pipeline.
-- El CSV puede tener nombres de clientes y montos: **no commitearlo a un remoto sin confirmación explícita**.
-- Sin guiones largos en el texto agregado a las notas.
+Show the dry run, point out `unknown_values` and `body_links_to_old_names` (note bodies are never edited), and run `--apply` only with the user's approval. With `+job-hunt` installed, `/job-hunt migrate` walks the same steps.
+
+## Process
+
+1. Run the requested mode. If the workspace does not exist, the script says so and suggests `/freelance-hunt setup` or `/job-hunt setup`.
+2. **Show the result in the chat, not just the raw JSON.** For `check`, the verdict and one line per match with its status. For `audit`, grouped by severity: first what costs money (extra hours, sent without a date), then the cosmetic issues.
+3. For each `audit` finding, offer the concrete action: follow-up, close as `no_response`, change order, or fill in the missing field.
+4. Fixes are made **in the note** with the user's approval, one at a time. Never in bulk.
+
+## Rules
+
+- **Never edit the CSV as if it were the source of truth.** It is regenerated; changes go to the note.
+- **Do not edit notes in bulk.** Each fix is shown and approved.
+- Never make up missing data: if a note has no sent date, ask or leave the gap reported.
+- Do not change `status`: that is done by `/job-outcome`, the only one that moves the pipeline.
+- The CSV may contain client names and amounts: **do not commit it to a remote without explicit confirmation**.
+- No long dashes in text added to notes.
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir el CSV o tocar una nota. Registro COMPLETE cuando el modo corrió y el usuario sabe qué hacer con cada hallazgo. Según el caso, el siguiente paso es `/cold-outreach` (follow-up de lo frenado), `/job-outcome` (cerrar lo que no va a responder), `/contract-and-proposal-writer` (change order de las horas de más) o `/freelance-pipeline` (si hay 10+ resueltas y querés el diagnóstico del embudo).
+Ask for approval before writing the CSV or touching a note. Registry COMPLETE when the mode ran and the user knows what to do with each finding. Depending on the case, the next step is `/cold-outreach` (follow-up on what stalled), `/job-outcome` (close what will not answer), `/contract-and-proposal-writer` (change order for the extra hours) or `/freelance-pipeline` (if there are 10+ resolved and you want the funnel diagnosis).

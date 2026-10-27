@@ -8,60 +8,60 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
 # logging-setup — Structured Logging
 
-Objetivo: **debuggable en prod, barato a escala, sin PII**.
+Goal: **debuggable in prod, cheap at scale, no PII**.
 
-## Principios
+## Principles
 
-1. JSON estructurado siempre — nunca strings libres en prod
-2. Una línea = un evento — no multi-line/pretty-print
-3. Level + message + context en todo evento
-4. Correlation ID (trace_id, request_id, user_id, tenant_id) en cada línea
-5. Sin PII — scrubber en el logger
-6. Sampling en hot paths
-7. Logs ≠ errors ≠ metrics ≠ traces — cada uno su destino
+1. Always structured JSON — never free-form strings in prod
+2. One line = one event — no multi-line/pretty-print
+3. Level + message + context on every event
+4. Correlation ID (trace_id, request_id, user_id, tenant_id) on every line
+5. No PII — scrubber in the logger
+6. Sampling on hot paths
+7. Logs ≠ errors ≠ metrics ≠ traces — each has its own destination
 
 ## Stack Decision
 
-| Destino | Cuándo |
+| Destination | When |
 |---------|--------|
-| **GCP Cloud Logging** | **Default Educabot** (runtime GCP), $0.50/GiB ingest |
-| Grafana Loki | Self-host, alto volumen barato |
-| Datadog Logs | Si ya pagan DD APM |
+| **GCP Cloud Logging** | **Educabot default** (GCP runtime), $0.50/GiB ingest |
+| Grafana Loki | Self-host, cheap high volume |
+| Datadog Logs | If you already pay for DD APM |
 | ELK/OpenSearch | Compliance/SIEM full-text |
 
-Default: Cloud Logging (runtime) + Loki (alto volumen/cheap retention).
+Default: Cloud Logging (runtime) + Loki (high volume/cheap retention).
 
-## Setup por Stack
+## Setup per Stack
 
-**Go (slog stdlib 1.21+):** `slog.NewJSONHandler` con level configurable, ReplaceAttr para PII scrubbing, base fields (service, env, version). Middleware Gin inyecta request-scoped attrs (request_id, trace_id, route) en context.
+**Go (slog stdlib 1.21+):** `slog.NewJSONHandler` with a configurable level, ReplaceAttr for PII scrubbing, base fields (service, env, version). Gin middleware injects request-scoped attrs (request_id, trace_id, route) into the context.
 
-**Node/TS (pino):** level via env, base fields, `redact.paths` para PII (password, token, authorization, cookie, dni, cuit), `pinoHttp` middleware con custom props (trace_id) y serializers compactos. Pino > winston: 5x más rápido, JSON nativo.
+**Node/TS (pino):** level via env, base fields, `redact.paths` for PII (password, token, authorization, cookie, dni, cuit), `pinoHttp` middleware with custom props (trace_id) and compact serializers. Pino > winston: 5x faster, native JSON.
 
-**Cloud Logging fields:** `severity` (DEBUG-CRITICAL), `logging.googleapis.com/trace` (auto-link a Cloud Trace), `httpRequest` (método/status/latency como columnas). Cloud Run/GKE: stdout se loguea automáticamente.
+**Cloud Logging fields:** `severity` (DEBUG-CRITICAL), `logging.googleapis.com/trace` (auto-link to Cloud Trace), `httpRequest` (method/status/latency as columns). Cloud Run/GKE: stdout is logged automatically.
 
-**React/frontend:** errores → Sentry, analytics → Mixpanel/Amplitude. Si necesitás logs centralizados: buffer + batch + flush a `/api/logs`, solo warn+ en prod. Evitar loguear interacciones rutinarias.
+**React/frontend:** errors → Sentry, analytics → Mixpanel/Amplitude. If you need centralized logs: buffer + batch + flush to `/api/logs`, only warn+ in prod. Avoid logging routine interactions.
 
-**React Native:** errores → Sentry, analytics → Mixpanel. Debug en campo: `react-native-logs` (archivos rotados), upload con consent. Nunca PII en logs del device.
+**React Native:** errors → Sentry, analytics → Mixpanel. Field debugging: `react-native-logs` (rotated files), upload with consent. Never PII in device logs.
 
 ## Correlation / Trace IDs
 
-OTel W3C Trace Context (`traceparent`). Todo log en un request con mismo trace_id. Go: `trace.SpanFromContext(ctx).SpanContext().TraceID()`.
+OTel W3C Trace Context (`traceparent`). Every log within a request carries the same trace_id. Go: `trace.SpanFromContext(ctx).SpanContext().TraceID()`.
 
 ## Log Levels
 
-| Level | Uso |
+| Level | Use |
 |-------|-----|
-| DEBUG | Flujo interno. Off en prod salvo troubleshooting |
-| INFO | Eventos normales. Default prod |
-| WARN | Recuperable ("retry 2/3"). Mirar tendencias |
-| ERROR | Falla operación, sistema sigue. → Sentry también |
-| FATAL | Se muere el servicio. Raro. Page on-call |
+| DEBUG | Internal flow. Off in prod except for troubleshooting |
+| INFO | Normal events. Prod default |
+| WARN | Recoverable ("retry 2/3"). Watch the trends |
+| ERROR | An operation fails, the system keeps going. → Sentry too |
+| FATAL | The service dies. Rare. Page on-call |
 
-Si nadie va a hacer algo con la línea → bájala de level o sacala.
+If nobody is going to act on the line → lower its level or remove it.
 
 ## Sampling
 
-Cloud Logging ~$0.50/GiB. Estrategia: siempre errores 100%, samplear éxitos (5-10%). Con OTel tracing, bajar INFO a 1-5%.
+Cloud Logging ~$0.50/GiB. Strategy: always 100% of errors, sample successes (5-10%). With OTel tracing, lower INFO to 1-5%.
 
 > → Read references/pii-audit-access.md for PII scrubbing fields, audit log schema, access log fields, and retention/cost tables
 

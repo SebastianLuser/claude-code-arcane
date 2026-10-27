@@ -2,7 +2,7 @@
 
 ## 5.1 Short-Lived JWT + Refresh Tokens — CRITICAL
 
-Access tokens cortos (5-15 min) limitan la ventana si se filtra uno; el refresh token (revocable, server-side) renueva sin re-login. Tokens de larga vida no se pueden invalidar.
+Short access tokens (5-15 min) limit the window if one leaks; the refresh token (revocable, server-side) renews without re-login. Long-lived tokens cannot be invalidated.
 
 ```csharp
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -15,13 +15,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 ## 5.2 Secrets in User-Secrets / Key Vault — CRITICAL
 
-Nunca claves ni connection strings en `appsettings.json` (van al repo). En dev `dotnet user-secrets`; en prod Azure Key Vault o variables de entorno.
+Never keys or connection strings in `appsettings.json` (they end up in the repo). In dev `dotnet user-secrets`; in prod Azure Key Vault or environment variables.
 
-**Incorrecto:**
+**Incorrect:**
 ```json
-{ "Jwt": { "Key": "super-secret-signing-key" } } // en el repo
+{ "Jwt": { "Key": "super-secret-signing-key" } } // in the repo
 ```
-**Correcto:**
+**Correct:**
 ```csharp
 // dotnet user-secrets set "Jwt:Key" "..." (dev)
 builder.Configuration.AddAzureKeyVault(vaultUri, new DefaultAzureCredential()); // prod
@@ -29,13 +29,13 @@ builder.Configuration.AddAzureKeyVault(vaultUri, new DefaultAzureCredential()); 
 
 ## 5.3 Authorize by Policies, Not Manual Role Checks — HIGH
 
-Las policies centralizan la regla de autorización; los `if (user.Role == "Admin")` dispersos se desincronizan y se olvidan.
+Policies centralize the authorization rule; scattered `if (user.Role == "Admin")` checks drift out of sync and get forgotten.
 
-**Incorrecto:**
+**Incorrect:**
 ```csharp
-if (!ctx.User.IsInRole("Admin")) return Results.Forbid(); // lógica esparcida
+if (!ctx.User.IsInRole("Admin")) return Results.Forbid(); // scattered logic
 ```
-**Correcto:**
+**Correct:**
 ```csharp
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("CanManageOrders", p => p.RequireRole("Admin").RequireClaim("scope", "orders:write"));
@@ -44,7 +44,7 @@ app.MapPost("/orders", Handler).RequireAuthorization("CanManageOrders");
 
 ## 5.4 HTTPS, HSTS and Rate Limiting — HIGH
 
-Forzar HTTPS + HSTS evita downgrade/MITM. El middleware `RateLimiter` integrado protege de abuso y brute-force.
+Forcing HTTPS + HSTS prevents downgrade/MITM. The built-in `RateLimiter` middleware protects against abuse and brute force.
 
 ```csharp
 builder.Services.AddRateLimiter(o => o.AddFixedWindowLimiter("api", w =>
@@ -56,7 +56,7 @@ app.UseRateLimiter();
 
 ## 5.5 Don't Log Sensitive Data; Validate Input — HIGH
 
-Nunca loggear passwords, tokens ni PII. Validar todo input con FluentValidation. Las queries de EF Core son parametrizadas por defecto (no concatenar SQL crudo) y `[ValidateAntiForgeryToken]` donde haya cookies/formularios.
+Never log passwords, tokens or PII. Validate all input with FluentValidation. EF Core queries are parameterized by default (do not concatenate raw SQL), and use `[ValidateAntiForgeryToken]` wherever there are cookies/forms.
 
 ```csharp
 public sealed class CreateOrderValidator : AbstractValidator<CreateOrderRequest>
@@ -67,7 +67,7 @@ public sealed class CreateOrderValidator : AbstractValidator<CreateOrderRequest>
         RuleFor(x => x.Items).NotEmpty();
     }
 }
-// EF Core parametriza: db.Users.Where(u => u.Email == input) — nunca string-interpolated FromSqlRaw
+// EF Core parameterizes: db.Users.Where(u => u.Email == input) — never string-interpolated FromSqlRaw
 ```
 
 _Ref: https://learn.microsoft.com/en-us/aspnet/core/security/authentication/configure-jwt-bearer-authentication · https://learn.microsoft.com/en-us/aspnet/core/performance/rate-limit_

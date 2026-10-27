@@ -1,69 +1,69 @@
 # Middleware Integration — Anti-patterns
 
-## Un evento por sonido
+## One event per sound
 
-500 eventos donde alcanzaban 40 con Switches. El código termina conociendo el nombre de cada asset, que es exactamente lo que el middleware venía a evitar. Un evento por *acción de gameplay*.
+500 events where 40 with Switches would have been enough. The code ends up knowing every asset's name, which is exactly what the middleware was supposed to avoid. One event per *gameplay action*.
 
-## ShareSet por objeto
+## One ShareSet per object
 
-Cada sonido con su propia atenuación y su propia conversión. Cambiar el rango de audición del juego pasa de ser un cambio a ser 300. Definir los ShareSets primero y reusarlos.
+Every sound with its own attenuation and its own conversion. Changing the game's hearing range goes from one change to 300. Define the ShareSets first and reuse them.
 
-## State donde va Switch
+## State where a Switch belongs
 
-Usar un State global para la superficie bajo el personaje produce el bug clásico: todos los personajes caminan sobre la superficie del jugador. Propiedad de objeto = Switch.
+Using a global State for the surface under the character produces the classic bug: every character walks on the player's surface. Object property = Switch.
 
-## Switch sin default
+## Switch without a default
 
-Si el Switch no está seteado cuando llega el evento, el sonido no suena, y el bug es invisible hasta que alguien nota el silencio. Todo Switch group con default.
+If the Switch is not set when the event arrives, the sound does not play, and the bug is invisible until someone notices the silence. Every Switch group gets a default.
 
-## Random puro en vez de shuffle
+## Pure random instead of shuffle
 
-Random repite: con 4 variantes hay 25% de escuchar la misma dos veces seguidas. Shuffle/round-robin excluyendo la última.
+Random repeats: with 4 variants there is a 25% chance of hearing the same one twice in a row. Shuffle/round-robin excluding the last one.
 
-## RTPC sin clamp del lado del código
+## RTPC without a clamp on the code side
 
-Un valor de salud que llega en 150 cuando el RTPC espera 0-100 deja el parámetro pegado al extremo. Normalizar y clampear en el boundary de gameplay.
+A health value that arrives as 150 when the RTPC expects 0-100 leaves the parameter stuck at the extreme. Normalize and clamp at the gameplay boundary.
 
-## Loops sin stop explícito
+## Loops without an explicit stop
 
-La fuente número uno de audio colgado. Todo sonido que loopea necesita un stop, y tiene que detenerse cuando el objeto dueño se destruye.
+The number one source of stuck audio. Every looping sound needs a stop, and it must stop when its owning object is destroyed.
 
-## Game objects sin des-registrar
+## Game objects never unregistered
 
-Cada enemigo muerto deja su game object registrado. A las dos horas de juego hay miles. Leak clásico, y arruina el profiling.
+Every dead enemy leaves its game object registered. After two hours of play there are thousands. A classic leak, and it ruins profiling.
 
-## Todo en un bank
+## Everything in one bank
 
-Un bank monolítico se carga entero aunque el nivel use el 10%. Y cualquier cambio obliga a redistribuirlo completo. Init + Global + por nivel + por personaje.
+A monolithic bank loads in full even if the level uses 10% of it. And any change forces redistributing all of it. Init + Global + per level + per character.
 
-## SFX en streaming
+## SFX in streaming
 
-Un sonido corto y frecuente en streaming llega tarde y genera accesos a disco. Streaming es para música, diálogo largo y ambientes.
+A short, frequent sound in streaming arrives late and causes disk access. Streaming is for music, long dialogue and ambiences.
 
-## Música en memoria
+## Music in memory
 
-Se come el budget de audio entero. Streaming con prefetch.
+It eats the entire audio budget. Streaming with prefetch.
 
-## Fallo de evento que rompe el frame
+## Event failure that breaks the frame
 
-Un bank no cargado tira una excepción que llega a gameplay. El audio degrada en silencio, siempre.
+An unloaded bank throws an exception that reaches gameplay. Audio always degrades silently.
 
-## Jerarquía por tipo de sonido
+## Hierarchy by sound type
 
-`Impacts/` con todos los impactos del juego mezclados no se navega ni se mezcla. Organizar por sistema de gameplay.
+`Impacts/` with every impact in the game mixed together can be neither navigated nor mixed. Organize by gameplay system.
 
-## Un solo work unit
+## A single work unit
 
-Dos personas trabajando producen conflictos de merge irresolubles en un archivo binario o XML gigante. Work units por sistema.
+Two people working produce unresolvable merge conflicts in a giant binary or XML file. Work units per system.
 
-## Confiar en el editor en vez del profiler
+## Trusting the editor instead of the profiler
 
-Disparar eventos a mano desde el editor no dice nada sobre voces activas, CPU o memoria en gameplay real. El profiler es la única fuente de verdad.
+Firing events by hand from the editor says nothing about active voices, CPU or memory in real gameplay. The profiler is the only source of truth.
 
-## Profilear game objects sin activar la captura
+## Profiling game objects without enabling the capture
 
-Sin la captura activa en la vista de Game Object antes de disparar los eventos, no se registra nada y parece que el sistema no funciona.
+Without the capture active in the Game Object view before the events fire, nothing is recorded and it looks like the system does not work.
 
-## Automatizar sobre el proyecto de producción
+## Automating on the production project
 
-Las herramientas de autoría en batch vía WAAPI son potentes y las de terceros están mayormente en estado experimental. Probar en un proyecto descartable; el proyecto real no es el lugar.
+Batch authoring tools via WAAPI are powerful, and the third-party ones are mostly experimental. Try them on a throwaway project; the real project is not the place.

@@ -1,65 +1,65 @@
 # Audio Audit — Anti-patterns
 
-## Medir en el editor
+## Measuring in the editor
 
-El editor dispara eventos en orden, uno por vez, sin ruido de fondo. El jugador produce combinaciones que nadie planificó. Las mediciones del editor no predicen nada.
+The editor fires events in order, one at a time, with no background noise. The player produces combinations nobody planned. Editor measurements predict nothing.
 
-## Medir en la plataforma más alta
+## Measuring on the highest platform
 
-El presupuesto cierra cómodo en PC y revienta en el handheld. La auditoría se hace contra el piso del target.
+The budget fits comfortably on PC and blows up on the handheld. The audit is done against the target's floor.
 
-## Medir loudness de un asset
+## Measuring the loudness of a single asset
 
-Los targets de LUFS son del programa completo en gameplay representativo. Medir un `.wav` no dice nada sobre cumplimiento.
+LUFS targets apply to the full program in representative gameplay. Measuring a `.wav` says nothing about compliance.
 
-## Sesión de medición demasiado corta
+## A measurement session that is too short
 
-Treinta segundos de exploración tranquila da un LUFS que no representa el juego. La medición tiene que cubrir exploración, combate y diálogo.
+Thirty seconds of calm exploration gives a LUFS value that does not represent the game. The measurement has to cover exploration, combat and dialogue.
 
-## Confiar en un target memorizado
+## Trusting a memorized target
 
-Las recomendaciones de plataforma se revisan. Confirmar el vigente antes de certificación.
+Platform recommendations get revised. Confirm the current one before certification.
 
-## Medir peak de sample en vez de true peak
+## Measuring sample peak instead of true peak
 
-Un mix que llega a 0 dBFS en PCM puede generar picos por encima al codificarse en lossy. El −1 dBTP existe justamente por eso.
+A mix that reaches 0 dBFS in PCM can produce peaks above that when encoded to a lossy format. The −1 dBTP exists precisely for that reason.
 
-## No buscar leaks
+## Not looking for leaks
 
-El contador de game objects registrados que crece durante dos horas y nunca baja es el hallazgo más frecuente, y solo se ve en sesiones largas. Una prueba de cinco minutos no lo encuentra.
+A registered game object counter that grows for two hours and never drops is the most frequent finding, and it only shows up in long sessions. A five-minute test will not find it.
 
-## Aceptar el pico de voces al límite
+## Accepting a voice peak at the limit
 
-Si el pico toca el límite configurado, cualquier situación un poco peor empieza a descartar sonidos. Y si lo que se descarta es feedback de la acción del jugador, el juego se siente roto sin ningún error visible.
+If the peak hits the configured limit, any slightly worse situation starts dropping sounds. And if what gets dropped is feedback for the player's action, the game feels broken without any visible error.
 
-## Ignorar qué se descarta
+## Ignoring what gets dropped
 
-El número de descartes por sí solo no dice nada. Lo que importa es la prioridad de lo descartado: perder un ambiente lejano está bien, perder el disparo del jugador no.
+The number of drops alone says nothing. What matters is the priority of what was dropped: losing a distant ambience is fine, losing the player's gunshot is not.
 
-## Fuente 3D en estéreo
+## Stereo 3D source
 
-El hallazgo más silencioso: el middleware la colapsa o la trata distinto, y la localización espacial se degrada sin que aparezca ningún error. Verificar canales por categoría de uso.
+The quietest finding: the middleware collapses it or treats it differently, and spatial localization degrades without any error showing up. Verify channels per usage category.
 
-## Mezcla de sample rates
+## Mixed sample rates
 
-44.1 y 48 kHz en el mismo proyecto obliga a resampleo en runtime, que cuesta CPU y puede introducir artefactos. Un solo sample rate por proyecto.
+44.1 and 48 kHz in the same project force runtime resampling, which costs CPU and can introduce artifacts. One sample rate per project.
 
-## Silencio al inicio del asset
+## Leading silence in the asset
 
-Retrasa el ataque y se percibe como lag de input, aunque el código responda instantáneo. Se detecta automáticamente y casi nunca se busca.
+It delays the attack and is perceived as input lag, even though the code responds instantly. It is detected automatically and almost nobody looks for it.
 
-## Hallazgo sin número
+## A finding without a number
 
-"El audio suena saturado" no es un hallazgo. Qué se midió, valor medido, valor esperado, dónde. Sin eso, nadie puede arreglarlo ni verificar que se arregló.
+"The audio sounds saturated" is not a finding. What was measured, measured value, expected value, where. Without that, nobody can fix it or verify that it was fixed.
 
-## Auditar a mano miles de assets
+## Auditing thousands of assets by hand
 
-La conformidad de sample rate, canales, naming y duración es mecánica: se automatiza. La inspección manual de 4.000 archivos garantiza que algo se pase por alto.
+Sample rate, channel, naming and duration conformance is mechanical: it gets automated. Manually inspecting 4,000 files guarantees something slips through.
 
-## Fallar cuando falta una herramienta externa
+## Failing when an external tool is missing
 
-Si el chequeo profundo necesita una herramienta que no está instalada, reportar `[SKIP]` y seguir. Abortar la auditoría entera por una dependencia opcional deja al usuario sin los chequeos que sí se podían correr.
+If the deep check needs a tool that is not installed, report `[SKIP]` and continue. Aborting the whole audit over an optional dependency leaves the user without the checks that could have run.
 
-## Dejar el checklist de plataforma para el final
+## Leaving the platform checklist for last
 
-El comportamiento en background y el switch de silencio en iOS son causas concretas de rechazo. Descubrirlos en certificación cuesta una release.
+Background behavior and the iOS silent switch are concrete causes of rejection. Discovering them at certification costs a release.

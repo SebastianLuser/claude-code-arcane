@@ -1,49 +1,49 @@
 ---
-tipo: dashboard
+type: dashboard
 ---
 
-# Dashboard - Búsqueda laboral
+# Dashboard - Job search
 
-> Índice del workspace. Cuando haya datos (aplicaciones, entrevistas), estas secciones pueden convertirse en queries dinámicas con Bases/Dataview si usás Obsidian.
+> Workspace index. Once there is data (applications, interviews), these sections can become dynamic queries with Bases/Dataview if you use Obsidian.
 
-## Aplicaciones activas
-**Prioridad alta:**
+## Active applications
+**High priority:**
 - 
 
-**Prioridad media:**
+**Medium priority:**
 - 
 
-**Cerradas / descartadas:**
+**Closed / discarded:**
 - 
 
-## Leyenda de estados
-⬜ interesado · ✅ aplicado · 📅 entrevista/oferta · ❌ rechazado/sin_respuesta/declinada · 🚫 descartado/cerrada
+## Status legend
+⬜ interested · ✅ applied · 📅 interviewing/offer · ❌ rejected/no_response/declined · 🚫 discarded/closed
 
-## Próximas entrevistas
+## Upcoming interviews
 - 
 
-## A seguir esta semana
+## To follow up this week
 - 
 
-## Perfiles
+## Profiles
 - 
 
-## Accesos rápidos por carpeta
-- `01-Perfiles/` - perfiles profesionales base + perfil maestro
-- `02-CVs/` - versiones de CV (incluye CVs custom por postulación)
-- `03-Aplicaciones/` - una nota por postulación
-- `04-Empresas/` - research de empresas
-- `05-Contactos/` - recruiters, referidos, hiring managers
-- `06-Entrevistas/` - prep y feedback por ronda
-- `07-Recursos/` - cover letters reutilizables, links útiles
-- `portfolio/` - source-of-truth del portfolio web
-- `Templates/` - plantillas con frontmatter
-- `tools/` - cv_export.py, verify_pdf.py y job_scraper/seen_jobs.json
+## Quick access by folder
+- `01-Profiles/` - base professional profiles + master profile
+- `02-CVs/` - CV versions (including custom CVs per application)
+- `03-Applications/` - one note per application
+- `04-Companies/` - company research
+- `05-Contacts/` - recruiters, referrals, hiring managers
+- `06-Interviews/` - prep and feedback per round
+- `07-Resources/` - reusable cover letters, useful links
+- `portfolio/` - source of truth for the portfolio website
+- `Templates/` - templates with frontmatter
+- `tools/` - cv_export.py, verify_pdf.py and job_scraper/seen_jobs.json
 
-## Workflow estándar para una nueva oportunidad
-1. `/job-scrape` - corrida de búsqueda con dedup (o `/job-search` para una oferta puntual) → nota en `03-Aplicaciones/` + `04-Empresas/`.
-2. Identificar contacto objetivo → nota en `05-Contactos/`.
-3. `/job-aplicar` - pipeline completo: CV custom + cover + review + PDF ATS verificado.
-4. Enviar (siempre manual) → `/job-outcome <empresa>` para marcar `aplicado` y registrar avances.
-5. `/interview-prep` - cuando haya entrevista.
-6. `/job-upskill` - con rechazos acumulados, plan de estudio según gaps reales.
+## Standard workflow for a new opportunity
+1. `/job-scrape` - search run with dedup (or `/job-search` for a single posting) → note in `03-Applications/` + `04-Companies/`.
+2. Identify the target contact → note in `05-Contacts/`.
+3. `/job-apply` - full pipeline: custom CV + cover + review + verified ATS PDF.
+4. Send (always by hand) → `/job-outcome <company>` to mark `applied` and log progress.
+5. `/interview-prep` - when there is an interview.
+6. `/job-upskill` - once rejections pile up, a study plan based on real gaps.

@@ -1,5 +1,5 @@
 name: second-brain
-description: "Second Brain — vault de Obsidian gestionado con Claude Code: captura sin friccion, reviews diario/semanal/mensual, notas atomicas y hub files (PARA + Zettelkasten), busqueda con ranking, captura web, auditoria de salud del vault y sintaxis nativa de Obsidian (markdown, Bases, Canvas)"
+description: "Second Brain — Obsidian vault managed with Claude Code: frictionless capture, daily/weekly/monthly reviews, atomic notes and hub files (PARA + Zettelkasten), ranked search, web capture, vault health audit and native Obsidian syntax (markdown, Bases, Canvas)"
 category: personal
 
 skills:
@@ -33,5 +33,7 @@ permissions:
     - "Bash(python3 *vault_audit.py*)"
     - "Bash(python *vault_index.py*)"
     - "Bash(python3 *vault_index.py*)"
+    - "Bash(python *migrate_vault.py*)"
+    - "Bash(python3 *migrate_vault.py*)"
   deny:
     []

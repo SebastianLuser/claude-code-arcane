@@ -1,27 +1,27 @@
 # Persona Template & Sections
 
-## Template Educabot
+## Educabot Template
 
-| Seccion | Contenido |
+| Section | Content |
 |---------|-----------|
-| **Snapshot** | Nombre ficticio, rol, edad, ubicacion, institucion, experiencia, tech-savviness |
-| **JTBD** | Formato: "Cuando <situacion>, quiero <motivacion>, para <outcome>". Functional + emotional + social jobs |
-| **Pain Points** | Dolores actuales, frustraciones con soluciones actuales, anti-pains (lo que NO quiere) |
-| **Gains** | Deseados + inesperados (delight) |
-| **Contexto de uso** | Cuando, donde, dispositivos, solo o con otros |
-| **Quotes reales** | Citas textuales de interviews, linkear a transcripts |
-| **Empathy Map** | Ve / Escucha / Piensa y siente / Dice y hace / Pains / Gains |
-| **Anti-patterns** | Cosas que esta persona rechaza en el producto |
-| **Metricas clave** | Tabla metrica + target (ej: NPS >50, retencion mes 3 >60%) |
-| **Testing** | Como reclutar, canal, incentivo, frecuencia |
-| **Referencias** | Links a interviews, surveys, analytics, PRDs, Figma |
+| **Snapshot** | Fictional name, role, age, location, institution, experience, tech-savviness |
+| **JTBD** | Format: "When <situation>, I want <motivation>, so I can <outcome>". Functional + emotional + social jobs |
+| **Pain Points** | Current pains, frustrations with current solutions, anti-pains (what they do NOT want) |
+| **Gains** | Desired + unexpected (delight) |
+| **Usage context** | When, where, devices, alone or with others |
+| **Real quotes** | Verbatim quotes from interviews, link to transcripts |
+| **Empathy Map** | Sees / Hears / Thinks and feels / Says and does / Pains / Gains |
+| **Anti-patterns** | Things this persona rejects in the product |
+| **Key metrics** | Metric + target table (e.g. NPS >50, month-3 retention >60%) |
+| **Testing** | How to recruit, channel, incentive, frequency |
+| **References** | Links to interviews, surveys, analytics, PRDs, Figma |
 
-Metadata: tipo (primaria/secundaria/anti-persona), producto, ultima validacion, research base, owner PM.
+Metadata: type (primary/secondary/anti-persona), product, last validation, research base, PM owner.
 
 ## Anti-persona
 
-Template para definir **para quien NO es el producto**: quien es, por que no es target (3 razones), senales en demo/sales/onboarding, que hacer cuando aparece (sales deflect, support no priorizar, product no construir).
+Template to define **who the product is NOT for**: who they are, why they are not the target (3 reasons), signals in demo/sales/onboarding, what to do when they show up (sales deflects, support does not prioritize, product does not build).
 
-## JTBD Canvas (alternativa ligera)
+## JTBD Canvas (lightweight alternative)
 
-Job statement + Forces diagram (push/pull/anxiety/habits) + success criteria. Usar JTBD solo para feature especifica (equipo ya conoce user). Persona completa para onboarding, producto nuevo, re-alignment.
+Job statement + Forces diagram (push/pull/anxiety/habits) + success criteria. Use JTBD only for a specific feature (the team already knows the user). Full persona for onboarding, a new product, re-alignment.

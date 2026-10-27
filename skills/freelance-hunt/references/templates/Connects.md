@@ -1,39 +1,39 @@
 ---
-tipo: costo-postulaciones
-anio: {{date:YYYY}}
-fecha_actualizacion: {{date:YYYY-MM-DD}}
+type: application-costs
+year: {{date:YYYY}}
+updated: {{date:YYYY-MM-DD}}
 ---
 
-# Ledger del costo de postularse {{date:YYYY}}
+# Cost-of-applying ledger {{date:YYYY}}
 
-> Cada fila es plata gastada. Sin este registro, `/freelance-pipeline` no puede calcular costo de adquisición ni cuánto se fue en ofertas que nunca contrataron a nadie.
+> Every row is money spent. Without this record, `/freelance-pipeline` cannot compute acquisition cost or how much went to postings that never hired anyone.
 >
-> La unidad depende de la plataforma: Connects en Upwork, bids en Freelancer.com, horas de escritura en outreach directo. Anotá la que uses y sé consistente.
+> The unit depends on the platform: Connects on Upwork, bids on Freelancer.com, writing hours for direct outreach. Write down the one you use and stay consistent.
 
-## Registro
+## Log
 
-| Fecha | Propuesta | Costo | Unidad | Resultado | Días hasta respuesta |
+| Date | Proposal | Cost | Unit | Result | Days to response |
 |---|---|---|---|---|---|
-|  | [[]] |  | connects | esperando |  |
+|  | [[]] |  | connects | waiting |  |
 
-%% Resultado: esperando / sin_respuesta / respondio / llamada / ganado / oferta_nunca_contrato %%
-%% "oferta_nunca_contrato" es la categoria que mas duele y la mas evitable: el cliente cerro sin contratar a nadie. Marcarla cuando se detecte. %%
+%% Result: waiting / no_response / replied / call / won / never_hired %%
+%% "never_hired" is the category that hurts the most and the most avoidable: the client closed without hiring anyone. Mark it as soon as you spot it. %%
 
-## Compras de presupuesto de postulaciones
+## Application budget purchases
 
-| Fecha | Cantidad | Costo | Fuente |
+| Date | Quantity | Cost | Source |
 |---|---|---|---|
-|  |  |  | comprados |
+|  |  |  | purchased |
 
-%% Fuente: incluidos_plan / comprados / devueltos %%
+%% Source: plan_included / purchased / refunded %%
 
-## Resumen del año
+## Year summary
 
-- **Total gastado:** 
-- **Contratos ganados:** 
-- **Costo de adquisición** (total gastado / contratos ganados): 
-- **Perdido en ofertas que nunca contrataron a nadie:** 
-- **Devuelto** (Upwork reintegra Connects en algunos casos): 
+- **Total spent:** 
+- **Contracts won:** 
+- **Acquisition cost** (total spent / contracts won): 
+- **Lost on postings that never hired anyone:** 
+- **Refunded** (Upwork refunds Connects in some cases): 
 
-## Notas
+## Notes
 

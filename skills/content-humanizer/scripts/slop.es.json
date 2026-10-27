@@ -1,12 +1,51 @@
 {
   "version": "1.0",
   "language": "es",
-  "note": "Lexicon used by humanize.py and detect.py. Replacements keep the sentence grammatical; \"replace\": null flags the term for a hand rewrite instead. Edit freely - it is meant to be yours. Adapted from Jake Schincariol's linkedin-agent-skill (MIT). Spanish uses the raya (em dash) for asides and dialogue: the typographic pass still turns it into a comma, so review dialogue by hand.",
+  "note": "Lexicon used by humanize.py and detect.py. Replacements keep the sentence grammatical; \"replace\": null flags the term for a hand rewrite instead. Edit freely - it is meant to be yours. Adapted from Jake Schincariol's linkedin-agent-skill (MIT). Spanish uses the raya (em dash) for asides and dialogue: the typographic pass still turns it into a comma, so review dialogue by hand. \"stopwords\" are frequent words of this language that neighbouring languages do not write; humanize.py detects the language by their share of the text. \"examples\" are the pack's spec: tests/humanizer runs them for every pack, so a new pack needs no new test code.",
   "voice": {
     "pronouns": "\\b(yo|me|mi|mí|mis|mío|mía|conmigo|nosotros|nosotras|nos|nuestro|nuestra|nuestros|nuestras|vos|tú|tu|tus|te|ti|contigo|usted|ustedes)\\b",
     "person_human": 5.0,
     "contractions": null
   },
+  "stopwords": [
+    "el",
+    "la",
+    "los",
+    "las",
+    "del",
+    "y",
+    "en",
+    "con",
+    "es",
+    "lo",
+    "pero",
+    "una",
+    "un",
+    "más",
+    "al",
+    "su",
+    "sus",
+    "muy",
+    "también",
+    "hay",
+    "cuando",
+    "ya",
+    "yo",
+    "son",
+    "fue",
+    "tiene",
+    "eso",
+    "esto",
+    "donde",
+    "hoy",
+    "mi",
+    "mis",
+    "tus",
+    "nuestro",
+    "nuestra",
+    "nuestros",
+    "nuestras"
+  ],
   "invisible": [
     {
       "cp": "U+200B",
@@ -662,5 +701,27 @@
       "name": "Reflex engagement bait",
       "fix": "Ask a question only you could ask, about the specific thing above it."
     }
-  ]
+  ],
+  "examples": {
+    "rewrite": [
+      {
+        "text": "En el mundo actual, es importante destacar que la IA es fundamental. Construimos una solución robusta\u200b para el equipo. ¿Qué opinan?",
+        "clean": "Hoy, la IA es fundamental. Construimos una solución sólida para el equipo. ¿Qué opinan?",
+        "flags": [
+          "Reflex engagement bait",
+          "fundamental"
+        ]
+      }
+    ],
+    "keep": [
+      "Mañana lanzamos la versión nueva. Si algo falla, avisame y lo arreglo antes del viernes."
+    ],
+    "pronouns": {
+      "text": "Para mí y para ti, no.",
+      "found": [
+        "mí",
+        "ti"
+      ]
+    }
+  }
 }

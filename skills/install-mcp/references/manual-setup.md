@@ -1,39 +1,39 @@
 # Manual setup — Unity MCP
 
-Referencia detallada para el flujo manual y troubleshooting de `/install-mcp`.
+Detailed reference for the manual flow and troubleshooting of `/install-mcp`.
 
-## Primario: CoplayDev "MCP for Unity" (`com.coplaydev.unity-mcp`)
+## Primary: CoplayDev "MCP for Unity" (`com.coplaydev.unity-mcp`)
 
-### Package UPM
+### UPM package
 
-En `Packages/manifest.json`, dentro de `dependencies`:
+In `Packages/manifest.json`, inside `dependencies`:
 
 ```json
 "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#<tag>"
 ```
 
-`<tag>` es el último release (`gh api repos/CoplayDev/unity-mcp/releases/latest --jq .tag_name`). Nunca `#main`: es código de terceros que cambia sin aviso.
+`<tag>` is the latest release (`gh api repos/CoplayDev/unity-mcp/releases/latest --jq .tag_name`). Never `#main`: it is third-party code that changes without notice.
 
-Al abrir el proyecto, Unity descarga e importa el package desde el git URL.
+When the project is opened, Unity downloads and imports the package from the git URL.
 
-### Levantar y registrar el server (desde Unity)
+### Start and register the server (from Unity)
 
-1. Abrir el proyecto en Unity.
-2. `Window → MCP for Unity` abre el panel del package.
-3. En el panel:
-   - El package instala/usa el server Python vía `uv`/`uvx` (paquete `mcp-for-unity`), transport HTTP en `127.0.0.1:8080`.
-   - Usar el botón de auto-config para el cliente **Claude Code** — escribe la config del cliente MCP y deja el server listo.
-4. Dejar Unity abierto: el server MCP solo responde mientras el Editor está corriendo con el panel activo.
+1. Open the project in Unity.
+2. `Window → MCP for Unity` opens the package's panel.
+3. In the panel:
+   - The package installs/uses the Python server via `uv`/`uvx` (package `mcp-for-unity`), HTTP transport on `127.0.0.1:8080`.
+   - Use the auto-config button for the **Claude Code** client — it writes the MCP client config and leaves the server ready.
+4. Keep Unity open: the MCP server only responds while the Editor is running with the panel active.
 
-### Registro manual del cliente (sin GUI)
+### Manual client registration (no GUI)
 
-Si no se puede usar el botón de auto-config:
+If the auto-config button cannot be used:
 
 ```bash
 claude mcp add --transport http unity-mcp http://127.0.0.1:8080
 ```
 
-O escribir un `.mcp.json` en la raíz del proyecto:
+Or write a `.mcp.json` at the project root:
 
 ```json
 {
@@ -46,29 +46,29 @@ O escribir un `.mcp.json` en la raíz del proyecto:
 }
 ```
 
-### Verificar
+### Verify
 
 ```bash
 claude mcp list
 ```
 
-`unity-mcp` debe figurar conectado. Si no, ver troubleshooting.
+`unity-mcp` must show up as connected. If not, see troubleshooting.
 
 ## Troubleshooting
 
-| Síntoma | Causa probable | Fix |
+| Symptom | Likely cause | Fix |
 |---------|----------------|-----|
-| `uv: command not found` | `uv` no instalado / no en PATH | `winget install astral-sh.uv` (o `pipx install uv`), reabrir terminal |
-| `claude mcp list` no muestra `unity-mcp` | Cliente no registrado | Re-correr el paso 4 (auto-config o `claude mcp add`) |
-| `unity-mcp` aparece pero **no conecta** | Unity cerrado o panel inactivo | Abrir Unity y `Window → MCP for Unity` |
-| Puerto `8080` ocupado | Otro proceso usa 8080 | Cambiar el puerto en el panel de MCP for Unity y ajustar la URL en el registro del cliente |
-| Operaciones de engine no se aplican | MCP desconectado | No asumir éxito: verificar conexión antes de operar; avisar al usuario |
+| `uv: command not found` | `uv` not installed / not on PATH | `winget install astral-sh.uv` (or `pipx install uv`), reopen the terminal |
+| `claude mcp list` does not show `unity-mcp` | Client not registered | Re-run step 4 (auto-config or `claude mcp add`) |
+| `unity-mcp` shows up but **does not connect** | Unity closed or panel inactive | Open Unity and `Window → MCP for Unity` |
+| Port `8080` busy | Another process uses 8080 | Change the port in the MCP for Unity panel and adjust the URL in the client registration |
+| Engine operations are not applied | MCP disconnected | Do not assume success: verify the connection before operating; tell the user |
 
-## Secundario (opcional): CoderGamester `mcp-unity` (`com.gamelovers.mcp-unity`)
+## Secondary (optional): CoderGamester `mcp-unity` (`com.gamelovers.mcp-unity`)
 
-Server Node. Instalar con el flag `--secondary`.
+Node server. Install it with the `--secondary` flag.
 
-### Package UPM
+### UPM package
 
 ```json
 "com.gamelovers.mcp-unity": "https://github.com/CoderGamester/mcp-unity.git"
@@ -76,19 +76,19 @@ Server Node. Instalar con el flag `--secondary`.
 
 ### Server
 
-Requiere `node` en PATH. El package incluye un server Node en `Server~/build/index.js` dentro del package cache (`Library/PackageCache/com.gamelovers.mcp-unity@.../Server~`). El registro del cliente apunta a ese `index.js`:
+Requires `node` on PATH. The package includes a Node server at `Server~/build/index.js` inside the package cache (`Library/PackageCache/com.gamelovers.mcp-unity@.../Server~`). The client registration points to that `index.js`:
 
 ```json
 {
   "mcpServers": {
     "mcp-unity": {
       "command": "node",
-      "args": ["<ruta absoluta a Server~/build/index.js>"]
+      "args": ["<absolute path to Server~/build/index.js>"]
     }
   }
 }
 ```
 
-En TesisUade esta ruta la genera un editor tool propio (`Tools → Update MCP Unity Route`). Fuera de ese proyecto, ubicar el `index.js` en el `PackageCache` y registrar la ruta a mano.
+In TesisUade this path is generated by a custom editor tool (`Tools → Update MCP Unity Route`). Outside that project, locate the `index.js` in the `PackageCache` and register the path by hand.
 
-> El primario (CoplayDev) es el oficial del set unity-dev. El secundario se mantiene solo por compatibilidad con proyectos que ya lo declaran.
+> The primary (CoplayDev) is the official one for the unity-dev set. The secondary is kept only for compatibility with projects that already declare it.

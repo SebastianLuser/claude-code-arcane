@@ -5,33 +5,33 @@ type: codebases
 
 # Codebases
 
-Puente del vault al código. Las notas de hub y de proyecto declaran `repos:` en su frontmatter; esta tabla dice qué es cada repo y dónde está en esta máquina.
+The vault's bridge to code. Hub and project notes declare `repos:` in their frontmatter; this table says what each repo is and where it lives on this machine.
 
-**El vault apunta, no copia.** Acá no va arquitectura, ni estructura de carpetas, ni explicaciones de módulos: eso vive en el repo y se desactualiza el día que alguien mergea. Acá va solo lo que el repo no te puede decir: dónde está local, cómo se corre, y qué te vas a llevar puesto.
+**The vault points, it does not copy.** No architecture goes here, no folder structure, no module explanations: that lives in the repo and goes stale the day someone merges. Only what the repo cannot tell you goes here: where it is locally, how it runs, and what is going to bite you.
 
-| Repo | Path local | Rama | Cómo correr | Grafo | Notas |
+| Repo | Local path | Branch | How to run | Graph | Notes |
 |---|---|---|---|---|---|
-| `<repo>` | `~/code/<repo>` | `main` | `npm run dev` | `graphify` | `<gotcha en una línea>` |
+| `<repo>` | `~/code/<repo>` | `main` | `npm run dev` | `graphify` | `<one-line gotcha>` |
 
-## Antes de explorar un repo, consultá su grafo
+## Before exploring a repo, query its graph
 
-Si el repo tiene un grafo de código consultable, **esa es la primera parada, no un subagente explorando**. Un relevamiento de arquitectura con subagentes cuesta del orden de 100k tokens y minutos; una consulta al grafo cuesta uno o dos mil y es instantánea.
+If the repo has a queryable code graph, **that is the first stop, not a subagent exploring**. An architecture survey with subagents costs on the order of 100k tokens and minutes; a graph query costs one or two thousand and is instant.
 
 ```bash
-graphify query "que conecta X con Y" --budget 2000
-graphify explain "<Simbolo>"
+graphify query "what connects X to Y" --budget 2000
+graphify explain "<Symbol>"
 ```
 
-Y si el repo tiene una capa curada de arquitectura (por ejemplo `exploracion/ARQUITECTURA.md`), leela después del grafo: ahí viven las decisiones y los gotchas que un AST no ve. Si tu cambio invalida algo de lo que documenta, actualizarla es parte del cambio.
+And if the repo has a curated architecture layer (for example `exploration/ARCHITECTURE.md`), read it after the graph: that is where the decisions and gotchas an AST cannot see live. If your change invalidates something it documents, updating it is part of the change.
 
-## Qué va en el vault y qué va en el repo
+## What goes in the vault and what goes in the repo
 
-| Pregunta | La responde |
+| Question | Answered by |
 |---|---|
-| ¿Qué hace esto y para quién? | El vault: el hub del tema |
-| ¿Por qué está hecho así? | El vault: la decisión, en una nota atómica |
-| ¿Qué archivos toco? | El repo: el grafo |
-| ¿Qué se rompe si cambio esto? | El repo: el grafo |
-| ¿Cómo lo corro y qué me va a explotar? | Esta tabla |
+| What does this do and for whom? | The vault: the topic's hub |
+| Why is it built this way? | The vault: the decision, in an atomic note |
+| Which files do I touch? | The repo: the graph |
+| What breaks if I change this? | The repo: the graph |
+| How do I run it and what is going to blow up on me? | This table |
 
-Si te encontrás copiando arquitectura al vault, la pregunta que estabas contestando era del repo.
+If you find yourself copying architecture into the vault, the question you were answering belonged to the repo.

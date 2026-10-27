@@ -8,59 +8,59 @@ allowed-tools: Read, Glob, Grep, Bash
 ---
 # game-audit — Assets + Documents
 
-Auditoría diagnóstica read-only. Produce reporte, no modifica archivos.
+Read-only diagnostic audit. Produces a report; does not modify files.
 
 ## 1. Asset Audit
 
-| Directorio | Checks |
+| Directory | Checks |
 |------------|--------|
 | Art (textures, sprites, meshes) | Naming, power-of-two, format (PNG UI, compressed 3D), size budget |
 | Audio (SFX, music) | Naming, sample rate, format (OGG/MP3), duration |
-| Data (JSON, YAML, SO) | Schema compliance, formato válido |
+| Data (JSON, YAML, SO) | Schema compliance, valid format |
 
 ### Checks
-- **Naming**: `lowercase_underscores`, patrón `[cat]_[name]_[variant].[ext]`
-- **Orphaned**: sin referencias en código/escenas — verificar carga dinámica (Addressables, Resources.Load) antes de flaggear
-- **Missing**: referencia en código a asset inexistente
-- **Size**: comparar contra budget del art bible
+- **Naming**: `lowercase_underscores`, pattern `[cat]_[name]_[variant].[ext]`
+- **Orphaned**: no references in code/scenes — check for dynamic loading (Addressables, Resources.Load) before flagging
+- **Missing**: code references an asset that does not exist
+- **Size**: compare against the art bible budget
 
-Standards source: art bible > CLAUDE.md > flaggear "no standard defined"
+Standards source: art bible > CLAUDE.md > flag "no standard defined"
 
 ## 2. Document Audit
 
-Args: `gdd`, `spec-docs`, `gdd-vs-code`, `balance`, path específico, o sin arg = full.
+Args: `gdd`, `spec-docs`, `gdd-vs-code`, `balance`, a specific path, or no arg = full.
 
-| Tipo | Severidad | Qué buscar |
+| Type | Severity | What to look for |
 |------|-----------|------------|
-| Contradicciones | CRITICAL | Misma mecánica descrita diferente entre docs/código |
-| Gaps | HIGH | TBD/vacío, mecánicas sin definir, fórmulas sin números |
-| Coherencia | MEDIUM | Edge cases, terminología inconsistente, fórmulas absurdas |
-| Balance | MEDIUM | Estrategias dominantes, opciones peores, snowball, economía rota |
-| Completitud | HIGH | Scope incompleto, dependencias ocultas |
+| Contradictions | CRITICAL | Same mechanic described differently across docs/code |
+| Gaps | HIGH | TBD/empty, undefined mechanics, formulas without numbers |
+| Coherence | MEDIUM | Edge cases, inconsistent terminology, absurd formulas |
+| Balance | MEDIUM | Dominant strategies, strictly worse options, snowball, broken economy |
+| Completeness | HIGH | Incomplete scope, hidden dependencies |
 
-Gap classification: Bloqueante (no se puede implementar) > Importante (antes del milestone) > Nice to have.
+Gap classification: Blocking (cannot be implemented) > Important (before the milestone) > Nice to have.
 
 ## 3. Consistency Check (entity registry)
 
 Arg: `consistency`, `consistency entity:<name>`, `consistency item:<name>`.
 
-Si existe registry (`design/registry/entities.yaml`): cargar lookup tables → grep nombres en GDDs → extraer valores cercanos → comparar.
+If a registry exists (`design/registry/entities.yaml`): load lookup tables → grep names in GDDs → extract nearby values → compare.
 
-| Tipo | Acción |
+| Type | Action |
 |------|--------|
-| CONFLICT | Mismo nombre, valores diferentes — resolver antes de avanzar |
-| STALE REGISTRY | Source GDD cambió, registry no actualizado |
-| UNVERIFIABLE | Sin atributos comparables — solo informativo |
+| CONFLICT | Same name, different values — resolve before moving on |
+| STALE REGISTRY | Source GDD changed, registry not updated |
+| UNVERIFIABLE | No comparable attributes — informational only |
 
-Resolución: GDD source es autoritativo. Si no existe registry → informar que se requiere uno.
+Resolution: the source GDD is authoritative. If no registry exists → report that one is required.
 
-## Formato del reporte
+## Report format
 
-Estado general: SALUDABLE / NECESITA ATENCIÓN / CRÍTICO. Resumen ejecutivo (2-3 oraciones). Hallazgos en formato PAS condensado (≤5 líneas c/u) con severity. Asset compliance table. Sección "lo que está bien". Action items priorizados.
+Overall status: HEALTHY / NEEDS ATTENTION / CRITICAL. Executive summary (2-3 sentences). Findings in condensed PAS format (≤5 lines each) with severity. Asset compliance table. A "what is working" section. Prioritized action items.
 
 ## Anti-patterns
 
-- Auditar sin leer art bible primero
-- Orphaned sin verificar carga dinámica
-- Mezclar severidades sin priorizar
-- Solo criticar sin reconocer buen diseño
+- Auditing without reading the art bible first
+- Flagging orphans without checking for dynamic loading
+- Mixing severities without prioritizing
+- Only criticizing without acknowledging good design

@@ -8,13 +8,13 @@ allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 # API Documentation Generator
 
-Escanea el código fuente para generar documentación de API.
+Scans the source code to generate API documentation.
 
 ## Process
 
-### 1. Detectar framework y rutas
+### 1. Detect the framework and routes
 
-| Framework | Dónde buscar rutas |
+| Framework | Where to look for routes |
 |-----------|-------------------|
 | Gin (Go) | `engine.GET/POST/PUT/DELETE`, `Group()` |
 | Echo (Go) | `e.GET/POST/PUT/DELETE`, `Group()` |
@@ -24,78 +24,78 @@ Escanea el código fuente para generar documentación de API.
 | Django REST | `urlpatterns`, ViewSets |
 | NestJS | `@Get/@Post` decorators, DTOs |
 
-### 2. Para cada endpoint extraer
+### 2. For each endpoint, extract
 
-- **Método HTTP** (GET, POST, PUT, DELETE, PATCH)
-- **Ruta** con params (`:id`, `{id}`)
-- **Middleware/Guards** (auth, roles requeridos)
+- **HTTP method** (GET, POST, PUT, DELETE, PATCH)
+- **Route** with params (`:id`, `{id}`)
+- **Middleware/Guards** (auth, required roles)
 - **Request body** (struct/DTO/schema)
 - **Query params**
-- **Response** (struct de respuesta, status codes)
-- **Descripción** (del comentario o nombre del handler)
+- **Response** (response struct, status codes)
+- **Description** (from the comment or the handler name)
 
-### 3. Generar documentación
+### 3. Generate the documentation
 
 ```markdown
-# API Documentation — [Proyecto]
-**Base URL:** `[detectado de config o .env]`
+# API Documentation — [Project]
+**Base URL:** `[detected from config or .env]`
 **Auth:** [Bearer JWT / API Key / etc.]
-**Última actualización:** [fecha]
+**Last updated:** [date]
 
 ---
 
-## [Módulo/Grupo]
+## [Module/Group]
 
 ### [METHOD] /api/v1/path/:param
 
-**Descripción:** [qué hace]
-**Auth:** [requerido/público] | **Roles:** [admin, coordinator]
+**Description:** [what it does]
+**Auth:** [required/public] | **Roles:** [admin, coordinator]
 
 **Path params:**
-| Param | Tipo | Descripción |
+| Param | Type | Description |
 |-------|------|-------------|
 
 **Query params:**
-| Param | Tipo | Required | Default | Descripción |
+| Param | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 
 **Request body:**
 ```json
 {
-  "field": "type — descripción"
+  "field": "type — description"
 }
 ```
 
 **Responses:**
-| Status | Descripción | Body |
+| Status | Description | Body |
 |--------|-------------|------|
-| 200 | Éxito | `{ ... }` |
-| 400 | Validación | `{ "error": "..." }` |
-| 401 | No autenticado | |
-| 404 | No encontrado | |
+| 200 | Success | `{ ... }` |
+| 400 | Validation | `{ "error": "..." }` |
+| 401 | Not authenticated | |
+| 404 | Not found | |
 
 ---
 ```
 
-### 4. Tabla resumen
+### 4. Summary table
 
 ```markdown
-## Resumen de endpoints
+## Endpoint summary
 
-| Método | Ruta | Auth | Roles | Descripción |
+| Method | Route | Auth | Roles | Description |
 |--------|------|------|-------|-------------|
-| GET | /api/v1/users | Si | admin | Listar usuarios |
-| POST | /api/v1/users | Si | admin | Crear usuario |
+| GET | /api/v1/users | Yes | admin | List users |
+| POST | /api/v1/users | Yes | admin | Create user |
 ```
 
 ### 5. Output
 
-- Mostrar en pantalla
-- Guardar en `docs/API.md` si el usuario lo pide
+- Show it on screen
+- Save it to `docs/API.md` if the user asks for it
 
 ## Rules
-- Seguir la estructura real del código, no inventar endpoints
-- Si hay OpenAPI/Swagger existente → leerlo y actualizarlo en vez de crear uno nuevo
-- Agrupar endpoints por módulo/recurso
-- En español para descripciones
-- Incluir ejemplos de request/response cuando sea posible inferirlos del código
+- Follow the real structure of the code, do not invent endpoints
+- If there is an existing OpenAPI/Swagger → read it and update it instead of creating a new one
+- Group endpoints by module/resource
+- Write descriptions in the user's language
+- Include request/response examples when they can be inferred from the code

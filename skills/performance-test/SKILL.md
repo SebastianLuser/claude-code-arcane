@@ -1,6 +1,6 @@
 ---
 name: performance-test
-description: "Performance y load testing para apps Educabot (Go/TS/React/RN): k6 scripts, smoke/load/stress/soak/spike, thresholds por SLO, CI integration, reporte."
+description: "Performance and load testing for Educabot apps (Go/TS/React/RN): k6 scripts, smoke/load/stress/soak/spike, SLO-based thresholds, CI integration, report."
 category: "testing"
 argument-hint: "[smoke|load|stress|soak|spike]"
 user-invocable: true
@@ -8,17 +8,17 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # performance-test — Load & Performance Testing
 
-Framework basado en **k6** (Grafana Labs) — scripting JS, ejecución Go, integración Prometheus/Grafana.
+Framework based on **k6** (Grafana Labs) — JS scripting, Go execution, Prometheus/Grafana integration.
 
 ## Test Types
 
-| Tipo | Objetivo | Duración | VUs |
+| Type | Goal | Duration | VUs |
 |------|----------|----------|-----|
-| **Smoke** | Verificar sin error grueso | 1-2min | 1-5 |
-| **Load** | Carga esperada sostenida | 15-30min | N esperado |
-| **Stress** | Encontrar breaking point | 30-60min | Ramp hasta romper |
-| **Soak** | Degradación/leaks sostenido | 2-8h | N esperado |
-| **Spike** | Resiliencia picos súbitos | 5-15min | 0→10x→0 |
+| **Smoke** | Verify there are no gross errors | 1-2min | 1-5 |
+| **Load** | Sustained expected load | 15-30min | Expected N |
+| **Stress** | Find the breaking point | 30-60min | Ramp until it breaks |
+| **Soak** | Sustained degradation/leaks | 2-8h | Expected N |
+| **Spike** | Resilience to sudden peaks | 5-15min | 0→10x→0 |
 
 ## Project Structure
 
@@ -32,7 +32,7 @@ perf/k6/
 
 ## Thresholds from SLOs
 
-SLO availability 99.9% → `http_req_failed: rate<0.001`. SLO p95 <500ms → `http_req_duration: p(95)<500`. Test falla (exit 1) si no se cumple → gate en CI.
+SLO availability 99.9% → `http_req_failed: rate<0.001`. SLO p95 <500ms → `http_req_duration: p(95)<500`. The test fails (exit 1) if it is not met → CI gate.
 
 ## Execution
 
@@ -44,44 +44,44 @@ k6 run -o experimental-prometheus-rw k6/scenarios/load-api.js
 
 ## CI Integration
 
-- Scheduled weekly (lunes 3am) con `workflow_dispatch` manual
-- **Solo smoke en PRs** — stress/soak en scheduled/manual
-- Upload `results/summary.json` como artifact
+- Scheduled weekly (Monday 3am) with manual `workflow_dispatch`
+- **Smoke only on PRs** — stress/soak on scheduled/manual
+- Upload `results/summary.json` as an artifact
 
 ## Key Metrics
 
-| Métrica | Qué significa |
+| Metric | What it means |
 |---------|---------------|
-| `http_req_duration` | Latencia total (DNS+TCP+TLS+server) |
-| `http_req_waiting` | TTFB — latencia server |
+| `http_req_duration` | Total latency (DNS+TCP+TLS+server) |
+| `http_req_waiting` | TTFB — server latency |
 | `http_req_failed` | Error rate |
-| `iterations` | Completaciones del flow |
+| `iterations` | Flow completions |
 
 ## Quick Diagnosis
 
-| Señal | Probable causa |
+| Signal | Likely cause |
 |-------|---------------|
-| p95 alto + error rate bajo | Server lento → profiler (pprof/clinic.js) |
-| Error rate sube con VUs | Saturación → pool DB, file descriptors, CPU |
-| p99 >> p95 | Long-tail → GC, cold cache, head-of-line blocking |
-| Throughput plateau | Bottleneck identificado (DB/CPU/red) |
+| High p95 + low error rate | Slow server → profiler (pprof/clinic.js) |
+| Error rate rises with VUs | Saturation → DB pool, file descriptors, CPU |
+| p99 >> p95 | Long tail → GC, cold cache, head-of-line blocking |
+| Throughput plateau | Bottleneck identified (DB/CPU/network) |
 
 ## Checklist
 
-- [ ] Avisar al team (Slack)
-- [ ] Confirmar env staging/perf (NO prod sin autorización)
-- [ ] Feature flags para disable paths destructivos
-- [ ] Monitorear dashboards en tiempo real
-- [ ] Plan rollback si rompe shared resources
-- [ ] Teardown data generada post-test
+- [ ] Notify the team (Slack)
+- [ ] Confirm staging/perf env (NO prod without authorization)
+- [ ] Feature flags to disable destructive paths
+- [ ] Monitor dashboards in real time
+- [ ] Rollback plan if it breaks shared resources
+- [ ] Tear down generated data after the test
 
 ## Anti-patterns
 
-- Load test contra prod sin aviso, thresholds sin relación a SLO
-- Stress en cada PR (ruidoso, costoso), test users compartidos con reales
-- Sin think time (tráfico irreal), confundir VUs = RPS
-- No limpiar data generada, correr desde laptop (red falsea p95)
+- Load testing prod without notice, thresholds unrelated to the SLO
+- Stress on every PR (noisy, expensive), test users shared with real ones
+- No think time (unrealistic traffic), confusing VUs = RPS
+- Not cleaning up generated data, running from a laptop (the network skews p95)
 
 ## Grafana Dashboard
 
-Import template ID 19665 (k6 Prometheus): RPS por endpoint, p50/p95/p99, error rate por status, VUs vs throughput.
+Import template ID 19665 (k6 Prometheus): RPS per endpoint, p50/p95/p99, error rate per status, VUs vs throughput.

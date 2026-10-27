@@ -1,82 +1,83 @@
 ---
 name: vault-recall
-description: "Busqueda con ranking sobre el vault via indice cacheado: BM25, acentos plegados y expansion con los alias que declaran tus notas. Tambien encuentra las notas mas parecidas a una dada. Triggers: buscar en el vault, que escribi sobre, encontrar la nota de, recall, donde anote, que tengo sobre, que se parece a esta nota, notas relacionadas."
-argument-hint: "<consulta> | related <nota> [-n N] [--no-expand] [--refresh]"
+description: "Ranked search over the vault via a cached index: BM25, folded accents and expansion with the aliases your notes declare. Also finds the notes most similar to a given one. Triggers: search the vault, what did I write about, find the note on, recall, where did I note, what do I have on, what is similar to this note, related notes."
+argument-hint: "<query> | related <note> [-n N] [--no-expand] [--refresh]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash
 ---
 
-# Vault Recall - Encontrar lo que ya escribiste
+# Vault Recall - Find what you already wrote
 
-Respondés qué hay en el vault sobre algo. La diferencia con `Grep` es el ranking: `Grep` te da las 40 notas que contienen la palabra, esto te da las 5 que **tratan** del tema, y encuentra las que usaron otro nombre para la misma cosa.
+You answer what the vault holds about something. The difference with `Grep` is the ranking: `Grep` gives you the 40 notes that contain the word, this gives you the 5 that are **about** the topic, and finds the ones that used another name for the same thing.
 
-Consulta: `$ARGUMENTS`
+Query: `$ARGUMENTS`
 
-## Fase 1 - Buscar
-
-```bash
-python .claude/skills/vault-recall/scripts/vault_index.py "<vault>" search "<consulta>" -n 10
-```
-
-El índice vive en `<vault>/.vault-index.json` (dotfile, Obsidian lo ignora) y se actualiza solo lo que cambió: la primera corrida indexa todo, las siguientes cuestan milisegundos. Si no existe, el script lo construye sin que tengas que pedirlo.
-
-Flags del skill, que son los del script y se pasan tal cual:
-
-| Flag | Qué hace |
-|---|---|
-| `-n N` | máximo de resultados; `-n 0` para todos. Default 10 |
-| `--no-expand` | consulta literal, sin expandir con los alias de los hubs |
-| `--role nombre=ruta` | estructura del vault distinta de la default (sale del `## Rutas` de su `CLAUDE.md`) |
-
-**`--refresh`** no es un flag del script: es un paso previo. Con `--refresh`, correr primero `vault_index.py "<vault>" refresh` y después la búsqueda. Sirve cuando el vault cambió por fuera de Claude (sync desde el teléfono, edición masiva en Obsidian): el índice es incremental por mtime, así que cuesta milisegundos y evita buscar contra un caché viejo.
-
-### Modo `related`: qué se parece a esta nota
+## Phase 1 - Search
 
 ```bash
-python .claude/skills/vault-recall/scripts/vault_index.py "<vault>" related "<nota o titulo>" -n 10
+python .claude/skills/vault-recall/scripts/vault_index.py "<vault>" search "<query>" -n 10
 ```
 
-Ranquea por vocabulario compartido (tf-idf cosine) y devuelve qué términos comparten, así se ve **por qué** dos notas quedaron cerca. Sirve para dos cosas concretas:
+The index lives in `<vault>/.vault-index.json` (a dotfile, Obsidian ignores it) and only what changed gets updated: the first run indexes everything, later runs cost milliseconds. If it does not exist, the script builds it without you having to ask.
 
-- Antes de crear una nota atómica, ver si ya existe una que dice lo mismo con otras palabras.
-- Buscar candidatos de conexión para `/review-weekly`, que es donde el vault empieza a producir ideas propias.
+Skill flags, which are the script's and are passed through as-is:
 
-Si el título es ambiguo (dos notas con el mismo nombre), no elige: reporta las dos y para. Eso es el hallazgo `ambiguous_names` del audit apareciendo por otra puerta.
-
-## Fase 2 - Leer y responder
-
-1. **Leé las 2 o 3 primeras**, no las 10. El ranking está para que no tengas que abrir todo.
-2. **Respondé la pregunta del usuario citando las notas**, con `[[wikilinks]]` para que pueda saltar. No pegues las notas enteras.
-3. **Decí qué miraste y qué no.** Si el resultado 1 tenía score 8 y el 2 tenía 0.4, decilo: significa que hay una sola nota sobre el tema.
-4. **Si la respuesta no está en el vault, decilo.** No la completes con conocimiento general disfrazado de nota del usuario: la utilidad del vault es que lo que sale de ahí es lo que él pensó.
-
-## Qué encuentra y qué no
-
-Esto es **recuperación léxica con sinónimos derivados del vault**, no búsqueda semántica. Concretamente:
-
-| Caso | Resultado |
+| Flag | What it does |
 |---|---|
-| Buscás `indice` y la nota dice `índices` | Lo encuentra: pliega acentos y colapsa plurales |
-| Buscás `PG` y la nota dice `postgres` | Lo encuentra, **si existe el hub con `PG` en `aliases`** |
-| La palabra aparece una vez en un dump de 900 palabras | Rankea bajo, como corresponde |
-| Buscás `performance de queries` y la nota habla de `indices parciales` sin nombrar ninguna de esas palabras | **No lo encuentra.** No hay embeddings, ni en `search` ni en `related`: los dos necesitan palabras compartidas. |
+| `-n N` | maximum results; `-n 0` for all. Default 10 |
+| `--no-expand` | literal query, without expanding with the hubs' aliases |
+| `--role name=path` | vault structure different from the default (comes from the `## Paths` of its `CLAUDE.md`) |
 
-Ese último caso es el límite real y hay que decirlo cuando pasa, en vez de responder "no tenés nada sobre eso". Las tres salidas, en orden de costo:
+**`--refresh`** is not a script flag: it is a preliminary step. With `--refresh`, first run `vault_index.py "<vault>" refresh` and then the search. Use it when the vault changed outside Claude (sync from the phone, bulk editing in Obsidian): the index is incremental by mtime, so it costs milliseconds and avoids searching against a stale cache.
 
-1. **Reformular con el vocabulario del usuario**, que es el que está en el vault.
-2. **Agregar el alias** donde corresponda (`/hub-note --update`, o el frontmatter de la nota: `aliases:` de **cualquier** nota alimenta la expansión). Enseñarle un sinónimo al vault lo arregla para siempre, y es el mecanismo, no un workaround.
-3. **Recorrer los hubs** del tema y leer sus `## Notas`: el mapa hecho a mano sigue siendo mejor que cualquier búsqueda.
+### `related` mode: what is similar to this note
 
-## Reglas
+```bash
+python .claude/skills/vault-recall/scripts/vault_index.py "<vault>" related "<note or title>" -n 10
+```
 
-- No escribir en el vault. Si de la búsqueda sale que falta un alias o un hub, proponelo y pedí approval: lo aplica `/hub-note`.
-- No inventar contenido de notas que no leíste. Citá solo lo que abriste.
-- El índice no es una fuente de verdad: es un caché. Si un resultado no coincide con la nota, la nota gana y hay que correr `refresh`.
-- Sin guiones largos.
+Ranks by shared vocabulary (tf-idf cosine) and returns which terms they share, so you can see **why** two notes ended up close. It serves two concrete purposes:
 
-Recall COMPLETE cuando el usuario tiene la respuesta con los links a las notas, o sabe que en el vault no está y por qué.
+- Before creating an atomic note, check whether one already says the same thing in other words.
+- Find connection candidates for `/review-weekly`, which is where the vault starts producing ideas of its own.
+
+If the title is ambiguous (two notes with the same name), it does not pick: it reports both and stops. That is the audit's `ambiguous_names` finding showing up through another door.
+
+## Phase 2 - Read and answer
+
+1. **Read the top 2 or 3**, not all 10. The ranking exists so you do not have to open everything.
+2. **Answer the user's question citing the notes**, with `[[wikilinks]]` so they can jump. Do not paste whole notes.
+3. **Say what you looked at and what you did not.** If result 1 scored 8 and result 2 scored 0.4, say so: it means there is a single note on the topic.
+4. **If the answer is not in the vault, say so.** Do not fill it in with general knowledge disguised as the user's note: the value of the vault is that what comes out of it is what they thought.
+
+## What it finds and what it does not
+
+This is **lexical retrieval with vault-derived synonyms**, not semantic search. Concretely:
+
+| Case | Result |
+|---|---|
+| You search `indice` and the note says `índices` | Finds it: folds accents and collapses plurals |
+| You search `PG` and the note says `postgres` | Finds it, **if the hub with `PG` in `aliases` exists** |
+| You search `the index` | Searches `index`: stopwords from `scripts/stopwords.en.json` and `scripts/stopwords.es.json` are dropped (add a `stopwords.<lang>.json` for another language) |
+| The word appears once in a 900-word dump | Ranks low, as it should |
+| You search `query performance` and the note talks about `partial indexes` without naming any of those words | **Does not find it.** There are no embeddings, in `search` or in `related`: both need shared words. |
+
+That last case is the real limit and it must be said when it happens, instead of answering "you have nothing on that". The three ways out, in order of cost:
+
+1. **Rephrase with the user's vocabulary**, which is the one in the vault.
+2. **Add the alias** where it belongs (`/hub-note --update`, or the note's frontmatter: `aliases:` from **any** note feeds the expansion). Teaching the vault a synonym fixes it for good, and it is the mechanism, not a workaround.
+3. **Walk the topic's hubs** and read their `## Notes`: the hand-made map is still better than any search.
+
+## Rules
+
+- Do not write to the vault. If the search shows a missing alias or hub, propose it and ask for approval: `/hub-note` applies it.
+- Do not invent content from notes you did not read. Cite only what you opened.
+- The index is not a source of truth: it is a cache. If a result does not match the note, the note wins and `refresh` has to run.
+- No em dashes.
+
+Recall COMPLETE when the user has the answer with links to the notes, or knows it is not in the vault and why.
 
 ## Handoff
 
-Si la búsqueda mostró que el tema está disperso en varios lugares sin un mapa, el siguiente paso es `/hub-note` para crear el hub que falta. Si mostró que una idea aparece repetida en tres notas parecidas, `/zettel` para consolidarla y `/vault-tidy` para linkear las sobras.
+If the search showed the topic is scattered across several places without a map, the next step is `/hub-note` to create the missing hub. If it showed an idea repeated across three similar notes, `/zettel` to consolidate it and `/vault-tidy` to link the leftovers.

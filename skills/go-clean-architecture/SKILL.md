@@ -1,90 +1,90 @@
 ---
 name: go-clean-architecture
-description: "Arquitectura Go estilo Alizia-BE (Educabot). Clean Architecture híbrida KISS, DI manual, entities/providers/usecases/entrypoints/repositories. Multi-tenant OrgID scope."
+description: "Alizia-BE style Go architecture (Educabot). Hybrid KISS Clean Architecture, manual DI, entities/providers/usecases/entrypoints/repositories. Multi-tenant OrgID scope."
 category: "backend"
 argument-hint: "[module-name or feature]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-# Go Clean Architecture (estilo Alizia-BE)
+# Go Clean Architecture (Alizia-BE style)
 
-Arquitectura canónica backends Go Educabot. KISS + Clean by layers, DI manual, separación estricta.
+Canonical architecture for Educabot Go backends. KISS + Clean by layers, manual DI, strict separation.
 
-## Cuándo usar / NO usar
+## When to use / NOT use
 
-| Usar | NO usar |
+| Use | Do NOT use |
 |------|---------|
-| API backend nueva con lógica no trivial | CLI simple / tool interno |
-| Multi-tenant con OrgID scope | Prototipo throwaway |
-| Necesitás testabilidad por capa | Worker de una sola función |
+| New backend API with non-trivial logic | Simple CLI / internal tool |
+| Multi-tenant with OrgID scope | Throwaway prototype |
+| You need per-layer testability | Single-function worker |
 
-## Filosofía
+## Philosophy
 
-- Simpleza primero — no DDD pesado, no event sourcing, no CQRS prematuro
-- DI manual en `cmd/` — no wire/fx/dig. Verbosidad es feature
-- One file = one responsibility (especialmente usecases)
-- Código en inglés, comunicación en español
+- Simplicity first — no heavy DDD, no event sourcing, no premature CQRS
+- Manual DI in `cmd/` — no wire/fx/dig. Verbosity is a feature
+- One file = one responsibility (especially usecases)
+- Code in English, communication in the user's language
 
-## Estructura de Directorios
+## Directory Structure
 
 ```
-cmd/                         ← Entry point + DI manual
+cmd/                         ← Entry point + manual DI
   main.go, app.go, repositories.go, usecases.go, handlers.go, routes.go
-src/core/                    ← DOMINIO PURO (sin imports infra)
-  entities/                  ← Structs planos (sin tags GORM/JSON)
-  providers/                 ← Interfaces (contratos) + errors.go
-  usecases/{domain}/         ← Business logic, un archivo por usecase
-src/entrypoints/rest/        ← HTTP handlers (sin lógica de negocio)
-src/repositories/{domain}/   ← GORM impl (tags GORM acá, no en entities)
-src/mocks/                   ← Un mock por provider
+src/core/                    ← PURE DOMAIN (no infra imports)
+  entities/                  ← Plain structs (no GORM/JSON tags)
+  providers/                 ← Interfaces (contracts) + errors.go
+  usecases/{domain}/         ← Business logic, one file per usecase
+src/entrypoints/rest/        ← HTTP handlers (no business logic)
+src/repositories/{domain}/   ← GORM impl (GORM tags here, not in entities)
+src/mocks/                   ← One mock per provider
 config/                      ← Env vars
 db/migrations/               ← SQL up/down (golang-migrate)
 ```
 
-## Regla de Dependencias
+## Dependency Rule
 
 `entrypoints → usecases → providers (interfaces) ← repositories`
 
-- Usecases **NUNCA** importan gorm/http/redis/openai — solo entities + providers
-- Interfaces en `core/providers/` (consumer side, Go idiom)
+- Usecases **NEVER** import gorm/http/redis/openai — only entities + providers
+- Interfaces in `core/providers/` (consumer side, Go idiom)
 
-## Capas
+## Layers
 
-| Capa | Responsabilidad | Reglas |
+| Layer | Responsibility | Rules |
 |------|----------------|--------|
-| **Entities** | Structs del dominio | Sin tags GORM/JSON, sin lógica de persistencia |
-| **Providers** | Interfaces + errores sentinel | `ErrValidation`, `ErrNotFound`, `ErrForbidden`, etc. |
-| **Usecases** | Request.Validate() + Execute() | Validate siempre primera línea. Validar OrgID siempre |
-| **Entrypoints** | HTTP ↔ Request translation | Sin lógica de negocio. Mapea sentinel → HTTP code |
-| **Repositories** | GORM impl de providers | Row structs con tags GORM acá. Traducen row ↔ entity |
+| **Entities** | Domain structs | No GORM/JSON tags, no persistence logic |
+| **Providers** | Interfaces + sentinel errors | `ErrValidation`, `ErrNotFound`, `ErrForbidden`, etc. |
+| **Usecases** | Request.Validate() + Execute() | Validate is always the first line. Always validate OrgID |
+| **Entrypoints** | HTTP ↔ Request translation | No business logic. Maps sentinel → HTTP code |
+| **Repositories** | GORM impl of providers | Row structs with GORM tags here. They translate row ↔ entity |
 
-## Patrón Canónico Usecase
+## Canonical Usecase Pattern
 
-- Struct `CreateXxxRequest` con `Validate() error` — wrappea con `providers.ErrValidation`
-- Interface `CreateXxx` con `Execute(ctx, req) (result, error)`
-- Impl `createXxxImpl` con deps como providers
+- Struct `CreateXxxRequest` with `Validate() error` — wraps with `providers.ErrValidation`
+- Interface `CreateXxx` with `Execute(ctx, req) (result, error)`
+- Impl `createXxxImpl` with deps as providers
 - Constructor `NewCreateXxx(deps) CreateXxx`
 
 ## Multi-tenant (OrgID)
 
-- `OrgID` en cada Request de usecase, `Validate()` chequea `OrgID != uuid.Nil`
-- Cada query filtra por `organization_id`. RLS en Postgres como última barrera
-- Middleware JWT extrae OrgID del token → context
+- `OrgID` in every usecase Request, `Validate()` checks `OrgID != uuid.Nil`
+- Every query filters by `organization_id`. RLS in Postgres as the last barrier
+- JWT middleware extracts OrgID from the token → context
 
-## DI Manual en cmd/
+## Manual DI in cmd/
 
-- `cmd/repositories.go`: `buildRepositories(db)` → struct con todos los repos
-- `cmd/usecases.go`: `buildUseCases(repos)` → struct con todos los usecases
-- `cmd/handlers.go`: `buildHandlers(ucs)` → struct con todos los handlers
-- Lectura completa del grafo de deps en un vistazo
+- `cmd/repositories.go`: `buildRepositories(db)` → struct with all the repos
+- `cmd/usecases.go`: `buildUseCases(repos)` → struct with all the usecases
+- `cmd/handlers.go`: `buildHandlers(ucs)` → struct with all the handlers
+- The whole dependency graph readable at a glance
 
 ## Testing
 
-| Capa | Tipo | Herramientas |
+| Layer | Type | Tools |
 |------|------|-------------|
-| Usecases | Unit con mocks | testify + mocks por provider |
-| Repositories | Integration | Postgres real (testcontainers) |
-| Handlers | HTTP con usecase mockeado | httptest + testify |
+| Usecases | Unit with mocks | testify + mocks per provider |
+| Repositories | Integration | Real Postgres (testcontainers) |
+| Handlers | HTTP with a mocked usecase | httptest + testify |
 
 ## Anti-patterns
 

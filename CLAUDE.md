@@ -54,7 +54,7 @@ These are the ones that are hard to find by hand — all live in `src/__tests__/
 - **`agents-integrity.test.ts`**: frontmatter may only declare fields Claude Code actually reads; `agent:` requires `context: fork`, that the agent exists and that it is reachable from every profile shipping that skill; each agent's `skills:` and delegations must resolve to files on disk. The `KNOWN_DEAD_REFS` allowlist **only shrinks**: a new dead reference is a failing test, not one more line.
 - **`agent-specs.test.ts`**: the specs in `skills-selftest/` must match the agent's model tier and division, and coverage cannot drop.
 - **`skill-specs.test.ts`**: every spec in `skills-selftest/skills/` must name a skill that exists in `skills/`. Deleting a skill means deleting its spec.
-- **`language.test.ts`**: repo content is English. Files still in Spanish are listed in `SPANISH_FILES`, a list that **only shrinks**; a new file in another language fails the test. Language data packs (`*.<lang>.json`) are exempt by rule.
+- **`language.test.ts`**: repo content is English. A line of Spanish prose anywhere (outside code blocks and inline code) fails the test. Words a script needs in one language go in a `*.<lang>.json` pack next to it, which the test exempts.
 - **`tests/repo/test_python_floor.py`**: the Python floor is 3.9, so a skill script with `X | Y` annotations needs `from __future__ import annotations` (it compiles on 3.9 but fails on import).
 
 ## Adding content

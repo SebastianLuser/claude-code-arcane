@@ -20,7 +20,14 @@ Structural tells (rule-of-three, "not just X, it's Y", hashtag walls) are
 REPORTED, never auto-rewritten - rewriting a sentence's shape needs judgement,
 so that is the model's job, not a regex's.
 
-The language (en, es) is detected from the text unless --lang is given.
+The language is detected from the text unless --lang is given. Each
+slop.<lang>.json is one language pack (lexicon, structures, stopwords); a new
+pack file is a new language, with no code change. When no pack's stopwords
+make up enough of the text, the language is "unknown" and no lexicon is
+applied: only the passes that need no language run (invisible characters,
+typography, the structures every pack shares, sentence-length uniformity).
+A wrong lexicon is worse than none: it rewrites words that are correct in the
+text's own language.
 
 Adapted from Jake Schincariol's linkedin-agent-skill (MIT).
 
@@ -40,34 +47,58 @@ import sys
 import unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-LANGS = ("en", "es")
+LANGS = tuple(sorted(f[len("slop."):-len(".json")] for f in os.listdir(HERE)
+                     if re.fullmatch(r"slop\.[a-z]{2}\.json", f)))
+UNKNOWN = "unknown"
+# Share of the text's words that must be the best pack's stopwords. Text in
+# the pack's language scores 0.25-0.5; a neighbouring language without a pack
+# (Portuguese, Italian, Catalan against the Spanish one) stays under 0.1.
+MIN_STOPWORD_SHARE = 0.12
 
 URL_RE = re.compile(r"https?://\S+|www\.\S+|\S+@\S+\.\S+")
 SENT_RE = re.compile(r"[^.!?\n]+[.!?]*")
 
-STOPWORDS = {
-    "en": {"the", "and", "of", "to", "is", "in", "that", "it", "for", "you",
-           "with", "on", "this", "was", "are", "but", "not", "have", "be", "at"},
-    "es": {"de", "la", "que", "el", "en", "y", "los", "las", "del", "se",
-           "por", "un", "una", "para", "con", "es", "lo", "pero", "como", "más"},
-}
-
 
 def detect_lang(text):
-    """Pick the language whose stopwords and letters the text uses most."""
-    tokens = re.findall(r"[^\W\d_]+", text.lower())
-    scores = {lang: sum(t in words for t in tokens) for lang, words in STOPWORDS.items()}
-    scores["es"] += 2 * sum(text.count(c) for c in "ñ¿¡áéíóú")
-    return "es" if scores["es"] > scores["en"] else "en"
+    """The pack whose stopwords make up the largest share of the text, or UNKNOWN below the threshold."""
+    tokens = re.findall(r"[^\W\d_]+", URL_RE.sub(" ", text).lower())
+    if not tokens:
+        return UNKNOWN
+    shares = {}
+    for lang in LANGS:
+        stopwords = set(load_lexicon(lang)["stopwords"])
+        shares[lang] = sum(t in stopwords for t in tokens) / len(tokens)
+    best = max(shares, key=shares.get, default=UNKNOWN)
+    return best if shares.get(best, 0) >= MIN_STOPWORD_SHARE else UNKNOWN
 
 
 def load_lexicon(lang="en", path=None):
+    if path is None and lang == UNKNOWN:
+        return neutral_lexicon()
     with open(path or os.path.join(HERE, f"slop.{lang}.json"), encoding="utf-8") as fh:
         return json.load(fh)
 
 
+def neutral_lexicon():
+    """What every pack agrees on: invisible characters, typography and the
+    structures with no words in them (emoji, hashtag walls). No vocabulary,
+    no voice."""
+    packs = [load_lexicon(lang) for lang in LANGS]
+
+    def shared(key):
+        return [e for e in packs[0][key] if all(e in p[key] for p in packs[1:])]
+
+    return {"language": UNKNOWN, "invisible": shared("invisible"), "typographic": shared("typographic"),
+            "structures": shared("structures"), "words": [], "phrases": [], "voice": None}
+
+
+def unknown_note():
+    return (f"Language not recognised (packs: {', '.join(LANGS)}): no lexicon applied, only the "
+            "language-neutral checks. Force a pack with --lang.")
+
+
 def term_pattern(find):
-    """Whole-term match; lookarounds instead of \\b so '¿qué opinan?' matches too."""
+    """Whole-term match; lookarounds instead of \\b so a term that starts or ends in punctuation matches too."""
     return re.compile(r"(?<!\w)" + re.escape(find).replace(r"\ ", r"\s+") + r"(?!\w)",
                       re.IGNORECASE)
 
@@ -175,10 +206,13 @@ def pass_lexical(text, lex):
     text = re.sub(r"\s+([,.;:!?])", r"\1", text)
     text = re.sub(r"(?m)^[ \t]+$", "", text)
     text = re.sub(r"\n{3,}", "\n\n", text)
-    # An em dash that became a comma, followed by a sentence connective, leaves
-    # a splice ("is important, also, it's proof"). Promote it to a full stop.
-    text = re.sub(r",\s*(also|so|still|basically|in the end)\s*,\s*",
-                  lambda m: ". " + m.group(1)[0].upper() + m.group(1)[1:] + ", ", text)
+    # An em dash that became a comma, followed by one of the pack's sentence
+    # connectives, leaves a splice ("is important, also, it's proof"). Promote
+    # it to a full stop.
+    connectives = "|".join(re.escape(c) for c in lex.get("connectives", []))
+    if connectives:
+        text = re.sub(r",\s*(" + connectives + r")\s*,\s*",
+                      lambda m: ". " + m.group(1)[0].upper() + m.group(1)[1:] + ", ", text)
     return text, hits
 
 
@@ -273,6 +307,8 @@ def main():
     raw = sys.stdin.read() if args.input == "-" else open(args.input, encoding="utf-8").read()
     lang = detect_lang(raw) if args.lang == "auto" else args.lang
     lex = load_lexicon(lang, args.lexicon)
+    if lex.get("language") == UNKNOWN:
+        print(unknown_note(), file=sys.stderr)
     clean, report = humanize(raw, lex)
 
     if args.json:

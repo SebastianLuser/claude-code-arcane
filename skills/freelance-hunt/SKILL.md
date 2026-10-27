@@ -1,126 +1,127 @@
 ---
 name: freelance-hunt
-description: "Entry point for the freelance skillset: extends the career workspace with contracts and a Connects ledger, then routes to the right skill. Triggers: freelance, upwork, buscar proyectos como freelancer, conseguir clientes, pipeline freelance, setup freelance workspace, cuanto gano por hora."
+description: "Entry point for the freelance skillset: extends the career workspace with contracts and a Connects ledger, then routes to the right skill. Triggers: freelance, upwork, find projects as a freelancer, get clients, freelance pipeline, setup freelance workspace, how much do I earn per hour."
 argument-hint: "[setup | status | next]"
 category: "career"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 
-# Freelance Hunt - Orquestador del pipeline freelance
+# Freelance Hunt - Freelance pipeline orchestrator
 
-Sos el punto de entrada de la suite freelance. Detectás (o extendés) el career workspace, entendés en qué etapa está el usuario, y ruteás al skill correcto. No hacés todo vos - orquestás.
+You are the entry point of the freelance suite. You detect (or extend) the career workspace, understand which stage the user is at, and route to the right skill. You do not do everything yourself - you orchestrate.
 
-## Un solo workspace, no dos
+## One workspace, not two
 
-El perfil **reutiliza el career workspace** de `+job-hunt` (default `./career-workspace/`, o env `CAREER_WORKSPACE`). No crea uno paralelo, y esto es deliberado: `01-Perfiles/` es la única fuente de verdad de la experiencia del usuario. Dos workspaces serían dos perfiles maestros divergiendo, que es exactamente el problema que el perfil maestro resuelve.
+The profile **reuses the career workspace** from `+job-hunt` (default `./career-workspace/`, or env `CAREER_WORKSPACE`). It does not create a parallel one, and this is deliberate: `01-Profiles/` is the single source of truth for the user's experience. Two workspaces would be two master profiles drifting apart, which is exactly the problem the master profile solves.
 
-Lo que agrega el perfil freelance:
+What the freelance profile adds:
 
 ```
 career-workspace/
-  03-Aplicaciones/         ← compartida: empleos Y propuestas (discrimina `tipo:`)
-  04-Empresas/             ← compartida: empresas Y clientes
-  08-Contratos/            NUEVA: contratos activos, milestones, horas, change orders
-  07-Recursos/
-    Connects - YYYY.md     NUEVO: ledger del costo de postularse (Connects en Upwork,
-                           bids en otras plataformas, horas en outreach directo)
+  03-Applications/         ← shared: jobs AND proposals (told apart by `type:`)
+  04-Companies/            ← shared: companies AND clients
+  08-Contracts/            NEW: active contracts, milestones, hours, change orders
+  07-Resources/
+    Connects - YYYY.md     NEW: ledger of the cost of applying (Connects on Upwork,
+                           bids on other platforms, hours in direct outreach)
   Templates/
-    Propuesta.md           NUEVO
-    Contrato.md            NUEVO
+    Proposal.md            NEW
+    Contract.md            NEW
 ```
 
-Una propuesta **es** una aplicación: vive en `03-Aplicaciones/` con `tipo: freelance`. Un cliente **es** una empresa: vive en `04-Empresas/`. Así `/job-outcome`, `/cold-outreach` y `/master-profile` funcionan sobre las dos mitades sin cambios.
+A proposal **is** an application: it lives in `03-Applications/` with `type: freelance`. A client **is** a company: it lives in `04-Companies/`. That way `/job-outcome`, `/cold-outreach` and `/master-profile` work on both halves without changes.
 
-Si el usuario no tiene `+job-hunt` instalado, el modo `setup` crea el árbol completo igual: el workspace no depende del otro perfil, solo lo comparte.
+If the user does not have `+job-hunt` installed, `setup` mode creates the full tree anyway: the workspace does not depend on the other profile, it only shares it.
 
-## Vocabulario de estados
+## Status vocabulary
 
-Frontmatter `estado` para `tipo: freelance`:
+Frontmatter `status` for `type: freelance`:
 
-`interesado → screeneado → propuesta_enviada → en_conversacion → contrato_activo → entregado`
+`interested → screened → proposal_sent → in_conversation → contract_active → delivered`
 
-Cierres: `ganado_cerrado | sin_respuesta | rechazado | descartado | disputa`
+Closes: `won_closed | no_response | rejected | discarded | disputed`
 
-`descartado` es una decisión activa y se registra igual que una propuesta enviada: los descartes son la mitad de los datos que `/freelance-pipeline` necesita (ver `freelance-guardrails`, sección Registro). Los estados los mueve `/job-outcome`; ninguna otra skill marca `propuesta_enviada`.
+`discarded` is an active decision and is recorded just like a sent proposal: discards are half the data `/freelance-pipeline` needs (see `freelance-guardrails`, Record section). Statuses are moved by `/job-outcome`; no other skill marks `proposal_sent`.
 
-## Modos
+## Modes
 
-### `setup` - Preparar el workspace
+### `setup` - Prepare the workspace
 
-1. Detectar si ya existe el career workspace. Si existe, **extenderlo**; si no, crear el árbol completo (mismo que `/job-hunt setup`).
-2. Crear `08-Contratos/` y copiar `Propuesta.md` y `Contrato.md` desde `references/templates/` a `Templates/`.
-3. Crear el ledger `07-Recursos/Connects - <año>.md` desde `references/templates/Connects.md`.
-4. Agregar al `00-Dashboard.md` las secciones freelance (propuestas activas, contratos en curso, Connects del mes). Si el dashboard no existe, crearlo.
-5. Preguntar y registrar en `01-Perfiles/` los **dos números que gobiernan todo el perfil**: el piso de tarifa neto y la capacidad semanal de horas facturables. Sin el piso, `/freelance-proposal` no puede validar un bid (ver `freelance-guardrails` regla 3).
-6. Si el usuario ya tiene cuenta en alguna plataforma, sugerir `/freelance-profile` como siguiente paso; si no, `/master-profile` primero. Si todavía no sabe qué piso poner, `/freelance-scan market` da la mediana de lo que cobran otros con su perfil.
+1. Detect whether the career workspace already exists. If it does, **extend it**; if not, create the full tree (same as `/job-hunt setup`).
+2. Create `08-Contracts/` and copy `Proposal.md` and `Contract.md` from `references/templates/` to `Templates/`.
+3. Create the ledger `07-Resources/Connects - <year>.md` from `references/templates/Connects.md`.
+4. Add the freelance sections to `00-Dashboard.md` (active proposals, ongoing contracts, Connects this month). If the dashboard does not exist, create it.
+5. Ask for and record in `01-Profiles/` the **two numbers that govern the whole profile**: the net rate floor and the weekly capacity of billable hours. Without the floor, `/freelance-proposal` cannot validate a bid (see `freelance-guardrails` rule 3).
+6. If the user already has an account on a platform, suggest `/freelance-profile` as the next step; if not, `/master-profile` first. If they do not know yet what floor to set, `/freelance-scan market` gives the median of what others with their profile charge.
 
-### `status` - Dónde estoy
+### `status` - Where am I
 
-1. Leer `00-Dashboard.md`, escanear `03-Aplicaciones/` filtrando `tipo: freelance`, y `08-Contratos/`.
-2. Resumir: propuestas esperando respuesta (con días transcurridos), contratos activos y su avance, Connects gastados en el mes contra resultados, horas facturables comprometidas contra capacidad.
-3. Marcar lo que necesita acción hoy: propuestas sin respuesta hace 7+ días, milestones vencidos, contratos con horas por encima de lo estimado.
-4. Recomendar la acción de mayor impacto.
+1. Read `00-Dashboard.md`, scan `03-Applications/` filtering `type: freelance`, and `08-Contracts/`.
+2. Summarize: proposals waiting for an answer (with days elapsed), active contracts and their progress, Connects spent this month against results, committed billable hours against capacity.
+3. Flag what needs action today: proposals with no answer for 7+ days, overdue milestones, contracts with hours above the estimate.
+4. Recommend the highest-impact action.
 
-### `next` - Qué hago ahora
+### `next` - What do I do now
 
-Según el estado del workspace, recomendar el skill siguiente (ver routing).
+Based on the state of the workspace, recommend the next skill (see routing).
 
 ## Routing
 
-| Situación | Skill |
+| Situation | Skill |
 |-----------|-------|
-| No hay workspace | `/freelance-hunt setup` |
-| Falta perfil maestro | `/master-profile` |
-| Perfil de plataforma flojo o vacío | `/freelance-profile` |
-| Buscar y scorear ofertas | `/freelance-scan` |
-| Qué cobran otros con mi perfil | `/freelance-scan market` |
-| Evaluar riesgo de un cliente | `/client-screen` |
-| Escribir la propuesta y el bid | `/freelance-proposal` |
-| Contrato, SOW, NDA o change order | `/contract-and-proposal-writer` |
-| Estimar esfuerzo de un proyecto | `/estimate` |
-| Registrar respuesta o resultado | `/job-outcome` |
-| ¿Ya me postulé acá? / exportar el registro a CSV | `/career-registry` |
-| Mensaje directo a un cliente o follow-up | `/cold-outreach` |
-| Portfolio web | `/portfolio-site` |
-| Gané el proyecto: desarmar alcance y validar horas | `/freelance-kickoff` |
-| Registrar horas, scope creep, change orders | `/freelance-deliver` |
-| ROI de Connects, utilización, tarifa efectiva | `/freelance-pipeline` |
+| No workspace | `/freelance-hunt setup` |
+| Workspace with the pre-English folders | `/career-registry` (its migration script, dry run first) |
+| Master profile missing | `/master-profile` |
+| Platform profile weak or empty | `/freelance-profile` |
+| Search and score postings | `/freelance-scan` |
+| What others with my profile charge | `/freelance-scan market` |
+| Evaluate a client's risk | `/client-screen` |
+| Write the proposal and the bid | `/freelance-proposal` |
+| Contract, SOW, NDA or change order | `/contract-and-proposal-writer` |
+| Estimate a project's effort | `/estimate` |
+| Record a reply or an outcome | `/job-outcome` |
+| Did I already apply here? / export the registry to CSV | `/career-registry` |
+| Direct message to a client or follow-up | `/cold-outreach` |
+| Portfolio website | `/portfolio-site` |
+| I won the project: break down the scope and validate the hours | `/freelance-kickoff` |
+| Log hours, scope creep, change orders | `/freelance-deliver` |
+| Connects ROI, utilization, effective rate | `/freelance-pipeline` |
 
-## Los 4 agentes del perfil
+## The profile's 4 agents
 
-El perfil instala `agents/freelance/`. Existen porque hay lecturas que solo sirven con contexto fresco, y son read-only: devuelven análisis, los archivos los escribe la sesión principal.
+The profile installs `agents/freelance/`. They exist because some readings only work with fresh context, and they are read-only: they return analysis, and the main session writes the files.
 
-| Agente | Contesta | Lo lanza |
+| Agent | Answers | Launched by |
 |---|---|---|
-| `client-screener` | ¿Este cliente es un riesgo? (adversarial por diseño) | `/client-screen` |
-| `proposal-reviewer` | ¿Vale gastar Connects en esta propuesta? | `/freelance-proposal` |
-| `discovery-call` | ¿Aguanto la llamada, el regateo y el alcance de contrabando? | `/freelance-proposal`, `/client-screen` |
-| `pipeline-strategist` | ¿Esto es un negocio o un pasatiempo caro? | `/freelance-pipeline` (10+ propuestas resueltas) |
+| `client-screener` | Is this client a risk? (adversarial by design) | `/client-screen` |
+| `proposal-reviewer` | Is this proposal worth spending Connects on? | `/freelance-proposal` |
+| `discovery-call` | Can I hold up through the call, the haggling and the smuggled scope? | `/freelance-proposal`, `/client-screen` |
+| `pipeline-strategist` | Is this a business or an expensive hobby? | `/freelance-pipeline` (10+ resolved proposals) |
 
-`client-screener` y `proposal-reviewer` corren **en paralelo** cuando van los dos: son preguntas independientes.
+`client-screener` and `proposal-reviewer` run **in parallel** when both are used: they are independent questions.
 
-## Workflow estándar para una oportunidad
+## Standard workflow for an opportunity
 
-1. `/freelance-scan` → ofertas scoreadas, dedup contra corridas anteriores.
-2. `/client-screen` → riesgo del cliente. **Si el veredicto es no postularse, se registra el descarte y termina acá.** Ese es el paso que ahorra plata.
-3. `/estimate` → esfuerzo real del alcance descrito.
-4. `/freelance-proposal` → propuesta + bid sobre el piso + review con `proposal-reviewer`.
-5. Enviar (**siempre manual**) → `/job-outcome` para marcar `propuesta_enviada` y registrar el gasto de Connects.
-6. Si el cliente responde → ensayar con `discovery-call`, después la llamada real.
-7. Si se cierra → `/contract-and-proposal-writer` para el SOW, nota en `08-Contratos/`.
-8. **`/freelance-kickoff`** → desarmar el alcance y validar si entra en lo cotizado. Acá se descubre la brecha, no en la semana 5.
-9. Mientras se ejecuta → `/freelance-deliver` para horas, scope creep y change orders.
-10. Al cerrar → `/freelance-deliver close`, y cada 2 semanas o con 10+ propuestas resueltas, `/freelance-pipeline`.
+1. `/freelance-scan` → scored postings, deduplicated against earlier runs.
+2. `/client-screen` → client risk. **If the verdict is do not apply, the discard is recorded and it ends here.** That is the step that saves money.
+3. `/estimate` → real effort for the described scope.
+4. `/freelance-proposal` → proposal + bid above the floor + review with `proposal-reviewer`.
+5. Send (**always by hand**) → `/job-outcome` to mark `proposal_sent` and record the Connects spent.
+6. If the client replies → rehearse with `discovery-call`, then the real call.
+7. If it closes → `/contract-and-proposal-writer` for the SOW, note in `08-Contracts/`.
+8. **`/freelance-kickoff`** → break down the scope and validate whether it fits what was quoted. This is where the gap is discovered, not in week 5.
+9. While it runs → `/freelance-deliver` for hours, scope creep and change orders.
+10. On closing → `/freelance-deliver close`, and every 2 weeks or with 10+ resolved proposals, `/freelance-pipeline`.
 
-## Reglas
+## Rules
 
-- Regla del perfil: `freelance-guardrails`. Las cuatro no son sugerencias - los Connects son plata, el JSS es un activo, el piso no se negocia y el envío es manual.
-- Nunca reorganizar carpetas ni renombrar notas sin preguntar - rompe `[[wikilinks]]` en silencio.
-- Nunca commitear datos sensibles (montos, datos de clientes, mails) a un remoto sin confirmación explícita.
-- Preservar los prefijos numéricos al crear archivos.
-- Máximo accionable: el usuario siempre termina sabiendo qué skill correr next.
+- Profile rule: `freelance-guardrails`. The four are not suggestions - Connects are money, the JSS is an asset, the floor is not negotiable and sending is manual.
+- Never reorganize folders or rename notes without asking - it silently breaks `[[wikilinks]]`.
+- Never commit sensitive data (amounts, client data, emails) to a remote without explicit confirmation.
+- Keep the numeric prefixes when creating files.
+- Maximum actionability: the user always ends up knowing which skill to run next.
 
 ## Handoff
 
-Pedí aprobación (approval) antes de escribir o sobrescribir archivos del workspace. Cuando el workspace queda READY, el siguiente paso es `/freelance-profile` si ya hay cuenta en una plataforma, o `/master-profile` si falta el perfil maestro.
+Ask for approval before writing or overwriting workspace files. When the workspace is READY, the next step is `/freelance-profile` if there is already an account on a platform, or `/master-profile` if the master profile is missing.

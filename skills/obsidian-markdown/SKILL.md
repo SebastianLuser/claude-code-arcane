@@ -1,110 +1,110 @@
 ---
 name: obsidian-markdown
-description: "Sintaxis de Obsidian Flavored Markdown: wikilinks, embeds, callouts, block IDs, propiedades, tags, highlights, math y mermaid. Valida o corrige una nota. Triggers: sintaxis obsidian, wikilink, callout, embed, block id, obsidian markdown, esto renderiza bien en obsidian, frontmatter obsidian."
-argument-hint: "[reference | check <archivo> | fix <archivo>]"
+description: "Obsidian Flavored Markdown syntax: wikilinks, embeds, callouts, block IDs, properties, tags, highlights, math and mermaid. Validates or fixes a note. Triggers: obsidian syntax, wikilink, callout, embed, block id, obsidian markdown, does this render right in obsidian, obsidian frontmatter."
+argument-hint: "[reference | check <file> | fix <file>]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 
-# Obsidian Markdown - Sintaxis nativa
+# Obsidian Markdown - Native syntax
 
-Obsidian extiende CommonMark y GFM. Este skill cubre **solo las extensiones propias de Obsidian**: el markdown estándar (títulos, negrita, listas, tablas, código) se da por sabido. Adaptado de `kepano/obsidian-skills` al formato de este repo.
+Obsidian extends CommonMark and GFM. This skill covers **only Obsidian's own extensions**: standard markdown (headings, bold, lists, tables, code) is taken as known. Adapted from `kepano/obsidian-skills` to this repo's format.
 
-Modo y archivo: `$ARGUMENTS`
+Mode and file: `$ARGUMENTS`
 
-## Modos
+## Modes
 
-- **`reference`** (default): responder la duda de sintaxis con la tabla de abajo, sin tocar archivos.
-- **`check <archivo>`**: leer la nota y reportar qué no va a renderizar. Read-only.
-- **`fix <archivo>`**: corregir lo que `check` encontró. Pedí approval antes de escribir, mostrando el diff propuesto.
+- **`reference`** (default): answer the syntax question with the table below, without touching files.
+- **`check <file>`**: read the note and report what will not render. Read-only.
+- **`fix <file>`**: fix what `check` found. Ask for approval before writing, showing the proposed diff.
 
-## Links y embeds
+## Links and embeds
 
 ```markdown
-[[Nota]]                          link interno
-[[Nota|Texto visible]]            alias
-[[Nota#Titulo]]                   link a un heading
-[[Nota#^block-id]]                link a un bloque
-[[#Titulo en esta nota]]          link interno a la misma nota
+[[Note]]                          internal link
+[[Note|Visible text]]             alias
+[[Note#Heading]]                  link to a heading
+[[Note#^block-id]]                link to a block
+[[#Heading in this note]]         internal link to the same note
 
-![[Nota]]                         embed de la nota completa
-![[Nota#Titulo]]                  embed de una seccion
-![[imagen.png|300]]               embed con ancho
-![[doc.pdf#page=3]]               embed de una pagina de PDF
+![[Note]]                         embed of the whole note
+![[Note#Heading]]                 embed of a section
+![[image.png|300]]                embed with a width
+![[doc.pdf#page=3]]               embed of a PDF page
 ```
 
-Un block ID se define agregando `^mi-id` al final del párrafo. En listas y citas va en una línea aparte después del bloque.
+A block ID is defined by adding `^my-id` at the end of the paragraph. In lists and quotes it goes on a separate line after the block.
 
-**`[[wikilinks]]` para lo interno, `[texto](url)` solo para URLs externas.** No es estilo: Obsidian actualiza los wikilinks cuando renombrás una nota dentro de la app, y no toca los markdown links.
+**`[[wikilinks]]` for internal content, `[text](url)` only for external URLs.** It is not style: Obsidian updates wikilinks when you rename a note inside the app, and it does not touch markdown links.
 
 ## Callouts
 
 ```markdown
 > [!note]
-> Callout basico.
+> Basic callout.
 
-> [!warning] Titulo propio
-> Con titulo custom.
+> [!warning] Custom title
+> With a custom title.
 
-> [!faq]- Colapsado por default
-> El `-` lo colapsa, el `+` lo abre.
+> [!faq]- Collapsed by default
+> The `-` collapses it, the `+` opens it.
 ```
 
-Tipos: `note`, `tip`, `info`, `warning`, `danger`, `bug`, `example`, `quote`, `success`, `failure`, `question`, `abstract`, `todo`. Un tipo inventado renderiza como `note` sin avisar, y ese es el error de callout más común.
+Types: `note`, `tip`, `info`, `warning`, `danger`, `bug`, `example`, `quote`, `success`, `failure`, `question`, `abstract`, `todo`. An invented type renders as `note` without warning, and that is the most common callout mistake.
 
-## Propiedades (frontmatter)
+## Properties (frontmatter)
 
 ```yaml
 ---
-title: Mi nota
+title: My note
 date: 2026-07-27
 tags:
-  - proyecto
-  - activo
+  - project
+  - active
 aliases:
-  - Nombre alternativo
+  - Alternative name
 cssclasses:
   - custom
 ---
 ```
 
-`tags`, `aliases` y `cssclasses` son las tres propiedades que Obsidian entiende de forma nativa. El resto son campos propios y los consume Bases o Dataview.
+`tags`, `aliases` and `cssclasses` are the three properties Obsidian understands natively. The rest are custom fields, consumed by Bases or Dataview.
 
-## Resto de la sintaxis propia
+## The rest of the native syntax
 
 ```markdown
-#tag  #anidado/tag              tags inline (no pueden empezar con numero)
-==resaltado==                   highlight
-%%comentario%%                  invisible en lectura
-$e^{i\pi}+1=0$   y   $$...$$    math LaTeX inline y en bloque
-texto[^1]  /  ^[nota inline]    footnotes
+#tag  #nested/tag               inline tags (cannot start with a number)
+==highlighted==                 highlight
+%%comment%%                     invisible in reading view
+$e^{i\pi}+1=0$   and   $$...$$  inline and block LaTeX math
+text[^1]  /  ^[inline note]     footnotes
 ```
 
-Los bloques ` ```mermaid ` renderizan diagramas nativamente.
+` ```mermaid ` blocks render diagrams natively.
 
-## Qué revisa `check`
+## What `check` reviews
 
-| Check | Qué busca | Verdict |
+| Check | What it looks for | Verdict |
 |---|---|---|
-| Tipo de callout | `> [!tipo]` con un tipo que no existe | FAIL: renderiza como `note` |
-| Links externos como wikilink | `[[https://...]]` | FAIL: no resuelve |
-| Links internos como markdown | `[texto](Nota.md)` dentro del vault | CONCERNS: se rompe al renombrar |
-| Frontmatter | Abre con `---` en la primera línea y cierra | FAIL si no cierra: Obsidian lo muestra como texto |
-| `tags` con `#` en frontmatter | `tags: [#foo]` | CONCERNS: el `#` no va en frontmatter |
-| Block IDs | Duplicados en la misma nota | FAIL: el link resuelve al primero |
-| Embeds de imagen | Ancho no numérico (`![[img.png|grande]]`) | CONCERNS: se ignora |
-| Espacios en `[[ Nota ]]` | Espacios internos al principio o final del target | CONCERNS: puede no resolver |
+| Callout type | `> [!type]` with a type that does not exist | FAIL: renders as `note` |
+| External links as wikilinks | `[[https://...]]` | FAIL: does not resolve |
+| Internal links as markdown | `[text](My%20note.md)` inside the vault | CONCERNS: breaks on rename |
+| Frontmatter | Opens with `---` on the first line and closes | FAIL if it does not close: Obsidian shows it as text |
+| `tags` with `#` in frontmatter | `tags: [#foo]` | CONCERNS: the `#` does not belong in frontmatter |
+| Block IDs | Duplicates in the same note | FAIL: the link resolves to the first one |
+| Image embeds | Non-numeric width (`![[img.png|large]]`) | CONCERNS: it is ignored |
+| Spaces in `[[ Note ]]` | Inner spaces at the start or end of the target | CONCERNS: may not resolve |
 
-Nota COMPLIANT cuando ninguna de estas falla.
+The note is COMPLIANT when none of these fail.
 
-## Reglas
+## Rules
 
-- No reformatear la nota entera cuando el pedido es arreglar un detalle: `Edit` sobre citas textuales, no `Write` del archivo completo.
-- No convertir markdown links externos a wikilinks: los externos van como markdown link.
-- No inventar tipos de callout ni propiedades que Obsidian no reconoce.
-- Sin guiones largos en lo que agregues.
+- Do not reformat the whole note when the request is to fix a detail: `Edit` on verbatim quotes, not a `Write` of the whole file.
+- Do not convert external markdown links into wikilinks: external ones stay as markdown links.
+- Do not invent callout types or properties Obsidian does not recognize.
+- No long dashes in what you add.
 
 ## Handoff
 
-Si la duda era de vistas agregadas y no de sintaxis de nota, el skill correcto es `/obsidian-bases`; si era de un canvas, `/obsidian-canvas`. Cuando la nota queda COMPLIANT, seguí con el flujo que la produjo (`/zettel`, `/review-dump` o `/vault-clip`).
+If the question was about aggregated views rather than note syntax, the right skill is `/obsidian-bases`; if it was about a canvas, `/obsidian-canvas`. Once the note is COMPLIANT, continue with the flow that produced it (`/zettel`, `/review-dump` or `/vault-clip`).

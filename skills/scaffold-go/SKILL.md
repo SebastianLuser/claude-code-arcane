@@ -6,72 +6,72 @@ argument-hint: "[project-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
-# Go Project Scaffold — Estilo Alizia-BE
+# Go Project Scaffold — Alizia-BE Style
 
-Genera estructura completa de proyecto Go con Clean Architecture + team-ai-toolkit.
+Generates a complete Go project structure with Clean Architecture + team-ai-toolkit.
 
 ## MANDATORY WORKFLOW
 
-**Antes de generar cualquier código, completar estos pasos en orden.**
+**Before generating any code, complete these steps in order.**
 
 ### Step 0: Gather Requirements
 
-Clarificar (o inferir del contexto si ya fue especificado):
+Clarify (or infer from context if already specified):
 
-1. **Nombre del proyecto** (e.g., "vigia-be", "tich-be")
-2. **Módulo Go** (e.g., "github.com/educabot/vigia-be")
-3. **Descripción** (1 línea)
-4. **Primer dominio/feature** (e.g., "alerts", "students")
-5. **Puerto default** (default: 8080)
-6. **Puerto PostgreSQL local** (default: 5432)
+1. **Project name** (e.g., "vigia-be", "tich-be")
+2. **Go module** (e.g., "github.com/educabot/vigia-be")
+3. **Description** (1 line)
+4. **First domain/feature** (e.g., "alerts", "students")
+5. **Default port** (default: 8080)
+6. **Local PostgreSQL port** (default: 5432)
 
-Si el usuario ya especificó estos valores, saltar directamente al Step 1.
+If the user already specified these values, skip straight to Step 1.
 
-### Step 1: Implementar
+### Step 1: Implement
 
-Seguir: Arquitectura → Estructura a generar → Patrones → Dependencias → Rules.
+Follow: Architecture → Structure to generate → Patterns → Dependencies → Rules.
 
-### Step 2: Verificar
+### Step 2: Verify
 
 ```bash
 GOPRIVATE=github.com/educabot/* go mod download
 go build ./...
-go test ./...          # todos los tests deben pasar
+go test ./...          # all tests must pass
 ```
 
-## Arquitectura
+## Architecture
 
-Dependency flow (estricto): `entrypoints → usecases → providers (interfaces) ← repositories`
+Dependency flow (strict): `entrypoints → usecases → providers (interfaces) ← repositories`
 
-| Capa | Ubicación | Responsabilidad | Importa |
+| Layer | Location | Responsibility | Imports |
 |------|-----------|-----------------|---------|
-| **Entities** | `src/core/entities/` | Structs dominio, enums, value objects | Nada |
-| **Providers** | `src/core/providers/` | Interfaces (contratos) + errores sentinel | entities |
-| **Usecases** | `src/core/usecases/{feature}/` | Lógica negocio. 1 archivo = 1 operación | providers, entities |
+| **Entities** | `src/core/entities/` | Domain structs, enums, value objects | Nothing |
+| **Providers** | `src/core/providers/` | Interfaces (contracts) + sentinel errors | entities |
+| **Usecases** | `src/core/usecases/{feature}/` | Business logic. 1 file = 1 operation | providers, entities |
 | **Entrypoints** | `src/entrypoints/` | HTTP handlers, containers, middleware | usecases, entities |
-| **Repositories** | `src/repositories/{feature}/` | Implementación GORM de providers | providers, entities |
-| **Mocks** | `src/mocks/` | Mocks testify para testing | providers |
+| **Repositories** | `src/repositories/{feature}/` | GORM implementation of providers | providers, entities |
+| **Mocks** | `src/mocks/` | testify mocks for testing | providers |
 
-## Estructura a generar
+## Structure to generate
 
 > → Read references/project-structure.md for full file list per directory
 
-## Patrones
+## Patterns
 
 > → Read references/patterns.md for UseCase, Handler, Repository, Entity, Errors, DI, and Test patterns
 
-## Dependencias core
+## Core dependencies
 
 team-ai-toolkit v1.7.7, gin v1.12.0, golang-jwt/jwt v5.3.1, google/uuid v1.6.0, testify v1.11.1, gorm v1.31.1, gorm/datatypes v1.2.7.
 
 ## Rules
 
-- Generar TODOS los archivos con código funcional (no placeholders)
-- Cada archivo debe compilar
-- Incluir ≥1 usecase + handler + repo + test funcional
-- Primer `go test ./...` debe pasar
-- Usar `GOPRIVATE=github.com/educabot/*` en Dockerfile
-- Migrations con up + down
-- .env.example con test tokens pre-generados
-- CLAUDE.md con convenciones del proyecto
-- Español para docs, inglés para código
+- Generate ALL files with working code (no placeholders)
+- Every file must compile
+- Include ≥1 working usecase + handler + repo + test
+- The first `go test ./...` must pass
+- Use `GOPRIVATE=github.com/educabot/*` in the Dockerfile
+- Migrations with up + down
+- .env.example with pre-generated test tokens
+- CLAUDE.md with the project conventions
+- Docs in the user's language, code in English

@@ -1,39 +1,39 @@
 # Audio Bible — Anti-patterns
 
-## Dirección vacía
+## Empty direction
 
-**Síntoma:** "El juego suena oscuro e inmersivo."
+**Symptom:** "The game sounds dark and immersive."
 
-Cualquier sonido pasa ese filtro, así que no filtra nada. Una statement útil excluye: "Todo suena grabado dentro de una habitación de concreto — nada nace limpio, todo tiene el cuarto encima." Eso rechaza el 90% de una library.
+Any sound passes that filter, so it filters nothing. A useful statement excludes: "Everything sounds recorded inside a concrete room — nothing is born clean, everything has the room on it." That rejects 90% of a library.
 
-## Paleta sin fuentes
+## Palette without sources
 
-Listar adjetivos (cálido, agresivo, etéreo) sin decir de dónde sale el sonido deja la decisión al sound designer, que es exactamente lo que el bible debería resolver. Nombrar fuentes: instrumentos, materiales, técnicas de grabación, cadenas de procesamiento.
+Listing adjectives (warm, aggressive, ethereal) without saying where the sound comes from leaves the decision to the sound designer, which is exactly what the bible should resolve. Name sources: instruments, materials, recording techniques, processing chains.
 
-## Frequency allocation ausente
+## Missing frequency allocation
 
-Se produce todo, se llega al mix, y diálogo compite con música y SFX en 500 Hz-2 kHz. La solución tardía es EQ quirúrgico que adelgaza todo. La solución temprana es asignar bandas antes de producir.
+Everything gets produced, the mix arrives, and dialogue competes with music and SFX at 500 Hz-2 kHz. The late fix is surgical EQ that thins everything out. The early fix is allocating bands before production.
 
-## Copiar la referencia entera
+## Copying the whole reference
 
-"Suena como Hollow Knight" sin decir qué se toma produce pastiche. Para cada referencia: qué tomar y qué evitar explícitamente.
+"Sounds like Hollow Knight" without saying what is taken produces pastiche. For each reference: what to take and what to avoid, explicitly.
 
-## Emotional targets que no se distinguen
+## Emotional targets that cannot be told apart
 
-Si exploración y tensión comparten instrumentación, tempo y densidad, el jugador no lee el estado por audio. Test: describir los estados sin nombrarlos y ver si son distinguibles.
+If exploration and tension share instrumentation, tempo and density, the player cannot read the state through audio. Test: describe the states without naming them and see whether they are distinguishable.
 
-## Standards no producibles
+## Unproducible standards
 
-"Audio de alta calidad, sin artefactos" no es un standard. Sample rate, bit depth, formato por plataforma, naming pattern, target de loudness con tolerancia, headroom y budget de voces sí lo son.
+"High-quality audio, no artifacts" is not a standard. Sample rate, bit depth, format per platform, naming pattern, loudness target with tolerance, headroom and voice budget are.
 
-## El silencio sin documentar
+## Undocumented silence
 
-Los juegos con mejor audio usan silencio deliberadamente. Si el bible no dice dónde y por qué, alguien va a llenar cada segundo con ambiente.
+The games with the best audio use silence deliberately. If the bible does not say where and why, someone will fill every second with ambience.
 
-## Ignorar la plataforma
+## Ignoring the platform
 
-Un bible que asume monitores de estudio falla en el speaker de un handheld o en earbuds bluetooth. Los targets de loudness y la allocation de frecuencias cambian por plataforma — documentar cuáles importan.
+A bible that assumes studio monitors fails on a handheld speaker or on bluetooth earbuds. Loudness targets and frequency allocation change per platform — document which ones matter.
 
-## Bible que nadie gatea
+## A bible nobody gates against
 
-Si no hay un paso de review que compare assets contra el bible, es decoración. Conectarlo con `/audio-audit` y hacerlo condición de entrega.
+If there is no review step that compares assets against the bible, it is decoration. Connect it to `/audio-audit` and make it a delivery condition.

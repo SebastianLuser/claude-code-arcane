@@ -1,139 +1,139 @@
 # Director Gates — Shared Infrastructure
 
-Define los mecanismos comunes para gates (approval checkpoints) en Arcane.
-Los gates específicos viven en:
+Defines the shared mechanisms for gates (approval checkpoints) in Arcane.
+The specific gates live in:
 
-- `.claude/docs/gates/software-gates.md` — gates para desarrollo de software (CTO, VPE, PM, SEC, QA)
-- `.claude/docs/gates/gamedev-gates.md` — gates para desarrollo de juegos (CD, TD, PR, AD, LP, QL, ND)
+- `.claude/docs/gates/software-gates.md` — gates for software development (CTO, VPE, PM, SEC, QA)
+- `.claude/docs/gates/gamedev-gates.md` — gates for game development (CD, TD, PR, AD, LP, QL, ND)
 
-Los skills referencian gates por ID en vez de embeber el prompt completo. Así cuando actualizamos un prompt, no hay drift entre skills.
+Skills reference gates by ID instead of embedding the full prompt. That way, when we update a prompt, there is no drift between skills.
 
 ---
 
-## Cómo usar este sistema
+## How to use this system
 
-En cualquier skill, reemplazá un prompt inline de director por una referencia:
+In any skill, replace an inline director prompt with a reference:
 
 ```
-Spawn `cto` via Task usando el gate **CTO-ARCHITECTURE** de
+Spawn `cto` via Task using the gate **CTO-ARCHITECTURE** from
 `.claude/docs/gates/software-gates.md`.
 ```
 
-Pasar el contexto listado bajo el campo **Context to pass** del gate, y manejar el verdict según las reglas de **Verdict Handling** de abajo.
+Pass the context listed under the gate's **Context to pass** field, and handle the verdict according to the **Verdict Handling** rules below.
 
 ---
 
 ## Review Modes
 
-La intensidad de review controla si los gates corren. Se puede setear global (persiste cross-session) u override por invocación.
+Review intensity controls whether gates run. It can be set globally (persists across sessions) or overridden per invocation.
 
-### Config global
+### Global config
 
-`production/review-mode.txt` — una palabra: `full`, `lean`, o `solo`.
-Setear una vez durante `/start`. Editar el archivo directo para cambiar.
+`production/review-mode.txt` — one word: `full`, `lean`, or `solo`.
+Set it once during `/start`. Edit the file directly to change it.
 
-### Override por invocación
+### Per-invocation override
 
-Cualquier skill con gates acepta `--review [full|lean|solo]` como argumento. Override solo para ese run.
+Any skill with gates accepts `--review [full|lean|solo]` as an argument. The override applies only to that run.
 
-Ejemplos:
+Examples:
 ```
-/gate-check concept                       → usa modo global
-/gate-check concept --review full         → fuerza full para este run
-/design-system combat --review solo       → skippea todos los gates
+/gate-check concept                       → uses the global mode
+/gate-check concept --review full         → forces full for this run
+/design-system combat --review solo       → skips every gate
 ```
 
-### Modos
+### Modes
 
-| Modo | Qué corre | Para quién |
+| Mode | What runs | For whom |
 |------|-----------|-----------|
-| `full` | Todos los gates — cada step es reviewed | Teams, usuarios learning, o cuando querés feedback exhaustivo |
-| `lean` | Solo PHASE-GATEs (via `/gate-check`) — gates per-skill skippeados | **Default** — solo-devs y small teams; directors review en milestones |
-| `solo` | Ningún gate | Prototypes, game jams, máximo speed |
+| `full` | Every gate — each step is reviewed | Teams, learning users, or when you want exhaustive feedback |
+| `lean` | Only PHASE-GATEs (via `/gate-check`) — per-skill gates skipped | **Default** — solo devs and small teams; directors review at milestones |
+| `solo` | No gates | Prototypes, game jams, maximum speed |
 
-### Check pattern (aplicar antes de cada spawn)
+### Check pattern (apply before every spawn)
 
 ```
-Antes de spawn de gate [GATE-ID]:
-1. Si el skill fue invocado con --review [mode], usá ese
-2. Sino leé production/review-mode.txt
-3. Sino default a lean
+Before spawning gate [GATE-ID]:
+1. If the skill was invoked with --review [mode], use that
+2. Otherwise read production/review-mode.txt
+3. Otherwise default to lean
 
-Aplicar el modo resolvido:
-- solo → skip todos los gates. Nota: "[GATE-ID] skipped — Solo mode"
-- lean → skip a menos que sea PHASE-GATE. Nota: "[GATE-ID] skipped — Lean mode"
-- full → spawn normal
+Apply the resolved mode:
+- solo → skip every gate. Note: "[GATE-ID] skipped — Solo mode"
+- lean → skip unless it is a PHASE-GATE. Note: "[GATE-ID] skipped — Lean mode"
+- full → spawn normally
 ```
 
 ---
 
-## Invocation Pattern (copiar en cualquier skill)
+## Invocation Pattern (copy into any skill)
 
-**MANDATORY:** Resolver review mode antes de cada spawn. Nunca spawn sin check.
+**MANDATORY:** Resolve the review mode before every spawn. Never spawn without the check.
 
 ```
 # Apply mode check, then:
 Spawn `[agent-name]` via Task:
 - Gate: [GATE-ID] (see .claude/docs/gates/[software|gamedev]-gates.md)
-- Context: [campos listados bajo el gate]
-- Await el verdict antes de proceder.
+- Context: [fields listed under the gate]
+- Await the verdict before proceeding.
 ```
 
-### Spawn paralelo (multiple directors en mismo checkpoint)
+### Parallel spawn (multiple directors at the same checkpoint)
 
 ```
-# Apply mode check para cada gate primero, luego spawn de los que sobreviven:
-Spawn de los [N] agents simultáneamente via Task — emitir todos los Task calls
-antes de esperar cualquier result. Collect todos los verdicts antes de proceder.
+# Apply the mode check for each gate first, then spawn the ones that survive:
+Spawn the [N] agents simultaneously via Task — issue every Task call
+before waiting on any result. Collect every verdict before proceeding.
 ```
 
 ---
 
 ## Standard Verdict Format
 
-Todos los gates devuelven uno de tres verdicts. Skills deben manejar los tres:
+Every gate returns one of three verdicts. Skills must handle all three:
 
 | Verdict | Meaning | Default action |
 |---------|---------|----------------|
-| **APPROVE / READY** | Sin issues. Proceder. | Continuar workflow |
-| **CONCERNS [list]** | Issues presentes pero no blocking. | Surface al user via `AskUserQuestion` — opciones: `Revise flagged items` / `Accept and proceed` / `Discuss further` |
-| **REJECT / NOT READY [blockers]** | Issues blocking. No proceder. | Surface blockers al user. No escribir archivos ni advance stage hasta resolver. |
+| **APPROVE / READY** | No issues. Proceed. | Continue the workflow |
+| **CONCERNS [list]** | Issues present but not blocking. | Surface to the user via `AskUserQuestion` — options: `Revise flagged items` / `Accept and proceed` / `Discuss further` |
+| **REJECT / NOT READY [blockers]** | Blocking issues. Do not proceed. | Surface the blockers to the user. Do not write files or advance the stage until resolved. |
 
 ### Escalation rule
 
-Cuando múltiples directors spawnean en paralelo, aplicar el verdict más estricto — un NOT READY overrides cualquier READY.
+When multiple directors are spawned in parallel, apply the strictest verdict — one NOT READY overrides any READY.
 
-### Primera línea mandatory
+### Mandatory first line
 
-Todo agente invocado como gate debe empezar su respuesta con:
+Every agent invoked as a gate must start its response with:
 ```
 [GATE-ID]: APPROVE | CONCERNS | REJECT
 ```
 
-Luego el rationale. El token en la primera línea permite al skill orquestador parsearlo automáticamente.
+Then the rationale. The token on the first line lets the orchestrating skill parse it automatically.
 
 ---
 
 ## Recording Gate Outcomes
 
-Después de que un gate resuelve, registrar el verdict en el header de status del documento relevante:
+After a gate resolves, record the verdict in the status header of the relevant document:
 
 ```markdown
 > **[Director] Review ([GATE-ID])**: APPROVED [date] / CONCERNS (accepted) [date] / REVISED [date]
 ```
 
-Para phase gates, registrar en:
-- Software: `docs/architecture/architecture.md` o `.arcane/session-state/active.md`
-- Gamedev: `docs/architecture/architecture.md` o `.arcane/session-state/active.md`
+For phase gates, record it in:
+- Software: `docs/architecture/architecture.md` or `.arcane/session-state/active.md`
+- Gamedev: `docs/architecture/architecture.md` or `.arcane/session-state/active.md`
 
 ---
 
 ## Parallel Gate Protocol
 
-Cuando un workflow requiere múltiples directors en el mismo checkpoint (muy común en `/gate-check`), spawnar todos los agents simultáneamente:
+When a workflow needs multiple directors at the same checkpoint (very common in `/gate-check`), spawn every agent simultaneously:
 
 ```
-Spawn en paralelo (emitir todos los Task calls antes de esperar any result):
+Spawn in parallel (issue every Task call before waiting on any result):
 
 SOFTWARE:
 1. cto                → gate CTO-PHASE-GATE
@@ -148,22 +148,22 @@ GAMEDEV:
 3. producer           → gate PR-PHASE-GATE
 4. art-director       → gate AD-PHASE-GATE
 
-Collect todos los verdicts, aplicar escalation rules:
+Collect every verdict, apply the escalation rules:
 - Any NOT READY / REJECT → overall minimum FAIL
 - Any CONCERNS → overall minimum CONCERNS
-- All READY / APPROVE → eligible for PASS (subject a artifact checks)
+- All READY / APPROVE → eligible for PASS (subject to artifact checks)
 ```
 
 ---
 
-## Agregar Nuevos Gates
+## Adding New Gates
 
-Cuando se necesita un gate nuevo para un skill o workflow:
+When a new gate is needed for a skill or workflow:
 
-1. Asignar un gate ID: `[DIRECTOR-PREFIX]-[DESCRIPTIVE-SLUG]`
+1. Assign a gate ID: `[DIRECTOR-PREFIX]-[DESCRIPTIVE-SLUG]`
    - Software prefixes: `CTO-`, `VPE-`, `PM-`, `SEC-`, `QA-`, `DESIGN-` (UX lead)
    - Gamedev prefixes: `CD-`, `TD-`, `PR-`, `AD-`, `LP-`, `QL-`, `ND-`
-   - Nuevos prefixes para nuevos agents (p.ej. `DATA-` para data-lead)
-2. Agregar el gate en la sección del director apropiado con los 5 campos:
-   Trigger, Context to pass, Prompt, Verdicts, y special handling notes
-3. Referenciar el gate en skills solo por ID — nunca copiar el prompt completo
+   - New prefixes for new agents (e.g. `DATA-` for data-lead)
+2. Add the gate in the appropriate director's section with the 5 fields:
+   Trigger, Context to pass, Prompt, Verdicts, and special handling notes
+3. Reference the gate in skills by ID only — never copy the full prompt

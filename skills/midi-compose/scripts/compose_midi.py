@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Escribe un Standard MIDI File (formato 1) desde un spec JSON.
+"""Writes a Standard MIDI File (format 1) from a JSON spec.
 
-Solo stdlib: el SMF es un formato binario documentado y no hace falta
-ninguna dependencia para emitirlo. Ver references/smf-format.md.
+Stdlib only: the SMF is a documented binary format and emitting it needs
+no dependency at all. See references/smf-format.md.
 
-Uso:
-    python compose_midi.py spec.json -o salida.mid
-    python compose_midi.py spec.json --validate      # solo valida, no escribe
+Usage:
+    python compose_midi.py spec.json -o output.mid
+    python compose_midi.py spec.json --validate      # validate only, write nothing
 """
 
 from __future__ import annotations
@@ -16,17 +16,17 @@ import json
 import struct
 import sys
 
-# ---------------------------------------------------------------- constantes
+# ---------------------------------------------------------------- constants
 
-DRUM_CHANNEL = 9          # canal 10 en base 1; reservado a percusion por GM
-MAX_CHANNELS = 16         # el limite duro: 15 tracks melodicos + percusion
+DRUM_CHANNEL = 9          # channel 10 in 1-based numbering; reserved for percussion by GM
+MAX_CHANNELS = 16         # the hard limit: 15 melodic tracks + percussion
 DEFAULT_PPQ = 480
 
 NOTE_OFFSETS = {
     "C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11,
 }
 
-# sf para el meta de tonalidad: sostenidos positivos, bemoles negativos
+# sf for the key signature meta event: sharps positive, flats negative
 KEY_SIGNATURES = {
     "C": 0, "G": 1, "D": 2, "A": 3, "E": 4, "B": 5, "F#": 6, "C#": 7,
     "F": -1, "Bb": -2, "Eb": -3, "Ab": -4, "Db": -5, "Gb": -6, "Cb": -7,
@@ -34,18 +34,18 @@ KEY_SIGNATURES = {
 
 
 class SpecError(ValueError):
-    """El spec JSON es invalido. El mensaje explica que arreglar."""
+    """The JSON spec is invalid. The message explains what to fix."""
 
 
 # ------------------------------------------------------------------ helpers
 
 def vlq(value: int) -> bytes:
-    """Variable-length quantity: el encoding de delta-times del SMF.
+    """Variable-length quantity: the SMF delta-time encoding.
 
-    Siete bits por byte, MSB=1 en todos menos el ultimo.
+    Seven bits per byte, MSB=1 on every byte but the last.
     """
     if value < 0:
-        raise SpecError(f"delta-time negativo: {value}")
+        raise SpecError(f"negative delta-time: {value}")
     out = [value & 0x7F]
     value >>= 7
     while value:
@@ -55,20 +55,20 @@ def vlq(value: int) -> bytes:
 
 
 def parse_pitch(pitch: object) -> int:
-    """Acepta 60, "C4", "F#3", "Bb5". Devuelve numero de nota MIDI (C4 = 60)."""
+    """Accepts 60, "C4", "F#3", "Bb5". Returns the MIDI note number (C4 = 60)."""
     if isinstance(pitch, bool):
-        raise SpecError(f"pitch invalido: {pitch!r}")
+        raise SpecError(f"invalid pitch: {pitch!r}")
     if isinstance(pitch, int):
         if not 0 <= pitch <= 127:
-            raise SpecError(f"pitch fuera de rango 0-127: {pitch}")
+            raise SpecError(f"pitch out of range 0-127: {pitch}")
         return pitch
     if not isinstance(pitch, str) or not pitch:
-        raise SpecError(f"pitch invalido: {pitch!r}")
+        raise SpecError(f"invalid pitch: {pitch!r}")
 
     text = pitch.strip()
     letter = text[0].upper()
     if letter not in NOTE_OFFSETS:
-        raise SpecError(f"nota desconocida en pitch {pitch!r}")
+        raise SpecError(f"unknown note in pitch {pitch!r}")
 
     index = 1
     accidental = 0
@@ -78,12 +78,12 @@ def parse_pitch(pitch: object) -> int:
 
     octave_text = text[index:]
     if not octave_text.lstrip("-").isdigit():
-        raise SpecError(f"falta la octava en pitch {pitch!r} (ej: C4, F#3, Bb5)")
+        raise SpecError(f"missing octave in pitch {pitch!r} (e.g. C4, F#3, Bb5)")
 
-    # C4 = 60 => la octava -1 arranca en 0
+    # C4 = 60 => octave -1 starts at 0
     value = (int(octave_text) + 1) * 12 + NOTE_OFFSETS[letter] + accidental
     if not 0 <= value <= 127:
-        raise SpecError(f"pitch {pitch!r} cae fuera del rango MIDI 0-127")
+        raise SpecError(f"pitch {pitch!r} falls outside the MIDI range 0-127")
     return value
 
 
@@ -98,40 +98,40 @@ def text_meta(kind: int, text: str) -> bytes:
 # ------------------------------------------------------------------ validate
 
 def validate(spec: dict) -> dict:
-    """Normaliza y valida el spec. Devuelve el spec normalizado."""
+    """Normalizes and validates the spec. Returns the normalized spec."""
     if not isinstance(spec, dict):
-        raise SpecError("el spec raiz tiene que ser un objeto JSON")
+        raise SpecError("the root of the spec must be a JSON object")
 
     tempo = spec.get("tempo", 120)
     if not isinstance(tempo, (int, float)) or not 1 <= tempo <= 600:
-        raise SpecError(f"tempo tiene que ser un numero entre 1 y 600, no {tempo!r}")
+        raise SpecError(f"tempo must be a number between 1 and 600, not {tempo!r}")
 
     ppq = spec.get("ppq", DEFAULT_PPQ)
     if not isinstance(ppq, int) or not 24 <= ppq <= 32767:
-        raise SpecError(f"ppq tiene que ser un entero entre 24 y 32767, no {ppq!r}")
+        raise SpecError(f"ppq must be an integer between 24 and 32767, not {ppq!r}")
 
     signature = spec.get("time_signature", [4, 4])
     if (not isinstance(signature, (list, tuple)) or len(signature) != 2
             or not all(isinstance(n, int) for n in signature)):
-        raise SpecError('time_signature tiene que ser [numerador, denominador], ej [4, 4]')
+        raise SpecError('time_signature must be [numerator, denominator], e.g. [4, 4]')
     numerator, denominator = signature
     if not 1 <= numerator <= 255:
-        raise SpecError(f"numerador de compas invalido: {numerator}")
+        raise SpecError(f"invalid time signature numerator: {numerator}")
     if denominator not in (1, 2, 4, 8, 16, 32, 64):
-        raise SpecError(f"denominador de compas invalido: {denominator}")
+        raise SpecError(f"invalid time signature denominator: {denominator}")
 
     key = spec.get("key", "C")
     mode = spec.get("mode", "major")
     if key not in KEY_SIGNATURES:
         raise SpecError(
-            f"tonalidad {key!r} desconocida. Validas: {', '.join(sorted(KEY_SIGNATURES))}"
+            f"unknown key {key!r}. Valid: {', '.join(sorted(KEY_SIGNATURES))}"
         )
     if mode not in ("major", "minor"):
-        raise SpecError(f'mode tiene que ser "major" o "minor", no {mode!r}')
+        raise SpecError(f'mode must be "major" or "minor", not {mode!r}')
 
     tracks = spec.get("tracks")
     if not isinstance(tracks, list) or not tracks:
-        raise SpecError("el spec necesita al menos un track en 'tracks'")
+        raise SpecError("the spec needs at least one track in 'tracks'")
 
     melodic = 0
     used_channels: set[int] = set()
@@ -143,52 +143,52 @@ def validate(spec: dict) -> dict:
         where = f"track {position}" + (f" ({label})" if label else "")
 
         if not isinstance(track, dict):
-            raise SpecError(f"{where}: cada track tiene que ser un objeto")
+            raise SpecError(f"{where}: each track must be an object")
 
         channel = track.get("channel", DRUM_CHANNEL if track.get("drums") else position)
         if not isinstance(channel, int) or not 0 <= channel < MAX_CHANNELS:
-            raise SpecError(f"{where}: channel tiene que estar entre 0 y 15, no {channel!r}")
+            raise SpecError(f"{where}: channel must be between 0 and 15, not {channel!r}")
         if channel in used_channels:
-            raise SpecError(f"{where}: el canal {channel} ya lo usa otro track")
+            raise SpecError(f"{where}: channel {channel} is already used by another track")
         used_channels.add(channel)
 
         if channel == DRUM_CHANNEL:
             if not track.get("drums"):
                 warnings.append(
-                    f"{where}: usa el canal {DRUM_CHANNEL}, reservado a percusion por GM. "
-                    f'Si es intencional agregale "drums": true; si no, movelo a otro canal.'
+                    f"{where}: uses channel {DRUM_CHANNEL}, reserved for percussion by GM. "
+                    f'If intentional, add "drums": true; otherwise move it to another channel.'
                 )
         else:
             melodic += 1
 
         program = track.get("program", 0)
         if not isinstance(program, int) or not 0 <= program <= 127:
-            raise SpecError(f"{where}: program tiene que estar entre 0 y 127, no {program!r}")
+            raise SpecError(f"{where}: program must be between 0 and 127, not {program!r}")
 
         notes = track.get("notes")
         if not isinstance(notes, list):
-            raise SpecError(f"{where}: 'notes' tiene que ser una lista")
+            raise SpecError(f"{where}: 'notes' must be a list")
 
         normalized_notes = []
         for note_position, note in enumerate(notes):
-            note_where = f"{where}, nota {note_position}"
+            note_where = f"{where}, note {note_position}"
             if not isinstance(note, dict):
-                raise SpecError(f"{note_where}: cada nota tiene que ser un objeto")
+                raise SpecError(f"{note_where}: each note must be an object")
 
             pitch = parse_pitch(note.get("pitch"))
 
             start = note.get("start", 0)
             if not isinstance(start, (int, float)) or start < 0:
-                raise SpecError(f"{note_where}: 'start' tiene que ser >= 0, no {start!r}")
+                raise SpecError(f"{note_where}: 'start' must be >= 0, not {start!r}")
 
             duration = note.get("duration", 1)
             if not isinstance(duration, (int, float)) or duration <= 0:
-                raise SpecError(f"{note_where}: 'duration' tiene que ser > 0, no {duration!r}")
+                raise SpecError(f"{note_where}: 'duration' must be > 0, not {duration!r}")
 
             velocity = note.get("velocity", 90)
             if not isinstance(velocity, int) or not 1 <= velocity <= 127:
                 raise SpecError(
-                    f"{note_where}: 'velocity' tiene que estar entre 1 y 127, no {velocity!r}"
+                    f"{note_where}: 'velocity' must be between 1 and 127, not {velocity!r}"
                 )
 
             normalized_notes.append(
@@ -223,7 +223,7 @@ def build_chunk(name: bytes, body: bytes) -> bytes:
 
 
 def conductor_track(spec: dict) -> bytes:
-    """Track 0 del formato 1: tempo, compas, tonalidad. Sin notas."""
+    """Format 1 track 0: tempo, time signature, key. No notes."""
     events = [b"\x00" + text_meta(0x03, spec["name"])]
 
     microseconds = int(round(60_000_000 / spec["tempo"]))
@@ -250,8 +250,8 @@ def music_track(track: dict, ppq: int) -> bytes:
         b"\x00" + bytes([0xC0 | channel, track["program"]]),
     ]
 
-    # (tick, orden, bytes). orden 0 = note-off primero, para que una nota
-    # reatacada en el mismo tick no se corte a si misma.
+    # (tick, order, bytes). order 0 = note-off first, so a note
+    # re-attacked on the same tick does not cut itself off.
     timeline: list[tuple[int, int, bytes]] = []
     for note in track["notes"]:
         start = int(round(note["start"] * ppq))
@@ -280,21 +280,21 @@ def build_midi(spec: dict) -> bytes:
 # ----------------------------------------------------------------------- cli
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Escribe un .mid desde un spec JSON.")
-    parser.add_argument("spec", help="ruta al spec JSON")
-    parser.add_argument("-o", "--output", help="ruta del .mid de salida")
+    parser = argparse.ArgumentParser(description="Writes a .mid from a JSON spec.")
+    parser.add_argument("spec", help="path to the JSON spec")
+    parser.add_argument("-o", "--output", help="path of the output .mid")
     parser.add_argument("--validate", action="store_true",
-                        help="solo valida el spec, no escribe nada")
+                        help="only validate the spec, write nothing")
     args = parser.parse_args(argv)
 
     try:
         with open(args.spec, "r", encoding="utf-8") as handle:
             raw = json.load(handle)
     except FileNotFoundError:
-        print(f"[FAIL] no existe el spec: {args.spec}", file=sys.stderr)
+        print(f"[FAIL] spec not found: {args.spec}", file=sys.stderr)
         return 1
     except json.JSONDecodeError as error:
-        print(f"[FAIL] JSON invalido en {args.spec}: {error}", file=sys.stderr)
+        print(f"[FAIL] invalid JSON in {args.spec}: {error}", file=sys.stderr)
         return 1
 
     try:
@@ -304,8 +304,8 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     note_count = sum(len(t["notes"]) for t in spec["tracks"])
-    print(f"[PASS] spec valido: {len(spec['tracks'])} tracks "
-          f"({spec['melodic_tracks']} melodicos de 15 posibles), {note_count} notas, "
+    print(f"[PASS] valid spec: {len(spec['tracks'])} tracks "
+          f"({spec['melodic_tracks']} melodic out of 15 possible), {note_count} notes, "
           f"{spec['tempo']:g} BPM, {spec['key']} {spec['mode']}")
     for warning in spec["warnings"]:
         print(f"[WARN] {warning}")

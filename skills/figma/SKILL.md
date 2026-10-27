@@ -8,53 +8,53 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 # Figma Manager
 
-Integra con Figma via MCP nativo o REST API.
+Integrates with Figma via the native MCP or the REST API.
 
-## Vía MCP
+## Via MCP
 
 Tools: `mcp__figma__authenticate`, `mcp__figma__complete_authentication`
-Una vez autenticado, MCP expone operations. Revisá `mcp__figma__*` en contexto.
+Once authenticated, the MCP exposes operations. Check `mcp__figma__*` in context.
 
-## Vía REST API
+## Via REST API
 
 ```bash
 curl "https://api.figma.com/v1/files/$FILE_KEY" \
   -H "X-Figma-Token: $FIGMA_TOKEN"
 ```
 
-Obtener FILE_KEY del URL: `https://www.figma.com/file/<FILE_KEY>/name?node-id=123-456`
-Node IDs en URL están con `-`, en API usar `:` (ej: `123:456`).
+Get FILE_KEY from the URL: `https://www.figma.com/file/<FILE_KEY>/name?node-id=123-456`
+Node IDs in the URL use `-`; in the API use `:` (e.g.: `123:456`).
 
-## Operaciones Clave
+## Key Operations
 
-### File tree completo
+### Full file tree
 ```bash
 GET /v1/files/$FILE_KEY
 ```
-Devuelve estructura completa (puede ser huge).
+Returns the full structure (can be huge).
 
-### Nodos específicos
+### Specific nodes
 ```bash
 GET /v1/files/$FILE_KEY/nodes?ids=123:456,789:012
 ```
-Mucho más eficiente que todo el file.
+Much more efficient than the whole file.
 
-### Exportar imágenes
+### Export images
 ```bash
 GET /v1/files/$FILE_KEY/images?ids=123:456&format=svg&scale=1
 ```
 Formats: `png`, `jpg`, `svg`, `pdf`
-Scale: 1-4 (para PNG)
+Scale: 1-4 (for PNG)
 
-Response tiene URLs temporales (expiran en ~1h). Descargar inmediatamente.
+The response has temporary URLs (they expire in ~1h). Download immediately.
 
-### Styles globales
+### Global styles
 ```bash
 GET /v1/files/$FILE_KEY/styles
 ```
-Colores, text styles, effects, grids publicados en el file.
+Colors, text styles, effects, grids published in the file.
 
-### Components publicados
+### Published components
 ```bash
 GET /v1/files/$FILE_KEY/components
 GET /v1/files/$FILE_KEY/component_sets
@@ -64,61 +64,61 @@ GET /v1/files/$FILE_KEY/component_sets
 ```bash
 GET /v1/files/$FILE_KEY/variables/local
 ```
-Figma Variables = design tokens nativos (primitives, aliases, modes).
+Figma Variables = native design tokens (primitives, aliases, modes).
 
-## Comandos
+## Commands
 
 ### Inspect frame
 ```
 /figma inspect <figma_url>
 ```
 
-Flujo:
-1. Parsear URL → file_key + node_id
-2. GET nodos → estructura
-3. Extraer:
+Flow:
+1. Parse URL → file_key + node_id
+2. GET nodes → structure
+3. Extract:
    - Dimensions (w × h)
    - Position (x, y)
    - Fills, strokes, effects
    - Text properties (font, size, weight, color, alignment)
    - Auto-layout rules
    - Children hierarchy
-4. Output estructurado
+4. Structured output
 
 ### Export assets
 ```
 /figma export <figma_url> [--format svg|png] [--scale 2]
 ```
 
-Para bulk (todos los frames con prefix "icon/"):
-1. Buscar nodos matching pattern
+For bulk (every frame with the "icon/" prefix):
+1. Find nodes matching the pattern
 2. Bulk export
-3. Descargar a `assets/icons/`
-4. Nombrar kebab-case desde el node name
+3. Download to `assets/icons/`
+4. Name them kebab-case from the node name
 
 ### Extract tokens
 ```
 /figma tokens <figma_url> [--output css|tailwind|json]
 ```
 
-Ver `/figma-tokens` para detalle completo.
+See `/figma-tokens` for full detail.
 
 ### Component spec
 ```
 /figma component <figma_url>
 ```
 
-Genera spec completo del component:
+Generates a full component spec:
 - Variants (property variants)
 - States (default, hover, active, disabled)
-- Tokens usados
-- Anatomy con measurements
-- Props/API sugeridos
+- Tokens used
+- Anatomy with measurements
+- Suggested props/API
 
-## Reglas
+## Rules
 
-- **Rate limit**: 2 req/s por token (strict)
-- **Response size**: archivos grandes pueden dar 30MB+ de JSON — usar `/nodes?ids=` selectivo
-- **URLs exportadas expiran**: descargar inmediatamente después del GET
-- **Plugin API vs REST API**: REST es read-only. Plugins (JavaScript en Figma) pueden modificar.
-- **Tokens vs Styles**: si el file usa Figma Variables, usar esos. Si no, fallback a Styles.
+- **Rate limit**: 2 req/s per token (strict)
+- **Response size**: large files can return 30MB+ of JSON — use selective `/nodes?ids=`
+- **Exported URLs expire**: download immediately after the GET
+- **Plugin API vs REST API**: REST is read-only. Plugins (JavaScript in Figma) can modify.
+- **Tokens vs Styles**: if the file uses Figma Variables, use those. If not, fall back to Styles.

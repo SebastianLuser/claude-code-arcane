@@ -10,28 +10,28 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 
 ## MANDATORY WORKFLOW
 
-**Antes de recomendar o generar cualquier diseño, completar estos pasos en orden.**
+**Before recommending or generating any design, complete these steps in order.**
 
 ### Step 0: Gather Requirements
 
-Clarificar (o inferir del contexto si ya fue especificado):
+Clarify (or infer from context if already specified):
 
-1. **¿API nueva o extensión?** (si es extensión, leer la existente primero)
-2. **Tipos de clientes:** SPA / mobile / third-party / server-to-server
-3. **¿Over-fetch o deeply nested relations?** → influye en REST vs GraphQL
-4. **Auth:** JWT / API Key / OAuth / ninguna
-5. **¿Versioning desde día 1?** ¿Hay clientes externos que no podemos romper?
+1. **New API or extension?** (if it is an extension, read the existing one first)
+2. **Client types:** SPA / mobile / third-party / server-to-server
+3. **Over-fetch or deeply nested relations?** → influences REST vs GraphQL
+4. **Auth:** JWT / API Key / OAuth / none
+5. **Versioning from day 1?** Are there external clients we cannot break?
 
-Si el usuario ya especificó estos valores, saltar directamente al Step 1.
+If the user already specified these values, skip straight to Step 1.
 
-### Step 1: Recomendar approach
+### Step 1: Recommend an approach
 
-Usar la tabla API Style Decision más abajo para elegir REST / GraphQL / gRPC.
-Explicar la elección en 1 oración.
+Use the API Style Decision table below to choose REST / GraphQL / gRPC.
+Explain the choice in 1 sentence.
 
-### Step 2: Diseñar + Verificar
+### Step 2: Design + Verify
 
-Implementar el diseño. Al terminar, validar contra el Checklist al final de este documento.
+Implement the design. When done, validate against the Checklist at the end of this document.
 
 ---
 

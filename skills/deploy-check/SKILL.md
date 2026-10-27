@@ -8,17 +8,17 @@ allowed-tools: Read, Glob, Grep, Bash
 ---
 # deploy-check — Pre-Deploy Verification Guide
 
-## Quick Start Checklist — Pre-deploy mínimo
+## Quick Start Checklist — Minimum pre-deploy
 
-- [ ] Tests pasan (`go test ./...` / `npm test`) — sin red, sin skip
-- [ ] Build limpio sin errores ni warnings relevantes
-- [ ] Sin secrets en archivos trackeados (`gitleaks detect` o `trufflehog`)
-- [ ] Migrations: todas commiteadas, `up → down → up` probado en staging
-- [ ] Env vars: todas las de `.env.example` seteadas en el target
-- [ ] Rollback plan documentado y probado — ¿quién lo ejecuta y cuándo?
-- [ ] Staging deployed y smoke tests pasando antes de prod
-- [ ] Health checks respondiendo (`/health`, `/ready`)
-- [ ] On-call notificado / disponible durante las primeras 2h post-deploy
+- [ ] Tests pass (`go test ./...` / `npm test`) — no red, no skips
+- [ ] Clean build with no errors or relevant warnings
+- [ ] No secrets in tracked files (`gitleaks detect` or `trufflehog`)
+- [ ] Migrations: all committed, `up → down → up` tested on staging
+- [ ] Env vars: every one in `.env.example` set in the target
+- [ ] Rollback plan documented and tested — who runs it and when?
+- [ ] Staging deployed and smoke tests passing before prod
+- [ ] Health checks responding (`/health`, `/ready`)
+- [ ] On-call notified / available during the first 2h after deploy
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: dotnet-scaffold
-description: "Scaffold de API ASP.NET Core (.NET 10) production-ready: Vertical Slice o Clean Architecture, Minimal APIs, EF Core + PostgreSQL, JWT + Identity, ProblemDetails, health checks y testing. Usar para iniciar un backend .NET nuevo."
+description: "Production-ready ASP.NET Core (.NET 10) API scaffold: Vertical Slice or Clean Architecture, Minimal APIs, EF Core + PostgreSQL, JWT + Identity, ProblemDetails, health checks and testing. Use to start a new .NET backend."
 category: "backend"
 argument-hint: "[project-name]"
 user-invocable: true
@@ -10,90 +10,90 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 
 ## MANDATORY WORKFLOW
 
-**Antes de generar cualquier código, completar estos pasos en orden.** Confirmar las decisiones del Step 0 con el usuario antes de escribir archivos (Question → Decision → Approval).
+**Before generating any code, complete these steps in order.** Confirm the Step 0 decisions with the user before writing files (Question → Decision → Approval).
 
 ### Step 0: Gather Requirements
-1. **Nombre del servicio** (PascalCase para la solución, ej. `OrdersApi`)
-2. **Arquitectura:** Vertical Slice (default) / Clean Architecture — ver skill `dotnet-architecture` para elegir
-3. **Transport:** Web API REST con Minimal APIs (default) / Controllers / gRPC
+1. **Service name** (PascalCase for the solution, e.g. `OrdersApi`)
+2. **Architecture:** Vertical Slice (default) / Clean Architecture — see the `dotnet-architecture` skill to choose
+3. **Transport:** REST Web API with Minimal APIs (default) / Controllers / gRPC
 4. **ORM:** EF Core (default) / Dapper
 5. **DB:** PostgreSQL (default) / SQL Server
-6. **Auth:** JWT + ASP.NET Identity (default) / OAuth / ninguna
+6. **Auth:** JWT + ASP.NET Identity (default) / OAuth / none
 7. **Deploy:** Docker (default) / Azure App Service
 
-> Si el dominio es CRUD/simple → **Vertical Slice**. Si es complejo y long-lived con varios devs → **Clean Architecture**.
+> If the domain is CRUD/simple → **Vertical Slice**. If it is complex and long-lived with several devs → **Clean Architecture**.
 
-### Step 1: Crear base
+### Step 1: Create the base
 ```bash
 dotnet new sln -n <Name>
-dotnet new webapi -n <Name>.Api                       # Minimal APIs (default en .NET 8+); para Controllers: --use-controllers
+dotnet new webapi -n <Name>.Api                       # Minimal APIs (default in .NET 8+); for Controllers: --use-controllers
 dotnet sln add <Name>.Api
 dotnet new xunit -n <Name>.Tests && dotnet sln add <Name>.Tests
 cd <Name>.Api
 dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
 dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
 dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore
-dotnet add package FluentValidation.DependencyInjectionExtensions    # core + DI; FluentValidation.AspNetCore (auto-validation) está deprecado
+dotnet add package FluentValidation.DependencyInjectionExtensions    # core + DI; FluentValidation.AspNetCore (auto-validation) is deprecated
 dotnet add package Serilog.AspNetCore
 ```
 
-### Step 2: Estructura
+### Step 2: Structure
 
-**Vertical Slice (default)** — un folder por feature/use-case:
+**Vertical Slice (default)** — one folder per feature/use case:
 ```
 src/
   Features/
-    Orders/   { CreateOrder.cs, GetOrder.cs, OrderEndpoints.cs }  # request+handler+validator+endpoint por slice
+    Orders/   { CreateOrder.cs, GetOrder.cs, OrderEndpoints.cs }  # request+handler+validator+endpoint per slice
     Users/    { ... }
   Infrastructure/  { AppDbContext.cs, Migrations/ }
   Common/    { Behaviors/, Results/, ProblemDetails/ }
   Program.cs
 ```
 
-**Clean Architecture** — proyectos por capa (deps apuntan hacia adentro):
+**Clean Architecture** — one project per layer (dependencies point inward):
 ```
-<Name>.Domain/          # entities, value objects — cero deps externas
+<Name>.Domain/          # entities, value objects — zero external deps
 <Name>.Application/      # use cases, interfaces (IAppDbContext), DTOs
-<Name>.Infrastructure/   # EF Core, Identity, implementaciones
+<Name>.Infrastructure/   # EF Core, Identity, implementations
 <Name>.Api/             # endpoints/controllers, DI, Program.cs
 ```
 
-### Step 3: Defaults no negociables (`Program.cs` / `.csproj`)
-- `<Nullable>enable</Nullable>` + `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` en el `.csproj`
-- **Async end-to-end**: handlers `async Task<>`, `CancellationToken` propagado a EF Core y HTTP; nunca `.Result`/`.Wait()`
-- **DI por constructor** (primary constructors); registrar servicios con scope correcto (`AddScoped` para DbContext/handlers)
-- **Validación**: FluentValidation por slice, invocada manualmente (pipeline behavior MediatR o endpoint filter — no auto-validation) → responder `ValidationProblemDetails` (RFC 7807)
-- **Errores**: `AddProblemDetails()` + exception handler global → `ProblemDetails` consistente, sin filtrar stack traces
-- **EF Core**: migraciones versionadas (`dotnet ef migrations add`), **nunca** `EnsureCreated()` en prod; `DbContext` como Unit of Work (sin repos genéricos salvo necesidad)
-- **Auth**: JWT de vida corta + refresh, secretos en `user-secrets`/secret manager, authorization por policies declarativas
-- **Observabilidad**: Serilog structured logging (JSON) + health checks (`AddHealthChecks`) + OpenTelemetry opcional
-- **Graceful shutdown**: respetar `IHostApplicationLifetime` / `CancellationToken` del host
+### Step 3: Non-negotiable defaults (`Program.cs` / `.csproj`)
+- `<Nullable>enable</Nullable>` + `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` in the `.csproj`
+- **Async end-to-end**: `async Task<>` handlers, `CancellationToken` propagated to EF Core and HTTP; never `.Result`/`.Wait()`
+- **Constructor DI** (primary constructors); register services with the correct scope (`AddScoped` for DbContext/handlers)
+- **Validation**: FluentValidation per slice, invoked manually (MediatR pipeline behavior or endpoint filter — no auto-validation) → respond with `ValidationProblemDetails` (RFC 7807)
+- **Errors**: `AddProblemDetails()` + a global exception handler → consistent `ProblemDetails`, without leaking stack traces
+- **EF Core**: versioned migrations (`dotnet ef migrations add`), **never** `EnsureCreated()` in prod; `DbContext` as the Unit of Work (no generic repos unless needed)
+- **Auth**: short-lived JWT + refresh, secrets in `user-secrets`/secret manager, authorization through declarative policies
+- **Observability**: Serilog structured logging (JSON) + health checks (`AddHealthChecks`) + optional OpenTelemetry
+- **Graceful shutdown**: honor the host's `IHostApplicationLifetime` / `CancellationToken`
 
-### Step 4: Agregar piezas (invocar skills relacionadas)
-- `dotnet-architecture` — estructura de slices/capas en detalle
-- `database` / `data-migrations` — modelado EF Core + migraciones
-- `jwt-strategy` / `auth-strategy` / `rbac-abac` — auth y authorization
-- `api-design` / `api-versioning` / `api-docs` — contrato REST + OpenAPI
-- `testing` / `contract-testing` — xUnit + Testcontainers (Postgres real en tests)
+### Step 4: Add pieces (invoke related skills)
+- `dotnet-architecture` — slice/layer structure in detail
+- `database` / `data-migrations` — EF Core modeling + migrations
+- `jwt-strategy` / `auth-strategy` / `rbac-abac` — auth and authorization
+- `api-design` / `api-versioning` / `api-docs` — REST contract + OpenAPI
+- `testing` / `contract-testing` — xUnit + Testcontainers (real Postgres in tests)
 
-### Step 5: Verificar
-`dotnet build` + `dotnet test`. Revisar contra la rule `dotnet-code` y el skill `dotnet-best-practices`. Build + tests verdes → scaffold **READY**.
+### Step 5: Verify
+`dotnet build` + `dotnet test`. Review against the `dotnet-code` rule and the `dotnet-best-practices` skill. Green build + tests → scaffold **READY**.
 
 ## Stack Defaults
 
-| Componente | Default |
+| Component | Default |
 |------------|---------|
 | Runtime | .NET 10 LTS (C# 14) |
 | Framework | ASP.NET Core — Minimal APIs |
-| Arquitectura | Vertical Slice (Clean opcional) |
+| Architecture | Vertical Slice (Clean optional) |
 | ORM | EF Core 10 |
 | DB | PostgreSQL (Npgsql) |
 | Auth | JWT + ASP.NET Identity |
-| Validación | FluentValidation → ProblemDetails |
+| Validation | FluentValidation → ProblemDetails |
 | Logging | Serilog (JSON) |
 | Testing | xUnit + Testcontainers |
 | Deploy | Docker |
 
 ---
 
-_Inspirado en [dotnet/skills](https://github.com/dotnet/skills) (oficial Microsoft), [github/awesome-copilot](https://github.com/github/awesome-copilot) (dotnet-best-practices) y los templates [ardalis/CleanArchitecture](https://github.com/ardalis/CleanArchitecture) y [nadirbad/VerticalSliceArchitecture](https://github.com/nadirbad/VerticalSliceArchitecture). Adaptado al formato Arcane._
+_Inspired by [dotnet/skills](https://github.com/dotnet/skills) (official Microsoft), [github/awesome-copilot](https://github.com/github/awesome-copilot) (dotnet-best-practices) and the [ardalis/CleanArchitecture](https://github.com/ardalis/CleanArchitecture) and [nadirbad/VerticalSliceArchitecture](https://github.com/nadirbad/VerticalSliceArchitecture) templates. Adapted to the Arcane format._

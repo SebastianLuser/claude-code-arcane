@@ -1,13 +1,14 @@
 """
-Especificaciones de import_history.py.
+Specs for import_history.py.
 
-Los fixtures son CSVs de forma realista, no ideal: preambulo de aviso arriba,
-comision como fila aparte, formato europeo, horas en hh:mm, separador punto y
-coma. Cada uno existe porque es lo que un export real trae.
+The fixtures are realistically shaped CSVs, not ideal ones: a notice preamble on
+top, the fee as a separate row, European number format, hours as hh:mm,
+semicolon separator. Each exists because that is what a real export brings.
 
-Correr desde la raiz: python -m unittest discover -s tests -p "test_*.py"
+Run from the root: python -m unittest discover -s tests -p "test_*.py"
 """
 
+import json
 import shutil
 import sys
 import tempfile
@@ -20,8 +21,8 @@ sys.path.insert(0, str(REPO_ROOT / "skills" / "freelance-pipeline" / "scripts"))
 import import_history as ih  # noqa: E402
 
 
-# Estilo transaction history de Upwork: preambulo, comision como FILA, negativos
-# entre parentesis, y dos columnas que compiten por "monto".
+# Upwork transaction history style: preamble, fee as a ROW, negatives in
+# parentheses, and two columns competing for "amount".
 UPWORK_CSV = '''Transaction history report
 Generated on 2026-08-06
 
@@ -32,11 +33,17 @@ Date,Type,Ref ID,Description,Team,Amount,Amount in local currency,Currency
 2026-07-31,Withdrawal,REF3,"Withdrawal to bank",,($1900.00),($1900.00),USD
 '''
 
-# Planilla propia: espanol, decimal con coma, miles con punto, horas hh:mm,
-# separador punto y coma.
-OWN_CSV = '''Fecha;Cliente;Proyecto;Importe;Horas trabajadas;Moneda
+# A hand-kept spreadsheet whose headers come from the Spanish pack (the script
+# must read them): decimal comma, thousands dot, hh:mm hours, semicolon
+# separator. The hours header only contains its alias: a substring match.
+ES = json.loads((REPO_ROOT / "skills" / "freelance-pipeline" / "scripts" / "columns.es.json")
+                .read_text(encoding="utf-8"))["fields"]
+OWN_HEADERS = [ES["date"][0].title(), ES["client"][0].title(), ES["contract"][0].title(),
+               ES["amount"][0].title(), ES["hours"][0].title() + " worked",
+               ES["currency"][0].title()]
+OWN_CSV = ";".join(OWN_HEADERS) + '''
 05/07/2026;Acme;Backend sprint;1.240,00;31:00;USD
-19/07/2026;Globex;Tienda Shopify;800,50;12:30;USD
+19/07/2026;Globex;Shopify store;800,50;12:30;USD
 02/08/2026;Initech;Landing;450,00;6:00;USD
 '''
 
@@ -65,7 +72,7 @@ class TestMoneyParsing(unittest.TestCase):
         self.assertEqual(ih.parse_money("$1,240.00"), 1240.0)
 
     def test_european_format(self):
-        # 1.240,00 son mil doscientos cuarenta, no uno con veinticuatro.
+        # 1.240,00 is one thousand two hundred forty, not one point twenty-four.
         self.assertEqual(ih.parse_money("1.240,00"), 1240.0)
         self.assertEqual(ih.parse_money("800,50"), 800.5)
 
@@ -73,7 +80,7 @@ class TestMoneyParsing(unittest.TestCase):
         self.assertEqual(ih.parse_money("1,240"), 1240.0)
 
     def test_accounting_parentheses_are_negative(self):
-        # Convencion contable: los parentesis son el signo menos.
+        # Accounting convention: parentheses are the minus sign.
         self.assertEqual(ih.parse_money("($124.00)"), -124.0)
 
     def test_currency_suffix(self):
@@ -107,16 +114,16 @@ class TestColumnMapping(CsvCase):
     def test_detects_semicolon_delimiter(self):
         path = self.write("o.csv", OWN_CSV)
         headers, rows, _ = ih.read_csv(path)
-        self.assertIn("Importe", headers)
+        self.assertIn(OWN_HEADERS[3], headers)
         self.assertEqual(len(rows), 3)
 
     def test_reports_ambiguity_instead_of_choosing_silently(self):
-        # "Amount" y "Amount in local currency" compiten por el mismo campo.
-        # Elegir mal ahi cambia todos los totales, asi que se avisa.
+        # "Amount" and "Amount in local currency" compete for the same field.
+        # Picking wrong there changes every total, so it is reported.
         headers, _, _ = ih.read_csv(self.write("u.csv", UPWORK_CSV))
         mapping, _, ambiguous = ih.map_columns(headers)
-        self.assertIn("monto", ambiguous)
-        self.assertEqual(mapping["monto"], "Amount", "gana la primera, la mas simple")
+        self.assertIn("amount", ambiguous)
+        self.assertEqual(mapping["amount"], "Amount", "the first, simplest one wins")
 
     def test_lists_unmapped_columns(self):
         headers, _, _ = ih.read_csv(self.write("u.csv", UPWORK_CSV))
@@ -125,72 +132,73 @@ class TestColumnMapping(CsvCase):
 
     def test_override_wins_over_detection(self):
         headers, _, _ = ih.read_csv(self.write("u.csv", UPWORK_CSV))
-        mapping, _, _ = ih.map_columns(headers, {"Amount in local currency": "monto"})
-        self.assertEqual(mapping["monto"], "Amount in local currency")
+        mapping, _, _ = ih.map_columns(headers, {"Amount in local currency": "amount"})
+        self.assertEqual(mapping["amount"], "Amount in local currency")
 
     def test_fee_alias_does_not_get_eaten_by_amount(self):
-        # "amount" hace substring con casi todo; sin el orden correcto de
-        # FIELD_ALIASES una columna de fee terminaba en monto.
+        # "amount" is a substring of almost everything; without the right
+        # FIELD_ALIASES order a fee column ended up in amount.
         mapping, _, _ = ih.map_columns(["Date", "Amount", "Service Fee"])
         self.assertEqual(mapping["fee"], "Service Fee")
-        self.assertEqual(mapping["monto"], "Amount")
+        self.assertEqual(mapping["amount"], "Amount")
 
 
 class TestFeeRows(CsvCase):
     def test_fee_as_a_row_is_not_counted_as_income(self):
         summary, _ = self.summary("u.csv", UPWORK_CSV)
-        self.assertEqual(summary["movimientos_de_ingreso"], 2)
-        self.assertEqual(summary["filas_de_comision"], 1)
+        self.assertEqual(summary["income_transactions"], 2)
+        self.assertEqual(summary["fee_rows"], 1)
 
     def test_gross_net_and_fees_add_up(self):
-        # El bug que esto cubre: sin detectar filas de comision, `bruto` daba
-        # 1916 (que es el neto) y `comisiones` daba None con un fee de 124 a la
-        # vista. El total era correcto y la etiqueta mentia.
+        # The bug this covers: without detecting fee rows, `gross` gave 1916
+        # (which is the net) and `fees` gave None with a 124 fee in plain
+        # sight. The total was right and the label lied.
         summary, _ = self.summary("u.csv", UPWORK_CSV)
-        self.assertEqual(summary["bruto"], 2040.0)
-        self.assertEqual(summary["comisiones"], 124.0)
-        self.assertEqual(summary["neto"], 1916.0)
+        self.assertEqual(summary["gross"], 2040.0)
+        self.assertEqual(summary["fees"], 124.0)
+        self.assertEqual(summary["net"], 1916.0)
 
     def test_withdrawals_are_excluded(self):
         summary, _ = self.summary("u.csv", UPWORK_CSV)
-        self.assertEqual(summary["excluidos_por_tipo"], 1)
+        self.assertEqual(summary["excluded_by_type"], 1)
 
 
 class TestSummary(CsvCase):
     def test_effective_rate_needs_hours(self):
         summary, _ = self.summary("o.csv", OWN_CSV)
-        self.assertEqual(summary["horas_registradas"], 49.5)
-        self.assertEqual(summary["tarifa_efectiva_por_hora"], round(2490.5 / 49.5, 2))
+        self.assertEqual(summary["hours_logged"], 49.5)
+        self.assertEqual(summary["effective_hourly_rate"], round(2490.5 / 49.5, 2))
 
     def test_says_when_the_rate_cannot_be_computed(self):
-        # El export de Upwork no trae horas. Estimar la tarifa sin horas seria
-        # inventar el numero mas importante del reporte.
+        # The Upwork export has no hours. Estimating the rate without hours
+        # would invent the most important number in the report.
         summary, _ = self.summary("u.csv", UPWORK_CSV)
-        self.assertIsNone(summary["tarifa_efectiva_por_hora"])
-        self.assertFalse(summary["tarifa_efectiva_calculable"])
+        self.assertIsNone(summary["effective_hourly_rate"])
+        self.assertFalse(summary["effective_rate_computable"])
 
     def test_client_concentration(self):
         summary, _ = self.summary("o.csv", OWN_CSV)
-        self.assertEqual(summary["concentracion"]["cliente_mas_grande"], "Acme")
-        self.assertEqual(summary["concentracion"]["porcentaje_del_ingreso"], 49.8)
+        self.assertEqual(summary["concentration"]["largest_client"], "Acme")
+        self.assertEqual(summary["concentration"]["share_of_income_pct"], 49.8)
 
     def test_flags_insufficient_sample(self):
         summary, _ = self.summary("o.csv", OWN_CSV)
-        self.assertFalse(summary["muestra_suficiente"], "3 movimientos no son una muestra")
+        self.assertFalse(summary["enough_sample"], "3 transactions are not a sample")
 
     def test_date_range(self):
         summary, _ = self.summary("o.csv", OWN_CSV)
-        self.assertEqual(summary["rango_de_fechas"], ["2026-07-05", "2026-08-02"])
+        self.assertEqual(summary["date_range"], ["2026-07-05", "2026-08-02"])
 
 
 class TestFailurePaths(CsvCase):
     def test_missing_amount_column_is_reported_not_guessed(self):
-        headers, _, _ = ih.read_csv(self.write("r.csv", "Fecha,Cliente,Comentario\n2026-01-01,Acme,x\n"))
+        csv_text = ",".join(OWN_HEADERS[:2] + ["Comment"]) + "\n2026-01-01,Acme,x\n"
+        headers, _, _ = ih.read_csv(self.write("r.csv", csv_text))
         mapping, _, _ = ih.map_columns(headers)
-        self.assertNotIn("monto", mapping)
+        self.assertNotIn("amount", mapping)
 
     def test_empty_file_raises_a_clear_error(self):
-        path = self.write("vacio.csv", "")
+        path = self.write("empty.csv", "")
         with self.assertRaises(ValueError):
             ih.read_csv(path)
 

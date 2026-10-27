@@ -1,28 +1,28 @@
 ---
 name: nextjs-best-practices
-description: "React + Next.js performance: 64 reglas en 8 categorías (waterfalls, bundle, server, client fetching, re-render, rendering, JS, advanced) priorizadas por impacto, de Vercel Engineering. Usar al escribir/optimizar React o Next.js."
+description: "React + Next.js performance: 64 rules in 8 categories (waterfalls, bundle, server, client fetching, re-render, rendering, JS, advanced) prioritized by impact, from Vercel Engineering. Use when writing/optimizing React or Next.js."
 category: "frontend"
 argument-hint: "[waterfalls|bundle|server|rerender|rendering|js|all]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-# nextjs-best-practices — Performance priorizada por impacto
+# nextjs-best-practices — Performance prioritized by impact
 
-64 reglas de optimización de performance para React y Next.js, de Vercel Engineering, organizadas en 8 categorías priorizadas de **CRITICAL** a **LOW**. Detalle por categoría en `references/`.
+64 performance optimization rules for React and Next.js, from Vercel Engineering, organized into 8 categories prioritized from **CRITICAL** to **LOW**. Per-category detail in `references/`.
 
 ## MANDATORY WORKFLOW
 
-**Diagnóstico dirigido por métricas, no aplicar las 64 reglas a ciegas** (este es el enfoque `vercel-optimize`: medir primero, optimizar solo lo que las métricas señalan).
+**Metrics-driven diagnosis, do not apply the 64 rules blindly** (this is the `vercel-optimize` approach: measure first, optimize only what the metrics point to).
 
-### Step 0: Medir / localizar
+### Step 0: Measure / locate
 
-1. **¿Hay métricas?** Lighthouse, Web Vitals (LCP/INP/CLS), bundle analyzer, traces de Vercel.
-2. **¿Cuál es el síntoma dominante?** TTFB alto → waterfalls/server. Bundle grande / TBT → bundle size. Jank en interacción → re-render. Layout shift → rendering.
-3. Identificar las rutas/componentes concretos que las métricas apuntan. Optimizar **esos**, no todo.
+1. **Are there metrics?** Lighthouse, Web Vitals (LCP/INP/CLS), bundle analyzer, Vercel traces.
+2. **What is the dominant symptom?** High TTFB → waterfalls/server. Large bundle / TBT → bundle size. Interaction jank → re-render. Layout shift → rendering.
+3. Identify the concrete routes/components the metrics point to. Optimize **those**, not everything.
 
-### Step 1: Priorizar por impacto
+### Step 1: Prioritize by impact
 
-| Prioridad | Categoría | Impacto | Reference |
+| Priority | Category | Impact | Reference |
 |-----------|-----------|---------|-----------|
 | 1 | Eliminating Waterfalls | CRITICAL | `references/waterfalls.md` |
 | 2 | Bundle Size Optimization | CRITICAL | `references/bundle-size.md` |
@@ -33,32 +33,32 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 | 7 | JavaScript Performance | LOW-MEDIUM | `references/javascript.md` |
 | 8 | Advanced Patterns | LOW | `references/advanced.md` |
 
-### Step 2: Aplicar + medir de nuevo
+### Step 2: Apply + measure again
 
-Aplicar la regla, re-medir. Si la métrica no mejoró, revertir y subir de categoría — no acumular micro-optimizaciones sin impacto medible.
+Apply the rule, re-measure. If the metric did not improve, revert and move up a category — do not pile up micro-optimizations without measurable impact.
 
-### Step 3: Checklist de cierre
+### Step 3: Closing checklist
 
-- [ ] Fetches independientes en paralelo (`Promise.all`), no en cascada
-- [ ] Server Components por defecto; `'use client'` empujado abajo en el árbol
-- [ ] Sin barrel imports en el critical path; componentes pesados con `next/dynamic`
-- [ ] Server Actions autenticadas individualmente
-- [ ] Sin componentes definidos dentro de componentes
-- [ ] `next/image` + `generateMetadata` + resource hints donde corresponde
-- [ ] Re-medir Web Vitals post-cambios
+- [ ] Independent fetches in parallel (`Promise.all`), not in a cascade
+- [ ] Server Components by default; `'use client'` pushed down the tree
+- [ ] No barrel imports on the critical path; heavy components with `next/dynamic`
+- [ ] Server Actions authenticated individually
+- [ ] No components defined inside components
+- [ ] `next/image` + `generateMetadata` + resource hints where appropriate
+- [ ] Re-measure Web Vitals after the changes
 
-Si todo el checklist pasa → optimización **COMPLETE**. Antes de escribir cambios significativos, confirmar el approach con el usuario (Question → Decision → Approval).
+If the whole checklist passes → optimization **COMPLETE**. Before writing significant changes, confirm the approach with the user (Question → Decision → Approval).
 
-## Tabla síntoma → categoría
+## Symptom → category table
 
-| Métrica mala | Categoría |
+| Bad metric | Category |
 |--------------|-----------|
-| TTFB / tiempo de respuesta del server | Waterfalls, Server |
-| First Load JS / TBT alto | Bundle Size |
-| INP / jank en interacción | Re-render, JS |
+| TTFB / server response time | Waterfalls, Server |
+| First Load JS / high TBT | Bundle Size |
+| INP / interaction jank | Re-render, JS |
 | LCP | Rendering, Bundle, Server |
-| CLS / flicker en hydration | Rendering |
+| CLS / hydration flicker | Rendering |
 
 ---
 
-_Adaptado de [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) (react-best-practices, MIT, © Vercel). 64 reglas priorizadas por impacto, reorganizadas al formato skill+references de Arcane._
+_Adapted from [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) (react-best-practices, MIT, © Vercel). 64 rules prioritized by impact, reorganized into Arcane's skill+references format._

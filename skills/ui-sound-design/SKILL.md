@@ -1,126 +1,126 @@
 ---
 name: ui-sound-design
-description: "Sonido de interfaz y feedback: duraciones y niveles por tipo de evento, jerarquia de feedback, coordinacion con haptics, respeto del volumen del sistema, accesibilidad. Usar para: sonidos de UI, feedback de menu, notificaciones, sonido de app."
+description: "Interface sound and feedback: durations and levels per event type, feedback hierarchy, coordination with haptics, respecting the system volume, accessibility. Use for: UI sounds, menu feedback, notifications, app sound."
 category: "audio"
 argument-hint: "[set | event-name | review | haptics]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
-# ui-sound-design — Feedback de Interfaz
+# ui-sound-design — Interface Feedback
 
-Diseña el sonido que confirma acciones. Es el audio que el usuario escucha más veces y el que más rápido se vuelve molesto si está mal calibrado.
+Designs the sound that confirms actions. It is the audio the user hears most often, and the one that turns annoying fastest if it is badly calibrated.
 
-## Cuándo usar
+## When to use
 
-- Definir el set de sonidos de UI de un juego o una app
-- El feedback se siente molesto, invasivo o inconsistente
-- Falta jerarquía: todo suena igual de importante
-- Coordinar audio con haptics
+- Define the UI sound set of a game or an app
+- The feedback feels annoying, intrusive or inconsistent
+- Hierarchy is missing: everything sounds equally important
+- Coordinate audio with haptics
 
 ## Input
 
-1. Leer audio bible (paleta, frequency allocation, mix hierarchy)
-2. Listar los eventos de UI reales de la interfaz
-3. Preguntar al usuario: plataforma (desktop / consola / móvil), si hay haptics, y si el juego se juega en sesiones largas
+1. Read the audio bible (palette, frequency allocation, mix hierarchy)
+2. List the interface's real UI events
+3. Ask the user: platform (desktop / console / mobile), whether there are haptics, and whether the game is played in long sessions
 
 ---
 
-## Especificaciones por tipo
+## Specifications by type
 
-Estos rangos son el punto de partida calibrado. Salirse de ellos requiere razón.
+These ranges are the calibrated starting point. Leaving them requires a reason.
 
-| Tipo | Duración | Carácter | Nivel |
+| Type | Duration | Character | Level |
 |---|---|---|---|
-| **Tap / hover** | 30-80 ms | Click suave, alta frecuencia | −24 dB |
-| **Confirmación** | 80-150 ms | Transiente definido, neutro | −21 dB |
-| **Éxito** | 150-300 ms | Tono ascendente, positivo | −18 dB |
-| **Error** | 200-400 ms | Descendente, menor | −18 dB |
-| **Notificación** | 300-800 ms | Distintivo, llama atención | −18 dB |
-| **Transición / navegación** | 100-250 ms | Movimiento sutil | −24 dB |
-| **Toggle** | 40-100 ms | Dos estados distinguibles | −24 dB |
+| **Tap / hover** | 30-80 ms | Soft click, high frequency | −24 dB |
+| **Confirmation** | 80-150 ms | Defined transient, neutral | −21 dB |
+| **Success** | 150-300 ms | Rising tone, positive | −18 dB |
+| **Error** | 200-400 ms | Falling, minor | −18 dB |
+| **Notification** | 300-800 ms | Distinctive, attention-grabbing | −18 dB |
+| **Transition / navigation** | 100-250 ms | Subtle movement | −24 dB |
+| **Toggle** | 40-100 ms | Two distinguishable states | −24 dB |
 
-**El nivel es lo que más se equivoca.** Los sonidos de UI van entre **−18 y −24 dB** relativos al material de gameplay. Un click a −3 dB compite con la acción del juego y agota en minutos.
+**The level is what gets it wrong most often.** UI sounds sit between **−18 and −24 dB** relative to the gameplay material. A click at −3 dB competes with the game action and becomes exhausting within minutes.
 
-Regla de proporcionalidad: **el nivel y la duración son proporcionales a la importancia del evento**. Un hover es lo más corto y lo más bajo. Un error de transacción es lo más largo y lo más alto. Si el hover y el error suenan parecido, no hay jerarquía.
+Proportionality rule: **level and duration are proportional to the event's importance**. A hover is the shortest and the quietest. A transaction error is the longest and the loudest. If the hover and the error sound alike, there is no hierarchy.
 
-## Frecuencia y fatiga
+## Frequency and fatigue
 
-El feedback de UI vive en **2-6 kHz**: es donde el oído es más sensible, así que un sonido bajo se lee claro sin volumen. Es también la banda que **más rápido fatiga**.
+UI feedback lives at **2-6 kHz**: that is where the ear is most sensitive, so a quiet sound reads clearly without volume. It is also the band that **fatigues fastest**.
 
-Consecuencias de diseño:
+Design consequences:
 
-- Transientes cortos, no tonos sostenidos: la energía breve informa sin cansar
-- En un juego de sesiones largas, correr el feedback hacia abajo (1-3 kHz) reduce la fatiga a costa de algo de claridad
-- Si el juego tiene mucha percusión brillante o hi-hats, el UI compite: bajar el UI no alcanza, hay que hacerle lugar en el arreglo (ver `/audio-mix`)
+- Short transients, not sustained tones: brief energy informs without tiring
+- In a game with long sessions, moving the feedback lower (1-3 kHz) reduces fatigue at the cost of some clarity
+- If the game has a lot of bright percussion or hi-hats, the UI competes: lowering the UI is not enough, it has to be given room in the arrangement (see `/audio-mix`)
 
-## Jerarquía
+## Hierarchy
 
-Tres niveles, y cada evento cae en uno:
+Three levels, and every event falls into one:
 
-| Nivel | Qué entra | Puede interrumpir |
+| Level | What goes in | Can interrupt |
 |---|---|---|
-| **Ambiental** | Hover, navegación, toggle | Nada. Se pierde y no importa |
-| **Confirmatorio** | Tap, confirmación, éxito | Nada, pero no se debe perder |
-| **Crítico** | Error, alerta, timeout | Duckea el resto |
+| **Ambient** | Hover, navigation, toggle | Nothing. It gets lost and that is fine |
+| **Confirmatory** | Tap, confirmation, success | Nothing, but it must not get lost |
+| **Critical** | Error, alert, timeout | Ducks everything else |
 
-Solo el nivel crítico duckea. Si los tres duckean, la música desaparece cada vez que el usuario navega un menú.
+Only the critical level ducks. If all three duck, the music disappears every time the user navigates a menu.
 
 ## Haptics
 
-Cuando hay haptics, audio y vibración son **un solo evento percibido**. Reglas:
+When there are haptics, audio and vibration are **a single perceived event**. Rules:
 
-- **Sincronía dura:** un desfasaje mayor a ~30 ms se percibe como dos eventos separados
-- **No duplicar la información:** si el haptic ya comunica la intensidad, el audio no necesita subir de nivel
-- **Complementariedad de banda:** el haptic cubre lo que el speaker chico no puede dar (el sub). Diseñar el audio sin depender del grave si hay haptic
-- **Respetar el ajuste del usuario:** haptics desactivado no debe dejar el evento sin feedback
+- **Hard sync:** an offset greater than ~30 ms is perceived as two separate events
+- **Do not duplicate information:** if the haptic already communicates intensity, the audio does not need to go up in level
+- **Band complementarity:** the haptic covers what the small speaker cannot deliver (the sub). Design the audio without relying on the lows when there is a haptic
+- **Respect the user's setting:** haptics turned off must not leave the event without feedback
 
-## Plataforma
+## Platform
 
-### Móvil — sesiones de audio
+### Mobile — audio sessions
 
-Ignorar la sesión de audio es el bug más común de audio en móvil: la app pierde el audio en una llamada y no lo recupera nunca.
+Ignoring the audio session is the most common mobile audio bug: the app loses its audio during a call and never gets it back.
 
-| iOS `AVAudioSession` | Comportamiento |
+| iOS `AVAudioSession` | Behavior |
 |---|---|
-| `.ambient` | Se mezcla con otro audio; el switch de silencio lo silencia |
-| `.playback` | Interrumpe otro audio; ignora el switch de silencio |
-| `.playAndRecord` | Para apps con voz |
-| `.soloAmbient` | Default; silencia otro audio |
+| `.ambient` | Mixes with other audio; the silent switch mutes it |
+| `.playback` | Interrupts other audio; ignores the silent switch |
+| `.playAndRecord` | For apps with voice |
+| `.soloAmbient` | Default; silences other audio |
 
-En Android el equivalente es AudioFocus. En los dos casos hay que manejar **interrupciones** (llamada, alarma) y **cambios de ruta** (auriculares conectados/desconectados).
+On Android the equivalent is AudioFocus. In both cases you have to handle **interruptions** (call, alarm) and **route changes** (headphones connected/disconnected).
 
-**Un juego que suena en background o que ignora el switch de silencio es un rechazo de store esperando pasar.** Para un juego, `.ambient` o `.soloAmbient` según si querés dejar que el usuario escuche su música.
+**A game that plays in the background or ignores the silent switch is a store rejection waiting to happen.** For a game, `.ambient` or `.soloAmbient` depending on whether you want to let the user listen to their own music.
 
-### Respetar el volumen del sistema
+### Respect the system volume
 
-Nunca normalizar por encima del volumen del sistema ni forzar un mínimo. Si el usuario bajó el volumen, bajó el volumen.
+Never normalize above the system volume or force a minimum. If the user turned the volume down, they turned the volume down.
 
-## Accesibilidad
+## Accessibility
 
-- El sonido de UI **nunca puede ser el único canal** de información crítica: siempre acompañado de señal visual
-- Éxito y error tienen que distinguirse por **contorno melódico** (ascendente vs descendente), no solo por timbre — es lo que sobrevive a pérdida de agudos
-- Ofrecer control de volumen de UI separado de música y SFX
-- Los sonidos repetitivos de navegación tienen que poder desactivarse sin perder el feedback crítico
+- UI sound **can never be the only channel** for critical information: always paired with a visual signal
+- Success and error must be distinguishable by **melodic contour** (rising vs falling), not only by timbre — it is what survives high-frequency hearing loss
+- Offer a UI volume control separate from music and SFX
+- Repetitive navigation sounds must be able to be turned off without losing the critical feedback
 
 ---
 
-## Proceso
+## Process
 
-1. **Listar los eventos** de UI reales y asignar cada uno a un nivel de jerarquía
-2. **Especificar** duración, carácter y nivel por evento, contra la tabla de referencia
-3. **Verificar la jerarquía** — hover y crítico tienen que ser inconfundibles
-4. **Definir haptics** si aplica, con sincronía y reparto de banda
-5. **Definir el manejo de sesión** en móvil
-6. **Chequear accesibilidad** — contorno melódico, canal redundante, controles separados
-7. **Escribir** — preguntar "¿Escribo el set a `<path>`?" antes de usar Write
+1. **List the real UI events** and assign each one to a hierarchy level
+2. **Specify** duration, character and level per event, against the reference table
+3. **Verify the hierarchy** — hover and critical must be unmistakable
+4. **Define the haptics** if applicable, with sync and band split
+5. **Define the session handling** on mobile
+6. **Check accessibility** — melodic contour, redundant channel, separate controls
+7. **Write** — ask "Shall I write the set to `<path>`?" before using Write
 
 ---
 
 ## Verdict
 
-- **READY** — cada evento tiene nivel, duración y jerarquía; la accesibilidad está cubierta; en móvil la sesión de audio está definida
-- **CONCERNS** — el set existe pero no hay jerarquía diferenciada, o el nivel está por encima de −18 dB, o falta el manejo de interrupciones
-- **BLOCKED** — no está definida la lista de eventos de UI o falta la dirección del audio bible
+- **READY** — every event has a level, duration and hierarchy; accessibility is covered; on mobile the audio session is defined
+- **CONCERNS** — the set exists but there is no differentiated hierarchy, or the level is above −18 dB, or interruption handling is missing
+- **BLOCKED** — the list of UI events is not defined, or the audio bible direction is missing
 
 ## Anti-patterns
 
@@ -128,6 +128,6 @@ Nunca normalizar por encima del volumen del sistema ni forzar un mínimo. Si el 
 
 ## Next steps
 
-- `/audio-mix` para el bus de UI y el ducking del nivel crítico
-- `/audio-spec` para formalizar cooldowns (navegación rápida spamea el evento)
-- `/audio-audit` para verificar niveles medidos contra los especificados
+- `/audio-mix` for the UI bus and the critical level's ducking
+- `/audio-spec` to formalize cooldowns (fast navigation spams the event)
+- `/audio-audit` to verify measured levels against the specified ones

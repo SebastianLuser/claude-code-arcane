@@ -10,65 +10,65 @@ metadata:
 ---
 # Database Indexing (PostgreSQL)
 
-Diseñar, crear y mantener índices en Postgres 15+ en contexto multi-tenant Educabot.
+Design, create and maintain indexes in Postgres 15+ in Educabot's multi-tenant context.
 
-## Cuándo usar / NO usar
+## When to use / NOT use
 
-| Usar | NO usar |
+| Use | Do NOT use |
 |------|---------|
-| Queries lentas con Seq Scan en tablas grandes | Tablas <10k rows (Seq Scan suele ganar) |
-| Schema nuevo: planificar índices | Booleans/enums baja cardinalidad (usar partial) |
-| Revisión periódica: faltantes/no usados | Alta write, pocas reads |
-| Bloat, REINDEX necesario | Full-text search → `/search-setup` |
-| Multi-tenant: `tenant_id` primera columna composite | Query puntual lenta → `/query-optimization` |
+| Slow queries with Seq Scan on large tables | Tables <10k rows (Seq Scan usually wins) |
+| New schema: plan the indexes | Low-cardinality booleans/enums (use partial) |
+| Periodic review: missing/unused | High writes, few reads |
+| Bloat, REINDEX needed | Full-text search → `/search-setup` |
+| Multi-tenant: `tenant_id` as first composite column | One slow query → `/query-optimization` |
 
-## Tipos de índices
+## Index types
 
-B-tree (default, 95% de casos), GIN (arrays/jsonb/tsvector), GiST (geo/ranges), BRIN (tablas enormes ordenadas), Partial (filtro en definición), Covering/INCLUDE, Expression.
+B-tree (default, 95% of cases), GIN (arrays/jsonb/tsvector), GiST (geo/ranges), BRIN (huge ordered tables), Partial (filter in the definition), Covering/INCLUDE, Expression.
 
 > → Read references/index-types.md for detailed type comparison table and JSONB indexing guide
 
-## Cuándo crear
+## When to create
 
-- `WHERE` con alta selectividad (>100 rows devueltos dilute beneficio)
-- `JOIN` (especialmente FKs)
-- `ORDER BY` / `GROUP BY` frecuentes
-- Constraints `UNIQUE`
-- Regla: query frecuente que escanea miles para devolver pocos → indexar
+- `WHERE` with high selectivity (>100 rows returned dilutes the benefit)
+- `JOIN` (especially FKs)
+- Frequent `ORDER BY` / `GROUP BY`
+- `UNIQUE` constraints
+- Rule: a frequent query that scans thousands to return a few → index it
 
 ## Composite indexes
 
-Un índice `(a, b, c)` sirve para `a`, `a,b`, `a,b,c` — NO para `b`, `c`, o `b,c` solos (leftmost prefix).
+An index on `(a, b, c)` serves `a`, `a,b`, `a,b,c` — NOT `b`, `c`, or `b,c` alone (leftmost prefix).
 
-**Orden de columnas:** igualdad primero (`tenant_id =`) → rango después (`created_at >`) → `ORDER BY` al final.
+**Column order:** equality first (`tenant_id =`) → range next (`created_at >`) → `ORDER BY` last.
 
-## CONCURRENTLY en producción
+## CONCURRENTLY in production
 
-**Obligatorio** en tablas grandes: no bloquea writes. No puede correr dentro de transacción — separar en su propia migration. Si falla queda índice `INVALID` → detectar con `pg_index WHERE NOT indisvalid` → `DROP INDEX CONCURRENTLY`.
+**Mandatory** on large tables: it does not block writes. It cannot run inside a transaction — put it in its own migration. If it fails it leaves an `INVALID` index → detect it with `pg_index WHERE NOT indisvalid` → `DROP INDEX CONCURRENTLY`.
 
-## Detectar faltantes
+## Detect missing ones
 
-Consultar `pg_stat_user_tables` donde `seq_scan > idx_scan AND n_live_tup > 10000`. Luego revisar queries reales con `pg_stat_statements`.
+Query `pg_stat_user_tables` where `seq_scan > idx_scan AND n_live_tup > 10000`. Then review real queries with `pg_stat_statements`.
 
-## Detectar no usados
+## Detect unused ones
 
-Consultar `pg_stat_user_indexes` donde `idx_scan = 0` tras **1 mes** de observación. `DROP INDEX CONCURRENTLY`. Excepción: índices únicos que respaldan constraints.
+Query `pg_stat_user_indexes` where `idx_scan = 0` after **1 month** of observation. `DROP INDEX CONCURRENTLY`. Exception: unique indexes backing constraints.
 
 ## Foreign keys
 
-Postgres **no** crea índice automático en columnas FK. Sin índice cada DELETE/UPDATE en parent hace seq scan de child. Siempre crear índice en child FK.
+Postgres does **not** automatically index FK columns. Without an index, every DELETE/UPDATE on the parent does a seq scan of the child. Always index the child FK.
 
-## EXPLAIN post-creación
+## EXPLAIN after creation
 
-Verificar con `EXPLAIN (ANALYZE, BUFFERS)`. Planes esperables: Index Scan, Index Only Scan (ideal), Bitmap Heap Scan. Si Seq Scan → índice no se usa. Ver `/query-optimization`.
+Verify with `EXPLAIN (ANALYZE, BUFFERS)`. Expected plans: Index Scan, Index Only Scan (ideal), Bitmap Heap Scan. If Seq Scan → the index is not used. See `/query-optimization`.
 
-## Bloat y REINDEX
+## Bloat and REINDEX
 
-B-tree se bloatea con updates/deletes. Monitorear con `pgstattuple`. Reparar: `REINDEX INDEX CONCURRENTLY` o `pg_repack`. Agendar trimestral para índices calientes.
+B-tree bloats with updates/deletes. Monitor with `pgstattuple`. Repair: `REINDEX INDEX CONCURRENTLY` or `pg_repack`. Schedule quarterly for hot indexes.
 
-## Multi-tenant Educabot
+## Educabot multi-tenant
 
-Todo índice compuesto debe empezar por `tenant_id` para que RLS y queries filtradas lo aprovechen. Patrón: `(tenant_id, student_id, period_id)`.
+Every composite index must start with `tenant_id` so RLS and filtered queries can use it. Pattern: `(tenant_id, student_id, period_id)`.
 
 ## Anti-patterns
 
@@ -78,9 +78,9 @@ Todo índice compuesto debe empezar por `tenant_id` para que RLS y queries filtr
 
 > → Read references/checklists.md for pre-creation checklist (11 items) and periodic maintenance checklist (5 items)
 
-## Delegación
+## Delegation
 
-- `/query-optimization` — análisis de query lenta puntual
+- `/query-optimization` — analysis of a single slow query
 - `/search-setup` — full-text search (tsvector, GIN)
-- `/data-migrations` — migraciones sin downtime, separación CONCURRENTLY
-- `/db-diagram` — diagramar schema
+- `/data-migrations` — zero-downtime migrations, CONCURRENTLY separation
+- `/db-diagram` — diagram the schema

@@ -1,6 +1,6 @@
 ---
 name: scaffold-unity
-description: "Scaffolding de proyectos Unity: estructura canónica, managers core, ScriptableObjects, Entity/State, naming conventions. Usar para: nuevo proyecto Unity, scaffold, crear juego, boilerplate Unity."
+description: "Unity project scaffolding: canonical structure, core managers, ScriptableObjects, Entity/State, naming conventions. Use for: new Unity project, scaffold, create a game, Unity boilerplate."
 category: "gamedev"
 argument-hint: "[project-name]"
 user-invocable: true
@@ -8,45 +8,45 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 # scaffold-unity — Unity Project Scaffold
 
-Genera estructura base para un nuevo proyecto Unity.
+Generates the base structure for a new Unity project.
 
 ## Input
 
-Preguntar al usuario:
-1. **Nombre del juego**
-2. **Género** (roguelite, platformer, RPG, puzzle, etc.)
-3. **Perspectiva** (isométrica, top-down, side-scroll, first-person)
-4. **Sistemas principales** (combate, inventario, diálogos, crafting, etc.)
+Ask the user:
+1. **Game name**
+2. **Genre** (roguelite, platformer, RPG, puzzle, etc.)
+3. **Perspective** (isometric, top-down, side-scroll, first-person)
+4. **Main systems** (combat, inventory, dialogue, crafting, etc.)
 5. **Render pipeline** (2D URP, 3D URP, HDRP) — default: 2D URP
 
 ---
 
-## Arquitectura
+## Architecture
 
-### Principios
+### Principles
 
-1. Código funcional sobre arquitectura perfecta
-2. No namespaces — flat para simplicidad en equipos chicos
-3. Singletons solo para managers cross-scene (`GameManager`, `AudioManager`)
-4. ScriptableObjects para todos los datos tuneables — nunca hardcodear gameplay
-5. C# events (`System.Action<T>`) para comunicación cross-system
-6. Entity/State separation — MonoBehaviour para avatar, clase pura para datos
-7. Static utilities para cálculos puros sin estado
+1. Working code over perfect architecture
+2. No namespaces — flat, for simplicity in small teams
+3. Singletons only for cross-scene managers (`GameManager`, `AudioManager`)
+4. ScriptableObjects for all tunable data — never hardcode gameplay
+5. C# events (`System.Action<T>`) for cross-system communication
+6. Entity/State separation — MonoBehaviour for the avatar, a plain class for the data
+7. Static utilities for pure, stateless calculations
 
-Para decisiones de arquitectura en detalle: `/unity-game-architecture`.
+For detailed architecture decisions: `/unity-game-architecture`.
 
-> → Read references/folder-structure-and-files.md for [estructura de carpetas y archivos a generar por categoría]
+> → Read references/folder-structure-and-files.md for [folder structure and files to generate per category]
 
-> → Read references/naming-conventions.md for [tabla de naming conventions por tipo de elemento]
+> → Read references/naming-conventions.md for [naming conventions table per element type]
 
 ---
 
 ## Rules
 
-- Generar C# funcional que compile
+- Generate working C# that compiles
 - NO namespaces
-- TextMeshPro para todo texto (`using TMPro;`)
-- `[CreateAssetMenu]` en todo ScriptableObject
-- NO hardcodear valores de gameplay — todo en SOs
-- Adaptar estructura y entidades al género del juego
-- Español para docs, inglés para código
+- TextMeshPro for all text (`using TMPro;`)
+- `[CreateAssetMenu]` on every ScriptableObject
+- Do NOT hardcode gameplay values — everything in SOs
+- Adapt the structure and entities to the game's genre
+- Docs in the user's language, code in English

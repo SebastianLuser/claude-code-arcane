@@ -1,53 +1,53 @@
-# Freelance Guardrails (marketplaces y clientes directos)
+# Freelance Guardrails (marketplaces and direct clients)
 
-Buscar empleo es gratis: aplicás a 40 puestos y solo perdés tiempo. Freelancear no. Cada propuesta cuesta algo, cada contrato malo toca tu reputación, y cada "¿me agregás esto rapidito?" sin cobrar sale de tu bolsillo.
+Job hunting is free: you apply to 40 positions and only lose time. Freelancing is not. Every proposal costs something, every bad contract hits your reputation, and every unpaid "could you add this real quick?" comes out of your pocket.
 
-Estas cuatro reglas existen porque los tres recursos que se gastan (plata, reputación, tiempo no facturado) no se recuperan.
+These four rules exist because the three resources being spent (money, reputation, unbilled time) do not come back.
 
-**El costo de postularse tiene nombre distinto en cada plataforma** y las reglas valen igual: Connects en Upwork, bids en Freelancer.com, y en outreach directo son las horas que ponés en escribir la propuesta. Donde abajo diga Connects, leé "lo que te cuesta postularte".
+**The cost of applying has a different name on each platform** and the rules apply all the same: Connects on Upwork, bids on Freelancer.com, and in direct outreach it is the hours you put into writing the proposal. Wherever it says Connects below, read "what applying costs you".
 
-Las rutas son relativas al career workspace (`./career-workspace/` o env `CAREER_WORKSPACE`).
+Paths are relative to the career workspace (`./career-workspace/` or env `CAREER_WORKSPACE`).
 
-## 1. Postularse cuesta plata: no se gasta sin screen
+## 1. Applying costs money: nothing is spent without a screen
 
-Nunca redactar una propuesta para una oferta cuyo cliente no pasó `/client-screen`, ni para una que quedó bajo el umbral de score.
+Never draft a proposal for a posting whose client has not passed `/client-screen`, or for one that fell below the score threshold.
 
-Si el usuario quiere postularse igual a una que falló el screen, se puede - **pero se le dice qué falló y se registra en la nota**. Un pago sin verificar que nadie nombró es una postulación tirada, y peor: es la propuesta que sí te contestan y termina en disputa.
+If the user wants to apply anyway to one that failed the screen, they can - **but they are told what failed and it is recorded in the note**. An unverified payment nobody mentioned is a wasted application, and worse: it is the proposal that does get an answer and ends in a dispute.
 
-## 2. La reputación se protege rechazando
+## 2. Reputation is protected by saying no
 
-Ganar un contrato no siempre es bueno. Casi toda plataforma calcula un puntaje sobre contratos cerrados (en Upwork es el Job Success Score) donde un cliente insatisfecho pesa más que dos contentos, y con clientes directos el equivalente son las referencias que no vas a poder pedir. Un contrato con alcance difuso, presupuesto irrealista o cliente sin historial es **riesgo de reputación**, no una oportunidad.
+Winning a contract is not always good. Almost every platform computes a score over closed contracts (on Upwork it is the Job Success Score) where one unhappy client weighs more than two happy ones, and with direct clients the equivalent is the references you will not be able to ask for. A contract with fuzzy scope, an unrealistic budget or a client with no history is a **reputation risk**, not an opportunity.
 
-Cuando el screen marca riesgo alto, la recomendación por defecto es no postularse. Decir "no" es una acción del pipeline, no una ausencia de acción.
+When the screen flags high risk, the default recommendation is not to apply. Saying "no" is a pipeline action, not the absence of one.
 
-## 3. Nada se cotiza abajo del piso
+## 3. Nothing is quoted below the floor
 
-Todo bid pasa por el piso declarado en `01-Perfiles/` (tarifa mínima aceptable). El piso es **neto**, después de la comisión de la plataforma: si se queda un 10%, un piso de 40 USD/h exige bidear 45. Con cliente directo la comisión es cero, pero el piso sigue siendo neto de impuestos y de las horas no facturables.
+Every bid goes through the floor declared in `01-Profiles/` (minimum acceptable rate). The floor is **net**, after the platform fee: if it keeps 10%, a floor of 40 USD/h requires bidding 45. With a direct client the fee is zero, but the floor is still net of taxes and of non-billable hours.
 
-Si el usuario todavía no fijó un piso, `/freelance-scan market` da la mediana de lo que cobran otros con su perfil. Es un punto de partida, no el piso: el piso lo define su costo de vida, no el mercado.
+If the user has not set a floor yet, `/freelance-scan market` gives the median of what others with their profile charge. It is a starting point, not the floor: the floor is set by their cost of living, not by the market.
 
-Alcance nuevo, precio nuevo. Ninguna propuesta ni contrato se amplía sin cotizarlo: si el trabajo extra no entra en un change order con número, no entra.
+New scope, new price. No proposal or contract grows without being quoted: if the extra work does not fit into a change order with a number, it does not go in.
 
-## 4. El envío siempre lo hace el usuario
+## 4. The user always does the sending
 
-Ninguna skill de este perfil envía una propuesta, acepta un contrato ni gasta el presupuesto de postulaciones. Se redacta, se revisa, se muestra, y el usuario copia y manda.
+No skill in this profile sends a proposal, accepts a contract or spends the application budget. It is drafted, reviewed, shown, and the user copies and sends it.
 
-Esto no es prudencia nuestra: **la API de Upwork no tiene mutation para postularse ni para gastar Connects**, justamente para frenar bots de auto-bidding, y las demás plataformas prohíben el envío automatizado en sus términos. Ninguna skill debe pretender lo contrario, y una que lo intentara estaría violando los ToS además de esta regla.
+This is not caution on our part: **the Upwork API has no mutation to apply or to spend Connects**, precisely to stop auto-bidding bots, and the other platforms forbid automated sending in their terms. No skill should pretend otherwise, and one that tried would be violating the ToS on top of this rule.
 
-El corolario para las **fuentes**: ninguna skill del perfil puede depender de credenciales que cada usuario tenga que conseguir por su cuenta. Este perfil lo instala cualquiera, y una fuente con API key aprobada a mano funciona para uno y está rota para el resto. Las fuentes automáticas son públicas y sin key (ver `skills/freelance-scan/references/platforms.md`); lo demás se pega a mano.
+The corollary for **sources**: no skill in the profile can depend on credentials each user has to obtain on their own. Anyone installs this profile, and a source with a hand-approved API key works for one person and is broken for everyone else. Automatic sources are public and keyless (see `skills/freelance-scan/references/platforms.md`); everything else is pasted by hand.
 
-## La estructura no la sostiene este archivo
+## This file does not hold up the structure
 
-Una regla sin columna derecha es una intención.
+A rule without a right-hand column is an intention.
 
-| Regla | Qué la hace cumplir |
+| Rule | What enforces it |
 |---|---|
-| Screen antes de gastar en postularse | `/freelance-proposal` exige la nota de screen; sin ella, pregunta y no redacta |
-| Rechazar por riesgo de reputación | `/client-screen` emite veredicto explícito; el agente `client-screener` es adversarial por diseño |
-| Piso de tarifa | `/freelance-proposal` lee el piso del perfil y falla ruidoso si el bid queda abajo; `/freelance-scan market` da la referencia de mercado |
-| Alcance nuevo, precio nuevo | `/freelance-pipeline` detecta drift de alcance en contratos activos y pide change order |
-| Envío manual | Ningún script del perfil escribe a una plataforma: `freelance_search.py` solo lee, y no hay otro |
+| Screen before spending on an application | `/freelance-proposal` requires the screen note; without it, it asks and does not draft |
+| Say no over reputation risk | `/client-screen` issues an explicit verdict; the `client-screener` agent is adversarial by design |
+| Rate floor | `/freelance-proposal` reads the floor from the profile and fails loudly if the bid falls below it; `/freelance-scan market` gives the market reference |
+| New scope, new price | `/freelance-pipeline` detects scope drift in active contracts and asks for a change order |
+| Manual sending | No script in the profile writes to a platform: `freelance_search.py` only reads, and there is no other |
 
-## Registro
+## Record
 
-Toda decisión de no postularse se registra igual que una postulación: nota en `03-Aplicaciones/` con `estado: descartado` y el motivo en `## Notas`. Los descartes son la mitad de los datos que `/freelance-pipeline` necesita para decirte si tu criterio de selección funciona.
+Every decision not to apply is recorded just like an application: a note in `03-Applications/` with `status: discarded` and the reason in `## Notes`. Discards are half the data `/freelance-pipeline` needs to tell you whether your selection criteria work.

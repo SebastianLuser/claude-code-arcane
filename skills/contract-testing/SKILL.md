@@ -8,35 +8,35 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # Contract Testing (Pact)
 
-## Cuando usar / NO usar
+## When to use / NOT use
 
-| Usar | NO usar |
+| Use | Do NOT use |
 |------|---------|
-| Microservicios con consumer y provider evolucionando separado | APIs terceros (Stripe, Google) — usar recorded mocks |
-| Detectar breaking changes API antes de deploy | Validar logica e2e — Pact valida shape, no business logic |
-| Reemplazar parcialmente E2E tests costosos/flakey | Contratos asincronos triviales sin evolucion |
-| Integraciones internas: `alizia-web <-> alizia-api`, mobile <-> api | Un equipo controla ambos lados sin CI separado |
+| Microservices with consumer and provider evolving separately | Third-party APIs (Stripe, Google) — use recorded mocks |
+| Detecting API breaking changes before deploy | Validating e2e logic — Pact validates shape, not business logic |
+| Partially replacing expensive/flaky E2E tests | Trivial async contracts that never evolve |
+| Internal integrations: `alizia-web <-> alizia-api`, mobile <-> api | One team controls both sides without separate CI |
 
-## Concepto
+## Concept
 
-Consumer-driven contract testing: consumer describe lo que espera -> provider lo verifica. Cada lado testea contra el contrato, no contra el otro servicio real. Complementario a OpenAPI (docs) — Pact valida expectativas ejecutables.
+Consumer-driven contract testing: the consumer describes what it expects -> the provider verifies it. Each side tests against the contract, not against the other real service. Complementary to OpenAPI (docs) — Pact validates executable expectations.
 
-## Flujo
+## Flow
 
-1. Consumer escribe tests usando mock Pact server -> genera `pacts/<consumer>-<provider>.json`
-2. Publicar a **Pact Broker** (Docker self-host gratis, o PactFlow SaaS) con `--consumer-app-version=$GIT_SHA --branch=$GIT_BRANCH`
-3. Webhook broker -> dispara provider verify en CI
-4. Provider corre verification con StateHandlers para cada `given()` del consumer
-5. Resultado publicado al broker
-6. `can-i-deploy` gate bloquea deploys incompatibles
+1. The consumer writes tests using the Pact mock server -> generates `pacts/<consumer>-<provider>.json`
+2. Publish to the **Pact Broker** (free self-hosted Docker, or PactFlow SaaS) with `--consumer-app-version=$GIT_SHA --branch=$GIT_BRANCH`
+3. Broker webhook -> triggers provider verify in CI
+4. The provider runs verification with StateHandlers for each consumer `given()`
+5. Result published to the broker
+6. The `can-i-deploy` gate blocks incompatible deploys
 
 > → Read references/implementation-details.md for consumer/provider setup, broker config, CI gate, and breaking change detection
 
 > → Read references/anti-patterns-and-checklist.md for anti-patterns and implementation checklist
 
-## Delegacion
+## Delegation
 
-- `/scaffold-go` — provider Go scaffold
-- `/api-docs` — OpenAPI complementario
-- `/deploy-check` — integrar can-i-deploy
-- `/doc-rfc` — documentar decision de adoptar Pact
+- `/scaffold-go` — Go provider scaffold
+- `/api-docs` — complementary OpenAPI
+- `/deploy-check` — integrate can-i-deploy
+- `/doc-rfc` — document the decision to adopt Pact

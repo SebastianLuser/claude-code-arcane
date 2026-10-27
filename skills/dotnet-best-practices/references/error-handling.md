@@ -2,9 +2,9 @@
 
 ## 4.1 Global IExceptionHandler + ProblemDetails — CRITICAL
 
-Respuestas de error consistentes y estandarizadas (RFC 7807) sin try/catch repetido en cada endpoint. Registrar `AddProblemDetails()` y un `IExceptionHandler`.
+Consistent, standardized error responses (RFC 7807) without a repeated try/catch in every endpoint. Register `AddProblemDetails()` and an `IExceptionHandler`.
 
-**Correcto:**
+**Correct:**
 ```csharp
 public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
@@ -24,17 +24,17 @@ app.UseExceptionHandler();
 
 ## 4.2 Don't Leak Stack Traces — CRITICAL
 
-En producción no exponer `ex.Message`, stack traces ni detalles internos: filtran rutas, versiones y vectores de ataque. Loggear el detalle, devolver un mensaje genérico (ver 4.1).
+In production do not expose `ex.Message`, stack traces or internal details: they leak paths, versions and attack vectors. Log the detail, return a generic message (see 4.1).
 
 ## 4.3 Result Pattern for Expected Failures — HIGH
 
-Fallos esperados (validación, "not found", reglas de negocio) no son excepciones: las excepciones son caras y para lo excepcional. Devolver un `Result`.
+Expected failures (validation, "not found", business rules) are not exceptions: exceptions are expensive and meant for the exceptional. Return a `Result`.
 
-**Incorrecto:**
+**Incorrect:**
 ```csharp
-if (order is null) throw new NotFoundException(); // control de flujo con excepciones
+if (order is null) throw new NotFoundException(); // control flow with exceptions
 ```
-**Correcto:**
+**Correct:**
 ```csharp
 public readonly record struct Result<T>(bool IsSuccess, T? Value, string? Error)
 {
@@ -46,7 +46,7 @@ return order is null ? Result<Order>.Fail("Order not found") : Result<Order>.Ok(
 
 ## 4.4 Validation → ValidationProblemDetails — HIGH
 
-Los errores de validación se devuelven como `ValidationProblemDetails` (400) con el mapa campo→errores, no como 500.
+Validation errors are returned as `ValidationProblemDetails` (400) with the field→errors map, not as a 500.
 
 ```csharp
 return Results.ValidationProblem(new Dictionary<string, string[]>
@@ -57,13 +57,13 @@ return Results.ValidationProblem(new Dictionary<string, string[]>
 
 ## 4.5 No Empty Catch; Log With Context — MEDIUM-HIGH
 
-`catch {}` oculta fallos y vuelve la app indebuggeable. Capturar tipos específicos, loggear con structured logging y re-lanzar o devolver un `Result`.
+`catch {}` hides failures and makes the app undebuggable. Catch specific types, log with structured logging and rethrow or return a `Result`.
 
-**Incorrecto:**
+**Incorrect:**
 ```csharp
-try { await Pay(ct); } catch { } // se traga el error
+try { await Pay(ct); } catch { } // swallows the error
 ```
-**Correcto:**
+**Correct:**
 ```csharp
 try { await Pay(ct); }
 catch (PaymentException ex) { logger.LogError(ex, "Payment failed for {OrderId}", orderId); throw; }

@@ -1,29 +1,32 @@
 #!/usr/bin/env python3
 """
-Importa historial de facturacion freelance desde un CSV que exportaste vos.
+Imports freelance billing history from a CSV you exported yourself.
 
-Mismo patron que job-scrape/network_map.py: no toca tu cuenta ni pide
-credenciales. Vos bajas el CSV desde la plataforma y este script lo lee. Sin API
-key, sin login, sin scrapear.
+Same pattern as job-scrape/network_map.py: it does not touch your account or ask
+for credentials. You download the CSV from the platform and this script reads
+it. No API key, no login, no scraping.
 
-Por que detecta las columnas en vez de asumirlas: Upwork tiene al menos dos
-exports distintos (Transaction History y Contract History), sus nombres de
-columna no estan documentados publicamente, y cambian. Hardcodear un esquema que
-no se puede verificar produce justo el codigo que falla en la primera corrida
-real del usuario. Ademas asi sirve para cualquier otra fuente: Freelancer.com, un
-export de tu banco, o la planilla que ya venias llevando a mano.
+Why it detects the columns instead of assuming them: Upwork has at least two
+different exports (Transaction History and Contract History), their column
+names are not publicly documented, and they change. Hardcoding a schema that
+cannot be verified produces exactly the code that fails on the user's first
+real run. It also makes it work for any other source: Freelancer.com, a bank
+export, or the spreadsheet you were already keeping by hand. The column names
+and transaction types it knows live in columns.<lang>.json next to this script
+(columns.en.json, columns.es.json); every pack applies at once, and a new
+language is a new pack.
 
-El contrato con el usuario es explicito: `inspect` muestra que columna se mapeo a
-que campo y **que columnas no se pudieron mapear**, para que el usuario corrija
-con --map antes de creerle a los numeros.
+The contract with the user is explicit: `inspect` shows which column was mapped
+to which field and **which columns could not be mapped**, so the user fixes it
+with --map before trusting the numbers.
 
-Uso:
-  python import_history.py inspect transacciones.csv
-  python import_history.py summary transacciones.csv
-  python import_history.py summary transacciones.csv --map "Importe=monto" --map "Horas trabajadas=horas"
-  python import_history.py import transacciones.csv
+Usage:
+  python import_history.py inspect transactions.csv
+  python import_history.py summary transactions.csv
+  python import_history.py summary transactions.csv --map "Payment=amount" --map "Hours worked=hours"
+  python import_history.py import transactions.csv
 
-Read-only: nunca escribe el CSV ni las notas. Solo stdlib. Python 3.9.
+Read-only: never writes the CSV or the notes. Stdlib only. Python 3.9.
 """
 
 from __future__ import annotations
@@ -36,45 +39,53 @@ import sys
 import unicodedata
 from collections import OrderedDict
 from datetime import datetime
+from pathlib import Path
 
-# Campos normalizados y los nombres reales con los que aparecen. El orden importa:
-# se prueba coincidencia exacta primero y despues por substring, asi que los
-# alias mas especificos van antes.
-FIELD_ALIASES = OrderedDict([
-    ("fecha", ["date", "fecha", "transaction date", "date/time", "period",
-               "start date", "created", "week"]),
-    ("tipo", ["type", "tipo", "transaction type", "category", "categoria"]),
-    ("cliente", ["client", "cliente", "company", "empresa", "team",
-                 "contract team", "buyer", "payer"]),
-    ("contrato", ["contract title", "contract", "contrato", "description",
-                  "descripcion", "memo", "project", "proyecto", "job title"]),
-    # `fee` y `neto` van antes de `monto`: "amount" hace substring con casi todo,
-    # y sin este orden una columna de fee cae en monto.
-    ("fee", ["freelancer service fee", "service fee", "upwork fee", "fee",
-             "comision", "commission", "marketplace fee"]),
-    ("neto", ["net amount", "net", "neto", "take home", "payout", "liquido"]),
-    ("monto", ["amount", "monto", "importe", "total", "gross", "bruto",
-               "earnings", "ganancia"]),
-    ("horas", ["hours", "horas", "quantity", "qty", "cantidad", "duration",
-               "time", "hs"]),
-    ("moneda", ["currency", "moneda", "curr"]),
-])
+HERE = Path(__file__).resolve().parent
 
-# Tipos de transaccion que NO son ingreso. Un export trae de todo mezclado y
-# sumar sin filtrar da un total inflado.
-NON_INCOME_HINTS = ("withdrawal", "retiro", "transfer", "transferencia",
-                    "membership", "connects", "refund", "reembolso",
-                    "adjustment", "ajuste", "tax", "impuesto")
+# Normalized fields. Field order matters: exact matches are tried first and
+# then substrings, field by field in this order. `fee` and `net` go before
+# `amount`: "amount" is a substring of almost everything, and without this
+# order a fee column falls into amount.
+FIELDS = ("date", "type", "client", "contract", "fee", "net", "amount", "hours", "currency")
 
-# En el transaction history de Upwork la comision NO es una columna: es una fila
-# aparte con monto negativo y tipo "Service Fee". Sin detectarlas por fila, el
-# total sale correcto pero etiquetado como bruto, y comisiones queda en cero -
-# o sea, el reporte miente sobre de donde salio el numero.
-FEE_ROW_HINTS = ("service fee", "freelancer fee", "upwork fee", "comision",
-                 "commission", "marketplace fee", "processing fee")
 
-DATE_FORMATS = ("%Y-%m-%d", "%d/%m/%Y", "%m/%d/%Y", "%Y/%m/%d",
-                "%b %d, %Y", "%d %b %Y", "%Y-%m-%d %H:%M:%S", "%m/%d/%y")
+def load_packs():
+    """Every columns.<lang>.json next to this script: a hand-kept spreadsheet mixes languages."""
+    packs = []
+    for path in sorted(HERE.glob("columns.*.json")):
+        with open(path, encoding="utf-8") as handle:
+            packs.append(json.load(handle))
+    return packs
+
+
+_PACKS = load_packs()
+
+# The real column names each field shows up with, from every pack.
+FIELD_ALIASES = OrderedDict(
+    (field, [alias for pack in _PACKS for alias in pack["fields"].get(field, [])])
+    for field in FIELDS)
+
+# Transaction types that are NOT income. An export mixes everything together
+# and summing without filtering gives an inflated total.
+NON_INCOME_HINTS = tuple(hint for pack in _PACKS for hint in pack["non_income_types"])
+
+# In Upwork's transaction history the fee is NOT a column: it is a separate
+# row with a negative amount and type "Service Fee". Without detecting them per
+# row, the total comes out right but labeled as gross, and fees stay at zero -
+# in other words, the report lies about where the number came from.
+FEE_ROW_HINTS = tuple(hint for pack in _PACKS for hint in pack["fee_row_types"])
+
+DATE_FORMATS = (
+    "%Y-%m-%d",
+    "%d/%m/%Y",
+    "%m/%d/%Y",
+    "%Y/%m/%d",
+    "%b %d, %Y",
+    "%d %b %Y",
+    "%Y-%m-%d %H:%M:%S",
+    "%m/%d/%y",
+)
 
 MIN_ROWS_FOR_RATES = 5
 
@@ -90,11 +101,11 @@ def normalize_header(name: str) -> str:
 
 def parse_money(raw):
     """
-    Plata en cualquiera de los formatos que aparecen en un export real.
+    Money in any of the formats a real export shows.
 
-    Casos que se vieron y hay que aguantar: "$1,234.56", "1.234,56" (europeo),
-    "(45.00)" negativo entre parentesis (convencion contable), "-", vacio, y
-    sufijos de moneda tipo "120.00 USD".
+    Cases that were seen and must be handled: "$1,234.56", "1.234,56" (European),
+    "(45.00)" negative in parentheses (accounting convention), "-", empty, and
+    currency suffixes like "120.00 USD".
     """
     text = str(raw or "").strip()
     if not text or text in ("-", "--", "n/a", "N/A"):
@@ -104,14 +115,14 @@ def parse_money(raw):
     text = re.sub(r"[^\d.,\-]", "", text)
     if not text or text in ("-", ".", ","):
         return None
-    # Formato europeo: la coma es el decimal si es el ultimo separador.
+    # European format: the comma is the decimal if it is the last separator.
     if "," in text and "." in text:
         if text.rfind(",") > text.rfind("."):
             text = text.replace(".", "").replace(",", ".")
         else:
             text = text.replace(",", "")
     elif "," in text:
-        # Coma sola: decimal si deja 1 o 2 digitos atras, si no es de miles.
+        # Comma alone: decimal if it leaves 1 or 2 digits after it, thousands otherwise.
         tail = text.split(",")[-1]
         text = text.replace(",", "." if len(tail) in (1, 2) else "")
     try:
@@ -122,7 +133,7 @@ def parse_money(raw):
 
 
 def parse_hours(raw):
-    """Horas: acepta decimal y tambien "3:30" que algunos exports usan."""
+    """Hours: accepts decimals and also the "3:30" some exports use."""
     text = str(raw or "").strip()
     if not text:
         return None
@@ -146,17 +157,17 @@ def parse_date(raw):
 
 def map_columns(headers, overrides=None):
     """
-    Devuelve (mapeo, sin_mapear, ambiguos).
+    Returns (mapping, unmapped, ambiguous).
 
-    Ambiguo = dos columnas quieren el mismo campo. No se elige en silencio: se
-    reporta, porque elegir mal ahi cambia todos los numeros de abajo.
+    Ambiguous = two columns want the same field. It is not picked silently: it
+    is reported, because picking wrong there changes every number below.
     """
     overrides = overrides or {}
     mapping, claims = {}, {}
 
-    # Los overrides se procesan primero y bloquean el campo: `--map` existe para
-    # ganarle a la deteccion, y si se mezclaran en el mismo recorrido ganaria la
-    # columna que aparece antes en el header, que es lo contrario de lo pedido.
+    # Overrides are processed first and lock the field: `--map` exists to beat
+    # detection, and if they were mixed into the same pass the column that
+    # appears first in the header would win, which is the opposite of the ask.
     forced = set()
     for header in headers:
         if header in overrides:
@@ -199,13 +210,13 @@ def map_columns(headers, overrides=None):
 
 
 def read_csv(path):
-    """Lee el CSV saltando el preambulo de aviso que algunos exports ponen arriba."""
+    """Reads the CSV skipping the notice preamble some exports put on top."""
     with open(path, "r", encoding="utf-8-sig", errors="replace", newline="") as handle:
         lines = handle.read().splitlines()
     if not lines:
-        raise ValueError("el archivo esta vacio")
+        raise ValueError("the file is empty")
 
-    # Heuristica: la fila de header es la primera con al menos 3 separadores.
+    # Heuristic: the header row is the first one with at least 3 separators.
     start = 0
     for index, line in enumerate(lines[:20]):
         if line.count(",") >= 2 or line.count(";") >= 2:
@@ -228,91 +239,91 @@ def normalize_rows(rows, mapping):
             column = mapping.get(field)
             return raw.get(column) if column else None
 
-        monto = parse_money(get("monto"))
+        amount = parse_money(get("amount"))
         fee = parse_money(get("fee"))
-        neto = parse_money(get("neto"))
-        # Si el export trae bruto y fee pero no neto, se deriva. El fee suele
-        # venir negativo, asi que se usa el valor absoluto.
-        if neto is None and monto is not None and fee is not None:
-            neto = monto - abs(fee)
+        net = parse_money(get("net"))
+        # If the export has gross and fee but no net, net is derived. The fee
+        # usually comes negative, so the absolute value is used.
+        if net is None and amount is not None and fee is not None:
+            net = amount - abs(fee)
 
-        tipo = str(get("tipo") or "").strip()
-        folded = fold(tipo)
-        es_fila_de_fee = any(h in folded for h in FEE_ROW_HINTS)
+        kind = str(get("type") or "").strip()
+        folded = fold(kind)
+        is_fee_row = any(h in folded for h in FEE_ROW_HINTS)
         out.append({
-            "fecha": parse_date(get("fecha")),
-            "tipo": tipo,
-            "es_fila_de_fee": es_fila_de_fee,
-            "es_ingreso": not es_fila_de_fee and not any(h in folded for h in NON_INCOME_HINTS),
-            "cliente": str(get("cliente") or "").strip(),
-            "contrato": str(get("contrato") or "").strip(),
-            "monto": monto,
+            "date": parse_date(get("date")),
+            "type": kind,
+            "is_fee_row": is_fee_row,
+            "is_income": not is_fee_row and not any(h in folded for h in NON_INCOME_HINTS),
+            "client": str(get("client") or "").strip(),
+            "contract": str(get("contract") or "").strip(),
+            "amount": amount,
             "fee": fee,
-            "neto": neto if neto is not None else monto,
-            "horas": parse_hours(get("horas")),
-            "moneda": str(get("moneda") or "").strip(),
+            "net": net if net is not None else amount,
+            "hours": parse_hours(get("hours")),
+            "currency": str(get("currency") or "").strip(),
         })
     return out
 
 
 def summarize(rows):
-    income = [r for r in rows if r["es_ingreso"]]
-    fee_rows = [r for r in rows if r.get("es_fila_de_fee")]
-    montos = [r["monto"] for r in income if r["monto"] is not None]
-    # Las comisiones pueden venir por columna (una por movimiento) o por fila
-    # aparte. Se suman las dos formas; en un export dado hay una sola.
+    income = [r for r in rows if r["is_income"]]
+    fee_rows = [r for r in rows if r.get("is_fee_row")]
+    amounts = [r["amount"] for r in income if r["amount"] is not None]
+    # Fees can come as a column (one per transaction) or as a separate row.
+    # Both forms are added up; a given export has only one.
     fees = [abs(r["fee"]) for r in income if r["fee"] is not None]
-    fees += [abs(r["monto"]) for r in fee_rows if r["monto"] is not None]
-    # El neto se deriva del bruto menos comisiones cuando estas vienen por fila,
-    # porque en ese caso la columna `neto` de cada movimiento no las conoce.
-    netos = [r["neto"] for r in income if r["neto"] is not None]
-    horas = [r["horas"] for r in income if r["horas"] is not None]
-    fechas = sorted(r["fecha"] for r in rows if r["fecha"])
+    fees += [abs(r["amount"]) for r in fee_rows if r["amount"] is not None]
+    # Net is derived from gross minus fees when fees come as rows, because in
+    # that case each transaction's `net` column does not know about them.
+    nets = [r["net"] for r in income if r["net"] is not None]
+    hours = [r["hours"] for r in income if r["hours"] is not None]
+    dates = sorted(r["date"] for r in rows if r["date"])
 
-    por_cliente = {}
+    by_client = {}
     for row in income:
-        key = row["cliente"] or "(sin cliente)"
-        bucket = por_cliente.setdefault(key, {"neto": 0.0, "horas": 0.0, "movimientos": 0})
-        bucket["neto"] += row["neto"] or 0
-        bucket["horas"] += row["horas"] or 0
-        bucket["movimientos"] += 1
+        key = row["client"] or "(no client)"
+        bucket = by_client.setdefault(key, {"net": 0.0, "hours": 0.0, "transactions": 0})
+        bucket["net"] += row["net"] or 0
+        bucket["hours"] += row["hours"] or 0
+        bucket["transactions"] += 1
 
-    total_bruto = sum(montos)
+    total_gross = sum(amounts)
     total_fees = sum(fees)
-    total_neto = (total_bruto - total_fees) if fee_rows else sum(netos)
-    ranking = sorted(por_cliente.items(), key=lambda kv: kv[1]["neto"], reverse=True)
-    concentracion = None
-    if total_neto and ranking:
-        concentracion = {
-            "cliente_mas_grande": ranking[0][0],
-            "porcentaje_del_ingreso": round(ranking[0][1]["neto"] / total_neto * 100, 1),
+    total_net = (total_gross - total_fees) if fee_rows else sum(nets)
+    ranking = sorted(by_client.items(), key=lambda kv: kv[1]["net"], reverse=True)
+    concentration = None
+    if total_net and ranking:
+        concentration = {
+            "largest_client": ranking[0][0],
+            "share_of_income_pct": round(ranking[0][1]["net"] / total_net * 100, 1),
         }
 
-    # La tarifa efectiva es el numero que dice si el negocio funciona, pero
-    # solo se puede calcular si el export trae horas. Sin horas se dice que
-    # falta el dato, no se estima.
-    tarifa_efectiva = None
-    if horas and sum(horas) > 0 and total_neto:
-        tarifa_efectiva = round(total_neto / sum(horas), 2)
+    # The effective rate is the number that says whether the business works,
+    # but it can only be computed if the export has hours. Without hours the
+    # report says the data is missing; it does not estimate.
+    effective_rate = None
+    if hours and sum(hours) > 0 and total_net:
+        effective_rate = round(total_net / sum(hours), 2)
 
     return {
-        "movimientos_leidos": len(rows),
-        "movimientos_de_ingreso": len(income),
-        "filas_de_comision": len(fee_rows),
-        "excluidos_por_tipo": len(rows) - len(income) - len(fee_rows),
-        "rango_de_fechas": [str(fechas[0]), str(fechas[-1])] if fechas else None,
-        "bruto": round(total_bruto, 2) if montos else None,
-        "comisiones": round(total_fees, 2) if fees else None,
-        "neto": round(total_neto, 2) if (netos or fee_rows) else None,
-        "horas_registradas": round(sum(horas), 2) if horas else None,
-        "tarifa_efectiva_por_hora": tarifa_efectiva,
-        "tarifa_efectiva_calculable": tarifa_efectiva is not None,
-        "por_cliente": OrderedDict(
-            (name, {"neto": round(v["neto"], 2), "horas": round(v["horas"], 2),
-                    "movimientos": v["movimientos"]})
+        "transactions_read": len(rows),
+        "income_transactions": len(income),
+        "fee_rows": len(fee_rows),
+        "excluded_by_type": len(rows) - len(income) - len(fee_rows),
+        "date_range": [str(dates[0]), str(dates[-1])] if dates else None,
+        "gross": round(total_gross, 2) if amounts else None,
+        "fees": round(total_fees, 2) if fees else None,
+        "net": round(total_net, 2) if (nets or fee_rows) else None,
+        "hours_logged": round(sum(hours), 2) if hours else None,
+        "effective_hourly_rate": effective_rate,
+        "effective_rate_computable": effective_rate is not None,
+        "by_client": OrderedDict(
+            (name, {"net": round(v["net"], 2), "hours": round(v["hours"], 2),
+                    "transactions": v["transactions"]})
             for name, v in ranking),
-        "concentracion": concentracion,
-        "muestra_suficiente": len(income) >= MIN_ROWS_FOR_RATES,
+        "concentration": concentration,
+        "enough_sample": len(income) >= MIN_ROWS_FOR_RATES,
     }
 
 
@@ -323,11 +334,11 @@ def load(args):
     overrides = {}
     for item in (args.map or []):
         if "=" not in item:
-            raise ValueError("--map espera 'Columna=campo', recibi: {0}".format(item))
+            raise ValueError("--map expects 'Column=field', got: {0}".format(item))
         column, field = item.split("=", 1)
         field = field.strip()
         if field not in FIELD_ALIASES:
-            raise ValueError("campo desconocido '{0}'; validos: {1}".format(
+            raise ValueError("unknown field '{0}'; valid: {1}".format(
                 field, ", ".join(FIELD_ALIASES)))
         overrides[column.strip()] = field
     mapping, unmapped, ambiguous = map_columns(headers, overrides)
@@ -336,35 +347,35 @@ def load(args):
 
 def run_inspect(args) -> int:
     headers, rows, skipped, mapping, unmapped, ambiguous = load(args)
-    faltantes = [f for f in ("fecha", "monto") if f not in mapping]
+    missing = [f for f in ("date", "amount") if f not in mapping]
     emit({
-        "archivo": args.csv,
-        "filas_de_preambulo_salteadas": skipped,
-        "columnas_encontradas": headers,
-        "mapeo": mapping,
-        "columnas_sin_mapear": unmapped,
-        "columnas_ambiguas": ambiguous,
-        "campos_criticos_faltantes": faltantes,
-        "usable": not faltantes,
-        "ejemplo_normalizado": normalize_rows(rows[:2], mapping),
-        "como_corregir": "--map \"Nombre exacto de la columna=campo\"; campos: {0}".format(
+        "file": args.csv,
+        "preamble_rows_skipped": skipped,
+        "columns_found": headers,
+        "mapping": mapping,
+        "unmapped_columns": unmapped,
+        "ambiguous_columns": ambiguous,
+        "missing_critical_fields": missing,
+        "usable": not missing,
+        "normalized_sample": normalize_rows(rows[:2], mapping),
+        "how_to_fix": "--map \"Exact column name=field\"; fields: {0}".format(
             ", ".join(FIELD_ALIASES)),
     })
-    return 0 if not faltantes else 1
+    return 0 if not missing else 1
 
 
 def run_summary(args) -> int:
     _, rows, _, mapping, unmapped, ambiguous = load(args)
-    if "monto" not in mapping:
-        emit({"error": "no encontre la columna de monto; corre `inspect` y usa --map",
+    if "amount" not in mapping:
+        emit({"error": "no amount column found; run `inspect` and use --map",
               "code": "NO_AMOUNT_COLUMN"})
         return 1
     payload = summarize(normalize_rows(rows, mapping))
-    payload["mapeo_usado"] = mapping
-    # Se repiten aca a proposito: quien mira el summary tiene que ver si el
-    # mapeo dejo algo afuera antes de creerle a los totales.
-    payload["columnas_sin_mapear"] = unmapped
-    payload["columnas_ambiguas"] = ambiguous
+    payload["mapping_used"] = mapping
+    # Repeated here on purpose: whoever reads the summary has to see whether
+    # the mapping left something out before trusting the totals.
+    payload["unmapped_columns"] = unmapped
+    payload["ambiguous_columns"] = ambiguous
     emit(payload)
     return 0
 
@@ -372,10 +383,10 @@ def run_summary(args) -> int:
 def run_import(args) -> int:
     _, rows, _, mapping, unmapped, ambiguous = load(args)
     emit({
-        "mapeo_usado": mapping,
-        "columnas_sin_mapear": unmapped,
-        "columnas_ambiguas": ambiguous,
-        "movimientos": normalize_rows(rows, mapping),
+        "mapping_used": mapping,
+        "unmapped_columns": unmapped,
+        "ambiguous_columns": ambiguous,
+        "transactions": normalize_rows(rows, mapping),
     })
     return 0
 
@@ -386,7 +397,7 @@ def emit(payload) -> None:
 
 
 def force_utf8_streams() -> None:
-    """En Windows stdout es cp1252 y un nombre con acento revienta al pipear."""
+    """On Windows stdout is cp1252 and a name with an accent blows up when piped."""
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(encoding="utf-8")
@@ -394,17 +405,17 @@ def force_utf8_streams() -> None:
 
 def build_parser():
     parser = argparse.ArgumentParser(
-        description="Importa historial de facturacion freelance desde un CSV exportado a mano.")
+        description="Imports freelance billing history from a CSV exported by hand.")
     sub = parser.add_subparsers(dest="command", required=True)
     for name, func, help_text in (
-        ("inspect", run_inspect, "mostrar que columnas detecto y cuales no pudo mapear"),
-        ("summary", run_summary, "totales, tarifa efectiva y concentracion de clientes"),
-        ("import", run_import, "volcar los movimientos normalizados en JSON"),
+        ("inspect", run_inspect, "show which columns were detected and which could not be mapped"),
+        ("summary", run_summary, "totals, effective rate and client concentration"),
+        ("import", run_import, "dump the normalized transactions as JSON"),
     ):
         cmd = sub.add_parser(name, help=help_text)
-        cmd.add_argument("csv", help="ruta del CSV exportado")
+        cmd.add_argument("csv", help="path to the exported CSV")
         cmd.add_argument("--map", action="append",
-                         help="forzar un mapeo: \"Columna=campo\" (repetible)")
+                         help="force a mapping: \"Column=field\" (repeatable)")
         cmd.set_defaults(func=func)
     return parser
 

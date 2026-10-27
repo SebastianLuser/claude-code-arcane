@@ -8,75 +8,75 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task
 ---
 # map-systems — Systems Decomposition
 
-Descompone un concepto de juego en sistemas, mapea dependencias y prioriza el orden de diseño.
+Decomposes a game concept into systems, maps dependencies and prioritizes the design order.
 
-## Modos
+## Modes
 
-- `/map-systems` — Workflow completo (enumerar → dependencias → priorizar → escribir index)
-- `/map-systems next` — Seleccionar siguiente sistema no diseñado del index
-- `/map-systems [name]` — Diseñar sistema específico
-
----
-
-## Phase 1: Contexto
-
-**Requerido:** game concept (buscar en `design/gdd/`, `Documents/`, raíz). Si no existe → pedir al usuario.
-
-**Opcional:** game pillars, systems index existente (resumir, no recrear), GDDs ya escritos.
-
-Si el index ya existe: presentar estado actual, preguntar qué hacer (actualizar, diseñar siguiente, revisar prioridades).
+- `/map-systems` — Full workflow (enumerate → dependencies → prioritize → write index)
+- `/map-systems next` — Select the next undesigned system from the index
+- `/map-systems [name]` — Design a specific system
 
 ---
 
-## Phase 2: Enumerar sistemas
+## Phase 1: Context
 
-### Explícitos
+**Required:** game concept (look in `design/gdd/`, `Documents/`, root). If it does not exist → ask the user.
 
-Extraer de: Core Mechanics, Core Loop, Technical Considerations, MVP Definition.
+**Optional:** game pillars, existing systems index (summarize, do not recreate), already-written GDDs.
 
-### Implícitos — inference patterns
-
-> → Read references/implicit-systems.md for [tabla de heurísticas: sistema mencionado → sistemas implícitos]
-
-Presentar cada sistema con: nombre, categoría, 1-line description, explícito vs implícito.
-
-**Validar con usuario antes de continuar.**
+If the index already exists: present the current state, ask what to do (update, design the next one, review priorities).
 
 ---
 
-## Phase 3: Dependencias → Phase 4: Priorizar
+## Phase 2: Enumerate systems
 
-> → Read references/dependency-layers-priorities.md for [heurísticas de dependencia, layers, risk detection, priority tiers y design order]
+### Explicit
 
-**Validar con usuario antes de continuar** (tanto dependencias como prioridades).
+Extract from: Core Mechanics, Core Loop, Technical Considerations, MVP Definition.
 
----
+### Implicit — inference patterns
 
-## Phase 5: Escribir systems index
+> → Read references/implicit-systems.md for [heuristics table: mentioned system → implicit systems]
 
-Crear tabla con: nombre, categoría, layer, priority tier, dependencias, status, design order.
+Present each system with: name, category, 1-line description, explicit vs implicit.
 
-Antes de escribir, presentar resumen:
-- Total por categoría y tier
-- Primeros 3 en design order
-- Sistemas high-risk (bottlenecks)
-
-Pedir aprobación explícita antes de escribir archivo.
+**Validate with the user before continuing.**
 
 ---
 
-## Phase 6: Diseñar sistemas
+## Phase 3: Dependencies → Phase 4: Prioritize
 
-Seleccionar sistema (por nombre, o `next` = mayor prioridad sin diseñar) → handoff a `/design-system [name]`.
+> → Read references/dependency-layers-priorities.md for [dependency heuristics, layers, risk detection, priority tiers and design order]
 
-Después de cada GDD completado: ofrecer continuar con siguiente o parar.
+**Validate with the user before continuing** (both dependencies and priorities).
 
 ---
 
-## Protocolo
+## Phase 5: Write the systems index
 
-- **Nunca** auto-generar lista completa sin review del usuario
-- **Nunca** empezar a diseñar sin confirmación
-- **Siempre** validar enumeración, dependencias y prioridades
-- **Pedir permiso** antes de escribir archivos
-- Si context window alcanza ~70%: guardar progreso, sugerir nueva sesión con `/map-systems next`
+Create a table with: name, category, layer, priority tier, dependencies, status, design order.
+
+Before writing, present a summary:
+- Total per category and tier
+- First 3 in design order
+- High-risk systems (bottlenecks)
+
+Ask for explicit approval before writing the file.
+
+---
+
+## Phase 6: Design systems
+
+Select a system (by name, or `next` = highest-priority undesigned one) → hand off to `/design-system [name]`.
+
+After each completed GDD: offer to continue with the next one or stop.
+
+---
+
+## Protocol
+
+- **Never** auto-generate the full list without user review
+- **Never** start designing without confirmation
+- **Always** validate enumeration, dependencies and priorities
+- **Ask permission** before writing files
+- If the context window reaches ~70%: save progress, suggest a new session with `/map-systems next`

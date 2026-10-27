@@ -15,60 +15,60 @@ metadata:
 ---
 # JWT Strategy — Educabot
 
-**Default:** Web SPA → session cookie httpOnly opaca + refresh rotation. Mobile/APIs externas → JWT corto (RS256) + refresh rotado.
+**Default:** Web SPA → opaque httpOnly session cookie + refresh rotation. Mobile/external APIs → short JWT (RS256) + rotated refresh.
 
-## Algoritmos
+## Algorithms
 
-**RS256** o **EdDSA (Ed25519)** — asimétricos. Private key firma, public key verifica via JWKS. Prohibido: `HS256` en multi-service (shared secret), `alg: none`.
+**RS256** or **EdDSA (Ed25519)** — asymmetric. The private key signs, the public key verifies via JWKS. Forbidden: `HS256` across multiple services (shared secret), `alg: none`.
 
 ## Claims
 
-Estándar obligatorios: `iss`, `sub` (user ID), `aud`, `exp`, `iat`, `nbf`, `jti` (para revocación). Custom Educabot: `tenant_id`, `roles`, `scope`, `user_version`. **Menores: NUNCA email/nombre/PII — solo sub (UUID) + tenant_id.**
+Mandatory standard claims: `iss`, `sub` (user ID), `aud`, `exp`, `iat`, `nbf`, `jti` (for revocation). Educabot custom: `tenant_id`, `roles`, `scope`, `user_version`. **Minors: NEVER email/name/PII — only sub (UUID) + tenant_id.**
 
 ## Lifetimes
 
-Access: 5-15 min. Refresh: 7-30 días, rotado en cada uso, en cookie httpOnly + DB.
+Access: 5-15 min. Refresh: 7-30 days, rotated on every use, in an httpOnly cookie + DB.
 
 ## Refresh Token Rotation
 
-Cada `POST /auth/refresh`: validar → marcar como `rotated_at` → emitir nuevo con misma `family_id` + `parent_jti`. Refresh ya rotado llega → reuse detectado → revocar toda la family.
+Each `POST /auth/refresh`: validate → mark as `rotated_at` → issue a new one with the same `family_id` + `parent_jti`. An already rotated refresh arrives → reuse detected → revoke the whole family.
 
 ## JWKS
 
-`/.well-known/jwks.json` con claves públicas activas. Cache respetando `Cache-Control` (~10 min). Rotar cada **90 días**: 2 kids activos durante overlap (emitir con nueva, validar con ambas). `kid` en JWT header.
+`/.well-known/jwks.json` with the active public keys. Cache it respecting `Cache-Control` (~10 min). Rotate every **90 days**: 2 active kids during the overlap (issue with the new one, validate with both). `kid` in the JWT header.
 
-## Validación Server-side
+## Server-side Validation
 
-1. Signature contra JWKS (kid correcto)
-2. `exp` no vencido, `nbf` ya pasado
-3. `iss` matchea, `aud` incluye servicio actual
-4. `jti` no en blacklist (Redis)
-5. `user_version` matchea DB (si se usa)
+1. Signature against JWKS (correct kid)
+2. `exp` not expired, `nbf` already passed
+3. `iss` matches, `aud` includes the current service
+4. `jti` not on the blacklist (Redis)
+5. `user_version` matches the DB (if used)
 
-## Implementación
+## Implementation
 
 Go (`golang-jwt`), TS (`jose`), React (in-memory + cookie), React Native (`expo-secure-store`).
 
-> → Read references/implementation.md for detalles por stack: Go, TS, React, React Native y CSRF
+> → Read references/implementation.md for per-stack details: Go, TS, React, React Native and CSRF
 
 ## Logout
 
-`POST /auth/logout` → delete refresh en DB → clear cookie (Max-Age=0) → frontend borra access in-memory. Access sigue válido hasta `exp`. Kill switch inmediato: `jti` a blacklist Redis con TTL = exp - now.
+`POST /auth/logout` → delete the refresh in the DB → clear the cookie (Max-Age=0) → the frontend drops the in-memory access token. The access token stays valid until `exp`. Immediate kill switch: `jti` to the Redis blacklist with TTL = exp - now.
 
-## Revocación
+## Revocation
 
-**A) Blacklist jti:** Redis `SET revoked:<jti> 1 EX <ttl>`. +1 Redis hit/request.
+**A) jti blacklist:** Redis `SET revoked:<jti> 1 EX <ttl>`. +1 Redis hit/request.
 
-**B) user_version (Default Educabot):** user tiene `version` en DB (incrementa en logout-all/password change/role change). JWT incluye `user_version`. Middleware compara (cacheable). Más barato a escala.
+**B) user_version (Educabot default):** the user has a `version` in the DB (incremented on logout-all/password change/role change). The JWT includes `user_version`. Middleware compares them (cacheable). Cheaper at scale.
 
 ## Multi-tenant
 
-`tenant_id` en claims **obligatorio**. Backend valida que recursos pertenezcan a `tenant_id` del JWT. Prohibido pasar tenant_id por query/body.
+`tenant_id` in the claims is **mandatory**. The backend validates that resources belong to the JWT's `tenant_id`. Passing tenant_id through query/body is forbidden.
 
 ## Anti-patterns
 
-> → Read references/anti-patterns.md for tabla completa (12 items) con remediación
+> → Read references/anti-patterns.md for the full table (12 items) with remediation
 
 ## Checklist
 
-> → Read references/checklist.md for checklist completo (11 items)
+> → Read references/checklist.md for the full checklist (11 items)

@@ -2,9 +2,9 @@
 
 ## 8.1 Integration Tests with WebApplicationFactory — HIGH
 
-`WebApplicationFactory<T>` levanta la app en memoria con el pipeline real (DI, middleware, routing), probando el comportamiento de verdad y no mocks.
+`WebApplicationFactory<T>` spins up the app in memory with the real pipeline (DI, middleware, routing), testing real behavior instead of mocks.
 
-**Correcto:**
+**Correct:**
 ```csharp
 public class OrdersApiTests(WebApplicationFactory<Program> factory)
     : IClassFixture<WebApplicationFactory<Program>>
@@ -21,13 +21,13 @@ public class OrdersApiTests(WebApplicationFactory<Program> factory)
 
 ## 8.2 Real Postgres via Testcontainers — HIGH
 
-El provider in-memory miente sobre el comportamiento relacional (transacciones, constraints, SQL). Testcontainers levanta un Postgres real y desechable.
+The in-memory provider lies about relational behavior (transactions, constraints, SQL). Testcontainers spins up a real, disposable Postgres.
 
-**Incorrecto:**
+**Incorrect:**
 ```csharp
-options.UseInMemoryDatabase("test"); // no valida FKs, constraints ni SQL real
+options.UseInMemoryDatabase("test"); // does not validate FKs, constraints or real SQL
 ```
-**Correcto:**
+**Correct:**
 ```csharp
 var pg = new PostgreSqlBuilder().WithImage("postgres:17").Build();
 await pg.StartAsync();
@@ -36,13 +36,13 @@ options.UseNpgsql(pg.GetConnectionString());
 
 ## 8.3 Don't Mock DbContext — MEDIUM-HIGH
 
-Mockear `DbContext` o `IQueryable` reimplementa LINQ-to-SQL en LINQ-to-Objects y da falsos verdes. Probar handlers/slices contra una base real.
+Mocking `DbContext` or `IQueryable` reimplements LINQ-to-SQL as LINQ-to-Objects and gives false greens. Test handlers/slices against a real database.
 
-**Incorrecto:**
+**Incorrect:**
 ```csharp
-var mock = new Mock<AppDbContext>(); // no traduce queries como el provider real
+var mock = new Mock<AppDbContext>(); // does not translate queries like the real provider
 ```
-**Correcto:**
+**Correct:**
 ```csharp
 var handler = new CreateOrderHandler(realDbContext);
 var result = await handler.Handle(command, CancellationToken.None);
@@ -50,9 +50,9 @@ var result = await handler.Handle(command, CancellationToken.None);
 
 ## 8.4 Arrange-Act-Assert with FluentAssertions — MEDIUM
 
-Estructurar cada test en AAA y usar `FluentAssertions` para aserciones legibles y mensajes de error claros.
+Structure each test as AAA and use `FluentAssertions` for readable assertions and clear error messages.
 
-**Correcto:**
+**Correct:**
 ```csharp
 [Fact]
 public void Discount_AppliesPercentage()
@@ -65,12 +65,12 @@ public void Discount_AppliesPercentage()
 
 ## 8.5 Deterministic Tests — MEDIUM
 
-Evitar `DateTime.Now`, GUIDs aleatorios o dependencias de orden: inyectar `TimeProvider` para que los tests sean reproducibles.
+Avoid `DateTime.Now`, random GUIDs or order dependencies: inject `TimeProvider` so the tests are reproducible.
 
-**Correcto:**
+**Correct:**
 ```csharp
 var time = new FakeTimeProvider(new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero));
-var service = new SubscriptionService(time); // sin reloj real, resultado estable
+var service = new SubscriptionService(time); // no real clock, stable result
 ```
 
 _Ref: https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests · https://learn.microsoft.com/en-us/dotnet/core/testing/ · https://learn.microsoft.com/en-us/dotnet/architecture/microservices/multi-container-microservice-net-applications/test-aspnet-core-services-web-apps_

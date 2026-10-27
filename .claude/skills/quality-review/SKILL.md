@@ -1,6 +1,6 @@
 ---
 name: quality-review
-description: "Architectural and quality code review: standards compliance, SOLID principles, testability, performance. Usar para revisar un archivo o directorio antes de mergear, o cuando se pide code review. Para bugs de correctness está el /code-review nativo de Claude Code; este revisa diseño y estándares."
+description: "Architectural and quality code review: standards compliance, SOLID principles, testability, performance. Use to review a file or directory before merging, or when a code review is requested. For correctness bugs use Claude Code's native /code-review; this one reviews design and standards."
 category: "workflow"
 argument-hint: "[path-to-file-or-directory]"
 user-invocable: true

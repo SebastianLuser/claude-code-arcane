@@ -1,30 +1,30 @@
 ---
 name: nestjs-best-practices
-description: "NestJS production best practices: 40 reglas en 10 categorías (arquitectura, DI, errores, seguridad, performance, testing, DB/ORM, API, microservicios, devops) priorizadas por impacto. Usar al escribir/revisar código NestJS."
+description: "NestJS production best practices: 40 rules in 10 categories (architecture, DI, errors, security, performance, testing, DB/ORM, API, microservices, devops) prioritized by impact. Use when writing/reviewing NestJS code."
 category: "backend"
 argument-hint: "[architecture|di|security|performance|testing|database|api|all]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-# nestjs-best-practices — Guía priorizada por impacto
+# nestjs-best-practices — Guide prioritized by impact
 
-40 reglas para aplicaciones NestJS production-ready, organizadas en 10 categorías y priorizadas de **CRITICAL** a **LOW-MEDIUM**. Cada regla del catálogo (en `references/`) trae impacto, ejemplo incorrecto, ejemplo correcto y link a docs.
+40 rules for production-ready NestJS applications, organized in 10 categories and prioritized from **CRITICAL** to **LOW-MEDIUM**. Each rule in the catalog (in `references/`) comes with impact, an incorrect example, a correct example and a link to the docs.
 
 ## MANDATORY WORKFLOW
 
-**No aplicar las 40 reglas a ciegas. Diagnosticar primero, priorizar por impacto.**
+**Do not apply the 40 rules blindly. Diagnose first, prioritize by impact.**
 
-### Step 0: Determinar scope
+### Step 0: Determine scope
 
-1. **¿Código nuevo o auditoría de existente?** Si es auditoría, leer primero el módulo/servicio objetivo.
-2. **¿Qué categoría aplica?** Mapear el área del problema (ver tabla) o usar `all` para review completa.
-3. **¿Hay síntomas concretos?** (crashes, lentitud, N+1, leaks) → ir directo a la categoría relevante.
+1. **New code or an audit of existing code?** If it is an audit, read the target module/service first.
+2. **Which category applies?** Map the problem area (see table) or use `all` for a full review.
+3. **Are there concrete symptoms?** (crashes, slowness, N+1, leaks) → go straight to the relevant category.
 
-### Step 1: Priorizar por impacto
+### Step 1: Prioritize by impact
 
-Aplicar en este orden — no bajar de nivel hasta resolver el anterior:
+Apply in this order — do not move down a level until the previous one is resolved:
 
-| Prioridad | Categoría | Impacto | Reference |
+| Priority | Category | Impact | Reference |
 |-----------|-----------|---------|-----------|
 | 1 | Architecture | CRITICAL | `references/architecture.md` |
 | 2 | Dependency Injection | CRITICAL | `references/dependency-injection.md` |
@@ -37,34 +37,34 @@ Aplicar en este orden — no bajar de nivel hasta resolver el anterior:
 | 9 | Microservices | MEDIUM | `references/microservices-devops.md` |
 | 10 | DevOps & Deployment | LOW-MEDIUM | `references/microservices-devops.md` |
 
-### Step 2: Aplicar + verificar
+### Step 2: Apply + verify
 
-Para cada regla relevante: leer el ejemplo correcto en el reference, aplicarlo, y verificar contra el checklist de cierre.
+For each relevant rule: read the correct example in the reference, apply it, and verify against the closing checklist.
 
-### Step 3: Checklist de cierre
+### Step 3: Closing checklist
 
-- [ ] Sin dependencias circulares (`madge --circular` o equivalente)
-- [ ] Constructor injection en todos los providers; cero `ModuleRef.get()` en runtime
-- [ ] `ValidationPipe` global + DTOs decorados en todos los endpoints
-- [ ] Guards declarativos para auth/authz (no checks manuales)
-- [ ] Sin N+1 (eager loading / joins donde corresponde)
-- [ ] Migraciones versionadas, `synchronize: false` en prod
+- [ ] No circular dependencies (`madge --circular` or equivalent)
+- [ ] Constructor injection in every provider; zero `ModuleRef.get()` at runtime
+- [ ] Global `ValidationPipe` + decorated DTOs on every endpoint
+- [ ] Declarative guards for auth/authz (no manual checks)
+- [ ] No N+1 (eager loading / joins where appropriate)
+- [ ] Versioned migrations, `synchronize: false` in prod
 - [ ] Graceful shutdown (SIGTERM) + health checks
 - [ ] Structured logging (JSON)
 
-Si todo el checklist pasa → código **COMPLIANT**. Antes de escribir cambios significativos, confirmar el approach con el usuario (Question → Decision → Approval).
+If the whole checklist passes → code is **COMPLIANT**. Before writing significant changes, confirm the approach with the user (Question → Decision → Approval).
 
-## Tabla de mapeo síntoma → categoría
+## Symptom → category mapping table
 
-| Síntoma | Categoría |
+| Symptom | Category |
 |---------|-----------|
-| Crash al arrancar / módulos no resuelven | Architecture, DI |
-| Lentitud en endpoints, muchas queries | Performance, Database |
-| Errores 500 inconsistentes / leaks de stack traces | Error Handling |
-| Endpoints expuestos / brute force / data sensible | Security |
-| Tests frágiles o que llaman servicios reales | Testing |
-| Respuestas inconsistentes / circular refs | API Design |
+| Crash on startup / modules do not resolve | Architecture, DI |
+| Slow endpoints, many queries | Performance, Database |
+| Inconsistent 500 errors / leaked stack traces | Error Handling |
+| Exposed endpoints / brute force / sensitive data | Security |
+| Brittle tests or tests that call real services | Testing |
+| Inconsistent responses / circular refs | API Design |
 
 ---
 
-_Adaptado de [kadajett/agent-nestjs-skills](https://github.com/kadajett/agent-nestjs-skills). El repo original compila reglas atómicas (`rules/*.md`) a un `AGENTS.md` vía build script; acá se reorganizó al formato skill+references de Arcane._
+_Adapted from [kadajett/agent-nestjs-skills](https://github.com/kadajett/agent-nestjs-skills). The original repo compiles atomic rules (`rules/*.md`) into an `AGENTS.md` via a build script; here it was reorganized into Arcane's skill+references format._

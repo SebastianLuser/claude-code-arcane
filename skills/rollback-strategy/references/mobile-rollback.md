@@ -1,10 +1,10 @@
 # Mobile Rollback (React Native)
 
-No hay rollback instantaneo por App Store review.
+There is no instant rollback because of App Store review.
 
-## Mitigaciones
+## Mitigations
 
-- **Feature flags server-driven** — toggle sin release
-- **OTA updates** (Expo Updates / CodePush) para JS bundle
-- **Version minima forzada** (force update) — obligar update si version rota
-- **Compatibilidad API con N-2 versiones** — nunca romper clientes viejos
+- **Server-driven feature flags** — toggle without a release
+- **OTA updates** (Expo Updates / CodePush) for the JS bundle
+- **Forced minimum version** (force update) — require an update if a version is broken
+- **API compatibility with N-2 versions** — never break old clients

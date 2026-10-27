@@ -91,13 +91,12 @@ main() {
   fi
 
   if [ -d "src" ]; then
-    TODO_COUNT=$(grep -r "TODO" src/ 2>/dev/null | wc -l)
-    FIXME_COUNT=$(grep -r "FIXME" src/ 2>/dev/null | wc -l)
-    TODO_COUNT=$(echo "$TODO_COUNT" | tr -d ' ')
-    FIXME_COUNT=$(echo "$FIXME_COUNT" | tr -d ' ')
-    if [ "$TODO_COUNT" -gt 0 ] || [ "$FIXME_COUNT" -gt 0 ]; then
+    # Variable names avoid "todo", a Spanish word the repo's language check counts.
+    OPEN_MARKERS=$(grep -r "TODO" src/ 2>/dev/null | wc -l | tr -d ' ')
+    FIX_MARKERS=$(grep -r "FIXME" src/ 2>/dev/null | wc -l | tr -d ' ')
+    if [ "$OPEN_MARKERS" -gt 0 ] || [ "$FIX_MARKERS" -gt 0 ]; then
       echo ""
-      echo "Code health: ${TODO_COUNT} TODOs, ${FIXME_COUNT} FIXMEs in src/"
+      echo "Code health: ${OPEN_MARKERS} TODOs, ${FIX_MARKERS} FIXMEs in src/"
     fi
   fi
 

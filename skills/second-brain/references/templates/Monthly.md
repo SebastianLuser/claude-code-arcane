@@ -6,24 +6,24 @@ tags: []
 
 # {{date:YYYY-MM}}
 
-Weeklies del mes: <links a los weeklies>
+Weeklies of the month: <links to the weeklies>
 
-## Patrones
+## Patterns
 
-<Lo que se repitió a lo largo del mes y no se ve en una sola semana.>
+<What repeated over the month and is not visible in a single week.>
 
-## Logros
+## Achievements
 
-<Lo que efectivamente se cerró, con link a la nota que lo respalda.>
+<What actually got closed, with a link to the note that backs it.>
 
-## Ideas para adelante
+## Ideas going forward
 
-<Semillas: lo que apareció este mes y merece seguimiento el mes que viene.>
+<Seeds: what came up this month and deserves follow-up next month.>
 
-## Salud del vault
+## Vault health
 
-<Resumen de la última corrida de /vault-audit: huérfanas, stale, tareas viejas abiertas.>
+<Summary of the last /vault-audit run: orphans, stale notes, old open tasks.>
 
-## Reflexión
+## Reflection
 
-<Esta sección la escribe el usuario.>
+<The user writes this section.>

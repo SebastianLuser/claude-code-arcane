@@ -1,6 +1,6 @@
 ---
 name: data-operations
-description: "Query optimization y data seeding Postgres: EXPLAIN ANALYZE, N+1, cursor pagination, CTEs, factories, fixtures."
+description: "Postgres query optimization and data seeding: EXPLAIN ANALYZE, N+1, cursor pagination, CTEs, factories, fixtures."
 category: "database"
 argument-hint: "[optimize <query>|seed <env>]"
 user-invocable: true
@@ -10,30 +10,30 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 
 ## Route
 
-| Intención del usuario | Modo | Sección |
+| User intent | Mode | Section |
 |----------------------|------|---------|
-| "query lenta", "EXPLAIN", "N+1", "optimizar SQL", "OFFSET", "índice" | OPTIMIZE | → Sección 1: Query Optimization |
-| "seed", "fixtures", "datos demo", "faker", "factory", "test data", "anonimizar" | SEED | → Sección 2: Data Seeding |
+| "slow query", "EXPLAIN", "N+1", "optimize SQL", "OFFSET", "index" | OPTIMIZE | → Section 1: Query Optimization |
+| "seed", "fixtures", "demo data", "faker", "factory", "test data", "anonymize" | SEED | → Section 2: Data Seeding |
 
-**Regla:** si la intención es ambigua, preguntar antes de ejecutar.
+**Rule:** if the intent is ambiguous, ask before running anything.
 
 ---
 
-## Cuándo usar
+## When to use
 
-Diagnosticar/optimizar queries lentas, crear seeders dev/test/staging, anonimizar dumps prod.
+Diagnose/optimize slow queries, create dev/test/staging seeders, anonymize prod dumps.
 
 ## 1. Query Optimization
 
-### EXPLAIN primero
+### EXPLAIN first
 
-Siempre: `EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT) <query>;`. Visualizar planes complejos: explain.dalibo.com. Top queries: `pg_stat_statements ORDER BY total_exec_time DESC LIMIT 20`.
+Always: `EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT) <query>;`. Visualize complex plans: explain.dalibo.com. Top queries: `pg_stat_statements ORDER BY total_exec_time DESC LIMIT 20`.
 
 > → Read references/query-optimization.md for EXPLAIN signal table, common problems (N+1, SELECT *, OFFSET, etc.), CTEs, LATERAL joins, and materialized views
 
 ## 2. Data Seeding
 
-4 tipos: Reference (all envs), Dev fixtures (local), Test fixtures (CI), Demo (staging). Structure: `db/seeds/` with reference/, fixtures/, demo/, anonymize/. Key rules: upserts for idempotency, factory pattern, guardrail anti-prod (`APP_ENV != "production"`).
+4 types: Reference (all envs), Dev fixtures (local), Test fixtures (CI), Demo (staging). Structure: `db/seeds/` with reference/, fixtures/, demo/, anonymize/. Key rules: upserts for idempotency, factory pattern, anti-prod guardrail (`APP_ENV != "production"`).
 
 > → Read references/seeding.md for seeding types, structure, factory patterns, performance tips, and anonymization guide
 
@@ -44,16 +44,16 @@ Siempre: `EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT) <query>;`. Visualizar planes c
 ## Checklist
 
 ### Query optimization
-- [ ] EXPLAIN ANALYZE antes y después
-- [ ] pg_stat_statements top queries revisado
-- [ ] N+1 eliminados (JOIN/Preload/DataLoader)
-- [ ] Paginación cursor, no OFFSET
-- [ ] Índices validados → `/database-setup`
+- [ ] EXPLAIN ANALYZE before and after
+- [ ] pg_stat_statements top queries reviewed
+- [ ] N+1 removed (JOIN/Preload/DataLoader)
+- [ ] Cursor pagination, not OFFSET
+- [ ] Indexes validated → `/database-setup`
 
 ### Seeding
-- [ ] Reference data separado de fixtures
-- [ ] Upserts idempotentes
-- [ ] Guardrail anti-prod
-- [ ] Sin PII real en fixtures
-- [ ] Factory pattern para datos random
-- [ ] faker.seed() para tests determinísticos
+- [ ] Reference data separate from fixtures
+- [ ] Idempotent upserts
+- [ ] Anti-prod guardrail
+- [ ] No real PII in fixtures
+- [ ] Factory pattern for random data
+- [ ] faker.seed() for deterministic tests

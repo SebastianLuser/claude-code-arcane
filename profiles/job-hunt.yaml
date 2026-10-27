@@ -1,5 +1,5 @@
 name: job-hunt
-description: "Job Hunt — busqueda laboral end-to-end: perfil maestro, CV ATS con verificacion, scraping de ofertas con dedup, pipeline de postulacion, LinkedIn, portfolio, cover letters, outreach a recruiters, scoring de ofertas, gaps/upskill, prep de entrevistas y 4 agentes de contexto fresco (review de CV, hiring manager, mock interview, diagnostico del embudo)"
+description: "Job Hunt — end-to-end job search: master profile, ATS CV with verification, posting scraping with dedup, application pipeline, LinkedIn, portfolio, cover letters, recruiter outreach, posting scoring, gaps/upskill, interview prep and 4 fresh-context agents (CV review, hiring manager, mock interview, funnel diagnosis)"
 category: personal
 
 skills:
@@ -11,7 +11,7 @@ skills:
   - portfolio-site
   - job-search
   - job-scrape
-  - job-aplicar
+  - job-apply
   - job-outcome
   - career-registry
   - job-upskill
@@ -61,5 +61,7 @@ permissions:
     - "Bash(python3 *detect.py*)"
     - "Bash(python *carousel_pdf.py*)"
     - "Bash(python3 *carousel_pdf.py*)"
+    - "Bash(python *migrate_workspace.py*)"
+    - "Bash(python3 *migrate_workspace.py*)"
   deny:
     []

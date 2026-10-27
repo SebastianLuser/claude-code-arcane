@@ -1,6 +1,6 @@
 ---
 name: oauth-setup
-description: "OAuth 2.0 + OIDC para Educabot (Go/TS/React/RN). Authorization Code + PKCE, id_token validation, multi-provider (Google, Microsoft, Apple, GitHub)."
+description: "OAuth 2.0 + OIDC for Educabot (Go/TS/React/RN). Authorization Code + PKCE, id_token validation, multi-provider (Google, Microsoft, Apple, GitHub)."
 category: "security"
 argument-hint: "[provider: google|github|generic] [stack]"
 user-invocable: true
@@ -10,83 +10,83 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task
 
 ## Flows
 
-| Flow | Uso | Estado |
+| Flow | Use | Status |
 |------|-----|--------|
 | Authorization Code + PKCE | SPA, mobile, web server | **Default** |
-| Authorization Code (client_secret) | Backend confidencial | OK |
+| Authorization Code (client_secret) | Confidential backend | OK |
 | Client Credentials | Server-to-server M2M | OK |
-| Implicit / Password Grant | — | Deprecado |
+| Implicit / Password Grant | — | Deprecated |
 
-**Regla: siempre Authorization Code + PKCE**, incluso con client_secret (defense in depth).
+**Rule: always Authorization Code + PKCE**, even with a client_secret (defense in depth).
 
 ## Providers
 
-| Provider | Scopes mínimos | Notas |
+| Provider | Minimum scopes | Notes |
 |----------|---------------|-------|
-| **Google** (default) | `openid email profile` | `hd` claim para dominio escolar. +`classroom.rosters.readonly` si Classroom |
-| **Microsoft** | `openid email profile User.Read` | Tenant-specific o `common` |
-| **Apple** | `name email` | Requerido en iOS si hay otros social logins. ES256, email puede ser relay |
-| **GitHub** | `read:user user:email` | No OIDC — parsear /user. Solo staff interno |
+| **Google** (default) | `openid email profile` | `hd` claim for the school domain. +`classroom.rosters.readonly` if Classroom |
+| **Microsoft** | `openid email profile User.Read` | Tenant-specific or `common` |
+| **Apple** | `name email` | Required on iOS if there are other social logins. ES256, the email can be a relay |
+| **GitHub** | `read:user user:email` | Not OIDC — parse /user. Internal staff only |
 
-## Librerías
+## Libraries
 
 - **Go**: `golang.org/x/oauth2` + `github.com/coreos/go-oidc/v3`
-- **Node/TS**: `openid-client` (evitar passport-*)
-- **React+Vite**: `@react-oauth/google` (solo Google) o flow PKCE manual (multi-provider)
+- **Node/TS**: `openid-client` (avoid passport-*)
+- **React+Vite**: `@react-oauth/google` (Google only) or a manual PKCE flow (multi-provider)
 - **Expo**: `expo-auth-session`. **Bare RN**: `react-native-app-auth`
 
 ## PKCE
 
-`code_verifier` = random 43-128 chars → `code_challenge` = base64url(sha256(verifier)). Cliente genera verifier, envía challenge en /authorize, envía verifier en /token.
+`code_verifier` = random 43-128 chars → `code_challenge` = base64url(sha256(verifier)). The client generates the verifier, sends the challenge in /authorize, sends the verifier in /token.
 
-## Seguridad Obligatoria
+## Mandatory Security
 
-| Parámetro | Propósito | Validación |
+| Parameter | Purpose | Validation |
 |-----------|----------|------------|
-| `state` | CSRF | Random opaco, guardar server-side, comparar en callback |
-| `nonce` | Replay protection | Incluir en request, verificar en id_token |
-| `code_challenge` S256 | PKCE | Ver arriba |
-| `redirect_uri` | Whitelist exacto | HTTPS siempre (excepto localhost dev) |
+| `state` | CSRF | Opaque random, store server-side, compare in the callback |
+| `nonce` | Replay protection | Include in the request, verify in the id_token |
+| `code_challenge` S256 | PKCE | See above |
+| `redirect_uri` | Exact whitelist | Always HTTPS (except localhost dev) |
 
-### Validación id_token
-Verificar: signature (JWKS), `iss` exacto, `aud` = client_id, `exp` no vencido, `nonce` match, `hd` si Workspace.
+### id_token validation
+Verify: signature (JWKS), exact `iss`, `aud` = client_id, `exp` not expired, `nonce` match, `hd` if Workspace.
 
-## Sesión Post-OAuth
+## Post-OAuth Session
 
-id_token NO es session token. Crear sesión propia:
-- **Web**: Cookie httpOnly+Secure+SameSite=Lax, sid → Redis/DB lookup
-- **Mobile/SPA**: JWT 15min (en memoria) + refresh token httpOnly/secure storage
+The id_token is NOT a session token. Create your own session:
+- **Web**: httpOnly+Secure+SameSite=Lax cookie, sid → Redis/DB lookup
+- **Mobile/SPA**: 15min JWT (in memory) + refresh token in httpOnly/secure storage
 
-Nunca localStorage/sessionStorage para tokens.
+Never localStorage/sessionStorage for tokens.
 
 ## Account Linking
 
-Verificar `email_verified=true` → buscar por email → pedir confirmación al usuario → guardar en `user_identities(user_id, provider, provider_sub)`. No auto-linkear sin confirmación.
+Verify `email_verified=true` → look up by email → ask the user for confirmation → store in `user_identities(user_id, provider, provider_sub)`. Do not auto-link without confirmation.
 
-## Multi-tenant (Workspace escolar)
+## Multi-tenant (school Workspace)
 
-Validar claim `hd` en id_token server-side. Mapear via `schools(domain, tenant_id)`.
+Validate the `hd` claim in the id_token server-side. Map via `schools(domain, tenant_id)`.
 
-## Menores (COPPA/LGPD)
+## Minors (COPPA/LGPD)
 
-No registro individual de menores. Usar Google Classroom rostering (cuenta Workspace gestionada por escuela). No pedir datos extra sin consentimiento parental.
+No individual registration of minors. Use Google Classroom rostering (a Workspace account managed by the school). Do not ask for extra data without parental consent.
 
 ## Anti-patterns
-- Implicit/password grant, SPA sin PKCE, sin `state`, id_token como session
-- localStorage para tokens, redirect_uri con wildcard, client_secret en frontend
-- Aceptar id_token sin verificar, confiar email sin email_verified, HTTP en redirect_uri prod
+- Implicit/password grant, SPA without PKCE, no `state`, id_token as the session
+- localStorage for tokens, wildcard redirect_uri, client_secret in the frontend
+- Accepting an id_token without verifying it, trusting an email without email_verified, HTTP in a prod redirect_uri
 
 ## Checklist
 - [ ] Authorization Code + PKCE (S256)
-- [ ] `state` + `nonce` generados y validados
-- [ ] id_token verificado: signature, iss, aud, exp, nonce
-- [ ] `email_verified=true` antes de trust
-- [ ] redirect_uri exacto, HTTPS en prod
-- [ ] client_secret solo en backend
-- [ ] Sesión propia post-login (httpOnly cookie o JWT+refresh seguro)
-- [ ] Tokens NO en localStorage
-- [ ] Logout invalida server-side
-- [ ] Account linking con confirmación
-- [ ] `hd` validado si Workspace escolar
-- [ ] Menores via rostering, no registro individual
-- [ ] Logs NO imprimen tokens
+- [ ] `state` + `nonce` generated and validated
+- [ ] id_token verified: signature, iss, aud, exp, nonce
+- [ ] `email_verified=true` before trusting it
+- [ ] Exact redirect_uri, HTTPS in prod
+- [ ] client_secret only in the backend
+- [ ] Own session after login (httpOnly cookie or secure JWT+refresh)
+- [ ] Tokens NOT in localStorage
+- [ ] Logout invalidates server-side
+- [ ] Account linking with confirmation
+- [ ] `hd` validated if school Workspace
+- [ ] Minors via rostering, not individual registration
+- [ ] Logs do NOT print tokens

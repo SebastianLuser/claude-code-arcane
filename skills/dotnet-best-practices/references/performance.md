@@ -2,13 +2,13 @@
 
 ## 6.1 Output Caching & HybridCache — HIGH
 
-Cachear respuestas caras evita recomputar en cada request. `HybridCache` combina cache en memoria (L1) y distribuida (L2) con stampede protection.
+Caching expensive responses avoids recomputing them on every request. `HybridCache` combines in-memory (L1) and distributed (L2) cache with stampede protection.
 
-**Incorrecto:**
+**Incorrect:**
 ```csharp
-app.MapGet("/stats", async (StatsService s) => await s.ComputeAsync()); // recomputa siempre
+app.MapGet("/stats", async (StatsService s) => await s.ComputeAsync()); // always recomputes
 ```
-**Correcto:**
+**Correct:**
 ```csharp
 builder.Services.AddHybridCache();
 
@@ -18,9 +18,9 @@ app.MapGet("/stats", async (HybridCache cache, StatsService s, CancellationToken
 
 ## 6.2 Response Compression — HIGH
 
-Comprimir respuestas reduce el ancho de banda y la latencia percibida en payloads JSON grandes.
+Compressing responses reduces bandwidth and perceived latency on large JSON payloads.
 
-**Correcto:**
+**Correct:**
 ```csharp
 builder.Services.AddResponseCompression(o => o.EnableForHttps = true);
 var app = builder.Build();
@@ -29,22 +29,22 @@ app.UseResponseCompression();
 
 ## 6.3 Never Block on Async (sync-over-async) — HIGH
 
-`.Result` o `.Wait()` bloquean un hilo del thread pool y pueden causar deadlocks y thread starvation bajo carga.
+`.Result` or `.Wait()` block a thread-pool thread and can cause deadlocks and thread starvation under load.
 
-**Incorrecto:**
+**Incorrect:**
 ```csharp
-var user = _repo.GetUserAsync(id).Result; // bloquea el hilo
+var user = _repo.GetUserAsync(id).Result; // blocks the thread
 ```
-**Correcto:**
+**Correct:**
 ```csharp
 var user = await _repo.GetUserAsync(id);
 ```
 
 ## 6.4 DbContext Pooling — MEDIUM-HIGH
 
-Reusar instancias de `DbContext` desde un pool reduce las allocations y el costo de setup por request.
+Reusing `DbContext` instances from a pool reduces allocations and the per-request setup cost.
 
-**Correcto:**
+**Correct:**
 ```csharp
 builder.Services.AddDbContextPool<AppDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
@@ -52,12 +52,12 @@ builder.Services.AddDbContextPool<AppDbContext>(o =>
 
 ## 6.5 Stream Large Results with IAsyncEnumerable — MEDIUM
 
-Devolver `IAsyncEnumerable<T>` transmite filas a medida que llegan en vez de materializar toda la colección en memoria.
+Returning `IAsyncEnumerable<T>` streams rows as they arrive instead of materializing the whole collection in memory.
 
-**Correcto:**
+**Correct:**
 ```csharp
 app.MapGet("/orders", (AppDbContext db) =>
-    db.Orders.AsNoTracking().AsAsyncEnumerable()); // streaming, server GC ayuda en cargas altas
+    db.Orders.AsNoTracking().AsAsyncEnumerable()); // streaming, server GC helps under heavy load
 ```
 
 _Ref: https://learn.microsoft.com/en-us/aspnet/core/performance/caching/hybrid · https://learn.microsoft.com/en-us/aspnet/core/performance/response-compression · https://learn.microsoft.com/en-us/ef/core/performance/advanced-performance-topics_

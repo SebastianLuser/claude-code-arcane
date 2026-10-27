@@ -1,15 +1,15 @@
 # Software Director Gates
 
-Gates de approval para desarrollo de software (backend, frontend, APIs, infra). Ver `.claude/docs/gates/README.md` para infraestructura compartida (Review Modes, Verdict Format, Parallel Protocol).
+Approval gates for software development (backend, frontend, APIs, infra). See `.claude/docs/gates/README.md` for the shared infrastructure (Review Modes, Verdict Format, Parallel Protocol).
 
 ---
 
-## Roles y Model Tiers
+## Roles and Model Tiers
 
-| Prefix | Rol | Agent | Model | Dominio |
+| Prefix | Role | Agent | Model | Domain |
 |--------|-----|-------|-------|---------|
-| **CTO-** | Chief Technology Officer | `cto` | Opus | Arquitectura, tech strategy, trade-offs sistémicos |
-| **VPE-** | VP of Engineering | `vpe` | Opus | Calidad de código, velocity, engineering excellence |
+| **CTO-** | Chief Technology Officer | `cto` | Opus | Architecture, tech strategy, systemic trade-offs |
+| **VPE-** | VP of Engineering | `vpe` | Opus | Code quality, velocity, engineering excellence |
 | **PM-** | Product/Project Manager | `pm` | Sonnet | Scope, timeline, dependencies, roadmap |
 | **SEC-** | Security Architect | `security-architect` | Opus | Threat modeling, compliance, AppSec |
 | **QA-** | QA Lead | `qa-lead` | Sonnet | Testability, coverage, test strategy |
@@ -19,21 +19,21 @@ Gates de approval para desarrollo de software (backend, frontend, APIs, infra). 
 
 ## Tier 1 — CTO Gates
 
-Agent: `cto` | Model: Opus | Dominio: Arquitectura, tech strategy
+Agent: `cto` | Model: Opus | Domain: Architecture, tech strategy
 
 ### CTO-ARCHITECTURE — Architecture Sign-Off
 
-**Trigger**: Después del documento maestro de architecture, o después de revisiones mayores.
+**Trigger**: After the master architecture document, or after major revisions.
 
 **Context to pass**:
 - Architecture document path (`docs/architecture/architecture.md`)
 - Technical requirements baseline (TR-IDs)
-- ADR list con statuses
-- Stack elegido (framework, DB, cache, queue)
+- ADR list with statuses
+- Chosen stack (framework, DB, cache, queue)
 - Non-functional requirements (latency, throughput, scale targets)
 
 **Prompt**:
-> "Review este architecture document para soundness técnico. Check: (1) ¿Cada technical requirement del baseline está cubierto por una decisión arquitectónica? (2) ¿Los service boundaries son clean, minimal, implementables? (3) ¿Hay cupling escondido entre módulos que va a crear pain? (4) ¿Las decisiones de datastore match los access patterns? (5) ¿Foundation-layer ADRs están resueltos antes de empezar implementación? Return APPROVE, CONCERNS [list], o REJECT [blockers que deben resolverse antes de que empiece coding]."
+> "Review this architecture document for technical soundness. Check: (1) Is every technical requirement in the baseline covered by an architecture decision? (2) Are the service boundaries clean, minimal and implementable? (3) Is there hidden coupling between modules that will cause pain? (4) Do the datastore decisions match the access patterns? (5) Are the foundation-layer ADRs resolved before implementation starts? Return APPROVE, CONCERNS [list], or REJECT [blockers that must be resolved before coding starts]."
 
 **Verdicts**: APPROVE / CONCERNS / REJECT
 
@@ -41,15 +41,15 @@ Agent: `cto` | Model: Opus | Dominio: Arquitectura, tech strategy
 
 ### CTO-ADR — Architecture Decision Review
 
-**Trigger**: Después de que un ADR individual se authored (`/architecture-decision`), antes de marcarlo Accepted.
+**Trigger**: After an individual ADR is authored (`/architecture-decision`), before marking it Accepted.
 
 **Context to pass**:
 - ADR file path
-- Stack version y knowledge gap risk si aplica
+- Stack version and knowledge gap risk if applicable
 - Related ADRs
 
 **Prompt**:
-> "Review este Architecture Decision Record. ¿Tiene problem statement y rationale claros? ¿Las alternativas rechazadas fueron consideradas genuinamente? ¿La sección Consequences acknowledgea los trade-offs honestamente? ¿Linkea a los technical requirements que cubre? ¿Hay reversibility path si la decisión sale mal? Return APPROVE, CONCERNS [specific gaps], o REJECT [la decisión está underspecified o hace unsound assumptions]."
+> "Review this Architecture Decision Record. Does it have a clear problem statement and rationale? Were the rejected alternatives genuinely considered? Does the Consequences section acknowledge the trade-offs honestly? Does it link to the technical requirements it covers? Is there a reversibility path if the decision goes wrong? Return APPROVE, CONCERNS [specific gaps], or REJECT [the decision is underspecified or makes unsound assumptions]."
 
 **Verdicts**: APPROVE / CONCERNS / REJECT
 
@@ -57,16 +57,16 @@ Agent: `cto` | Model: Opus | Dominio: Arquitectura, tech strategy
 
 ### CTO-TECH-CHOICE — Technology Selection Review
 
-**Trigger**: Antes de adoptar una nueva major technology (framework, DB, cache, queue, language). Para libraries pequeñas usar `VPE-CODE-REVIEW` en el PR donde se introduce.
+**Trigger**: Before adopting a new major technology (framework, DB, cache, queue, language). For small libraries, use `VPE-CODE-REVIEW` on the PR that introduces them.
 
 **Context to pass**:
-- Technology candidate(s) con comparison
-- Problem being solved (qué alternativa a lo actual)
+- Technology candidate(s) with a comparison
+- Problem being solved (what it replaces in the current setup)
 - Maturity evidence (release history, community, corporate backing)
-- Migration cost estimate si aplica
+- Migration cost estimate if applicable
 
 **Prompt**:
-> "Review esta decisión de tech selection. ¿El problema genuinamente necesita una nueva tool, o puede resolverse con lo existente? ¿La candidate tiene production-grade maturity (no bleeding edge sin justificación)? ¿Los trade-offs vs alternatives son entendidos? ¿El cost de adoption (learning curve, migration, ops burden) vale los benefits? Return APPROVE, CONCERNS [revisar X antes de adoptar], o REJECT [usar alternative Y o stick con lo actual]."
+> "Review this tech selection decision. Does the problem genuinely need a new tool, or can it be solved with what exists? Does the candidate have production-grade maturity (not bleeding edge without justification)? Are the trade-offs vs. alternatives understood? Is the cost of adoption (learning curve, migration, ops burden) worth the benefits? Return APPROVE, CONCERNS [review X before adopting], or REJECT [use alternative Y or stick with the current one]."
 
 **Verdicts**: APPROVE / CONCERNS / REJECT
 
@@ -74,16 +74,16 @@ Agent: `cto` | Model: Opus | Dominio: Arquitectura, tech strategy
 
 ### CTO-PHASE-GATE — Technical Readiness at Phase Transition
 
-**Trigger**: Siempre en `/gate-check` — spawn en paralelo con VPE-PHASE-GATE, PM-PHASE-GATE, SEC-PHASE-GATE.
+**Trigger**: Always in `/gate-check` — spawned in parallel with VPE-PHASE-GATE, PM-PHASE-GATE, SEC-PHASE-GATE.
 
 **Context to pass**:
 - Target phase name
 - Architecture document path
-- ADR list con statuses
+- ADR list with statuses
 - Current tech debt inventory
 
 **Prompt**:
-> "Review el estado actual del proyecto para [target phase] gate readiness desde perspectiva de CTO. ¿La arquitectura es sound para esta phase? ¿Los high-risk technical domains están addressed? ¿Los performance budgets son realistas y documentados? ¿Foundation-layer decisions están complete para empezar implementation? ¿Hay tech debt que va a bloquear progreso en esta phase? Return READY, CONCERNS [list], o NOT READY [blockers]."
+> "Review the project's current state for [target phase] gate readiness from a CTO perspective. Is the architecture sound for this phase? Are the high-risk technical domains addressed? Are the performance budgets realistic and documented? Are the foundation-layer decisions complete enough to start implementation? Is there tech debt that will block progress in this phase? Return READY, CONCERNS [list], or NOT READY [blockers]."
 
 **Verdicts**: READY / CONCERNS / NOT READY
 
@@ -91,20 +91,20 @@ Agent: `cto` | Model: Opus | Dominio: Arquitectura, tech strategy
 
 ## Tier 1 — VPE Gates
 
-Agent: `vpe` | Model: Opus | Dominio: Calidad de código, eng excellence
+Agent: `vpe` | Model: Opus | Domain: Code quality, eng excellence
 
 ### VPE-CODE-REVIEW — Senior Code Review
 
-**Trigger**: Antes de merge de cambios significativos (nueva feature, refactor, migration path). Para patches triviales usar peer review normal.
+**Trigger**: Before merging significant changes (new feature, refactor, migration path). For trivial patches, use normal peer review.
 
 **Context to pass**:
-- File paths modificados
-- Story / ticket con acceptance criteria
-- ADR governante si aplica
-- Tests agregados / modificados
+- Modified file paths
+- Story / ticket with acceptance criteria
+- Governing ADR if applicable
+- Tests added / modified
 
 **Prompt**:
-> "Review esta implementación contra acceptance criteria y ADR relevante. Check: (1) ¿El code match las boundary definitions de la arquitectura? (2) ¿Hay violations de coding standards o forbidden patterns? (3) ¿La API pública es testeable y está documentada? (4) ¿Hay issues de correctness, races, o edge cases? (5) ¿Los tests cubren lógica importante (no solo happy path)? (6) ¿El error handling es adecuado para boundaries? Return APPROVE, CONCERNS [specific issues], o REJECT [debe revisarse antes de merge]."
+> "Review this implementation against the acceptance criteria and the relevant ADR. Check: (1) Does the code match the architecture's boundary definitions? (2) Are there violations of coding standards or forbidden patterns? (3) Is the public API testable and documented? (4) Are there correctness issues, races or edge cases? (5) Do the tests cover the important logic (not just the happy path)? (6) Is the error handling adequate at the boundaries? Return APPROVE, CONCERNS [specific issues], or REJECT [must be revised before merge]."
 
 **Verdicts**: APPROVE / CONCERNS / REJECT
 
@@ -112,7 +112,7 @@ Agent: `vpe` | Model: Opus | Dominio: Calidad de código, eng excellence
 
 ### VPE-FEASIBILITY — Implementation Feasibility Review
 
-**Trigger**: Después del architecture document, o cuando un patrón arquitectónico nuevo se propone. Valida que se pueda implementar en la práctica.
+**Trigger**: After the architecture document, or when a new architectural pattern is proposed. Validates that it can be implemented in practice.
 
 **Context to pass**:
 - Architecture document path
@@ -121,7 +121,7 @@ Agent: `vpe` | Model: Opus | Dominio: Calidad de código, eng excellence
 - Team capability assessment (stack expertise)
 
 **Prompt**:
-> "Review esta architecture para feasibility de implementación. Flag: (a) decisiones difíciles o imposibles de implementar con el stack elegido, (b) interface definitions faltantes que developers tendrían que inventar, (c) patrones que crean tech debt avoidable o que contradicen idioms del framework. ¿El team tiene expertise actual para ejecutar esto, o hay gap? Return FEASIBLE, CONCERNS [list], o INFEASIBLE [blockers que hacen esta architecture unimplementable como está]."
+> "Review this architecture for implementation feasibility. Flag: (a) decisions that are hard or impossible to implement with the chosen stack, (b) missing interface definitions that developers would have to invent, (c) patterns that create avoidable tech debt or contradict the framework's idioms. Does the team have the expertise today to execute this, or is there a gap? Return FEASIBLE, CONCERNS [list], or INFEASIBLE [blockers that make this architecture unimplementable as it stands]."
 
 **Verdicts**: FEASIBLE / CONCERNS / INFEASIBLE
 
@@ -129,16 +129,16 @@ Agent: `vpe` | Model: Opus | Dominio: Calidad de código, eng excellence
 
 ### VPE-REFACTOR — Refactor Strategy Review
 
-**Trigger**: Antes de ejecutar un refactor significativo (>2 días de effort o afecta >5 archivos críticos).
+**Trigger**: Before running a significant refactor (>2 days of effort or affects >5 critical files).
 
 **Context to pass**:
 - Refactor scope document
-- Root cause que motiva el refactor
-- Incremental migration path propuesto
+- Root cause motivating the refactor
+- Proposed incremental migration path
 - Rollback strategy
 
 **Prompt**:
-> "Review esta refactor strategy. ¿El root cause amerita el costo del refactor, o es polish de código sin ROI claro? ¿La migration es incremental (cada PR mergeable aislado) o big-bang? ¿Hay rollback path si algo se rompe? ¿El blast radius está entendido? ¿El refactor va a crear code freeze que bloquee feature work? Return APPROVE, CONCERNS [adjust strategy], o REJECT [riesgo vs benefit no justifica — defer o rescope]."
+> "Review this refactor strategy. Does the root cause justify the cost of the refactor, or is it code polish with no clear ROI? Is the migration incremental (each PR mergeable on its own) or big-bang? Is there a rollback path if something breaks? Is the blast radius understood? Will the refactor create a code freeze that blocks feature work? Return APPROVE, CONCERNS [adjust strategy], or REJECT [risk vs. benefit does not justify it — defer or rescope]."
 
 **Verdicts**: APPROVE / CONCERNS / REJECT
 
@@ -146,7 +146,7 @@ Agent: `vpe` | Model: Opus | Dominio: Calidad de código, eng excellence
 
 ### VPE-PHASE-GATE — Engineering Readiness at Phase Transition
 
-**Trigger**: Siempre en `/gate-check` — paralelo con CTO-PHASE-GATE, PM-PHASE-GATE, SEC-PHASE-GATE.
+**Trigger**: Always in `/gate-check` — in parallel with CTO-PHASE-GATE, PM-PHASE-GATE, SEC-PHASE-GATE.
 
 **Context to pass**:
 - Target phase name
@@ -155,7 +155,7 @@ Agent: `vpe` | Model: Opus | Dominio: Calidad de código, eng excellence
 - Open PRs / stuck reviews count
 
 **Prompt**:
-> "Review el estado actual del proyecto para [target phase] gate readiness desde perspectiva de engineering excellence. ¿La test suite está healthy (high pass rate, deterministic)? ¿Los quality gates en CI funcionan? ¿Hay patterns anti-quality acumulándose que van a explotar en esta phase? ¿Team velocity es sostenible? Return READY, CONCERNS [list], o NOT READY [blockers]."
+> "Review the project's current state for [target phase] gate readiness from an engineering excellence perspective. Is the test suite healthy (high pass rate, deterministic)? Do the CI quality gates work? Are anti-quality patterns piling up that will blow up in this phase? Is team velocity sustainable? Return READY, CONCERNS [list], or NOT READY [blockers]."
 
 **Verdicts**: READY / CONCERNS / NOT READY
 
@@ -163,21 +163,21 @@ Agent: `vpe` | Model: Opus | Dominio: Calidad de código, eng excellence
 
 ## Tier 1 — PM Gates
 
-Agent: `pm` | Model: Sonnet | Dominio: Scope, timeline, dependencies
+Agent: `pm` | Model: Sonnet | Domain: Scope, timeline, dependencies
 
 ### PM-SCOPE — Scope and Timeline Validation
 
-**Trigger**: Después de que los scope tiers están definidos (brainstorm, quick-design, o workflow que produce MVP + timeline).
+**Trigger**: After the scope tiers are defined (brainstorm, quick-design, or a workflow that produces an MVP + timeline).
 
 **Context to pass**:
 - Full vision scope description
 - MVP definition
 - Timeline estimate
 - Team size (solo / small team / etc.)
-- Scope tiers (qué se ship si time runs out)
+- Scope tiers (what ships if time runs out)
 
 **Prompt**:
-> "Review este scope estimate. ¿El MVP es achievable en el timeline para el team size? ¿Los scope tiers están ordenados correctamente por riesgo — cada tier delivera un producto shippable si work stops there? ¿Cuál es el most likely cut point bajo pressure de timeline, y es un graceful fallback o un producto roto? Return REALISTIC (scope matches capacity), OPTIMISTIC [specific adjustments], o UNREALISTIC [blockers — timeline o MVP debe revisarse]."
+> "Review this scope estimate. Is the MVP achievable in the timeline for the team size? Are the scope tiers ordered correctly by risk — does each tier deliver a shippable product if work stops there? What is the most likely cut point under timeline pressure, and is it a graceful fallback or a broken product? Return REALISTIC (scope matches capacity), OPTIMISTIC [specific adjustments], or UNREALISTIC [blockers — the timeline or MVP must be revised]."
 
 **Verdicts**: REALISTIC / OPTIMISTIC / UNREALISTIC
 
@@ -185,7 +185,7 @@ Agent: `pm` | Model: Sonnet | Dominio: Scope, timeline, dependencies
 
 ### PM-SPRINT — Sprint Feasibility Review
 
-**Trigger**: Antes de finalizar un sprint plan (`/sprint-plan`), y después de cualquier mid-sprint scope change.
+**Trigger**: Before finalizing a sprint plan (`/sprint-plan`), and after any mid-sprint scope change.
 
 **Context to pass**:
 - Proposed sprint story list (titles, estimates, dependencies)
@@ -194,7 +194,7 @@ Agent: `pm` | Model: Sonnet | Dominio: Scope, timeline, dependencies
 - Milestone constraints
 
 **Prompt**:
-> "Review este sprint plan para feasibility. ¿La story load es realista para la capacity disponible? ¿Las stories están ordenadas correctamente por dependency? ¿Hay hidden dependencies entre stories que podrían bloquear el sprint a mitad de camino? ¿Hay stories underestimadas given su complejidad técnica? Return REALISTIC (achievable), CONCERNS [specific risks], o UNREALISTIC [sprint debe descopearse — identificar qué stories deferir]."
+> "Review this sprint plan for feasibility. Is the story load realistic for the available capacity? Are the stories ordered correctly by dependency? Are there hidden dependencies between stories that could block the sprint halfway through? Are there stories underestimated given their technical complexity? Return REALISTIC (achievable), CONCERNS [specific risks], or UNREALISTIC [the sprint must be descoped — identify which stories to defer]."
 
 **Verdicts**: REALISTIC / CONCERNS / UNREALISTIC
 
@@ -202,16 +202,16 @@ Agent: `pm` | Model: Sonnet | Dominio: Scope, timeline, dependencies
 
 ### PM-MILESTONE — Milestone Risk Assessment
 
-**Trigger**: En milestone review (`/milestone-review`), mid-sprint retrospectives, o cuando un scope change afecta el milestone.
+**Trigger**: At milestone review (`/milestone-review`), mid-sprint retrospectives, or when a scope change affects the milestone.
 
 **Context to pass**:
-- Milestone definition y target date
+- Milestone definition and target date
 - Current completion percentage
 - Blocked stories count
 - Sprint velocity data
 
 **Prompt**:
-> "Review este milestone status. Basado en velocity actual y blocked story count, ¿este milestone hitea su target date? ¿Cuáles son los top 3 risks de producción entre ahora y el milestone? ¿Hay scope items que deberían cortarse para proteger la fecha del milestone vs items non-negotiable? Return ON TRACK, AT RISK [specific mitigations], o OFF TRACK [date debe slipear o scope debe cortarse — presentar ambas opciones]."
+> "Review this milestone status. Based on current velocity and the blocked story count, will this milestone hit its target date? What are the top 3 production risks between now and the milestone? Are there scope items that should be cut to protect the milestone date vs. non-negotiable items? Return ON TRACK, AT RISK [specific mitigations], or OFF TRACK [the date must slip or scope must be cut — present both options]."
 
 **Verdicts**: ON TRACK / AT RISK / OFF TRACK
 
@@ -219,17 +219,17 @@ Agent: `pm` | Model: Sonnet | Dominio: Scope, timeline, dependencies
 
 ### PM-EPIC — Epic Structure Feasibility Review
 
-**Trigger**: Después de que los epics están definidos (`/create-epics`), antes de story breakdown.
+**Trigger**: After the epics are defined (`/create-epics`), before story breakdown.
 
 **Context to pass**:
 - Epic definition file paths
 - Epic index path (`production/epics/index.md`)
-- Milestone timeline y target dates
+- Milestone timeline and target dates
 - Team capacity
 - Layer being epic'd (Foundation / Core / Feature / Polish)
 
 **Prompt**:
-> "Review esta epic structure para feasibility de producción antes de story breakdown. ¿Los epic boundaries están scope apropiadamente — cada epic puede realísticamente completarse antes de un milestone deadline? ¿Epics están ordenados correctamente por system dependency? ¿Hay epics underscoped (muy chicos, deberían merge) o overscoped (muy grandes, split en 2-3)? ¿Foundation-layer epics scope permite a Core-layer epics empezar al inicio del siguiente sprint? Return REALISTIC (producible), CONCERNS [structural adjustments antes de stories], o UNREALISTIC [epics deben split/merge/reorder]."
+> "Review this epic structure for production feasibility before story breakdown. Are the epic boundaries scoped appropriately — can each epic realistically be completed before a milestone deadline? Are the epics ordered correctly by system dependency? Are there underscoped epics (too small, should merge) or overscoped ones (too large, split into 2-3)? Does the foundation-layer epic scope let the Core-layer epics start at the beginning of the next sprint? Return REALISTIC (producible), CONCERNS [structural adjustments before stories], or UNREALISTIC [epics must be split/merged/reordered]."
 
 **Verdicts**: REALISTIC / CONCERNS / UNREALISTIC
 
@@ -237,16 +237,16 @@ Agent: `pm` | Model: Sonnet | Dominio: Scope, timeline, dependencies
 
 ### PM-PHASE-GATE — Production Readiness at Phase Transition
 
-**Trigger**: Siempre en `/gate-check` — paralelo con CTO-PHASE-GATE, VPE-PHASE-GATE, SEC-PHASE-GATE.
+**Trigger**: Always in `/gate-check` — in parallel with CTO-PHASE-GATE, VPE-PHASE-GATE, SEC-PHASE-GATE.
 
 **Context to pass**:
 - Target phase name
-- Sprint y milestone artifacts present
-- Team size y capacity
+- Sprint and milestone artifacts present
+- Team size and capacity
 - Current blocked story count
 
 **Prompt**:
-> "Review el estado actual del proyecto para [target phase] gate readiness desde perspectiva de production. ¿El scope es realista para el timeline y team size? ¿Las dependencies están ordenadas correctamente? ¿Hay milestone o sprint risks que podrían derailar la phase en los primeros 2 sprints? Return READY, CONCERNS [list], o NOT READY [blockers]."
+> "Review the project's current state for [target phase] gate readiness from a production perspective. Is the scope realistic for the timeline and team size? Are the dependencies ordered correctly? Are there milestone or sprint risks that could derail the phase in the first 2 sprints? Return READY, CONCERNS [list], or NOT READY [blockers]."
 
 **Verdicts**: READY / CONCERNS / NOT READY
 
@@ -254,11 +254,11 @@ Agent: `pm` | Model: Sonnet | Dominio: Scope, timeline, dependencies
 
 ## Tier 1 — Security Gates
 
-Agent: `security-architect` | Model: Opus | Dominio: Threat modeling, compliance, AppSec
+Agent: `security-architect` | Model: Opus | Domain: Threat modeling, compliance, AppSec
 
 ### SEC-THREAT-MODEL — Threat Model Review
 
-**Trigger**: Después de que un threat model se authored para un sistema, o después de arquitectura que introduce nueva trust boundary.
+**Trigger**: After a threat model is authored for a system, or after an architecture that introduces a new trust boundary.
 
 **Context to pass**:
 - Threat model document path
@@ -267,7 +267,7 @@ Agent: `security-architect` | Model: Opus | Dominio: Threat modeling, compliance
 - Compliance requirements (GDPR, SOC2, HIPAA, PCI)
 
 **Prompt**:
-> "Review este threat model. ¿Identifica todas las trust boundaries del sistema? ¿Los threats están categorizados (STRIDE, DREAD, o similar)? ¿Cada threat tiene mitigación propuesta proporcional al riesgo? ¿Los assumptions están listados y son razonables? ¿Hay compliance requirements que no se consideran? Return APPROVE, CONCERNS [missing threats o mitigations], o REJECT [threat model incompleto — critical risks no addressed]."
+> "Review this threat model. Does it identify all of the system's trust boundaries? Are the threats categorized (STRIDE, DREAD, or similar)? Does each threat have a proposed mitigation proportional to the risk? Are the assumptions listed and reasonable? Are there compliance requirements not being considered? Return APPROVE, CONCERNS [missing threats or mitigations], or REJECT [incomplete threat model — critical risks not addressed]."
 
 **Verdicts**: APPROVE / CONCERNS / REJECT
 
@@ -275,16 +275,16 @@ Agent: `security-architect` | Model: Opus | Dominio: Threat modeling, compliance
 
 ### SEC-AUDIT — Security Audit of Implementation
 
-**Trigger**: Antes de producción para sistemas que tocan auth, autz, payments, PII, o data sensible.
+**Trigger**: Before production for systems that touch auth, authz, payments, PII, or sensitive data.
 
 **Context to pass**:
 - Implementation file paths
-- Threat model relevante
-- Dependencies usadas (con versions)
-- Audit scope (qué incluye, qué no)
+- Relevant threat model
+- Dependencies used (with versions)
+- Audit scope (what it includes, what it does not)
 
 **Prompt**:
-> "Review esta implementación para security. Check contra OWASP Top 10: injection, broken auth, sensitive data, XXE/XSS, broken access control, security misconfig, vulnerable deps, logging/monitoring. Verificar: (1) ¿input validation en boundaries? (2) ¿prepared statements / query builders para queries? (3) ¿secrets no están en code/logs? (4) ¿autorización se checkea por endpoint, no solo auth? (5) ¿TLS enforced donde hay data sensible? Return APPROVE, CONCERNS [specific issues con severity], o REJECT [critical vulns que bloquean release]."
+> "Review this implementation for security. Check against the OWASP Top 10: injection, broken auth, sensitive data, XXE/XSS, broken access control, security misconfig, vulnerable deps, logging/monitoring. Verify: (1) input validation at the boundaries? (2) prepared statements / query builders for queries? (3) secrets kept out of code/logs? (4) authorization checked per endpoint, not just authentication? (5) TLS enforced where there is sensitive data? Return APPROVE, CONCERNS [specific issues with severity], or REJECT [critical vulns that block release]."
 
 **Verdicts**: APPROVE / CONCERNS / REJECT
 
@@ -292,16 +292,16 @@ Agent: `security-architect` | Model: Opus | Dominio: Threat modeling, compliance
 
 ### SEC-DEPS — Dependency Security Review
 
-**Trigger**: Antes de adoptar nuevas dependencies, o al correr `/deps-audit`.
+**Trigger**: Before adopting new dependencies, or when running `/deps-audit`.
 
 **Context to pass**:
-- Dependencies list con versions
+- Dependencies list with versions
 - Lockfile status
 - Audit output (npm audit, snyk, pip-audit)
 - Critical/high findings counts
 
 **Prompt**:
-> "Review esta dependency audit. ¿Hay CVEs HIGH o CRITICAL sin mitigación? ¿Las dependencies están pinned con lockfile? ¿Hay dependencies abandonadas (sin updates >12 meses) en critical path? ¿Las dev dependencies están separadas de production? Return APPROVE (deps están healthy), CONCERNS [specific vulns a resolver en próximo sprint], o REJECT [critical vulns bloquean deploy hasta que se patcheen]."
+> "Review this dependency audit. Are there HIGH or CRITICAL CVEs without mitigation? Are the dependencies pinned with a lockfile? Are there abandoned dependencies (no updates in >12 months) on the critical path? Are the dev dependencies separated from production? Return APPROVE (deps are healthy), CONCERNS [specific vulns to resolve next sprint], or REJECT [critical vulns block deploy until patched]."
 
 **Verdicts**: APPROVE / CONCERNS / REJECT
 
@@ -309,16 +309,16 @@ Agent: `security-architect` | Model: Opus | Dominio: Threat modeling, compliance
 
 ### SEC-PHASE-GATE — Security Readiness at Phase Transition
 
-**Trigger**: Siempre en `/gate-check` — paralelo con CTO/VPE/PM-PHASE-GATE. Crítico en Pre-Production y Release.
+**Trigger**: Always in `/gate-check` — in parallel with CTO/VPE/PM-PHASE-GATE. Critical in Pre-Production and Release.
 
 **Context to pass**:
 - Target phase name
-- Threat models existentes
+- Existing threat models
 - Recent audit findings
 - Compliance status
 
 **Prompt**:
-> "Review el estado actual del proyecto para [target phase] gate readiness desde perspectiva de security. ¿Los high-risk systems tienen threat model? ¿Las audit findings HIGH/CRITICAL están resueltas? ¿Los secrets están managed correctamente (no en code, rotation setup)? ¿Compliance requirements están trackeados? Return READY, CONCERNS [list], o NOT READY [security blockers]."
+> "Review the project's current state for [target phase] gate readiness from a security perspective. Do the high-risk systems have a threat model? Are the HIGH/CRITICAL audit findings resolved? Are secrets managed correctly (not in code, rotation set up)? Are compliance requirements tracked? Return READY, CONCERNS [list], or NOT READY [security blockers]."
 
 **Verdicts**: READY / CONCERNS / NOT READY
 
@@ -326,20 +326,20 @@ Agent: `security-architect` | Model: Opus | Dominio: Threat modeling, compliance
 
 ## Tier 2 — QA Lead Gates
 
-Agent: `qa-lead` | Model: Sonnet | Dominio: Testability, coverage, test strategy
+Agent: `qa-lead` | Model: Sonnet | Domain: Testability, coverage, test strategy
 
 ### QA-STORY-READY — Story Readiness Check
 
-**Trigger**: Antes de que una story se acepta en un sprint — invocado por `/create-stories`, `/story-readiness`, `/sprint-plan`.
+**Trigger**: Before a story is accepted into a sprint — invoked by `/create-stories`, `/story-readiness`, `/sprint-plan`.
 
 **Context to pass**:
 - Story file path
 - Story type (Logic / Integration / UI / Performance / Security)
 - Acceptance criteria list (verbatim)
-- Technical requirement (TR-ID) que la story cubre
+- Technical requirement (TR-ID) the story covers
 
 **Prompt**:
-> "Review los acceptance criteria de esta story para testability antes de que entre al sprint. ¿Todos los criteria son específicos enough que un developer sabría unambiguously cuando están done? Para Logic-type: ¿cada criterion es verifiable con un automated test? Para Integration: ¿cada criterion es observable en test environment controlado? Para UI: ¿hay E2E test path o walkthrough documentado? Flaggear criteria too vague o que requieren full system build para testear. Return ADEQUATE, GAPS [specific criteria needing refinement], o INADEQUATE [story debe revisarse antes de sprint]."
+> "Review this story's acceptance criteria for testability before it enters the sprint. Are all the criteria specific enough that a developer would know unambiguously when they are done? For Logic-type: is each criterion verifiable with an automated test? For Integration: is each criterion observable in a controlled test environment? For UI: is there an E2E test path or a documented walkthrough? Flag criteria that are too vague or that require a full system build to test. Return ADEQUATE, GAPS [specific criteria needing refinement], or INADEQUATE [the story must be revised before the sprint]."
 
 **Verdicts**: ADEQUATE / GAPS / INADEQUATE
 
@@ -347,16 +347,16 @@ Agent: `qa-lead` | Model: Sonnet | Dominio: Testability, coverage, test strategy
 
 ### QA-TEST-COVERAGE — Test Coverage Review
 
-**Trigger**: Después de stories completas, antes de marcar epic done, o en `/gate-check` Production → Polish.
+**Trigger**: After stories are complete, before marking an epic done, or in `/gate-check` Production → Polish.
 
 **Context to pass**:
-- List de implemented stories con types
-- Test file paths en `tests/`
+- List of implemented stories with types
+- Test file paths in `tests/`
 - Coverage report output
 - Acceptance criteria per story
 
 **Prompt**:
-> "Review el test coverage para estas implementation stories. ¿Todas las Logic stories están cubiertas por passing unit tests? ¿Integration stories con integration tests? ¿UI stories con E2E tests o walkthroughs documentados? ¿Los acceptance criteria están mapeados a al menos 1 test cada uno? ¿Hay edge cases untested de la spec? ¿Coverage meta (>80% dominio, >60% integration) se hit? Return ADEQUATE, GAPS [specific missing tests], o INADEQUATE [critical logic untested — no advance]."
+> "Review the test coverage for these implementation stories. Are all Logic stories covered by passing unit tests? Integration stories by integration tests? UI stories by E2E tests or documented walkthroughs? Is each acceptance criterion mapped to at least 1 test? Are there untested edge cases from the spec? Is the coverage target (>80% domain, >60% integration) hit? Return ADEQUATE, GAPS [specific missing tests], or INADEQUATE [critical logic untested — do not advance]."
 
 **Verdicts**: ADEQUATE / GAPS / INADEQUATE
 
@@ -364,16 +364,16 @@ Agent: `qa-lead` | Model: Sonnet | Dominio: Testability, coverage, test strategy
 
 ### QA-LOAD-TEST — Performance/Load Test Review
 
-**Trigger**: Antes de release para endpoints críticos, o antes de adopter una arquitectura nueva con claims de performance.
+**Trigger**: Before release for critical endpoints, or before adopting a new architecture with performance claims.
 
 **Context to pass**:
 - Load test script path
 - Performance targets (p95/p99 latency, throughput)
 - Actual results
-- Environment spec (no prod, pero comparable)
+- Environment spec (not prod, but comparable)
 
 **Prompt**:
-> "Review estos load test results. ¿El test simula patterns realistas de producción (ramp-up, concurrent users, request distribution)? ¿Los targets están hit bajo sustained load, no solo peak? ¿Hay degradation modes (cómo falla el sistema bajo overload)? ¿Memory y connection pool usage son bounded? Return APPROVE (performance ready), CONCERNS [specific bottlenecks a optimizar], o REJECT [performance no meets targets — no deploy]."
+> "Review these load test results. Does the test simulate realistic production patterns (ramp-up, concurrent users, request distribution)? Are the targets hit under sustained load, not just peak? Are there degradation modes (how does the system fail under overload)? Are memory and connection pool usage bounded? Return APPROVE (performance ready), CONCERNS [specific bottlenecks to optimize], or REJECT [performance does not meet targets — no deploy]."
 
 **Verdicts**: APPROVE / CONCERNS / REJECT
 
@@ -381,20 +381,20 @@ Agent: `qa-lead` | Model: Sonnet | Dominio: Testability, coverage, test strategy
 
 ## Tier 2 — UX Lead Gates
 
-Agent: `ux-lead` | Model: Sonnet | Dominio: UX consistency, accessibility, design system
+Agent: `ux-lead` | Model: Sonnet | Domain: UX consistency, accessibility, design system
 
 ### UX-DESIGN-REVIEW — UX Design Review
 
-**Trigger**: Después de mockups / prototypes / design specs, antes de implementation.
+**Trigger**: After mockups / prototypes / design specs, before implementation.
 
 **Context to pass**:
-- Design spec / mockup paths (Figma link si aplica)
+- Design spec / mockup paths (Figma link if applicable)
 - User flow affected
 - Design system reference
 - Accessibility requirements (WCAG level)
 
 **Prompt**:
-> "Review este UX design. ¿El flow es consistent con el design system? ¿Hay fricción innecesaria en tasks críticos? ¿La accessibility meets WCAG AA (keyboard nav, screen reader, contrast)? ¿Los error states y edge cases están diseñados (loading, empty, error, success)? ¿Responsive / mobile behavior está especificado? Return APPROVE, CONCERNS [specific UX issues], o REJECT [fundamental UX problems — redesign antes de implementation]."
+> "Review this UX design. Is the flow consistent with the design system? Is there unnecessary friction in critical tasks? Does the accessibility meet WCAG AA (keyboard nav, screen reader, contrast)? Are the error states and edge cases designed (loading, empty, error, success)? Is responsive / mobile behavior specified? Return APPROVE, CONCERNS [specific UX issues], or REJECT [fundamental UX problems — redesign before implementation]."
 
 **Verdicts**: APPROVE / CONCERNS / REJECT
 
@@ -402,16 +402,16 @@ Agent: `ux-lead` | Model: Sonnet | Dominio: UX consistency, accessibility, desig
 
 ### UX-A11Y — Accessibility Audit
 
-**Trigger**: Antes de release para cualquier UI que sirve usuarios públicos.
+**Trigger**: Before release for any UI that serves public users.
 
 **Context to pass**:
 - UI component / screen paths
-- WCAG level target (AA baseline, AAA donde aplique)
+- WCAG level target (AA baseline, AAA where applicable)
 - Automated audit output (axe, Lighthouse)
 - Manual testing notes
 
 **Prompt**:
-> "Review este accessibility audit. ¿Meets WCAG AA? Check: (1) contraste mínimo 4.5:1 para texto, (2) keyboard nav funcional en todos los flows, (3) ARIA solo donde HTML semántico no alcanza, (4) imágenes con alt, (5) forms con labels asociados, (6) focus visible, (7) skip links, (8) no motion-only communication. ¿Hay findings CRITICAL del audit? Return APPROVE, CONCERNS [fix before next release], o REJECT [critical a11y blockers — no ship hasta remediar]."
+> "Review this accessibility audit. Does it meet WCAG AA? Check: (1) minimum 4.5:1 contrast for text, (2) working keyboard nav in every flow, (3) ARIA only where semantic HTML falls short, (4) images with alt text, (5) forms with associated labels, (6) visible focus, (7) skip links, (8) no motion-only communication. Are there CRITICAL findings in the audit? Return APPROVE, CONCERNS [fix before next release], or REJECT [critical a11y blockers — do not ship until remediated]."
 
 **Verdicts**: APPROVE / CONCERNS / REJECT
 
@@ -419,20 +419,20 @@ Agent: `ux-lead` | Model: Sonnet | Dominio: UX consistency, accessibility, desig
 
 ## Parallel Gate Protocol — Software
 
-Cuando un workflow de software requiere múltiples directors al mismo checkpoint (común en `/gate-check`), spawn simultáneo:
+When a software workflow requires multiple directors at the same checkpoint (common in `/gate-check`), spawn them at once:
 
 ```
-Spawn en paralelo:
+Spawn in parallel:
 1. cto                → CTO-PHASE-GATE
 2. vpe                → VPE-PHASE-GATE
 3. pm                 → PM-PHASE-GATE
 4. security-architect → SEC-PHASE-GATE
-5. qa-lead            → QA-PHASE-GATE (si coverage/quality en scope)
+5. qa-lead            → QA-PHASE-GATE (if coverage/quality is in scope)
 
-Collect todos los verdicts, aplicar escalation rules:
+Collect all verdicts, apply the escalation rules:
 - Any NOT READY / REJECT → overall FAIL
 - Any CONCERNS → overall CONCERNS
-- All READY / APPROVE → eligible PASS (subject a artifact checks)
+- All READY / APPROVE → eligible PASS (subject to artifact checks)
 ```
 
 ---
@@ -443,7 +443,7 @@ Collect todos los verdicts, aplicar escalation rules:
 |-------|---------------|----------------|
 | **Discovery** | PM-SCOPE, CTO-TECH-CHOICE | SEC-THREAT-MODEL, UX-DESIGN-REVIEW |
 | **Design** | CTO-ARCHITECTURE, CTO-ADR (per ADR), VPE-FEASIBILITY | SEC-THREAT-MODEL, UX-DESIGN-REVIEW |
-| **Pre-Production** | PM-EPIC, QA-STORY-READY (per story), PM-SPRINT, PHASE-GATEs (via gate-check) | UX-A11Y si UI |
+| **Pre-Production** | PM-EPIC, QA-STORY-READY (per story), PM-SPRINT, PHASE-GATEs (via gate-check) | UX-A11Y if UI |
 | **Production** | VPE-CODE-REVIEW (per significant story), QA-STORY-READY, PM-SPRINT | PM-MILESTONE, QA-TEST-COVERAGE, SEC-AUDIT |
-| **Pre-Release** | SEC-AUDIT, SEC-DEPS, QA-TEST-COVERAGE, QA-LOAD-TEST, UX-A11Y | VPE-REFACTOR si refactor en curso |
-| **Release** | PHASE-GATEs (via gate-check) | Todos los Tier 1 gates |
+| **Pre-Release** | SEC-AUDIT, SEC-DEPS, QA-TEST-COVERAGE, QA-LOAD-TEST, UX-A11Y | VPE-REFACTOR if a refactor is under way |
+| **Release** | PHASE-GATEs (via gate-check) | All Tier 1 gates |

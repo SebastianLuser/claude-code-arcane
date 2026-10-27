@@ -1,23 +1,23 @@
 ---
 name: seo-nextjs
-description: "SEO técnico para Next.js App Router: Metadata API, generateMetadata dinámico, sitemap.ts, robots.ts, JSON-LD structured data, Open Graph y canonical. Usar al agregar o auditar SEO en una app Next."
+description: "Technical SEO for the Next.js App Router: Metadata API, dynamic generateMetadata, sitemap.ts, robots.ts, JSON-LD structured data, Open Graph and canonical. Use when adding or auditing SEO in a Next app."
 category: "frontend"
 argument-hint: "[metadata|sitemap|jsonld|audit]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
-# seo-nextjs — SEO técnico para Next.js
+# seo-nextjs — Technical SEO for Next.js
 
 ## MANDATORY WORKFLOW
 
-**Antes de generar o modificar código, completar estos pasos en orden.**
+**Before generating or modifying code, complete these steps in order.**
 
-### Step 0: Determinar scope
-1. ¿App nueva o auditoría de SEO existente?
-2. ¿Contenido estático, dinámico (DB/CMS) o mixto?
-3. ¿Necesita structured data (JSON-LD) para rich results? (artículos, productos, FAQ, breadcrumbs)
+### Step 0: Determine the scope
+1. New app or an audit of existing SEO?
+2. Static, dynamic (DB/CMS) or mixed content?
+3. Does it need structured data (JSON-LD) for rich results? (articles, products, FAQ, breadcrumbs)
 
-### Step 1: Metadata base (`app/layout.tsx`)
+### Step 1: Base metadata (`app/layout.tsx`)
 ```ts
 export const metadata: Metadata = {
   metadataBase: new URL('https://example.com'),
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 };
 ```
 
-### Step 2: Metadata dinámica (`generateMetadata`)
+### Step 2: Dynamic metadata (`generateMetadata`)
 ```ts
 export async function generateMetadata({ params }): Promise<Metadata> {
   const post = await getPost(params.slug);
@@ -41,9 +41,9 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   };
 }
 ```
-Nunca tags `<meta>` manuales en el body — siempre la Metadata API.
+Never manual `<meta>` tags in the body — always the Metadata API.
 
-### Step 3: sitemap.ts y robots.ts
+### Step 3: sitemap.ts and robots.ts
 ```ts
 // app/sitemap.ts
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -51,7 +51,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [{ url: 'https://example.com', changeFrequency: 'daily' },
     ...posts.map(p => ({ url: `https://example.com/blog/${p.slug}`, lastModified: p.updatedAt }))];
 }
-// app/robots.ts → reglas + link al sitemap
+// app/robots.ts → rules + link to the sitemap
 ```
 
 ### Step 4: JSON-LD structured data
@@ -61,21 +61,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '@context': 'https://schema.org', '@type': 'Article',
     headline: post.title, datePublished: post.date, author: {...} }) }} />
 ```
-Validar con Rich Results Test de Google.
+Validate with Google's Rich Results Test.
 
 ### Step 5: Checklist
-- [ ] `metadataBase` seteado (evita URLs OG rotas)
-- [ ] Canonical en cada page indexable
-- [ ] OG image 1200×630 por page importante
-- [ ] sitemap.ts + robots.ts presentes
-- [ ] JSON-LD donde aplique rich result
-- [ ] Sin `noindex` accidental en prod
-- [ ] LCP/CLS sanos (ver skill `nextjs-best-practices`)
+- [ ] `metadataBase` set (avoids broken OG URLs)
+- [ ] Canonical on every indexable page
+- [ ] 1200×630 OG image per important page
+- [ ] sitemap.ts + robots.ts present
+- [ ] JSON-LD wherever a rich result applies
+- [ ] No accidental `noindex` in prod
+- [ ] Healthy LCP/CLS (see the `nextjs-best-practices` skill)
 
-## Cierre
+## Wrap-up
 
-Validar el structured data con el Rich Results Test de Google y los meta tags con el inspector del navegador. Si el checklist pasa → SEO **READY**. Confirmar cambios con el usuario antes de escribir. Siguiente paso: skill `nextjs-best-practices` para Web Vitals, o `ai-seo` para estrategia de contenido.
+Validate the structured data with Google's Rich Results Test and the meta tags with the browser inspector. If the checklist passes → SEO **READY**. Confirm changes with the user before writing. Next step: the `nextjs-best-practices` skill for Web Vitals, or `ai-seo` for content strategy.
 
 ---
 
-_Inspirado en las skills de SEO de [laguagu/claude-code-nextjs-skills](https://github.com/laguagu/claude-code-nextjs-skills). Adaptado al formato Arcane. Relacionado: skill `ai-seo`._
+_Inspired by the SEO skills in [laguagu/claude-code-nextjs-skills](https://github.com/laguagu/claude-code-nextjs-skills). Adapted to the Arcane format. Related: the `ai-seo` skill._

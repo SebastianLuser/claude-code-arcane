@@ -5,38 +5,38 @@ paths:
 
 # Meshy Files
 
-Como se guardan los assets de Meshy. Los creditos y las reglas de gasto estan en `.claude/rules/meshy-assets.md`, que se carga siempre.
+How Meshy assets are stored. Credits and spending rules are in `.claude/rules/meshy-assets.md`, which is always loaded.
 
-## Master unico, derivados baratos
+## Single master, cheap derivatives
 
-El GLB refined es la fuente de verdad y es **inmutable**. Ningun target se genera desde el prompt: todos salen del master.
+The refined GLB is the source of truth and is **immutable**. No target is generated from the prompt: all of them come from the master.
 
-| Target | Como | Creditos |
+| Target | How | Credits |
 |---|---|---|
-| Unity y UE5 | `meshy_convert` -> `fbx` (un solo archivo sirve para los dos) | 1 |
+| Unity and UE5 | `meshy_convert` -> `fbx` (a single file serves both) | 1 |
 | Blender | `meshy_convert` -> `blend` | 1 |
-| Impresion | `meshy_convert` -> `stl` (`3mf` si es multicolor) | 1 |
+| Printing | `meshy_convert` -> `stl` (`3mf` if multicolor) | 1 |
 | Web / three.js | `npx gltf-transform optimize --simplify` | **0** |
 
-## Estructura en disco
+## On-disk structure
 
 ```
 assets/3d/<slug>/
-  meshy.json           # ledger, ver abajo
-  master.glb           # refined, inmutable
+  meshy.json           # ledger, see below
+  master.glb           # refined, immutable
   thumb.png
   targets/
-    web.glb            # <=15k tris, texturas 1024, KTX2 + draco
+    web.glb            # <=15k tris, 1024 textures, KTX2 + draco
     game.fbx           # Unity + UE5
     edit.blend
     print.stl
 ```
 
-Slugs en kebab-case, sin fechas ni task_ids en el path.
+Slugs in kebab-case, no dates or task_ids in the path.
 
 ## Ledger: `meshy.json`
 
-Obligatorio por asset. Sin esto cada sesion nueva arranca ciega y se paga dos veces el mismo modelo.
+Mandatory per asset. Without it every new session starts blind and the same model is paid for twice.
 
 ```json
 {
@@ -52,32 +52,32 @@ Obligatorio por asset. Sin esto cada sesion nueva arranca ciega y se paga dos ve
 }
 ```
 
-Actualizar `meshy.json` **en el mismo turno** en que se genera. No dejarlo para despues.
+Update `meshy.json` **in the same turn** the generation happens. Do not leave it for later.
 
-## Ejes y escala
+## Axes and scale
 
-Verificar una vez, anotar en el ledger, no volver a pensarlo.
+Verify once, record it in the ledger, do not think about it again.
 
-| Destino | Convencion |
+| Target | Convention |
 |---|---|
-| GLB | Y-up, metros |
-| Unity | Y-up, 1 unidad = 1 m |
-| UE5 | Z-up, 1 unidad = 1 cm (rotacion + factor 100) |
-| Blender | Z-up, metros |
+| GLB | Y-up, meters |
+| Unity | Y-up, 1 unit = 1 m |
+| UE5 | Z-up, 1 unit = 1 cm (rotation + factor 100) |
+| Blender | Z-up, meters |
 
-## Impresion 3D
+## 3D printing
 
-`meshy_resize` a milimetros reales antes de exportar STL.
+`meshy_resize` to real millimeters before exporting STL.
 
 ## Rigging
 
-El esqueleto que devuelve `meshy_rig` **no** es el mannequin de UE5: el retargeting es manual. En UE5 los static meshes van a Nanite y no necesitan decimation; los skeletal meshes si necesitan LODs propios.
+The skeleton returned by `meshy_rig` is **not** the UE5 mannequin: retargeting is manual. In UE5 static meshes go to Nanite and need no decimation; skeletal meshes do need their own LODs.
 
 ## Git
 
-- `*.glb *.fbx *.blend *.stl *.3mf` por **Git LFS**.
-- `meshy.json` y `thumb.png` van como archivos normales — son chicos y son lo que hace grepeable el catalogo.
+- `*.glb *.fbx *.blend *.stl *.3mf` through **Git LFS**.
+- `meshy.json` and `thumb.png` go in as regular files — they are small and they are what makes the catalog greppable.
 
-## Integracion con el resto del stack
+## Integration with the rest of the stack
 
-`asset-spec` define que asset hace falta -> Meshy lo genera -> `asset-audit` valida el resultado. Meshy no reemplaza a ninguno de los dos.
+`asset-spec` defines which asset is needed -> Meshy generates it -> `asset-audit` validates the result. Meshy replaces neither of them.

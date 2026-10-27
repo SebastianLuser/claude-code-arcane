@@ -8,65 +8,65 @@ paths:
 
 # Blender Files
 
-Como tiene que salir un asset de Blender hacia un engine o la web. Como operar Blender sin romper nada esta en `.claude/rules/blender-pipeline.md`, que se carga siempre.
+How a Blender asset has to come out toward an engine or the web. How to operate Blender without breaking anything is in `.claude/rules/blender-pipeline.md`, which is always loaded.
 
-## Ejes, escala y unidades
+## Axes, scale and units
 
-Verificar una vez por proyecto, anotarlo, no volver a pensarlo.
+Verify once per project, write it down, do not think about it again.
 
-| Destino | Convencion | Al exportar desde Blender |
+| Target | Convention | When exporting from Blender |
 |---|---|---|
-| Blender | Z-up, right-handed, 1 unidad = 1 m | — |
-| glTF / GLB | Y-up, metros | El exporter convierte solo (`+Y up`) |
-| Unity | Y-up, left-handed, 1 unidad = 1 m | glTF sale derecho; en FBX revisar el eje |
-| UE5 | Z-up, left-handed, 1 unidad = 1 cm | Factor 100 |
+| Blender | Z-up, right-handed, 1 unit = 1 m | — |
+| glTF / GLB | Y-up, meters | The exporter converts on its own (`+Y up`) |
+| Unity | Y-up, left-handed, 1 unit = 1 m | glTF comes out straight; with FBX check the axis |
+| UE5 | Z-up, left-handed, 1 unit = 1 cm | Factor 100 |
 
-Reglas duras:
+Hard rules:
 
-- **Aplicar escala antes de exportar** (`Object → Apply → Scale`). Un objeto que sale con `scale`
-  distinto de 1 arrastra el problema al engine y rompe la fisica y el skinning.
-- Origen al piso para props y personajes; al centro para objetos que rotan sobre si mismos.
-- Un nodo con escala `100` o `0.01` en el archivo exportado es una conversion de unidades sin
-  aplicar, no una decision de diseno. Se corrige, no se documenta.
+- **Apply scale before exporting** (`Object → Apply → Scale`). An object that leaves with a `scale`
+  other than 1 drags the problem into the engine and breaks physics and skinning.
+- Origin at the floor for props and characters; at the center for objects that rotate around themselves.
+- A node with scale `100` or `0.01` in the exported file is an unapplied unit conversion,
+  not a design decision. It gets fixed, not documented.
 
-## Topologia
+## Topology
 
-- **Quads en todo lo que deforma.** Tris solo en geometria estatica. N-gons en nada que deforme.
-- Edge loops en articulaciones, poles de 5 aristas o menos.
-- Presupuesto de triangulos declarado **antes** de modelar, no medido despues.
-- Un LOD generado con Decimate es un borrador. Para heroes va retopo a mano.
+- **Quads on everything that deforms.** Tris only on static geometry. N-gons on nothing that deforms.
+- Edge loops at joints, poles of 5 edges or fewer.
+- Triangle budget declared **before** modeling, not measured afterwards.
+- A LOD generated with Decimate is a draft. Hero assets get a manual retopo.
 
-## Materiales y texturas
+## Materials and textures
 
-- **Principled BSDF y nada mas** en lo que se exporta. Los nodos procedurales no sobreviven a
-  glTF ni a FBX: si el look depende de ellos, hay que bakearlo a textura.
-- Color space: Base Color en sRGB; Normal, Roughness, Metallic y AO en **Non-Color**. Es el bug
-  mas comun y el mas silencioso.
-- Normal maps: Blender, glTF y Unity usan OpenGL (+Y). **UE5 usa DirectX (-Y)**: hay que invertir
-  el canal verde o marcarlo en el import.
-- Resoluciones potencia de dos. Texel density consistente entre assets del mismo set.
-- Cantidad de materiales = draw calls. Atlas antes de sumar materiales.
+- **Principled BSDF and nothing else** on what gets exported. Procedural nodes do not survive
+  glTF or FBX: if the look depends on them, bake it to a texture.
+- Color space: Base Color in sRGB; Normal, Roughness, Metallic and AO in **Non-Color**. It is the most
+  common bug and the quietest.
+- Normal maps: Blender, glTF and Unity use OpenGL (+Y). **UE5 uses DirectX (-Y)**: invert
+  the green channel or flag it on import.
+- Power-of-two resolutions. Consistent texel density across assets of the same set.
+- Number of materials = draw calls. Atlas before adding materials.
 
-## Animacion
+## Animation
 
-- **Los constraints no se exportan, los keyframes si.** Todo rig con IK, drivers o constraints se
-  bakea (`nla.bake` con visual keying) antes de exportar.
-- Frame rate del `.blend` igual al del engine. Un mismatch se ve como animacion lenta o acelerada,
-  no como error.
-- Huesos con sufijo `.L` / `.R` para que la simetria funcione.
-- Root motion: hueso raiz en el origen. Decidir in-place vs root motion **antes** de animar.
+- **Constraints are not exported, keyframes are.** Every rig with IK, drivers or constraints gets
+  baked (`nla.bake` with visual keying) before exporting.
+- The `.blend` frame rate equals the engine's. A mismatch shows up as slow or sped-up animation,
+  not as an error.
+- Bones with a `.L` / `.R` suffix so symmetry works.
+- Root motion: root bone at the origin. Decide in-place vs root motion **before** animating.
 
 ## Git
 
-- `*.blend *.fbx *.glb *.gltf` por **Git LFS**. Verificar `git lfs version` antes de agregar las
-  entradas: peor que no tenerlas es tenerlas sin LFS instalado.
-- `*.blend1` y `*.blend2` (backups de Blender) van al `.gitignore`, nunca al repo.
-- Las texturas fuente (`.psd`, `.kra`, `.exr` de bake) por LFS; los `.png` finales tambien.
+- `*.blend *.fbx *.glb *.gltf` through **Git LFS**. Check `git lfs version` before adding the
+  entries: worse than not having them is having them without LFS installed.
+- `*.blend1` and `*.blend2` (Blender backups) go in `.gitignore`, never in the repo.
+- Source textures (`.psd`, `.kra`, bake `.exr`) through LFS; final `.png` files too.
 
-## Integracion con el resto del stack
+## Integration with the rest of the stack
 
-`asset-spec` define que asset hace falta → Meshy o modelado a mano lo produce → **Blender lo
-limpia y lo exporta** → `asset-audit` valida el resultado en el proyecto.
+`asset-spec` defines which asset is needed → Meshy or manual modeling produces it → **Blender
+cleans it up and exports it** → `asset-audit` validates the result in the project.
 
-Blender es el paso del medio, no el principio ni el final. Si el asset vino de `meshy-derive`, el
-`.blend` que bajo es el punto de entrada; no se regenera desde Meshy para arreglar topologia.
+Blender is the middle step, not the beginning or the end. If the asset came from `meshy-derive`, the
+`.blend` it downloaded is the entry point; it is not regenerated from Meshy to fix topology.

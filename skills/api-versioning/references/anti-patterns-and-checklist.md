@@ -2,26 +2,26 @@
 
 ## Anti-patterns
 
-- Breaking change sin nueva versión
-- Mantener v1/v2/v3/v4 vivas (backport hell) — max 2
-- Versión en body JSON (rompe routing/caché)
-- Sin headers Deprecation/Sunset
-- Versionar internals (auth, healthchecks, webhooks salientes)
-- Bumpear major por non-breaking (inflación)
-- No monitorear uso de v1 -> apagás a ciegas
-- Docs única para todas las versiones
-- Changelog inexistente
+- Breaking change without a new version
+- Keeping v1/v2/v3/v4 alive (backport hell) — max 2
+- Version in the JSON body (breaks routing/caching)
+- No Deprecation/Sunset headers
+- Versioning internals (auth, healthchecks, outgoing webhooks)
+- Bumping the major for a non-breaking change (inflation)
+- Not monitoring v1 usage -> you shut it down blind
+- A single doc for every version
+- No changelog
 
-## Checklist (introducir v2)
+## Checklist (introducing v2)
 
-- [ ] Confirmar que es realmente breaking (sección 3)
-- [ ] Se resuelve con campo opcional o endpoint nuevo en v1?
-- [ ] `/v2/` paralelo, reusar dominio/service, duplicar handlers+DTOs
-- [ ] OpenAPI spec separado para v2
-- [ ] Sunset de v1 definido (min 6m, 12m si mobile)
-- [ ] Headers Deprecation+Sunset+Link en v1
-- [ ] Logging hits a v1 + dashboard uso v1 vs v2
-- [ ] Guía de migración publicada antes del anuncio
-- [ ] Contract tests de v1 pasan hasta sunset
-- [ ] Mobile: subir min en /minimum-version antes del sunset
-- [ ] Plan de rollback si v2 explota
+- [ ] Confirm it really is breaking (see Breaking vs Non-breaking in SKILL.md)
+- [ ] Can it be solved with an optional field or a new endpoint in v1?
+- [ ] Parallel `/v2/`, reuse domain/service, duplicate handlers+DTOs
+- [ ] Separate OpenAPI spec for v2
+- [ ] v1 sunset defined (min 6m, 12m if mobile)
+- [ ] Deprecation+Sunset+Link headers on v1
+- [ ] Logging of v1 hits + v1 vs v2 usage dashboard
+- [ ] Migration guide published before the announcement
+- [ ] v1 contract tests pass until the sunset
+- [ ] Mobile: raise the min in /minimum-version before the sunset
+- [ ] Rollback plan if v2 blows up

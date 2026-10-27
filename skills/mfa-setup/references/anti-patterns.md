@@ -1,15 +1,15 @@
 # Anti-patterns — MFA Setup
 
-- TOTP secret en claro en DB — siempre AES-256-GCM + KMS
-- SMS como unica opcion MFA
-- Sin backup codes al enrolar
-- Backup codes en claro — hashear Argon2id
-- Sin rate limit en `/verify` — brute force trivial
-- Window TOTP >+-1 step
-- No actualizar counter WebAuthn
-- Preguntas secretas como recovery
-- Mismo OTP valido mas de una vez
-- No invalidar sesiones al desactivar MFA
-- Reutilizar challenge WebAuthn entre requests
-- SMS a menores
-- Sin logging de eventos MFA
+- TOTP secret in plaintext in the DB — always AES-256-GCM + KMS
+- SMS as the only MFA option
+- No backup codes at enrollment
+- Backup codes in plaintext — hash with Argon2id
+- No rate limit on `/verify` — trivial brute force
+- TOTP window >+-1 step
+- Not updating the WebAuthn counter
+- Secret questions as recovery
+- Same OTP valid more than once
+- Not invalidating sessions when MFA is disabled
+- Reusing a WebAuthn challenge across requests
+- SMS to minors
+- No logging of MFA events

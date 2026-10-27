@@ -1,32 +1,35 @@
 #!/usr/bin/env python3
-"""job_key de seen_jobs.json, y una auditoria del estado que ya existe.
+"""job_key for seen_jobs.json, and an audit of the state that already exists.
 
-La regla estaba solo en prosa (references/dedup-playbook.md), asi que cada
-corrida la aplicaba a su manera y el archivo juntaba la misma oferta bajo dos
-claves: un titulo cortado en otro punto, un sufijo legal que una vez se saco y
-otra no. Aca la clave es una funcion pura de empresa + titulo:
+The rule used to live only in prose (references/dedup-playbook.md), so every
+run applied it its own way and the file collected the same posting under two
+keys: a title cut at another point, a legal suffix removed once and kept
+another time. Here the key is a pure function of company + title:
 
-  * slug: minusculas, sin acentos, palabras unidas con "-", conserva el "."
-    interno (coderslab.io, .net);
-  * empresa sin sufijo legal (inc, llc, s.a., gmbh...); titulo sin los
-    calificadores de modalidad o region entre parentesis ("(remote)", "(latam)");
-  * largo acotado con un hash del slug completo: un titulo largo da siempre la
-    misma clave y dos titulos largos distintos nunca chocan;
-  * un nombre en otro alfabeto (cirilico, CJK) se reduce a casi nada al pasarlo
-    a ASCII, y "Программист 1С" y "Аналитик 1С" quedarian ambos en "1": ahi la
-    identidad sale del id numerico de la URL, o de un hash.
+  * slug: lowercase, no accents, words joined with "-", keeps the inner "."
+    (coderslab.io, .net);
+  * company without legal suffix (inc, llc, s.a., gmbh...); title without the
+    work-mode or region qualifiers in parentheses ("(remote)", "(latam)");
+    both word lists live in qualifiers.<lang>.json next to this script and
+    every pack applies;
+  * bounded length with a hash of the full slug: a long title always gives the
+    same key and two different long titles never collide;
+  * a name in another alphabet (Cyrillic, CJK) shrinks to almost nothing when
+    turned into ASCII, and "Программист 1С" and "Аналитик 1С" would both end up
+    as "1": there the identity comes from the numeric id in the URL, or a hash.
 
-Adaptado de tools/job_key.py de ai-job-search (MIT, (c) 2026 Mads Lorentzen;
-ver ATTRIBUTION.md) a la clave `empresa|titulo` y al schema de Arcane.
+Adapted from tools/job_key.py of ai-job-search (MIT, (c) 2026 Mads Lorentzen;
+see ATTRIBUTION.md) to the `company|title` key and Arcane's schema.
 
-Uso:
+Usage:
   python .claude/skills/job-scrape/scripts/job_key.py --company "Acme Inc." --title "Backend Dev (Remote)" [--url URL]
-  python .claude/skills/job-scrape/scripts/job_key.py --audit [ruta/a/seen_jobs.json]
+  python .claude/skills/job-scrape/scripts/job_key.py --audit [path/to/seen_jobs.json]
 
-Sin ruta, --audit lee <workspace>/tools/job_scraper/seen_jobs.json, con el
-workspace de CAREER_WORKSPACE o ./career-workspace. Sale 0 con una clave, o con
-una auditoria sin problemas; 1 si la auditoria encuentra claves malformadas o
-URLs repetidas en dos entradas. Nunca renombra nada: reporta y decide el usuario.
+Without a path, --audit reads <workspace>/tools/job_scraper/seen_jobs.json, with
+the workspace from CAREER_WORKSPACE or ./career-workspace. Exits 0 with a key,
+or with an audit without problems; 1 if the audit finds malformed keys or URLs
+repeated across two entries. It never renames anything: it reports and the
+user decides.
 """
 
 import argparse
@@ -42,19 +45,21 @@ COMPANY_MAX = 40
 TITLE_MAX = 60
 HASH_LEN = 6
 
-LEGAL_SUFFIXES = {
-    "inc", "llc", "ltd", "ltda", "corp", "co", "plc", "gmbh", "ag", "bv", "sa", "sas", "sl",
-    "srl", "spa", "sapi", "sac", "cv", "de", "limited", "corporation", "company",
-}
-QUALIFIERS = {
-    "remote", "remoto", "remota", "latam", "hybrid", "hibrido", "hibrida", "onsite", "on-site",
-    "presencial", "full-time", "part-time", "contract", "contractor", "freelance", "worldwide",
-    "anywhere", "global", "usa", "us", "eu", "emea", "americas",
-}
+def _load_packs():
+    """Union of every qualifiers.<lang>.json next to this script: one board mixes languages."""
+    suffixes, qualifiers = set(), set()
+    for path in sorted(Path(__file__).resolve().parent.glob("qualifiers.*.json")):
+        pack = json.loads(path.read_text(encoding="utf-8"))
+        suffixes.update(pack["legal_suffixes"])
+        qualifiers.update(pack["qualifiers"])
+    return suffixes, qualifiers
+
+
+LEGAL_SUFFIXES, QUALIFIERS = _load_packs()
 _PAREN = re.compile(r"\(([^()]*)\)")
 _WORD = re.compile(r"[a-z0-9]+(?:\.[a-z0-9]+)*")
 _JOB_ID = re.compile(r"(\d{6,})")
-# Clave canonica: dos slugs separados por un solo "|".
+# Canonical key: two slugs separated by a single "|".
 _SLUG = r"[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?"
 _CANONICAL = re.compile(rf"^{_SLUG}\|{_SLUG}$")
 
@@ -64,15 +69,15 @@ def _ascii(text):
 
 
 def slugify(text):
-    """Palabras ASCII unidas con "-"; el "." solo sobrevive entre alfanumericos."""
+    """ASCII words joined with "-"; the "." only survives between alphanumerics."""
     return "-".join(_WORD.findall(_ascii(text)))
 
 
 def _lost_letters(text):
-    """True si pasar a ASCII tiro letras de otro alfabeto, y el slug ya no identifica.
+    """True if turning it into ASCII dropped letters of another alphabet, so the slug no longer identifies.
 
-    Las letras latinas sin descomposicion (o, ae, ss, l con trazo) no cuentan:
-    "Ørsted" queda "rsted" y no choca con nadie en la practica.
+    Latin letters without a decomposition (o, ae, ss, l with stroke) do not count:
+    "Ørsted" becomes "rsted" and collides with nobody in practice.
     """
     for ch in unicodedata.normalize("NFKD", str(text or "")):
         if ord(ch) >= 128 and ch.isalpha() and not unicodedata.name(ch, "LATIN").startswith("LATIN"):
@@ -81,7 +86,7 @@ def _lost_letters(text):
 
 
 def _cap(slug, limit):
-    """Acota el largo sin que el corte cambie entre corridas: hash del slug completo."""
+    """Bounds the length without the cut changing between runs: hash of the full slug."""
     if len(slug) <= limit:
         return slug
     return f"{slug[:limit].rstrip('-.')}-{hashlib.sha1(slug.encode('utf-8')).hexdigest()[:HASH_LEN]}"
@@ -100,10 +105,10 @@ def company_slug(company):
         return slug
     name = unicodedata.normalize("NFC", str(company or "").strip().casefold())
     if not name:
-        return "sin-empresa"
-    # Un nombre en otro alfabeto igual tiene identidad: el hash. Lo latino que
-    # sobrevive queda como prefijo legible ("Сбер AI" y "Яндекс AI" dan "ai").
-    return f"{slug}-{_digest(name)}" if slug else f"empresa-{_digest(name)}"
+        return "no-company"
+    # A name in another alphabet still has an identity: the hash. Whatever Latin
+    # survives stays as a readable prefix ("Сбер AI" and "Яндекс AI" give "ai").
+    return f"{slug}-{_digest(name)}" if slug else f"company-{_digest(name)}"
 
 
 def title_slug(title, url=""):
@@ -114,18 +119,18 @@ def title_slug(title, url=""):
     slug = _cap(slugify(_PAREN.sub(keep, str(title or ""))), TITLE_MAX)
     if slug and not _lost_letters(title):
         return slug
-    # Titulo en otro alfabeto: el id numerico del portal es la identidad estable;
-    # sin id, el hash de la URL (no del titulo: un portal que re-publica con otro
-    # titulo guardaria la misma oferta dos veces).
+    # Title in another alphabet: the portal's numeric id is the stable identity;
+    # without an id, the hash of the URL (not of the title: a portal that
+    # re-publishes with another title would store the same posting twice).
     match = _JOB_ID.search(url or "")
     if match:
         return f"{slug}-{match.group(1)}" if slug else match.group(1)
     digest = _digest(url or title)
-    return f"{slug}-{digest}" if slug else f"sin-titulo-{digest}"
+    return f"{slug}-{digest}" if slug else f"untitled-{digest}"
 
 
 def make_key(company, title, url=""):
-    """La clave de seen_jobs.json para una oferta."""
+    """The seen_jobs.json key for a posting."""
     return f"{company_slug(company)}|{title_slug(title, url)}"
 
 
@@ -135,15 +140,15 @@ def default_state():
 
 
 def audit(path):
-    """Claves malformadas, URLs en dos entradas, y claves que hoy darian distinto."""
+    """Malformed keys, URLs in two entries, and keys that would come out different today."""
     try:
         doc = json.loads(Path(path).read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
-        print(json.dumps({"error": f"no se pudo leer {path}: {exc}"}, ensure_ascii=False), file=sys.stderr)
+        print(json.dumps({"error": f"could not read {path}: {exc}"}, ensure_ascii=False), file=sys.stderr)
         return 1
     jobs = doc.get("jobs") if isinstance(doc, dict) else None
     if not isinstance(jobs, dict) or not all(isinstance(v, dict) for v in jobs.values()):
-        print(json.dumps({"error": f"{path}: se esperaba un objeto 'jobs' de entradas"}, ensure_ascii=False), file=sys.stderr)
+        print(json.dumps({"error": f"{path}: expected a 'jobs' object of entries"}, ensure_ascii=False), file=sys.stderr)
         return 1
 
     malformed = [k for k in jobs if not _CANONICAL.match(k)]
@@ -162,24 +167,24 @@ def audit(path):
             drift[key] = expected
 
     print(json.dumps({
-        "entradas": len(jobs),
-        "claves_malformadas": malformed,
-        "urls_repetidas": duplicates,
-        "claves_con_otra_forma": drift,
+        "entries": len(jobs),
+        "malformed_keys": malformed,
+        "duplicate_urls": duplicates,
+        "drifted_keys": drift,
     }, indent=2, ensure_ascii=False))
     return 1 if (malformed or duplicates) else 0
 
 
 def _force_utf8_output():
     for stream in (sys.stdout, sys.stderr):
-        reconfigure = getattr(stream, "reconfigure", None)  # no existe en un StringIO de test
+        reconfigure = getattr(stream, "reconfigure", None)  # does not exist on a test StringIO
         if reconfigure:
             reconfigure(encoding="utf-8")
 
 
 def main(argv=None):
     _force_utf8_output()
-    ap = argparse.ArgumentParser(description="job_key de seen_jobs.json, o auditoria del estado.")
+    ap = argparse.ArgumentParser(description="job_key for seen_jobs.json, or an audit of the state.")
     ap.add_argument("--company")
     ap.add_argument("--title")
     ap.add_argument("--url", default="")
@@ -189,7 +194,7 @@ def main(argv=None):
     if args.audit is not None:
         return audit(args.audit or default_state())
     if args.company is None or args.title is None:
-        ap.error("pasa --company y --title, o --audit")
+        ap.error("pass --company and --title, or --audit")
     print(make_key(args.company, args.title, args.url))
     return 0
 

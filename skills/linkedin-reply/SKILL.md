@@ -13,7 +13,7 @@ Every reply is another engagement event on the post, and the first hour does mos
 
 ## Phase 1: Input
 
-The user pastes the comments, ideally with names and roles, or a screenshot. Never read the thread with a browser. Read the **Voice** section of `01-Perfiles/Perfil Maestro.md`.
+The user pastes the comments, ideally with names and roles, or a screenshot. Never read the thread with a browser. Read the **Voice** section of `01-Profiles/Master Profile.md`.
 
 ## Phase 2: Triage
 
@@ -36,7 +36,7 @@ Write in that order and stop when the value stops.
 - **A critic:** concede the true part first, in their words, then hold the line on the rest. Never delete, never get defensive, never reply twice in the same thread.
 - **A lead:** answer fully in public; the open door is one sentence at the end, an offer of help, not a pitch. For a recruiter, a reply in public and the details in a DM is fine.
 - **A pitch in the comments:** ignore it. Replying gives it reach.
-- **Never invent facts about the user's work.** Stack, numbers, timelines and how something was built come from `01-Perfiles/Perfil Maestro.md` or from the user. When a reply needs one that is missing, write `{{...}}` in its place and ask; a made-up detail in public is worse than a shorter reply.
+- **Never invent facts about the user's work.** Stack, numbers, timelines and how something was built come from `01-Profiles/Master Profile.md` or from the user. When a reply needs one that is missing, write `{{...}}` in its place and ask; a made-up detail in public is worse than a shorter reply.
 
 Run every reply through `/content-humanizer` (`.claude/skills/content-humanizer/scripts/humanize.py`, then `detect.py` from the same folder).
 
@@ -62,7 +62,7 @@ Skipped: an agency pitch. Replying gives it reach.
 ## Protocol
 
 - Nothing is posted until the user says yes, and the user pastes the replies. The User Agreement (section 8.2) forbids bots and automated methods that comment on posts.
-- A LEAD that becomes a conversation goes to `05-Contactos/` (ask before writing) so `/cold-outreach` and `/network-map` see it.
+- A LEAD that becomes a conversation goes to `05-Contacts/` (ask before writing) so `/cold-outreach` and `/network-map` see it.
 - Credit: adapted from Jake Schincariol's linkedin-agent-skill (MIT).
 
 ## Next steps

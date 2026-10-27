@@ -3,35 +3,35 @@ type: cache
 updated: {{date:YYYY-MM-DD}}
 ---
 
-# Contexto reciente
+# Recent context
 
-> [!warning] Esto es un caché, no una nota
-> Lo reescribe `/review-dump` al cerrar el día. Si contradice a una nota, **la nota gana**. Se puede borrar sin perder nada: se regenera. No lo edites a mano, no lo linkees desde otras notas.
+> [!warning] This is a cache, not a note
+> `/review-dump` rewrites it when closing the day. If it contradicts a note, **the note wins**. It can be deleted without losing anything: it is regenerated. Do not edit it by hand, do not link to it from other notes.
 
-## Dónde estoy
+## Where I am
 
-<Dos o tres líneas: en qué está trabajando el usuario ahora. Reescrito cada vez, no acumulado.>
+<Two or three lines: what the user is working on right now. Rewritten every time, not accumulated.>
 
-## Cambió en los últimos días
+## Changed in the last few days
 
-<Links a las notas creadas o tocadas, con una línea de qué cambió en cada una. Máximo 10.>
+<Links to the notes created or touched, with one line on what changed in each. At most 10.>
 
-## Hilos abiertos
+## Open threads
 
-<Preguntas y decisiones pendientes, con link a donde aparecieron. Máximo 5. Un hilo que se cierra se saca de acá.>
+<Pending questions and decisions, with a link to where they came up. At most 5. A thread that closes is removed from here.>
 
-## Tareas vivas
+## Live tasks
 
-<Las tareas abiertas que siguen vigentes, con link a su nota. No las canceladas.>
+<The open tasks that are still current, with a link to their note. Not the cancelled ones.>
 
 <!--
-Reglas de este archivo, y son duras porque es lo único del vault que un agente
-reescribe sin preguntar:
+Rules for this file, and they are hard because it is the only thing in the vault an agent
+rewrites without asking:
 
-- Techo de 40 lineas. Si no entra, es que hay que resumir mas, no agrandar el techo.
-- Nada de secretos, tokens, ni credenciales, aunque aparezcan en un dump.
-- Nada de transcripciones crudas ni de texto pegado de terceros.
-- Ninguna afirmacion sin su link a la nota que la respalda. Este archivo no crea
-  conocimiento: apunta al que ya existe.
-- Se reescribe completo, no se le agrega al final. Un caché que crece es un log.
+- 40-line ceiling. If it does not fit, summarize more, do not raise the ceiling.
+- No secrets, tokens or credentials, even if they appear in a dump.
+- No raw transcripts or text pasted from third parties.
+- No claim without its link to the note that backs it. This file does not create
+  knowledge: it points to what already exists.
+- It is rewritten in full, never appended to. A cache that grows is a log.
 -->

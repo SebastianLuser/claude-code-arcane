@@ -1,13 +1,13 @@
 # Folder Structure & Files to Generate
 
-## Estructura de carpetas
+## Folder structure
 
 ```
 Assets/
   _Project/
     Scripts/
       Core/             # GameManager, AudioManager, enums, shared types
-      [Feature1]/       # Scripts agrupados por feature
+      [Feature1]/       # Scripts grouped by feature
       [Feature2]/
       Data/             # SO class definitions
       UI/
@@ -21,23 +21,23 @@ Assets/
       Game Design Document.md
 ```
 
-## Archivos a generar
+## Files to generate
 
 ### Core
-- **Enums.cs** — Enum principal (GameState, etc.) con spacing para extensibilidad (0, 10, 20...)
-- **SharedTypes.cs** — Structs compartidos (GameConfig, etc.)
+- **Enums.cs** — Main enum (GameState, etc.) with spacing for extensibility (0, 10, 20...)
+- **SharedTypes.cs** — Shared structs (GameConfig, etc.)
 
 ### Managers
-- **GameManager.cs** — Singleton, `DontDestroyOnLoad`, state con `OnStateChanged` event
-- **AudioManager.cs** — Singleton, SFX pool (round-robin `AudioSource[]`), music source separada
+- **GameManager.cs** — Singleton, `DontDestroyOnLoad`, state with an `OnStateChanged` event
+- **AudioManager.cs** — Singleton, SFX pool (round-robin `AudioSource[]`), separate music source
 
-### Data (por cada tipo de dato del juego)
-- **{Nombre}Data.cs** — `ScriptableObject` con `[CreateAssetMenu]`, campos del tipo
+### Data (for each data type in the game)
+- **{Name}Data.cs** — `ScriptableObject` with `[CreateAssetMenu]`, the type's fields
 
-### Entities (por cada entidad principal)
-- **{Entity}Entity.cs** — MonoBehaviour (avatar), recibe Data, inicializa State
-- **{Entity}State.cs** — Clase pura (datos mutables), factory method `Create(Data)`
+### Entities (for each main entity)
+- **{Entity}Entity.cs** — MonoBehaviour (avatar), receives Data, initializes State
+- **{Entity}State.cs** — Plain class (mutable data), factory method `Create(Data)`
 
 ### Documents
-- **Game Design Document.md** — Esqueleto de GDD (o delegar a `/doc-gdd`)
-- **CLAUDE.md** — Reglas del proyecto: stack, arquitectura, naming, pilares de diseno
+- **Game Design Document.md** — GDD skeleton (or delegate to `/doc-gdd`)
+- **CLAUDE.md** — Project rules: stack, architecture, naming, design pillars

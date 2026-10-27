@@ -1,16 +1,16 @@
-# <NOMBRE DEL VAULT>
+# <VAULT NAME>
 
-Vault de Obsidian usado como segundo cerebro. Este archivo es el contrato: Claude Code lo lee al inicio de cada sesión y de acá saca dónde va cada cosa. Si una convención cambia, se cambia acá primero.
+Obsidian vault used as a second brain. This file is the contract: Claude Code reads it at the start of every session and takes from here where everything goes. If a convention changes, it changes here first.
 
-## Quién soy
+## Who I am
 
-<Rol, en qué proyectos estoy, qué temas me interesan. Dos o tres líneas: sirve para que las síntesis tengan contexto y no sean genéricas.>
+<Role, which projects I am in, which topics interest me. Two or three lines: it gives the syntheses context so they are not generic.>
 
-## Rutas
+## Paths
 
-Contrato de rutas: los skills escriben en **roles**, y esta tabla dice qué carpeta es cada rol en este vault. Si cambiás una carpeta de lugar, se cambia acá y todo lo demás sigue funcionando.
+Paths contract: the skills write to **roles**, and this table says which folder each role is in this vault. If you move a folder, change it here and everything else keeps working. The skills find this table by its `## Paths` heading: do not rename it.
 
-| Rol | Ruta en este vault |
+| Role | Path in this vault |
 |---|---|
 | `inbox` | `_inbox` |
 | `daily` | `Reflect/Daily` |
@@ -23,105 +23,105 @@ Contrato de rutas: los skills escriben en **roles**, y esta tabla dice qué carp
 | `archive` | `04_Archive` |
 | `templates` | `Templates` |
 
-Y tres archivos fijos en la raíz: este `CLAUDE.md` (el contrato), `hot.md` (el caché de contexto reciente, lo reescribe `/review-dump`) y `codebases.md` (el puente a los repos, si hay código).
+And three fixed files at the root: this `CLAUDE.md` (the contract), `hot.md` (the recent-context cache, rewritten by `/review-dump`) and `codebases.md` (the bridge to the repos, if there is code).
 
-Un rol que este vault no usa se marca `(no usa)` en vez de borrar la fila: así queda explícito que la ausencia fue una decisión.
+A role this vault does not use is marked `(unused)` instead of deleting the row: that way it is explicit that the absence was a decision.
 
-Los scripts reciben esto por flag: `--role hubs=Hubs --role atomic=03_Resources`.
+The scripts receive this through a flag: `--role hubs=Hubs --role atomic=03_Resources`.
 
-## Estructura
+## Structure
 
-| Carpeta | Qué vive acá |
+| Folder | What lives here |
 |---|---|
-| `_inbox/` | Captura cruda, un archivo por día (`YYYY-MM-DD dump.md`). Sin estructura, sin tags, sin pensar. El sufijo evita que el nombre choque con el del daily. |
-| `Reflect/Daily/` | Síntesis del día (`YYYY-MM-DD.md`), la crea `/review-dump`. |
-| `Reflect/Weekly/` | Retrospectiva semanal (`YYYY-Www.md`). |
-| `Reflect/Monthly/` | Balance del mes (`YYYY-MM.md`). |
-| `01_Projects/` | Algo con deadline o resultado definido. Cuando cierra, va a `04_Archive/`. |
-| `02_Areas/` | Responsabilidad continua sin fecha de fin (salud, finanzas, un rol). |
-| `03_Resources/` | Notas atómicas: una idea por nota, plano, sin subcarpetas. |
-| `04_Archive/` | Cerrado. Nunca se borra nada, se archiva. |
-| `Hubs/` | Una nota por entidad que importa: persona, herramienta, concepto, empresa. |
-| `Bases/` | Vistas `.base`. |
-| `Templates/` | Mis plantillas. Claude no las edita. |
+| `_inbox/` | Raw capture, one file per day (`YYYY-MM-DD dump.md`). No structure, no tags, no thinking. The suffix keeps the name from clashing with the daily's. |
+| `Reflect/Daily/` | Synthesis of the day (`YYYY-MM-DD.md`), created by `/review-dump`. |
+| `Reflect/Weekly/` | Weekly retrospective (`YYYY-Www.md`). |
+| `Reflect/Monthly/` | Balance of the month (`YYYY-MM.md`). |
+| `01_Projects/` | Something with a deadline or a defined outcome. When it closes, it goes to `04_Archive/`. |
+| `02_Areas/` | Ongoing responsibility with no end date (health, finances, a role). |
+| `03_Resources/` | Atomic notes: one idea per note, flat, no subfolders. |
+| `04_Archive/` | Closed. Nothing is ever deleted, it is archived. |
+| `Hubs/` | One note per entity that matters: person, tool, concept, company. |
+| `Bases/` | `.base` views. |
+| `Templates/` | My templates. Claude does not edit them. |
 
-## Contrato de frontmatter
+## Frontmatter contract
 
-Todo campo que se escriba tiene que estar acá. Un campo que no está declarado no se inventa: se propone y se agrega primero.
+Every field that gets written has to be here. A field that is not declared is not invented: it is proposed and added here first.
 
 ```yaml
 ---
-created: YYYY-MM-DD        # ISO, nunca se reescribe
+created: YYYY-MM-DD        # ISO, never rewritten
 type: daily                # daily | weekly | monthly | dump | atomic | hub | project | area | clip
-status: seed               # madurez, solo en atomic, hub y clip (ver abajo)
+status: seed               # maturity, only on atomic, hub and clip (see below)
 tags: []
 ---
 ```
 
-### `status`: madurez de la nota
+### `status`: note maturity
 
-Solo para `atomic`, `hub` y `clip`. Las notas periódicas (`daily`, `weekly`, `monthly`, `dump`) no lo llevan: son registro, no conocimiento, y no maduran.
+Only for `atomic`, `hub` and `clip`. Periodic notes (`daily`, `weekly`, `monthly`, `dump`) do not carry it: they are a record, not knowledge, and they do not mature.
 
-| Valor | Significa | Efecto |
+| Value | Means | Effect |
 |---|---|---|
-| `seed` | Apenas plantada, incompleta a propósito | No cuenta como hueca. Si sigue `seed` a los 30 días, el audit la marca: una semilla que no crecio es la falla clasica del vault. |
-| `provisional` | Tiene cuerpo pero no la sostendría en una discusión | Default de una nota recién escrita con contenido |
-| `evergreen` | Dice lo que tiene que decir. Puede quedarse quieta años | **No cuenta como stale.** Es lo que distingue una nota que ya hizo su trabajo de una abandonada. |
-| `contested` | Contradice a otra nota del vault y no está resuelto | El audit la lista para que un review la mire. La contradicción se preserva, no se resuelve sola. |
-| `archived` | Cerrada | Fuera del alcance del audit, viva donde viva |
+| `seed` | Just planted, incomplete on purpose | Does not count as hollow. If it is still `seed` after 30 days, the audit flags it: a seed that never grew is the classic vault failure. |
+| `provisional` | Has a body but I would not defend it in a discussion | Default for a freshly written note with content |
+| `evergreen` | Says what it has to say. It can stay still for years | **Does not count as stale.** It is what tells a note that already did its job apart from an abandoned one. |
+| `contested` | Contradicts another note in the vault and is unresolved | The audit lists it so a review looks at it. The contradiction is preserved, it does not resolve itself. |
+| `archived` | Closed | Out of the audit's scope, wherever it lives |
 
-Sin este campo el audit no puede distinguir una nota de referencia que terminó su trabajo de un stub que nunca creció, y reporta las dos como stale.
+Without this field the audit cannot tell a reference note that finished its job from a stub that never grew, and reports both as stale.
 
-**Los proyectos usan el mismo campo con otro vocabulario** (`activo | pausado | cerrado`): es su ciclo de vida, no su madurez. El audit solo interpreta los cinco valores de arriba, así que un `activo` le resulta inerte y el proyecto se evalúa como cualquier otra nota. Si eso te molesta, renombralo acá y el contrato manda.
+**Projects use the same field with another vocabulary** (`active | paused | closed`): it is their lifecycle, not their maturity. The audit only interprets the five values above, so an `active` is inert to it and the project is evaluated like any other note. If that bothers you, rename it here and the contract rules.
 
-Campos adicionales por tipo:
+Additional fields per type:
 
-| `type` | Campos propios |
+| `type` | Own fields |
 |---|---|
-| `project` | `status: activo \| pausado \| cerrado`, `deadline` (opcional), `repos:` si tiene código |
-| `clip` | `source` (URL), `author` (opcional) |
-| `hub` | `aliases` (nombres alternativos de la entidad), `repos:` si la entidad tiene código |
+| `project` | `status: active \| paused \| closed`, `deadline` (optional), `repos:` if it has code |
+| `clip` | `source` (URL), `author` (optional) |
+| `hub` | `aliases` (alternative names of the entity), `repos:` if the entity has code |
 
-`repos:` es el puente al código: la lista de repos que implementan esa entidad. Se traduce a path local en `codebases.md`. **El vault apunta, no copia:** la arquitectura vive en el repo.
+`repos:` is the bridge to code: the list of repos that implement that entity. It is translated to a local path in `codebases.md`. **The vault points, it does not copy:** the architecture lives in the repo.
 
-## Reglas de link
+## Link rules
 
-- **Los links van hacia arriba, nunca hacia abajo.** Dump linkea a hubs y proyectos. Daily linkea al dump. Weekly linkea a los dailies. Monthly linkea a los weeklies. Los backlinks de Obsidian dan la dirección inversa gratis.
-- **Ninguna nota se cierra sin al menos un `[[wikilink]]`.** Si no hay a qué linkearla, falta un hub file.
-- `[[wikilinks]]` para lo interno, `[texto](url)` solo para URLs externas.
+- **Links go up, never down.** A dump links to hubs and projects. A daily links to the dump. A weekly links to the dailies. A monthly links to the weeklies. Obsidian backlinks give the reverse direction for free.
+- **No note is closed without at least one `[[wikilink]]`.** If there is nothing to link it to, a hub file is missing.
+- `[[wikilinks]]` for internal links, `[text](url)` only for external URLs.
 
-## Tareas
+## Tasks
 
-Las tareas viven en la nota a la que pertenecen, no en una lista central. Una tarea de un proyecto vive en la nota del proyecto; una que apareció en el día vive en el dump de ese día.
+Tasks live in the note they belong to, not in a central list. A project task lives in the project note; one that came up during the day lives in that day's dump.
 
-**Una tarea abierta no se arrastra al día siguiente.** Queda en su día marcada como cancelada (`- [-]`) y se crea de nuevo donde corresponda. No haber hecho algo un día es información.
+**An open task is not carried over to the next day.** It stays in its day marked as cancelled (`- [-]`) and is created again where it belongs. Not having done something on a given day is information.
 
-## Qué puede hacer Claude
+## What Claude can do
 
-- Crear y editar notas, clasificar el dump, actualizar hub files, generar dailies/weeklies/monthlies, buscar en el vault, proponer links.
+- Create and edit notes, classify the dump, update hub files, generate dailies/weeklies/monthlies, search the vault, propose links.
 
-## Qué no puede hacer Claude
+## What Claude cannot do
 
-- Borrar notas (mueve a `04_Archive/`).
-- Renombrar o mover notas sin que yo lo apruebe.
-- Editar `Templates/` ni nada dentro de `.obsidian/`.
-- Escribir la sección de reflexión de los reviews: los hechos los sintetiza Claude, la interpretación la escribo yo.
-- Editar en masa: los cambios que afectan muchas notas van por `/vault-tidy` con approval.
+- Delete notes (it moves them to `04_Archive/`).
+- Rename or move notes without my approval.
+- Edit `Templates/` or anything inside `.obsidian/`.
+- Write the reflection section of the reviews: Claude synthesizes the facts, I write the interpretation.
+- Bulk edit: changes that affect many notes go through `/vault-tidy` with approval.
 
-## Plugins instalados
+## Installed plugins
 
-<Completado por `/second-brain setup` con la detección real. Lo que no está en esta lista no se usa en las notas.>
+<Filled in by `/second-brain setup` with the real detection. Whatever is not on this list is not used in the notes.>
 
-## Quién escribe qué
+## Who writes what
 
-- **Autorado** (lo escribo yo, Claude no lo toca sin approval): dumps, notas atómicas, hubs, clips, proyectos, este archivo, y la `## Reflexión` de los reviews.
-- **Sintetizado** (Claude lo escribe con mi OK y queda como nota): dailies, weeklies, monthlies, el `## Historial` de los hubs.
-- **Proyectado** (Claude lo reescribe sin preguntar, es derivado y descartable): `hot.md`, `.vault-index.json`, las vistas `.base`. No los edito a mano porque se pisan.
+- **Authored** (I write it, Claude does not touch it without approval): dumps, atomic notes, hubs, clips, projects, this file, and the `## Reflection` of the reviews.
+- **Synthesized** (Claude writes it with my OK and it stays as a note): dailies, weeklies, monthlies, the `## History` of the hubs.
+- **Projected** (Claude rewrites it without asking, it is derived and disposable): `hot.md`, `.vault-index.json`, the `.base` views. I do not edit them by hand because they get overwritten.
 
-## Uso desde otros proyectos
+## Use from other projects
 
-Otros repos pueden leer este vault. El orden de lectura es `hot.md` → búsqueda con `vault_index.py` → el hub del tema → la nota. **No se lee el vault para preguntas generales de programación**, y no se escribe en él desde otro proyecto salvo pedido explícito. Receta completa: `/second-brain link`.
+Other repos can read this vault. The read order is `hot.md` → search with `vault_index.py` → the topic's hub → the note. **The vault is not read for general programming questions**, and it is not written to from another project unless explicitly asked. Full recipe: `/second-brain link`.
 
 ## Git
 
-Este vault es un repo git. Antes de una corrida que escribe varias notas, el árbol tiene que estar limpio: es el único undo confiable.
+This vault is a git repo. Before a run that writes several notes, the tree has to be clean: it is the only reliable undo.

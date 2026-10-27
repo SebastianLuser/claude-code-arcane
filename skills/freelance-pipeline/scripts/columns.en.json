@@ -1,0 +1,17 @@
+{
+  "language": "en",
+  "note": "Column names and transaction types import_history.py recognizes in English exports (Upwork, Freelancer.com, banks). Every columns.<lang>.json next to the script applies at once, because a hand-kept spreadsheet mixes languages. Entries are matched folded (lowercase, no accents), exactly first and then as a substring of the header.",
+  "fields": {
+    "date": ["date", "transaction date", "date/time", "period", "start date", "created", "week"],
+    "type": ["type", "transaction type", "category"],
+    "client": ["client", "company", "team", "contract team", "buyer", "payer"],
+    "contract": ["contract title", "contract", "description", "memo", "project", "job title"],
+    "fee": ["freelancer service fee", "service fee", "upwork fee", "fee", "commission", "marketplace fee"],
+    "net": ["net amount", "net", "take home", "payout"],
+    "amount": ["amount", "total", "gross", "earnings"],
+    "hours": ["hours", "quantity", "qty", "duration", "time"],
+    "currency": ["currency", "curr"]
+  },
+  "non_income_types": ["withdrawal", "transfer", "membership", "connects", "refund", "adjustment", "tax"],
+  "fee_row_types": ["service fee", "freelancer fee", "upwork fee", "commission", "marketplace fee", "processing fee"]
+}

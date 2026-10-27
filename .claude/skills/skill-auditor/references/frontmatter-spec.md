@@ -1,120 +1,119 @@
 # Frontmatter Specification -- Arcane Skills
 
-Formato de frontmatter para todas las skills del repo Claude Code Arcane.
+Frontmatter format for every skill in the Claude Code Arcane repo.
 
-**Fuente de verdad:** la lista de campos que Claude Code realmente lee está en
-`code.claude.com/docs/en/skills`. Este documento la refleja y agrega la única
-convención local del repo (`category`). No inventar campos: un campo que no está
-en la tabla de abajo lo ignora el runtime, y ese silencio es donde el drift se
-esconde.
+**Source of truth:** the list of fields Claude Code actually reads lives at
+`code.claude.com/docs/en/skills`. This document mirrors it and adds the repo's
+only local convention (`category`). Do not invent fields: the runtime ignores any
+field missing from the table below, and that silence is where drift hides.
 
-## Formato requerido
+## Required format
 
 ```yaml
 ---
 name: skill-name
-description: "Qué hace la skill y cuándo usarla, 1-2 oraciones."
+description: "What the skill does and when to use it, 1-2 sentences."
 category: "domain-name"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash
 ---
 ```
 
-## Campos oficiales de Claude Code
+## Official Claude Code fields
 
-Todos son opcionales para el runtime; las columnas "Arcane" marcan lo que este
-repo exige por convención propia.
+All are optional for the runtime; the "Arcane" column marks what this repo
+requires by its own convention.
 
-| Campo | Arcane | Qué hace |
+| Field | Arcane | What it does |
 |-------|--------|----------|
-| `name` | **requerido** | Etiqueta mostrada en los listados. En skills personales o de proyecto el comando sale del nombre del directorio, no de este campo. |
-| `description` | **requerido** | Qué hace y cuándo usarla. Claude decide con esto si aplicar la skill. `description` + `when_to_use` se truncan juntos a 1.536 caracteres. |
-| `when_to_use` | opcional | Contexto extra de invocación: frases gatillo, ejemplos de pedido. Se anexa a `description` y cuenta para el tope de 1.536. |
-| `argument-hint` | opcional | Hint de autocompletado. Ej: `[issue-number]`, `[filename] [format]`. |
-| `arguments` | opcional | Declaración estructurada de argumentos. |
-| `user-invocable` | **requerido** | `false` cuando solo Claude debe invocarla: la oculta del menú `/`. Default `true`. |
-| `disable-model-invocation` | opcional | `true` impide que Claude la cargue sola. También impide precargarla en subagentes. |
-| `allowed-tools` | **requerido** | Tools que Claude puede usar sin pedir permiso durante el turno que invoca la skill. El permiso se limpia con el mensaje siguiente. |
-| `disallowed-tools` | opcional | Denylist de tools. |
-| `model` | opcional | Modelo para el turno en que la skill está activa. Con `context: fork`, define el modelo del subagente. |
-| `effort` | opcional | Nivel de esfuerzo de razonamiento. |
-| `context` | opcional | **Único valor válido: `fork`.** Corre la skill en un subagente forkeado. |
-| `agent` | opcional | Qué tipo de subagente usar. **Solo tiene efecto si `context: fork` está puesto.** |
-| `background` | opcional | Corre en background. |
-| `hooks` | opcional | Hooks con alcance de esta skill. |
-| `paths` | opcional | Paths asociados. |
-| `shell` | opcional | Shell para los `` !`comando` `` del body: `bash` (default) o `powershell`. |
-| `metadata` | opcional | Map YAML libre para datos propios. **Claude Code no actúa sobre su contenido** — es el lugar correcto para campos que solo lee tooling nuestro. Descarta el valor si no es un map. |
-| `license` | opcional | Licencia. |
-| `compatibility` | opcional | Compatibilidad declarada. |
+| `name` | **required** | Label shown in listings. In personal or project skills the command comes from the directory name, not from this field. |
+| `description` | **required** | What it does and when to use it. Claude uses this to decide whether to apply the skill. `description` + `when_to_use` are truncated together at 1,536 characters. |
+| `when_to_use` | optional | Extra invocation context: trigger phrases, example requests. Appended to `description` and counts toward the 1,536 cap. |
+| `argument-hint` | optional | Autocomplete hint. E.g. `[issue-number]`, `[filename] [format]`. |
+| `arguments` | optional | Structured argument declaration. |
+| `user-invocable` | **required** | `false` when only Claude should invoke it: hides it from the `/` menu. Default `true`. |
+| `disable-model-invocation` | optional | `true` stops Claude from loading it on its own. Also stops it from being preloaded into subagents. |
+| `allowed-tools` | **required** | Tools Claude may use without asking for permission during the turn that invokes the skill. The permission clears with the next message. |
+| `disallowed-tools` | optional | Tool denylist. |
+| `model` | optional | Model for the turn in which the skill is active. With `context: fork`, sets the subagent's model. |
+| `effort` | optional | Reasoning effort level. |
+| `context` | optional | **Only valid value: `fork`.** Runs the skill in a forked subagent. |
+| `agent` | optional | Which subagent type to use. **Only takes effect when `context: fork` is set.** |
+| `background` | optional | Runs in the background. |
+| `hooks` | optional | Hooks scoped to this skill. |
+| `paths` | optional | Associated paths. |
+| `shell` | optional | Shell for the body's `` !`command` ``: `bash` (default) or `powershell`. |
+| `metadata` | optional | Free-form YAML map for your own data. **Claude Code does not act on its contents** — it is the right place for fields only our tooling reads. The value is discarded if it is not a map. |
+| `license` | optional | License. |
+| `compatibility` | optional | Declared compatibility. |
 
-### `category` — convención local, no campo oficial
+### `category` — local convention, not an official field
 
-`category` no existe en la doc de Claude Code: el runtime lo ignora. Arcane lo
-exige igual porque `src/skills-catalog.ts` y los profiles lo usan para agrupar.
-Es inocuo. Si en algún momento deja de usarse desde `src/`, moverlo a
-`metadata:` en vez de dejarlo suelto.
+`category` does not exist in the Claude Code docs: the runtime ignores it. Arcane
+requires it anyway because `src/skills-catalog.ts` and the profiles use it for
+grouping. It is harmless. If `src/` ever stops using it, move it under
+`metadata:` instead of leaving it loose.
 
-Categorías estándar: `arcane`, `backend`, `frontend`, `ai`, `devops`,
+Standard categories: `arcane`, `backend`, `frontend`, `ai`, `devops`,
 `security`, `testing`, `gamedev`, `agile`, `business`, `marketing-content`,
 `marketing-growth`, `marketing-seo`, `marketing-strategy`, `finance`,
 `regulatory`, `git`, `clevel-advisors`, `clevel-operations`, `observability`,
 `database`, `workflow`, `visualnovel`, `audio`.
 
-## Reglas por campo
+## Per-field rules
 
 ### `name`
-- kebab-case, y tiene que coincidir con el directorio que contiene el SKILL.md.
+- kebab-case, and it must match the directory that contains the SKILL.md.
 
 ### `description`
-- 1-2 oraciones. Bajo 200 caracteres preferido, 300 máximo.
-- Entre comillas dobles.
-- No repetir solo el nombre de la skill.
-- Poner el caso de uso principal primero: se trunca a 1.536 caracteres.
+- 1-2 sentences. Under 200 characters preferred, 300 max.
+- In double quotes.
+- Do not just repeat the skill name.
+- Put the main use case first: it is truncated at 1,536 characters.
 
 ### `allowed-tools`
 - Read-only: `Read, Glob, Grep, Bash`
 - Authoring: `Read, Write, Edit, Bash, Glob, Grep`
-- Orquestación: `Read, Write, Edit, Bash, Glob, Grep, Task`
-- Nombres válidos: `Read`, `Write`, `Edit`, `Bash`, `Glob`, `Grep`, `Task`,
+- Orchestration: `Read, Write, Edit, Bash, Glob, Grep, Task`
+- Valid names: `Read`, `Write`, `Edit`, `Bash`, `Glob`, `Grep`, `Task`,
   `WebFetch`, `WebSearch`, `NotebookEdit`
 
 ### `agent` + `context`
-Van siempre juntos. `agent:` sin `context: fork` **no hace nada**:
+They always go together. `agent:` without `context: fork` **does nothing**:
 
 ```yaml
-# MAL - el agente declarado nunca entra en juego
+# WRONG - the declared agent never comes into play
 agent: qa-director
 
-# BIEN
+# RIGHT
 context: fork
 agent: qa-director
 ```
 
-Y el agente nombrado tiene que existir en `agents/` **y** su división tiene que
-estar en la lista `agents:` de todos los profiles que traen la skill. Si no, el
-fork cae en un agente genérico sin system prompt especializado.
+And the named agent must exist in `agents/` **and** its division must be in the
+`agents:` list of every profile that ships the skill. Otherwise the fork falls
+back to a generic agent with no specialized system prompt.
 
-## Inyección de contexto dinámico
+## Dynamic context injection
 
-No hay campo de frontmatter para esto. El mecanismo es `` !`comando` `` **en el
-body**, y la salida reemplaza el placeholder antes de que Claude vea la skill:
+There is no frontmatter field for this. The mechanism is `` !`command` `` **in the
+body**, and its output replaces the placeholder before Claude sees the skill:
 
 ```markdown
-## Estado actual
+## Current state
 
 - Branch: !`git branch --show-current`
-- Sprints: !`ls production/sprints/ 2>/dev/null || echo "sin sprints"`
+- Sprints: !`ls production/sprints/ 2>/dev/null || echo "no sprints"`
 ```
 
-El `!` se reconoce solo al principio de línea o después de whitespace, y el
-comando va entre backticks. `!echo foo` sin backticks es texto literal.
+The `!` is recognized only at the start of a line or after whitespace, and the
+command goes between backticks. `!echo foo` without backticks is literal text.
 
-## Formato a convertir (legacy)
+## Format to convert (legacy)
 
-Si el frontmatter tiene `version`, `author`, `updated`, `python-tools` o
-`tech-stack`, es formato importado y hay que convertirlo: esos campos no existen
-en la doc oficial ni en Arcane.
+If the frontmatter has `version`, `author`, `updated`, `python-tools` or
+`tech-stack`, it is an imported format and must be converted: those fields exist
+neither in the official docs nor in Arcane.
 
-**`license` y `metadata` NO son parte de este grupo** — los dos son campos
-oficiales de Claude Code y no hay que tocarlos.
+**`license` and `metadata` are NOT part of this group** — both are official
+Claude Code fields and must be left alone.

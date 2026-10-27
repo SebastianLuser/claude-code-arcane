@@ -1,21 +1,21 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "seen_jobs",
-  "description": "Registro de ofertas vistas por /job-scrape para deduplicacion entre corridas. Fuente de verdad SOLO del triage pre-nota; el estado del pipeline vive en el frontmatter de las notas de 03-Aplicaciones/ del career workspace y el dashboard es una vista derivada.",
+  "description": "Record of the postings /job-scrape has seen, for dedup across runs. Source of truth ONLY for pre-note triage; the pipeline status lives in the frontmatter of the notes in 03-Applications/ of the career workspace, and the dashboard is a derived view.",
   "type": "object",
-  "required": ["schema_version", "actualizado", "jobs"],
+  "required": ["schema_version", "updated", "jobs"],
   "properties": {
     "$schema": { "type": "string" },
-    "schema_version": { "type": "integer", "const": 1 },
-    "actualizado": { "type": "string", "format": "date", "description": "Fecha ISO de la ultima escritura" },
+    "schema_version": { "type": "integer", "const": 2, "description": "2 = English field names. A version 1 file is migrated with career-registry's scripts/migrate_workspace.py" },
+    "updated": { "type": "string", "format": "date", "description": "ISO date of the last write" },
     "jobs": {
       "type": "object",
-      "description": "Mapa job_key -> entrada. job_key = 'slug(empresa)|slug(titulo)', calculada con scripts/job_key.py (reglas en references/dedup-playbook.md).",
+      "description": "Map job_key -> entry. job_key = 'slug(company)|slug(title)', computed with scripts/job_key.py (rules in references/dedup-playbook.md).",
       "additionalProperties": {
         "type": "object",
         "required": ["title", "company", "sources", "first_seen", "last_seen", "status"],
         "properties": {
-          "title": { "type": "string", "description": "Titulo como se vio la primera vez" },
+          "title": { "type": "string", "description": "Title as it was first seen" },
           "company": { "type": "string" },
           "sources": {
             "type": "array",
@@ -24,41 +24,41 @@
               "type": "object",
               "required": ["source", "url", "first_seen", "last_seen"],
               "properties": {
-                "source": { "enum": ["linkedin", "getonbrd", "manual", "otro"] },
-                "source_id": { "type": ["string", "null"], "description": "ID nativo de la fuente (numerico LinkedIn, slug GetOnBoard)" },
-                "url": { "type": "string", "description": "URL canonica (sin utm/tracking; linkedin.com/jobs/view/<id>; getonbrd /empleos/ -> /jobs/)" },
-                "publicada": { "type": ["string", "null"], "format": "date" },
+                "source": { "enum": ["linkedin", "getonbrd", "manual", "other"] },
+                "source_id": { "type": ["string", "null"], "description": "Native ID at the source (LinkedIn numeric, GetOnBoard slug)" },
+                "url": { "type": "string", "description": "Canonical URL (no utm/tracking; linkedin.com/jobs/view/<id>; getonbrd /empleos/ -> /jobs/)" },
+                "published": { "type": ["string", "null"], "format": "date" },
                 "first_seen": { "type": "string", "format": "date" },
                 "last_seen": { "type": "string", "format": "date" }
               }
             }
           },
-          "first_seen": { "type": "string", "format": "date", "description": "Primera vez vista en cualquier fuente" },
+          "first_seen": { "type": "string", "format": "date", "description": "First time seen at any source" },
           "last_seen": { "type": "string", "format": "date" },
-          "perfil": { "type": ["string", "null"], "description": "Nota de perfil contra la que se evaluo (nombre de la nota de 01-Perfiles/)" },
-          "quick_score": { "enum": ["high", "medium", "low", null], "description": "Triage barato sobre datos del listing" },
-          "match_score": { "type": ["integer", "null"], "minimum": 0, "maximum": 100, "description": "Score de la rubrica completa de job-search, si se corrio" },
+          "profile": { "type": ["string", "null"], "description": "Profile note it was scored against (name of the note in 01-Profiles/)" },
+          "quick_score": { "enum": ["high", "medium", "low", null], "description": "Cheap triage on the listing data" },
+          "match_score": { "type": ["integer", "null"], "minimum": 0, "maximum": 100, "description": "Score from the full job-search rubric, if it ran" },
           "status": {
-            "enum": ["new", "descartado", "nota_creada"],
-            "description": "Estados del triage. Deliberadamente NO existe 'aplicado': al crear la nota la entrada se congela y el pipeline sigue en el frontmatter de la nota (lo mueve /job-outcome)."
+            "enum": ["new", "discarded", "note_created"],
+            "description": "Triage states. There is deliberately NO 'applied': once the note is created the entry freezes and the pipeline continues in the note's frontmatter (moved by /job-outcome)."
           },
-          "descarte_motivo": { "type": ["string", "null"], "description": "Obligatorio si status=descartado (ver allOf)" },
-          "nota": { "type": ["string", "null"], "description": "Nombre de archivo de la nota en 03-Aplicaciones/ (obligatorio si status=nota_creada, ver allOf)" },
-          "salario_max_usd_mes": { "type": ["integer", "null"], "description": "Salario maximo publicado en USD/mes, para re-triage sin re-fetch" }
+          "discard_reason": { "type": ["string", "null"], "description": "Required when status=discarded (see allOf)" },
+          "note": { "type": ["string", "null"], "description": "File name of the note in 03-Applications/ (required when status=note_created, see allOf)" },
+          "salary_max_usd_month": { "type": ["integer", "null"], "description": "Highest published salary in USD/month, to re-triage without re-fetching" }
         },
         "allOf": [
           {
-            "if": { "properties": { "status": { "const": "descartado" } }, "required": ["status"] },
+            "if": { "properties": { "status": { "const": "discarded" } }, "required": ["status"] },
             "then": {
-              "required": ["descarte_motivo"],
-              "properties": { "descarte_motivo": { "type": "string", "minLength": 1 } }
+              "required": ["discard_reason"],
+              "properties": { "discard_reason": { "type": "string", "minLength": 1 } }
             }
           },
           {
-            "if": { "properties": { "status": { "const": "nota_creada" } }, "required": ["status"] },
+            "if": { "properties": { "status": { "const": "note_created" } }, "required": ["status"] },
             "then": {
-              "required": ["nota"],
-              "properties": { "nota": { "type": "string", "minLength": 1 } }
+              "required": ["note"],
+              "properties": { "note": { "type": "string", "minLength": 1 } }
             }
           }
         ]

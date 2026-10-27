@@ -8,17 +8,17 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 # Sprint Report Generator
 
-Genera un reporte unificado combinando Jira + GitHub para el sprint actual.
+Generates a unified report combining Jira + GitHub for the current sprint.
 
 ## Input
 
-Argumento opcional: `$ARGUMENTS`
-- Nombre de proyecto: "TUNI", "TICH", "ALZ", "VIA"
-- Si no se especifica → preguntar
+Optional argument: `$ARGUMENTS`
+- Project name: "TUNI", "TICH", "ALZ", "VIA"
+- If not specified → ask
 
 ## Process
 
-### 1. Cargar credenciales
+### 1. Load credentials
 
 ```bash
 source ~/.config/jira/credentials
@@ -26,10 +26,10 @@ JIRA_AUTH="$JIRA_EMAIL:$JIRA_API_TOKEN"
 API="$JIRA_BASE_URL/rest/api/3"
 ```
 
-### 2. Obtener datos de Jira
+### 2. Get the Jira data
 
 ```bash
-# Issues del sprint activo
+# Issues in the active sprint
 curl -s -X POST -u "$JIRA_AUTH" -H "Content-Type: application/json" \
   "$API/search/jql" \
   -d '{
@@ -39,86 +39,86 @@ curl -s -X POST -u "$JIRA_AUTH" -H "Content-Type: application/json" \
   }'
 ```
 
-Agrupar por estado:
-- Tareas por hacer (new)
-- En curso (in-progress)
-- Por subir / QA / En revisión
-- Finalizadas (done)
-- Bloqueadas
-- Canceladas
+Group by status. The Jira status names are the literal values of the Educabot workflow, which is in Spanish (see the `jira-tickets` skill); match them verbatim:
+- To do (`Tareas por hacer`, category new)
+- In progress (`En curso`, category in-progress)
+- To deploy / QA / In review (`Por subir`, `Control de calidad`, `En revision`)
+- Done (`Finalizada`, category done)
+- Blocked (`Blocked`)
+- Cancelled (`Cancelado`)
 
-### 3. Obtener datos de GitHub
+### 3. Get the GitHub data
 
 ```bash
-# PRs mergeados en la última semana (o sprint)
+# PRs merged in the last week (or sprint)
 gh pr list --state merged --limit 50 --json number,title,author,mergedAt,additions,deletions
 
-# PRs abiertos
+# Open PRs
 gh pr list --state open --json number,title,author,createdAt,reviewDecision
 
-# Commits en main de la última semana
+# Commits on main in the last week
 git log main --since="1 week ago" --pretty=format:"%h|%s|%an|%ad" --date=short
 ```
 
-### 4. Cruzar datos
+### 4. Cross-reference the data
 
-- Mapear PRs a tickets de Jira por key en el título (e.g., "TUNI-123: ...")
-- Detectar tickets sin PR asociado (posible trabajo pendiente de subir)
-- Detectar PRs sin ticket asociado (trabajo no trackeado)
+- Map PRs to Jira tickets by the key in the title (e.g., "TUNI-123: ...")
+- Detect tickets without an associated PR (possibly work not yet pushed)
+- Detect PRs without an associated ticket (untracked work)
 
-### 5. Generar reporte
+### 5. Generate the report
 
 ```markdown
-# Sprint Report — [Proyecto] — [Sprint Name] — [Fecha]
+# Sprint Report — [Project] — [Sprint Name] — [Date]
 
-## Resumen
-| Métrica | Valor |
+## Summary
+| Metric | Value |
 |---------|-------|
 | Total tickets | X |
-| Completados | Y (Z%) |
-| En progreso | N |
-| Bloqueados | M |
-| PRs mergeados | P |
-| Líneas +/- | +A / -B |
+| Completed | Y (Z%) |
+| In progress | N |
+| Blocked | M |
+| PRs merged | P |
+| Lines +/- | +A / -B |
 
-## Velocidad
-[Barra de progreso visual: ████████░░ 80%]
+## Velocity
+[Visual progress bar: ████████░░ 80%]
 
-## Por estado
+## By status
 
-### Finalizados
-| Ticket | Título | Assignee | PR |
+### Done
+| Ticket | Title | Assignee | PR |
 |--------|--------|----------|-----|
 
-### En progreso
-| Ticket | Título | Assignee | Status | PR |
+### In progress
+| Ticket | Title | Assignee | Status | PR |
 |--------|--------|----------|--------|-----|
 
-### Bloqueados
-| Ticket | Título | Assignee | Motivo |
+### Blocked
+| Ticket | Title | Assignee | Reason |
 |--------|--------|----------|--------|
 
-### Sin empezar
-| Ticket | Título | Assignee | Prioridad |
+### Not started
+| Ticket | Title | Assignee | Priority |
 |--------|--------|----------|-----------|
 
-## PRs abiertos (pendientes de review)
-| PR | Título | Autor | Días abierto |
+## Open PRs (pending review)
+| PR | Title | Author | Days open |
 |----|--------|-------|-------------|
 
-## Alertas
-- Tickets sin PR asociado
-- PRs sin ticket asociado
-- Tickets en "En curso" hace más de 3 días sin actividad
-- Tickets sin asignar
+## Alerts
+- Tickets without an associated PR
+- PRs without an associated ticket
+- Tickets in `En curso` (in progress) for more than 3 days with no activity
+- Unassigned tickets
 
-## Por persona
-| Dev | Completados | En progreso | PRs |
+## By person
+| Dev | Completed | In progress | PRs |
 |-----|-------------|-------------|-----|
 ```
 
 ## Rules
-- Usar los IDs de proyecto y sprint de la skill de jira-tickets
-- Si no hay repo Git en el directorio actual → solo mostrar datos de Jira
-- En español
-- No cachear datos — siempre consultar en vivo
+- Use the project and sprint IDs from the jira-tickets skill
+- If there is no Git repo in the current directory → show only the Jira data
+- Write the report in the user's language
+- Do not cache data — always query live

@@ -1,68 +1,68 @@
 ---
 name: hub-note
-description: "Crea o actualiza un hub file (MOC) del vault: una nota por entidad que importa (persona, herramienta, concepto, empresa) que acumula conocimiento y conecta PARA con Zettelkasten. Triggers: hub file, MOC, mapa de contenido, nota de entidad, crear hub de, actualizar hub, nota de persona."
-argument-hint: "[entidad] [--update]"
+description: "Creates or updates a vault hub file (MOC): one note per entity that matters (person, tool, concept, company) that accumulates knowledge and connects PARA with Zettelkasten. Triggers: hub file, MOC, map of content, entity note, create hub for, update hub, person note."
+argument-hint: "[entity] [--update]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 
-# Hub Note - Tejido conectivo del vault
+# Hub Note - The vault's connective tissue
 
-Un hub file es una nota por entidad que importa. No contiene conocimiento propio: contiene **el estado actual** de esa entidad y **los links** a todo lo que se sabe de ella. Es lo que hace que PARA (carpetas) y Zettelkasten (notas planas) convivan sin pelearse.
+A hub file is one note per entity that matters. It holds no knowledge of its own: it holds **the current state** of that entity and **the links** to everything known about it. It is what lets PARA (folders) and Zettelkasten (flat notes) live together without fighting.
 
-Entidad: `$ARGUMENTS`
+Entity: `$ARGUMENTS`
 
-Aplica la rule `vault-conventions`.
+Apply the `vault-conventions` rule.
 
-**Rutas por rol:** los destinos se nombran por rol y la ruta real de cada uno sale del `## Rutas` del `CLAUDE.md` del vault (leelo antes de escribir). Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+**Paths by role:** destinations are named by role, and the real path of each one comes from the `## Paths` section of the vault's `CLAUDE.md` (read it before writing). The defaults in parentheses only apply if the vault does not declare otherwise.
 
-## Fase 1 - Decidir si la entidad merece hub
+## Phase 1 - Decide whether the entity deserves a hub
 
-El criterio es la recurrencia, no la importancia: **la entidad apareció en tres dumps o notas distintas**. Antes de eso es una mención, y un hub por mención produce cientos de notas de una línea que nadie visita.
+The criterion is recurrence, not importance: **the entity appeared in three different dumps or notes**. Before that it is a mention, and a hub per mention produces hundreds of one-line notes nobody visits.
 
-1. Buscar la entidad con `/vault-recall` si está disponible, o `Grep` en los roles `inbox`, `daily` y `atomic` (defaults `_inbox/`, `Reflect/Daily/`, `03_Resources/`) por el nombre y sus variantes.
-2. Contar apariciones y reportarlas con los links.
-3. Si hay menos de tres, decirlo y proponer esperar. Si el usuario quiere el hub igual (una persona nueva en el equipo, un proyecto que arranca), se crea: la anticipación es un motivo válido, la duda no.
+1. Search for the entity with `/vault-recall` if available, or `Grep` the `inbox`, `daily` and `atomic` roles (defaults `_inbox/`, `Reflect/Daily/`, `03_Resources/`) for the name and its variants.
+2. Count the appearances and report them with the links.
+3. If there are fewer than three, say so and propose waiting. If the user wants the hub anyway (a new person on the team, a project that is starting), create it: anticipation is a valid reason, doubt is not.
 
-Verdict: PASS si hay tres apariciones o una razón explícita del usuario.
+Verdict: PASS if there are three appearances or an explicit reason from the user.
 
-## Fase 2 - Buscar el hub existente
+## Phase 2 - Look for the existing hub
 
-`Glob` en `<hubs>` (default `Hubs/`) y revisar los `aliases` del frontmatter de los hubs que haya. Las entidades llegan con nombres distintos ("Educabot", "educabot", "EB"): si ya existe un hub para la entidad bajo otro nombre, **actualizar ese** y agregar el nombre nuevo a `aliases`. Nunca crear un segundo hub para la misma entidad: es el duplicado más caro del vault, porque parte el conocimiento en dos lugares que nadie reconcilia.
+`Glob` in `<hubs>` (default `Hubs/`) and check the frontmatter `aliases` of the hubs there. Entities arrive under different names ("Educabot", "educabot", "EB"): if a hub for the entity already exists under another name, **update that one** and add the new name to `aliases`. Never create a second hub for the same entity: it is the vault's most expensive duplicate, because it splits the knowledge into two places nobody reconciles.
 
-## Fase 3 - Escribir
+## Phase 3 - Write
 
-Con approval, crear o actualizar el hub en `<hubs>` (default `Hubs/`) desde `<templates>/Hub.md`.
+With approval, create or update the hub in `<hubs>` (default `Hubs/`) from `<templates>/Hub.md`.
 
-Al **crear**:
-- Título: el nombre canónico de la entidad. Las variantes van a `aliases`.
-- Una o dos líneas de qué es y por qué tiene nota propia.
-- `## Estado actual`: lo que hay que saber hoy.
-- `## Notas`: links a las notas atómicas y proyectos del tema que ya existan (los que encontraste en la fase 1).
-- `## Historial`: una línea por aparición relevante, formato `- YYYY-MM-DD - qué pasó`, lo más nuevo arriba.
-- `status`: `seed` al crearlo, `provisional` cuando ya acumuló contenido. Un hub que el usuario mantiene al día puede quedar `evergreen`, pero lo marca él.
-- `repos:` si la entidad tiene código (una herramienta propia, un proyecto, un servicio). Es el puente al repo, y se traduce a path local en `codebases.md` del vault. **No copies arquitectura al hub:** el hub dice qué es y por qué, el repo dice cómo está hecho, y el que copia se desactualiza.
+When **creating**:
+- Title: the entity's canonical name. The variants go into `aliases`.
+- One or two lines on what it is and why it has its own note.
+- `## Current status`: what you need to know today.
+- `## Notes`: links to the atomic notes and projects on the topic that already exist (the ones you found in phase 1).
+- `## History`: one line per relevant appearance, format `- YYYY-MM-DD - what happened`, newest at the top.
+- `status`: `seed` when created, `provisional` once it has accumulated content. A hub the user keeps up to date can become `evergreen`, but the user marks it.
+- `repos:` if the entity has code (an in-house tool, a project, a service). It is the bridge to the repo, and it is translated to a local path in the vault's `codebases.md`. **Do not copy architecture into the hub:** the hub says what it is and why, the repo says how it is built, and whatever gets copied goes stale.
 
-Al **actualizar** (`--update`, o cuando el hub ya existe):
-- Agregar la entrada nueva al `## Historial`, sin duplicar una que ya esté con la misma fecha y el mismo contenido.
-- **`## Estado actual` se reescribe, no se acumula.** Es la sección que responde "qué sé hoy de esto"; si se convierte en un log, el hub deja de servir para lo único que sirve. Lo que se reemplaza y sigue siendo relevante baja al historial.
-- `## Notas`: agregar los links nuevos.
+When **updating** (`--update`, or when the hub already exists):
+- Add the new entry to `## History`, without duplicating one that is already there with the same date and the same content.
+- **`## Current status` is rewritten, not accumulated.** It is the section that answers "what do I know about this today"; if it turns into a log, the hub stops serving the one thing it is for. Whatever gets replaced and is still relevant moves down to the history.
+- `## Notes`: add the new links.
 
-## Fase 4 - Conectar
+## Phase 4 - Connect
 
-- El hub linkea hacia las notas atómicas y los proyectos. Los dumps y dailies linkean **hacia** el hub. El hub no linkea a dumps ni a dailies: son registro, no conocimiento, y llenan el hub de ruido en un mes.
-- Si el hub cubre un tema amplio y ya pasó las 30 o 40 entradas en `## Notas`, proponer partirlo en sub-hubs por subtema. Un hub que nadie puede leer de arriba a abajo dejó de ser un mapa.
+- The hub links to the atomic notes and the projects. Dumps and dailies link **to** the hub. The hub does not link to dumps or dailies: they are a record, not knowledge, and they fill the hub with noise within a month.
+- If the hub covers a broad topic and already has more than 30 or 40 entries in `## Notes`, propose splitting it into sub-hubs per subtopic. A hub nobody can read top to bottom has stopped being a map.
 
-Hub COMPLETE cuando tiene estado actual, al menos un link saliente, y las apariciones encontradas quedaron en el historial.
+Hub COMPLETE when it has a current state, at least one outgoing link, and the appearances found are recorded in the history.
 
-## Reglas
+## Rules
 
-- Un hub por entidad. Los alias van al frontmatter, no a un hub nuevo.
-- El hub no acumula conocimiento propio: si querés explicar una idea, es una nota atómica (`/zettel`) linkeada desde acá.
-- Nunca borrar entradas del historial: si algo dejó de ser cierto, se agrega la entrada nueva.
-- Sin guiones largos.
+- One hub per entity. Aliases go into the frontmatter, not into a new hub.
+- The hub accumulates no knowledge of its own: if you want to explain an idea, it is an atomic note (`/zettel`) linked from here.
+- Never delete history entries: if something stopped being true, add a new entry.
+- No long dashes.
 
 ## Handoff
 
-Con el hub listo, el siguiente paso es `/zettel` para las ideas del tema que todavía no tienen nota propia, o volver a `/review-dump` si esto salió procesando el día. `/vault-audit` va a usar los hubs para distinguir una huérfana real de una nota que simplemente todavía no fue linkeada.
+With the hub ready, the next step is `/zettel` for the topic's ideas that do not have their own note yet, or back to `/review-dump` if this came out of processing the day. `/vault-audit` will use the hubs to tell a real orphan from a note that simply has not been linked yet.

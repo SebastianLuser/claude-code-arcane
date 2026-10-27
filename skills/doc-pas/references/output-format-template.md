@@ -1,63 +1,63 @@
 # PAS Output Format Template
 
 ```markdown
-# [Título conciso del problema/feature]
+# [Concise problem/feature title]
 
-## Problema
+## Problem
 
-**Qué pasa:**
-- [Hecho concreto 1 — qué no funciona o qué falta]
-- [Hecho concreto 2]
+**What happens:**
+- [Concrete fact 1 — what does not work or what is missing]
+- [Concrete fact 2]
 
-**Impacto en el jugador:**
-- [User story o experiencia negativa concreta]
-- [Qué sistema se ve afectado y cómo]
-
----
-
-## Análisis
-
-**Por qué pasa:**
-- [Causa raíz 1]
-- [Causa raíz 2]
-
-**Variables que influyen:**
-- [Variable 1]: [valor actual] → [efecto]
-- [Variable 2]: [valor actual] → [efecto]
+**Impact on the player:**
+- [User story or concrete negative experience]
+- [Which system is affected and how]
 
 ---
 
-## Opciones
+## Analysis
 
-### A: [Nombre de la opción]
-[1 oración: qué es]
-- **Pro:** [ventaja concreta]
-- **Contra:** [desventaja concreta]
-- **Esfuerzo:** [bajo/medio/alto]
+**Why it happens:**
+- [Root cause 1]
+- [Root cause 2]
 
-### B: [Nombre de la opción]
-[1 oración: qué es]
-- **Pro:** [ventaja]
-- **Contra:** [desventaja]
-- **Esfuerzo:** [bajo/medio/alto]
-
-### C: [Nombre de la opción] (si aplica)
-[1 oración]
-- **Pro:** [ventaja]
-- **Contra:** [desventaja]
-- **Esfuerzo:** [bajo/medio/alto]
+**Variables that influence it:**
+- [Variable 1]: [current value] → [effect]
+- [Variable 2]: [current value] → [effect]
 
 ---
 
-## Decisión
+## Options
 
-**Elegimos: Opción [X]**
+### A: [Option name]
+[1 sentence: what it is]
+- **Pro:** [concrete advantage]
+- **Con:** [concrete disadvantage]
+- **Effort:** [low/medium/high]
 
-**Justificación:** [1-2 oraciones máximo. Por qué esta y no las otras.]
+### B: [Option name]
+[1 sentence: what it is]
+- **Pro:** [advantage]
+- **Con:** [disadvantage]
+- **Effort:** [low/medium/high]
 
-**Cambios concretos:**
-- [Cambio 1 con valores exactos]
-- [Cambio 2 con valores exactos]
+### C: [Option name] (if applicable)
+[1 sentence]
+- **Pro:** [advantage]
+- **Con:** [disadvantage]
+- **Effort:** [low/medium/high]
 
-**Status:** Decidido / Pendiente de validar / [TBD]
+---
+
+## Decision
+
+**We choose: Option [X]**
+
+**Justification:** [1-2 sentences max. Why this one and not the others.]
+
+**Concrete changes:**
+- [Change 1 with exact values]
+- [Change 2 with exact values]
+
+**Status:** Decided / Pending validation / [TBD]
 ```

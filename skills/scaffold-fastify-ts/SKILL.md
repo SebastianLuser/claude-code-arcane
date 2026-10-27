@@ -10,33 +10,33 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 
 ## MANDATORY WORKFLOW
 
-**Antes de generar cualquier código, completar estos pasos en orden.**
+**Before generating any code, complete these steps in order.**
 
 ### Step 0: Gather Requirements
 
-Clarificar (o inferir del contexto si ya fue especificado):
+Clarify (or infer from context if already specified):
 
-1. **Nombre del servicio** (kebab-case)
-2. **Base de datos:** PostgreSQL / MySQL / SQLite
+1. **Service name** (kebab-case)
+2. **Database:** PostgreSQL / MySQL / SQLite
 3. **ORM:** Prisma (default) / Drizzle
-4. **Auth:** JWT / Session cookies / OAuth / ninguna
+4. **Auth:** JWT / Session cookies / OAuth / none
 5. **Deploy target:** Docker / AWS ECS / Railway / Vercel
 
-Si el usuario ya especificó estos valores, saltar directamente al Step 1.
+If the user already specified these values, skip straight to Step 1.
 
-### Step 1: Implementar
+### Step 1: Implement
 
-Seguir las secciones de este documento en orden: Framework Decision → Stack Baseline → Project Structure.
+Follow the sections of this document in order: Framework Decision → Stack Baseline → Project Structure.
 
-### Step 2: Verificar
+### Step 2: Verify
 
-Antes de declarar el scaffold completo:
+Before declaring the scaffold complete:
 
 ```bash
-npm run build        # tsc sin errores
-docker compose up -d # Postgres arriba
-npm run test         # vitest pasa
-curl http://localhost:3000/health  # responde 200
+npm run build        # tsc with no errors
+docker compose up -d # Postgres up
+npm run test         # vitest passes
+curl http://localhost:3000/health  # responds 200
 ```
 
 ---

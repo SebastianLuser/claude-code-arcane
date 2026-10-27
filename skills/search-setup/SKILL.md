@@ -1,6 +1,6 @@
 ---
 name: search-setup
-description: "Búsqueda para apps Educabot (Go/TS/React): Meilisearch, Typesense, Elasticsearch, Postgres FTS + pg_trgm, indexing pipeline, faceting, multi-tenant, multilingual es/pt."
+description: "Search for Educabot apps (Go/TS/React): Meilisearch, Typesense, Elasticsearch, Postgres FTS + pg_trgm, indexing pipeline, faceting, multi-tenant, multilingual es/pt."
 category: "backend"
 argument-hint: "[provider: meilisearch|typesense|elastic|algolia|pg-fts]"
 user-invocable: true
@@ -8,17 +8,17 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # search-setup — Search
 
-**Default Educabot:** Meilisearch para catálogo + Postgres FTS para búsquedas transaccionales. No empezar con Elasticsearch.
+**Educabot default:** Meilisearch for the catalog + Postgres FTS for transactional searches. Do not start with Elasticsearch.
 
 ## Engine Decision
 
-| Engine | Cuándo | Pros | Cons |
+| Engine | When | Pros | Cons |
 |--------|--------|------|------|
-| **Postgres FTS + pg_trgm** | <10k docs, ya tenés PG | Cero infra extra, transaccional | Relevancia cruda, sin facets nativos |
-| **Meilisearch** | **Default catálogo** | Typo-tolerant, facets, rápido, OSS | No escala horizontal trivial |
-| **Typesense** | Alt a Meili con HA | Clustering nativo, buena API | Comunidad más chica |
-| **Elasticsearch/OpenSearch** | >10M docs, analytics | Ecosistema, agregaciones | Ops pesado, JVM, caro |
-| **Algolia** | SaaS, time-to-market | Cero ops, InstantSearch | $$$, vendor lock-in |
+| **Postgres FTS + pg_trgm** | <10k docs, you already have PG | Zero extra infra, transactional | Crude relevance, no native facets |
+| **Meilisearch** | **Catalog default** | Typo-tolerant, facets, fast, OSS | Horizontal scaling is not trivial |
+| **Typesense** | Alternative to Meili with HA | Native clustering, good API | Smaller community |
+| **Elasticsearch/OpenSearch** | >10M docs, analytics | Ecosystem, aggregations | Heavy ops, JVM, expensive |
+| **Algolia** | SaaS, time-to-market | Zero ops, InstantSearch | $$$, vendor lock-in |
 
 > → Read references/engine-details.md for Postgres FTS and Meilisearch configuration specifics
 
@@ -26,23 +26,23 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 
 ## Multi-tenant
 
-| Estrategia | Cuándo | Pro | Contra |
+| Strategy | When | Pro | Con |
 |------------|--------|-----|--------|
-| Filtro por `tenantId` | **Default** (<100 tenants) | Barato, reindex único | Grande degrada al chico |
-| Index por tenant | Aislamiento requerido | Per-tenant tuning | Más ops, synonyms duplicados |
+| Filter by `tenantId` | **Default** (<100 tenants) | Cheap, single reindex | A large tenant degrades a small one |
+| Index per tenant | Isolation required | Per-tenant tuning | More ops, duplicated synonyms |
 
-Tenant tokens Meili: scoped con filtro `tenantId` forzado, TTL 1h.
+Meili tenant tokens: scoped with a forced `tenantId` filter, TTL 1h.
 
 ## Frontend Exposure
 
-- **Default:** proxy endpoint backend (`/api/search`) — más control, observabilidad, rate limit
-- Alternativa: tenant token directo a Meili (menos latencia, menos control)
-- Rate limit en search endpoint. Input sanitization: nunca pasar user input directo a `filter:`
+- **Default:** backend proxy endpoint (`/api/search`) — more control, observability, rate limit
+- Alternative: tenant token straight to Meili (less latency, less control)
+- Rate limit on the search endpoint. Input sanitization: never pass user input straight to `filter:`
 
 ## Autocomplete
 
-- Debounce ≥150ms, `limit: 5-10`, `attributesToHighlight` para resaltar match
-- Cache frontend (last 20 queries) para back/forward instantáneo
+- Debounce ≥150ms, `limit: 5-10`, `attributesToHighlight` to highlight the match
+- Frontend cache (last 20 queries) for instant back/forward
 
 > → Read references/observability.md for search metrics, latency alerting, zero-result tracking
 

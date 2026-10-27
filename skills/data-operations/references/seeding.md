@@ -1,38 +1,38 @@
 # Data Seeding Details - Data Operations
 
-## Tipos
+## Types
 
-| Tipo | Entornos | En prod? | Ejemplo |
+| Type | Environments | In prod? | Example |
 |------|----------|----------|---------|
-| **Reference** | Todos | Si | roles, paises, categorias |
-| **Dev fixtures** | local | No | usuarios fake |
-| **Test fixtures** | CI | No | escenarios controlados |
-| **Demo** | staging | No | tenant demo comerciales |
+| **Reference** | All | Yes | roles, countries, categories |
+| **Dev fixtures** | local | No | fake users |
+| **Test fixtures** | CI | No | controlled scenarios |
+| **Demo** | staging | No | demo tenant for sales |
 
-## Estructura
+## Structure
 
-`db/seeds/`: reference/ (siempre), fixtures/ (opt-in), demo/ (opt-in), anonymize/ (sanitizacion).
+`db/seeds/`: reference/ (always), fixtures/ (opt-in), demo/ (opt-in), anonymize/ (sanitization).
 
-## Idempotencia
+## Idempotency
 
-Upserts: `ON CONFLICT DO UPDATE/NOTHING`. Seeds corren N veces sin error ni duplicados.
+Upserts: `ON CONFLICT DO UPDATE/NOTHING`. Seeds run N times with no errors or duplicates.
 
 ## Factory Pattern
 
-Go: `FakeUser(overrides ...func(*User))` con `gofakeit`. TS: `buildUser(overrides: Partial<User>)` con `faker/locale/es`. Tests deterministicos: `faker.seed(42)`.
+Go: `FakeUser(overrides ...func(*User))` with `gofakeit`. TS: `buildUser(overrides: Partial<User>)` with `faker/locale/es`. Deterministic tests: `faker.seed(42)`.
 
-## Relaciones
+## Relations
 
-Top-down: tenants -> users -> hijas. Cachear IDs parents para FK.
+Top-down: tenants -> users -> children. Cache parent IDs for FKs.
 
 ## Performance (10k+ rows)
 
-Desactivar triggers/indices -> COPY FROM CSV o batch INSERT ~10k -> recrear indices CONCURRENTLY -> ANALYZE.
+Disable triggers/indexes -> COPY FROM CSV or batch INSERT ~10k -> recreate indexes CONCURRENTLY -> ANALYZE.
 
-## Anonimizacion Staging
+## Staging Anonymization
 
-Sanitizar: email->`user_ID@anon.test`, name->`User ID`, phone->NULL. Nunca dumps prod sin anonimizar. Campos: email, nombre, documento, telefono, direccion, password hash.
+Sanitize: email->`user_ID@anon.test`, name->`User ID`, phone->NULL. Never prod dumps without anonymizing. Fields: email, name, ID document, phone, address, password hash.
 
-## Guardrail Anti-prod
+## Anti-prod Guardrail
 
-Check `APP_ENV != "production"` -> fatal/throw. Obligatorio en todo seeder.
+Check `APP_ENV != "production"` -> fatal/throw. Mandatory in every seeder.

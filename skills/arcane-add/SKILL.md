@@ -21,10 +21,10 @@ Examples:
 - `/arcane-add +security` — add all skills from the +security profile
 - `/arcane-add +database` — add all skills from the +database profile
 
-## Sin argumentos
+## No arguments
 
-Mismo criterio que el picker de `arcane install`: mostrar solo lo que **no** esta instalado y dejar
-elegir. No listar los 400 skills.
+Same criteria as the `arcane install` picker: show only what is **not** installed and let the
+user choose. Don't list all 400 skills.
 
 1. Read `.claude/arcane-manifest.json` (`profiles`, `installed_skills`)
 2. List `profiles/*.yaml` from the source, skip `core.yaml`, the ones already in `profiles`, and bridge files (those with a `renamed_to` field: an old name kept for older CLIs). An installed old name counts as its `renamed_to` profile
@@ -64,11 +64,11 @@ Updated arcane-manifest.json
 COMPLETE
 ```
 
-Un skill que ya esta instalado se saltea, no se sobreescribe. Si el usuario quiere reemplazar una
-copia modificada localmente, preguntar antes de escribir encima.
+A skill that is already installed is skipped, not overwritten. If the user wants to replace a
+locally modified copy, ask before writing over it.
 
 ## Next step
 
-- `/arcane-status` — confirmar que el manifest quedo bien
-- `/arcane-list` — ver que mas hay disponible
-- `/arcane-remove` — deshacer si se agrego de mas
+- `/arcane-status` — confirm the manifest came out right
+- `/arcane-list` — see what else is available
+- `/arcane-remove` — undo if too much was added

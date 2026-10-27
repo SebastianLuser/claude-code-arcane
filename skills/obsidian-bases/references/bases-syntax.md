@@ -1,22 +1,22 @@
 # Bases Syntax Reference
 
-Referencia de la sintaxis de los archivos `.base` de Obsidian (core plugin, 1.9+). Fuente: `https://obsidian.md/help/bases/syntax`.
+Reference for the syntax of Obsidian `.base` files (core plugin, 1.9+). Source: `https://obsidian.md/help/bases/syntax`.
 
-## Bloques top-level
+## Top-level blocks
 
-| Bloque | Qué hace |
+| Block | What it does |
 |---|---|
-| `filters` | Condiciones globales, aplican a todas las vistas. Opcional. |
-| `formulas` | Propiedades calculadas, disponibles en todas las vistas. |
-| `properties` | Configuración de display de una propiedad (`displayName`). |
-| `summaries` | Fórmulas de agregación propias. |
-| `views` | Lista de vistas: cómo se renderizan los datos. |
+| `filters` | Global conditions, apply to every view. Optional. |
+| `formulas` | Computed properties, available in every view. |
+| `properties` | Display configuration for a property (`displayName`). |
+| `summaries` | Custom aggregation formulas. |
+| `views` | List of views: how the data is rendered. |
 
-Sin `filters`, la base incluye **todos** los archivos del vault.
+Without `filters`, the base includes **every** file in the vault.
 
-## Filtros
+## Filters
 
-Un objeto de filtro contiene `and`, `or` o `not`, y cada uno una lista de objetos de filtro o de statements (strings). Se anidan.
+A filter object contains `and`, `or` or `not`, each holding a list of filter objects or statements (strings). They nest.
 
 ```yaml
 filters:
@@ -30,30 +30,30 @@ filters:
         - file.inFolder("Required Reading")
 ```
 
-Operadores:
+Operators:
 
-- Aritméticos: `+`, `-`, `*`, `/`, `%`, `()`
-- Comparación: `==`, `!=`, `>`, `<`, `>=`, `<=`
-- Booleanos: `!`, `&&`, `||`
-- Fechas: sumar o restar duraciones con `+` y `-`. Unidades: `y/year/years`, `M/month/months`, `w/week/weeks`, `d/day/days`, `h/hour/hours`, `m/minute/minutes`, `s/second/seconds`
+- Arithmetic: `+`, `-`, `*`, `/`, `%`, `()`
+- Comparison: `==`, `!=`, `>`, `<`, `>=`, `<=`
+- Boolean: `!`, `&&`, `||`
+- Dates: add or subtract durations with `+` and `-`. Units: `y/year/years`, `M/month/months`, `w/week/weeks`, `d/day/days`, `h/hour/hours`, `m/minute/minutes`, `s/second/seconds`
 
-## Propiedades
+## Properties
 
-Tres orígenes:
+Three sources:
 
-| Forma | Origen |
+| Form | Source |
 |---|---|
-| `note.propiedad` o `propiedad` | frontmatter de la nota |
-| `file.*` | metadata del archivo |
-| `formula.nombre` | fórmula declarada en `formulas` |
+| `note.property` or `property` | the note's frontmatter |
+| `file.*` | file metadata |
+| `formula.name` | formula declared in `formulas` |
 
-Propiedades de archivo: `file.name`, `file.path`, `file.folder`, `file.ext`, `file.size`, `file.ctime`, `file.mtime`, `file.tags`, `file.links`, `file.embeds`, `file.backlinks`.
+File properties: `file.name`, `file.path`, `file.folder`, `file.ext`, `file.size`, `file.ctime`, `file.mtime`, `file.tags`, `file.links`, `file.embeds`, `file.backlinks`.
 
-`file.backlinks` es costoso de calcular: evitarlo en vistas de uso frecuente.
+`file.backlinks` is expensive to compute: avoid it in frequently used views.
 
-Tipos de dato: strings (entre comillas), números, booleanos (`true`/`false`), fechas, duraciones, objetos, listas, y files/links.
+Data types: strings (in quotes), numbers, booleans (`true`/`false`), dates, durations, objects, lists, and files/links.
 
-## Fórmulas
+## Formulas
 
 ```yaml
 formulas:
@@ -61,15 +61,15 @@ formulas:
   ppu: "(price / age).toFixed(2)"
 ```
 
-Funciones habituales: `if()`, `date()`, `now()`, `duration()`, además de los métodos de cada tipo (`toFixed`, `round`, `mean`).
+Common functions: `if()`, `date()`, `now()`, `duration()`, plus each type's methods (`toFixed`, `round`, `mean`).
 
-Tres trampas:
+Three traps:
 
-1. **Duraciones:** una resta de fechas devuelve `Duration`. Hay que acceder al campo numérico antes de operar: `(now() - file.mtime).days`, no `round(now() - file.mtime)`.
-2. **Nulls:** una propiedad ausente rompe la fórmula. Envolver en `if(propiedad, ...)`.
-3. **Referencias:** una `formula.x` usada en `order` pero no declarada en `formulas` falla en silencio, la columna no aparece.
+1. **Durations:** subtracting dates returns a `Duration`. Access the numeric field before operating on it: `(now() - file.mtime).days`, not `round(now() - file.mtime)`.
+2. **Nulls:** a missing property breaks the formula. Wrap it in `if(property, ...)`.
+3. **References:** a `formula.x` used in `order` but not declared in `formulas` fails silently; the column does not appear.
 
-## Vistas
+## Views
 
 ```yaml
 views:
@@ -93,31 +93,31 @@ views:
       formula.ppu: Average
 ```
 
-Claves de una vista: `type`, `name`, `limit`, `groupBy`, `filters`, `order`, `summaries`.
+View keys: `type`, `name`, `limit`, `groupBy`, `filters`, `order`, `summaries`.
 
-Tipos: `table` (columnas), `cards` (galería), `list` (lista simple), `map` (geográfico).
+Types: `table` (columns), `cards` (gallery), `list` (simple list), `map` (geographic).
 
-## Summaries por default
+## Default summaries
 
-- Numéricos: Average, Min, Max, Sum, Range, Median, Stddev
-- Fechas: Earliest, Latest
-- Booleanos: Checked, Unchecked
-- Cualquier tipo: Empty, Filled, Unique
+- Numeric: Average, Min, Max, Sum, Range, Median, Stddev
+- Dates: Earliest, Latest
+- Boolean: Checked, Unchecked
+- Any type: Empty, Filled, Unique
 
-Propios:
+Custom:
 
 ```yaml
 summaries:
   customAverage: 'values.mean().round(3)'
 ```
 
-## Quoting de YAML
+## YAML quoting
 
-Cualquier expresión que contenga `:`, `{`, `}`, `[`, `]` va entre comillas. Si la expresión tiene comillas dobles adentro, el string va entre comillas simples:
+Any expression containing `:`, `{`, `}`, `[`, `]` goes in quotes. If the expression has double quotes inside, the string goes in single quotes:
 
 ```yaml
 formulas:
   label: 'if(done, "Yes", "No")'
 ```
 
-Es la causa número uno de un `.base` que no carga.
+It is the number one cause of a `.base` that does not load.

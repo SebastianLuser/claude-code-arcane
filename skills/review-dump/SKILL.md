@@ -1,108 +1,108 @@
 ---
 name: review-dump
-description: "Procesa el dump del dia en el vault: clasifica item por item con confirmacion, actualiza hub files, rutea tareas a su nota y crea el daily con la sintesis. Triggers: review dump, procesar el dump, cerrar el dia, revisar el inbox, clasificar lo que capture, crear el daily."
+description: "Processes the day's dump in the vault: classifies it item by item with confirmation, updates hub files, routes tasks to their note and creates the daily with the synthesis. Triggers: review dump, process the dump, close the day, review the inbox, classify what I captured, create the daily."
 argument-hint: "[today | YYYY-MM-DD]"
 category: "pkm"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
 ---
 
-# Review Dump - Clasificar el día
+# Review Dump - Classify the day
 
-Convertís el dump crudo en estructura. Es la sesión donde el vault se ordena, y la única del ciclo diario que escribe en varios lugares: por eso va item por item, con confirmación, y nunca en batch silencioso.
+You turn the raw dump into structure. It is the session where the vault gets organized, and the only one in the daily cycle that writes to several places: that is why it goes item by item, with confirmation, and never as a silent batch.
 
-Día a procesar: `$ARGUMENTS` (default: hoy)
+Day to process: `$ARGUMENTS` (default: today)
 
-Aplica la rule `vault-conventions`.
+Apply the `vault-conventions` rule.
 
-**Rutas por rol:** los destinos se nombran por rol y la ruta real de cada uno sale del `## Rutas` del `CLAUDE.md` del vault. Los defaults entre paréntesis solo aplican si el vault no declara otra cosa.
+**Paths by role:** destinations are named by role, and the real path of each one comes from the `## Paths` section of the vault's `CLAUDE.md`. The defaults in parentheses only apply if the vault does not declare otherwise.
 
-## Fase 1 - Preparación
+## Phase 1 - Preparation
 
-1. **Ubicar el vault** (`--vault`, env `OBSIDIAN_VAULT`, o directorio actual con `.obsidian/`) y leer su `CLAUDE.md`: de ahí salen la estructura real, el contrato de frontmatter y los plugins disponibles. Si no hay `CLAUDE.md`, ofrecer `/second-brain adopt` y parar.
-2. **Verificar git.** Si el vault es un repo y el árbol está sucio, avisarlo antes de escribir: esta corrida toca varias notas y git es el undo.
-3. **Leer el dump** `<inbox>/YYYY-MM-DD dump.md` (default `_inbox/`), aceptando también el nombre sin sufijo si el vault viene de antes. Si no existe, decirlo y ofrecer `/brain-dump`. Si ya existe el daily de ese día, avisar que se va a actualizar y no duplicar secciones.
-4. **Inventariar el vault una sola vez**, desde el índice cacheado y no con `Glob`:
+1. **Locate the vault** (`--vault`, env `OBSIDIAN_VAULT`, or the current directory with `.obsidian/`) and read its `CLAUDE.md`: it gives you the real structure, the frontmatter contract and the available plugins. If there is no `CLAUDE.md`, offer `/second-brain adopt` and stop.
+2. **Check git.** If the vault is a repo and the tree is dirty, say so before writing: this run touches several notes and git is the undo.
+3. **Read the dump** `<inbox>/YYYY-MM-DD dump.md` (default `_inbox/`), also accepting the name without the suffix if the vault predates it. If it does not exist, say so and offer `/brain-dump`. If the daily for that day already exists, warn that it will be updated and do not duplicate sections.
+4. **Inventory the vault only once**, from the cached index and not with `Glob`:
 
    ```bash
    python .claude/skills/vault-recall/scripts/vault_index.py "<vault>" inventory --format text
    ```
 
-   Devuelve hubs con sus alias, proyectos, areas, los dumps sin daily y las fechas del último weekly y monthly. Es lo que necesitás para proponer destinos reales, y su costo no crece con el vault: un `Glob` de cuatro carpetas sobre miles de notas mete un listado enorme en contexto en cada corrida. Si el vault usa otra estructura, pasar `--role nombre=ruta` con lo que diga el contrato. Sin el script, `Glob` de los roles `hubs`, `projects`, `areas` y `atomic`.
+   It returns hubs with their aliases, projects, areas, the dumps without a daily, and the dates of the last weekly and monthly. That is what you need to propose real destinations, and its cost does not grow with the vault: a `Glob` of four folders over thousands of notes puts a huge listing into context on every run. If the vault uses another structure, pass `--role name=path` with whatever the contract says. Without the script, `Glob` the `hubs`, `projects`, `areas` and `atomic` roles.
 
-## Fase 2 - Clasificación item por item
+## Phase 2 - Item-by-item classification
 
-Para cada línea del dump, proponer un destino y esperar confirmación. Una línea por propuesta, agrupando las obvias para no hacer 30 preguntas:
+For each line of the dump, propose a destination and wait for confirmation. One line per proposal, grouping the obvious ones so you do not ask 30 questions:
 
-| Lo que es | Destino |
+| What it is | Destination |
 |---|---|
-| Tarea de un proyecto existente | La nota del proyecto en `<projects>` (default `01_Projects/`) |
-| Tarea del día sin proyecto | Se queda en el dump |
-| Idea que se sostiene sola | Nota atómica nueva en `<atomic>` (default `03_Resources/`), delegar a `/zettel` |
-| Mención de una entidad con hub existente | Entrada en `## Historial` de ese hub |
-| Mención de una entidad recurrente sin hub | Proponer hub nuevo (delegar a `/hub-note`) |
-| URL para leer después | Se queda en el dump, o `/vault-clip` si el usuario lo quiere ahora |
-| Ruido, duplicado, ya resuelto | Nada: se deja en el dump y se marca resuelto |
+| Task for an existing project | The project's note in `<projects>` (default `01_Projects/`) |
+| Task for the day without a project | Stays in the dump |
+| An idea that stands on its own | New atomic note in `<atomic>` (default `03_Resources/`), delegate to `/zettel` |
+| Mention of an entity with an existing hub | Entry in that hub's `## History` |
+| Mention of a recurring entity without a hub | Propose a new hub (delegate to `/hub-note`) |
+| URL to read later | Stays in the dump, or `/vault-clip` if the user wants it now |
+| Noise, duplicate, already resolved | Nothing: it stays in the dump and is marked resolved |
 
-**Taxonomía de la captura.** Antes de decidir destino, clasificá qué **tipo** de captura es. Adaptado del patrón de organización por tipo en vez de por tema: el tema crea silos (una nota de psicología de la atención y una de por qué el contenido corto rinde nunca se cruzan), el tipo crea colisiones, y las colisiones son de donde sale lo original.
+**Capture taxonomy.** Before deciding the destination, classify what **type** of capture it is. Adapted from the pattern of organizing by type instead of by topic: topics create silos (a note on the psychology of attention and one on why short content performs never cross), types create collisions, and collisions are where original ideas come from.
 
-| Tipo | Qué es | Suele terminar en |
+| Type | What it is | Usually ends up in |
 |---|---|---|
-| observación | algo que noté, sin conclusión todavía | dump, o `atomic` si se sostiene sola |
-| reacción | mi respuesta honesta a algo que leí o escuché | dump, o `## Historial` del hub del tema |
-| patrón | el mismo principio apareciendo en dos dominios distintos | casi siempre `atomic`: es la materia prima del conocimiento |
-| pregunta | algo que genuinamente no sé | dump, y al weekly como hilo abierto |
-| número | un dato concreto, con su fuente | hub del tema, o `atomic` si el número prueba algo |
+| observation | something I noticed, with no conclusion yet | the dump, or `atomic` if it stands on its own |
+| reaction | my honest response to something I read or heard | the dump, or the topic hub's `## History` |
+| pattern | the same principle showing up in two different domains | almost always `atomic`: it is the raw material of knowledge |
+| question | something I genuinely do not know | the dump, and into the weekly as an open thread |
+| number | a concrete data point, with its source | the topic's hub, or `atomic` if the number proves something |
 
-**Afilado.** Cada item que se mueve del dump se reescribe en una línea que se entienda sola: si todavía necesita explicación, no está afilada. "las notas sin links no se encuentran" es flojo; "una nota sin link entrante es invisible desde el día que se escribe" se sostiene sin contexto. El afilado se muestra al usuario para que confirme, porque es su idea y sus palabras.
+**Sharpening.** Every item that moves out of the dump is rewritten as one line that makes sense on its own: if it still needs explaining, it is not sharp. "notes without links can't be found" is weak; "a note with no incoming link is invisible from the day it is written" holds up without context. Show the sharpened line to the user to confirm, because it is their idea and their words.
 
-Reglas de la clasificación:
+Classification rules:
 
-- **Proponé, no decidas.** Cada movimiento se confirma. Si el usuario dice que no, el item se queda en el dump: quedarse es un destino válido y no es un fracaso.
-- **Una entidad merece hub cuando aparece en tres dumps distintos**, no la primera vez. Antes de eso es una mención, no un tema.
-- **Una idea merece nota atómica cuando el usuario podría querer linkearla desde otra cosa.** Si solo tiene sentido dentro del día en que se escribió, se queda en el dump.
-- No inventes destinos: las carpetas y los hubs propuestos tienen que existir en el inventario, o crearse explícitamente.
+- **Propose, do not decide.** Every move is confirmed. If the user says no, the item stays in the dump: staying is a valid destination and not a failure.
+- **An entity deserves a hub when it appears in three different dumps**, not the first time. Before that it is a mention, not a topic.
+- **An idea deserves an atomic note when the user might want to link it from something else.** If it only makes sense within the day it was written, it stays in the dump.
+- Do not invent destinations: the proposed folders and hubs must exist in the inventory, or be created explicitly.
 
-## Fase 3 - Tareas
+## Phase 3 - Tasks
 
-Aplicar la regla de arrastre sin excepción:
+Apply the carry-forward rule without exception:
 
-1. Buscar tareas abiertas en los dumps de días anteriores (últimos 7 días alcanza).
-2. Las que sigan abiertas se marcan `- [-]` (canceladas) **en su día original**, con el motivo si el usuario lo dice. No se mueven.
-3. Si la tarea sigue vigente, se crea de nuevo: en la nota del proyecto si tiene uno, o en el dump de hoy.
-4. Si hay plugin `obsidian-tasks-plugin`, usar su sintaxis de fecha y prioridad; si no, checkbox plano. No mezclar.
+1. Look for open tasks in the dumps of previous days (the last 7 days is enough).
+2. The ones still open are marked `- [-]` (cancelled) **on their original day**, with the reason if the user gives one. They are not moved.
+3. If the task is still relevant, it is created again: in the project's note if it has one, or in today's dump.
+4. If the `obsidian-tasks-plugin` plugin is present, use its date and priority syntax; if not, a plain checkbox. Do not mix them.
 
-Verdict de esta fase: PASS cuando ninguna tarea quedó duplicada entre un día viejo y el nuevo.
+Verdict for this phase: PASS when no task ended up duplicated between an old day and the new one.
 
-## Fase 4 - Escribir
+## Phase 4 - Write
 
-Con approval sobre lo recolectado, en este orden:
+With approval on what was collected, in this order:
 
-1. Notas atómicas nuevas y hubs nuevos (para que existan antes de que algo los linkee).
-2. Actualización de hubs existentes: entrada en `## Historial`, y reescritura de `## Estado actual` solo si cambió de verdad.
-3. Tareas en las notas de proyecto.
-4. El daily en `<daily>/YYYY-MM-DD.md` (default `Reflect/Daily/`) desde `<templates>/Daily.md`: link al dump, síntesis de 3 a 5 líneas, links a las notas creadas, y el estado real de las tareas del día.
-5. El dump queda como está, salvo las marcas de tarea. **El dump no se borra ni se vacía nunca:** es el registro crudo de lo que pasó ese día.
+1. New atomic notes and new hubs (so they exist before anything links to them).
+2. Updates to existing hubs: an entry in `## History`, and a rewrite of `## Current status` only if it really changed.
+3. Tasks in the project notes.
+4. The daily in `<daily>/YYYY-MM-DD.md` (default `Reflect/Daily/`) from `<templates>/Daily.md`: link to the dump, a 3 to 5 line synthesis, links to the notes created, and the real state of the day's tasks.
+5. The dump stays as it is, except for the task marks. **The dump is never deleted or emptied:** it is the raw record of what happened that day.
 
-Los links van hacia arriba: el daily linkea al dump y a las notas creadas; ninguna nota atómica linkea de vuelta al daily.
+Links go up: the daily links to the dump and to the notes created; no atomic note links back to the daily.
 
-## Fase 5 - Cierre
+## Phase 5 - Close
 
-1. **Reescribir `hot.md`** en la raíz del vault (desde `Templates/hot.md` la primera vez): dónde está el usuario, las notas que cambiaron con un link cada una, los hilos abiertos y las tareas vivas. Techo de 40 líneas, sin secretos, sin transcripciones crudas, y ninguna afirmación sin su link. **Se reescribe completo, no se le agrega al final.** Es el archivo que hace que la próxima sesión abra sabiendo dónde estabas, y es descartable: si contradice a una nota, la nota gana.
-2. Reportar en una tabla qué se creó, qué se actualizó y qué quedó en el dump.
-3. La sección `## Reflexión` del daily queda vacía: la escribe el usuario. No la completes ni la sugieras.
-4. Si el vault es un repo git, recordar el commit.
+1. **Rewrite `hot.md`** at the vault root (from `Templates/hot.md` the first time): where the user is, the notes that changed with one link each, the open threads and the live tasks. A 40-line ceiling, no secrets, no raw transcripts, and no claim without its link. **It is rewritten in full, not appended to.** It is the file that lets the next session open knowing where you were, and it is disposable: if it contradicts a note, the note wins.
+2. Report in a table what was created, what was updated and what stayed in the dump.
+3. The daily's `## Reflection` section stays empty: the user writes it. Do not fill it in or suggest it.
+4. If the vault is a git repo, remind the user to commit.
 
-Review COMPLETE cuando existe el daily, `hot.md` refleja el estado de hoy, los hubs tocados quedaron consistentes y ninguna tarea quedó duplicada.
+Review COMPLETE when the daily exists, `hot.md` reflects today's state, the hubs touched are consistent and no task ended up duplicated.
 
-## Reglas
+## Rules
 
-- Escribir los hechos, no interpretarlos: la síntesis dice qué pasó, no qué significa.
-- Idempotente: correr el review dos veces sobre el mismo día no duplica entradas de historial ni secciones del daily.
-- Nunca borrar contenido del dump.
-- Sin guiones largos en nada de lo que escribas.
-- Si el dump tiene más de 40 items, proponer procesar por bloques temáticos en vez de item por item, y decir por qué.
+- Write the facts, do not interpret them: the synthesis says what happened, not what it means.
+- Idempotent: running the review twice on the same day does not duplicate history entries or daily sections.
+- Never delete content from the dump.
+- No long dashes in anything you write.
+- If the dump has more than 40 items, propose processing it in thematic blocks instead of item by item, and say why.
 
 ## Handoff
 
-Con el daily listo, el siguiente paso depende del día: durante la semana volver a `/brain-dump`, y al cierre `/review-weekly` para extraer los temas de la semana. Si la corrida dejó varias entidades sin hub o varias ideas sin nota, `/hub-note` y `/zettel` son los pasos puntuales.
+With the daily ready, the next step depends on the day: during the week go back to `/brain-dump`, and at the end of it `/review-weekly` to extract the week's themes. If the run left several entities without a hub or several ideas without a note, `/hub-note` and `/zettel` are the targeted steps.

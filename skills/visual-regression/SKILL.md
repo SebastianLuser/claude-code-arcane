@@ -1,6 +1,6 @@
 ---
 name: visual-regression
-description: "Visual regression testing: screenshot comparison antes/después. Chromatic, Percy, Playwright. React+Vite, React Native."
+description: "Visual regression testing: before/after screenshot comparison. Chromatic, Percy, Playwright. React+Vite, React Native."
 category: "testing"
 argument-hint: "[setup|run|update-baseline]"
 user-invocable: true
@@ -8,79 +8,79 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task
 ---
 # Visual Regression Testing
 
-Detectar cambios visuales **no intencionales** comparando screenshots antes/después. Complementa (no reemplaza) tests de behavior.
+Detect **unintended** visual changes by comparing before/after screenshots. Complements (doesn't replace) behavior tests.
 
-**Flujo:** correr suite → comparar contra baseline → humano aprueba (intencional) o rechaza (regresión) → baseline actualizado.
+**Flow:** run the suite → compare against the baseline → a human approves (intended) or rejects (regression) → baseline updated.
 
-## Cuándo usar / NO usar
+## When to use / NOT use
 
-| Usar | NO usar |
+| Use | Do NOT use |
 |------|---------|
-| PRs que tocan CSS/componentes/tokens/layouts | Testing de behavior/lógica |
-| Refactors de design system | Accesibilidad semántica (usar axe) |
-| Validar upgrade (React, Vite, Tailwind) | Performance (usar Lighthouse) |
-| Gatekeeping merges con cambios visuales | Features inestables sin diseño congelado |
-| Detectar regresiones focus/contraste/dark mode | Prototipos/MVPs (overkill) |
+| PRs that touch CSS/components/tokens/layouts | Behavior/logic testing |
+| Design system refactors | Semantic accessibility (use axe) |
+| Validating an upgrade (React, Vite, Tailwind) | Performance (use Lighthouse) |
+| Gatekeeping merges with visual changes | Unstable features without a frozen design |
+| Detecting focus/contrast/dark mode regressions | Prototypes/MVPs (overkill) |
 
 ## Tools
 
-| Tool | Tipo | Cuándo |
+| Tool | Type | When |
 |------|------|--------|
-| **Chromatic** | SaaS | Default si usás Storybook |
-| **Playwright screenshots** | OSS | Default sin Storybook, flujos cross-page |
-| Percy | SaaS | Alternativa a Chromatic |
-| Loki / Argos CI | OSS | Storybook sin presupuesto SaaS |
+| **Chromatic** | SaaS | Default if you use Storybook |
+| **Playwright screenshots** | OSS | Default without Storybook, cross-page flows |
+| Percy | SaaS | Alternative to Chromatic |
+| Loki / Argos CI | OSS | Storybook without a SaaS budget |
 | Detox + screenshots | OSS | React Native e2e + VR |
 
-**Default Educabot:** Web: Storybook + Chromatic (componentes) + Playwright (cross-page). RN: Detox screenshots.
+**Educabot default:** Web: Storybook + Chromatic (components) + Playwright (cross-page). RN: Detox screenshots.
 
 ## Setup
 
-**Chromatic:** `npm i -D chromatic` → `npx chromatic --project-token=xxx`. CI: `chromaui/action@latest` con `onlyChanged: true` (TurboSnap) + `exitZeroOnChanges: false`.
+**Chromatic:** `npm i -D chromatic` → `npx chromatic --project-token=xxx`. CI: `chromaui/action@latest` with `onlyChanged: true` (TurboSnap) + `exitZeroOnChanges: false`.
 
-**Playwright:** config con `maxDiffPixelRatio: 0.01`, projects para mobile (375), tablet (768), desktop (1280). Baselines en `__screenshots__/` committeadas o en S3.
+**Playwright:** config with `maxDiffPixelRatio: 0.01`, projects for mobile (375), tablet (768), desktop (1280). Baselines in `__screenshots__/`, committed or in S3.
 
 ## Flakiness
 
 Sources: fonts, animations, timestamps, random data, cursors, lazy images.
 
-Mitigaciones: `waitForLoadState('networkidle')` + `document.fonts.ready` + disable animations globalmente (transition/animation/caret none) + seed fijo en faker + stub `Date.now` + mask áreas volátiles con `mask: [locator]`.
+Mitigations: `waitForLoadState('networkidle')` + `document.fonts.ready` + disable animations globally (transition/animation/caret none) + fixed seed in faker + stub `Date.now` + mask volatile areas with `mask: [locator]`.
 
 ## Viewports, themes, browsers
 
 - Viewports: 375 + 768 + 1280
-- Dark mode: capturar ambos temas (Chromatic `modes` parameter)
-- Browsers: Chromium default. Firefox/WebKit solo si bugs browser-specific recurrentes
+- Dark mode: capture both themes (Chromatic `modes` parameter)
+- Browsers: Chromium by default. Firefox/WebKit only for recurring browser-specific bugs
 
 ## CI & Approval
 
-PR con cambio UI → CI corre VR → diffs bloquean merge → reviewer acepta/rechaza en Chromatic UI → baseline se actualiza en branch → merge actualiza baseline de main.
+PR with a UI change → CI runs VR → diffs block the merge → reviewer accepts/rejects in the Chromatic UI → baseline is updated on the branch → merge updates main's baseline.
 
-Regla: diseñador/PM aprueba shared components; dev aprueba features propias. Threshold default: `maxDiffPixelRatio: 0.01` (ajustar por componente, nunca subir globalmente).
+Rule: the designer/PM approves shared components; the dev approves their own features. Default threshold: `maxDiffPixelRatio: 0.01` (adjust per component, never raise it globally).
 
 ## Anti-patterns
 
-- Sin handle de animations/fonts → flaky → nadie confía
-- Threshold alto global (0.5%+) → oculta regresiones
-- Baselines no versionadas → branch drift
-- Full suite en cada commit → lento + caro (usar TurboSnap)
-- "Accept all" sin revisar → se cuela regresión
-- Mutear diffs flaky en vez de fixear → test pierde valor
-- VR como único test UI → no testea behavior
-- Mocks rotos → data real + PII en CI logs
-- Ignorar dark mode/mobile → regresiones silenciosas en 50% tráfico
+- No handling of animations/fonts → flaky → nobody trusts it
+- High global threshold (0.5%+) → hides regressions
+- Unversioned baselines → branch drift
+- Full suite on every commit → slow + expensive (use TurboSnap)
+- "Accept all" without reviewing → a regression slips in
+- Muting flaky diffs instead of fixing them → the test loses value
+- VR as the only UI test → doesn't test behavior
+- Broken mocks → real data + PII in CI logs
+- Ignoring dark mode/mobile → silent regressions on 50% of traffic
 
 ## Checklist
 
-- [ ] Tool elegido según stack (Storybook → Chromatic, sin → Playwright)
-- [ ] Animations disabled en test env
-- [ ] Fonts loaded + networkidle antes de screenshot
-- [ ] Datos mockeados con seed fijo, Date.now estable
-- [ ] Masking áreas volátiles
+- [ ] Tool chosen per stack (Storybook → Chromatic, without → Playwright)
+- [ ] Animations disabled in the test env
+- [ ] Fonts loaded + networkidle before the screenshot
+- [ ] Mocked data with a fixed seed, stable Date.now
+- [ ] Volatile areas masked
 - [ ] Viewports: mobile + tablet + desktop
-- [ ] Dark mode capturado si aplica
-- [ ] Threshold 0.01, CI bloquea merge sin aprobar
-- [ ] TurboSnap / onlyChanged activado
-- [ ] Baselines versionadas (Chromatic auto / repo / S3)
-- [ ] Approval workflow documentado
-- [ ] Budget/tier confirmado (Chromatic educativo si aplica)
+- [ ] Dark mode captured if applicable
+- [ ] Threshold 0.01, CI blocks unapproved merges
+- [ ] TurboSnap / onlyChanged enabled
+- [ ] Versioned baselines (Chromatic auto / repo / S3)
+- [ ] Approval workflow documented
+- [ ] Budget/tier confirmed (Chromatic education plan if applicable)
