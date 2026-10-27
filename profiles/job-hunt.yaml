@@ -40,6 +40,8 @@ agents:
 permissions:
   allow:
     - "Bash(python *posting_guard.py*)"
+    - "Bash(python *job_key.py*)"
+    - "Bash(python3 *job_key.py*)"
     - "Bash(python3 *posting_guard.py*)"
     - "Bash(python *career_registry.py*)"
     - "Bash(python3 *career_registry.py*)"

@@ -15,7 +15,7 @@ El flujo es **unidireccional**: seen_jobs -> nota -> dashboard. Cuando una entra
 ## Claves de dedup
 
 1. **URL canonica** (por fuente): sin utm/tracking params; LinkedIn reducido a `linkedin.com/jobs/view/<id>`; GetOnBoard `/empleos/` -> `/jobs/`.
-2. **`job_key`** = `slug(empresa)|slug(titulo)`: lowercase, sin acentos, sin puntuacion (conserva `.` interno: coderslab.io, .net), sin sufijos legales (inc, llc, sa...), sin calificadores del titulo entre parentesis ("(remote)", "(latam)"). Detecta la misma oferta publicada en dos fuentes con URLs distintas; se agrega a `sources[]` de la entrada existente en vez de duplicar.
+2. **`job_key`** = `slug(empresa)|slug(titulo)`, calculada siempre con `scripts/job_key.py` (la regla escrita solo en prosa daba claves distintas para la misma oferta segun la corrida): lowercase, sin acentos, palabras unidas con `-`, conserva el `.` interno (coderslab.io; `.NET` queda `net`), sin sufijos legales (inc, llc, s.a....), sin calificadores de modalidad o region entre parentesis ("(remote)", "(latam)"; "(OT/IoT)" se queda). Un slug largo se acota con un hash del completo, y un nombre en otro alfabeto usa el id numerico de la URL o un hash. Detecta la misma oferta publicada en dos fuentes con URLs distintas; se agrega a `sources[]` de la entrada existente en vez de duplicar. `job_key.py --audit` revisa un `seen_jobs.json` existente.
 3. Matching blando (misma empresa + alto solapamiento de tokens del titulo) = **warning** en `/job-scrape`, nunca dedup automatico (una empresa puede tener dos roles parecidos legitimos, o el mismo rol con titulo traducido).
 
 ## Mantenimiento

@@ -27,7 +27,7 @@ Todas las rutas de notas son relativas al **career workspace** (flag `--workspac
 
 1. **Perfil y criterios.** Si `$ARGUMENTS` no matchea una nota de `01-Perfiles/` (excluir `_index`), listar los perfiles y preguntar cuál usar. Leer del frontmatter: `keywords`, `keywords_excluir`, `match_score_minimo`, `salario_minimo_usd_mes`, `modalidad`, `seniority`, `regla_seniority`, `mercado_objetivo`.
 
-2. **Cargar estado.** Leer `<workspace>/tools/job_scraper/seen_jobs.json` (si no existe, crearlo con el esqueleto de `references/seen_jobs.schema.json`; si hay notas previas en `03-Aplicaciones/`, ofrecer backfillearlas como `nota_creada`). Validar que toda entrada `nota_creada` apunte a una nota existente en `03-Aplicaciones/`; reportar punteros rotos sin frenar.
+2. **Cargar estado.** Si la corrida anterior es de antes de `job_key.py`, ofrecer `python .claude/skills/job-scrape/scripts/job_key.py --audit` una vez: reporta claves malformadas, URLs repetidas en dos entradas y claves con la forma vieja, sin renombrar nada (decide el usuario). Leer `<workspace>/tools/job_scraper/seen_jobs.json` (si no existe, crearlo con el esqueleto de `references/seen_jobs.schema.json`; si hay notas previas en `03-Aplicaciones/`, ofrecer backfillearlas como `nota_creada`). Validar que toda entrada `nota_creada` apunte a una nota existente en `03-Aplicaciones/`; reportar punteros rotos sin frenar.
 
 3. **Derivar queries.** 3-5 queries con forma de rol desde las keywords del perfil (ej. "fullstack developer", "backend developer"), no fragmentos de skill sueltos.
 
@@ -47,7 +47,7 @@ Todas las rutas de notas son relativas al **career workspace** (flag `--workspac
 
    **`--brief` no es opcional en el barrido:** los JD completos son ~80% del payload de GetOnBoard (~58 KB por query), y el quick score del paso 8 solo necesita los campos estructurados + el arranque de la description. El JD completo se trae en el paso 9, solo para las `high`. Si el CLI de LinkedIn emite un `warning` `NO_CARDS_PARSED` en stderr, la respuesta traía contenido pero el markup cambió: reportarlo como degradación de esa fuente, no como "no hay ofertas".
 
-6. **Normalizar y dedup intra-batch.** Canonicalizar URLs (sin utm/tracking; LinkedIn → `jobs/view/<id>`; GetOnBoard `/empleos/` → `/jobs/`), calcular `job_key = slug(empresa)|slug(titulo)` (reglas exactas en `references/dedup-playbook.md`). Misma oferta en ambas fuentes = una entrada con dos `sources[]`.
+6. **Normalizar y dedup intra-batch.** Canonicalizar URLs (sin utm/tracking; LinkedIn → `jobs/view/<id>`; GetOnBoard `/empleos/` → `/jobs/`), la `job_key` sale de `python .claude/skills/job-scrape/scripts/job_key.py --company "<empresa>" --title "<titulo>" --url "<url>"`, nunca a mano (reglas en `references/dedup-playbook.md`). Misma oferta en ambas fuentes = una entrada con dos `sources[]`. Una misma empresa con el mismo titulo y la misma description publicado en varias ciudades es **un aviso masivo**: una sola fila, con las ubicaciones juntas en `location`, no N filas que compiten en el score.
 
 7. **Dedup contra historial:**
    - `seen_jobs.json`: entradas `nota_creada` o `descartado` se omiten de la tabla (contarlas aparte); entradas `new` re-vistas actualizan `last_seen` y se muestran marcadas "vista antes, sin decisión".
