@@ -69,7 +69,7 @@ class GuardFixture(unittest.TestCase):
         if isinstance(content, bytes):
             p.write_bytes(content)
         else:
-            p.write_text(content, encoding=encoding, newline="")
+            p.write_bytes(content.encode(encoding))  # write_text(newline=) needs Python 3.10
         return p
 
     def findings_of(self, out):
