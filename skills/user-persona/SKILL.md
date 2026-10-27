@@ -61,5 +61,4 @@ Notion/Coda (hub personas) -> linkear desde PRDs y Figma -> printables opcional.
 ## Delegacion
 
 - `/product-spec` — PRD que usa la persona
-- `/notion`, `/coda` — publicar hub
 - `/meeting-to-tasks` — convertir interviews en insights

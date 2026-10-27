@@ -429,6 +429,17 @@ const RETIRED_DOCS: ReadonlySet<string> = new Set([
   "presentations/build_arcane_deck_12.py",
 ]);
 
+/** Files templates/gamedev/ shipped to .claude/skills/_templates/ and no longer does. */
+const RETIRED_TEMPLATES: readonly string[] = [
+  "architecture-decision-record.md",
+  "pitch-document.md",
+  "project-stage-report.md",
+  "sound-bible.md",
+  "technical-design-document.md",
+  "test-evidence.md",
+  "test-plan.md",
+];
+
 type OwnershipCheck = (type: ContentType, name: string) => boolean;
 
 /**
@@ -823,6 +834,19 @@ function syncUnhashedFiles(
   }
 
   const changed: string[] = [];
+
+  // Nothing records which _templates/ files are Arcane's, so retiring one needs a
+  // name here, like RETIRED_DOCS; otherwise every game project keeps the stale copy.
+  for (const name of RETIRED_TEMPLATES) {
+    const dst = path.join(claudeDir, "skills", "_templates", name);
+    if (!fs.existsSync(dst) || fs.existsSync(path.join(root, "templates", "gamedev", name))) continue;
+    changed.push(`skills/_templates/${name} (retired, moved to ${TRASH_DIR}/)`);
+    if (dryRun) continue;
+    const bak = path.join(claudeDir, TRASH_DIR, path.relative(claudeDir, dst));
+    fs.mkdirSync(path.dirname(bak), { recursive: true });
+    if (fs.existsSync(bak)) fs.rmSync(bak, { force: true });
+    fs.renameSync(dst, bak);
+  }
   for (const t of targets) {
     if (!fs.existsSync(t.src)) continue;
     const src = fs.readFileSync(t.src);

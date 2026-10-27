@@ -13,7 +13,7 @@ Extract milestone name (`current` = most recent). Resolve review mode: `--review
 
 ## Phase 1: Load Milestone Data
 
-Read milestone definition from `production/milestones/`. Read all sprint reports within this milestone from `production/sprints/`.
+Read milestone definition from `production/milestones/` (none yet → offer to write one from `.claude/docs/templates/milestone-definition.md` before reviewing). Read all sprint reports within this milestone from `production/sprints/`.
 
 ## Phase 2: Scan Codebase Health
 

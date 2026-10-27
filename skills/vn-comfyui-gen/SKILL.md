@@ -20,6 +20,8 @@ When this skill is invoked:
 
 ## Phase 0: ComfyUI Environment Check
 
+Node graphs and settings for each asset type: [references/comfyui-vn-workflows.md](references/comfyui-vn-workflows.md).
+
 Verify ComfyUI setup:
 - ComfyUI server accessible at `http://127.0.0.1:8188` (or custom port)
 - Required custom nodes installed:

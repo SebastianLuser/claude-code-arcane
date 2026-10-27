@@ -265,7 +265,7 @@ class SecurityAssessor:
         for standard in standards:
             if standard not in self.COMPLIANCE_STANDARDS:
                 results[standard] = {
-                    'readiness': 'Unknown',
+                    'readiness_level': 'Unknown',
                     'score': 0,
                     'status': 'Unknown standard'
                 }
@@ -516,3 +516,16 @@ class SecurityAssessor:
             return "High Risk - Security improvements needed"
         else:
             return "Critical Risk - Not recommended for production use"
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(description="Evaluate security posture")
+    parser.add_argument("input", help="JSON file with the input data")
+    args = parser.parse_args()
+    with open(args.input, encoding="utf-8") as f:
+        data = json.load(f)
+    data = data.get("security", data)
+    print(json.dumps(SecurityAssessor(data).generate_security_report(), indent=2, default=str))

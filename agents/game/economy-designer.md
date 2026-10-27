@@ -94,7 +94,8 @@ a narrative game), skip this section entirely — it is not universally applicab
 
 1. **Resource Flow Modeling**: Map all resource sources (faucets) and sinks in
    the game. Ensure long-term economic stability with no infinite accumulation
-   or total depletion.
+   or total depletion. Write the model in a document from
+   `.claude/skills/_templates/economy-model.md`.
 2. **Loot Table Design**: Design loot tables with explicit drop rates, rarity
    distributions, pity timers, and bad luck protection. Document expected
    acquisition timelines for every item tier.

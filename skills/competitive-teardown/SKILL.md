@@ -89,6 +89,8 @@ Capture recent mentions via Twitter/X API v2, Reddit, or LinkedIn. Look for recu
 
 ## Scoring Rubric (12 Dimensions, 1-5)
 
+Frameworks to read the scores through (Five Forces, SWOT, positioning map, Blue Ocean canvas): `references/competitive-analysis-frameworks.md`.
+
 | # | Dimension | 1 (Weak) | 3 (Average) | 5 (Best-in-class) |
 |---|-----------|----------|-------------|-------------------|
 | 1 | **Features** | Core only, many gaps | Solid coverage | Comprehensive + unique |

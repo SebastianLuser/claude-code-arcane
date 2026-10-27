@@ -44,12 +44,12 @@ Test-driven development skill for generating tests, analyzing coverage, and guid
 
 | Tool | Purpose | Usage |
 |------|---------|-------|
-| `test_generator.py` | Generate test cases from code/requirements | `python scripts/test_generator.py --input source.py --framework pytest` |
-| `coverage_analyzer.py` | Parse and analyze coverage reports | `python scripts/coverage_analyzer.py --report lcov.info --threshold 80` |
-| `tdd_workflow.py` | Guide red-green-refactor cycles | `python scripts/tdd_workflow.py --phase red --test test_auth.py` |
-| `fixture_generator.py` | Generate test data and mocks | `python scripts/fixture_generator.py --entity User --count 5` |
+| `test_generator.py` | Generate test stubs from requirements | `python scripts/test_generator.py --input requirements.json --framework pytest --module discount` (input shape: `assets/sample_input_python.json`, `assets/sample_input_typescript.json`) |
+| `coverage_analyzer.py` | Parse and analyze coverage reports | `python scripts/coverage_analyzer.py --report lcov.info --threshold 80` (try it on `assets/sample_coverage_report.lcov`) |
+| `tdd_workflow.py` | Check a red-green-refactor step | `python scripts/tdd_workflow.py --phase red --test test_auth.py --status failed`; `--phase green --code auth.py --status passed`; `--phase refactor --original old.py --code auth.py --status passed` |
+| `fixture_generator.py` | Generate test data and mocks | `python scripts/fixture_generator.py --schema user.json --count 5` (schema: `{"email": {"type": "email"}, "age": {"type": "int", "min": 18}}`) |
 
-Additional scripts: `framework_adapter.py` (convert between frameworks), `metrics_calculator.py` (quality metrics), `format_detector.py` (detect language/framework), `output_formatter.py` (CLI/desktop/CI output).
+Helper modules the tools import, with no command of their own: `framework_adapter.py` (convert between frameworks), `metrics_calculator.py` (quality metrics), `format_detector.py` (detect language/framework), `output_formatter.py` (CLI/desktop/CI output).
 
 ## Spec-First Workflow
 
@@ -92,6 +92,8 @@ Each acceptance criterion in a spec maps to at least one test:
 - **Existing test patterns** -- the codebase already has similar tests to follow
 
 ## Code Examples and Advanced Patterns
+
+> See references/tdd-best-practices.md for the red-green-refactor discipline and test naming, references/framework-guide.md for Jest, Pytest, JUnit and Vitest specifics, and references/ci-integration.md to run coverage gates in CI.
 
 > See references/tdd-code-examples.md for complete examples covering Pytest, Jest, Go table-driven tests, property-based testing (Hypothesis, fast-check), mutation testing, and coverage analysis output.
 

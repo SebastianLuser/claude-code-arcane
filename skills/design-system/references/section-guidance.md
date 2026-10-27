@@ -19,11 +19,11 @@
 
 | System Category | Primary | Supporting |
 |----------------|---------|------------|
-| Foundation/Infrastructure | `systems-designer` | `gameplay-programmer`, `engine-programmer` |
+| Foundation/Infrastructure | `systems-designer` | `gameplay-programmer`, `lead-programmer` |
 | Combat, damage, health | `game-designer` | `systems-designer`, `ai-programmer`, `art-director` |
 | Economy, loot, crafting | `economy-designer` | `systems-designer`, `game-designer` |
 | Progression, XP, skills | `game-designer` | `systems-designer`, `economy-designer` |
 | Dialogue, quests, lore | `game-designer` | `narrative-director`, `writer`, `art-director` |
-| UI systems | `game-designer` | `ux-designer`, `ui-programmer`, `art-director` |
+| UI systems | `game-designer` | `ux-designer`, `gameplay-programmer`, `art-director` |
 | AI, pathfinding | `game-designer` | `ai-programmer`, `systems-designer` |
 | Animation, movement | `game-designer` | `art-director`, `technical-artist`, `gameplay-programmer` |

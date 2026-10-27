@@ -472,3 +472,32 @@ class TDDWorkflow:
             }
 
         return {}
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(description="Check that a red, green or refactor step is complete")
+    parser.add_argument("--phase", required=True, choices=["red", "green", "refactor"])
+    parser.add_argument("--test", help="red: the test file you wrote")
+    parser.add_argument("--code", help="green: the implementation; refactor: the refactored code")
+    parser.add_argument("--original", help="refactor: the code before refactoring")
+    parser.add_argument("--status", choices=["passed", "failed"], help="result of running the tests")
+    args = parser.parse_args()
+
+    def read(path):
+        if not path:
+            parser.error("missing a file for this phase")
+        with open(path, encoding="utf-8") as f:
+            return f.read()
+
+    result = {"status": args.status} if args.status else None
+    workflow = TDDWorkflow()
+    if args.phase == "red":
+        report = workflow.validate_red_phase(read(args.test), result)
+    elif args.phase == "green":
+        report = workflow.validate_green_phase(read(args.code), result or {})
+    else:
+        report = workflow.validate_refactor_phase(read(args.original), read(args.code), result or {})
+    print(json.dumps(report, indent=2, default=str))

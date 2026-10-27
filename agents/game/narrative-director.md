@@ -38,6 +38,8 @@ Fits RPGs and action-adventures.
 
 ## Character Design
 
+A full character document starts from `.claude/skills/_templates/narrative-character-sheet.md`; the block below is the short form.
+
 ```markdown
 ## Character: [Name]
 **Role:** Protagonist / Antagonist / Ally / Mentor / etc.

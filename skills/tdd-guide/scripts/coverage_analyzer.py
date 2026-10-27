@@ -432,3 +432,22 @@ class CoverageAnalyzer:
             return CoverageFormat.XML
 
         raise ValueError("Unable to detect coverage report format")
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Analyze a coverage report (LCOV, JSON or Cobertura XML)")
+    parser.add_argument("--report", required=True, help="coverage report file")
+    parser.add_argument("--threshold", type=float, default=80.0, help="minimum line coverage, percent")
+    args = parser.parse_args()
+    with open(args.report, encoding="utf-8") as f:
+        content = f.read()
+    analyzer = CoverageAnalyzer()
+    analyzer.parse_coverage_report(content, analyzer.detect_format(content))
+    result = {
+        "summary": analyzer.calculate_summary(),
+        "gaps": analyzer.identify_gaps(args.threshold),
+        "recommendations": analyzer.generate_recommendations(),
+    }
+    print(json.dumps(result, indent=2, default=str))

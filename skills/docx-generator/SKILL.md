@@ -246,4 +246,7 @@ Note: `Samples/` path is relative to `scripts/dotnet/MiniMaxAIDocx.Core/`.
 | `references/design_principles.md` | **Aesthetic foundations**: 6 design principles (white space, contrast/scale, proximity, alignment, repetition, hierarchy) — teaches WHY, not just WHAT |
 | `references/design_good_bad_examples.md` | **Good vs Bad comparisons**: 10 categories of typography mistakes with OpenXML values, ASCII mockups, and fixes |
 | `references/track_changes_guide.md` | Revision marks deep dive |
+| `references/comments_guide.md` | Comments: the four XML parts that must stay in sync |
+| `references/openxml_namespaces.md` | Namespace URIs and prefixes for every part |
+| `references/xsd_validation_guide.md` | Running the XSD checks and reading their errors |
 | `references/troubleshooting.md` | **Symptom-driven fixes**: 13 common problems indexed by what you SEE (headings wrong, images missing, TOC broken, etc.) — search by symptom, find the fix |

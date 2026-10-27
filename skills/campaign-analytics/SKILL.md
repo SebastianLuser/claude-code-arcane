@@ -53,7 +53,9 @@ ROI, ROAS, CPA, CPL, CAC, CTR, CVR — flags underperforming campaigns against i
 
 ## Input Requirements
 
-All scripts accept a JSON file. Use `python -m json.tool your_file.json` to validate syntax.
+All scripts accept a JSON file. Use `python -m json.tool your_file.json` to validate syntax. `assets/sample_campaign_data.json` has a valid example of each input.
+
+To present the results: [assets/campaign_report_template.md](assets/campaign_report_template.md) for a campaign report, [assets/channel_comparison_template.md](assets/channel_comparison_template.md) to compare channels, [assets/ab_test_template.md](assets/ab_test_template.md) for an A/B test.
 
 For complete input schemas (journey, funnel, campaign), sample data, and validation rules, see [references/attribution-models-guide.md](references/attribution-models-guide.md).
 

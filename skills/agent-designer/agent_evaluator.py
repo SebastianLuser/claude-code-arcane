@@ -103,11 +103,12 @@ class OptimizationRecommendation:
     description: str
     implementation_effort: str  # low, medium, high
     expected_impact: Dict[str, Any]
-    estimated_cost_savings: Optional[float]
-    estimated_performance_gain: Optional[float]
     implementation_steps: List[str]
     risks: List[str]
     prerequisites: List[str]
+    # Not every recommendation can put a number on these.
+    estimated_cost_savings: Optional[float] = None
+    estimated_performance_gain: Optional[float] = None
 
 
 @dataclass

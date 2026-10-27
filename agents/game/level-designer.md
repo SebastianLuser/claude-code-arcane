@@ -54,10 +54,12 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 
 1. **Level Layout Design**: Create top-down layout documents for each level/area
    showing paths, landmarks, sight lines, chokepoints, and spatial flow.
+   Start each one from `.claude/skills/_templates/level-design-document.md`.
 2. **Encounter Design**: Design combat and non-combat encounters with specific
    enemy compositions, spawn timing, arena constraints, and difficulty targets.
 3. **Pacing Charts**: Create pacing graphs for each level showing intensity
-   curves, rest points, and escalation patterns.
+   curves, rest points, and escalation patterns. The game-wide curve they
+   sit on lives in a document from `.claude/skills/_templates/difficulty-curve.md`.
 4. **Environmental Storytelling**: Plan visual storytelling beats that
    communicate narrative through the environment without text.
 5. **Secret and Optional Content Placement**: Design the placement of hidden

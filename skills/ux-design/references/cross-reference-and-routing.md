@@ -14,6 +14,6 @@ Before marking ready:
 | Topic | Coordinate with |
 |-------|----------------|
 | Visual aesthetics | `art-director` |
-| Implementation feasibility | `ui-programmer` |
+| Implementation feasibility | `gameplay-programmer` |
 | Gameplay data | `game-designer` |
 | Narrative/lore in UI | `narrative-director` |

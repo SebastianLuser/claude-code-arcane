@@ -141,6 +141,24 @@ describe("update never deletes what Arcane did not install", () => {
     expect(fs.readdirSync(templates).length).toBe(before);
   });
 
+  it("should move a retired gamedev template to the trash", async () => {
+    // Arrange: an install from before sound-bible.md was retired.
+    tmpDir = makeTmpDir();
+    install(tmpDir, "unity-design");
+    const retired = path.join(tmpDir, ".claude", "skills", "_templates", "sound-bible.md");
+    fs.writeFileSync(retired, "# Sound Bible\n");
+    stampOldVersion(tmpDir);
+
+    // Act
+    const { updateTarget } = await import("../commands/update.js");
+    await updateTarget(tmpDir, {});
+
+    // Assert
+    expect(fs.existsSync(retired)).toBe(false);
+    const trashed = path.join(tmpDir, ".claude", ".arcane-trash", "skills", "_templates", "sound-bible.md");
+    expect(fs.readFileSync(trashed, "utf-8")).toBe("# Sound Bible\n");
+  });
+
   it("should keep an agent installed through a granular entry", async () => {
     // Arrange: unity-design ships `agents: [game, product/ux-lead]`.
     tmpDir = makeTmpDir();

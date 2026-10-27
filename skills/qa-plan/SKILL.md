@@ -56,6 +56,8 @@ Use actual story titles and GDD content — no placeholder text.
 
 ## Phase 5: Write Output
 
+Write it on the skeleton in `.claude/docs/templates/test-plan.md`.
+
 Show plan (or summary if very long). "May I write to `production/qa/qa-plan-[sprint-slug]-[date].md`?"
 
 After writing: share with team before sprint, run `/smoke-check sprint` after implementation, create test files at listed paths before marking done.
