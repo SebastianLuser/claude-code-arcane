@@ -1,3 +1,11 @@
+## [3.0.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.0.0...v3.0.1) (2026-10-28)
+
+
+### Bug Fixes
+
+* **cli:** never lose user files on install, update or remove ([798627e](https://github.com/SebastianLuser/claude-code-arcane/commit/798627e15e8c47384d8ec9d95183814776e2efb3))
+* **guard:** ask before cmd rd /s, find -delete and xargs rm; deny copies onto .env ([ee43e4b](https://github.com/SebastianLuser/claude-code-arcane/commit/ee43e4bcd0affdfb974cd762b3ccd331d2006d71))
+
 # [3.0.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v2.31.0...v3.0.0) (2026-10-27)
 
 
