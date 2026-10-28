@@ -8,19 +8,22 @@ const mockCreateGitWorktree = vi.fn();
 const mockDefaultWorktreePath = vi.fn();
 const mockDetectPackageManager = vi.fn();
 const mockExecSync = vi.fn();
+const mockExecFileSync = vi.fn();
+const mockFindMainArcaneInstall = vi.fn(() => false);
 
 vi.mock("../worktree.js", () => ({
   getWorktreeInfo: mockGetWorktreeInfo,
   createGitWorktree: mockCreateGitWorktree,
+  checkBranchExists: vi.fn(() => false),
   defaultWorktreePath: mockDefaultWorktreePath,
   detectPackageManager: mockDetectPackageManager,
-  findMainArcaneInstall: vi.fn(() => false),
+  findMainArcaneInstall: mockFindMainArcaneInstall,
   linkOrCopyDir: vi.fn(() => "copied"),
-  isSymlinkOrJunction: vi.fn(() => false),
 }));
 
 vi.mock("node:child_process", () => ({
   execSync: mockExecSync,
+  execFileSync: mockExecFileSync,
 }));
 
 function makeTmpDir(): string {
@@ -56,6 +59,9 @@ describe("worktreeCommand", () => {
     mockDefaultWorktreePath.mockReset();
     mockDetectPackageManager.mockReset();
     mockExecSync.mockReset();
+    mockExecFileSync.mockReset();
+    mockFindMainArcaneInstall.mockReset();
+    mockFindMainArcaneInstall.mockReturnValue(false);
     vi.resetModules();
   });
 
@@ -93,7 +99,7 @@ describe("worktreeCommand", () => {
     mockGetWorktreeInfo.mockReturnValue({
       isWorktree: false,
       mainWorktreePath: tmpDir,
-      currentBranch: "main",
+      toplevel: tmpDir,
     });
     mockDefaultWorktreePath.mockReturnValue(worktreePath);
 
@@ -116,7 +122,7 @@ describe("worktreeCommand", () => {
     mockGetWorktreeInfo.mockReturnValue({
       isWorktree: false,
       mainWorktreePath: tmpDir,
-      currentBranch: "main",
+      toplevel: tmpDir,
     });
     mockDefaultWorktreePath.mockReturnValue(worktreePath);
 
@@ -139,7 +145,7 @@ describe("worktreeCommand", () => {
     mockGetWorktreeInfo.mockReturnValue({
       isWorktree: false,
       mainWorktreePath: tmpDir,
-      currentBranch: "main",
+      toplevel: tmpDir,
     });
     mockDefaultWorktreePath.mockReturnValue(worktreePath);
 
@@ -164,7 +170,7 @@ describe("worktreeCommand", () => {
     mockGetWorktreeInfo.mockReturnValue({
       isWorktree: false,
       mainWorktreePath: tmpDir,
-      currentBranch: "main",
+      toplevel: tmpDir,
     });
     mockDefaultWorktreePath.mockReturnValue(worktreePath);
     mockCreateGitWorktree.mockImplementation(() => {
@@ -190,7 +196,7 @@ describe("worktreeCommand", () => {
     mockGetWorktreeInfo.mockReturnValue({
       isWorktree: false,
       mainWorktreePath: tmpDir,
-      currentBranch: "main",
+      toplevel: tmpDir,
     });
     mockDefaultWorktreePath.mockReturnValue(worktreePath);
     mockCreateGitWorktree.mockImplementation(
@@ -233,7 +239,7 @@ describe("worktreeCommand", () => {
     mockGetWorktreeInfo.mockReturnValue({
       isWorktree: false,
       mainWorktreePath: tmpDir,
-      currentBranch: "main",
+      toplevel: tmpDir,
     });
     mockCreateGitWorktree.mockImplementation(
       (_root: string, wtPath: string) => {
@@ -274,7 +280,7 @@ describe("worktreeCommand", () => {
     mockGetWorktreeInfo.mockReturnValue({
       isWorktree: false,
       mainWorktreePath: tmpDir,
-      currentBranch: "main",
+      toplevel: tmpDir,
     });
     mockDefaultWorktreePath.mockReturnValue(worktreePath);
     mockCreateGitWorktree.mockImplementation(
@@ -304,7 +310,7 @@ describe("worktreeCommand", () => {
     mockGetWorktreeInfo.mockReturnValue({
       isWorktree: false,
       mainWorktreePath: tmpDir,
-      currentBranch: "main",
+      toplevel: tmpDir,
     });
     mockDefaultWorktreePath.mockReturnValue(worktreePath);
     mockCreateGitWorktree.mockImplementation(
@@ -335,7 +341,7 @@ describe("worktreeCommand", () => {
     mockGetWorktreeInfo.mockReturnValue({
       isWorktree: false,
       mainWorktreePath: tmpDir,
-      currentBranch: "main",
+      toplevel: tmpDir,
     });
     mockDefaultWorktreePath.mockReturnValue(worktreePath);
     mockCreateGitWorktree.mockImplementation(
@@ -373,7 +379,7 @@ describe("worktreeCommand", () => {
     mockGetWorktreeInfo.mockReturnValue({
       isWorktree: false,
       mainWorktreePath: tmpDir,
-      currentBranch: "main",
+      toplevel: tmpDir,
     });
     mockDefaultWorktreePath.mockReturnValue(worktreePath);
     mockCreateGitWorktree.mockImplementation(
@@ -410,7 +416,7 @@ describe("worktreeCommand", () => {
     mockGetWorktreeInfo.mockReturnValue({
       isWorktree: false,
       mainWorktreePath: tmpDir,
-      currentBranch: "main",
+      toplevel: tmpDir,
     });
     mockDefaultWorktreePath.mockReturnValue(worktreePath);
     mockCreateGitWorktree.mockImplementation(
@@ -432,5 +438,58 @@ describe("worktreeCommand", () => {
       .map((c: unknown[]) => String(c[0]))
       .join("\n");
     expect(output).toContain("worktree-isolation skill not installed");
+  });
+  it("removes the worktree it just created when the install fails", async () => {
+    const worktreePath = path.join(tmpDir, "new-wt");
+    mockGetWorktreeInfo.mockReturnValue({
+      isWorktree: false,
+      mainWorktreePath: tmpDir,
+      toplevel: tmpDir,
+    });
+    mockDefaultWorktreePath.mockReturnValue(worktreePath);
+    // A file where .claude/ must go: the installer cannot write there.
+    mockCreateGitWorktree.mockImplementation((_root: string, wtPath: string) => {
+      fs.writeFileSync(wtPath, "");
+    });
+
+    const { worktreeCommand } = await import("../commands/worktree.js");
+    await expect(
+      worktreeCommand("feat/test", { profile: "testing", share: false }),
+    ).rejects.toThrow("process.exit called");
+
+    const calls = mockExecFileSync.mock.calls.map((c: unknown[]) => (c[1] as string[]).join(" "));
+    expect(calls).toContain(`worktree remove --force ${worktreePath}`);
+    expect(calls).toContain("branch -D feat/test");
+  });
+
+  it("from inside another worktree, reads its manifest and shares from the main checkout", async () => {
+    const { Installer } = await import("../installer.js");
+    const { mergeProfiles } = await import("../profiles.js");
+    const { getPackageRoot } = await import("../utils.js");
+    const merged = mergeProfiles(path.join(getPackageRoot(), "profiles"), ["testing"]);
+    const main = path.join(tmpDir, "main");
+    const other = path.join(tmpDir, "other-wt");
+    for (const dir of [main, other]) {
+      new Installer(merged, { target: dir, dryRun: false, force: false }).run("testing");
+    }
+
+    const worktreePath = path.join(tmpDir, "new-wt");
+    // process.cwd() is a subdirectory of the other worktree.
+    mockGetWorktreeInfo.mockReturnValue({ isWorktree: true, mainWorktreePath: main, toplevel: other });
+    mockFindMainArcaneInstall.mockImplementation(((p: string) => p === main) as never);
+    mockDefaultWorktreePath.mockReturnValue(worktreePath);
+    mockCreateGitWorktree.mockImplementation((_root: string, wtPath: string) => {
+      fs.mkdirSync(wtPath, { recursive: true });
+    });
+    const { linkOrCopyDir } = await import("../worktree.js");
+    logSpy.mockClear();
+
+    const { worktreeCommand } = await import("../commands/worktree.js");
+    await worktreeCommand("feat/test", {});
+
+    const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
+    expect(output).toContain("Inheriting profile");
+    expect(mockCreateGitWorktree.mock.calls[0][0]).toBe(main);
+    expect(vi.mocked(linkOrCopyDir).mock.calls[0][0]).toBe(path.join(main, ".claude", "hooks"));
   });
 });

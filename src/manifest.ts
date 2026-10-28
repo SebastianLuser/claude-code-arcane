@@ -18,6 +18,8 @@ export function readManifest(target: string): ArcaneManifest | null {
 export interface WriteManifestOptions {
   contentHashes?: ContentHashes;
   sourceType?: "bundled" | "github" | "cache";
+  /** The content's own version: a commit SHA for github and cache sources. */
+  sourceVersion?: string;
   worktree?: {
     is_worktree: boolean;
     main_worktree: string;
@@ -61,7 +63,7 @@ export function writeManifest(
     ],
     installed_agents: merged.agents,
     source: packageRoot,
-    source_version: version,
+    source_version: opts.sourceVersion ?? version,
   };
   if (opts.worktree) {
     manifest.worktree = opts.worktree;

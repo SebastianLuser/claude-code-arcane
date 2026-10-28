@@ -175,6 +175,8 @@ export async function installCommand(
     force: opts.force ?? false,
     shareFrom,
     contentRoot: root,
+    sourceVersion: await source.getVersion(),
+    sourceType: source.type,
   });
   installer.run(profileExpr, worktreeMeta);
 

@@ -2,6 +2,8 @@
 # Hook: detect-gaps.sh — SessionStart
 # Graceful: wraps in main(), never blocks session
 set +e
+# Claude may have cd'd into a subdirectory; the session files live at the checkout root.
+TOP=$(git rev-parse --show-toplevel 2>/dev/null) && cd "$TOP"
 
 main() {
 echo "=== Checking for Documentation Gaps ==="

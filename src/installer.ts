@@ -43,6 +43,8 @@ export class Installer {
 
   private shareFrom?: string;
   private sharedDirs: string[] = [];
+  private sourceVersion?: string;
+  private sourceType?: InstallerOptions["sourceType"];
 
   constructor(merged: MergedProfile, opts: InstallerOptions) {
     this.root = opts.contentRoot ?? getPackageRoot();
@@ -51,6 +53,8 @@ export class Installer {
     this.merged = merged;
     this.dryRun = opts.dryRun;
     this.shareFrom = opts.shareFrom;
+    this.sourceVersion = opts.sourceVersion;
+    this.sourceType = opts.sourceType;
   }
 
   private log(msg: string): void {
@@ -86,6 +90,8 @@ export class Installer {
       writeManifest(this.target, this.merged, profileCommand, this.root, {
         worktree: wt,
         contentHashes,
+        sourceVersion: this.sourceVersion,
+        sourceType: this.sourceType,
       });
       this.log("  [ok] arcane-manifest.json");
       // After the manifest: its hashes must not claim the user's files as Arcane's.

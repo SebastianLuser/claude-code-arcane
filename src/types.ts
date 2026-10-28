@@ -64,16 +64,14 @@ export interface InstallerOptions {
   force: boolean;
   shareFrom?: string;
   contentRoot?: string;
+  /** What `getVersion()` of the content source said; defaults to the CLI's version. */
+  sourceVersion?: string;
+  sourceType?: "bundled" | "github" | "cache";
 }
 
 export interface WorktreeInfo {
   isWorktree: boolean;
+  /** The checkout's root, even when the command ran in a subdirectory. */
+  toplevel: string;
   mainWorktreePath: string;
-  currentBranch: string;
-  worktreeId: string;
-  allWorktrees: Array<{
-    path: string;
-    branch: string;
-    isMain: boolean;
-  }>;
 }
