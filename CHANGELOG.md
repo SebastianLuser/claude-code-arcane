@@ -1,3 +1,10 @@
+## [3.0.4](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.0.3...v3.0.4) (2026-10-28)
+
+
+### Bug Fixes
+
+* **cli:** worktree, doctor and install report and act on the right paths ([fcb9e84](https://github.com/SebastianLuser/claude-code-arcane/commit/fcb9e8476b95d0b2d8605418dc40beecc258b0ed))
+
 ## [3.0.3](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.0.2...v3.0.3) (2026-10-28)
 
 
