@@ -759,7 +759,7 @@ def main():
 
     if args.input:
         try:
-            with open(args.input, 'r') as f:
+            with open(args.input, 'r', encoding="utf-8") as f:
                 requirements = json.load(f)
         except FileNotFoundError:
             print(f"Error: File '{args.input}' not found.", file=sys.stderr)
@@ -784,7 +784,7 @@ def main():
     }
 
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding="utf-8") as f:
             json.dump(output, f, indent=2)
         print(f"Design written to {args.output}")
     elif args.json:

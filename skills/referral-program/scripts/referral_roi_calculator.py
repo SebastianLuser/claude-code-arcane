@@ -371,7 +371,7 @@ def main():
 
     if args.file:
         try:
-            with open(args.file) as f:
+            with open(args.file, encoding="utf-8") as f:
                 params = json.load(f)
         except Exception as e:
             print(f"Error reading file: {e}", file=sys.stderr)

@@ -922,7 +922,7 @@ class DataContractValidator:
 
     def load_contract(self, contract_path: str) -> Dict:
         """Load a data contract from file"""
-        with open(contract_path, 'r') as f:
+        with open(contract_path, 'r', encoding="utf-8") as f:
             content = f.read()
 
         # Support both YAML and JSON
@@ -1379,7 +1379,7 @@ def cmd_validate(args):
         output = reporter.generate_text_report(profile, results, score)
 
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding="utf-8") as f:
             f.write(output)
         logger.info(f"Report saved to {args.output}")
     else:
@@ -1420,7 +1420,7 @@ def cmd_profile(args):
         output = "\n".join(lines)
 
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding="utf-8") as f:
             f.write(output)
         logger.info(f"Profile saved to {args.output}")
     else:
@@ -1443,7 +1443,7 @@ def cmd_generate_suite(args):
     output = json.dumps(suite, indent=2)
 
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding="utf-8") as f:
             f.write(output)
         logger.info(f"Expectation suite saved to {args.output}")
     else:
@@ -1479,7 +1479,7 @@ def cmd_contract(args):
         output = reporter.generate_text_report(profile, results, score)
 
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding="utf-8") as f:
             f.write(output)
         logger.info(f"Report saved to {args.output}")
     else:
@@ -1542,7 +1542,7 @@ def cmd_schema(args):
     output = json.dumps(schema, indent=2)
 
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding="utf-8") as f:
             f.write(output)
         logger.info(f"Schema saved to {args.output}")
     else:

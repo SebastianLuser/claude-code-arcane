@@ -506,7 +506,7 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        with open(args.input, "r") as f:
+        with open(args.input, "r", encoding="utf-8") as f:
             data = json.load(f)
     except FileNotFoundError:
         print(f"Error: File not found: {args.input}", file=sys.stderr)

@@ -546,7 +546,7 @@ def main():
         return
 
     if args.capas:
-        with open(args.capas, "r") as f:
+        with open(args.capas, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         capas = []

@@ -56,7 +56,6 @@ TEMPLATE_SLOT_ROLES = {
 # AARRGGBB values for each role color
 BLUE_RGB  = "000000ff"
 BLACK_RGB = "00000000"
-GREEN_RGB = "00008000"
 RED_RGB   = "00ff0000"
 
 # numFmtIds that represent percentage formats (built-in + common custom)
@@ -154,10 +153,6 @@ def _is_blue_font(font: dict) -> bool:
 
 def _is_black_font(font: dict) -> bool:
     return font["rgb"] == BLACK_RGB or (font["rgb"] == "" and font["theme"] is not None)
-
-
-def _is_green_font(font: dict) -> bool:
-    return font["rgb"] == GREEN_RGB
 
 
 def _fmt_is_percent(num_fmt_id: int, num_fmts: dict) -> bool:

@@ -506,7 +506,7 @@ def main():
 
     # Create sample review if no data provided
     if args.data:
-        with open(args.data, "r") as f:
+        with open(args.data, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         inputs = [

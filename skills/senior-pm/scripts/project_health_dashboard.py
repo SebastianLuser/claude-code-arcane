@@ -783,7 +783,7 @@ def main() -> int:
     
     try:
         # Load and validate data
-        with open(args.data_file, 'r') as f:
+        with open(args.data_file, 'r', encoding="utf-8") as f:
             data = json.load(f)
         
         # Perform analysis

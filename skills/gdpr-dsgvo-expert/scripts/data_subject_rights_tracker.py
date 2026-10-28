@@ -145,14 +145,14 @@ class RightsTracker:
     def _load_requests(self) -> Dict:
         """Load requests from file."""
         if self.data_file.exists():
-            with open(self.data_file, "r") as f:
+            with open(self.data_file, "r", encoding="utf-8") as f:
                 return json.load(f)
         return {"requests": [], "metadata": {"created": datetime.now().isoformat()}}
 
     def _save_requests(self):
         """Save requests to file."""
         self.requests["metadata"]["updated"] = datetime.now().isoformat()
-        with open(self.data_file, "w") as f:
+        with open(self.data_file, "w", encoding="utf-8") as f:
             json.dump(self.requests, f, indent=2)
 
     def _generate_id(self) -> str:
@@ -512,7 +512,7 @@ def main():
         report = tracker.generate_report()
         output = json.dumps(report, indent=2)
         if args.output:
-            with open(args.output, "w") as f:
+            with open(args.output, "w", encoding="utf-8") as f:
                 f.write(output)
             print(f"Report written to {args.output}")
         else:

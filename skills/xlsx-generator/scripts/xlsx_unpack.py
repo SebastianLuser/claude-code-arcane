@@ -24,8 +24,11 @@ def pretty_print_xml(content: bytes) -> str:
     try:
         dom = xml.dom.minidom.parseString(content)
         pretty = dom.toprettyxml(indent="  ", encoding="utf-8").decode("utf-8")
-        # Remove the extra blank lines toprettyxml adds
-        lines = [line for line in pretty.splitlines() if line.strip()]
+        # Drop the blank lines toprettyxml adds between tags; one inside cell text is content.
+        lines = []
+        for line in pretty.splitlines():
+            if line.strip() or (lines and not lines[-1].rstrip().endswith(">")):
+                lines.append(line)
         return "\n".join(lines) + "\n"
     except Exception:
         return content.decode("utf-8", errors="replace")
@@ -39,9 +42,17 @@ def unpack(xlsx_path: str, output_dir: str) -> None:
     if not xlsx_path.lower().endswith((".xlsx", ".xlsm")):
         print(f"WARNING: '{xlsx_path}' does not have an .xlsx/.xlsm extension", file=sys.stderr)
 
-    if os.path.exists(output_dir):
+    if os.path.isdir(output_dir) and os.listdir(output_dir):
+        # Only an earlier unpack may be replaced; anything else is the user's folder.
+        if not os.path.isfile(os.path.join(output_dir, "[Content_Types].xml")):
+            print(f"ERROR: '{output_dir}' is not empty and is not an earlier unpack; "
+                  "pick an empty or new directory", file=sys.stderr)
+            sys.exit(1)
         shutil.rmtree(output_dir)
-    os.makedirs(output_dir)
+    elif os.path.exists(output_dir) and not os.path.isdir(output_dir):
+        print(f"ERROR: '{output_dir}' is a file, not a directory", file=sys.stderr)
+        sys.exit(1)
+    os.makedirs(output_dir, exist_ok=True)
 
     try:
         with zipfile.ZipFile(xlsx_path, "r") as z:

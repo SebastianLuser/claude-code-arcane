@@ -190,7 +190,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.file:
-        with open(args.file, 'r') as f:
+        with open(args.file, 'r', encoding="utf-8") as f:
             content = f.read()
         print(analyze_content(content, args.format))
     else:

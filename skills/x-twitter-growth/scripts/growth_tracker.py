@@ -41,7 +41,7 @@ def record_snapshot(handle: str, followers: int, following: int = 0,
     }
 
     filepath = get_data_file(handle)
-    with open(filepath, "a") as f:
+    with open(filepath, "a", encoding="utf-8") as f:
         f.write(json.dumps(entry) + "\n")
 
     return entry
@@ -57,7 +57,7 @@ def load_snapshots(handle: str, period_days: int = 0) -> list:
     if period_days > 0:
         cutoff = datetime.now() - timedelta(days=period_days)
 
-    with open(filepath) as f:
+    with open(filepath, encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if not line:

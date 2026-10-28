@@ -38,6 +38,7 @@ import sys
 import unicodedata
 from datetime import date, datetime
 from pathlib import Path
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 DEFAULT_WORKSPACE = "career-workspace"
 APPLICATIONS_DIR = "03-Applications"
@@ -68,7 +69,8 @@ STALE_DAYS = 21
 # Legal suffixes that do not tell one company from another. Same rule as the
 # dedup job_key, so both tools agree.
 LEGAL_SUFFIXES = ("inc", "llc", "ltd", "sa", "srl", "sas", "gmbh", "bv", "co",
-                  "corp", "company", "sl", "spa", "plc", "ag", "oy", "ab")
+                  "corp", "company", "sl", "spa", "plc", "ag", "oy", "ab",
+                  "limited", "corporation", "ltda", "sapi", "sac", "cv", "de")
 
 CSV_COLUMNS = ("type", "counterpart", "title", "status", "open", "platform",
                "match_score", "client_risk", "profile", "bid_or_amount",
@@ -97,7 +99,10 @@ def slug(text: str) -> str:
     """
     base = re.sub(r"\.", "", fold(text))
     base = re.sub(r"[^a-z0-9 ]+", " ", base)
-    words = [w for w in base.split() if w and w not in LEGAL_SUFFIXES]
+    words = base.split()
+    # Only at the end: "AB Tasty" and "Spa Group" are names, "Acme S.A. de C.V." is Acme.
+    while len(words) > 1 and words[-1] in LEGAL_SUFFIXES:
+        words.pop()
     return " ".join(words)
 
 
@@ -109,6 +114,7 @@ def parse_frontmatter(text: str):
     Supports what the workspace templates actually use; anything more exotic
     is ignored instead of blowing up.
     """
+    text = text.lstrip("\ufeff")
     if not text.startswith("---"):
         return {}
     end = text.find("\n---", 3)
@@ -133,7 +139,10 @@ def parse_frontmatter(text: str):
         if not match:
             continue
         key = match.group(1)
-        fields[key] = match.group(2).strip()
+        value = match.group(2).strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+            value = value[1:-1]
+        fields[key] = value
     return fields
 
 
@@ -164,9 +173,10 @@ def canonical_url(url: str) -> str:
     """URL without tracking, so two links to the same posting match."""
     if not url:
         return ""
-    clean = url.strip().split("#")[0]
-    clean = re.sub(r"[?&](utm_[^&]*|ref|source|trk|trackingId)=[^&]*", "", clean)
-    clean = re.sub(r"[?&]$", "", clean)
+    parts = urlsplit(url.strip())
+    query = [(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True)
+             if not (k.startswith("utm_") or k in ("ref", "source", "trk", "trackingId"))]
+    clean = urlunsplit(parts._replace(query=urlencode(query), fragment=""))
     match = re.search(r"linkedin\.com/jobs/view/(\d+)", clean)
     if match:
         return "https://www.linkedin.com/jobs/view/{0}".format(match.group(1))

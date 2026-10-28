@@ -426,7 +426,7 @@ def main():
 
     if args.file:
         try:
-            with open(args.file, "r") as f:
+            with open(args.file, "r", encoding="utf-8") as f:
                 data = json.load(f)
         except FileNotFoundError:
             print(f"Error: File '{args.file}' not found.")

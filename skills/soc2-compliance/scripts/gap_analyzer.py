@@ -124,7 +124,7 @@ TYPE2_CHECKS = [
 def load_controls(filepath: str) -> List[Dict[str, Any]]:
     """Load current controls from a JSON file."""
     try:
-        with open(filepath, "r") as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             data = json.load(f)
     except FileNotFoundError:
         print(f"Error: File not found: {filepath}", file=sys.stderr)

@@ -97,7 +97,7 @@ class VisionModelTrainer:
             for split in ['train', 'val', 'test']:
                 ann_file = self.data_dir / 'annotations' / f'{split}.json'
                 if ann_file.exists():
-                    with open(ann_file, 'r') as f:
+                    with open(ann_file, 'r', encoding="utf-8") as f:
                         data = json.load(f)
                         analysis['images'][split] = len(data.get('images', []))
                         if not analysis['annotations']['classes']:
@@ -117,7 +117,7 @@ class VisionModelTrainer:
             data_yaml = self.data_dir / 'data.yaml'
             if data_yaml.exists():
                 import yaml
-                with open(data_yaml, 'r') as f:
+                with open(data_yaml, 'r', encoding="utf-8") as f:
                     data = yaml.safe_load(f)
                     analysis['annotations']['classes'] = data.get('names', [])
 
@@ -440,11 +440,11 @@ class VisionModelTrainer:
         if self.framework == 'ultralytics':
             # YOLO uses YAML
             import yaml
-            with open(output_path, 'w') as f:
+            with open(output_path, 'w', encoding="utf-8") as f:
                 yaml.dump(self.config, f, default_flow_style=False, sort_keys=False)
         else:
             # Detectron2 and MMDetection use Python configs
-            with open(output_path, 'w') as f:
+            with open(output_path, 'w', encoding="utf-8") as f:
                 f.write("# Auto-generated configuration\n")
                 f.write(f"# Generated at: {datetime.now().isoformat()}\n\n")
                 f.write(f"config = {json.dumps(self.config, indent=2)}\n")

@@ -470,7 +470,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        with open(args.config, "r") as f:
+        with open(args.config, "r", encoding="utf-8") as f:
             resources = json.load(f)
     except FileNotFoundError:
         print(f"Error: file not found: {args.config}", file=sys.stderr)

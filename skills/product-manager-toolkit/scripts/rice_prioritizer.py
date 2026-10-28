@@ -207,7 +207,7 @@ def format_output(features: List[Dict], analysis: Dict, roadmap: List[Dict]) -> 
 def load_features_from_csv(filepath: str) -> List[Dict]:
     """Load features from CSV file"""
     features = []
-    with open(filepath, 'r') as f:
+    with open(filepath, 'r', encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             feature = {
@@ -237,7 +237,7 @@ def create_sample_csv(filepath: str):
         ['Analytics Dashboard', '6000', 'high', 'medium', 'l', 'Advanced analytics for users'],
     ]
     
-    with open(filepath, 'w', newline='') as f:
+    with open(filepath, 'w', newline='', encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerows(sample_features)
     

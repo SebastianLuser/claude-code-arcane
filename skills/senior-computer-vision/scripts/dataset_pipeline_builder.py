@@ -206,7 +206,7 @@ class DatasetAnalyzer:
         # Check for COCO JSON
         for json_file in self.dataset_path.rglob('*.json'):
             try:
-                with open(json_file) as f:
+                with open(json_file, encoding="utf-8") as f:
                     data = json.load(f)
                 if 'annotations' in data and 'images' in data:
                     return 'coco'
@@ -221,7 +221,7 @@ class DatasetAnalyzer:
                 if txt_file.name == 'classes.txt':
                     continue
                 try:
-                    with open(txt_file) as f:
+                    with open(txt_file, encoding="utf-8") as f:
                         line = f.readline().strip()
                     if line:
                         parts = line.split()
@@ -303,7 +303,7 @@ class DatasetAnalyzer:
         # Find COCO JSON files
         for json_file in self.dataset_path.rglob('*.json'):
             try:
-                with open(json_file) as f:
+                with open(json_file, encoding="utf-8") as f:
                     data = json.load(f)
 
                 if 'annotations' not in data:
@@ -372,7 +372,7 @@ class DatasetAnalyzer:
         class_names = {}
         classes_file = self.dataset_path / 'classes.txt'
         if classes_file.exists():
-            with open(classes_file) as f:
+            with open(classes_file, encoding="utf-8") as f:
                 for i, line in enumerate(f):
                     class_names[i] = line.strip()
 
@@ -384,7 +384,7 @@ class DatasetAnalyzer:
                 continue
 
             try:
-                with open(txt_file) as f:
+                with open(txt_file, encoding="utf-8") as f:
                     lines = f.readlines()
 
                 if lines:
@@ -555,7 +555,7 @@ class FormatConverter:
 
         for coco_file in coco_files:
             try:
-                with open(coco_file) as f:
+                with open(coco_file, encoding="utf-8") as f:
                     coco_data = json.load(f)
 
                 if 'annotations' not in coco_data:
@@ -593,7 +593,7 @@ class FormatConverter:
                     label_name = Path(img_info['file_name']).stem + '.txt'
                     label_path = labels_dir / label_name
 
-                    with open(label_path, 'w') as f:
+                    with open(label_path, 'w', encoding="utf-8") as f:
                         for ann in annotations:
                             if 'bbox' not in ann:
                                 continue
@@ -618,7 +618,7 @@ class FormatConverter:
                     idx = cat_map[cat['id']]
                     classes[idx] = cat['name']
 
-                with open(self.output_path / 'classes.txt', 'w') as f:
+                with open(self.output_path / 'classes.txt', 'w', encoding="utf-8") as f:
                     for class_name in classes:
                         f.write(f"{class_name}\n")
 
@@ -631,7 +631,7 @@ class FormatConverter:
                     num_classes=len(classes),
                     class_names=classes
                 )
-                with open(self.output_path / 'data.yaml', 'w') as f:
+                with open(self.output_path / 'data.yaml', 'w', encoding="utf-8") as f:
                     f.write(yaml_content)
 
             except Exception as e:
@@ -652,7 +652,7 @@ class FormatConverter:
         classes_file = self.input_path / 'classes.txt'
         class_names = []
         if classes_file.exists():
-            with open(classes_file) as f:
+            with open(classes_file, encoding="utf-8") as f:
                 class_names = [line.strip() for line in f.readlines()]
 
         for i, name in enumerate(class_names):
@@ -688,7 +688,7 @@ class FormatConverter:
                 label_path = img_path.parent.parent / 'labels' / (img_path.stem + '.txt')
 
             if label_path.exists():
-                with open(label_path) as f:
+                with open(label_path, encoding="utf-8") as f:
                     for line in f:
                         parts = line.strip().split()
                         if len(parts) >= 5:
@@ -715,7 +715,7 @@ class FormatConverter:
 
         # Write COCO JSON
         self.output_path.mkdir(parents=True, exist_ok=True)
-        with open(self.output_path / 'annotations.json', 'w') as f:
+        with open(self.output_path / 'annotations.json', 'w', encoding="utf-8") as f:
             json.dump(coco_data, f, indent=2)
 
         return results
@@ -792,7 +792,7 @@ class FormatConverter:
 
         # Write output
         self.output_path.mkdir(parents=True, exist_ok=True)
-        with open(self.output_path / 'annotations.json', 'w') as f:
+        with open(self.output_path / 'annotations.json', 'w', encoding="utf-8") as f:
             json.dump(coco_data, f, indent=2)
 
         return results
@@ -823,7 +823,7 @@ class FormatConverter:
 
         for coco_file in self.input_path.rglob('*.json'):
             try:
-                with open(coco_file) as f:
+                with open(coco_file, encoding="utf-8") as f:
                     coco_data = json.load(f)
 
                 if 'annotations' not in coco_data:
@@ -954,7 +954,7 @@ class DatasetSplitter:
                     label_path = img.parent.parent / 'labels' / (img.stem + '.txt')
 
                 if label_path.exists():
-                    with open(label_path) as f:
+                    with open(label_path, encoding="utf-8") as f:
                         line = f.readline()
                     if line:
                         class_id = int(line.split()[0])
@@ -1034,7 +1034,7 @@ class DatasetSplitter:
             classes_file = self.dataset_path / 'classes.txt'
             class_names = []
             if classes_file.exists():
-                with open(classes_file) as f:
+                with open(classes_file, encoding="utf-8") as f:
                     class_names = [line.strip() for line in f.readlines()]
 
             yaml_content = YOLO_DATA_YAML_TEMPLATE.format(
@@ -1045,7 +1045,7 @@ class DatasetSplitter:
                 num_classes=len(class_names),
                 class_names=class_names
             )
-            with open(self.output_path / 'data.yaml', 'w') as f:
+            with open(self.output_path / 'data.yaml', 'w', encoding="utf-8") as f:
                 f.write(yaml_content)
 
         return results
@@ -1304,7 +1304,7 @@ class DatasetValidator:
         """Validate COCO format dataset."""
         for json_file in self.dataset_path.rglob('*.json'):
             try:
-                with open(json_file) as f:
+                with open(json_file, encoding="utf-8") as f:
                     data = json.load(f)
 
                 if 'annotations' not in data:
@@ -1362,7 +1362,7 @@ class DatasetValidator:
                 continue
 
             try:
-                with open(txt_file) as f:
+                with open(txt_file, encoding="utf-8") as f:
                     lines = f.readlines()
 
                 for line_num, line in enumerate(lines, 1):
@@ -1650,7 +1650,7 @@ Examples:
             output = json.dumps(config, indent=2)
 
             if args.output:
-                with open(args.output, 'w') as f:
+                with open(args.output, 'w', encoding="utf-8") as f:
                     f.write(output)
                 print(f"Configuration saved to {args.output}")
             else:

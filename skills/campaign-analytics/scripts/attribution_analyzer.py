@@ -308,7 +308,7 @@ def main() -> None:
 
     # Load input data
     try:
-        with open(args.input_file, "r") as f:
+        with open(args.input_file, "r", encoding="utf-8") as f:
             data = json.load(f)
     except FileNotFoundError:
         print(f"Error: File not found: {args.input_file}", file=sys.stderr)

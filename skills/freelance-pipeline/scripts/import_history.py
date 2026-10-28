@@ -175,28 +175,27 @@ def map_columns(headers, overrides=None):
             claims[field] = [header]
             forced.add(field)
 
-    for header in headers:
-        if header in overrides:
+    # Exact names first, over every header: "Amount" must beat the partial
+    # match "total" finds in an earlier "Total Hours" column.
+    candidates = [h for h in headers if h not in overrides and normalize_header(h)]
+    exact = set()
+    for header in candidates:
+        norm = normalize_header(header)
+        for field, aliases in FIELD_ALIASES.items():
+            if field not in forced and norm in [normalize_header(a) for a in aliases]:
+                claims.setdefault(field, []).append(header)
+                exact.add(header)
+                break
+    for header in candidates:
+        if header in exact:
             continue
         norm = normalize_header(header)
-        if not norm:
-            continue
-        chosen = None
         for field, aliases in FIELD_ALIASES.items():
             if field in forced:
                 continue
-            if norm in [normalize_header(a) for a in aliases]:
-                chosen = field
+            if any(normalize_header(a) in norm for a in aliases):
+                claims.setdefault(field, []).append(header)
                 break
-        if not chosen:
-            for field, aliases in FIELD_ALIASES.items():
-                if field in forced:
-                    continue
-                if any(normalize_header(a) in norm for a in aliases):
-                    chosen = field
-                    break
-        if chosen:
-            claims.setdefault(chosen, []).append(header)
 
     ambiguous = {}
     for field, columns in claims.items():

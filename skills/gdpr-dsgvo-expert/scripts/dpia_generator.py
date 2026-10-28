@@ -653,13 +653,13 @@ def main():
         print(f"Error: Input file not found: {input_path}")
         sys.exit(1)
 
-    with open(input_path, "r") as f:
+    with open(input_path, "r", encoding="utf-8") as f:
         input_data = json.load(f)
 
     report = generate_dpia_report(input_data)
 
     if args.output:
-        with open(args.output, "w") as f:
+        with open(args.output, "w", encoding="utf-8") as f:
             f.write(report)
         print(f"DPIA report written to {args.output}")
     else:

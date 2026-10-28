@@ -386,7 +386,7 @@ def main():
         return
 
     if args.processes:
-        with open(args.processes, "r") as f:
+        with open(args.processes, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         processes = []

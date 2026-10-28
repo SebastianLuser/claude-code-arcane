@@ -180,7 +180,7 @@ def main():
     args = parser.parse_args()
 
     if args.input_file:
-        with open(args.input_file) as f:
+        with open(args.input_file, encoding="utf-8") as f:
             inputs = json.load(f)
     else:
         print("No input file provided. Running with sample data...\n")

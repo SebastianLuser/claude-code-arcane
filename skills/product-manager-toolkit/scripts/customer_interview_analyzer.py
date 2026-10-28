@@ -437,7 +437,7 @@ def main():
         print("  - Key themes and quotes")
         sys.exit(1)
 
-    with open(args.file, 'r') as f:
+    with open(args.file, 'r', encoding="utf-8") as f:
         interview_text = f.read()
 
     analyzer = InterviewAnalyzer()

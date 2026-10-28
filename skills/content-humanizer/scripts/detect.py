@@ -216,7 +216,7 @@ def main():
                     help="lexicon language (default: detected from the first input)")
     ap.add_argument("--lexicon", help="path to a custom lexicon, overrides --lang")
     args = ap.parse_args()
-    for stream in (sys.stdout, sys.stderr):
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
         stream.reconfigure(encoding="utf-8")
 
     read = lambda p: sys.stdin.read() if p == "-" else open(p, encoding="utf-8").read()

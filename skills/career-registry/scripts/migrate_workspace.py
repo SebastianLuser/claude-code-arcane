@@ -301,7 +301,7 @@ def rewrite_note(text, note):
 
 def read_note(path):
     """newline="" keeps the note's own line endings, so writing it back changes only the edits."""
-    with open(path, encoding="utf-8", errors="replace", newline="") as handle:
+    with open(path, encoding="utf-8", newline="") as handle:
         return handle.read()
 
 
@@ -409,13 +409,27 @@ def plan(workspace):
                 result["rename_files"].append({"from": src.as_posix(), "to": dst.as_posix()})
 
     for old, new in FOLDERS.items():
-        if (workspace / old).is_dir():
-            how = "merge" if (workspace / new).exists() else "rename"
-            result["rename_folders"].append({"from": old, "to": new, "how": how})
+        if not (workspace / old).is_dir():
+            continue
+        if not (workspace / new).exists():
+            result["rename_folders"].append({"from": old, "to": new, "how": "rename"})
+            continue
+        clashes = [c.name for c in (workspace / old).iterdir() if (workspace / new / c.name).exists()]
+        result["conflicts"].extend({"note": "{0}/{1}".format(old, name), "problem": "{0}/{1} already "
+                                    "exists; left in {2}".format(new, name, old)} for name in clashes)
+        # A merge where every child clashes moves nothing, so it is not work to do.
+        if len(clashes) < len(list((workspace / old).iterdir())):
+            result["rename_folders"].append({"from": old, "to": new, "how": "merge"})
 
     for path in note_files(workspace):
         rel = path.relative_to(workspace).as_posix()
-        text = read_note(path)
+        try:
+            text = read_note(path)
+        except UnicodeDecodeError:
+            # Rewriting it would replace every accent it holds with U+FFFD.
+            result["conflicts"].append({"note": rel, "problem": "not UTF-8; left alone, "
+                                        "re-save it as UTF-8 and run again"})
+            continue
         new_text, changes, unknown, conflicts, links, body_changes = rewrite_note(text, rel)
         if changes:
             result["frontmatter"].append({"note": rel, "changes": changes})
@@ -468,11 +482,7 @@ def apply(workspace, result):
             os.rename(old, new)
             continue
         for child in sorted(old.iterdir()):
-            if (new / child.name).exists():
-                result["conflicts"].append({"note": "{0}/{1}".format(item["from"], child.name),
-                                            "problem": "{0}/{1} already exists; left in {2}".format(
-                                                item["to"], child.name, item["from"])})
-            else:
+            if not (new / child.name).exists():  # clashes are already in the plan's conflicts
                 os.rename(child, new / child.name)
         if not any(old.iterdir()):
             old.rmdir()
@@ -480,7 +490,9 @@ def apply(workspace, result):
 
 def backup(workspace):
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    target = workspace.parent / "{0}.backup-{1}".format(workspace.name, stamp)
+    target, n = workspace.parent / "{0}.backup-{1}".format(workspace.name, stamp), 1
+    while target.exists():  # never overwrite an earlier backup
+        target, n = workspace.parent / "{0}.backup-{1}-{2}".format(workspace.name, stamp, n), n + 1
     # node_modules of a portfolio site is reinstallable and the migration never touches it.
     shutil.copytree(workspace, target, ignore=shutil.ignore_patterns("node_modules"))
     return target

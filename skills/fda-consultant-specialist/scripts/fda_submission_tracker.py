@@ -113,7 +113,7 @@ def find_submission_config(project_dir: Path) -> Optional[Dict]:
     for config_path in config_paths:
         if config_path.exists():
             try:
-                with open(config_path) as f:
+                with open(config_path, encoding="utf-8") as f:
                     return json.load(f)
             except json.JSONDecodeError:
                 continue
@@ -474,7 +474,7 @@ def main():
         if args.type:
             sample["submission_type"] = args.type
 
-        with open(config_path, "w") as f:
+        with open(config_path, "w", encoding="utf-8") as f:
             json.dump(sample, f, indent=2)
 
         print(f"Created sample configuration: {config_path}")

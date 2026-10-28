@@ -23,14 +23,11 @@ non-fatal diagnostics use the same shape with a "warning" key.
 import argparse
 import html
 import json
-import random
 import re
 import sys
-import time
-import urllib.error
 import urllib.parse
-import urllib.request
 
+from _fetch import fetch
 from posting_guard import check
 
 SEARCH_URL = "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search"
@@ -58,30 +55,14 @@ def write_warning(warning, code):
 
 
 def html_fetch(url):
-    """Fetch HTML with exponential backoff on 429/5xx. Returns "" on a 404."""
-    delay = 0.5
-    for attempt in range(MAX_RETRIES + 1):
-        request = urllib.request.Request(
-            url,
-            headers={
-                "User-Agent": UA,
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                "Accept-Language": "en-US,en;q=0.9",
-                "X-Requested-With": "XMLHttpRequest",
-            },
-        )
-        try:
-            with urllib.request.urlopen(request, timeout=30) as response:
-                return response.read().decode("utf-8", errors="replace")
-        except urllib.error.HTTPError as e:
-            if e.code == 404:
-                return ""
-            retryable = e.code == 429 or e.code >= 500
-            if not retryable or attempt == MAX_RETRIES:
-                raise RuntimeError(f"Request failed: {e.code} {e.reason}") from None
-            time.sleep(delay + random.random() * 0.5)
-            delay = min(delay * 2, 8)
-    raise RuntimeError("Request failed after max retries")
+    """HTML of a page, or "" on a 404."""
+    headers = {
+        "User-Agent": UA,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "X-Requested-With": "XMLHttpRequest",
+    }
+    return fetch(url, headers, MAX_RETRIES) or ""
 
 
 def unescape(markup):
