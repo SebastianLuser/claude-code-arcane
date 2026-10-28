@@ -1,3 +1,10 @@
+## [3.0.2](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.0.1...v3.0.2) (2026-10-28)
+
+
+### Bug Fixes
+
+* **skills:** audit fixes in the Python scripts ([b8f2115](https://github.com/SebastianLuser/claude-code-arcane/commit/b8f2115f3cd70517c5c4c520dda80d3aa7bb5bac))
+
 ## [3.0.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.0.0...v3.0.1) (2026-10-28)
 
 
