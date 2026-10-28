@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { copyDirSync, ensureDir, safeRemove } from "./utils.js";
+import { copyDirSync, ensureDir, moveToTrash } from "./utils.js";
 
 /**
  * A profile's `agents:` entry names either a whole division or a single agent.
@@ -80,10 +80,10 @@ export function copyAgentEntry(root: string, claudeDir: string, raw: string): nu
 }
 
 /**
- * Remove an entry from `<claudeDir>/agents/`. A granular entry deletes one file
+ * Move an entry from `<claudeDir>/agents/` to the trash. A granular entry moves one file
  * and takes the division directory with it only if nothing is left inside -
  * otherwise it would remove agents another profile still needs.
- * Returns true when something was actually deleted.
+ * Returns true when something was actually moved.
  */
 export function removeAgentEntry(claudeDir: string, raw: string): boolean {
   const { division, agent } = parseAgentEntry(raw);
@@ -91,13 +91,13 @@ export function removeAgentEntry(claudeDir: string, raw: string): boolean {
 
   if (!agent) {
     if (!fs.existsSync(dstDir)) return false;
-    fs.rmSync(dstDir, { recursive: true, force: true });
+    moveToTrash(claudeDir, path.join("agents", division));
     return true;
   }
 
   const file = path.join(dstDir, `${agent}.md`);
   if (!fs.existsSync(file)) return false;
-  safeRemove(file);
+  moveToTrash(claudeDir, path.join("agents", division, `${agent}.md`));
   if (fs.existsSync(dstDir) && fs.readdirSync(dstDir).length === 0) {
     fs.rmSync(dstDir, { recursive: true, force: true });
   }

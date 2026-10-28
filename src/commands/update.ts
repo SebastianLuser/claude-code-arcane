@@ -5,8 +5,9 @@ import chalk from "chalk";
 import { readManifest, updateManifestFields, manifestPath } from "../manifest.js";
 import {
   copyDirSync,
-  ensureDir,
+  moveToTrash,
   RELATIVE_STATUSLINE_COMMAND,
+  TRASH_DIR,
   statuslineCommand,
 } from "../utils.js";
 import { mergeProfiles } from "../profiles.js";
@@ -47,10 +48,8 @@ type UpdateAction =
   | "remove"
   | "keep-foreign";
 
-type UpdateStatus = "no-manifest" | "up-to-date" | "no-changes" | "updated" | "dry-run";
+type UpdateStatus = "no-manifest" | "up-to-date" | "no-changes" | "updated" | "dry-run" | "failed";
 
-/** Where removed content is parked, relative to `.claude/`. */
-const TRASH_DIR = ".arcane-trash";
 
 interface UpdateResult {
   target: string;
@@ -148,9 +147,10 @@ export async function updateCommand(opts: UpdateOpts): Promise<void> {
       if (!opts.quiet) {
         console.log(chalk.red(`  Update failed: ${(err as Error).message}`));
       }
+      process.exitCode = 1;
       results.push({
         target,
-        status: "no-changes",
+        status: "failed",
         updated: 0,
         skipped: 0,
         removed: 0,
@@ -402,9 +402,14 @@ function printGeneralSummary(results: UpdateResult[], isDryRun: boolean): void {
   const prefix = isDryRun ? chalk.yellow("[dry-run] ") : "";
   const updated = results.filter((r) => r.status === "updated" || r.status === "dry-run").length;
   const unchanged = results.filter((r) => r.status === "up-to-date" || r.status === "no-changes").length;
+  const failed = results.filter((r) => r.status === "failed");
 
   console.log(chalk.bold(`\n${prefix}Done. ${results.length} installation${results.length === 1 ? "" : "s"} processed:`));
-  console.log(`  ${chalk.green(updated)} ${isDryRun ? "would change" : "updated"}, ${chalk.dim(unchanged + " unchanged")}`);
+  console.log(
+    `  ${chalk.green(updated)} ${isDryRun ? "would change" : "updated"}, ${chalk.dim(unchanged + " unchanged")}` +
+      (failed.length > 0 ? `, ${chalk.red(failed.length + " failed")}` : ""),
+  );
+  for (const r of failed) console.log(chalk.red(`    failed: ${r.target}`));
 }
 
 /** Hashes as a manifest stores them: older manifests predate some categories. */
@@ -842,10 +847,7 @@ function syncUnhashedFiles(
     if (!fs.existsSync(dst) || fs.existsSync(path.join(root, "templates", "gamedev", name))) continue;
     changed.push(`skills/_templates/${name} (retired, moved to ${TRASH_DIR}/)`);
     if (dryRun) continue;
-    const bak = path.join(claudeDir, TRASH_DIR, path.relative(claudeDir, dst));
-    fs.mkdirSync(path.dirname(bak), { recursive: true });
-    if (fs.existsSync(bak)) fs.rmSync(bak, { force: true });
-    fs.renameSync(dst, bak);
+    moveToTrash(claudeDir, path.relative(claudeDir, dst));
   }
   for (const t of targets) {
     if (!fs.existsSync(t.src)) continue;
@@ -858,10 +860,7 @@ function syncUnhashedFiles(
     if (fs.existsSync(t.dst)) {
       // Same contract as a hashed conflict: never overwrite without a backup, and the
       // backup goes to the trash, not beside the file (a `.md.bak` per agent piled up).
-      const bak = path.join(claudeDir, TRASH_DIR, path.relative(claudeDir, t.dst));
-      fs.mkdirSync(path.dirname(bak), { recursive: true });
-      if (fs.existsSync(bak)) fs.rmSync(bak, { force: true });
-      fs.renameSync(t.dst, bak);
+      moveToTrash(claudeDir, path.relative(claudeDir, t.dst));
     }
     fs.mkdirSync(path.dirname(t.dst), { recursive: true });
     fs.copyFileSync(t.src, t.dst);
@@ -977,13 +976,7 @@ function applyItem(item: UpdateItem, root: string, claudeDir: string): void {
 function quarantineItem(item: UpdateItem, claudeDir: string): void {
   const installed = getInstalledPath(item, claudeDir);
   if (!fs.existsSync(installed)) return;
-
-  const quarantine = path.join(claudeDir, TRASH_DIR, `${item.type}s`, item.name);
-  ensureDir(path.dirname(quarantine));
-  if (fs.existsSync(quarantine)) {
-    fs.rmSync(quarantine, { recursive: true, force: true });
-  }
-  fs.renameSync(installed, quarantine);
+  moveToTrash(claudeDir, path.relative(claudeDir, installed));
 }
 
 function getSourcePath(item: UpdateItem, root: string): string | null {

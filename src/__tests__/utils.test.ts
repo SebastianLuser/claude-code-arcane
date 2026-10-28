@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import { copyDirSync, isSymlinkOrJunction, safeRemove, ensureDir, fileExists } from "../utils.js";
+import { copyDirSync, isSymlinkOrJunction, safeRemove, ensureDir, fileExists, moveToTrash } from "../utils.js";
 
 function makeTmpDir(): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), "arcane-test-"));
@@ -173,5 +173,30 @@ describe("fileExists", () => {
 
   it("returns false for missing file", () => {
     expect(fileExists("/nonexistent/file.txt")).toBe(false);
+  });
+});
+
+describe("moveToTrash", () => {
+  let tmpDir: string;
+
+  afterEach(() => {
+    if (tmpDir && fs.existsSync(tmpDir)) {
+      fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+    }
+  });
+
+  it("never overwrites an earlier copy in the trash", () => {
+    tmpDir = makeTmpDir();
+    const rule = path.join(tmpDir, "rules", "a.md");
+    const trashed: string[] = [];
+    for (const body of ["first", "second", "third"]) {
+      fs.mkdirSync(path.dirname(rule), { recursive: true });
+      fs.writeFileSync(rule, body);
+      trashed.push(moveToTrash(tmpDir, path.join("rules", "a.md")));
+    }
+
+    expect(new Set(trashed).size).toBe(3);
+    expect(trashed.map((p) => fs.readFileSync(p, "utf-8"))).toEqual(["first", "second", "third"]);
+    expect(fs.existsSync(rule)).toBe(false);
   });
 });

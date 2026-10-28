@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 import { arcaneHome, ensureDir, fileExists, readJsonSync, writeJsonSync } from "./utils.js";
 import { manifestPath } from "./manifest.js";
@@ -33,6 +34,14 @@ function readRegistryFile(): Registry {
       installations: Array.isArray(data.installations) ? data.installations : [],
     };
   } catch {
+    // Set aside before the next write replaces it with a one-entry list.
+    const aside = `${p}.corrupt-${Date.now()}`;
+    try {
+      fs.renameSync(p, aside);
+      console.warn(`Arcane registry was not valid JSON; moved to ${aside}`);
+    } catch {
+      // Best-effort, like every registry write.
+    }
     return { version: REGISTRY_VERSION, installations: [] };
   }
 }

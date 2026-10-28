@@ -45,6 +45,23 @@ describe("registry", () => {
     cleanup.length = 0;
   });
 
+  it("should set a corrupt registry aside instead of overwriting it", async () => {
+    // Arrange
+    const registryFile = path.join(homeDir, "installations.json");
+    fs.writeFileSync(registryFile, '{"installations": [{"path": "C:/a"},');
+    const repo = makeTmpDir("arcane-repo-");
+    cleanup.push(repo);
+    const { registerInstallation } = await import("../registry.js");
+
+    // Act
+    registerInstallation(repo);
+
+    // Assert
+    const aside = fs.readdirSync(homeDir).filter((n) => n.startsWith("installations.json.corrupt-"));
+    expect(aside).toHaveLength(1);
+    expect(fs.readFileSync(path.join(homeDir, aside[0]), "utf-8")).toContain('"C:/a"');
+  });
+
   it("should write the registry under ARCANE_HOME when registering", async () => {
     // Arrange
     const repo = makeTmpDir("arcane-repo-");

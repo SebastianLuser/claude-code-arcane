@@ -116,6 +116,53 @@ describe("Installer", () => {
   });
 });
 
+describe("Installer over an existing .claude/", () => {
+  let tmpDir: string;
+
+  afterEach(() => {
+    if (tmpDir && fs.existsSync(tmpDir)) {
+      fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+    }
+  });
+
+  const install = () =>
+    new Installer(mergeProfiles(PROFILES_DIR, ["testing"]), { target: tmpDir, dryRun: false, force: false }).run("testing");
+
+  it("keeps the user's own files and every backup across two installs", () => {
+    tmpDir = makeTmpDir();
+    const claude = path.join(tmpDir, ".claude");
+    fs.mkdirSync(path.join(claude, "skills", "mine"), { recursive: true });
+    fs.writeFileSync(path.join(claude, "skills", "mine", "SKILL.md"), "mine");
+    fs.writeFileSync(path.join(claude, "settings.local.json"), "{}");
+
+    install();
+    install();
+
+    expect(fs.readFileSync(path.join(claude, "skills", "mine", "SKILL.md"), "utf-8")).toBe("mine");
+    expect(fs.existsSync(path.join(claude, "settings.local.json"))).toBe(true);
+    expect(fs.readdirSync(tmpDir).filter((n) => n.startsWith(".claude.bak")).length).toBe(2);
+    // The user's skill is not recorded as Arcane's, or the next update would trash it.
+    expect(readManifest(tmpDir)!.content_hashes?.skills).not.toHaveProperty("mine");
+  });
+
+  it("does not bring back a skill the old install shipped", () => {
+    tmpDir = makeTmpDir();
+    install();
+    const manifest = readManifest(tmpDir)!;
+    const shipped = manifest.installed_skills[0];
+    fs.writeFileSync(
+      path.join(tmpDir, ".claude", "arcane-manifest.json"),
+      JSON.stringify({ ...manifest, installed_skills: [...manifest.installed_skills, "retired-skill"] }),
+    );
+    fs.mkdirSync(path.join(tmpDir, ".claude", "skills", "retired-skill"));
+
+    install();
+
+    expect(fs.existsSync(path.join(tmpDir, ".claude", "skills", "retired-skill"))).toBe(false);
+    expect(fs.existsSync(path.join(tmpDir, ".claude", "skills", shipped))).toBe(true);
+  });
+});
+
 describe("clean", () => {
   let tmpDir: string;
 

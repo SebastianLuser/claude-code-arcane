@@ -15,29 +15,7 @@ const PROFILES_DIR = path.join(REPO_ROOT, "profiles");
 const SKILLS_DIR = path.join(REPO_ROOT, "skills");
 
 /** Core skills that the remove command protects from deletion. */
-const CORE_SKILLS = [
-  "commit",
-  "create-pr",
-  "changelog",
-  "check",
-  "quality-review",
-  "context-prime",
-  "what-next",
-  "start",
-  "fix-issue",
-  "hotfix",
-  "brainstorm",
-  "scope-check",
-  "reverse-document",
-  "skill-improve",
-  "skill-test",
-  "tech-debt",
-  "arcane-status",
-  "arcane-list",
-  "arcane-add",
-  "arcane-remove",
-  "arcane-clean",
-];
+const CORE_SKILLS = parseProfile(path.join(PROFILES_DIR, "core.yaml")).skills;
 
 function makeTmpDir(): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), "arcane-commands-test-"));
