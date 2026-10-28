@@ -71,6 +71,11 @@ def main():
     if not browser:
         sys.exit("[ERROR] Chrome/Edge not found in standard paths. Install one or edit BROWSERS.")
     out.parent.mkdir(parents=True, exist_ok=True)
+    # Chrome exits 0 without writing when the old PDF is locked; it must not pass as fresh.
+    try:
+        out.unlink(missing_ok=True)
+    except PermissionError:
+        sys.exit(f"[ERROR] {out} is open in another program; close it and run again")
     r = subprocess.run(
         [browser, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
          f"--print-to-pdf={out}", src.as_uri()],

@@ -53,6 +53,10 @@ MemoryCaptures/
 *.sln
 *.suo
 *.user
+# docx-generator ships a .NET tool; without its projects it cannot be built
+!skills/docx-generator/scripts/dotnet/**/*.csproj
+skills/docx-generator/scripts/dotnet/**/bin/
+skills/docx-generator/scripts/dotnet/**/obj/
 
 # Unreal
 Intermediate/

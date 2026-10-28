@@ -11,6 +11,7 @@ Exit codes: 0 success, 1 bad args/missing file, 3 render error
 """
 
 import argparse
+import html
 import json
 import sys
 
@@ -1529,8 +1530,14 @@ PATTERNS = {
 }
 
 
+TEXT_FIELDS = ("title", "subtitle", "author", "date", "abstract", "doc_type")
+
+
 def render(tokens: dict) -> str:
     """Dispatch to the cover pattern function and return the HTML string."""
+    # User text goes into HTML: a title like "Why <script> tags" must stay text.
+    tokens = {k: html.escape(v) if k in TEXT_FIELDS and isinstance(v, str) else v
+              for k, v in tokens.items()}
     pattern = tokens.get("cover_pattern", "fullbleed")
     fn = PATTERNS.get(pattern, _pattern_fullbleed)
     return fn(tokens)

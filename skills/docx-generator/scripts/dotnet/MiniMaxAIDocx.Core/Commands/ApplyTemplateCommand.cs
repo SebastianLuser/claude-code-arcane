@@ -47,6 +47,18 @@ public static class ApplyTemplateCommand
             if (!File.Exists(inputPath)) { Console.Error.WriteLine($"Input file not found: {inputPath}"); return; }
             if (!File.Exists(templatePath)) { Console.Error.WriteLine($"Template file not found: {templatePath}"); return; }
 
+            // The output is created by copying the input over it: pointing it at the template
+            // or the input would destroy that file before it is read.
+            var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            var fullOutput = Path.GetFullPath(outputPath);
+            if (string.Equals(fullOutput, Path.GetFullPath(templatePath), comparison)
+                || string.Equals(fullOutput, Path.GetFullPath(inputPath), comparison))
+            {
+                Console.Error.WriteLine("--output must be a new file, not the --input or --template path.");
+                Environment.ExitCode = 1;
+                return;
+            }
+
             // Create output as a copy of the source
             File.Copy(inputPath, outputPath, overwrite: true);
 

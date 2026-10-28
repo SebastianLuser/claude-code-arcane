@@ -17,21 +17,10 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-import importlib.util
+from _deps import require
 import os
 
-
-
-
-def ensure_deps():
-    if importlib.util.find_spec("pypdf") is None:
-        import subprocess
-        subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", "--break-system-packages", "-q", "pypdf"]
-        )
-
-
-ensure_deps()
+require("pypdf")
 from pypdf import PdfReader
 from pypdf.generic import ArrayObject, DictionaryObject, NameObject, TextStringObject
 

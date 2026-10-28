@@ -30,102 +30,14 @@ import argparse
 import copy
 import os
 import re
-import sys
-import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
-NS_SS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
-NS_REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-
-ET.register_namespace('', NS_SS)
-ET.register_namespace('r', NS_REL)
-ET.register_namespace('xdr', 'http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing')
-ET.register_namespace('x14', 'http://schemas.microsoft.com/office/spreadsheetml/2009/9/main')
-ET.register_namespace('xr2', 'http://schemas.microsoft.com/office/spreadsheetml/2015/revision2')
-ET.register_namespace('mc', 'http://schemas.openxmlformats.org/markup-compatibility/2006')
-
-
-def _tag(local: str) -> str:
-    return f"{{{NS_SS}}}{local}"
-
-
-def _write_tree(tree: ET.ElementTree, path: str) -> None:
-    tree.write(path, encoding="unicode", xml_declaration=False)
-    with open(path, "r", encoding="utf-8") as fh:
-        raw = fh.read()
-    try:
-        dom = xml.dom.minidom.parseString(raw.encode("utf-8"))
-        pretty = dom.toprettyxml(indent="  ", encoding="utf-8").decode("utf-8")
-        lines = [line for line in pretty.splitlines() if line.strip()]
-        with open(path, "w", encoding="utf-8") as fh:
-            fh.write("\n".join(lines) + "\n")
-    except Exception:
-        pass
-
-
-def col_number(s: str) -> int:
-    n = 0
-    for c in s.upper():
-        n = n * 26 + (ord(c) - 64)
-    return n
-
-
-def col_letter(n: int) -> str:
-    r = ""
-    while n > 0:
-        n, rem = divmod(n - 1, 26)
-        r = chr(65 + rem) + r
-    return r
-
-
-def find_ws_path(work_dir: str, sheet_name: str | None) -> str:
-    wb_tree = ET.parse(os.path.join(work_dir, "xl", "workbook.xml"))
-    rid = None
-    for sheet in wb_tree.getroot().iter(_tag("sheet")):
-        if sheet_name is None or sheet.get("name") == sheet_name:
-            rid = sheet.get(f"{{{NS_REL}}}id")
-            break
-
-    if rid is None:
-        print(f"ERROR: Sheet not found: {sheet_name}")
-        sys.exit(1)
-
-    rels_tree = ET.parse(os.path.join(work_dir, "xl", "_rels", "workbook.xml.rels"))
-    for rel in rels_tree.getroot():
-        if rel.get("Id") == rid:
-            return os.path.join(work_dir, "xl", rel.get("Target"))
-
-    print(f"ERROR: Relationship not found: {rid}")
-    sys.exit(1)
-
-
-def add_shared_string(work_dir: str, text: str) -> int:
-    ss_path = os.path.join(work_dir, "xl", "sharedStrings.xml")
-    tree = ET.parse(ss_path)
-    root = tree.getroot()
-
-    idx = 0
-    for si in root.findall(_tag("si")):
-        t_el = si.find(_tag("t"))
-        if t_el is not None and t_el.text == text:
-            return idx
-        idx += 1
-
-    si = ET.SubElement(root, _tag("si"))
-    t = ET.SubElement(si, _tag("t"))
-    t.set("{http://www.w3.org/XML/1998/namespace}space", "preserve")
-    t.text = text
-
-    root.set("count", str(int(root.get("count", "0")) + 1))
-    root.set("uniqueCount", str(int(root.get("uniqueCount", "0")) + 1))
-
-    _write_tree(tree, ss_path)
-    return idx
+from _xlsx import add_shared_string, col_letter, col_number, find_ws_path, load, tag, write_tree
 
 
 def get_cell_style(ws_tree: ET.ElementTree, col: str, row: int) -> int:
     ref = f"{col}{row}"
-    for row_el in ws_tree.getroot().iter(_tag("row")):
+    for row_el in ws_tree.getroot().iter(tag("row")):
         if row_el.get("r") == str(row):
             for c in row_el:
                 if c.get("r") == ref:
@@ -136,11 +48,11 @@ def get_cell_style(ws_tree: ET.ElementTree, col: str, row: int) -> int:
 def ensure_numfmt_style(work_dir: str, ref_style_idx: int, numfmt_code: str) -> int:
     """Clone a cellXfs entry with the given numfmt. Returns new style index."""
     styles_path = os.path.join(work_dir, "xl", "styles.xml")
-    tree = ET.parse(styles_path)
+    tree = load(styles_path)
     root = tree.getroot()
 
     # Find or add numFmt
-    numfmts = root.find(_tag("numFmts"))
+    numfmts = root.find(tag("numFmts"))
     numfmt_id = None
     if numfmts is not None:
         for nf in numfmts:
@@ -154,19 +66,19 @@ def ensure_numfmt_style(work_dir: str, ref_style_idx: int, numfmt_code: str) -> 
             for nf in numfmts:
                 max_id = max(max_id, int(nf.get("numFmtId", "0")))
         else:
-            numfmts = ET.SubElement(root, _tag("numFmts"))
+            numfmts = ET.SubElement(root, tag("numFmts"))
             numfmts.set("count", "0")
             root.remove(numfmts)
             root.insert(0, numfmts)
 
         numfmt_id = max_id + 1
-        nf = ET.SubElement(numfmts, _tag("numFmt"))
+        nf = ET.SubElement(numfmts, tag("numFmt"))
         nf.set("numFmtId", str(numfmt_id))
         nf.set("formatCode", numfmt_code)
         numfmts.set("count", str(len(list(numfmts))))
 
     # Find or create cellXfs entry
-    cellxfs = root.find(_tag("cellXfs"))
+    cellxfs = root.find(tag("cellXfs"))
     xf_list = list(cellxfs)
     ref_xf = xf_list[min(ref_style_idx, len(xf_list) - 1)]
 
@@ -183,7 +95,7 @@ def ensure_numfmt_style(work_dir: str, ref_style_idx: int, numfmt_code: str) -> 
     cellxfs.append(new_xf)
     cellxfs.set("count", str(len(list(cellxfs))))
 
-    _write_tree(tree, styles_path)
+    write_tree(tree, styles_path)
     return len(list(cellxfs)) - 1
 
 
@@ -192,23 +104,23 @@ def _apply_border_to_row(work_dir: str, ws_path: str, ws_tree: ET.ElementTree,
                          border_style: str, new_col: str) -> None:
     """Apply a top border to ALL cells in the specified row (A through new_col)."""
     styles_path = os.path.join(work_dir, "xl", "styles.xml")
-    st_tree = ET.parse(styles_path)
+    st_tree = load(styles_path)
     st_root = st_tree.getroot()
 
     # 1. Create a new border entry with the specified top style
-    borders = st_root.find(_tag("borders"))
-    new_border = ET.SubElement(borders, _tag("border"))
+    borders = st_root.find(tag("borders"))
+    new_border = ET.SubElement(borders, tag("border"))
     for side in ("left", "right"):
-        ET.SubElement(new_border, _tag(side))
-    top_el = ET.SubElement(new_border, _tag("top"))
+        ET.SubElement(new_border, tag(side))
+    top_el = ET.SubElement(new_border, tag("top"))
     top_el.set("style", border_style)
-    ET.SubElement(new_border, _tag("bottom"))
-    ET.SubElement(new_border, _tag("diagonal"))
+    ET.SubElement(new_border, tag("bottom"))
+    ET.SubElement(new_border, tag("diagonal"))
     borders.set("count", str(len(list(borders))))
     new_border_id = len(list(borders)) - 1
 
     # 2. For each existing style used in the row, create a clone with the new borderId
-    cellxfs = st_root.find(_tag("cellXfs"))
+    cellxfs = st_root.find(tag("cellXfs"))
     style_remap = {}  # old_style_idx -> new_style_idx
 
     if border_row not in row_map:
@@ -234,7 +146,7 @@ def _apply_border_to_row(work_dir: str, ws_path: str, ws_tree: ET.ElementTree,
         if old_s in style_remap:
             c.set("s", str(style_remap[old_s]))
 
-    _write_tree(st_tree, styles_path)
+    write_tree(st_tree, styles_path)
     last_col_num = col_number(new_col)
     print(f"  Applied {border_style} top border to all cells in row {border_row} "
           f"(A-{new_col}, {len(style_remap)} style(s) cloned)")
@@ -267,7 +179,7 @@ def main() -> None:
     prev_col = col_letter(col_number(col) - 1) if col_number(col) > 1 else "A"
 
     ws_path = find_ws_path(args.work_dir, args.sheet)
-    ws_tree = ET.parse(ws_path)
+    ws_tree = load(ws_path)
     changes = 0
 
     print(f"Adding column {col} to {os.path.basename(ws_path)}")
@@ -292,9 +204,9 @@ def main() -> None:
     header_idx = add_shared_string(args.work_dir, args.header) if args.header else None
 
     # Re-parse worksheet (sharedStrings write may have changed state)
-    ws_tree = ET.parse(ws_path)
+    ws_tree = load(ws_path)
     root = ws_tree.getroot()
-    sheet_data = root.find(_tag("sheetData"))
+    sheet_data = root.find(tag("sheetData"))
 
     row_map = {}
     for row_el in sheet_data:
@@ -304,11 +216,11 @@ def main() -> None:
 
     # Add header cell
     if args.header and 1 in row_map:
-        cell = ET.SubElement(row_map[1], _tag("c"))
+        cell = ET.SubElement(row_map[1], tag("c"))
         cell.set("r", f"{col}1")
         cell.set("s", str(header_style))
         cell.set("t", "s")
-        v = ET.SubElement(cell, _tag("v"))
+        v = ET.SubElement(cell, tag("v"))
         v.text = str(header_idx)
         changes += 1
         print(f"  {col}1 = \"{args.header}\" (header, style={header_style})")
@@ -318,17 +230,17 @@ def main() -> None:
         start, end = map(int, args.formula_rows.split(":"))
         for row_num in range(start, end + 1):
             if row_num not in row_map:
-                row_el = ET.SubElement(sheet_data, _tag("row"))
+                row_el = ET.SubElement(sheet_data, tag("row"))
                 row_el.set("r", str(row_num))
                 row_map[row_num] = row_el
 
             formula_text = args.formula.replace("{row}", str(row_num))
             formula_text = formula_text.lstrip("=")
-            cell = ET.SubElement(row_map[row_num], _tag("c"))
+            cell = ET.SubElement(row_map[row_num], tag("c"))
             cell.set("r", f"{col}{row_num}")
             if data_style is not None:
                 cell.set("s", str(data_style))
-            f_el = ET.SubElement(cell, _tag("f"))
+            f_el = ET.SubElement(cell, tag("f"))
             f_el.text = formula_text
             changes += 1
 
@@ -337,22 +249,22 @@ def main() -> None:
     # Add total formula
     if args.total_row and args.total_formula:
         if args.total_row not in row_map:
-            row_el = ET.SubElement(sheet_data, _tag("row"))
+            row_el = ET.SubElement(sheet_data, tag("row"))
             row_el.set("r", str(args.total_row))
             row_map[args.total_row] = row_el
 
         total_f = args.total_formula.lstrip("=")
-        cell = ET.SubElement(row_map[args.total_row], _tag("c"))
+        cell = ET.SubElement(row_map[args.total_row], tag("c"))
         cell.set("r", f"{col}{args.total_row}")
         if total_style is not None:
             cell.set("s", str(total_style))
-        f_el = ET.SubElement(cell, _tag("f"))
+        f_el = ET.SubElement(cell, tag("f"))
         f_el.text = total_f
         changes += 1
         print(f"  {col}{args.total_row} = ={total_f} (style={total_style})")
 
     # Update dimension
-    for dim in root.iter(_tag("dimension")):
+    for dim in root.iter(tag("dimension")):
         old_ref = dim.get("ref", "")
         if ":" in old_ref:
             start_ref, end_ref = old_ref.split(":")
@@ -364,7 +276,7 @@ def main() -> None:
                 print(f"  Dimension: {old_ref} → {new_ref}")
 
     # Extend <cols> to cover new column
-    cols_el = root.find(_tag("cols"))
+    cols_el = root.find(tag("cols"))
     if cols_el is not None:
         new_col_num = col_number(col)
         covered = any(
@@ -388,7 +300,7 @@ def main() -> None:
                              row_map, args.border_row, args.border_style,
                              col)
 
-    _write_tree(ws_tree, ws_path)
+    write_tree(ws_tree, ws_path)
     print(f"\nDone. {changes} cells added.")
     print(f"\nNext: python3 xlsx_pack.py {args.work_dir} output.xlsx")
 

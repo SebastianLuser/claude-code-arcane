@@ -44,8 +44,11 @@ def find_soffice() -> str | None:
     """
     candidates = [
         "/Applications/LibreOffice.app/Contents/MacOS/soffice",  # macOS
-        "soffice",     # Linux / macOS if on PATH
+        "soffice",     # Linux / macOS / Windows if on PATH
         "libreoffice", # alternative Linux name
+        # Windows installs it here and does not add it to PATH
+        os.path.join(os.environ.get("ProgramFiles", r"C:\Program Files"), "LibreOffice", "program", "soffice.exe"),
+        os.path.join(os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)"), "LibreOffice", "program", "soffice.exe"),
     ]
     for c in candidates:
         # shutil.which handles PATH lookup; also check absolute paths directly
@@ -97,9 +100,13 @@ def recalculate(
     version = get_libreoffice_version(soffice)
 
     # Work on a copy in a temp directory to avoid side effects on the source file.
-    # LibreOffice writes the output using the same filename stem in --outdir.
+    # LibreOffice writes the output using the same filename stem in --outdir, so input and
+    # output need separate folders: in one folder the copied input passed as the result.
     with tempfile.TemporaryDirectory(prefix="xlsx_recalc_") as tmpdir:
-        tmp_input = os.path.join(tmpdir, os.path.basename(input_path))
+        in_dir, out_dir = os.path.join(tmpdir, "in"), os.path.join(tmpdir, "out")
+        os.makedirs(in_dir)
+        os.makedirs(out_dir)
+        tmp_input = os.path.join(in_dir, os.path.basename(input_path))
         shutil.copy(input_path, tmp_input)
 
         cmd = [
@@ -108,7 +115,7 @@ def recalculate(
             "--norestore",           # do not attempt to restore crashed sessions
             "--infilter=Calc MS Excel 2007 XML",
             "--convert-to", "xlsx",
-            "--outdir", tmpdir,
+            "--outdir", out_dir,
             tmp_input,
         ]
 
@@ -138,20 +145,15 @@ def recalculate(
 
         # LibreOffice writes: <tmpdir>/<stem>.xlsx
         stem = os.path.splitext(os.path.basename(tmp_input))[0]
-        tmp_output = os.path.join(tmpdir, stem + ".xlsx")
+        tmp_output = os.path.join(out_dir, stem + ".xlsx")
 
         if not os.path.isfile(tmp_output):
-            # Try to find any .xlsx file in tmpdir (LibreOffice may behave differently)
-            xlsx_files = [f for f in os.listdir(tmpdir) if f.endswith(".xlsx") and f != os.path.basename(tmp_input)]
-            if xlsx_files:
-                tmp_output = os.path.join(tmpdir, xlsx_files[0])
-            else:
-                stdout = result.stdout.decode(errors="replace").strip()
-                return False, (
-                    f"LibreOffice succeeded (exit 0) but output file not found in {tmpdir}.\n"
-                    f"stdout: {stdout}\n"
-                    f"Files in tmpdir: {os.listdir(tmpdir)}"
-                )
+            # A LibreOffice already open in the GUI exits 0 and writes nothing.
+            stdout = result.stdout.decode(errors="replace").strip()
+            return False, (
+                "LibreOffice exited 0 but wrote no output (is it open in another window?).\n"
+                f"stdout: {stdout}"
+            )
 
         # Copy recalculated file to final destination
         os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)

@@ -10,20 +10,12 @@ Exit codes: 0 success, 1 bad args/missing file, 2 missing dep, 3 merge error
 """
 
 import argparse
-import importlib.util
+from _deps import require
 import json
 import os
 import sys
 
-def ensure_deps():
-    if importlib.util.find_spec("pypdf") is None:
-        import subprocess
-        subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", "--break-system-packages", "-q", "pypdf"]
-        )
-
-
-ensure_deps()
+require("pypdf")
 
 from pypdf import PdfWriter, PdfReader
 
