@@ -270,6 +270,9 @@ function nestedCommands(tokens, shell = "bash") {
       && (flag === "-c" || flag === "-command")) {
       found.push([tokens[i + 2], "powershell"]);
     }
+    if (["cmd", "cmd.exe"].includes(name) && i + 2 < tokens.length && /^\/\/?[ck]$/.test(flag)) {
+      found.push([tokens.slice(i + 2).join(" "), "cmd"]);
+    }
     if (token === "eval" && i + 1 < tokens.length) found.push([tokens.slice(i + 1).join(" "), "bash"]);
     if ((name === "iex" || name === "invoke-expression") && i + 1 < tokens.length) {
       found.push([tokens.slice(i + 1).join(" "), "powershell"]);
@@ -430,6 +433,23 @@ function pipPackages(args) {
     !(p.startsWith(".") || p.startsWith("/") || p.endsWith(".whl") || p.endsWith(".tar.gz") || p.endsWith(".zip")));
 }
 
+/** cmd's `rd /s` and `del /s`: switches are `/x`, or `//x` when Git Bash runs cmd. */
+function checkCmdRemove(args) {
+  const isSwitch = (a) => /^\/\/?[a-z]$/i.test(a);
+  if (!args.some((a) => /^\/\/?s$/i.test(a))) return [NONE, ""];
+  return deleteDecision(args.filter((a) => !isSwitch(a)));
+}
+
+/** xargs runs its command on paths read from stdin; check that command, not xargs. */
+function xargsCommand(args) {
+  const takesValue = new Set(["-n", "-I", "-L", "-P", "-d", "-s", "-E", "-a"]);
+  let i = 0;
+  while (i < args.length && args[i].startsWith("-")) i += takesValue.has(args[i]) ? 2 : 1;
+  return args.slice(i);
+}
+
+const COPIERS = new Set(["cp", "mv", "install", "copy-item", "move-item", "cpi", "mi", "copy", "move", "cpp"]);
+
 function writesEnvFile(tokens) {
   const targets = [];
   tokens.forEach((token, i) => {
@@ -437,12 +457,14 @@ function writesEnvFile(tokens) {
   });
   const [name, args] = program(tokens);
   if (name === "tee") targets.push(...positional(args));
+  if (COPIERS.has(name)) targets.push(positional(args).at(-1) ?? "");
   return targets.some(isEnvFile);
 }
 
 function isEnvFile(p) {
   const base = basename(p.replace(/\\/g, "/"));
-  return ENV_FILE.test(base) && !ENV_SAFE_SUFFIXES.some((s) => base.endsWith(s));
+  // `.env.example.bak` is still a template, not a secrets file.
+  return ENV_FILE.test(base) && !ENV_SAFE_SUFFIXES.some((s) => base.endsWith(s) || base.includes(`${s}.`));
 }
 
 function checkSegment(tokens, depth = 0, shell = "bash") {
@@ -462,7 +484,14 @@ function checkSegment(tokens, depth = 0, shell = "bash") {
   }
   if (name === "git") decisions.push(checkGit(args));
   if (shell === "powershell" && PS_REMOVERS.has(name)) decisions.push(checkRemoveItem(args));
+  else if (shell === "cmd" && ["rd", "rmdir", "del", "erase"].includes(name)) decisions.push(checkCmdRemove(args));
   else if (name === "rm") decisions.push(checkRm(args));
+  if (name === "find" && args.includes("-delete")) decisions.push([ASK, "deletes every file find matches (find -delete)"]);
+  const exec = args.findIndex((a) => a === "-exec" || a === "-execdir");
+  if (name === "find" && exec >= 0 && depth < 3) {
+    decisions.push(checkSegment(args.slice(exec + 1).filter((a) => !["{}", ";", "+"].includes(a)), depth + 1, shell));
+  }
+  if (name === "xargs" && depth < 3) decisions.push(checkSegment(xargsCommand(args), depth + 1, shell));
   if (name === "gh") {
     const pair = args.slice(0, 2).join(" ");
     if (["repo delete", "release delete", "secret delete", "secret remove"].includes(pair)) {

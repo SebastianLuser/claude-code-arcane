@@ -42,6 +42,8 @@ describe("denied commands", () => {
     expect(bash("cat .env.example > .env")).toBe("deny");
     expect(bash("echo KEY=1 | tee .env.local")).toBe("deny");
     expect(bash("cp .env .env.example.bak && echo x > .env.example")).toBeNull();
+    expectAll(["cp evil .env", "mv x .env.local", "cp .env.example .env"], bash, "deny");
+    expect(powershell("Copy-Item x .env")).toBe("deny");
   });
 
   it("reading env files", () => {
@@ -71,6 +73,13 @@ describe("asked commands", () => {
   it("recursive force delete outside build output", () => {
     expectAll(["rm -rf src", "rm -fr ./lib", "rm -r -f data", "rm --recursive --force x",
       "rm -rf node_modules ../other", "rm -rf /tmp/x", "rm -rf C:/proj/node_modules", "rm -rf *"], bash, "ask");
+  });
+
+  it("deletes through cmd, find and xargs", () => {
+    expectAll(["cmd /c rd /s /q src", "cmd //c rd //s //q src", "cmd /c del /s /q *.ts", "find . -delete",
+      "find . -name '*.log' -exec rm -rf {} \\;", "ls | xargs rm -rf", "xargs -n 1 rm -rf < list"], bash, "ask");
+    expect(powershell("cmd /c rd /s /q src")).toBe("ask");
+    expectAll(["cmd /c rd /s /q node_modules", "cmd /c dir /s", "find . -name x -print", "xargs -n 1 echo"], bash, null);
   });
 
   it("build output is deleted freely", () => {
