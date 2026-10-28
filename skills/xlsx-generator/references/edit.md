@@ -507,14 +507,14 @@ Inserting a row at position N shifts all rows from N downward. Every reference t
 **Do not attempt row insertion manually in large or formula-heavy files.** Use the dedicated shift script instead:
 
 ```bash
-# Insert 1 row at row 5: all rows 5 and below shift down by 1
+# Insert 1 row at row 5 of the first sheet: rows 5 and below shift down by 1
 python3 SKILL_DIR/scripts/xlsx_shift_rows.py /tmp/xlsx_work/ insert 5 1
 
-# Delete 1 row at row 8: all rows 9 and above shift up by 1
-python3 SKILL_DIR/scripts/xlsx_shift_rows.py /tmp/xlsx_work/ delete 8 1
+# Delete row 8 of "Budget": row 8 is removed, rows 9 and below shift up by 1
+python3 SKILL_DIR/scripts/xlsx_shift_rows.py /tmp/xlsx_work/ delete 8 1 --sheet "Budget"
 ```
 
-The script updates in one pass: `<row r="...">` attributes, `<c r="...">` cell addresses, all `<f>` formula text across every worksheet, `<mergeCell>` ranges, `<conditionalFormatting sqref="...">`, `<dataValidation sqref="...">`, `<dimension ref="...">`, table `ref` attributes in `xl/tables/`, chart series ranges in `xl/charts/`, and pivot cache source ranges in `xl/pivotCaches/`.
+Only the sheet named by `--sheet` (default: the first) moves. In that sheet the script updates `<row r="...">` and `<c r="...">`, formulas, `<mergeCell>`, `<conditionalFormatting>`, `<dataValidation>`, `<hyperlink>`, `<dimension>` and its tables. Elsewhere it updates only references that name that sheet (`Budget!B7`): formulas in other sheets, chart series, pivot cache sources and named ranges. A reference to a deleted row becomes `#REF!`, as in Excel.
 
 **After running the shift script, always repack and validate:**
 ```bash
@@ -523,7 +523,7 @@ python3 SKILL_DIR/scripts/formula_check.py output.xlsx
 ```
 
 **What the script does NOT update (review manually):**
-- Named ranges in `xl/workbook.xml` `<definedNames>` — check and update if they reference shifted rows.
+- 3D references (`Sheet1:Sheet3!A1`).
 - Structured table references (`Table[@Column]`) inside formulas.
 - External workbook links in `xl/externalLinks/`.
 

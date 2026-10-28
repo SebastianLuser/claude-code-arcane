@@ -34,22 +34,11 @@ import io
 import json
 import os
 import sys
-import importlib.util
+from _deps import require
 
 
 # ── Dependency bootstrap ───────────────────────────────────────────────────────
-def ensure_deps():
-    missing = [p for p in ("reportlab", "pypdf")
-               if importlib.util.find_spec(p) is None]
-    if missing:
-        import subprocess
-        subprocess.check_call(
-            [sys.executable, "-m", "pip", "install",
-             "--break-system-packages", "-q"] + missing
-        )
-
-
-ensure_deps()
+require("reportlab", "pypdf")
 
 from reportlab.platypus import (
     BaseDocTemplate, PageTemplate, Frame,

@@ -282,11 +282,12 @@ cmd_fill() {
 
   bold "Filling form: $input → $out"
 
-  local val_args=""
-  if [[ -n "$values" ]];    then val_args="--values $values"; fi
-  if [[ -n "$data_file" ]]; then val_args="--data $data_file"; fi
+  # An array keeps '{"name": "John Doe"}' as one argument.
+  local val_args=()
+  if [[ -n "$values" ]];    then val_args=(--values "$values"); fi
+  if [[ -n "$data_file" ]]; then val_args=(--data "$data_file"); fi
 
-  $PY "$SCRIPTS/fill_write.py" --input "$input" --out "$out" $val_args
+  $PY "$SCRIPTS/fill_write.py" --input "$input" --out "$out" "${val_args[@]}"
 }
 
 # ── reformat ───────────────────────────────────────────────────────────────────

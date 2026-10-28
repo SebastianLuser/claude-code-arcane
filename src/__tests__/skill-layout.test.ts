@@ -50,7 +50,7 @@ describe("skill folders", () => {
       const root = path.join(skillsDir, s);
       const files = walk(root).filter((f) => fs.statSync(f).isFile() && !f.includes("__pycache__"));
       const texts = files
-        .filter((f) => /\.(md|py|sh|json|ya?ml|txt|js|cjs|mjs|ts|html|cs|csproj)$/.test(f))
+        .filter((f) => /\.(md|py|sh|json|ya?ml|txt|js|cjs|mjs|ts|html|cs|csproj|slnx)$/.test(f))
         .map((f) => ({ f, text: fs.readFileSync(f, "utf-8") }));
       return files
         // docx-generator's .NET project builds every .cs under it, so its sources never need naming.

@@ -23,28 +23,15 @@ Exit codes: 0 success, 1 bad args / unsupported format, 2 dep missing, 3 parse e
 """
 
 import argparse
+import html
 import json
 import os
 import re
 import sys
-import importlib.util
+from _deps import require
 from pathlib import Path
 
-
-
-
-def ensure_deps():
-    missing = []
-    if importlib.util.find_spec("pypdf") is None:
-        missing.append("pypdf")
-    if missing:
-        import subprocess
-        subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", "--break-system-packages", "-q"] + missing
-        )
-
-
-ensure_deps()
+require("pypdf")
 
 
 # ── Markdown / plain text parser ───────────────────────────────────────────────
@@ -162,7 +149,7 @@ def parse_markdown(text: str) -> list:
             data_rows = [r for r in table_lines if not re.match(r'^\|[-:| ]+\|$', r)]
             parsed = []
             for row in data_rows:
-                cells = [c.strip() for c in row.strip("|").split("|")]
+                cells = [_md_inline(c.strip()) for c in row.strip("|").split("|")]
                 parsed.append(cells)
             if len(parsed) >= 2:
                 blocks.append({
@@ -192,13 +179,14 @@ def parse_markdown(text: str) -> list:
 
 
 def _md_inline(text: str) -> str:
-    """Convert inline Markdown to ReportLab XML markup."""
+    """Convert inline Markdown to ReportLab XML markup; the text itself is escaped first."""
+    text = html.escape(text, quote=False)
     # Bold: **text** or __text__
     text = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', text)
-    text = re.sub(r'__(.+?)__',     r'<b>\1</b>', text)
-    # Italic: *text* or _text_
+    text = re.sub(r'(?<!\w)__(.+?)__(?!\w)', r'<b>\1</b>', text)
+    # Italic: *text* or _text_ (not the underscores inside config_file_path)
     text = re.sub(r'\*(.+?)\*', r'<i>\1</i>', text)
-    text = re.sub(r'_(.+?)_',   r'<i>\1</i>', text)
+    text = re.sub(r'(?<!\w)_(.+?)_(?!\w)', r'<i>\1</i>', text)
     # Inline code: `code`
     text = re.sub(r'`(.+?)`', r'<font name="Courier">\1</font>', text)
     # Strip markdown links, keep text
@@ -249,7 +237,7 @@ def parse_plain(text: str) -> list:
         # Single short line that looks like a heading
         if len(lines) == 1 and len(para) < 80:
             if para.isupper() or re.match(r'^[A-Z][^.!?]*$', para):
-                blocks.append({"type": "h1", "text": para.title()})
+                blocks.append({"type": "h1", "text": html.escape(para.title(), quote=False)})
                 continue
 
         # Bullet lists
@@ -257,11 +245,11 @@ def parse_plain(text: str) -> list:
             for line in lines:
                 text_part = re.sub(r'^[-•*]\s+', '', line.strip())
                 if text_part:
-                    blocks.append({"type": "bullet", "text": text_part})
+                    blocks.append({"type": "bullet", "text": html.escape(text_part, quote=False)})
             continue
 
         # Regular paragraph
-        blocks.append({"type": "body", "text": " ".join(lines)})
+        blocks.append({"type": "body", "text": html.escape(" ".join(lines), quote=False)})
 
     return blocks
 

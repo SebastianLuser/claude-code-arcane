@@ -25,20 +25,9 @@ import argparse
 import json
 import os
 import sys
-import importlib.util
+from _deps import require
 
-
-
-
-def ensure_deps():
-    if importlib.util.find_spec("pypdf") is None:
-        import subprocess
-        subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", "--break-system-packages", "-q", "pypdf"]
-        )
-
-
-ensure_deps()
+require("pypdf")
 from pypdf import PdfReader, PdfWriter
 from pypdf.generic import NameObject, TextStringObject, BooleanObject
 
@@ -134,10 +123,18 @@ def _walk_and_fill(fields, data: dict, filled: list, errors: list, parent: str =
         elif ftype == "radio":
             # Radio value must start with /
             pdf_val = str(value) if str(value).startswith("/") else f"/{value}"
-            field.update({
-                NameObject("/V"):  NameObject(pdf_val),
-                NameObject("/AS"): NameObject(pdf_val),
-            })
+            # Each option is a widget kid; the one shown checked is the kid whose /AS is on.
+            widgets = [k.get_object() for k in field.get("/Kids", [])] or [field]
+            states = [set(w.get("/AP", {}).get("/N", {}).keys()) - {"/Off"} for w in widgets]
+            if any(states) and not any(pdf_val in s for s in states):
+                errors.append({
+                    "field": full,
+                    "error": f"Value '{value}' not in allowed choices: {sorted(set().union(*states))}"
+                })
+                continue
+            field.update({NameObject("/V"): NameObject(pdf_val)})
+            for widget, own in zip(widgets, states):
+                widget.update({NameObject("/AS"): NameObject(pdf_val if pdf_val in own else "/Off")})
             filled.append(full)
 
         else:

@@ -15,4 +15,6 @@ rootCommand.Add(FixOrderCommand.Create());
 rootCommand.Add(AnalyzeCommand.Create());
 rootCommand.Add(DiffCommand.Create());
 
-return rootCommand.Parse(args).Invoke();
+// A void action returns 0, so the failures commands report through Environment.ExitCode are kept.
+var code = rootCommand.Parse(args).Invoke();
+return code != 0 ? code : Environment.ExitCode;

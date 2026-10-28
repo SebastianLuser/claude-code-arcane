@@ -254,6 +254,12 @@ def export(md_path, browser, cv_dir, export_dir, check_ats=True):
         name = fm.get("final_file") or md_path.stem.replace("CV - ", "")
         pdf_path = export_dir / f"{name}.pdf"
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
+    # Chrome exits 0 without writing when the old PDF is locked; it must not pass as fresh.
+    try:
+        pdf_path.unlink(missing_ok=True)
+    except PermissionError:
+        print(f"[ERROR] {pdf_path} is open in another program; close it and export again")
+        return False
 
     doc = (
         "<!DOCTYPE html><html><head><meta charset='utf-8'>"
