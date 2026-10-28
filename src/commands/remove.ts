@@ -8,36 +8,18 @@ import {
   parseAgentEntry,
   removeAgentEntry,
 } from "../agent-entries.js";
-import { writeJsonSync } from "../utils.js";
+import { moveToTrash, TRASH_DIR, writeJsonSync } from "../utils.js";
 import {
   resolveContentSource,
   resolveContentSourceForVersion,
   type SourcePreference,
 } from "../content-source.js";
 
-const CORE_SKILLS = [
-  "commit",
-  "create-pr",
-  "changelog",
-  "check",
-  "quality-review",
-  "context-prime",
-  "what-next",
-  "start",
-  "fix-issue",
-  "hotfix",
-  "brainstorm",
-  "scope-check",
-  "reverse-document",
-  "skill-improve",
-  "skill-test",
-  "tech-debt",
-  "arcane-status",
-  "arcane-list",
-  "arcane-add",
-  "arcane-remove",
-  "arcane-clean",
-];
+/** Skills `remove` refuses to touch. */
+function coreSkills(root: string): string[] {
+  const core = resolveProfile(path.join(root, "profiles"), "core");
+  return core ? parseProfile(core.file).skills : [];
+}
 
 export interface RemoveOpts {
   source?: SourcePreference;
@@ -89,7 +71,7 @@ export async function removeCommand(
       if (result.removed) removedProfiles.push(profileName);
       else skipped.push(item);
     } else {
-      const result = removeSkill(target, item, manifest);
+      const result = removeSkill(root, target, item, manifest);
       if (result === "removed") removedSkills.push(item);
       else skipped.push(item);
     }
@@ -112,14 +94,16 @@ export async function removeCommand(
     console.log(chalk.cyan(`  [ok] ${a} (agent dir)`));
   for (const s of skipped)
     console.log(chalk.dim(`  [skip] ${s}`));
+  if (totalRemoved > 0) console.log(chalk.dim(`  Removed files are in .claude/${TRASH_DIR}/`));
 }
 
 function removeSkill(
+  root: string,
   target: string,
   skill: string,
   manifest: ReturnType<typeof readManifest> & {},
 ): "removed" | "skipped" {
-  if (CORE_SKILLS.includes(skill)) {
+  if (coreSkills(root).includes(skill)) {
     console.warn(
       chalk.yellow(`  WARNING: '${skill}' is a core skill. Skipping.`),
     );
@@ -129,7 +113,7 @@ function removeSkill(
   const skillDir = path.join(target, ".claude", "skills", skill);
   if (!fs.existsSync(skillDir)) return "skipped";
 
-  fs.rmSync(skillDir, { recursive: true, force: true });
+  moveToTrash(path.join(target, ".claude"), path.join("skills", skill));
   manifest.installed_skills = manifest.installed_skills.filter(
     (s) => s !== skill,
   );
@@ -185,13 +169,14 @@ function removeProfile(
     rpDef.rules.gamedev.forEach((r) => sharedRules.add(r));
   }
 
+  const core = new Set(coreSkills(root));
   const removedSkills: string[] = [];
   for (const skill of profile.skills) {
     if (sharedSkills.has(skill)) continue;
-    if (CORE_SKILLS.includes(skill)) continue;
+    if (core.has(skill)) continue;
     const skillDir = path.join(target, ".claude", "skills", skill);
     if (fs.existsSync(skillDir)) {
-      fs.rmSync(skillDir, { recursive: true, force: true });
+      moveToTrash(path.join(target, ".claude"), path.join("skills", skill));
       removedSkills.push(skill);
     }
     manifest.installed_skills = manifest.installed_skills.filter(
@@ -221,7 +206,7 @@ function removeProfile(
     if (sharedRules.has(rule)) continue;
     const ruleFile = path.join(target, ".claude", "rules", `${rule}.md`);
     if (fs.existsSync(ruleFile)) {
-      fs.rmSync(ruleFile);
+      moveToTrash(claudeDir, path.join("rules", `${rule}.md`));
     }
     manifest.installed_rules = manifest.installed_rules.filter(
       (r) => r !== rule,
@@ -231,7 +216,7 @@ function removeProfile(
   if (profileName === "statusline") {
     const statuslineFile = path.join(target, ".claude", "statusline.sh");
     if (fs.existsSync(statuslineFile)) {
-      fs.rmSync(statuslineFile);
+      moveToTrash(claudeDir, "statusline.sh");
     }
     removeStatuslineFromSettings(path.join(target, ".claude"));
   }
@@ -248,7 +233,13 @@ function removeStatuslineFromSettings(claudeDir: string): void {
   const settingsPath = path.join(claudeDir, "settings.json");
   if (!fs.existsSync(settingsPath)) return;
 
-  const settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
+  let settings;
+  try {
+    settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
+  } catch {
+    console.warn(chalk.yellow("  WARNING: settings.json is not valid JSON; remove statusLine by hand."));
+    return;
+  }
   if (settings.statusLine) {
     delete settings.statusLine;
     fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + "\n", "utf-8");

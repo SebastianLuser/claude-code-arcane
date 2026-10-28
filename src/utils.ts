@@ -132,3 +132,18 @@ export function safeRemove(p: string): void {
     fs.rmSync(p, { recursive: true, force: true });
   }
 }
+
+/** Where removed or replaced content is parked, relative to `.claude/`. */
+export const TRASH_DIR = ".arcane-trash";
+
+/** Move `<claudeDir>/<rel>` into the trash; an earlier copy there is kept and the new one gets a dated name. */
+export function moveToTrash(claudeDir: string, rel: string): string {
+  let dst = path.join(claudeDir, TRASH_DIR, rel);
+  if (fs.existsSync(dst)) {
+    dst = `${dst}.${new Date().toISOString().replace(/[-:]/g, "").replace(/\..*$/, "")}`;
+    for (let n = 2; fs.existsSync(dst); n++) dst = dst.replace(/(-\d+)?$/, `-${n}`);
+  }
+  fs.mkdirSync(path.dirname(dst), { recursive: true });
+  fs.renameSync(path.join(claudeDir, rel), dst);
+  return dst;
+}

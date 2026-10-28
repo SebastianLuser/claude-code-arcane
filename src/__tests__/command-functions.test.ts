@@ -4,7 +4,7 @@ import path from "node:path";
 import os from "node:os";
 import { fileURLToPath } from "node:url";
 import { Installer } from "../installer.js";
-import { mergeProfiles } from "../profiles.js";
+import { mergeProfiles, parseProfile } from "../profiles.js";
 import { readManifest } from "../manifest.js";
 import type { MergedProfile } from "../types.js";
 
@@ -354,13 +354,7 @@ describe("removeCommand", () => {
   it("should remove a non-core skill", async () => {
     installProfile(tmpDir);
     const manifest = readManifest(tmpDir)!;
-    const coreSkills = new Set([
-      "commit", "create-pr", "changelog", "check", "quality-review",
-      "context-prime", "what-next", "start", "fix-issue", "hotfix",
-      "brainstorm", "scope-check", "reverse-document", "skill-improve",
-      "skill-test", "tech-debt", "arcane-status", "arcane-list",
-      "arcane-add", "arcane-remove", "arcane-clean",
-    ]);
+    const coreSkills = new Set(parseProfile(path.join(PROFILES_DIR, "core.yaml")).skills);
     const removable = manifest.installed_skills.find((s) => !coreSkills.has(s));
     if (!removable) return;
 
@@ -368,6 +362,7 @@ describe("removeCommand", () => {
     await removeCommand([removable]);
 
     expect(fs.existsSync(path.join(tmpDir, ".claude", "skills", removable))).toBe(false);
+    expect(fs.existsSync(path.join(tmpDir, ".claude", ".arcane-trash", "skills", removable, "SKILL.md"))).toBe(true);
     const updated = readManifest(tmpDir)!;
     expect(updated.installed_skills).not.toContain(removable);
   });

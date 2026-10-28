@@ -84,7 +84,7 @@ npx claude-code-arcane install unity-dev --dry-run
 npx claude-code-arcane install unity-dev --force
 ```
 
-If `.claude/` already exists, it gets backed up to `.claude.bak/` and replaced.
+If `.claude/` already exists, it is moved to `.claude.bak/` (or `.claude.bak-<time>/` when that one exists; no backup is ever deleted) and replaced. What Arcane did not write moves back into the new `.claude/`: `settings.local.json`, session state, worktrees, the trash, and the skills, rules and agents you added yourself.
 
 ### `npx claude-code-arcane add` — Add skills or profiles
 
@@ -121,7 +121,7 @@ npx claude-code-arcane remove +testing api-design
 npx claude-code-arcane remove +testing --source bundled
 ```
 
-When removing a profile, Arcane only deletes assets **exclusive** to that profile. Skills, agents, and rules shared with other active profiles are preserved. Core skills (21) and the core profile cannot be removed.
+When removing a profile, Arcane only removes assets **exclusive** to that profile, and moves them to `.claude/.arcane-trash/` instead of deleting them. Skills, agents, and rules shared with other active profiles are preserved. Core skills and the core profile cannot be removed.
 
 What gets deleted is read from that profile's definition, so `remove` uses the content of the version recorded in your manifest. If that version is no longer cached it falls back to the current one and says so: a profile whose skill or agent list changed between the two can leave files behind, and `--source` is the escape hatch. The known limit is that two builds sharing a version number (a local checkout and the published release, say) are indistinguishable, so removing content installed from an unreleased source needs `--source bundled` explicitly.
 
@@ -189,7 +189,7 @@ rather than deleted, so a wrong call is recoverable. The trash sits outside
 npx claude-code-arcane clean --force
 ```
 
-Removes `.claude/` and `.claude.bak/` from the current directory. Requires `--force` flag.
+Removes `.claude/` and every `.claude.bak*/` backup from the current directory. Requires `--force` flag.
 
 ### `npx claude-code-arcane worktree` — Create worktrees with Arcane
 
@@ -531,7 +531,7 @@ Hooks are relative to `.claude/` in the working directory.
 
 ### Restoring from backup
 
-If something went wrong, your previous configuration is in `.claude.bak/`:
+If something went wrong, your previous configuration is in `.claude.bak/` (the newest is the dated `.claude.bak-<time>/`, if there is one):
 
 ```bash
 rm -rf ~/projects/my-game/.claude

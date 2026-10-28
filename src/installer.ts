@@ -15,6 +15,7 @@ import {
   copyAgentEntry,
 } from "./agent-entries.js";
 import { writeManifest } from "./manifest.js";
+import type { ArcaneManifest } from "./types.js";
 import { linkOrCopyDir } from "./worktree.js";
 import { computeContentHashes, referencedDocs } from "./content-hash.js";
 import { defaultHooks } from "./hook-commands.js";
@@ -64,7 +65,7 @@ export class Installer {
       main_worktree: string;
     },
   ): string[] {
-    this.backup();
+    const backup = this.backup();
     this.createDirs();
     this.copyHooks();
     this.copySkills();
@@ -87,6 +88,8 @@ export class Installer {
         contentHashes,
       });
       this.log("  [ok] arcane-manifest.json");
+      // After the manifest: its hashes must not claim the user's files as Arcane's.
+      if (backup) this.restoreUserContent(backup);
     } else {
       this.log("  [dry-run] arcane-manifest.json");
     }
@@ -94,18 +97,55 @@ export class Installer {
     return this.logs;
   }
 
-  private backup(): void {
-    if (!fs.existsSync(this.claudeDir)) return;
-    const backup = path.join(this.target, ".claude.bak");
-    if (this.dryRun) {
-      this.log("  [dry-run] Would backup .claude/ -> .claude.bak/");
-      return;
-    }
+  /** Move .claude/ aside without touching earlier backups; returns where it went. */
+  private backup(): string | null {
+    if (!fs.existsSync(this.claudeDir)) return null;
+    let backup = path.join(this.target, ".claude.bak");
     if (fs.existsSync(backup)) {
-      fs.rmSync(backup, { recursive: true, force: true });
+      const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\..*$/, "");
+      backup = `${backup}-${stamp}`;
+    }
+    if (this.dryRun) {
+      this.log(`  [dry-run] Would backup .claude/ -> ${path.basename(backup)}/ and keep your own files`);
+      return null;
     }
     fs.renameSync(this.claudeDir, backup);
-    this.log("  Backed up .claude/ -> .claude.bak/");
+    this.log(`  Backed up .claude/ -> ${path.basename(backup)}/`);
+    return backup;
+  }
+
+  /** Move back what Arcane did not write; a name the new install also ships stays in the backup. */
+  private restoreUserContent(backup: string): void {
+    const oldManifestFile = path.join(backup, "arcane-manifest.json");
+    const prev: Partial<ArcaneManifest> = fs.existsSync(oldManifestFile)
+      ? (JSON.parse(fs.readFileSync(oldManifestFile, "utf-8")) as ArcaneManifest)
+      : {};
+    const owned: Record<string, Set<string>> = {
+      skills: new Set([...(prev.installed_skills ?? []), ...Object.keys(prev.content_hashes?.skills ?? {}), "_templates"]),
+      rules: new Set([...(prev.installed_rules ?? []).map((r) => (r.endsWith(".md") ? r : `${r}.md`)),
+        ...Object.keys(prev.content_hashes?.rules ?? {})]),
+      agents: new Set([...(prev.installed_agents ?? []).map((a) => a.split("/")[0]),
+        ...Object.keys(prev.content_hashes?.agents ?? {})]),
+    };
+    const arcaneFiles = new Set(["arcane-manifest.json", "settings.json", "statusline.sh", "output-styles", "hooks", "docs"]);
+    const kept: string[] = [];
+    const move = (rel: string) => {
+      fs.mkdirSync(path.dirname(path.join(this.claudeDir, rel)), { recursive: true });
+      fs.renameSync(path.join(backup, rel), path.join(this.claudeDir, rel));
+      kept.push(rel.split(path.sep).join("/"));
+    };
+
+    for (const entry of fs.readdirSync(backup)) {
+      if (Object.hasOwn(owned, entry)) {
+        for (const name of fs.readdirSync(path.join(backup, entry))) {
+          if (owned[entry].has(name) || fs.existsSync(path.join(this.claudeDir, entry, name))) continue;
+          move(path.join(entry, name));
+        }
+      } else if (!arcaneFiles.has(entry) && !fs.existsSync(path.join(this.claudeDir, entry))) {
+        move(entry);
+      }
+    }
+    if (kept.length > 0) this.log(`  [ok] Kept your own files: ${kept.join(", ")}`);
   }
 
   private createDirs(): void {
@@ -366,7 +406,6 @@ export class Installer {
 
 export function clean(target: string): void {
   const claudeDir = path.join(target, ".claude");
-  const backup = path.join(target, ".claude.bak");
   if (!fs.existsSync(claudeDir)) {
     console.log(`No .claude/ found in ${target} — nothing to clean.`);
     return;
@@ -405,8 +444,11 @@ export function clean(target: string): void {
   if (fs.existsSync(claudeDir)) {
     fs.rmSync(claudeDir, { recursive: true, force: true });
   }
-  if (fs.existsSync(backup)) {
-    fs.rmSync(backup, { recursive: true, force: true });
+  // Every backup install() made: .claude.bak and the dated ones after it.
+  for (const name of fs.readdirSync(target)) {
+    if (name === ".claude.bak" || name.startsWith(".claude.bak-")) {
+      fs.rmSync(path.join(target, name), { recursive: true, force: true });
+    }
   }
   console.log(`\n  [ok] Removed .claude/ from ${target}`);
 }

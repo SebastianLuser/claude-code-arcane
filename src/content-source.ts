@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
+import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
-import { createGunzip } from "node:zlib";
 import { getPackageRoot, getPackageVersion } from "./utils.js";
 import {
   getCachedContentRoot,
@@ -69,6 +69,7 @@ export class GitHubContentSource implements ContentSource {
   private repo: string;
   private branch: string;
   private resolvedVersion: string | null = null;
+  private resolvedSha: string | null = null;
 
   constructor(
     owner: string = GITHUB_OWNER,
@@ -128,6 +129,7 @@ export class GitHubContentSource implements ContentSource {
       if (!response.ok) return null;
 
       const data = (await response.json()) as { sha: string };
+      this.resolvedSha = data.sha;
       this.resolvedVersion = data.sha.substring(0, 12);
       return this.resolvedVersion;
     } catch {
@@ -161,7 +163,9 @@ export class GitHubContentSource implements ContentSource {
   }
 
   private async downloadAndExtract(destDir: string): Promise<void> {
-    const tarballUrl = `https://api.github.com/repos/${this.owner}/${this.repo}/tarball/${this.branch}`;
+    // The commit the version names, so the cache entry holds exactly that content.
+    const ref = this.resolvedSha ?? this.branch;
+    const tarballUrl = `https://api.github.com/repos/${this.owner}/${this.repo}/tarball/${ref}`;
 
     const response = await fetch(tarballUrl, {
       headers: {
@@ -178,28 +182,10 @@ export class GitHubContentSource implements ContentSource {
 
     const tar = await import("tar");
     const tarballPath = path.join(destDir, "repo.tar.gz");
-    const fileStream = fs.createWriteStream(tarballPath);
-
-    const reader = response.body.getReader();
-    const writable = new WritableStream({
-      write(chunk) {
-        fileStream.write(chunk);
-      },
-      close() {
-        fileStream.end();
-      },
-    });
-
-    await reader.read().then(async function process({ done, value }): Promise<void> {
-      if (done) {
-        fileStream.end();
-        return;
-      }
-      fileStream.write(value);
-      return reader.read().then(process);
-    });
-
-    await new Promise<void>((resolve) => fileStream.on("finish", resolve));
+    await pipeline(
+      Readable.fromWeb(response.body as import("node:stream/web").ReadableStream),
+      fs.createWriteStream(tarballPath),
+    );
 
     await tar.extract({
       file: tarballPath,

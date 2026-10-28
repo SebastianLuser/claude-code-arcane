@@ -75,6 +75,32 @@ describe("updateCommand (general orchestration)", () => {
     expect(output).toContain("No Arcane installations found");
   });
 
+  it("should report a target that fails instead of counting it as unchanged", async () => {
+    const good = makeTmpDir("arcane-good-");
+    const broken = makeTmpDir("arcane-broken-");
+    cleanup.push(good, broken);
+    installTestingProfile(good);
+    installTestingProfile(broken);
+    fs.writeFileSync(path.join(broken, ".claude", "arcane-manifest.json"), "{ not json");
+
+    const { registerInstallation } = await import("../registry.js");
+    registerInstallation(good);
+    registerInstallation(broken);
+    const elsewhere = makeTmpDir("arcane-cwd-");
+    cleanup.push(elsewhere);
+    process.chdir(elsewhere);
+
+    const { updateCommand } = await import("../commands/update.js");
+    await updateCommand({ dryRun: true });
+
+    const output = logSpy.mock.calls.map((c: unknown[]) => String(c[0])).join("\n");
+    expect(output).toContain("1 unchanged");
+    expect(output).toContain("1 failed");
+    expect(output).toContain(`failed: ${broken}`);
+    expect(process.exitCode).toBe(1);
+    process.exitCode = 0;
+  });
+
   it("should process all registered targets in dry-run without applying", async () => {
     // Arrange
     const repoA = makeTmpDir("arcane-a-");
