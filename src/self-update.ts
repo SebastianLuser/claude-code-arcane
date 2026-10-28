@@ -19,18 +19,36 @@ export interface SelfUpdateResult {
   fromVersion?: string;
 }
 
+let cachedGlobalRoot: string | null | undefined;
+
+/** `npm root -g`, asked once per run; null when npm cannot answer. */
+function npmGlobalRoot(): string | null {
+  if (cachedGlobalRoot === undefined) {
+    const win = process.platform === "win32";
+    const result = spawnSync(win ? "npm root -g" : "npm", win ? [] : ["root", "-g"], {
+      encoding: "utf-8",
+      shell: win,
+      timeout: 15_000,
+    });
+    cachedGlobalRoot = result.status === 0 && result.stdout ? String(result.stdout).trim() : null;
+  }
+  return cachedGlobalRoot;
+}
+
 /**
- * Heuristic: is this CLI running from a globally-installed npm package (vs an
- * ephemeral `npx` run or a local dev checkout)? `npx` extracts packages under a
- * `_npx` cache dir; dev/CI runs from the repo (no node_modules ancestor).
+ * Is this CLI running from the global npm install, as opposed to an `npx` run,
+ * a dev checkout, or a project's own node_modules (which `npm i -g` would not update)?
  */
-export function isGloballyInstalled(): boolean {
-  const root = getPackageRoot().replace(/\\/g, "/");
+export function isGloballyInstalled(globalRoot: string | null = null): boolean {
+  const norm = (p: string) => {
+    const posix = p.replace(/\\/g, "/").replace(/\/+$/, "");
+    return process.platform === "win32" ? posix.toLowerCase() : posix;
+  };
+  const root = norm(getPackageRoot());
+  if (root.includes("/_npx/") || !root.includes("/node_modules/")) return false;
 
-  if (root.includes("/_npx/")) return false;
-  if (!root.includes("/node_modules/")) return false;
-
-  return true;
+  const global = globalRoot ?? npmGlobalRoot();
+  return global !== null && root === `${norm(global)}/${PACKAGE_NAME}`;
 }
 
 /**

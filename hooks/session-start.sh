@@ -2,6 +2,8 @@
 # Hook: session-start.sh — SessionStart
 # Graceful: wraps in main(), never blocks session
 set +e
+# Claude may have cd'd into a subdirectory; the session files live at the checkout root.
+TOP=$(git rev-parse --show-toplevel 2>/dev/null) && cd "$TOP"
 
 # Hook logs and state. Only hooks write here, so Claude Code's protection of .claude/
 # never gets in the way.

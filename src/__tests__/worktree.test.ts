@@ -1,4 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
@@ -8,9 +9,10 @@ import {
   detectPackageManager,
   findMainArcaneInstall,
   linkOrCopyDir,
-  isSymlinkOrJunction,
   getWorktreeInfo,
+  createGitWorktree,
 } from "../worktree.js";
+import { isSymlinkOrJunction } from "../utils.js";
 
 function makeTmpDir(): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), "arcane-worktree-test-"));
@@ -97,6 +99,12 @@ describe("detectPackageManager", () => {
     const result = detectPackageManager(tmpDir);
 
     expect(result).toEqual({ lockfile: "pnpm-lock.yaml", command: "pnpm install" });
+  });
+
+  it("should detect bun's text lockfile", () => {
+    tmpDir = makeTmpDir();
+    fs.writeFileSync(path.join(tmpDir, "bun.lock"), "");
+    expect(detectPackageManager(tmpDir)).toEqual({ lockfile: "bun.lock", command: "bun install" });
   });
 
   it("should detect bun when bun.lockb exists", () => {
@@ -254,38 +262,6 @@ describe("linkOrCopyDir", () => {
   });
 });
 
-describe("isSymlinkOrJunction", () => {
-  let tmpDir: string;
-
-  afterEach(() => {
-    if (tmpDir && fs.existsSync(tmpDir)) {
-      fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
-    }
-  });
-
-  it("should return true for a junction/symlink", () => {
-    tmpDir = makeTmpDir();
-    const target = path.join(tmpDir, "target");
-    const link = path.join(tmpDir, "link");
-    fs.mkdirSync(target);
-    fs.symlinkSync(target, link, "junction");
-
-    expect(isSymlinkOrJunction(link)).toBe(true);
-  });
-
-  it("should return false for a regular directory", () => {
-    tmpDir = makeTmpDir();
-    const dir = path.join(tmpDir, "regular");
-    fs.mkdirSync(dir);
-
-    expect(isSymlinkOrJunction(dir)).toBe(false);
-  });
-
-  it("should return false for a non-existent path", () => {
-    expect(isSymlinkOrJunction("/nonexistent/path/xyz-abc-123")).toBe(false);
-  });
-});
-
 describe("getWorktreeInfo", { timeout: 15000 }, () => {
   it("should return non-null info for the current git repo", () => {
     // The test is running inside a git repo
@@ -295,10 +271,7 @@ describe("getWorktreeInfo", { timeout: 15000 }, () => {
 
     expect(info).not.toBeNull();
     expect(info!.mainWorktreePath).toBeTruthy();
-    expect(typeof info!.currentBranch).toBe("string");
-    expect(info!.worktreeId).toBeTruthy();
-    expect(Array.isArray(info!.allWorktrees)).toBe(true);
-    expect(info!.allWorktrees.length).toBeGreaterThanOrEqual(1);
+    expect(info!.toplevel).toBe(info!.mainWorktreePath);
   });
 
   it("should return null for a non-git directory", () => {
@@ -321,14 +294,45 @@ describe("getWorktreeInfo", { timeout: 15000 }, () => {
     expect(info!.isWorktree).toBe(false);
   });
 
-  it("should include at least one entry in allWorktrees with isMain true", () => {
-    const repoRoot = path.resolve(__dirname, "..", "..");
+});
 
-    const info = getWorktreeInfo(repoRoot);
+describe("in a real repository", { timeout: 30000 }, () => {
+  let tmpDir: string;
 
-    expect(info).not.toBeNull();
-    const mainEntry = info!.allWorktrees.find((w) => w.isMain);
-    expect(mainEntry).toBeDefined();
-    expect(mainEntry!.isMain).toBe(true);
+  afterEach(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+  });
+
+  function repo(): string {
+    tmpDir = fs.realpathSync(makeTmpDir());
+    const root = path.join(tmpDir, "main");
+    fs.mkdirSync(path.join(root, "src", "deep"), { recursive: true });
+    const git = (...args: string[]) => execFileSync("git", args, { cwd: root, stdio: "pipe" });
+    git("init", "-q");
+    git("-c", "user.email=t@t", "-c", "user.name=t", "commit", "-q", "--allow-empty", "-m", "init");
+    return root;
+  }
+
+  it("reports the checkout root from a subdirectory", () => {
+    const root = repo();
+    const info = getWorktreeInfo(path.join(root, "src", "deep"))!;
+    expect(info.toplevel).toBe(root);
+    expect(info.mainWorktreePath).toBe(root);
+    expect(info.isWorktree).toBe(false);
+  });
+
+  it("passes branch names and paths to git without a shell", () => {
+    const root = repo();
+    // A shell expands $(echo) to nothing and splits the path at the space.
+    const branch = "x$(echo)y";
+    const wt = path.join(tmpDir, "with space");
+    createGitWorktree(root, wt, branch);
+
+    const info = getWorktreeInfo(path.join(wt))!;
+    expect(info.isWorktree).toBe(true);
+    expect(info.toplevel).toBe(wt);
+    expect(info.mainWorktreePath).toBe(root);
+    const current = execFileSync("git", ["branch", "--show-current"], { cwd: wt, encoding: "utf-8" });
+    expect(current.trim()).toBe(branch);
   });
 });

@@ -212,6 +212,22 @@ describe("installCommand", () => {
 
     expect(fs.existsSync(path.join(tmpDir, ".claude", "arcane-manifest.json"))).toBe(false);
   });
+
+  it("stamps the content source's version, not the CLI's", async () => {
+    // The update notice only compares SHA-shaped versions.
+    const { BundledContentSource } = await import("../content-source.js");
+    const spy = vi.spyOn(BundledContentSource.prototype, "getVersion").mockResolvedValue("0123456789ab");
+    try {
+      const { installCommand } = await import("../commands/install.js");
+      await installCommand("testing", { target: tmpDir });
+    } finally {
+      spy.mockRestore();
+    }
+
+    const manifest = readManifest(tmpDir)!;
+    expect(manifest.source_version).toBe("0123456789ab");
+    expect(manifest.source_type).toBe("bundled");
+  });
 });
 
 describe("addCommand", () => {

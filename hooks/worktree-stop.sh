@@ -17,8 +17,9 @@ main() {
   # Second stop of the same turn: Claude already answered the block.
   echo "$INPUT" | grep -qE '"stop_hook_active"[[:space:]]*:[[:space:]]*true' && return 0
 
-  PROJECT="${CLAUDE_PROJECT_DIR:-}"
-  [ -n "$PROJECT" ] || return 0
+  [ -n "${CLAUDE_PROJECT_DIR:-}" ] || return 0
+  # In git's own form: on Windows the variable has backslashes and git prints C:/.
+  PROJECT=$(git -C "$CLAUDE_PROJECT_DIR" rev-parse --show-toplevel 2>/dev/null) || return 0
   TOP=$(git rev-parse --show-toplevel 2>/dev/null) || return 0
 
   # Only worktrees EnterWorktree creates: under the project the session started in.

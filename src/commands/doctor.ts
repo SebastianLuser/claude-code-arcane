@@ -27,7 +27,7 @@ export interface Probes {
  * Allow rules that hand Claude a whole tool or a destructive command without asking.
  * Arcane's profiles never ship these; `Bash(gh *)` is what core allowed before 2.13.
  */
-const DANGEROUS_ALLOWS = new Set([
+const DANGEROUS_ALLOWS = [
   "Bash",
   "Bash(*)",
   "Bash(gh *)",
@@ -43,7 +43,11 @@ const DANGEROUS_ALLOWS = new Set([
   "PowerShell(*)",
   "PowerShell(Remove-Item *)",
   "PowerShell(git *)",
-]);
+];
+
+/** `Bash(rm:*)`, `Bash(rm *)` and `Bash(rm*)` are one rule to Claude Code. */
+const permissionKey = (rule: string) => rule.trim().replace(/[:\s]*\*\)$/, "*)");
+const DANGEROUS_KEYS = new Set(DANGEROUS_ALLOWS.map(permissionKey));
 
 const SECRET_PATTERNS: Array<[string, RegExp]> = [
   ["Anthropic key", /sk-ant-[A-Za-z0-9_-]{20,}/],
@@ -72,7 +76,7 @@ export const defaultProbes: Probes = {
  * Claude Code runs hooks with Git Bash on Windows. A plain `bash` lookup from Node
  * finds System32\bash.exe (WSL) first, which cannot read Windows paths, so skip it.
  */
-function findBash(): string | null {
+export function findBash(): string | null {
   if (process.platform !== "win32") {
     return spawnSync("bash", ["--version"]).error ? null : "bash";
   }
@@ -82,10 +86,13 @@ function findBash(): string | null {
   for (const dir of (process.env.PATH ?? "").split(path.delimiter)) {
     const lower = dir.toLowerCase();
     if (!dir || lower.startsWith(systemRoot) || lower.includes("windowsapps")) continue;
-    const candidate = path.join(dir, "bash.exe");
-    if (fs.existsSync(candidate)) return candidate;
+    // Git for Windows puts Git\cmd on PATH; bash.exe is in Git\bin beside it.
+    for (const candidate of [path.join(dir, "bash.exe"), path.join(dir, "..", "bin", "bash.exe")]) {
+      if (fs.existsSync(candidate)) return path.resolve(candidate);
+    }
   }
-  return null;
+  const programFiles = path.join(process.env.ProgramFiles ?? "C:\\Program Files", "Git", "bin", "bash.exe");
+  return fs.existsSync(programFiles) ? programFiles : null;
 }
 
 function readJson(file: string): { value?: unknown; error?: string } {
@@ -228,7 +235,7 @@ function checkPermissions(claudeDir: string, settings: Record<string, unknown>, 
     const permissions = (data as { permissions?: { allow?: unknown; defaultMode?: unknown } } | undefined)?.permissions;
     const allow = Array.isArray(permissions?.allow) ? permissions.allow : [];
     for (const rule of allow) {
-      if (typeof rule === "string" && DANGEROUS_ALLOWS.has(rule.trim())) found.push(`${file}: ${rule}`);
+      if (typeof rule === "string" && DANGEROUS_KEYS.has(permissionKey(rule))) found.push(`${file}: ${rule}`);
     }
     if (permissions?.defaultMode === "bypassPermissions") found.push(`${file}: defaultMode bypassPermissions`);
   }
@@ -237,7 +244,7 @@ function checkPermissions(claudeDir: string, settings: Record<string, unknown>, 
         name: "permissions",
         verdict: "warn",
         detail: `rules that skip every confirmation: ${found.join(", ")}`,
-        fix: found.some((f) => f.endsWith("Bash(gh *)"))
+        fix: found.some((f) => /Bash\(gh[:\s]*\*\)$/.test(f))
           ? `Run \`${cli} update --here\` to narrow the old \`Bash(gh *)\`; narrow any other by hand, unless you mean it.`
           : "Narrow them by hand (e.g. `Bash(npm test*)` instead of `Bash(*)`), unless you mean it.",
       }

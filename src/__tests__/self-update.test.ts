@@ -36,24 +36,38 @@ describe("npmInstallCommand", () => {
   });
 });
 
+const GLOBAL_ROOT = "C:\\Users\\x\\AppData\\Roaming\\npm\\node_modules";
+
+/** npm answers `root -g`; any other call is the install. */
+function fakeNpm(install: { status: number | null; error?: Error }) {
+  spawnSync.mockImplementation((command: string, args: string[]) =>
+    [command, ...args].join(" ").includes("root -g") ? { status: 0, stdout: `${GLOBAL_ROOT}\n` } : install,
+  );
+}
+const installCalls = () =>
+  spawnSync.mock.calls.filter((c: unknown[]) => [c[0], ...(c[1] as string[])].join(" ").includes("install"));
+
 describe("isGloballyInstalled", () => {
   it("is false for an npx run", () => {
     getPackageRoot.mockReturnValue(
       "C:\\Users\\x\\AppData\\Local\\npm-cache\\_npx\\abc\\node_modules\\claude-code-arcane",
     );
-    expect(isGloballyInstalled()).toBe(false);
+    expect(isGloballyInstalled(GLOBAL_ROOT)).toBe(false);
   });
 
   it("is false for a dev checkout", () => {
     getPackageRoot.mockReturnValue("C:\\repos\\claude-code-arcane");
-    expect(isGloballyInstalled()).toBe(false);
+    expect(isGloballyInstalled(GLOBAL_ROOT)).toBe(false);
+  });
+
+  it("is false for a project's own node_modules", () => {
+    getPackageRoot.mockReturnValue("C:\\repos\\app\\node_modules\\claude-code-arcane");
+    expect(isGloballyInstalled(GLOBAL_ROOT)).toBe(false);
   });
 
   it("is true for a global install", () => {
-    getPackageRoot.mockReturnValue(
-      "C:\\Users\\x\\AppData\\Roaming\\npm\\node_modules\\claude-code-arcane",
-    );
-    expect(isGloballyInstalled()).toBe(true);
+    getPackageRoot.mockReturnValue(`${GLOBAL_ROOT}\\claude-code-arcane`);
+    expect(isGloballyInstalled(GLOBAL_ROOT)).toBe(true);
   });
 });
 
@@ -86,23 +100,24 @@ describe("selfUpdateNpm", () => {
     expect(spawnSync).not.toHaveBeenCalled();
   });
 
-  it("skips a dry run before spawning", async () => {
+  it("skips a dry run before installing", async () => {
     delete process.env.VITEST;
     delete process.env.ARCANE_SOURCE;
+    fakeNpm({ status: 0 });
     const result = await selfUpdateNpm({ dryRun: true });
     expect(result.reason).toBe("dry-run");
-    expect(spawnSync).not.toHaveBeenCalled();
+    expect(installCalls()).toEqual([]);
   });
 
   it("passes the shell flag through to spawnSync", async () => {
     delete process.env.VITEST;
     delete process.env.ARCANE_SOURCE;
-    spawnSync.mockReturnValue({ status: 0 });
+    fakeNpm({ status: 0 });
 
     const result = await selfUpdateNpm();
 
     expect(result).toMatchObject({ updated: true, skipped: false });
-    const [command, args, options] = spawnSync.mock.calls[0];
+    const [command, args, options] = installCalls()[0];
     const expected = npmInstallCommand();
     expect(command).toBe(expected.command);
     expect(args).toEqual(expected.args);
@@ -114,10 +129,7 @@ describe("selfUpdateNpm", () => {
   it("reports the spawn error instead of claiming success", async () => {
     delete process.env.VITEST;
     delete process.env.ARCANE_SOURCE;
-    spawnSync.mockReturnValue({
-      status: null,
-      error: new Error("spawnSync npm.cmd EINVAL"),
-    });
+    fakeNpm({ status: null, error: new Error("spawnSync npm.cmd EINVAL") });
 
     const result = await selfUpdateNpm();
 

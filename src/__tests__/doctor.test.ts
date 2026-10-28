@@ -115,6 +115,14 @@ describe("diagnose", () => {
     expect(check.detail).toContain("settings.local.json: Bash(*)");
   });
 
+  it("reads the colon form of a rule as the same rule", () => {
+    const target = install();
+    editSettings(target, (s) => s.permissions.allow.push("Bash(rm:*)", "Bash(git push:*)"));
+    const check = byName(diagnose(target, healthy), "permissions");
+    expect(check.detail).toContain("Bash(rm:*)");
+    expect(check.detail).toContain("Bash(git push:*)");
+  });
+
   it("fails on a credential in .mcp.json but accepts an env reference", () => {
     const target = install();
     const mcp = path.join(target, ".mcp.json");
@@ -140,6 +148,24 @@ describe("diagnose", () => {
 });
 
 describe("default probes", () => {
+  it.skipIf(process.platform !== "win32")("find Git Bash from the Git\\cmd folder on PATH", async () => {
+    const { findBash } = await import("../commands/doctor.js");
+    const git = fs.mkdtempSync(path.join(os.tmpdir(), "arcane-doctor-git-"));
+    fs.mkdirSync(path.join(git, "cmd"));
+    fs.mkdirSync(path.join(git, "bin"));
+    fs.writeFileSync(path.join(git, "bin", "bash.exe"), "");
+    const saved = { PATH: process.env.PATH, override: process.env.CLAUDE_CODE_GIT_BASH_PATH };
+    process.env.PATH = path.join(git, "cmd");
+    delete process.env.CLAUDE_CODE_GIT_BASH_PATH;
+    try {
+      expect(findBash()).toBe(path.join(git, "bin", "bash.exe"));
+    } finally {
+      process.env.PATH = saved.PATH;
+      if (saved.override !== undefined) process.env.CLAUDE_CODE_GIT_BASH_PATH = saved.override;
+      fs.rmSync(git, { recursive: true, force: true });
+    }
+  });
+
   it("parse every shipped hook with the real bash", async () => {
     const { defaultProbes } = await import("../commands/doctor.js");
     const bash = defaultProbes.findBash();

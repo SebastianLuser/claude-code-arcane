@@ -20,9 +20,11 @@ def git(cwd: Path, *args: str) -> str:
     ).stdout.strip()
 
 
-def run_hook(script: str, cwd: Path, payload: dict | None = None, project: Path | None = None) -> str:
+def run_hook(script: str, cwd: Path, payload: dict | None = None, project: Path | str | None = None) -> str:
     env = dict(os.environ)
-    if project is not None:
+    if isinstance(project, str):
+        env["CLAUDE_PROJECT_DIR"] = project
+    elif project is not None:
         env["CLAUDE_PROJECT_DIR"] = git(project, "rev-parse", "--show-toplevel")
     result = subprocess.run(
         [BASH, str(HOOKS / script)], cwd=cwd, input=json.dumps(payload or {}),
@@ -57,6 +59,12 @@ class WorktreeStop(HookTestCase):
         self.assertIn("wt-feat", decision["reason"])
         # Same commit, next turn: already asked.
         self.assertEqual(run_hook("worktree-stop.sh", worktree, {}, project=self.project), "")
+
+    def test_blocks_with_the_project_dir_as_the_os_writes_it(self):
+        # Claude Code passes C:\... on Windows; git prints C:/...
+        worktree = self.add_worktree("feat")
+        out = run_hook("worktree-stop.sh", worktree, {}, project=str(self.project))
+        self.assertIn("block", out)
 
     def test_asks_again_after_a_new_commit(self):
         worktree = self.add_worktree("feat")
@@ -127,6 +135,15 @@ class SessionStart(HookTestCase):
         run_hook("session-start.sh", self.project)
         self.assertEqual(git(self.project, "status", "--porcelain", "--untracked-files=all", ".arcane"), "")
 
+    def test_finds_active_md_from_a_subdirectory(self):
+        progress = self.project / ".arcane" / "session-state"
+        progress.mkdir(parents=True)
+        (progress / "active.md").write_text("# Goal: ship the login\n")
+        (self.project / "src" / "deep").mkdir(parents=True)
+        out = run_hook("session-start.sh", self.project / "src" / "deep")
+        self.assertIn("ship the login", out)
+        self.assertFalse((self.project / "src" / "deep" / ".arcane").exists())
+
     def test_tells_a_session_started_in_a_worktree_where_it_is(self):
         worktree = self.add_worktree("feat")
         out = run_hook("session-start.sh", worktree)
@@ -141,6 +158,13 @@ class SessionStop(HookTestCase):
         (state / "active.md").write_text("goal\n")
         run_hook("session-stop.sh", self.project)
         self.assertEqual(git(self.project, "status", "--porcelain", "--untracked-files=all"), "")
+
+    def test_logs_at_the_root_from_a_subdirectory(self):
+        state = self.project / ".claude" / "session-state"
+        state.mkdir(parents=True)
+        (self.project / "src").mkdir()
+        run_hook("session-stop.sh", self.project / "src")
+        self.assertIn("Session stopped", (state / "sessions.log").read_text())
 
 
 if __name__ == "__main__":
