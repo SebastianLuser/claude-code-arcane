@@ -21,6 +21,7 @@ import argparse
 import csv
 import sys
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
 
 EXPECTED_COLS = {"First Name", "Last Name", "Company", "Position"}
@@ -51,10 +52,18 @@ def fullname(r):
     return f"{r.get('First Name', '')} {r.get('Last Name', '')}".strip()
 
 
+def connected_on(r):
+    """LinkedIn writes "15 Mar 2024"; rows without a readable date sort last."""
+    try:
+        return datetime.strptime(r.get("Connected On", ""), "%d %b %Y")
+    except ValueError:
+        return datetime.min
+
+
 def query_company(rows, company):
     needle = company.lower()
     hits = [r for r in rows if needle in r.get("Company", "").lower()]
-    hits.sort(key=lambda r: r.get("Connected On", ""), reverse=True)
+    hits.sort(key=connected_on, reverse=True)
     if not hits:
         print(f"No 1st-degree connections matched company '{company}'.")
         return

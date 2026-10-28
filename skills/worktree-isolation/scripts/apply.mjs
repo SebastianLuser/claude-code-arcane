@@ -171,6 +171,13 @@ function hostPortToken(token) {
   return /^\d+$/.test(token) ? [Number(token), null] : [null, null];
 }
 
+/** [start, count] for "3000-3005", [port, 1] for "3000", null otherwise. */
+function portRange(token) {
+  const m = /^(\d+)-(\d+)$/.exec(token);
+  if (m && Number(m[2]) >= Number(m[1])) return [Number(m[1]), Number(m[2]) - Number(m[1]) + 1];
+  return /^\d+$/.test(token) ? [Number(token), 1] : null;
+}
+
 /** One `ports:` entry as a mapping with newHostPort 0, or null when it cannot be read. */
 export function parsePortEntry(entry, service) {
   if (entry && typeof entry === "object") {
@@ -184,7 +191,7 @@ export function parsePortEntry(entry, service) {
       host = def ?? container;
     }
     return { service, hostIp: entry.host_ip ?? null, originalHostPort: host, newHostPort: 0,
-      containerPort: container, protocol: entry.protocol ?? "tcp", varName };
+      containerPort: container, protocol: entry.protocol ?? "tcp", varName, count: 1 };
   }
 
   let s = String(entry).trim();
@@ -199,19 +206,29 @@ export function parsePortEntry(entry, service) {
   let host;
   let container;
   let varName = null;
+  let count = 1;
+  if (parts.length === 3) hostIp = parts.shift();
   if (parts.length === 1) {
     // Bare port: Docker treats it as the container port; we still bind a deterministic host port.
-    container = hostPortToken(parts[0])[0] ?? 0;
+    [container, count] = portRange(parts[0]) ?? [0, 1];
     host = container;
-  } else if (parts.length === 2 || parts.length === 3) {
-    if (parts.length === 3) hostIp = parts.shift();
-    [host, varName] = hostPortToken(parts[0]);
-    container = hostPortToken(parts[1])[0] ?? 0;
-    host ??= container;
+  } else if (parts.length === 2) {
+    const range = portRange(parts[1]);
+    if (!range) return null;
+    [container, count] = range;
+    if (count > 1) {
+      // A range keeps its length: 3000-3005:3000-3005 moves as one block of six.
+      const hostRange = portRange(parts[0]);
+      if (!hostRange || hostRange[1] !== count) return null;
+      host = hostRange[0];
+    } else {
+      [host, varName] = hostPortToken(parts[0]);
+      host ??= container;
+    }
   } else {
     return null;
   }
-  return { service, hostIp, originalHostPort: host, newHostPort: 0, containerPort: container, protocol, varName };
+  return { service, hostIp, originalHostPort: host, newHostPort: 0, containerPort: container, protocol, varName, count };
 }
 
 // ---------------------------------------------------------------------------
@@ -265,7 +282,9 @@ export function renderOverrideYaml(mappings, containerNames, projectName, worktr
     if (byService.has(service)) {
       lines.push("    ports: !override");
       for (const m of byService.get(service)) {
-        let spec = m.hostIp ? `${m.hostIp}:${m.newHostPort}:${m.containerPort}` : `${m.newHostPort}:${m.containerPort}`;
+        const span = (start) => (m.count > 1 ? `${start}-${start + m.count - 1}` : `${start}`);
+        let spec = `${span(m.newHostPort)}:${span(m.containerPort)}`;
+        if (m.hostIp) spec = `${m.hostIp}:${spec}`;
         if (m.protocol !== "tcp") spec += `/${m.protocol}`;
         lines.push(`      - ${JSON.stringify(spec)}`);
       }
@@ -286,8 +305,8 @@ export function renderEnvWorktree(projectName, worktree, chain, mappings) {
   const lines = [GENERATED_BY, "# DO NOT COMMIT. Source before running docker compose:",
     "#   set -a; source .env.worktree; set +a", `WORKTREE_ID=${worktree}`, `COMPOSE_PROJECT_NAME=${projectName}`];
   const files = chain.flatMap(([base, override]) => [path.basename(base), ...(override ? [path.basename(override)] : [])]);
-  // Compose reads COMPOSE_FILE colon-separated on Unix, semicolon on Windows.
-  if (files.length) lines.push(`COMPOSE_FILE=${files.join(":")}`);
+  // Compose splits COMPOSE_FILE on ';' on Windows unless told otherwise.
+  if (files.length) lines.push("COMPOSE_PATH_SEPARATOR=:", `COMPOSE_FILE=${files.join(":")}`);
   const seen = new Set();
   for (const m of mappings) {
     const v = envVarName(m);

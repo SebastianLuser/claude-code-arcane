@@ -53,7 +53,7 @@ python scripts/worktree_cleanup.py --repo . --remove-merged --format text
 
 ### 3. Port Allocation Strategy
 
-Default: `base + (index * stride)` with collision checks. App: `3000`, Postgres: `5432`, Redis: `6379`, Stride: `10`.
+Default: `base + (index * stride)` with collision checks, from index 1: the base ports stay with the main checkout. App: `3000`, Postgres: `5432`, Redis: `6379`, Stride: `10`.
 
 > See [references/port-allocation-strategy.md](references/port-allocation-strategy.md) for full strategy and edge cases.
 

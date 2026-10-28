@@ -19,8 +19,8 @@ Formula by slot index `n`:
 
 Examples:
 
-- Slot 0: `3000/5432/6379`
-- Slot 1: `3010/5442/6389`
+- Slot 0: `3000/5432/6379`, the main checkout's; never assigned to a worktree
+- Slot 1: `3010/5442/6389`, the first worktree
 - Slot 2: `3020/5452/6399`
 
 ## Collision Avoidance
@@ -28,6 +28,7 @@ Examples:
 1. Read `.worktree-ports.json` from existing worktrees.
 2. Skip any slot where one or more ports are already assigned.
 3. Persist selected mapping in the new worktree.
+4. On a rerun, keep the mapping the worktree already has, and leave its `.env` files alone.
 
 ## Operational Notes
 

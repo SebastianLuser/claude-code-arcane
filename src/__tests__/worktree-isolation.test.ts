@@ -7,13 +7,14 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 /** Specs for skills/worktree-isolation/scripts/apply.mjs. */
 
-interface Mapping { service: string; hostIp: string | null; originalHostPort: number; containerPort: number; protocol: string; varName: string | null }
+interface Mapping { service: string; hostIp: string | null; originalHostPort: number; containerPort: number; protocol: string; varName: string | null; count: number }
 interface Apply {
   parseYaml(source: string): any;
   parsePortEntry(entry: unknown, service: string): Mapping | null;
   allocatePort(worktree: string, service: string, host: number, container: number): number;
   worktreeId(cwd: string): string;
   run(opts: object, log?: (s: string) => void, err?: (s: string) => void): number;
+  renderOverrideYaml(mappings: Mapping[], containerNames: object, projectName: string, worktree: string): string;
 }
 
 const SCRIPT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..",
@@ -65,6 +66,18 @@ describe("compose parsing", () => {
     expect(wi.parsePortEntry("1:2:3:4", "x")).toBeNull();
   });
 
+  it("moves a port range as one block of the same length", () => {
+    expect(wi.parsePortEntry("3000-3005:3000-3005", "web")).toMatchObject({ originalHostPort: 3000, containerPort: 3000, count: 6 });
+    expect(wi.parsePortEntry("127.0.0.1:9000-9001:80-81", "web")).toMatchObject({ hostIp: "127.0.0.1", containerPort: 80, count: 2 });
+    expect(wi.parsePortEntry("7000-7002", "web")).toMatchObject({ containerPort: 7000, count: 3 });
+    // Any host port of the range for one container port: one deterministic port does that.
+    expect(wi.parsePortEntry("3000-3005:80", "web")).toMatchObject({ containerPort: 80, count: 1 });
+    expect(wi.parsePortEntry("3000-3005:80-81", "web")).toBeNull();
+
+    const range = { ...wi.parsePortEntry("3000-3005:3000-3005", "web")!, newHostPort: 21000 };
+    expect(wi.renderOverrideYaml([range], {}, "p", "w")).toContain('- "21000-21005:3000-3005"');
+  });
+
   it("allocates the same ports the Python version did", () => {
     // Values from lib.py, so worktrees keep their ports across the port.
     expect(wi.allocatePort("abcd1234", "db", 5433, 5432)).toBe(22959);
@@ -97,7 +110,7 @@ describe("run", () => {
     expect(parsed.services.worker).toBeUndefined();
 
     const env = fs.readFileSync(path.join(dir, ".env.worktree"), "utf-8");
-    expect(env).toContain("COMPOSE_FILE=docker-compose.yml:docker-compose.worktree.yml");
+    expect(env).toContain("COMPOSE_PATH_SEPARATOR=:\nCOMPOSE_FILE=docker-compose.yml:docker-compose.worktree.yml");
     expect(env).toContain(`DB_5432_HOST_PORT=${db}\nTEST_DB_PORT=${db}\n`);
     expect(fs.readFileSync(path.join(dir, ".git", "info", "exclude"), "utf-8")).toContain("*.worktree.yml");
 
