@@ -1,3 +1,10 @@
+## [3.0.5](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.0.4...v3.0.5) (2026-10-28)
+
+
+### Bug Fixes
+
+* **skills:** scripts no longer crash, emit broken code or reuse ports ([09b4681](https://github.com/SebastianLuser/claude-code-arcane/commit/09b4681f341d9eab22250065546eb65a7095678f))
+
 ## [3.0.4](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.0.3...v3.0.4) (2026-10-28)
 
 
