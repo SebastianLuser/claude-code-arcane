@@ -777,7 +777,7 @@ Examples:
         if args.command == 'generate':
             # Load config if provided
             if args.config:
-                with open(args.config) as f:
+                with open(args.config, encoding="utf-8") as f:
                     if HAS_YAML:
                         config_data = yaml.safe_load(f)
                     else:
@@ -815,14 +815,14 @@ Examples:
 
             # Output
             if args.output:
-                with open(args.output, 'w') as f:
+                with open(args.output, 'w', encoding="utf-8") as f:
                     f.write(code)
                 logger.info(f"Generated pipeline saved to {args.output}")
             else:
                 print(code)
 
         elif args.command == 'validate':
-            with open(args.dag) as f:
+            with open(args.dag, encoding="utf-8") as f:
                 code = f.read()
 
             generators = {
@@ -866,7 +866,7 @@ Examples:
             code = generator.generate(config)
 
             if args.output:
-                with open(args.output, 'w') as f:
+                with open(args.output, 'w', encoding="utf-8") as f:
                     f.write(code)
                 logger.info(f"Generated {args.pattern} pipeline saved to {args.output}")
             else:

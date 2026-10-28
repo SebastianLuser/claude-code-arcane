@@ -560,7 +560,7 @@ def main():
 
     if args.input:
         try:
-            with open(args.input) as f:
+            with open(args.input, encoding="utf-8") as f:
                 data = json.load(f)
         except FileNotFoundError:
             print(f"Error: file not found: {args.input}", file=sys.stderr)

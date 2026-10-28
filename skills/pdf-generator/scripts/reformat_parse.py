@@ -300,7 +300,7 @@ def parse_file(input_path: str) -> tuple[list, list]:
         return blocks, ["PDF text extraction is best-effort — review content.json before rendering"]
 
     if ext == ".json":
-        with open(input_path) as f:
+        with open(input_path, encoding="utf-8") as f:
             data = json.load(f)
         if isinstance(data, list):
             return validate_content_json(data)

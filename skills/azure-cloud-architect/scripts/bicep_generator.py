@@ -759,7 +759,7 @@ def main():
         }
         print(json.dumps(result, indent=2))
     elif args.output:
-        with open(args.output, "w") as f:
+        with open(args.output, "w", encoding="utf-8") as f:
             f.write(bicep_content)
         print(f"Bicep template written to {args.output} ({len(bicep_content.strip().split(chr(10)))} lines)")
         print(f"Pattern: {TEMPLATE_DESCRIPTIONS[args.arch_type]}")

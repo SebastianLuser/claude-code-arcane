@@ -210,7 +210,7 @@ def main():
     # Load data
     try:
         if args.data:
-            with open(args.data) as f:
+            with open(args.data, encoding="utf-8") as f:
                 data = json.load(f)
         else:
             data = json.loads(args.values)

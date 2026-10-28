@@ -52,7 +52,7 @@ class RegulatoryTracker:
     def load_data(self):
         """Load existing submission data from JSON file"""
         try:
-            with open(self.data_file, 'r') as f:
+            with open(self.data_file, 'r', encoding="utf-8") as f:
                 data = json.load(f)
                 for sub_id, sub_data in data.items():
                     # Convert date strings back to date objects
@@ -89,7 +89,7 @@ class RegulatoryTracker:
             
             data[sub_id] = sub_dict
         
-        with open(self.data_file, 'w') as f:
+        with open(self.data_file, 'w', encoding="utf-8") as f:
             json.dump(data, f, indent=2)
     
     def add_submission(self, submission: RegulatorySubmission):

@@ -811,14 +811,14 @@ def main():
 
         if args.format in ('gcloud', 'both'):
             gcloud_path = os.path.join(args.output, 'deploy.sh')
-            with open(gcloud_path, 'w') as f:
+            with open(gcloud_path, 'w', encoding="utf-8") as f:
                 f.write(manager.generate_gcloud_script())
             os.chmod(gcloud_path, 0o755)
             print(f"gcloud script written to {gcloud_path}")
 
         if args.format in ('terraform', 'both'):
             tf_path = os.path.join(args.output, 'main.tf')
-            with open(tf_path, 'w') as f:
+            with open(tf_path, 'w', encoding="utf-8") as f:
                 f.write(manager.generate_terraform_configuration())
             print(f"Terraform config written to {tf_path}")
     else:

@@ -1581,7 +1581,7 @@ Incident JSON format:
             incident_data = json.loads(input_text)
         elif args.incident:
             # Read from file
-            with open(args.incident, 'r') as f:
+            with open(args.incident, 'r', encoding="utf-8") as f:
                 incident_data = json.load(f)
         else:
             parser.error("No incident data specified. Use --incident or pipe data to stdin.")
@@ -1589,7 +1589,7 @@ Incident JSON format:
         # Read timeline data if provided
         timeline_data = None
         if args.timeline:
-            with open(args.timeline, 'r') as f:
+            with open(args.timeline, 'r', encoding="utf-8") as f:
                 timeline_data = json.load(f)
         
         # Validate incident data
@@ -1617,7 +1617,7 @@ Incident JSON format:
         
         # Write output
         if args.output:
-            with open(args.output, 'w') as f:
+            with open(args.output, 'w', encoding="utf-8") as f:
                 f.write(output)
                 f.write('\n')
         else:

@@ -1336,7 +1336,7 @@ def cmd_analyze_sql(args):
     # Load SQL
     sql_path = Path(args.input)
     if sql_path.exists():
-        with open(sql_path, 'r') as f:
+        with open(sql_path, 'r', encoding="utf-8") as f:
             sql = f.read()
     else:
         sql = args.input  # Treat as inline SQL
@@ -1354,7 +1354,7 @@ def cmd_analyze_sql(args):
         estimator = CostEstimator()
         data_stats = None
         if args.stats:
-            with open(args.stats, 'r') as f:
+            with open(args.stats, 'r', encoding="utf-8") as f:
                 data_stats = json.load(f)
         cost_estimate = estimator.estimate(query_info, args.warehouse, data_stats)
 
@@ -1368,7 +1368,7 @@ def cmd_analyze_sql(args):
         output = reporter.generate_text_report(query_info, recommendations, cost_estimate)
 
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding="utf-8") as f:
             f.write(output)
         logger.info(f"Report saved to {args.output}")
     else:
@@ -1377,7 +1377,7 @@ def cmd_analyze_sql(args):
 
 def cmd_analyze_spark(args):
     """Analyze Spark job metrics"""
-    with open(args.input, 'r') as f:
+    with open(args.input, 'r', encoding="utf-8") as f:
         metrics_data = json.load(f)
 
     # Handle both single job and array of jobs
@@ -1436,7 +1436,7 @@ def cmd_analyze_spark(args):
         output = "\n".join(lines)
 
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding="utf-8") as f:
             f.write(output)
     else:
         print(output)
@@ -1444,7 +1444,7 @@ def cmd_analyze_spark(args):
 
 def cmd_optimize_partition(args):
     """Recommend partition strategies"""
-    with open(args.input, 'r') as f:
+    with open(args.input, 'r', encoding="utf-8") as f:
         data_stats = json.load(f)
 
     advisor = PartitionAdvisor()
@@ -1475,7 +1475,7 @@ def cmd_optimize_partition(args):
         output = "\n".join(lines)
 
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding="utf-8") as f:
             f.write(output)
     else:
         print(output)
@@ -1486,7 +1486,7 @@ def cmd_estimate_cost(args):
     # Load SQL
     sql_path = Path(args.input)
     if sql_path.exists():
-        with open(sql_path, 'r') as f:
+        with open(sql_path, 'r', encoding="utf-8") as f:
             sql = f.read()
     else:
         sql = args.input
@@ -1498,7 +1498,7 @@ def cmd_estimate_cost(args):
     # Load data stats if provided
     data_stats = None
     if args.stats:
-        with open(args.stats, 'r') as f:
+        with open(args.stats, 'r', encoding="utf-8") as f:
             data_stats = json.load(f)
 
     # Estimate cost
@@ -1523,7 +1523,7 @@ def cmd_estimate_cost(args):
         output = "\n".join(lines)
 
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding="utf-8") as f:
             f.write(output)
     else:
         print(output)
@@ -1582,7 +1582,7 @@ def cmd_generate_template(args):
     output = json.dumps(templates[args.template], indent=2)
 
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding="utf-8") as f:
             f.write(output)
         logger.info(f"Template saved to {args.output}")
     else:

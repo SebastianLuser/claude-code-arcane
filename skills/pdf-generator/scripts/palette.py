@@ -485,7 +485,7 @@ def main():
 
     if args.meta:
         try:
-            with open(args.meta) as f:
+            with open(args.meta, encoding="utf-8") as f:
                 meta = json.load(f)
             args.title  = meta.get("title",  args.title)
             args.type   = meta.get("type",   args.type)
@@ -502,7 +502,7 @@ def main():
     )
 
     try:
-        with open(args.out, "w") as f:
+        with open(args.out, "w", encoding="utf-8") as f:
             json.dump(tokens, f, indent=2)
     except Exception as e:
         print(json.dumps({"status": "error", "error": str(e)}), file=sys.stderr)

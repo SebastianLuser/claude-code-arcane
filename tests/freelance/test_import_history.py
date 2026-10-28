@@ -135,6 +135,12 @@ class TestColumnMapping(CsvCase):
         mapping, _, _ = ih.map_columns(headers, {"Amount in local currency": "amount"})
         self.assertEqual(mapping["amount"], "Amount in local currency")
 
+    def test_exact_name_beats_an_earlier_partial_match(self):
+        # "total" is an amount alias, so "Total Hours" partially matches amount.
+        mapping, _, ambiguous = ih.map_columns(["Date", "Client", "Total Hours", "Amount"])
+        self.assertEqual(mapping["amount"], "Amount")
+        self.assertIn("amount", ambiguous)
+
     def test_fee_alias_does_not_get_eaten_by_amount(self):
         # "amount" is a substring of almost everything; without the right
         # FIELD_ALIASES order a fee column ended up in amount.

@@ -113,7 +113,7 @@ def main():
 
     lyrics = args.lyrics
     if args.lyrics_file:
-        with open(args.lyrics_file, "r") as f:
+        with open(args.lyrics_file, "r", encoding="utf-8") as f:
             lyrics = f.read()
 
     os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)

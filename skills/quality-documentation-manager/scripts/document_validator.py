@@ -599,7 +599,7 @@ def main():
         return
 
     if args.doc:
-        with open(args.doc, "r") as f:
+        with open(args.doc, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         doc = Document(

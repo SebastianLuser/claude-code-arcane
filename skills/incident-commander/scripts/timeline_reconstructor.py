@@ -961,7 +961,7 @@ Input JSON format:
             events_data = json.loads(input_text)
         elif args.input:
             # Read from file
-            with open(args.input, 'r') as f:
+            with open(args.input, 'r', encoding="utf-8") as f:
                 events_data = json.load(f)
         else:
             parser.error("No input specified. Use --input or pipe data to stdin.")
@@ -986,7 +986,7 @@ Input JSON format:
         
         # Write output
         if args.output:
-            with open(args.output, 'w') as f:
+            with open(args.output, 'w', encoding="utf-8") as f:
                 f.write(output)
                 f.write('\n')
         else:

@@ -113,6 +113,19 @@ class TestNormalization(unittest.TestCase):
     def test_accents_do_not_distinguish_a_company(self):
         self.assertEqual(cr.slug("Zürich Labs"), cr.slug("zurich labs"))
 
+    def test_every_legal_suffix_form_names_the_same_company(self):
+        for name in ("Acme Ltda", "Acme Corporation", "Acme Limited", "Acme S.A. de C.V.", "Acme SAPI de CV"):
+            self.assertEqual(cr.slug(name), "acme", name)
+
+    def test_a_suffix_word_at_the_start_is_part_of_the_name(self):
+        self.assertEqual(cr.slug("AB Tasty"), "ab tasty")
+        self.assertEqual(cr.slug("Spa Group"), "spa group")
+
+    def test_tracking_parameter_first_in_the_query(self):
+        self.assertEqual(cr.canonical_url("https://acme.com/jobs?utm_source=li&id=5#apply"),
+                         cr.canonical_url("https://acme.com/jobs?id=5"))
+        self.assertEqual(cr.canonical_url("https://acme.com/jobs/?utm_source=li"), "https://acme.com/jobs")
+
     def test_url_canonicalization_ignores_tracking(self):
         a = cr.canonical_url("https://www.linkedin.com/jobs/view/123?utm_source=share&trk=x")
         b = cr.canonical_url("https://www.linkedin.com/jobs/view/123?trackingId=other")
@@ -140,6 +153,10 @@ class TestFrontmatter(unittest.TestCase):
         fields = cr.parse_frontmatter("---\nprofile: Backend\ntags:\n  - a\n  - b\n---")
         self.assertEqual(fields["profile"], "Backend")
         self.assertEqual(fields["tags"], ["a", "b"])
+
+    def test_bom_and_quoted_values(self):
+        fields = cr.parse_frontmatter("﻿---\nstatus: \"applied\"\ncompany: 'Acme'\n---")
+        self.assertEqual(fields, {"status": "applied", "company": "Acme"})
 
     def test_no_frontmatter_returns_empty(self):
         self.assertEqual(cr.parse_frontmatter("# just a title"), {})

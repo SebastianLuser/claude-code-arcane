@@ -184,7 +184,7 @@ Examples:
     competitors = []
 
     if args.import_file:
-        with open(args.import_file) as f:
+        with open(args.import_file, encoding="utf-8") as f:
             data = json.load(f)
             for item in data:
                 competitors.append(CompetitorProfile(**item))

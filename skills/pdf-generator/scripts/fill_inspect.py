@@ -177,7 +177,7 @@ def main():
     output = json.dumps(result, indent=2, ensure_ascii=False)
 
     if args.out:
-        with open(args.out, "w") as f:
+        with open(args.out, "w", encoding="utf-8") as f:
             f.write(output)
 
     print(output)

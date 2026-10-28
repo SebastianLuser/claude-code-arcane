@@ -424,7 +424,7 @@ def main():
 
     if args.resources:
         try:
-            with open(args.resources, 'r') as f:
+            with open(args.resources, 'r', encoding="utf-8") as f:
                 resources = json.load(f)
         except FileNotFoundError:
             print(f"Error: File '{args.resources}' not found.", file=sys.stderr)
@@ -442,7 +442,7 @@ def main():
         result['checklist'] = optimizer.generate_optimization_checklist()
 
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding="utf-8") as f:
             json.dump(result, f, indent=2)
         print(f"Report written to {args.output}")
     elif args.json:

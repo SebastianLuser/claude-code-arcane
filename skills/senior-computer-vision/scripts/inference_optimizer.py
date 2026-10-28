@@ -548,7 +548,7 @@ def main():
 
     # Save to file
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, 'w', encoding="utf-8") as f:
             json.dump(results, f, indent=2, default=str)
         logger.info(f"Results saved to {args.output}")
 

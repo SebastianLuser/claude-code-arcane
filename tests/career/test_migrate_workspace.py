@@ -314,6 +314,31 @@ class TestApply(MigrationCase):
         self.assertTrue((self.ws / APPS / "Acme - Backend.md").is_file())
         self.assertTrue(any("left in " + APPS in c["problem"] for c in report["conflicts"]))
 
+    def test_a_merge_left_with_clashes_only_is_finished(self):
+        # Arrange
+        self.write("03-Applications/Acme - Backend.md", "---\ntype: application\n---\n")
+        self.run_cli("--apply")
+
+        # Act
+        second = self.run_cli("--apply")
+
+        # Assert
+        self.assertTrue(second["nothing_to_do"])
+        self.assertTrue(any("left in " + APPS in c["problem"] for c in second["conflicts"]))
+
+    def test_a_note_that_is_not_utf8_is_left_alone(self):
+        # Arrange
+        path = self.ws / APPS / "Legacy.md"
+        original = "---\ntype: application\n{0}: x\n---\nCaf\xe9\n".format(KEY["status"]).encode("cp1252")
+        path.write_bytes(original)
+
+        # Act
+        report = self.run_cli("--apply")
+
+        # Assert
+        self.assertEqual((self.ws / "03-Applications" / "Legacy.md").read_bytes(), original)
+        self.assertTrue(any("not UTF-8" in c["problem"] for c in report["conflicts"]))
+
     def test_a_key_already_in_english_is_not_duplicated(self):
         old_status = KEY["status"]
         self.write(DIR["04-Companies"] + "/Acme.md",

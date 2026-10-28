@@ -154,6 +154,9 @@ def main() -> int:
 
     for entry in entries:
         path = Path(entry.get("worktree", "")).resolve()
+        if "prunable" in entry or not path.is_dir():
+            # Folder already deleted: git commands cannot run there; `git worktree prune` clears it.
+            continue
         branch = get_branch(path)
         age = get_last_commit_age_days(path)
         dirty = is_dirty(path)

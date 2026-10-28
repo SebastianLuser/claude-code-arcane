@@ -227,7 +227,7 @@ def analyze_project(project_path: Path) -> Dict:
             config_path = project_path / config_file
             if config_path.exists():
                 try:
-                    with open(config_path, "r") as f:
+                    with open(config_path, "r", encoding="utf-8") as f:
                         content = f.read()
                     if config_info["check"] not in content.lower():
                         config_findings.append({
@@ -426,7 +426,7 @@ def main():
     if args.json:
         output = json.dumps(analysis, indent=2)
         if args.output:
-            with open(args.output, "w") as f:
+            with open(args.output, "w", encoding="utf-8") as f:
                 f.write(output)
             print(f"Report written to {args.output}")
         else:
@@ -434,7 +434,7 @@ def main():
     else:
         print_report(analysis)
         if args.output:
-            with open(args.output, "w") as f:
+            with open(args.output, "w", encoding="utf-8") as f:
                 json.dump(analysis, f, indent=2)
             print(f"\nDetailed JSON report written to {args.output}")
 
