@@ -598,15 +598,12 @@ def main():
         "assessment_date": datetime.now().isoformat(),
         "overall_score": overall_score,
         "risk_assessment": risk_assessment,
+        # Without --detailed only the evidence goes: the gaps and recommendations need the controls.
         "categories": category_results if args.detailed else [
-            {
-                "category": c["category"],
-                "title": c["title"],
-                "score": c["score"],
-                "compliant": c["compliant"],
-                "partial": c["partial"],
-                "gaps": c["gaps"]
-            }
+            {**c, "controls": [
+                {k: v for k, v in control.items() if k not in ("documentation", "code_evidence")}
+                for control in c["controls"]
+            ]}
             for c in category_results
         ],
         "phi_detection": phi_detection,

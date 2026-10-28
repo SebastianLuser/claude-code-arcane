@@ -25,6 +25,7 @@ LOCKFILE_COMMANDS = [
     ("pnpm-lock.yaml", ["pnpm", "install"]),
     ("yarn.lock", ["yarn", "install"]),
     ("package-lock.json", ["npm", "install"]),
+    ("bun.lock", ["bun", "install"]),
     ("bun.lockb", ["bun", "install"]),
     ("requirements.txt", [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"]),
 ]
@@ -95,7 +96,8 @@ def find_next_ports(repo: Path, app_base: int, db_base: int, redis_base: int, st
             except Exception:
                 continue
 
-    index = 0
+    # Index 0 is the base ports themselves, which the main checkout uses.
+    index = 1
     while True:
         ports = {
             "app": app_base + (index * stride),
@@ -111,8 +113,9 @@ def sync_env_files(src_repo: Path, dest_repo: Path) -> List[str]:
     copied = []
     for name in ENV_FILES:
         src = src_repo / name
-        if src.exists() and src.is_file():
-            dst = dest_repo / name
+        dst = dest_repo / name
+        # An existing copy may hold this worktree's own ports and secrets.
+        if src.is_file() and not dst.exists():
             shutil.copy2(src, dst)
             copied.append(name)
     return copied
@@ -207,10 +210,14 @@ def main() -> int:
         raise CLIError(f"Not a git repository: {repo}") from exc
 
     wt_path = ensure_worktree(repo, branch, name, base_branch)
-    created = (wt_path / ".worktree-ports.json").exists() is False
+    ports_file = wt_path / ".worktree-ports.json"
+    created = not ports_file.exists()
 
-    ports = find_next_ports(repo, app_base, db_base, redis_base, stride)
-    (wt_path / ".worktree-ports.json").write_text(json.dumps(ports, indent=2), encoding="utf-8")
+    if created:
+        ports = find_next_ports(repo, app_base, db_base, redis_base, stride)
+        ports_file.write_text(json.dumps(ports, indent=2), encoding="utf-8")
+    else:
+        ports = json.loads(ports_file.read_text(encoding="utf-8"))
 
     copied = sync_env_files(repo, wt_path)
     install_status = install_dependencies_if_requested(wt_path, install_deps)

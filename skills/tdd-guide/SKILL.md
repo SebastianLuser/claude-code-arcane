@@ -49,8 +49,6 @@ Test-driven development skill for generating tests, analyzing coverage, and guid
 | `tdd_workflow.py` | Check a red-green-refactor step | `python scripts/tdd_workflow.py --phase red --test test_auth.py --status failed`; `--phase green --code auth.py --status passed`; `--phase refactor --original old.py --code auth.py --status passed` |
 | `fixture_generator.py` | Generate test data and mocks | `python scripts/fixture_generator.py --schema user.json --count 5` (schema: `{"email": {"type": "email"}, "age": {"type": "int", "min": 18}}`) |
 
-Helper modules the tools import, with no command of their own: `framework_adapter.py` (convert between frameworks), `metrics_calculator.py` (quality metrics), `format_detector.py` (detect language/framework), `output_formatter.py` (CLI/desktop/CI output).
-
 ## Spec-First Workflow
 
 TDD is most effective when driven by a written spec. The flow:

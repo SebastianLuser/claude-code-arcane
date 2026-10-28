@@ -100,8 +100,8 @@ def load_payload(args: argparse.Namespace) -> Dict[str, Any]:
 
 
 def run_runner(runner_cmd: str, prompt: str, case_input: str) -> str:
-    cmd = runner_cmd.format(prompt=prompt, input=case_input)
-    parts = shlex.split(cmd)
+    # Split the template first: a quote or space inside the prompt must stay inside one argument.
+    parts = [part.replace("{prompt}", prompt).replace("{input}", case_input) for part in shlex.split(runner_cmd)]
     try:
         proc = subprocess.run(parts, text=True, capture_output=True, check=True)
     except subprocess.CalledProcessError as exc:
