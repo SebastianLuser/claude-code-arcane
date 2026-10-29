@@ -75,10 +75,10 @@ describe("diagnose", () => {
 
   it("fails when bash rejects a script", () => {
     const target = install();
-    const probes = { ...healthy, checkSyntax: (_: string, file: string) => (file.endsWith("notify.sh") ? "line 3: bad" : null) };
+    const probes = { ...healthy, checkSyntax: (_: string, file: string) => (file.endsWith("pre-compact.sh") ? "line 3: bad" : null) };
     const check = byName(diagnose(target, probes), "hook syntax");
     expect(check.verdict).toBe("fail");
-    expect(check.detail).toContain("hooks/notify.sh: line 3: bad");
+    expect(check.detail).toContain("hooks/pre-compact.sh: line 3: bad");
   });
 
   it("fails without bash", () => {
@@ -89,7 +89,7 @@ describe("diagnose", () => {
   it("warns on hooks still wired with a relative path", () => {
     const target = install();
     editSettings(target, (s) => {
-      s.hooks.Notification[0].hooks[0].command = "bash .claude/hooks/notify.sh";
+      s.hooks.PreCompact[0].hooks[0].command = "bash .claude/hooks/pre-compact.sh";
     });
     expect(byName(diagnose(target, healthy), "hook paths").verdict).toBe("warn");
   });

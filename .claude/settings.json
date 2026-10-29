@@ -65,11 +65,6 @@
           },
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/detect-division.sh\"",
-            "timeout": 10
-          },
-          {
-            "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/detect-gaps.sh\"",
             "timeout": 10
           }
@@ -125,18 +120,6 @@
         ]
       }
     ],
-    "Notification": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/notify.sh\"",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
     "PreCompact": [
       {
         "matcher": "",
@@ -179,30 +162,6 @@
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/run-py.sh\" session_watch.py stop",
             "timeout": 120
-          }
-        ]
-      }
-    ],
-    "SubagentStart": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/log-agent.sh\"",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/hooks/log-agent-stop.sh\"",
-            "timeout": 5
           }
         ]
       }
