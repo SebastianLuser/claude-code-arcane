@@ -83,7 +83,7 @@ Every installation automatically loads `core.yaml` first:
 - 3 base rules (verification, agent-delegation, user-language)
 - Security permissions (15 allow + 13 deny)
 
-Coding practice is not in core: code profiles bring the `code-flow` workflow (see [Workflows](#workflows)), and `install` adds it to any project with code in it.
+Coding practice is not in core: code profiles bring the `code-flow` workflow (see [Workflows and loops](#5-workflows-and-loops)), and `install` adds it to any project with code in it.
 
 ### 4. What gets generated
 
@@ -101,6 +101,22 @@ my-project/.claude/
 ```
 
 ---
+
+### 5. Workflows and loops
+
+A **workflow** is a process with a starting point and an end: implement a feature, apply to a job, improve a skill. A **loop** is a part of a workflow that repeats until a condition holds, with a limit. Workflows ship as profiles named `-flow`; a standalone loop would be named `-loop`.
+
+| Workflow | Starts with | Steps | Loop inside |
+|---|---|---|---|
+| `code-flow` | `/kickoff`, or asking for an implementation | work mode → goal and criteria in `active.md` → implement → fresh reviewer | goal review: FAIL → fix → review again, at most 2 FAIL, then both verdicts go to you |
+| `review-flow` | `/job-apply`, `/cv-tailor`, `/cover-letter` | draft → fresh-context reviewer → apply its edits → export | none: one review round on purpose |
+| `improve-skill-flow` | `/skill-improve <skill>` | static test → targeted fix → retest | test → fix → retest: keeps a change only if the score rose, reverts it otherwise |
+
+**Who runs the loop.** The main session. It does the work or delegates a bounded part, launches the reviewer with a clean context, reads the verdict, counts the rounds and stops at the limit. A subagent cannot start another one, so a loop never lives inside a subagent. The round count goes into `active.md` (`Review: round N — verdict`), so a compaction does not reset it.
+
+**How you get one.** Code profiles bring `code-flow`, `job-hunt` brings `review-flow`, `self-improving` brings `improve-skill-flow`; `install` and `update` add `code-flow` to any project with code in it. Add one by hand with `npx claude-code-arcane add +review-flow`. A workflow brings its rules, skills and hooks, and goes when the last profile that brought it goes.
+
+**Writing one.** A profile with `category: workflow`, an `entry:` (shown by `list` and the picker), its `rules`, `skills` and `hooks`, and an optional `loops:` that describes each loop (`name`, `until`, `limit`) for people; the rule or skill is what runs it. Other profiles bring it with `workflows: [<name>]`.
 
 ## CLI Commands
 

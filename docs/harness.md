@@ -50,6 +50,10 @@ The guard, the session watch, the update check and the status line are Node scri
 
 The maker-checker split is the core of it: whoever did the work does not grade it. In code that is the goal review in `rules/implementation-workflow.md`; in documents, `rules/drafter-reviewer.md`. **One agent by default** (`rules/agent-delegation.md`): a second agent is worth it only when the work does not fit one context, or the second one needs something the first must not have (a clean context, other tools, another model).
 
+## Workflows and loops
+
+A workflow is a profile with `category: workflow` that other profiles bring through `workflows: [...]`; `mergeProfiles()` loads it after them. Its loops are run by the main session, never by a subagent, and each has a written limit: `code-flow` stops after 2 FAIL reviews, `review-flow` reviews once, `improve-skill-flow` reverts a change that lowers the score. The table and how to write one: [README](../README.md#5-workflows-and-loops).
+
 ## The life of a task
 
 1. **Session start.** `session-start.sh` prints the state, including an open `active.md`, so a new session or a compaction resumes from the file, not from memory.
@@ -82,6 +86,7 @@ Both session-state folders carry a `.gitignore` with `*`, so they never land in 
 | Block or ask before a command | `hooks/guard.mjs`, with a spec in `src/__tests__/hook-guard.test.ts` |
 | Change what the session watch warns about | The constants at the top of `hooks/session-watch.mjs` |
 | Change how answers look | `output-styles/arcane.md` |
+| Add a workflow | A profile with `category: workflow`, `entry:` and its rules, skills and hooks; `workflows: [<name>]` in the profiles that bring it |
 | Add a hook to an event | The script in `hooks/`, its entry in `WIRING` (`src/hook-commands.ts`), and the `hooks:` of the profile that brings it |
 | Check an installed project | `arcane doctor`: hook scripts and paths, bash, installed content, broad or destructive allow rules, secrets in config |
 
