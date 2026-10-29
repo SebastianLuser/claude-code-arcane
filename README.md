@@ -79,7 +79,7 @@ Not sure what to pick? Run `install` with no arguments to get an interactive pic
 
 Every installation automatically loads `core.yaml` first:
 - 19 essential skills (commit, create-pr, quality-review, what-next, etc.)
-- 12 lifecycle hooks (session start/stop, guard, commit validation, etc.)
+- 7 lifecycle hooks (session start/stop, guard, loop and context watch, compaction log)
 - 3 base rules (verification, agent-delegation, user-language)
 - Security permissions (15 allow + 13 deny)
 
@@ -92,7 +92,7 @@ my-project/.claude/
 ├── settings.json          # Permissions + hooks + optional statusline
 ├── arcane-manifest.json   # Installation metadata (tracks what's installed)
 ├── statusline.sh          # Only if you used +statusline
-├── hooks/                 # 12 lifecycle hooks
+├── hooks/                 # Lifecycle hook scripts (settings.json wires those your profiles list)
 ├── skills/                # Only your profile's skills
 │   └── */SKILL.md         # Each skill = one directory
 ├── rules/                 # Stack-specific rules
@@ -286,7 +286,7 @@ A workflow is a process with a starting point. Other profiles bring it with `wor
 
 ### Core (always included)
 
-19 universal skills (commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, tech-debt, + 5 arcane self-management), 12 hooks, 3 base rules and security permissions. No agents: QA agents ship with `+testing`, the security architect with `+security`.
+19 universal skills (commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, tech-debt, + 5 arcane self-management), 7 hooks, 3 base rules and security permissions. No agents: QA agents ship with `+testing`, the security architect with `+security`.
 
 ---
 

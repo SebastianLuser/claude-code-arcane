@@ -917,7 +917,7 @@ function syncUnhashedFiles(
       // Hooks were wired with paths relative to the session's directory, which miss
       // inside a worktree without committed hooks, and the guard did not exist yet.
       if (settings.hooks && typeof settings.hooks === "object") {
-        const healed = healHooks(settings.hooks as HookMap, path.dirname(claudeDir));
+        const healed = healHooks(settings.hooks as HookMap, path.dirname(claudeDir), merged.hooks);
         if (healed.length > 0) {
           changed.push(`settings.json (${healed.join(", ")})`);
           dirty = true;

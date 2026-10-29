@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import chalk from "chalk";
 import { readManifest } from "../manifest.js";
 import { cliInvocation } from "../self-update.js";
+import { looksLikeCode } from "../detect.js";
 import type { ArcaneManifest } from "../types.js";
 
 export type Verdict = "ok" | "warn" | "fail";
@@ -299,6 +300,19 @@ function checkSecrets(target: string, claudeDir: string): DoctorCheck {
   return { name: "secrets", verdict: "ok", detail: "no credentials found in settings or .mcp.json" };
 }
 
+/** A code project needs the coding rules, which only code-flow brings. */
+function checkWorkflow(target: string, manifest: ArcaneManifest, cli: string): DoctorCheck {
+  if (!looksLikeCode(target)) return { name: "workflow", verdict: "ok", detail: "no code project detected" };
+  return manifest.installed_rules.includes("implementation-workflow")
+    ? { name: "workflow", verdict: "ok", detail: "code project with the coding rules" }
+    : {
+        name: "workflow",
+        verdict: "warn",
+        detail: "code project without code-flow: no work modes, goal review or test standards",
+        fix: `Run \`${cli} add +code-flow\`.`,
+      };
+}
+
 /** Runs every check against the Arcane install in `target`. */
 export function diagnose(target: string, probes: Probes = defaultProbes): DoctorCheck[] {
   const claudeDir = path.join(target, ".claude");
@@ -321,6 +335,7 @@ export function diagnose(target: string, probes: Probes = defaultProbes): Doctor
   checks.push(check);
   if (settings) checks.push(...checkHooks(claudeDir, settings, probes, cli));
   checks.push(checkContent(claudeDir, manifest, cli));
+  checks.push(checkWorkflow(target, manifest, cli));
   if (settings) checks.push(checkPermissions(claudeDir, settings, cli));
   checks.push(checkSecrets(target, claudeDir));
   return checks;

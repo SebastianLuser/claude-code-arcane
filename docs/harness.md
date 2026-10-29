@@ -19,7 +19,7 @@ The model writes the code; the harness is everything around it that Arcane insta
 
 ## Hooks by event
 
-The installer writes these into `settings.json` (`src/hook-commands.ts`); `core.yaml` ships the scripts to every profile.
+Each profile lists the hooks it brings under `hooks:` (core the session and guard hooks, `code-flow` the coding ones); the installer wires those into `settings.json` (`WIRING` in `src/hook-commands.ts`). Every script is copied, wired or not.
 
 | Event | Hook | What it does |
 |---|---|---|
@@ -82,7 +82,7 @@ Both session-state folders carry a `.gitignore` with `*`, so they never land in 
 | Block or ask before a command | `hooks/guard.mjs`, with a spec in `src/__tests__/hook-guard.test.ts` |
 | Change what the session watch warns about | The constants at the top of `hooks/session-watch.mjs` |
 | Change how answers look | `output-styles/arcane.md` |
-| Add a hook to an event | The script in `hooks/`, its wiring in `src/hook-commands.ts`, and `core.yaml` |
+| Add a hook to an event | The script in `hooks/`, its entry in `WIRING` (`src/hook-commands.ts`), and the `hooks:` of the profile that brings it |
 | Check an installed project | `arcane doctor`: hook scripts and paths, bash, installed content, broad or destructive allow rules, secrets in config |
 
 ## Limits
