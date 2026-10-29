@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.0.5...v3.1.0) (2026-10-29)
+
+
+### Features
+
+* **profiles:** workflow profiles carry the coding practice out of core ([73f9581](https://github.com/SebastianLuser/claude-code-arcane/commit/73f958167ea604454586cc1f3c37be126cfc9a35))
+
 ## [3.0.5](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.0.4...v3.0.5) (2026-10-28)
 
 
