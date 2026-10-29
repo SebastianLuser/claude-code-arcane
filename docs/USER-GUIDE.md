@@ -256,7 +256,7 @@ Every installation automatically loads `core.yaml` first:
 |----------|----------|
 | **Skills (19)** | commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, tech-debt, arcane-status, arcane-list, arcane-add, arcane-remove, arcane-clean |
 | **Rules (3)** | verification, agent-delegation, user-language. The coding rules (implementation-workflow, test-standards, code-comments, prototype-code, data-files, git-worktrees) and `/kickoff` come with the `code-flow` workflow |
-| **Hooks (12)** | session-start, detect-unreal, detect-gaps, check-update, guard, validate-commit, validate-skill-change, pre-compact, post-compact, session-stop, worktree-stop, session-watch |
+| **Hooks (7)** | session-start, check-update, guard, session-watch (post-tool), pre-compact, post-compact, session-stop. `code-flow` adds detect-gaps, validate-commit, worktree-stop and the format/type check on stop; `improve-skill-flow` adds validate-skill-change; `unreal-dev` adds detect-unreal |
 | **Agents** | none: a profile like `job-hunt` has no use for QA agents, so they ship with `+testing` |
 | **Permissions** | 15 allow (git, ls, gh pr/issue/run and read-only gh, curl) + 13 deny (force push, reset --hard, clean -f, sudo, .env, etc.) |
 

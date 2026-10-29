@@ -380,7 +380,7 @@ export class Installer {
     const settings = JSON.parse(JSON.stringify(SETTINGS_TEMPLATE));
     settings.permissions.allow = [...this.merged.permissions.allow];
     settings.permissions.deny = [...this.merged.permissions.deny];
-    settings.hooks = defaultHooks(this.target);
+    settings.hooks = defaultHooks(this.target, this.merged.hooks);
     if (this.hasStatusline) {
       settings.statusLine = {
         type: "command",

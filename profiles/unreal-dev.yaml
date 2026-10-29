@@ -108,6 +108,9 @@ agents:
   - game/unreal-specialist
   - quality/security-architect
 
+hooks:
+  - detect-unreal.sh
+
 permissions:
   allow:
     - "Bash(*RunUAT*)"

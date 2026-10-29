@@ -102,6 +102,16 @@ describe("diagnose", () => {
     expect(check.detail).toContain("rule verification");
   });
 
+  it("warns on a code project without the coding rules, and only there", () => {
+    const target = install();
+    expect(byName(diagnose(target, healthy), "workflow").verdict).toBe("ok");
+
+    fs.writeFileSync(path.join(target, "package.json"), "{}");
+    const check = byName(diagnose(target, healthy), "workflow");
+    expect(check.verdict).toBe("warn");
+    expect(check.fix).toContain("add +code-flow");
+  });
+
   it("warns on allow rules that skip every confirmation, in either settings file", () => {
     const target = install();
     editSettings(target, (s) => s.permissions.allow.push("Bash(gh *)"));

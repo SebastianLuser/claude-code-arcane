@@ -26,8 +26,10 @@ agents:
   []
 
 hooks:
-  - validate-commit.sh
   - detect-gaps.sh
+  - validate-commit.sh
+  - worktree-stop.sh
+  - session-watch.sh stop
 
 permissions:
   allow:

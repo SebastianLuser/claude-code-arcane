@@ -118,17 +118,20 @@ When a project is dual (for example web + game), each family applies through its
 
 ## Hooks: how they are wired
 
-The events are defined by `src/installer.ts` when it generates `settings.json`, not by the profiles. Every installed project gets these:
+Each profile lists its hooks under `hooks:`; `src/hook-commands.ts` (`WIRING`) knows the event, matcher and timeout of each, and `settings.json` gets those of the installed profiles. `arcane update` adds the ones a profile now lists and unwires the ones none does, without touching hooks you added.
 
-| Event | Hooks |
-|--------|-------|
-| SessionStart | `session-start.sh` → `detect-unreal.sh` → `detect-gaps.sh` → `check-update.sh` |
-| PreToolUse (`Bash\|PowerShell`) | `guard.sh` → `validate-commit.sh` |
-| PreToolUse (`Write\|Edit\|MultiEdit\|NotebookEdit`) | `guard.sh` |
-| PostToolUse (`Write\|Edit`) | `validate-skill-change.sh` |
-| PostToolUse (all) | `session-watch.sh post-tool` (edits, loops, scope, compaction warning) |
-| PreCompact / PostCompact | `pre-compact.sh` / `post-compact.sh` |
-| Stop | `session-stop.sh`, `worktree-stop.sh`, `session-watch.sh stop` (format + type check of what was edited) |
+| Event | Hook | Brought by |
+|--------|------|------------|
+| SessionStart | `session-start.sh`, `check-update.sh` | core |
+| | `detect-gaps.sh` | code-flow |
+| | `detect-unreal.sh` | unreal-dev |
+| PreToolUse (`Bash\|PowerShell`, file tools) | `guard.sh` | core (never unwired) |
+| PreToolUse (`Bash\|PowerShell`) | `validate-commit.sh` | code-flow |
+| PostToolUse (all) | `session-watch.sh post-tool` (edits, loops, scope, compaction warning) | core |
+| PostToolUse (`Write\|Edit`) | `validate-skill-change.sh` | improve-skill-flow |
+| PreCompact / PostCompact | `pre-compact.sh` / `post-compact.sh` | core |
+| Stop | `session-stop.sh` | core |
+| | `worktree-stop.sh`, `session-watch.sh stop` (format + type check of what was edited) | code-flow |
 
 Each command is `bash "$CLAUDE_PROJECT_DIR/.claude/hooks/<script>"`: inside a worktree the hooks run from the worktree, which may not have `.claude/hooks/` committed, and the variable always points to the project where the session started. `arcane update` migrates installations that had the relative path.
 

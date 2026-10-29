@@ -40,14 +40,12 @@ agents:
 
 hooks:
   - session-start.sh
-  - detect-unreal.sh
   - check-update.sh
   - guard.sh
+  - session-watch.sh post-tool
   - pre-compact.sh
   - post-compact.sh
   - session-stop.sh
-  - worktree-stop.sh
-  - session-watch.sh
 
 permissions:
   allow:

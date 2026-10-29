@@ -4,9 +4,10 @@ import path from "node:path";
 import os from "node:os";
 import { fileURLToPath } from "node:url";
 import { Installer } from "../installer.js";
-import { mergeProfiles } from "../profiles.js";
+import { listProfiles, mergeProfiles, parseProfile } from "../profiles.js";
 import {
   FILE_TOOLS_MATCHER,
+  HOOK_IDS,
   SHELL_TOOLS_MATCHER,
   defaultHooks,
   healHooks,
@@ -245,5 +246,58 @@ describe("an install and its update", () => {
     const healed = JSON.stringify(settingsOf(tmpDir).hooks);
     expect(healed).not.toContain("bash .claude/hooks/");
     expect(healed).toContain("guard.sh");
+  });
+});
+
+describe("hooks come from the profiles", () => {
+  const profiles = listProfiles(PROFILES_DIR).concat(parseProfile(path.join(PROFILES_DIR, "core.yaml")));
+  const idsOf = (...names: string[]) => mergeProfiles(PROFILES_DIR, names).hooks;
+
+  it("every hook a profile lists is wired, and every wired hook has a profile", () => {
+    const listed = new Set(profiles.flatMap((p) => p.hooks));
+    expect([...listed].filter((id) => !HOOK_IDS.includes(id))).toEqual([]);
+    expect(HOOK_IDS.filter((id) => !listed.has(id))).toEqual([]);
+  });
+
+  it("a project without code gets no coding hook", () => {
+    const wired = commands(defaultHooks(PROJECT, idsOf("agile"))).join("\n");
+    expect(wired).toContain("guard.sh");
+    expect(wired).toContain("session-watch.sh\" post-tool");
+    for (const coding of ["validate-commit.sh", "detect-gaps.sh", "worktree-stop.sh", "session-watch.sh\" stop", "detect-unreal.sh"]) {
+      expect(wired).not.toContain(coding);
+    }
+  });
+
+  it("a code profile brings the coding hooks through code-flow", () => {
+    const wired = commands(defaultHooks(PROJECT, idsOf("backend-go"))).join("\n");
+    expect(wired).toContain("validate-commit.sh");
+    expect(wired).toContain("session-watch.sh\" stop");
+    expect(wired).not.toContain("detect-unreal.sh");
+    expect(commands(defaultHooks(PROJECT, idsOf("unreal-dev"))).join("\n")).toContain("detect-unreal.sh");
+  });
+
+  it("update unwires what no profile lists any more, keeps the guard and the user's hooks, and adds what is missing", () => {
+    const hooks = defaultHooks(PROJECT);
+    hooks.Stop[0].hooks.push({ type: "command", command: "bash scripts/my-stop.sh" });
+    hooks.PreToolUse[0].hooks.push({ type: "command", command: 'bash "$CLAUDE_PROJECT_DIR/.claude/hooks/my-check.sh"' });
+
+    const changes = healHooks(hooks, PROJECT, idsOf("agile"));
+    const wired = commands(hooks).join("\n");
+    expect(changes).toEqual(expect.arrayContaining(["unwired hook: validate-commit.sh", "unwired hook: session-watch.sh stop"]));
+    expect(wired).not.toContain("validate-commit.sh");
+    expect(wired).toContain("guard.sh");
+    expect(wired).toContain("bash scripts/my-stop.sh");
+    expect(wired).toContain("my-check.sh");
+    expect(healHooks(hooks, PROJECT, idsOf("agile"))).toEqual([]);
+
+    healHooks(hooks, PROJECT, idsOf("backend-go"));
+    const shell = hooks.PreToolUse.find((g) => g.matcher === SHELL_TOOLS_MATCHER)!;
+    expect(shell.hooks.map((h) => h.command).some((c) => c.includes("validate-commit.sh"))).toBe(true);
+  });
+
+  it("reads a bare session-watch.sh, as content before 3.1 lists it, as both entries", () => {
+    const wired = commands(defaultHooks(PROJECT, ["session-watch.sh"])).join("\n");
+    expect(wired).toContain("session-watch.sh\" post-tool");
+    expect(wired).toContain("session-watch.sh\" stop");
   });
 });
