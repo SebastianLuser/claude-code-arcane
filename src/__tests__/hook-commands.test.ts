@@ -161,6 +161,29 @@ describe("healHooks", () => {
     expect(hooks.PreToolUse.every((g) => g.hooks.length > 0)).toBe(true);
   });
 
+  it("drops the scripts that only wrote logs, and the events they leave empty", () => {
+    const wired = (script: string) => [{ matcher: "", hooks: [{ type: "command", command: `bash "$CLAUDE_PROJECT_DIR/.claude/hooks/${script}"` }] }];
+    const hooks: HookMap = {
+      SessionStart: [{ matcher: "", hooks: [wired("session-start.sh")[0].hooks[0], wired("detect-division.sh")[0].hooks[0]] }],
+      Notification: wired("notify.sh"),
+      SubagentStart: wired("log-agent.sh"),
+      SubagentStop: wired("log-agent-stop.sh"),
+    };
+    const changes = healHooks(hooks, PROJECT);
+    expect(changes).toEqual(expect.arrayContaining(["detect-division.sh", "notify.sh", "log-agent.sh", "log-agent-stop.sh"].map((s) => `retired hook: ${s}`)));
+    expect(Object.keys(hooks)).not.toContain("Notification");
+    expect(Object.keys(hooks)).not.toContain("SubagentStart");
+    expect(Object.keys(hooks)).not.toContain("SubagentStop");
+    expect(commands(hooks).filter((c) => c.includes("session-start.sh"))).toHaveLength(1);
+  });
+
+  it("a fresh install wires no retired script", () => {
+    const wired = commands(defaultHooks(PROJECT)).join("\n");
+    for (const script of ["detect-division.sh", "notify.sh", "log-agent.sh", "log-agent-stop.sh"]) {
+      expect(wired).not.toContain(script);
+    }
+  });
+
   it("leaves hooks the user wrote alone", () => {
     const hooks = legacyHooks();
     hooks.PreToolUse[0].hooks.push({ type: "command", command: "bash scripts/my-check.sh" });

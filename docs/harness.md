@@ -24,7 +24,7 @@ The installer writes these into `settings.json` (`src/hook-commands.ts`); `core.
 | Event | Hook | What it does |
 |---|---|---|
 | `SessionStart` (startup, resume, clear, compact) | `session-start.sh` | Shows branch, recent commits and the first lines of `.arcane/session-state/active.md`; moves a legacy progress file |
-| | `detect-division.sh`, `detect-unreal.sh`, `detect-gaps.sh` | Name the project's stack, flag an Unreal project, point out missing docs |
+| | `detect-unreal.sh`, `detect-gaps.sh` | Flag an Unreal project, point out missing docs |
 | | `check-update.sh` | Says when a newer Arcane exists (cached for 4 hours) |
 | `PreToolUse` (`Bash\|PowerShell`, file tools) | `guard.sh` → `guard.mjs` | **deny** what the user should run by hand (force push, `--no-verify`, `sudo`, writing `.env`); **ask** before destructive or supply-chain actions (`rm -rf`, `rd /s`, `find -delete` or `xargs rm` outside build output, dropping data, a new dependency, editing CI or lint configs) |
 | | `validate-commit.sh` | Blocks `--no-verify` and empty commit messages |
@@ -33,7 +33,7 @@ The installer writes these into `settings.json` (`src/hook-commands.ts`); `core.
 | `Stop` | `session-watch.sh stop` | Formats and type-checks the files edited this turn with the project's own tools; new errors block the stop once |
 | | `worktree-stop.sh` | A finished task inside an `EnterWorktree` worktree is asked to leave it before stopping |
 | | `session-stop.sh` | Logs the stop |
-| `PreCompact`, `PostCompact`, `Notification`, `SubagentStart`, `SubagentStop` | `pre-compact.sh`, `post-compact.sh`, `notify.sh`, `log-agent*.sh` | Log only, to `.claude/session-state/` |
+| `PreCompact`, `PostCompact` | `pre-compact.sh`, `post-compact.sh` | Log only, to `.claude/session-state/` |
 
 The guard, the session watch, the update check and the status line are Node scripts (`guard.mjs`, `session-watch.mjs`, `check-update.mjs`, `statusline.mjs`) behind bash wrappers. Arcane is installed with npx, so Node is on the machine; without it they do nothing instead of failing.
 

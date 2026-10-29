@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **454 skills, 115 agents, 17 hooks and 38 rules for Claude Code — selective deploy by profile.**
+> **454 skills, 115 agents, 13 hooks and 38 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
@@ -79,7 +79,7 @@ Not sure what to pick? Run `install` with no arguments to get an interactive pic
 
 Every installation automatically loads `core.yaml` first:
 - 21 essential skills (commit, create-pr, quality-review, what-next, etc.)
-- 15 lifecycle hooks (session start/stop, commit validation, secret scanning, etc.)
+- 12 lifecycle hooks (session start/stop, guard, commit validation, etc.)
 - 3 base rules (data-files, prototype-code, test-standards)
 - 1 agent dir (quality)
 - Security permissions (9 allow + 14 deny)
@@ -91,7 +91,7 @@ my-project/.claude/
 ├── settings.json          # Permissions + hooks + optional statusline
 ├── arcane-manifest.json   # Installation metadata (tracks what's installed)
 ├── statusline.sh          # Only if you used +statusline
-├── hooks/                 # 14 lifecycle hooks
+├── hooks/                 # 12 lifecycle hooks
 ├── skills/                # Only your profile's skills
 │   └── */SKILL.md         # Each skill = one directory
 ├── rules/                 # Stack-specific rules
@@ -275,7 +275,7 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 
 ### Core (always included)
 
-22 universal skills (commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, kickoff, + 5 arcane self-management), 16 hooks, 8 base rules and security permissions. No agents: QA agents ship with `+testing`, the security architect with `+security`.
+22 universal skills (commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, kickoff, + 5 arcane self-management), 12 hooks, 8 base rules and security permissions. No agents: QA agents ship with `+testing`, the security architect with `+security`.
 
 ---
 
@@ -473,7 +473,7 @@ claude-code-arcane/
 ├── skills/                    # 454 skills (flat, one dir per skill)
 ├── profiles/                  # 38 profiles (YAML)
 ├── agents/                    # 17 dirs, 109 agents (Markdown)
-├── hooks/                     # 17 lifecycle hooks (Bash)
+├── hooks/                     # 13 lifecycle hooks (Bash)
 ├── rules/                     # 38 rules (Markdown)
 ├── templates/                 # Gamedev templates
 ├── docs/                      # Documentation

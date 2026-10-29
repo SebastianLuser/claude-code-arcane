@@ -30,10 +30,19 @@ const ARCANE_COMMAND = /^bash "?(?:\$CLAUDE_PROJECT_DIR\/|[^"]*\/)?\.claude\/hoo
  * Scripts no longer shipped. The guard replaced validate-push and validate-secrets,
  * whose substring checks fired on text inside arguments (a prompt or a commit
  * message that mentions `git push --force ... main`); validate-assets was a
- * placeholder that never checked anything. The update removes the files, so their
- * settings.json entries must go with them.
+ * placeholder that never checked anything. detect-division, notify and the two
+ * log-agent scripts only appended to files under session-state/ that nothing read.
+ * The update removes the files, so their settings.json entries must go with them.
  */
-const RETIRED_SCRIPTS = new Set(["validate-push.sh", "validate-secrets.sh", "validate-assets.sh"]);
+const RETIRED_SCRIPTS = new Set([
+  "validate-push.sh",
+  "validate-secrets.sh",
+  "validate-assets.sh",
+  "detect-division.sh",
+  "notify.sh",
+  "log-agent.sh",
+  "log-agent-stop.sh",
+]);
 
 /**
  * The command settings.json runs for an installed hook script.
@@ -82,7 +91,6 @@ export function defaultHooks(target: string): HookMap {
         matcher: "",
         hooks: [
           hook(target, "session-start.sh", 10),
-          hook(target, "detect-division.sh", 10),
           hook(target, "detect-unreal.sh", 10),
           hook(target, "detect-gaps.sh", 10),
           hook(target, "check-update.sh", 10),
@@ -106,7 +114,6 @@ export function defaultHooks(target: string): HookMap {
       },
       { matcher: "", hooks: [hook(target, WATCH_POST_TOOL[0], 10, WATCH_POST_TOOL[1])] },
     ],
-    Notification: one("notify.sh", 10),
     PreCompact: one("pre-compact.sh", 10),
     PostCompact: one("post-compact.sh", 10),
     Stop: [
@@ -119,8 +126,6 @@ export function defaultHooks(target: string): HookMap {
         ],
       },
     ],
-    SubagentStart: one("log-agent.sh", 5),
-    SubagentStop: one("log-agent-stop.sh", 5),
   };
 }
 
@@ -152,6 +157,7 @@ export function healHooks(hooks: HookMap, target: string): string[] {
       if (kept.length !== (group.hooks ?? []).length) group.hooks = kept;
     }
     hooks[event] = groups.filter((group) => (group.hooks ?? []).length > 0);
+    if (hooks[event].length === 0) delete hooks[event];
   }
 
   for (const groups of Object.values(hooks)) {

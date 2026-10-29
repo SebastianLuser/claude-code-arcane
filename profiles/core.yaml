@@ -51,19 +51,15 @@ hooks:
   - session-start.sh
   - detect-unreal.sh
   - check-update.sh
-  - detect-division.sh
   - detect-gaps.sh
   - validate-commit.sh
   - guard.sh
   - validate-skill-change.sh
-  - notify.sh
   - pre-compact.sh
   - post-compact.sh
   - session-stop.sh
   - worktree-stop.sh
   - session-watch.sh
-  - log-agent.sh
-  - log-agent-stop.sh
 
 permissions:
   allow:

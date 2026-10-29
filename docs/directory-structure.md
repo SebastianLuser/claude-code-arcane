@@ -122,15 +122,13 @@ The events are defined by `src/installer.ts` when it generates `settings.json`, 
 
 | Event | Hooks |
 |--------|-------|
-| SessionStart | `session-start.sh` → `detect-division.sh` → `detect-unreal.sh` → `detect-gaps.sh` → `check-update.sh` |
+| SessionStart | `session-start.sh` → `detect-unreal.sh` → `detect-gaps.sh` → `check-update.sh` |
 | PreToolUse (`Bash\|PowerShell`) | `guard.sh` → `validate-commit.sh` |
 | PreToolUse (`Write\|Edit\|MultiEdit\|NotebookEdit`) | `guard.sh` |
 | PostToolUse (`Write\|Edit`) | `validate-skill-change.sh` |
 | PostToolUse (all) | `session-watch.sh post-tool` (edits, loops, scope, compaction warning) |
-| Notification | `notify.sh` |
 | PreCompact / PostCompact | `pre-compact.sh` / `post-compact.sh` |
 | Stop | `session-stop.sh`, `worktree-stop.sh`, `session-watch.sh stop` (format + type check of what was edited) |
-| SubagentStart / SubagentStop | `log-agent.sh` / `log-agent-stop.sh` |
 
 Each command is `bash "$CLAUDE_PROJECT_DIR/.claude/hooks/<script>"`: inside a worktree the hooks run from the worktree, which may not have `.claude/hooks/` committed, and the variable always points to the project where the session started. `arcane update` migrates installations that had the relative path.
 
