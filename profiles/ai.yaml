@@ -1,6 +1,8 @@
 name: ai
 description: "AI & ML — LLM optimization, RAG, computer vision, data engineering, prompt engineering"
 category: platform
+workflows:
+  - code-flow
 
 skills:
   - llm-cost-optimizer

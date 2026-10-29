@@ -16,26 +16,17 @@ skills:
   - brainstorm
   - scope-check
   - reverse-document
-  - skill-improve
-  - skill-test
   - tech-debt
   - arcane-status
   - arcane-list
   - arcane-add
   - arcane-remove
   - arcane-clean
-  - kickoff
 
 rules:
   universal:
-    - data-files
-    - prototype-code
-    - test-standards
-    - implementation-workflow
-    - code-comments
     - verification
     - agent-delegation
-    - git-worktrees
     - user-language
   gamedev:
     []
@@ -51,10 +42,7 @@ hooks:
   - session-start.sh
   - detect-unreal.sh
   - check-update.sh
-  - detect-gaps.sh
-  - validate-commit.sh
   - guard.sh
-  - validate-skill-change.sh
   - pre-compact.sh
   - post-compact.sh
   - session-stop.sh

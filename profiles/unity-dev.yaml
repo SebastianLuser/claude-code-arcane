@@ -1,6 +1,8 @@
 name: unity-dev
 description: "Unity programmer — C#, architecture, performance, builds"
 category: gamedev
+workflows:
+  - code-flow
 
 skills:
   - test-setup

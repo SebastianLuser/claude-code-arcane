@@ -25,7 +25,7 @@ describe("parseProfile", () => {
     expect(profile.category).toBe("core");
     expect(profile.skills).toContain("commit");
     expect(profile.skills).toContain("what-next");
-    expect(profile.rules.universal).toContain("data-files");
+    expect(profile.rules.universal).toContain("verification");
     expect(profile.agents).toEqual([]);
     expect(profile.hooks.length).toBeGreaterThan(0);
     expect(profile.permissions.allow.length).toBeGreaterThan(0);
@@ -198,7 +198,7 @@ describe("profile renames", () => {
 
   it("loads an old name as the current profile, once", () => {
     const merged = mergeProfiles(PROFILES_DIR, ["backend-ts", "backend-typescript"]);
-    expect(merged.loaded).toEqual(["core", "backend-typescript"]);
+    expect(merged.loaded).toEqual(["core", "backend-typescript", "code-flow"]);
     expect(merged.skills).toContain("scaffold-fastify-ts");
   });
 

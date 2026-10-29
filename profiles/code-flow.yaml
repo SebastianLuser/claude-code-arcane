@@ -1,0 +1,36 @@
+name: code-flow
+description: "Code workflow — work mode question, progress file, goal review, test and comment standards, worktree hygiene"
+category: workflow
+entry: /kickoff, or ask for an implementation
+
+loops:
+  - name: goal review
+    until: a fresh reviewer subagent answers PASS
+    limit: 2 FAIL rounds, then both verdicts go to the user
+
+skills:
+  - kickoff
+
+rules:
+  universal:
+    - implementation-workflow
+    - test-standards
+    - code-comments
+    - prototype-code
+    - data-files
+    - git-worktrees
+  gamedev:
+    []
+
+agents:
+  []
+
+hooks:
+  - validate-commit.sh
+  - detect-gaps.sh
+
+permissions:
+  allow:
+    []
+  deny:
+    []

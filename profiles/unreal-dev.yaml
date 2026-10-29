@@ -1,6 +1,8 @@
 name: unreal-dev
 description: "Unreal Engine 5 programmer — C++, Blueprints, GAS, replication, rendering, naming conventions, build and editor MCP"
 category: gamedev
+workflows:
+  - code-flow
 
 skills:
   - architecture-review

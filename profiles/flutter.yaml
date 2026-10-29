@@ -3,6 +3,8 @@ name: flutter
 renamed_to: mobile-flutter
 description: "Flutter + Dart cross-platform development"
 category: mobile
+workflows:
+  - code-flow
 
 skills:
   - testing

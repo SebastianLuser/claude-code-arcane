@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import chalk from "chalk";
 import type { ProfileDefinition } from "./types.js";
-import { groupByCategory } from "./profiles.js";
+import { groupByCategory, profileSummary } from "./profiles.js";
 import type { StackDetection } from "./detect.js";
 import type { SkillEntry } from "./skills-catalog.js";
 
@@ -42,7 +42,7 @@ export async function runInstallWizard(
     options[group.label] = group.profiles.map((pr) => ({
       value: pr.name,
       label: pr.name,
-      hint: pr.description,
+      hint: profileSummary(pr),
     }));
   }
 
@@ -195,7 +195,7 @@ async function pickProfiles(
     options[group.label] = group.profiles.map((pr) => ({
       value: pr.name,
       label: pr.name,
-      hint: hint(pr.description),
+      hint: hint(profileSummary(pr)),
     }));
   }
 

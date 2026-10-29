@@ -1,0 +1,26 @@
+name: review-flow
+description: "Review workflow — every tailored CV or cover letter passes a fresh-context reviewer before it is exported"
+category: workflow
+entry: /job-apply, /cv-tailor or /cover-letter
+
+loops: []
+
+skills:
+  []
+
+rules:
+  universal:
+    - drafter-reviewer
+  gamedev:
+    []
+
+agents:
+  # cv-reviewer and hiring-manager preload job-hunt skills, so they ship with job-hunt;
+  # without them the rule falls back to a general-purpose reviewer.
+  []
+
+permissions:
+  allow:
+    []
+  deny:
+    []

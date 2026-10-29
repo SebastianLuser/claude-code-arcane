@@ -1,6 +1,8 @@
 name: database
 description: "Advanced database — indexing, migrations, seeding, replicas"
 category: platform
+workflows:
+  - code-flow
 
 skills:
   - database-indexing

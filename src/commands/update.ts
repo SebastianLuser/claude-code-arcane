@@ -10,7 +10,8 @@ import {
   TRASH_DIR,
   statuslineCommand,
 } from "../utils.js";
-import { mergeProfiles } from "../profiles.js";
+import { mergeProfiles, resolveProfile } from "../profiles.js";
+import { looksLikeCode } from "../detect.js";
 import { parseAgentEntry } from "../agent-entries.js";
 import { healHooks, type HookMap } from "../hook-commands.js";
 import { SETTINGS_ENV } from "../installer.js";
@@ -260,7 +261,15 @@ export async function updateTarget(
 
   const profileNames = manifest.profile_command.split("+").filter(Boolean);
   const profilesDir = path.join(root, "profiles");
-  const merged = mergeProfiles(profilesDir, profileNames);
+  let merged = mergeProfiles(profilesDir, profileNames);
+  // The coding rules live in code-flow now: a code project installed only with
+  // non-code profiles would lose them to the trash on this update.
+  if (!merged.loaded.includes("code-flow") && resolveProfile(profilesDir, "code-flow") && looksLikeCode(target)) {
+    profileNames.push("code-flow");
+    merged = mergeProfiles(profilesDir, profileNames);
+    manifest.profile_command = profileNames.join("+");
+    if (!opts.quiet) console.log(chalk.blue("  Code project: adding +code-flow, which carries the coding rules"));
+  }
 
   const allRules = [...merged.rules.universal, ...merged.rules.gamedev];
   const sourceHashes = computeSourceHashes(root, merged.skills, allRules, merged.agents);
@@ -325,6 +334,8 @@ export async function updateTarget(
         installed_skills: merged.skills,
         installed_rules: allRules,
         installed_agents: merged.agents,
+        profiles: merged.loaded,
+        profile_command: manifest.profile_command,
         total_skills: merged.skills.length,
         total_rules: allRules.length,
       });
@@ -378,6 +389,8 @@ export async function updateTarget(
     installed_skills: merged.skills,
     installed_rules: allRules,
     installed_agents: merged.agents,
+    profiles: merged.loaded,
+    profile_command: manifest.profile_command,
     total_skills: merged.skills.length,
     total_rules: allRules.length,
   });

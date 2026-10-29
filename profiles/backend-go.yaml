@@ -1,6 +1,8 @@
 name: backend-go
 description: "Backend Go — scaffold, DB, auth, API design, CI"
 category: backend
+workflows:
+  - code-flow
 
 skills:
   - test-setup

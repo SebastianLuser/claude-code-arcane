@@ -1,6 +1,8 @@
 name: security
 description: "Security — audits, OWASP, secrets, backups"
 category: platform
+workflows:
+  - code-flow
 
 skills:
   - audit-dev

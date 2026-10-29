@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
-import { listProfiles, groupByCategory } from "../profiles.js";
+import { listProfiles, groupByCategory, profileSummary } from "../profiles.js";
 import { listSkills } from "../skills-catalog.js";
 import { readManifest } from "../manifest.js";
 import { resolveContentSource } from "../content-source.js";
@@ -26,7 +26,7 @@ export async function listCommand(): Promise<void> {
         ? chalk.green(" [installed]")
         : "";
       console.log(
-        `  ${chalk.green(p.name.padEnd(20))} ${p.description}${tag}`,
+        `  ${chalk.green(p.name.padEnd(20))} ${profileSummary(p)}${tag}`,
       );
     }
     console.log();

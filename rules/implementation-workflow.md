@@ -59,6 +59,7 @@ Plan:
 Decisions: <decision> — <why>
 Next: <the next concrete step>
 Not verified: <what has not been checked yet>
+Review: round <N> — <PASS | FAIL: what it found>
 ```
 
 Direct and Action Plan tasks do not need it.
@@ -80,7 +81,7 @@ Never pass your reasoning or a summary of the conversation: the reviewer judges 
 Then:
 
 1. Show the user the reviewer's verdict as it came, before your own comments.
-2. **FAIL:** fix what it found and review again with a new subagent. After a second FAIL, stop and bring both verdicts to the user.
+2. **FAIL:** write `Review: round <N> — FAIL: <what it found>` in `active.md` before fixing, so a compaction cannot lose the count or the verdict. Fix what it found and review again with a new subagent. After a second FAIL, stop and bring both verdicts to the user.
 3. **PASS:** close `active.md` with the verdict.
 
 ## Before writing new code

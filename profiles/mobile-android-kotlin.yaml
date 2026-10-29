@@ -1,6 +1,8 @@
 name: mobile-android-kotlin
 description: "Android native — Kotlin + Jetpack Compose + Material Design 3"
 category: mobile
+workflows:
+  - code-flow
 
 skills:
   - testing
