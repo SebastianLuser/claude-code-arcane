@@ -245,6 +245,7 @@ All profiles are equal — pick any combination that fits your work. They are gr
 | **Business** | `business`, `clevel`, `finance`, `marketing`, `ecommerce`, `regulatory` |
 | **Personal** | `second-brain`, `job-hunt`, `freelance` |
 | **Utilities** | `docs`, `self-improving`, `statusline` |
+| **Workflows** | `code-flow`, `review-flow`, `improve-skill-flow`: other profiles bring them; see [Workflows and loops](../README.md#5-workflows-and-loops) |
 
 Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutter`, `ios-native` and `android-native` resolve to `backend-typescript`, `frontend-react-vite`, `mobile-react-native`, `mobile-flutter`, `mobile-ios-swift` and `mobile-android-kotlin`.
 
@@ -273,7 +274,7 @@ npx claude-code-arcane install <profile>[+<profile>][+<profile>...]
 ### Rules
 
 1. **Always explicit** — there is no "full" or "all" profile. You choose what you need.
-2. **Core is automatic** — the 21 universal skills and all hooks are always included.
+2. **Core is automatic** — its 19 universal skills, 3 rules and 7 hooks are always included. Workflows come with the profiles that name them (`workflows: [code-flow]`).
 3. **All profiles combine freely** — `unity-dev+unity-design`, `backend-go+frontend-react-vite`, or `backend-typescript+agile+testing`; there is no required "base".
 4. **Deduplication is automatic** — overlapping skills across profiles are installed once.
 5. **Replace, not merge** — installing a new profile replaces the previous one entirely (with backup).
