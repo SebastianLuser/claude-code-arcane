@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.1.0...v3.2.0) (2026-10-29)
+
+
+### Features
+
+* **hooks:** settings.json wires the hooks the installed profiles list ([8dc8749](https://github.com/SebastianLuser/claude-code-arcane/commit/8dc8749de98a7f02d11a80212d79ca6dd4882216))
+
 # [3.1.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.0.5...v3.1.0) (2026-10-29)
 
 
