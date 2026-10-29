@@ -1,6 +1,8 @@
 name: self-improving
 description: "Self-improving — auto-memory curation, skill auditing and optimization"
 category: utilities
+workflows:
+  - improve-skill-flow
 
 skills:
   - self-improving-agent

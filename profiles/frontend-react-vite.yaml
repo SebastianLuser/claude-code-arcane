@@ -1,6 +1,8 @@
 name: frontend-react-vite
 description: "Frontend React + Vite + TypeScript"
 category: frontend
+workflows:
+  - code-flow
 
 skills:
   - testing

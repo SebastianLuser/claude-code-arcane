@@ -3,6 +3,8 @@ name: frontend
 renamed_to: frontend-react-vite
 description: "Frontend React + Vite + TypeScript"
 category: frontend
+workflows:
+  - code-flow
 
 skills:
   - testing

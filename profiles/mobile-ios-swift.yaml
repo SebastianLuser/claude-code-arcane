@@ -1,6 +1,8 @@
 name: mobile-ios-swift
 description: "iOS native — Swift + UIKit/SwiftUI + Apple HIG"
 category: mobile
+workflows:
+  - code-flow
 
 skills:
   - testing

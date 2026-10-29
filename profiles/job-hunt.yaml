@@ -1,6 +1,8 @@
 name: job-hunt
 description: "Job Hunt — end-to-end job search: master profile, ATS CV with verification, posting scraping with dedup, application pipeline, LinkedIn, portfolio, cover letters, recruiter outreach, posting scoring, gaps/upskill, interview prep and 4 fresh-context agents (CV review, hiring manager, mock interview, funnel diagnosis)"
 category: personal
+workflows:
+  - review-flow
 
 skills:
   - job-hunt
@@ -29,7 +31,6 @@ skills:
 
 rules:
   universal:
-    - drafter-reviewer
     - untrusted-content
   gamedev:
     []

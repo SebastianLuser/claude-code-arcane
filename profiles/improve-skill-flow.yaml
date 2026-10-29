@@ -1,0 +1,31 @@
+name: improve-skill-flow
+description: "Skill improvement workflow — test a skill, fix it, test again, keep the change only if the score rose"
+category: workflow
+entry: /skill-improve <skill>
+
+loops:
+  - name: test, fix, retest
+    until: the score stops rising
+    limit: a change that lowers the score is reverted
+
+skills:
+  - skill-test
+  - skill-improve
+
+rules:
+  universal:
+    []
+  gamedev:
+    []
+
+agents:
+  []
+
+hooks:
+  - validate-skill-change.sh
+
+permissions:
+  allow:
+    []
+  deny:
+    []

@@ -1,6 +1,8 @@
 name: infra
 description: "DevOps/Platform/Ops — deploy, observability, secrets, rollback"
 category: platform
+workflows:
+  - code-flow
 
 skills:
   - observability

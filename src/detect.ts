@@ -32,6 +32,17 @@ function readPackageDeps(dir: string): Record<string, string> {
   }
 }
 
+/** Manifests of languages no stack profile is suggested for. */
+const OTHER_CODE_MARKERS = [
+  "package.json", "pyproject.toml", "requirements.txt", "setup.py", "Cargo.toml",
+  "Gemfile", "composer.json", "pom.xml", "build.gradle", "build.gradle.kts", "CMakeLists.txt", "Makefile",
+];
+
+/** Does the directory hold a code project, whatever its stack? */
+export function looksLikeCode(dir: string): boolean {
+  return detectStack(dir).length > 0 || OTHER_CODE_MARKERS.some((f) => hasFile(dir, f));
+}
+
 /**
  * Inspect a project directory for stack markers and suggest matching
  * profiles. Returns zero or more suggestions (a monorepo can hit several).

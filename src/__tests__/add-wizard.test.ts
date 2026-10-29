@@ -30,6 +30,8 @@ function profile(name: string, category: string): ProfileDefinition {
     hooks: [],
     output_styles: [],
     permissions: { allow: [], deny: [] },
+    workflows: [],
+    loops: [],
   };
 }
 

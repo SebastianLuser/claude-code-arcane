@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
 import { readManifest } from "../manifest.js";
-import { parseProfile, resolveProfile, sameProfile } from "../profiles.js";
+import { mergeProfiles, parseProfile, resolveProfile, sameProfile } from "../profiles.js";
 import {
   isGranular,
   parseAgentEntry,
@@ -133,47 +133,40 @@ function removeProfile(
     return { removed: false, skills: [], agents: [] };
   }
 
+  // The command names what the user installed; workflows come with those profiles.
+  const command = manifest.profile_command.split("+").filter(Boolean);
   // The manifest may hold a profile under the name it had when it was installed.
-  const installedName = manifest.profiles.find((p) => sameProfile(p, profileName));
+  const installedName = command.find((p) => sameProfile(p, profileName));
   if (!installedName) {
+    const bringers = manifest.profiles.some((p) => sameProfile(p, profileName))
+      ? ` It comes with another profile; remove that one instead.`
+      : "";
     console.warn(
-      chalk.yellow(`  WARNING: Profile '${profileName}' is not installed.`),
+      chalk.yellow(`  WARNING: Profile '${profileName}' is not installed on its own.${bringers}`),
     );
     return { removed: false, skills: [], agents: [] };
   }
 
-  const resolved = resolveProfile(path.join(root, "profiles"), installedName);
-  if (!resolved) {
+  const profilesDir = path.join(root, "profiles");
+  if (!resolveProfile(profilesDir, installedName)) {
     console.warn(
       chalk.yellow(`  WARNING: Profile '${installedName}.yaml' not found.`),
     );
     return { removed: false, skills: [], agents: [] };
   }
 
-  const profile = parseProfile(resolved.file);
+  // What the profile brought, with its workflows, against what the rest still brings
+  // (core included): only the difference goes.
+  const profile = mergeProfiles(profilesDir, [installedName]);
+  const remainingCommand = command.filter((p) => p !== installedName);
+  const kept = mergeProfiles(profilesDir, remainingCommand);
+  const sharedSkills = new Set(kept.skills);
+  const sharedAgents = new Set(kept.agents);
+  const sharedRules = new Set([...kept.rules.universal, ...kept.rules.gamedev]);
 
-  const remainingProfiles = manifest.profiles.filter(
-    (p) => p !== installedName,
-  );
-  const sharedSkills = new Set<string>();
-  const sharedAgents = new Set<string>();
-  const sharedRules = new Set<string>();
-
-  for (const rp of remainingProfiles) {
-    const rpResolved = resolveProfile(path.join(root, "profiles"), rp);
-    if (!rpResolved) continue;
-    const rpDef = parseProfile(rpResolved.file);
-    rpDef.skills.forEach((s) => sharedSkills.add(s));
-    rpDef.agents.forEach((a) => sharedAgents.add(a));
-    rpDef.rules.universal.forEach((r) => sharedRules.add(r));
-    rpDef.rules.gamedev.forEach((r) => sharedRules.add(r));
-  }
-
-  const core = new Set(coreSkills(root));
   const removedSkills: string[] = [];
   for (const skill of profile.skills) {
     if (sharedSkills.has(skill)) continue;
-    if (core.has(skill)) continue;
     const skillDir = path.join(target, ".claude", "skills", skill);
     if (fs.existsSync(skillDir)) {
       moveToTrash(path.join(target, ".claude"), path.join("skills", skill));
@@ -221,10 +214,8 @@ function removeProfile(
     removeStatuslineFromSettings(path.join(target, ".claude"));
   }
 
-  manifest.profiles = remainingProfiles;
-  manifest.profile_command = remainingProfiles
-    .filter((p) => p !== "core")
-    .join("+");
+  manifest.profiles = kept.loaded;
+  manifest.profile_command = remainingCommand.join("+");
 
   return { removed: true, skills: removedSkills, agents: removedAgents };
 }

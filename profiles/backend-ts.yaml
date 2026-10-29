@@ -3,6 +3,8 @@ name: backend-ts
 renamed_to: backend-typescript
 description: "Backend TypeScript — Fastify, Prisma, Zod, API design, CI"
 category: backend
+workflows:
+  - code-flow
 
 skills:
   - testing

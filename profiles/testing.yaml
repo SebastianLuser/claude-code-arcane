@@ -1,6 +1,8 @@
 name: testing
 description: "Advanced testing — contract, performance, regression, flakiness"
 category: platform
+workflows:
+  - code-flow
 
 skills:
   - contract-testing

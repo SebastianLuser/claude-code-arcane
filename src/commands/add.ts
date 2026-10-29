@@ -2,12 +2,13 @@ import fs from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
 import {
-  parseProfile,
+  mergeProfiles,
   listProfiles,
   groupByCategory,
   resolveProfile,
   sameProfile,
   canonicalProfileName,
+  profileSummary,
 } from "../profiles.js";
 import { listSkills } from "../skills-catalog.js";
 import { runAddWizard } from "../wizard.js";
@@ -79,7 +80,8 @@ export async function addCommand(items: string[] = []): Promise<void> {
         continue;
       }
       const profileName = resolved.name;
-      const profile = parseProfile(resolved.file);
+      // With the workflows it names; core's own items are already installed and skip below.
+      const profile = mergeProfiles(path.join(root, "profiles"), [profileName]);
 
       for (const skill of profile.skills) {
         const result = addSkill(root, target, skill, manifest.installed_skills);
@@ -137,11 +139,12 @@ export async function addCommand(items: string[] = []): Promise<void> {
         mergePermissions(claudeDir, profile.permissions);
       }
 
-      if (!manifest.profiles.some((p) => sameProfile(p, profileName))) {
-        manifest.profiles.push(profileName);
-        manifest.profile_command = manifest.profiles
-          .filter((p) => p !== "core")
-          .join("+");
+      const command = manifest.profile_command.split("+").filter(Boolean);
+      if (!command.some((p) => sameProfile(p, profileName))) {
+        manifest.profile_command = [...command, profileName].join("+");
+      }
+      for (const name of profile.loaded) {
+        if (!manifest.profiles.some((p) => sameProfile(p, name))) manifest.profiles.push(name);
       }
 
       if (statuslineAdded) {
@@ -270,7 +273,7 @@ function printCatalog(
     console.log(chalk.cyan(`  ${group.label}:`));
     for (const pr of group.profiles) {
       console.log(
-        `    ${chalk.green(`+${pr.name}`.padEnd(20))} ${pr.description}`,
+        `    ${chalk.green(`+${pr.name}`.padEnd(20))} ${profileSummary(pr)}`,
       );
     }
     console.log();

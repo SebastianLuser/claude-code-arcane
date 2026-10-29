@@ -1,6 +1,8 @@
 name: visual-novel
 description: "Visual Novel Developer — Ren'Py, narrative, branching"
 category: gamedev
+workflows:
+  - code-flow
 
 skills:
   - vn-renpy-setup

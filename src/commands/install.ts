@@ -2,8 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
 import * as p from "@clack/prompts";
-import { listProfiles, mergeProfiles, groupByCategory } from "../profiles.js";
-import { detectStack } from "../detect.js";
+import { listProfiles, mergeProfiles, groupByCategory, profileSummary, resolveProfile } from "../profiles.js";
+import { detectStack, looksLikeCode } from "../detect.js";
 import { runInstallWizard } from "../wizard.js";
 import { Installer } from "../installer.js";
 import { getPackageRoot } from "../utils.js";
@@ -117,7 +117,7 @@ export async function installCommand(
         console.log(chalk.cyan(`  ${group.label}:`));
         for (const p of group.profiles) {
           console.log(
-            `    ${chalk.green(p.name.padEnd(20))} ${p.description}`,
+            `    ${chalk.green(p.name.padEnd(20))} ${profileSummary(p)}`,
           );
         }
         console.log();
@@ -160,7 +160,14 @@ export async function installCommand(
 
   if (opts.dryRun) console.log(chalk.yellow("  Mode: dry-run\n"));
 
-  const merged = mergeProfiles(profilesDir, profileNames);
+  let merged = mergeProfiles(profilesDir, profileNames);
+  // A code project installed with only non-code profiles would miss the code workflow.
+  if (!merged.loaded.includes("code-flow") && resolveProfile(profilesDir, "code-flow") && looksLikeCode(target)) {
+    profileNames.push("code-flow");
+    profileExpr = `${profileExpr}+code-flow`;
+    merged = mergeProfiles(profilesDir, profileNames);
+    console.log(chalk.blue("  Code project detected: adding +code-flow (`arcane remove +code-flow` takes it out)"));
+  }
 
   console.log(`  Profiles loaded: ${merged.loaded.join(", ")}`);
   console.log(`  Skills: ${merged.skills.length}`);

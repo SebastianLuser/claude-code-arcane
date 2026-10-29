@@ -1,6 +1,8 @@
 name: mobile-react-native
 description: "Mobile React Native + Expo + TypeScript"
 category: mobile
+workflows:
+  - code-flow
 
 skills:
   - testing

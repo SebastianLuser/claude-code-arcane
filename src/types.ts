@@ -16,6 +16,18 @@ export interface ProfileDefinition {
     allow: string[];
     deny: string[];
   };
+  /** Workflow profiles this one brings in: `mergeProfiles()` loads them too. */
+  workflows: string[];
+  /** A workflow profile's starting point, e.g. `/kickoff`. */
+  entry?: string;
+  /** The loops inside a workflow, described for people; nothing executes this. */
+  loops: WorkflowLoop[];
+}
+
+export interface WorkflowLoop {
+  name: string;
+  until: string;
+  limit: string;
 }
 
 export interface MergedProfile {

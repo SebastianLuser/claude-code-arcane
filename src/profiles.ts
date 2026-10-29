@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import yaml from "js-yaml";
-import type { ProfileDefinition, MergedProfile } from "./types.js";
+import type { ProfileDefinition, MergedProfile, WorkflowLoop } from "./types.js";
 
 export function parseProfile(filePath: string): ProfileDefinition {
   const raw = yaml.load(fs.readFileSync(filePath, "utf-8")) as Record<
@@ -28,7 +28,15 @@ export function parseProfile(filePath: string): ProfileDefinition {
       allow: perms.allow ?? [],
       deny: perms.deny ?? [],
     },
+    workflows: (raw.workflows as string[]) ?? [],
+    ...(raw.entry ? { entry: String(raw.entry) } : {}),
+    loops: (raw.loops as WorkflowLoop[]) ?? [],
   };
+}
+
+/** The description, led by how to start it for a workflow profile (hints get truncated). */
+export function profileSummary(profile: ProfileDefinition): string {
+  return profile.entry ? `start: ${profile.entry} — ${profile.description}` : profile.description;
 }
 
 // Display order for profile categories. Categories not listed here (including
@@ -43,6 +51,7 @@ export const CATEGORY_ORDER: ReadonlyArray<{ id: string; label: string }> = [
   { id: "business", label: "Business" },
   { id: "personal", label: "Personal" },
   { id: "utilities", label: "Utilities" },
+  { id: "workflow", label: "Workflows" },
 ];
 
 export function groupByCategory(
@@ -123,6 +132,7 @@ export function mergeProfiles(
   profilesDir: string,
   profileNames: string[],
 ): MergedProfile {
+  // A queue: each profile appends the workflows it names, so they load after it.
   const namesToLoad = ["core", ...profileNames];
   const loaded: string[] = [];
 
@@ -154,6 +164,12 @@ export function mergeProfiles(
     if (loaded.includes(resolved.name)) continue;
     const profile = parseProfile(resolved.file);
     loaded.push(resolved.name);
+    for (const workflow of profile.workflows) {
+      if (!resolveProfile(profilesDir, workflow)) {
+        throw new Error(`Profile '${resolved.name}' names workflow '${workflow}', which does not exist.`);
+      }
+      namesToLoad.push(workflow);
+    }
 
     for (const s of profile.skills) {
       if (!seenSkills.has(s)) {

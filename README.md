@@ -78,11 +78,12 @@ Not sure what to pick? Run `install` with no arguments to get an interactive pic
 ### 3. Core is always included
 
 Every installation automatically loads `core.yaml` first:
-- 21 essential skills (commit, create-pr, quality-review, what-next, etc.)
+- 19 essential skills (commit, create-pr, quality-review, what-next, etc.)
 - 12 lifecycle hooks (session start/stop, guard, commit validation, etc.)
-- 3 base rules (data-files, prototype-code, test-standards)
-- 1 agent dir (quality)
-- Security permissions (9 allow + 14 deny)
+- 3 base rules (verification, agent-delegation, user-language)
+- Security permissions (15 allow + 13 deny)
+
+Coding practice is not in core: code profiles bring the `code-flow` workflow (see [Workflows](#workflows)), and `install` adds it to any project with code in it.
 
 ### 4. What gets generated
 
@@ -273,9 +274,19 @@ Older names still install and update: `backend-ts`, `frontend`, `mobile`, `flutt
 | `self-improving` | Agent self-improvement and skill extraction | 2 | — |
 | `statusline` | Claude Code status bar (branch, division, session info) | 0 | — |
 
+### Workflows
+
+A workflow is a process with a starting point. Other profiles bring it with `workflows: [...]`, or add it on its own with `arcane add +<name>`.
+
+| Profile | Adds | Skills | Agents |
+|---------|------|--------|--------|
+| `code-flow` | Work mode question, progress file, goal review by a fresh subagent (loop: up to 2 FAIL rounds), test and comment standards, worktree hygiene. Start: `/kickoff`. Brought by every code profile | 1 | — |
+| `review-flow` | A fresh-context reviewer checks every tailored CV or cover letter before export. Start: `/job-apply`. Brought by `job-hunt` | 0 | — |
+| `improve-skill-flow` | Test a skill, fix it, test again; keep the change only if the score rose. Start: `/skill-improve`. Brought by `self-improving` | 2 | — |
+
 ### Core (always included)
 
-22 universal skills (commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, skill-improve, skill-test, tech-debt, kickoff, + 5 arcane self-management), 12 hooks, 8 base rules and security permissions. No agents: QA agents ship with `+testing`, the security architect with `+security`.
+19 universal skills (commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, tech-debt, + 5 arcane self-management), 12 hooks, 3 base rules and security permissions. No agents: QA agents ship with `+testing`, the security architect with `+security`.
 
 ---
 
