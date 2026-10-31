@@ -40,7 +40,7 @@ The script:
 1. Locates the workspace (`--workspace` flag, env `CAREER_WORKSPACE`, or walks up directories looking for a `02-CVs` folder, or uses the cwd).
 2. Reads the `.md`, splits off the frontmatter, converts the body to HTML with the embedded ATS CSS.
 3. Prints to PDF with headless Chrome/Edge (`--headless=new --print-to-pdf`).
-4. Saves to `02-CVs/exports/`. The name comes from the `pdf_file` frontmatter if present; otherwise from the `.md` name (without the `CV - ` prefix).
+4. Saves to `02-CVs/exports/`. The name comes from the `pdf_file` frontmatter if present (`.pdf` is appended when missing; a value with a folder, such as `sent/Ana`, is relative to `02-CVs/`); otherwise from the `.md` name (without the `CV - ` prefix).
 5. **Verifies the ATS text layer** with `verify_pdf.py` (pypdf): extractable text (at least 200 chars), that the H1 name and the email survive the export (comparing with quotes, dashes and spaces normalized), that no date range uses a Unicode dash (`2019–2024` → `2019-2024`: an ATS like Workday loses it) and warns if it goes over 2 pages. Reports `[ATS OK]` / `[ATS WARN]` / `[ATS SKIP]`; it never breaks the export. Skipped with `--no-verify`.
 
 The two `[ATS SKIP]` cases are different: `verify_pdf.py not found next to cv_export.py` means you copied only one file to the workspace (installing pypdf changes nothing); `pypdf not installed` is the one solved with `pip install pypdf`.
