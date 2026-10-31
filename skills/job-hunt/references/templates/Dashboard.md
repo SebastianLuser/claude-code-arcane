@@ -44,6 +44,6 @@ type: dashboard
 1. `/job-scrape` - search run with dedup (or `/job-search` for a single posting) → note in `03-Applications/` + `04-Companies/`.
 2. Identify the target contact → note in `05-Contacts/`.
 3. `/job-apply` - full pipeline: custom CV + cover + review + verified ATS PDF.
-4. Send (always by hand) → `/job-outcome <company>` to mark `applied` and log progress.
+4. Send (by hand, or assisted on a company ATS form with your OK; LinkedIn always by hand) → `/job-outcome <company>` to mark `applied` and log progress.
 5. `/interview-prep` - when there is an interview.
 6. `/job-upskill` - once rejections pile up, a study plan based on real gaps.

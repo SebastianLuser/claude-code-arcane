@@ -56,6 +56,8 @@ permissions:
     - "Bash(python3 *linkedin_search.py*)"
     - "Bash(python *getonbrd_search.py*)"
     - "Bash(python3 *getonbrd_search.py*)"
+    - "Bash(python *career_boards.py*)"
+    - "Bash(python3 *career_boards.py*)"
     - "Bash(python *humanize.py*)"
     - "Bash(python3 *humanize.py*)"
     - "Bash(python *detect.py*)"

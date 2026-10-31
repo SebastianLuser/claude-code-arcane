@@ -72,5 +72,23 @@ class StalePdfTest(unittest.TestCase):
             self.assertFalse(out.exists())
 
 
+class PdfPathTest(unittest.TestCase):
+    def path(self, pdf_file):
+        cv_dir = Path("ws") / "02-CVs"
+        out = cv_export.pdf_path_for({"pdf_file": pdf_file}, Path("CV - Ana.md"), cv_dir, cv_dir / "exports")
+        return out.relative_to(cv_dir).as_posix()
+
+    def test_bare_name_without_suffix_lands_in_exports_as_pdf(self):
+        # It used to write an extension-less file loose in 02-CVs/.
+        self.assertEqual(self.path("Ana - Acme"), "exports/Ana - Acme.pdf")
+
+    def test_bare_name_with_suffix_lands_in_exports(self):
+        self.assertEqual(self.path("Ana.pdf"), "exports/Ana.pdf")
+
+    def test_path_with_a_folder_stays_relative_to_the_cvs_folder(self):
+        self.assertEqual(self.path("exports/acme/Ana"), "exports/acme/Ana.pdf")
+        self.assertEqual(self.path("sent/Ana.PDF"), "sent/Ana.PDF")
+
+
 if __name__ == "__main__":
     unittest.main()

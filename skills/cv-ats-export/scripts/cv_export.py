@@ -23,7 +23,9 @@ Workspace resolution order:
 
 Output path:
     - If frontmatter has `pdf_file`, the PDF is written to that path
-      relative to the CVs folder (<workspace>/02-CVs/<pdf_file>).
+      relative to the CVs folder (<workspace>/02-CVs/<pdf_file>). A bare
+      file name goes to <workspace>/02-CVs/exports/, and `.pdf` is appended
+      when the value lacks it.
     - Otherwise it goes to <workspace>/02-CVs/exports/<name>.pdf, where
       <name> is the frontmatter field `final_file` if present, else the
       .md filename with the "CV - " prefix stripped.
@@ -244,15 +246,22 @@ def verify_ats(pdf_path, body):
         print("        [ATS OK] text layer verified (name + email extractable)")
 
 
+def pdf_path_for(fm, md_path, cv_dir, export_dir):
+    if fm.get("pdf_file"):
+        rel = Path(fm["pdf_file"])
+        if rel.suffix.lower() != ".pdf":
+            rel = rel.with_name(rel.name + ".pdf")
+        # A bare file name belongs with the other exports, never loose in 02-CVs/.
+        return (export_dir if rel.parent == Path(".") else cv_dir) / rel
+    name = fm.get("final_file") or md_path.stem.replace("CV - ", "")
+    return export_dir / f"{name}.pdf"
+
+
 def export(md_path, browser, cv_dir, export_dir, check_ats=True):
     text = md_path.read_text(encoding="utf-8")
     fm, body = strip_frontmatter(text)
 
-    if fm.get("pdf_file"):
-        pdf_path = cv_dir / fm["pdf_file"]
-    else:
-        name = fm.get("final_file") or md_path.stem.replace("CV - ", "")
-        pdf_path = export_dir / f"{name}.pdf"
+    pdf_path = pdf_path_for(fm, md_path, cv_dir, export_dir)
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
     # Chrome exits 0 without writing when the old PDF is locked; it must not pass as fresh.
     try:

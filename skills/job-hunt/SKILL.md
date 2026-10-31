@@ -23,6 +23,7 @@ The whole system lives in a portable folder (default: `career-workspace/` at the
 career-workspace/
   00-Dashboard.md          index + active applications + next steps
   01-Profiles/             master profile + per-role profiles
+                           + Application Answers.md (answer bank for application forms)
   02-CVs/                  base CV per profile + custom CV per application
     exports/               generated ATS PDFs
   03-Applications/         one note per application
@@ -34,6 +35,7 @@ career-workspace/
   Templates/               templates with frontmatter
   tools/                   cv_export.py + verify_pdf.py (installed by /cv-ats-export)
                            and job_scraper/seen_jobs.json (/job-scrape's dedup memory)
+                           and company_boards/target_companies.json (optional, /job-scrape)
 ```
 
 It is **portable and Obsidian-agnostic**: it uses `[[wikilinks]]` (they work in Obsidian if the user uses it, and read fine as plain text), YAML frontmatter, and numeric prefixes to order folders. It does not require Obsidian installed.
@@ -45,8 +47,8 @@ Application statuses (frontmatter `status`): `interested → applied → intervi
 ### `setup` - Create the workspace
 1. Ask where to create the workspace (default `./career-workspace/`) and the target role(s).
 2. Create the full folder tree.
-3. Copy the 7 templates from `references/templates/` to the workspace's `Templates/`.
-4. Create `00-Dashboard.md` from `references/templates/Dashboard.md`.
+3. Copy the 8 templates from `references/templates/` to the workspace's `Templates/`.
+4. Create `00-Dashboard.md` from `references/templates/Dashboard.md`, and `01-Profiles/Application Answers.md` from `references/templates/Application Answers.md` (placeholders only; `/job-apply` fills it as forms ask).
 5. Suggest the next step: `/master-profile` to build the master profile.
 
 ### `status` - Where am I
@@ -125,7 +127,7 @@ If the user installed the profile without the agents directory, the `drafter-rev
 2. Identify the target contact → note in `05-Contacts/`.
 3. `/job-apply` → the application's full pipeline: custom CV + cover + review (drafter-reviewer rule) + verified ATS PDF. (By hand: `/cv-tailor` → `/cv-ats-export` → `/cover-letter`.)
 4. `/cold-outreach` → if there is a contact to write to directly.
-5. Send the application (**always by hand**) → `/job-outcome <company>` to mark `applied`; log every step forward there.
+5. Send the application: by hand, or on a company ATS form with `/job-apply`'s opt-in assisted submission (explicit OK per application; **LinkedIn always by hand**) → `/job-outcome <company>` to mark `applied`; log every step forward there.
 6. When there is an interview → `/interview-prep`.
 7. With rejections piling up → `/job-upskill` for a study plan based on real gaps.
 

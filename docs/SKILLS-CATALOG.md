@@ -529,8 +529,8 @@ Installed with the `unreal-dev` profile. Provenance and licenses in `ATTRIBUTION
 | `/linkedin-optimize` | Optimizes LinkedIn: headline, About, experience with KPIs, keywords, value prop, 30s pitch | `[section\|full]` |
 | `/portfolio-site` | Generates/updates the web portfolio from the source of truth | `[sync\|scaffold] [repo\|--new]` |
 | `/job-search` | Searches, scores and prioritizes postings + a 7-day search plan | `[search <query>\|score <url>\|plan]` |
-| `/job-scrape` | Searches postings (bundled LinkedIn + GetOnBoard CLIs) with dedup across runs, scores them and offers to create notes | `[profile] [--jobage N]` |
-| `/job-apply` | Full pipeline for one application: fit, custom CV, cover letter, review, verified PDF and dashboard | `<url\|note>` |
+| `/job-scrape` | Searches postings (bundled LinkedIn + GetOnBoard CLIs, plus target companies' ATS boards) with dedup across runs, scores them and offers to create notes | `[profile] [--jobage N]` |
+| `/job-apply` | Full pipeline for one application: fit, custom CV, cover letter, review, verified PDF and dashboard; opt-in assisted submission on company ATS forms with a Gmail confirmation check | `<url\|note>` |
 | `/career-registry` | Traceability: answers whether you already applied to a company/URL, exports everything to CSV, audits gaps, stalled notes and hours over the estimate. Serves both jobs and freelance | `[check\|export\|stats\|audit]` |
 | `/job-outcome` | Records an application's outcome/progress and updates the note + dashboard | `[company]` |
 | `/job-upskill` | Skill gaps aggregated across applications + a study plan with real resources | `[url\|note]` |

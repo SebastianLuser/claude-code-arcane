@@ -1,6 +1,6 @@
 ---
 name: job-apply
-description: "Orchestrate a full job application from a URL or note: fit score, application note, tailored CV, cover letter, fresh-context review and ATS-verified PDF. Sending is always manual. Triggers: apply to this posting, apply for this job, put together the application, application pipeline, prepare CV and cover for a posting."
+description: "Orchestrate a full job application from a URL or note: fit score, application note, tailored CV, cover letter, fresh-context review and ATS-verified PDF. Sending is manual, or opt-in assisted on company ATS forms with a Gmail confirmation check (never LinkedIn). Triggers: apply to this posting, apply for this job, put together the application, application pipeline, prepare CV and cover for a posting."
 argument-hint: "<url | application note>"
 category: "career"
 user-invocable: true
@@ -9,7 +9,7 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, WebFetch, WebSearch, Task
 
 # /job-apply - Full application pipeline
 
-Orchestrates end to end: assess fit → application note → custom CV → cover → reviewer → ATS PDF → dashboard. Adapted from the `/apply` of MadsLorentzen/ai-job-search to this skillset's skills and rules. **The final send is always done by the user by hand; this skill never sets `status: applied`** (`/job-outcome` records that after sending).
+Orchestrates end to end: assess fit → application note → custom CV → cover → reviewer → ATS PDF → dashboard. Adapted from the `/apply` of MadsLorentzen/ai-job-search to this skillset's skills and rules. **By default the user sends the application by hand.** Step 11 is an opt-in path to fill and submit a company ATS form for the user, with an explicit OK per application; LinkedIn is always sent by hand. This skill never sets `status: applied` itself (`/job-outcome` records that after sending).
 
 Argument: `$ARGUMENTS` (posting URL, or name/wikilink of a note in `03-Applications/`).
 
@@ -81,15 +81,42 @@ Add/update the posting's row in the active applications section of `00-Dashboard
 
 - Summary of 3-5 tailoring decisions in the note's `## Notes` (what was emphasized, company angle, acknowledged gaps).
 - If seen_jobs exists: entry → `note_created` (create it if it did not exist).
-- Remind the user: **sending is manual**; the PDF and the cover are ready, the apply link is in the note and the dashboard. After sending, run `/job-outcome <company>` to mark `applied`.
+- Tell the user the package is ready: the PDF and the cover, with the apply link in the note and the dashboard. Two ways to send: by hand, then `/job-outcome <company>` to mark `applied`; or, for a company ATS form, the opt-in assisted submission in step 11.
+
+## Step 11 - Optional: assisted submission on a company ATS form
+
+Only when the user asks for it. It does not run by default.
+
+**Scope.** A company form on a known ATS (`ashbyhq.com`, `lever.co`, `greenhouse.io`, `smartrecruiters.com`, `workable.com`, `myworkdayjobs.com`) or the company's own careers site, whose host passed the step 1 check. **Never LinkedIn** (Easy Apply included): its User Agreement (section 8.2) forbids automating activity on the site, so a LinkedIn application is always sent by hand. Never a form that asks to create an account, pay, or solve a CAPTCHA: stop there and hand the tab to the user.
+
+1. **CONFIRMATION 3, per application.** List what will be submitted (company, role, form URL, PDF path, the cover text) and ask for an explicit OK. An OK covers that one application. "All of these" counts only when the user lists them or approves the list you show.
+2. **Read the answer bank** `01-Profiles/Application Answers.md` (create it from `Templates/Application Answers.md` if it is missing). Use only what it says; never invent an answer.
+3. **Fill the form** with Claude in Chrome (the browser extension MCP): contact and eligibility fields from the answer bank, the exported PDF as the resume upload, the reviewed cover in the cover letter field. Salary follows the bank's currency rule: a foreign company or a form that asks in USD gets USD only; a local company paying in local currency gets local currency only; never both in one answer.
+4. **Unknown fields and consents.** Collect every field the bank does not answer (including consent checkboxes and optional demographic questions) and ask the user **once**, in a single message, before submitting. Write each new answer back into the bank with the date, so the next form does not ask again. Never tick a consent the user has not given.
+5. **Submit** only after the form is complete and the user's OK from point 1 still applies. Read the page after submitting: a "thank you" or "application received" page is a success; a validation error is fixed (or asked about) and submitted again.
+6. **Record** in the note's Timeline: date, channel (`assisted, <ATS>`), and the answers used. Add a line to the bank's usage log. Then run the `/job-outcome` flow to set `status: applied`.
+
+If the Claude in Chrome tools are not available, say so and fall back to sending by hand.
+
+## Step 12 - Confirmation email check (after a batch of assisted submissions)
+
+1. When the last application of the batch is submitted, start a background wait of about 5 minutes (for example a background `sleep 300`) instead of polling.
+2. Then search the user's Gmail with the Gmail MCP, **read-only**: one search per company over the last day (company name, plus words such as "application", "received", "thank you"). Only search and read: never send, reply, label, archive or delete.
+3. For each application, record the result in the note's Timeline, in the user's language: confirmation received (date and sender) or no confirmation yet.
+4. Report a table: company | submitted | confirmation. An application with no confirmation is not a failure yet: ATS emails can take hours. Suggest checking again later, and check the ATS page if the user wants.
+
+If the Gmail MCP is not connected, say so and ask the user to check their inbox.
 
 ## What it does NOT do
 
-- It does not send the application or mark `applied` (portal ToS + human quality control).
+- It does not send the application unless the user opted into step 11 for that application, and never on LinkedIn.
+- It does not set `applied` itself: `/job-outcome` does.
+- It does not create accounts, solve CAPTCHAs, pay, or tick consents the user has not given.
+- It does not write, label or delete email: the Gmail check only reads.
 - It does not export the PDF without confirmation 2.
 - It does not touch other notes or other dashboard rows.
 - It does not invent experience: gaps are acknowledged, not padded.
 
 ## Handoff
 
-With the verified PDF and the cover approved, the package is READY to send by hand. After sending: `/job-outcome <company>`. If there is a direct contact at the company, `/cold-outreach` for the message to the recruiter/hiring manager.
+With the verified PDF and the cover approved, the package is READY to send: by hand, or through step 11 on a company ATS form. After sending: `/job-outcome <company>`. If there is a direct contact at the company, `/cold-outreach` for the message to the recruiter/hiring manager.
