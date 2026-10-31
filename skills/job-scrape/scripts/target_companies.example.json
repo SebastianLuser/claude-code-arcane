@@ -1,0 +1,10 @@
+[
+  {"name": "Clara", "sector": "fintech", "ats": "greenhouse", "slug": "clara", "careers_url": null},
+  {"name": "Nubank", "sector": "fintech", "ats": "ashby", "slug": "nubank", "careers_url": null},
+  {"name": "dLocal", "sector": "fintech", "ats": "lever", "slug": "dlocal", "careers_url": null},
+  {"name": "Playtech", "sector": "betting-gaming", "ats": "smartrecruiters", "slug": "playtech", "careers_url": null},
+  {"name": "VTEX", "sector": "tech-latam", "ats": "greenhouse", "slug": "vtex", "careers_url": null},
+  {"name": "Cohere", "sector": "ai-startup", "ats": "ashby", "slug": "cohere", "careers_url": null},
+  {"name": "Ualá", "sector": "fintech", "ats": "manual", "slug": null, "careers_url": "https://www.ua.la/sumate"},
+  {"name": "Banco Galicia", "sector": "bank", "ats": "manual", "slug": null, "careers_url": "https://empleos.galicia.com.ar"}
+]
