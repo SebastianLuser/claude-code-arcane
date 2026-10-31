@@ -1,3 +1,15 @@
+# [3.3.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.2.0...v3.3.0) (2026-10-31)
+
+
+### Bug Fixes
+
+* **cv-ats-export:** keep pdf_file exports inside exports/ with a .pdf suffix ([935495a](https://github.com/SebastianLuser/claude-code-arcane/commit/935495aec1f69260ccee9ed5e7c440b175f79011))
+
+
+### Features
+
+* **job-hunt:** company career boards, answer bank and assisted ATS submission ([376f26c](https://github.com/SebastianLuser/claude-code-arcane/commit/376f26c465618788f6256c8371fd60d83f4489d0))
+
 # [3.2.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.1.0...v3.2.0) (2026-10-29)
 
 
