@@ -19,23 +19,18 @@ The model writes the code; the harness is everything around it that Arcane insta
 
 ## Hooks by event
 
-Each profile lists the hooks it brings under `hooks:` (core the session and guard hooks, `code-flow` the coding ones); the installer wires those into `settings.json` (`WIRING` in `src/hook-commands.ts`). Every script is copied, wired or not.
+Each profile lists the hooks it brings under `hooks:` (core the session and guard hooks, `code-flow` the coding ones). The installer writes those ids to `.claude/arcane-hooks.json` and wires **one handler per event** into `settings.json` (`HANDLERS` in `src/hook-commands.ts`); the handler runs only the parts the list names. Claude Code starts a process for every hook, and on Windows a start costs 0.2-1.5 s at rest and seconds on a loaded machine: one script per hook made each Bash command start seven. Every script is copied, listed or not.
 
-| Event | Hook | What it does |
+| Event | Handler | What it runs, when the list names it |
 |---|---|---|
-| `SessionStart` (startup, resume, clear, compact) | `session-start.sh` | Shows branch, recent commits and the first lines of `.arcane/session-state/active.md`; moves a legacy progress file |
-| | `detect-unreal.sh`, `detect-gaps.sh` | Flag an Unreal project, point out missing docs |
-| | `check-update.sh` | Says when a newer Arcane exists (cached for 4 hours) |
-| `PreToolUse` (`Bash\|PowerShell`, file tools) | `guard.sh` → `guard.mjs` | **deny** what the user should run by hand (force push, `--no-verify`, `sudo`, writing `.env`); **ask** before destructive or supply-chain actions (`rm -rf`, `rd /s`, `find -delete` or `xargs rm` outside build output, dropping data, a new dependency, a session against production such as `railway ssh -e production` or `ssh`/`psql` to a `prod` host, editing CI or lint configs) |
-| | `validate-commit.sh` | Blocks `--no-verify` and empty commit messages |
-| `PostToolUse` | `session-watch.sh post-tool` | Records edited files; warns on a tool loop (same call 5 times), on scope drift (15 files) and at 70% / 85% of the context window |
-| | `validate-skill-change.sh` | Warns when an edited `SKILL.md` looks like it lost its frontmatter |
-| `Stop` | `session-watch.sh stop` | Formats and type-checks the files edited this turn with the project's own tools; new errors block the stop once |
-| | `worktree-stop.sh` | A finished task inside an `EnterWorktree` worktree is asked to leave it before stopping |
-| | `session-stop.sh` | Logs the stop |
-| `PreCompact`, `PostCompact` | `pre-compact.sh`, `post-compact.sh` | Log only, to `.claude/session-state/` |
+| `SessionStart` (startup, resume, clear, compact) | `session-start.sh` | Shows branch, recent commits and the first lines of `.arcane/session-state/active.md`; moves a legacy progress file. Then sources `detect-unreal.sh` and `detect-gaps.sh` (flag an Unreal project, point out missing docs) and `check-update.sh` (a newer Arcane, cached for 4 hours) |
+| `PreToolUse` (`Bash\|PowerShell`, file tools) | `arcane-hook.mjs pre-tool` | The guard (`guard.mjs`, always): **deny** what the user should run by hand (force push, `--no-verify`, `sudo`, writing `.env`); **ask** before destructive or supply-chain actions (`rm -rf`, `rd /s`, `find -delete` or `xargs rm` outside build output, dropping data, a new dependency, a session against production such as `railway ssh -e production` or `ssh`/`psql` to a `prod` host, editing CI or lint configs). Then the commit checks (`validate-commit.sh`): empty messages, staged 3D exports. Logs a file edit it lets through, so the turn's Stop formats it even when the background PostToolUse finishes late |
+| `PostToolUse`, in the background | `arcane-hook.mjs post-tool` | The session watch (`session-watch.sh post-tool`): records edited files; warns on a tool loop (same call 5 times), on scope drift (15 files) and at 70% / 85% of the context window. The frontmatter check of an edited `SKILL.md` (`validate-skill-change.sh`). Warnings reach Claude on the next turn |
+| `Stop` | `arcane-hook.mjs stop` | Logs the stop (`session-stop.sh`); asks a finished task inside an `EnterWorktree` worktree to leave it (`worktree-stop.sh`); formats the files edited this turn (`session-watch.sh stop`) |
+| `Stop`, in the background | `arcane-hook.mjs stop-check` | Type-checks what `stop` formatted, with the project's own tools. Errors in those files wake Claude (`asyncRewake`), once per set of errors |
+| `PreCompact`, `PostCompact`, in the background | `pre-compact.sh`, `post-compact.sh` | Log only, to `.claude/session-state/` |
 
-The guard, the session watch, the update check and the status line are Node scripts (`guard.mjs`, `session-watch.mjs`, `check-update.mjs`, `statusline.mjs`) behind bash wrappers. Arcane is installed with npx, so Node is on the machine; without it they do nothing instead of failing.
+The `settings.json` command is the same text in every install, so when the global install and a project both list it Claude Code runs it once: the global copy, with the project's hook list (see [directory-structure](directory-structure.md#hooks-how-they-are-wired)). Formatting stays in the foreground on purpose: in the background it could rewrite a file Claude edits in the next turn. The guard, the session watch, the update check and the status line are Node scripts; Arcane is installed with npx, so Node is on the machine.
 
 ## Roles
 
@@ -63,7 +58,7 @@ A workflow is a profile with `category: workflow` that other profiles bring thro
 5. **Every tool call.** the guard screens shell commands and file writes; the session watch watches for loops, scope drift and context use.
 6. **Evidence.** `rules/verification.md`: no "it works" without a command run in this session; domain rules say what counts as evidence (a `curl`, a migration up and down, Playwright screenshots at four widths).
 7. **Goal review.** When the goal looks met, a fresh reviewer runs the checks and answers `PASS` or `FAIL`. The user sees the verdict first. Two `FAIL`s in a row go back to the user.
-8. **Stop.** The session watch formats and type-checks what changed; `worktree-stop.sh` gets the session out of a finished worktree.
+8. **Stop.** The Stop hook formats what changed and type-checks it in the background, waking Claude only for errors in those files; the worktree check gets the session out of a finished worktree.
 9. **Long sessions.** At 70% of the window the maker updates `active.md` and suggests `/compact` at a logical point; after the compaction, step 1 runs again.
 
 ## State on disk

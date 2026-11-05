@@ -18,7 +18,7 @@ import { writeManifest } from "./manifest.js";
 import type { ArcaneManifest } from "./types.js";
 import { linkOrCopyDir } from "./worktree.js";
 import { computeContentHashes, referencedDocs } from "./content-hash.js";
-import { defaultHooks } from "./hook-commands.js";
+import { defaultHooks, HOOK_LIST_FILE, writeHookList } from "./hook-commands.js";
 
 /**
  * Skill scripts print arrows, emoji and accents. On Windows a piped stdout (how
@@ -407,6 +407,10 @@ export class Installer {
       "utf-8",
     );
     this.log("  [ok] settings.json");
+    // The settings.json command is the same in every install; this list says what
+    // this one's profiles want the hooks to do.
+    writeHookList(this.claudeDir, this.merged.hooks);
+    this.log(`  [ok] ${HOOK_LIST_FILE}`);
   }
 }
 

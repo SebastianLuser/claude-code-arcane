@@ -5,6 +5,7 @@ import chalk from "chalk";
 import { readManifest } from "../manifest.js";
 import { cliInvocation } from "../self-update.js";
 import { looksLikeCode } from "../detect.js";
+import { HOOK_LIST_FILE } from "../hook-commands.js";
 import type { ArcaneManifest } from "../types.js";
 
 export type Verdict = "ok" | "warn" | "fail";
@@ -122,11 +123,13 @@ function commandsOf(settings: Record<string, unknown>): string[] {
 
 /** The files under `.claude/` a command runs, relative to `.claude/`. */
 function scriptsOf(command: string): string[] {
-  const scripts = [...command.matchAll(/\.claude\/((?:hooks\/)?[\w.-]+\.(?:sh|py))/g)].map((m) => m[1]);
+  const scripts = [...command.matchAll(/\.claude\/((?:hooks\/)?[\w.-]+\.(?:sh|py|mjs))/g)].map((m) => m[1]);
   // These wrappers only start Node; the logic lives in the .mjs beside them.
   for (const wrapper of ["guard", "session-watch", "check-update"]) {
     if (scripts.includes(`hooks/${wrapper}.sh`)) scripts.push(`hooks/${wrapper}.mjs`);
   }
+  // The dispatcher imports the guard and the session watch.
+  if (scripts.includes("hooks/arcane-hook.mjs")) scripts.push("hooks/guard.mjs", "hooks/session-watch.mjs");
   if (scripts.includes("statusline.sh")) scripts.push("hooks/statusline.mjs");
   return scripts;
 }
@@ -168,6 +171,15 @@ function checkHooks(claudeDir: string, settings: Record<string, unknown>, probes
         }
       : { name: "hook scripts", verdict: "ok", detail: `${scripts.length} scripts found` },
   );
+
+  if (scripts.includes("hooks/arcane-hook.mjs") && !fs.existsSync(path.join(claudeDir, HOOK_LIST_FILE))) {
+    checks.push({
+      name: "hook list",
+      verdict: "warn",
+      detail: `${HOOK_LIST_FILE} is missing, so in this project the hooks follow another install's list, or only the guard and the session start banner run`,
+      fix: `Run \`${cli} update --here\`: it writes the list from the installed profiles.`,
+    });
+  }
 
   const relative = commands.filter((c) => /^bash \.claude\/hooks\//.test(c));
   if (relative.length) {

@@ -15,6 +15,9 @@ interface Watch {
   planChecks(files: string[], project: string): Plan[];
   errorsIn(output: string, files: string[], cwd: string): string[];
   stop(payload: object, project: string, runner?: Runner): { decision: string; reason: string } | null;
+  formatPending(payload: object, project: string, runner?: Runner): string[];
+  recordEdit(payload: object, project: string): void;
+  checkPending(payload: object, project: string, runner?: Runner, startedAt?: number, waitMs?: number): Promise<string | null>;
 }
 
 const HOOK = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "hooks", "session-watch.mjs");
@@ -165,5 +168,117 @@ describe("stop check", () => {
     nodeProject();
     edit("src/a.ts");
     expect(watch.stop({ session_id: "s1", stop_hook_active: true }, project)).toBeNull();
+  });
+});
+
+describe("format in the foreground, check in the background", () => {
+  const tsError = "src/a.ts(1,1): error TS2322: Type 'x' is not assignable\n";
+  function nodeProject() {
+    fs.writeFileSync(path.join(project, "package.json"), "{}");
+    fs.writeFileSync(path.join(project, "tsconfig.json"), "{}");
+    const bin = path.join(project, "node_modules", ".bin");
+    fs.mkdirSync(bin, { recursive: true });
+    for (const name of ["prettier", "tsc"]) {
+      for (const suffix of ["", ".cmd"]) fs.writeFileSync(path.join(bin, name + suffix), "");
+    }
+  }
+  const recorder = (errors = tsError) => {
+    const calls: string[][] = [];
+    const runner: Runner = (command) => {
+      calls.push(command);
+      return command.includes("--noEmit") ? [errors ? 2 : 0, errors] : [0, ""];
+    };
+    return { calls, runner };
+  };
+
+  it("the stop only formats; the check reports what that turn edited", async () => {
+    nodeProject();
+    edit("src/a.ts");
+    const { calls, runner } = recorder();
+    const formatted = watch.formatPending({ session_id: "s1" }, project, runner);
+    expect(formatted).toHaveLength(1);
+    expect(calls.map((c) => c.includes("--noEmit"))).toEqual([false]);
+
+    const report = await watch.checkPending({ session_id: "s1" }, project, runner, Date.now(), 1000);
+    expect(report).toContain("TS2322");
+    expect(calls.map((c) => c.includes("--noEmit"))).toEqual([false, true]);
+  });
+
+  it("the check waits for the formatting of its turn", async () => {
+    nodeProject();
+    edit("src/a.ts");
+    const { runner } = recorder();
+    const started = Date.now();
+    const pending = watch.checkPending({ session_id: "s1" }, project, runner, started, 5000);
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    watch.formatPending({ session_id: "s1" }, project, runner);
+    expect(await pending).toContain("TS2322");
+  });
+
+  it("a stop after a block or a wake-up still formats and checks what Claude edited", async () => {
+    nodeProject();
+    edit("src/a.ts");
+    const { calls, runner } = recorder();
+    expect(watch.formatPending({ session_id: "s1", stop_hook_active: true }, project, runner)).toHaveLength(1);
+    expect(await watch.checkPending({ session_id: "s1" }, project, runner, Date.now(), 1000)).toContain("TS2322");
+    expect(calls).toHaveLength(2);
+  });
+
+  it("a Stop cut off while formatting still gets its files checked", async () => {
+    nodeProject();
+    edit("src/a.ts");
+    const cutOff: Runner = () => {
+      throw new Error("killed by the hook timeout");
+    };
+    expect(() => watch.formatPending({ session_id: "s1" }, project, cutOff)).toThrow();
+    const { runner } = recorder();
+    expect(await watch.checkPending({ session_id: "s1" }, project, runner, Date.now(), 300)).toContain("TS2322");
+  });
+
+  it("an edit logged before the tool runs is not logged twice after it", () => {
+    const file = path.join(project, "src", "a.ts");
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, "x");
+    watch.recordEdit({ session_id: "s1", tool_name: "Edit", tool_input: { file_path: file } }, project);
+    tool("Edit", { file_path: file });
+    const lines = fs.readFileSync(path.join(project, ".claude", "session-state", "watch-s1.log"), "utf-8").split("\n");
+    expect(lines.filter((l) => l.includes('"t":"edit"'))).toHaveLength(1);
+    expect(watch.loadState(project, "s1").pending).toEqual([file]);
+  });
+
+  it("the same errors wake Claude once, so an error it cannot fix never loops", async () => {
+    nodeProject();
+    const { runner } = recorder();
+    for (const expected of [true, false]) {
+      edit("src/a.ts");
+      watch.formatPending({ session_id: "s1" }, project, runner);
+      const report = await watch.checkPending({ session_id: "s1" }, project, runner, Date.now(), 1000);
+      expect(report !== null).toBe(expected);
+    }
+  });
+
+  it("nothing edited, nothing checked; no formatting, no wait past the limit", async () => {
+    nodeProject();
+    const { calls, runner } = recorder();
+    watch.formatPending({ session_id: "s1" }, project, runner);
+    expect(await watch.checkPending({ session_id: "s1" }, project, runner, Date.now(), 1000)).toBeNull();
+    const started = Date.now();
+    expect(await watch.checkPending({ session_id: "s2" }, project, runner, started, 200)).toBeNull();
+    expect(Date.now() - started).toBeLessThan(2000);
+    expect(calls).toEqual([]);
+  });
+
+  it("parallel post-tool runs lose no edit", async () => {
+    const { spawn } = await import("node:child_process");
+    const runs = Array.from({ length: 6 }, (_, i) => {
+      const file = path.join(project, `f${i}.ts`);
+      fs.writeFileSync(file, "x");
+      const script = `import(${JSON.stringify(pathToFileURL(HOOK).href)}).then((w) => w.postTool(${JSON.stringify({
+        session_id: "par", tool_name: "Edit", tool_input: { file_path: file },
+      })}, ${JSON.stringify(project)}))`;
+      return new Promise((resolve) => spawn(process.execPath, ["-e", script]).on("exit", resolve));
+    });
+    await Promise.all(runs);
+    expect(watch.loadState(project, "par").pending).toHaveLength(6);
   });
 });

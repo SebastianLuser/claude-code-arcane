@@ -1,7 +1,34 @@
 #!/bin/bash
 # Hook: session-start.sh — SessionStart
 # Graceful: wraps in main(), never blocks session
+#
+# The one SessionStart hook in settings.json: it also sources detect-unreal.sh,
+# detect-gaps.sh and check-update.sh when the hook list names them: the project's
+# .claude/arcane-hooks.json, else this install's. On Windows every process a hook
+# starts costs up to seconds.
 set +e
+# The real folder of this file, found before any cd and with builtins only: in a
+# worktree hooks/ is a symlink, and arcane-hooks.json sits next to the real one.
+HOOKS_DIR=.
+SELF=${BASH_SOURCE[0]//\\//}
+[[ $SELF == */* ]] && HOOKS_DIR=${SELF%/*}
+cd -P "$HOOKS_DIR" 2>/dev/null && HOOKS_DIR=$PWD && cd "$OLDPWD"
+# Where the session started: detect-unreal.sh and check-update.sh ran from there as
+# their own hooks, and still do.
+START_DIR=$PWD
+
+# The other SessionStart hooks this list names run in this same process. Without a list
+# (an install whose settings.json still runs them one by one) none runs here.
+LIST="$CLAUDE_PROJECT_DIR/.claude/arcane-hooks.json"
+[[ -n $CLAUDE_PROJECT_DIR && -f $LIST ]] || LIST="$HOOKS_DIR/../arcane-hooks.json"
+ENABLED=""
+read -r -d '' ENABLED 2>/dev/null < "$LIST"
+listed() { [[ $ENABLED == *"\"$1\""* && -f "$HOOKS_DIR/$1" ]]; }
+ARCANE_SOURCED=1
+# The update check can wait seconds on the network: it runs alongside the rest, and the
+# `wait` at the end keeps its line in this hook's output.
+listed check-update.sh && ( . "$HOOKS_DIR/check-update.sh" ) &
+
 # Claude may have cd'd into a subdirectory; the session files live at the checkout root.
 TOP=$(git rev-parse --show-toplevel 2>/dev/null) && cd "$TOP"
 
@@ -122,4 +149,9 @@ main() {
   echo "==================================="
 }
 main 2>/dev/null
+
+# Each detector runs from where it did as its own hook.
+listed detect-unreal.sh && { cd "$START_DIR"; . "$HOOKS_DIR/detect-unreal.sh"; }
+listed detect-gaps.sh && { cd "${TOP:-$START_DIR}"; . "$HOOKS_DIR/detect-gaps.sh"; }
+wait
 exit 0

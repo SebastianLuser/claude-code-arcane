@@ -3,7 +3,8 @@
 # Graceful: wraps in main(), never blocks session
 set +e
 # Claude may have cd'd into a subdirectory; the session files live at the checkout root.
-TOP=$(git rev-parse --show-toplevel 2>/dev/null) && cd "$TOP"
+# Sourced by session-start.sh, which already moved there.
+[[ -n "$ARCANE_SOURCED" ]] || { TOP=$(git rev-parse --show-toplevel 2>/dev/null) && cd "$TOP"; }
 
 main() {
 echo "=== Checking for Documentation Gaps ==="
@@ -56,7 +57,7 @@ if [ "$FRESH_PROJECT" = true ]; then
   echo "NEW PROJECT: no stack detected, no source code."
   echo "   Run: /start to begin the guided onboarding"
   echo "==================================="
-  exit 0
+  return 0
 fi
 
 echo "Stack: $STACK"
@@ -229,4 +230,5 @@ echo "Run /what-next for the next step"
 echo "==================================="
 }
 main 2>/dev/null
-exit 0
+# session-start.sh sources this file to save a process; `exit` would end it there.
+return 0 2>/dev/null || exit 0

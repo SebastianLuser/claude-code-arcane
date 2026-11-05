@@ -118,23 +118,24 @@ When a project is dual (for example web + game), each family applies through its
 
 ## Hooks: how they are wired
 
-Each profile lists its hooks under `hooks:`; `src/hook-commands.ts` (`WIRING`) knows the event, matcher and timeout of each, and `settings.json` gets those of the installed profiles. `arcane update` adds the ones a profile now lists and unwires the ones none does, without touching hooks you added.
+Each profile lists its hooks under `hooks:`. The installer writes the ids of the installed profiles to `.claude/arcane-hooks.json` and wires one handler per event into `settings.json` (`HANDLERS` in `src/hook-commands.ts`); each handler runs only the listed parts. `arcane update` rewrites the list, adds the handlers a profile now needs, removes those none needs and replaces the one-script-per-hook wiring of 3.3 and earlier, without touching hooks you added.
 
-| Event | Hook | Brought by |
-|--------|------|------------|
-| SessionStart | `session-start.sh`, `check-update.sh` | core |
-| | `detect-gaps.sh` | code-flow |
-| | `detect-unreal.sh` | unreal-dev |
-| PreToolUse (`Bash\|PowerShell`, file tools) | `guard.sh` | core (never unwired) |
-| PreToolUse (`Bash\|PowerShell`) | `validate-commit.sh` | code-flow |
-| PostToolUse (all) | `session-watch.sh post-tool` (edits, loops, scope, compaction warning) | core |
-| PostToolUse (`Write\|Edit`) | `validate-skill-change.sh` | improve-skill-flow |
-| PreCompact / PostCompact | `pre-compact.sh` / `post-compact.sh` | core |
-| Stop | `session-stop.sh` | core |
-| | `worktree-stop.sh`, `session-watch.sh stop` (format + type check of what was edited) | code-flow |
+| Event | Hook id | Brought by | Handler |
+|--------|------|------------|---------|
+| SessionStart | `session-start.sh`, `check-update.sh` | core | `session-start.sh`, which sources the others |
+| | `detect-gaps.sh` | code-flow | |
+| | `detect-unreal.sh` | unreal-dev | |
+| PreToolUse (`Bash\|PowerShell`, file tools) | `guard.sh` | core (never unwired) | `arcane-hook.mjs pre-tool` |
+| | `validate-commit.sh` | code-flow | |
+| PostToolUse (all), in the background | `session-watch.sh post-tool` (edits, loops, scope, compaction warning) | core | `arcane-hook.mjs post-tool` |
+| | `validate-skill-change.sh` | improve-skill-flow | |
+| PreCompact / PostCompact, in the background | `pre-compact.sh` / `post-compact.sh` | core | the same scripts |
+| Stop | `session-stop.sh` | core | `arcane-hook.mjs stop` |
+| | `worktree-stop.sh`, `session-watch.sh stop` (formatting) | code-flow | |
+| Stop, in the background | `session-watch.sh stop` (type check) | code-flow | `arcane-hook.mjs stop-check` (`asyncRewake`) |
 
-Each command is `bash "$CLAUDE_PROJECT_DIR/.claude/hooks/<script>"`: inside a worktree the hooks run from the worktree, which may not have `.claude/hooks/` committed, and the variable always points to the project where the session started. `arcane update` migrates installations that had the relative path.
+Each command is the same text in every install: `h=.claude/hooks/<file>; [ -f "$HOME/$h" ] && h="$HOME/$h" || h="$CLAUDE_PROJECT_DIR/$h"; node "$h" <mode>`. Claude Code runs a handler once when several settings files define it, so a project with its own install no longer runs every hook twice next to the global one. The global copy runs whenever it exists, so the global settings never run code a cloned repository ships; the project's copy runs only on a machine without a global install. What runs follows the project: its `.claude/arcane-hooks.json` when it has one, read as data, else the list of the install that runs. `$CLAUDE_PROJECT_DIR` always points to the project where the session started, so a worktree without committed hooks still finds them. The scripts the ids name (`guard.sh`, `validate-commit.sh`, `worktree-stop.sh` ...) still ship, for installs an update has not rewired yet.
 
-`guard.sh` runs `guard.mjs` with Node over the commands of Bash and of the Windows PowerShell tool (with its own forms: `Remove-Item -Recurse`, `Set-Content .env`): it denies what the user runs by hand (force push, `--no-verify`, `sudo`, writing `.env`), asks before anything destructive (`rm -rf` outside regenerable folders, deleting data, a new dependency, a session against production) and when editing CI, infra, existing migrations, manifests or lint configs. Without Node it does nothing and only the static permissions remain; Arcane is installed with npx, so Node is there.
+The guard (`guard.mjs`, run by `arcane-hook.mjs pre-tool`) checks the commands of Bash and of the Windows PowerShell tool (with its own forms: `Remove-Item -Recurse`, `Set-Content .env`): it denies what the user runs by hand (force push, `--no-verify`, `sudo`, writing `.env`), asks before anything destructive (`rm -rf` outside regenerable folders, deleting data, a new dependency, a session against production) and when editing CI, infra, existing migrations, manifests or lint configs. Without Node it does nothing and only the static permissions remain; Arcane is installed with npx, so Node is there.
 
 The statusline (`statusline.sh`) is configured separately, only with the `statusline` profile.
