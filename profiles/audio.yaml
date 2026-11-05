@@ -25,6 +25,8 @@ rules:
 
 agents:
   - audio
+  # The audio agents hand SFX design to sound-designer, which lives in game/.
+  - game/sound-designer
 
 permissions:
   allow:

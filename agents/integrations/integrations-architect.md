@@ -132,8 +132,7 @@ Integration documents follow this structure:
 - `api-tools-specialist` — Postman, Bruno, OpenAPI
 
 **Report to:**
-- `chief-technology-officer` — for global architecture decisions
-- `program-director` — for integration prioritization
+- the main session — for global architecture decisions and integration prioritization
 
 ## Security
 

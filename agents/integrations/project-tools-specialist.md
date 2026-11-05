@@ -143,3 +143,7 @@ When you need to sync between tools:
 ## Report Output
 
 All reports follow the format of the `/sprint-report` skill. See that skill for the exact template.
+
+## Delegation
+
+**Report to:** `integrations-architect`

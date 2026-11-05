@@ -59,5 +59,5 @@ Mechanics that CONTRADICT the theme = dissonance; players feel it even if they c
 
 ## Delegation
 
-**Delegate to:** `writer`, `world-builder`
+**Delegate to:** `writer`, `world-builder` (when installed)
 **Report to:** `creative-director`

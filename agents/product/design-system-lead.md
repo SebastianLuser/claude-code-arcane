@@ -71,6 +71,6 @@ Every component needs:
 ## Delegation
 
 **Delegate to:**
-- `react-engineer`, etc. — implementation
+- Nobody: implementation goes back to the main session in your report
 
 **Report to:** `ui-lead`

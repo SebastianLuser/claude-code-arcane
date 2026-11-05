@@ -125,8 +125,8 @@ precise rules and formulas.
   escalate to `creative-director`. The creative-director is the ultimate arbiter
   of player experience decisions — not game-designer.
 - **Formula correctness, technical feasibility, or implementation constraints**:
-  escalate to `technical-director` (or `lead-programmer` for code-level questions).
-- **Cross-domain scope or schedule impact**: escalate to `producer`.
+  escalate to `technical-director`.
+- **Cross-domain scope or schedule impact**: escalate to the main session.
 
 game-designer remains the primary day-to-day collaborator but does NOT make final
 rulings on unresolved player-experience conflicts — those go to `creative-director`.

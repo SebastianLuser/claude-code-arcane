@@ -51,6 +51,5 @@ Reporting cadence:
 - Project managers (division 5 leads)
 - `vp-engineering` — team capacity
 - `chief-product-officer` — priorities
-- `chief-technology-officer` — technical dependencies
 
 **Escalate from:** resource conflicts between PMs

@@ -89,5 +89,4 @@ Shortcut: Breakthrough Device → fast-track for any pathway
 - `compliance-officer` — data privacy, information security
 
 **Report to:**
-- `ceo-advisor` — market access strategy
-- `coo-advisor` — operational planning
+- the main session — market access strategy and operational planning

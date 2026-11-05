@@ -36,6 +36,6 @@ Report grouped by severity (CRITICAL → LOW), with counts and the top recommend
 
 ## Delegation Map
 
-**Report to:** `frontend-architect`, `lead-programmer`.
+**Report to:** `frontend-architect`.
 **Hands findings to:** `nextjs-engineer` for implementation.
 **No delegate down.** Tier 3 specialist (read-only).

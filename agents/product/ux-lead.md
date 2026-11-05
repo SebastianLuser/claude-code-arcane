@@ -94,7 +94,6 @@ Visualize the page hierarchy. Max 3 levels deep.
 
 
 **Coordinate with:**
-- `ui-lead` — visual execution
-- `product-manager` — problem framing
+- `ui-lead` or `ux-designer`, whichever is installed — visual execution
 
-**Report to:** `chief-product-officer`
+**Report to:** the main session

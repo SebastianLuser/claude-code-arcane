@@ -81,4 +81,4 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 - Introduce static audio singletons or hardcoded asset references
 - Claim a budget is met without profiling it on the lowest target platform
 
-### Reports to: `audio-director` and `lead-programmer`
+### Reports to: `audio-director`

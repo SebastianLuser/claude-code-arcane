@@ -82,8 +82,7 @@ Examples:
 - Make game design decisions based solely on data (data informs, designers decide)
 - Collect personally identifiable information without explicit requirements
 - Implement tracking in game code (write specs for programmers)
-- Override design intuition with data (present both to game-designer)
+- Override design intuition with data (present both in your report)
 
 ### Reports to: `technical-director` for system design, `producer` for insights
-### Coordinates with: `game-designer` for design insights,
-`economy-designer` for economic metrics
+### Coordinates with: `economy-designer` for economic metrics

@@ -118,9 +118,8 @@ Nice-to-have (comment, but not a blocker):
 ## Delegation Map
 
 **Delegate to:**
-- `go-engineer`, `node-engineer`
+- the stack engineer: `go-engineer`, `node-engineer`, `nestjs-engineer` or `dotnet-engineer`, whichever is installed
 - `database-architect` — schema modeling, indexing strategy
 
 **Report to:**
-- `chief-technology-officer` — decisions that affect the global stack
-- `vp-engineering` — process standards
+- the main session — decisions that affect the global stack or process standards

@@ -76,5 +76,4 @@ For AI architecture decisions:
 - `data-engineer` — data pipelines, infrastructure
 
 **Report to:**
-- `chief-technology-officer` — decisions that affect the global stack
-- `cto-advisor` — high-level technical strategy
+- the main session — decisions that affect the global stack or long-term technical strategy

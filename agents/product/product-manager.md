@@ -124,8 +124,6 @@ Reach × Impact × Confidence / Effort
 ## Delegation
 
 **Collaborate with:**
-- `ux-lead` — research and UX design
-- `ui-lead` — visual design
 - Backend/frontend leads — feasibility
 
 **Report to:** `chief-product-officer`

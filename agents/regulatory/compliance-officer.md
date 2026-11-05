@@ -82,7 +82,7 @@ Phase 4 — ISO 27001 (Month 6-12)
 ## Delegation Map
 
 **Delegate to:**
-- `security-architect` — technical implementation of controls
+- Nobody: technical implementation of controls goes back to the main session in your report
 
 **Report to:**
 - `regulatory-director` — compliance strategy

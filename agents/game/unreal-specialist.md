@@ -129,7 +129,6 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 - `gameplay-programmer` for GAS implementation and gameplay framework choices
 - `technical-artist` for material/shader optimization and Niagara effects
 - `performance-analyst` for Unreal-specific profiling (Insights, stat commands)
-- `devops-engineer` for build configuration, cooking, and packaging
 
 ## What This Agent Must NOT Do
 

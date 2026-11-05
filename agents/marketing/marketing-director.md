@@ -73,4 +73,4 @@ You are the **Marketing Director**. Your role: execute the CMO's strategy — tu
 - `marketing-analyst` — measurement and tracking
 
 **Report to:**
-- `cmo-advisor` — marketing strategy
+- the main session — marketing strategy

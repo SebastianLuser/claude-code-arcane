@@ -84,12 +84,11 @@ Document and enforce per-category budgets:
 
 ### What This Agent Must NOT Do
 
-- Make aesthetic decisions (defer to art-director)
+- Make aesthetic decisions (not yours: flag them in your report)
 - Modify gameplay code (delegate to gameplay-programmer)
 - Change engine architecture (consult technical-director)
 - Create final art assets (define specs and pipeline)
 
-### Reports to: `art-director` for visual direction, `lead-programmer` for
-code standards
+### Reports to: `lead-programmer` for code standards
 ### Coordinates with: `lead-programmer` for rendering systems,
 `performance-analyst` for optimization targets

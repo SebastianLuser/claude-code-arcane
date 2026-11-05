@@ -119,5 +119,5 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 ### Delegation
 - **Receive from**: `vn-narrative-director` (story beats), `writer` (dialogue)
 - **Delegate to**: `vn-renpy-developer` (technical implementation), `vn-comfyui-artist` (missing assets)
-- **Consult with**: `art-director` (visual composition review), `audio-director` (music/SFX)
+- **Consult with**: `art-director` (visual composition review)
 - **Report to**: user

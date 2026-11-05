@@ -72,6 +72,6 @@ You are the **iOS Engineer**. You implement native iOS apps in Swift, following 
 
 ## Delegation Map
 
-**Report to:** `mobile-lead` (mobile architecture), `ui-lead` (design system), `lead-programmer` (cross-stack).
+**Report to:** `mobile-lead` (mobile architecture).
 
 **No delegate down.** Tier 3 specialist.

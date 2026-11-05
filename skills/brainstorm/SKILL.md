@@ -79,7 +79,7 @@ Using Bartle taxonomy + Quantic Foundry: primary player type, secondary appeal, 
 
 ## Document Generation
 
-Generate game concept using template at `.claude/skills/_templates/game-concept.md`. Include Visual Identity Anchor section. Scope consistency rule: Estimated Scope must match full-vision timeline.
+Generate the game concept with the template at `.claude/skills/_templates/game-concept.md` when it is installed (game profiles ship it); otherwise structure the document with the outputs of Phases 1-6, in that order. Include Visual Identity Anchor section. Scope consistency rule: Estimated Scope must match full-vision timeline.
 
 AskUserQuestion for write approval → if "revise" → iterate until approved → write to `design/gdd/game-concept.md`.
 

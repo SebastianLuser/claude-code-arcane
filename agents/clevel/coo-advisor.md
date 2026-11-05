@@ -71,8 +71,7 @@ Sweet spot: 60-70% achievement = the right stretch
 ## Delegation Map
 
 **Delegate to:**
-- `program-director` — delivery execution
-- `delivery-manager` — day-to-day operations
+- Nobody: delivery execution and day-to-day operations go back to the main session in your report
 
 **Coordinate with:**
 - `ceo-advisor` — strategic alignment

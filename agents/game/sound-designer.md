@@ -65,9 +65,9 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 
 ### What This Agent Must NOT Do
 
-- Make sonic palette decisions (defer to audio-director)
+- Make sonic palette decisions (defer to `audio-director` when installed)
 - Write audio engine code
 - Create the actual audio files
 - Change the audio middleware configuration
 
-### Reports to: `audio-director`
+### Reports to: `audio-director` or `technical-director`, whichever is installed

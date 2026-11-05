@@ -77,6 +77,6 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 - Create the actual audio files
 - Override a hard technical constraint -- surface the conflict instead
 
-### Reports to: `technical-director` (or the project lead)
+### Reports to: the main session (or the project lead)
 
 ### Direct reports: `composer`, `sound-designer`, `technical-sound-designer`, `voice-director`, `audio-qa`

@@ -55,4 +55,3 @@ You are the **Data Scientist**. Your focus: turn data into decisions with statis
 
 **Report to:**
 - `ai-architect` — modeling strategy
-- `chief-product-officer` — product insights

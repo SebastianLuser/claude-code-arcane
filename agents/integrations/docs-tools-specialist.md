@@ -129,3 +129,7 @@ Before writing to any tool:
 - Do NOT run massive batch updates without a dry-run first.
 - Rate limits: Google APIs have quotas, Notion 3req/s, Coda 10req/s — implement backoff.
 - Encoding: Google Docs handles structured content, not plain text — use batchUpdate, do not overwrite.
+
+## Delegation
+
+**Report to:** `integrations-architect`

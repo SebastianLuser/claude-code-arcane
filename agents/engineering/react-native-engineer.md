@@ -108,6 +108,6 @@ const token = storage.getString("user.token");
 
 ## Delegation Map
 
-**Report to:** `mobile-lead` (mobile architecture), `ui-lead` (design system), `lead-programmer` (cross-stack).
+**Report to:** `mobile-lead` (mobile architecture).
 
 **No delegate down.** Tier 3 specialist.

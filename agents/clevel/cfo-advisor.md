@@ -55,8 +55,7 @@ Action triggers:
 ## Delegation Map
 
 **Delegate to:**
-- `financial-analyst` — detailed analysis, DCF, ratios
-- `business-ops-lead` — revenue operations
+- Nobody: detailed analysis and revenue operations go back to the main session in your report
 
 **Coordinate with:**
 - `ceo-advisor` — fundraising strategy

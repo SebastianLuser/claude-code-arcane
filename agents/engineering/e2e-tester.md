@@ -61,6 +61,6 @@ await app.close();
 
 ## Delegation Map
 
-**Report to:** `qa-director`, `lead-programmer`.
-**Coordinates with:** `nextjs-engineer`, `nestjs-engineer`.
+**Report to:** `frontend-architect`.
+**Coordinates with:** `nextjs-engineer` or `react-engineer`, whichever is installed.
 **No delegate down.** Tier 3 specialist.

@@ -157,3 +157,7 @@ You receive a message + a list of channels/platforms:
 - **Heavy attachments:** Slack caps files at 1GB, Discord at 25MB. For large ones, send a link.
 - **Encoding:** Watch out for special characters in JSON (escape them).
 - **Spam prevention:** If a workflow sends >3 messages/min to a channel → suspect a bug, raise an alert.
+
+## Delegation
+
+**Report to:** `integrations-architect`

@@ -136,5 +136,6 @@ Re-threat-model when: major feature, infra change, incident
 
 
 **Coordinate with:**
-- `chief-technology-officer` — architectural security
-- `qa-director` — security testing
+- `backend-architect` or `technical-director`, whichever is installed — architectural security
+
+**Report to:** the main session

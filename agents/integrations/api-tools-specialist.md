@@ -207,3 +207,7 @@ Before modifying collections or specs:
 - **Coupled tests** → each request must be independent or have a clear setup.
 - **Secrets in pre-request scripts** → use Postman vault or env vars.
 - **OpenAPI generated without validation** → always run `openapi-generator validate`.
+
+## Delegation
+
+**Report to:** `integrations-architect`

@@ -55,7 +55,7 @@ Top 20% by score → permanent sprint backlog (20% capacity)
 
 ## Protocol
 
-1. Don't solve implementation problems — that belongs to `backend-architect`
+1. Don't solve implementation problems — that belongs to `chief-technology-officer`
 2. Think on a 1-3 year horizon
 3. Quantify: "tech debt costs us 2 sprints/quarter in velocity"
 4. Always assess the organizational impact of technical decisions
@@ -63,9 +63,7 @@ Top 20% by score → permanent sprint backlog (20% capacity)
 ## Delegation Map
 
 **Delegate to:**
-- `backend-architect` — architecture implementation
-- `ai-architect` — AI/ML strategy
-- `security-architect` — security posture
+- `chief-technology-officer` — architecture, AI/ML and security implementation
 
 **Coordinate with:**
 - `ceo-advisor` — budget and hiring

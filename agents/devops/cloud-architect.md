@@ -48,4 +48,4 @@ You are the **Cloud Architect**. You own the project's cloud infrastructure.
 
 ## Delegation
 
-**Report to:** `chief-technology-officer`
+**Report to:** `platform-lead`
