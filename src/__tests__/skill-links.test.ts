@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseProfile } from "../profiles.js";
+import { SKILL_ROOTS } from "./skill-roots.js";
 
 /**
  * A skill that links to a reference file the model then cannot open loses that
@@ -170,7 +171,8 @@ function walk(dir: string): string[] {
 describe("relative links in skills", () => {
   it("every linked file exists", () => {
     const broken: string[] = [];
-    for (const file of walk(SKILLS)) {
+    // The contributor-only skills in maintainers/skills/ follow the same rule.
+    for (const file of SKILL_ROOTS.filter((root) => fs.existsSync(root)).flatMap(walk)) {
       const text = fs.readFileSync(file, "utf-8").replace(/```[\s\S]*?```/g, "");
       for (const [, raw] of text.matchAll(/\]\(([^)\s]+)\)/g)) {
         const target = raw.split("#")[0];

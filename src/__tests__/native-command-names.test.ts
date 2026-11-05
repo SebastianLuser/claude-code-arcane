@@ -1,7 +1,5 @@
 import { describe, it, expect } from "vitest";
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { skillDirs } from "./skill-roots.js";
 
 /**
  * A project skill with the same name as a Claude Code command replaces it:
@@ -32,11 +30,8 @@ terminal-setup theme tp tui ultraplan ultrareview undo update-config upgrade usa
 usage-credits verify vim voice web-setup workflow-authoring workflows
 `.trim().split(/\s+/);
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const skills = fs
-  .readdirSync(path.join(repoRoot, "skills"), { withFileTypes: true })
-  .filter((e) => e.isDirectory())
-  .map((e) => e.name);
+// Shipped and contributor-only alike: a native command shadows either in a session.
+const skills = skillDirs().map((s) => s.name);
 
 describe("skill names vs Claude Code native commands", () => {
   it("no shipped skill takes the name of a native command", () => {

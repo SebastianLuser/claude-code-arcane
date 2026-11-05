@@ -137,6 +137,11 @@ const skills = walk("skills", (n) => n === "SKILL.md")
   .map(parse)
   .filter((s): s is Parsed => s !== null);
 
+/** Contributor-only skills: no agent or profile reaches them, but their frontmatter follows the same rules. */
+const maintainerSkills = walk(path.join("maintainers", "skills"), (n) => n === "SKILL.md")
+  .map(parse)
+  .filter((s): s is Parsed => s !== null);
+
 const agentNames = new Set(agents.map((a) => a.slug));
 const agentDivision = new Map(
   agents.map((a) => [a.slug, a.file.split("/")[1]] as [string, string]),
@@ -375,7 +380,7 @@ describe("agent definitions", () => {
 describe("skill definitions", () => {
   it("declare only fields Claude Code reads", () => {
     const unknown: string[] = [];
-    for (const s of skills) {
+    for (const s of [...skills, ...maintainerSkills]) {
       for (const k of s.keys) {
         if (!SKILL_FIELDS.has(k)) unknown.push(`${s.file}: ${k}`);
       }
@@ -384,7 +389,7 @@ describe("skill definitions", () => {
   });
 
   it("context: only ever says fork", () => {
-    const wrong = skills
+    const wrong = [...skills, ...maintainerSkills]
       .filter((s) => s.fm.context !== undefined && s.fm.context !== "fork")
       .map((s) => `${s.file}: context=${JSON.stringify(s.fm.context)}`);
     expect(wrong).toEqual([]);

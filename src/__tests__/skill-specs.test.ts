@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { findSkill } from "./skill-roots.js";
 
 /**
  * `skills-selftest/skills/` holds behavioural specs for skills. 25 of them
@@ -41,8 +42,9 @@ describe("skills-selftest skill specs", () => {
   });
 
   it("every spec tests a skill that exists", () => {
+    // In skills/ or, for a contributor-only skill, in maintainers/skills/.
     const orphans = specs
-      .filter((s) => s.name && !fs.existsSync(path.join(repoRoot, "skills", s.name, "SKILL.md")))
+      .filter((s) => s.name && !findSkill(s.name))
       .map((s) => `${s.file} -> /${s.name}`);
     expect(orphans).toEqual([]);
   });
