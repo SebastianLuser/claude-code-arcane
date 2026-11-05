@@ -2,7 +2,7 @@
 
 ## What is Arcane?
 
-Arcane is a configuration harness for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). It provides a curated library of **454 skills**, **115 agents**, **13 hooks**, and **38 rules** that you selectively deploy into any project. Instead of shipping everything to every project (wasting tokens and degrading performance), you pick a **profile** that matches your stack and only the relevant tools get installed.
+Arcane is a configuration harness for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). It provides a curated library of **454 skills**, **115 agents**, **13 hooks**, and **39 rules** that you selectively deploy into any project. Instead of shipping everything to every project (wasting tokens and degrading performance), you pick a **profile** that matches your stack and only the relevant tools get installed.
 
 ## Table of Contents
 
@@ -256,7 +256,7 @@ Every installation automatically loads `core.yaml` first:
 | Category | Contents |
 |----------|----------|
 | **Skills (19)** | commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, tech-debt, arcane-status, arcane-list, arcane-add, arcane-remove, arcane-clean |
-| **Rules (3)** | verification, agent-delegation, user-language. The coding rules (implementation-workflow, test-standards, code-comments, prototype-code, data-files, git-worktrees) and `/kickoff` come with the `code-flow` workflow |
+| **Rules (4)** | verification, agent-delegation, user-language, shell-commands. The coding rules (implementation-workflow, test-standards, code-comments, prototype-code, data-files, git-worktrees) and `/kickoff` come with the `code-flow` workflow |
 | **Hooks (7)** | session-start, check-update, guard, session-watch (post-tool), pre-compact, post-compact, session-stop. `code-flow` adds detect-gaps, validate-commit, worktree-stop and the format/type check on stop; `improve-skill-flow` adds validate-skill-change; `unreal-dev` adds detect-unreal |
 | **Agents** | none: a profile like `job-hunt` has no use for QA agents, so they ship with `+testing` |
 | **Permissions** | 15 allow (git, ls, gh pr/issue/run and read-only gh, curl) + 13 deny (force push, reset --hard, clean -f, sudo, .env, etc.) |
@@ -274,7 +274,7 @@ npx claude-code-arcane install <profile>[+<profile>][+<profile>...]
 ### Rules
 
 1. **Always explicit** — there is no "full" or "all" profile. You choose what you need.
-2. **Core is automatic** — its 19 universal skills, 3 rules and 7 hooks are always included. Workflows come with the profiles that name them (`workflows: [code-flow]`).
+2. **Core is automatic** — its 19 universal skills, 4 rules and 7 hooks are always included. Workflows come with the profiles that name them (`workflows: [code-flow]`).
 3. **All profiles combine freely** — `unity-dev+unity-design`, `backend-go+frontend-react-vite`, or `backend-typescript+agile+testing`; there is no required "base".
 4. **Deduplication is automatic** — overlapping skills across profiles are installed once.
 5. **Replace, not merge** — installing a new profile replaces the previous one entirely (with backup).

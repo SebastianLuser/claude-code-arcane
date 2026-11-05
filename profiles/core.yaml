@@ -28,6 +28,7 @@ rules:
     - verification
     - agent-delegation
     - user-language
+    - shell-commands
   gamedev:
     []
 

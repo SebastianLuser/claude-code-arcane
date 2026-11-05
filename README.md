@@ -1,6 +1,6 @@
 # Claude Code Arcane
 
-> **454 skills, 115 agents, 13 hooks and 38 rules for Claude Code — selective deploy by profile.**
+> **454 skills, 115 agents, 13 hooks and 39 rules for Claude Code — selective deploy by profile.**
 
 A configuration harness installable via `npx`. Pick a **profile** that matches your stack and only the relevant tools get installed into your project's `.claude/` directory.
 
@@ -80,7 +80,7 @@ Not sure what to pick? Run `install` with no arguments to get an interactive pic
 Every installation automatically loads `core.yaml` first:
 - 19 essential skills (commit, create-pr, quality-review, what-next, etc.)
 - 7 lifecycle hooks (session start/stop, guard, loop and context watch, compaction log)
-- 3 base rules (verification, agent-delegation, user-language)
+- 4 base rules (verification, agent-delegation, user-language, shell-commands)
 - Security permissions (15 allow + 13 deny)
 
 Coding practice is not in core: code profiles bring the `code-flow` workflow (see [Workflows and loops](#5-workflows-and-loops)), and `install` adds it to any project with code in it.
@@ -302,7 +302,7 @@ A workflow is a process with a starting point. Other profiles bring it with `wor
 
 ### Core (always included)
 
-19 universal skills (commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, tech-debt, + 5 arcane self-management), 7 hooks, 3 base rules and security permissions. No agents: QA agents ship with `+testing`, the security architect with `+security`.
+19 universal skills (commit, create-pr, changelog, check, quality-review, context-prime, what-next, start, fix-issue, hotfix, brainstorm, scope-check, reverse-document, tech-debt, + 5 arcane self-management), 7 hooks, 4 base rules and security permissions. No agents: QA agents ship with `+testing`, the security architect with `+security`.
 
 ---
 
@@ -501,7 +501,7 @@ claude-code-arcane/
 ├── profiles/                  # 38 profiles (YAML)
 ├── agents/                    # 17 dirs, 109 agents (Markdown)
 ├── hooks/                     # 13 lifecycle hooks (Bash)
-├── rules/                     # 38 rules (Markdown)
+├── rules/                     # 39 rules (Markdown)
 ├── templates/                 # Gamedev templates
 ├── docs/                      # Documentation
 └── skills-selftest/           # QA framework
