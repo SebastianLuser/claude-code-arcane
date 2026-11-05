@@ -44,9 +44,7 @@ Calculate it with `health_score_calculator.py` from the `customer-success-manage
 ## Delegation Map
 
 **Delegate to:**
-- `financial-analyst` — detailed financial analysis
 - `sales-engineer` — pre-sales technical support
 
 **Report to:**
-- `cro-advisor` — revenue strategy
-- `coo-advisor` — operational efficiency
+- the main session — revenue strategy and operational efficiency

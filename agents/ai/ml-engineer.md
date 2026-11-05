@@ -55,7 +55,6 @@ Infra:        K8s + GPU nodes
 
 **Delegate to:**
 - `data-engineer` — upstream data pipelines
-- `sre-lead` — serving infrastructure
 
 **Report to:**
 - `ai-architect` — ML architecture decisions

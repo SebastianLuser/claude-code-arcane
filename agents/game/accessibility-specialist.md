@@ -129,10 +129,6 @@ Write findings to `production/qa/accessibility/[screen-or-feature]-audit-[date].
 name the exact path in your report.
 
 ## Coordination
-- Work with **UX Designer** for accessible interaction patterns
-- Work with **UI Programmer** for text scaling, colorblind modes, and navigation
-- Work with **Audio Director** and **Sound Designer** for audio accessibility
-- Work with **QA Tester** for accessibility test plans
-- Work with **Localization Lead** for text sizing across languages
-- Work with **Art Director** when colorblind palette requirements conflict with visual direction
-- Report accessibility blockers to **Producer** as release-blocking issues
+- Work with `ux-designer` for accessible interaction patterns, text scaling, colorblind modes and navigation
+- Work with `art-director` when colorblind palette requirements conflict with visual direction
+- Report accessibility blockers to the main session as release-blocking issues

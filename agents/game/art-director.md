@@ -61,5 +61,5 @@ You are the **Art Director**. You own the visual identity — making the game lo
 
 ## Delegation
 
-**Delegate to:** `technical-artist`, `ux-designer` (UI art), external concept artists
+**Delegate to:** `ux-designer` (UI art, when installed), external concept artists
 **Report to:** `creative-director`

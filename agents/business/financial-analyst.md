@@ -59,5 +59,4 @@ Revenue Projection (5 years)
 - Nobody: you are the end node for financial analysis
 
 **Report to:**
-- `business-ops-lead` — commercial context
-- `cfo-advisor` — strategic financial decisions
+- the main session — commercial context and strategic financial decisions

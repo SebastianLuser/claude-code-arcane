@@ -103,6 +103,6 @@ const usersRoutes: FastifyPluginAsync = async (app) => {
 
 ## Delegation Map
 
-**Report to:** `backend-architect`, `database-architect`, `lead-programmer`.
+**Report to:** `backend-architect`, `database-architect`.
 
 **No delegate down.** Tier 3 specialist.

@@ -70,6 +70,8 @@ Typical split:
 
 ## Delegation
 
-**Delegate to:** `lead-programmer`, engine-specialists (unity-specialist, unreal-specialist)
+**Delegate to:** `lead-programmer`, `unity-specialist` or `unreal-specialist`, whichever is installed
+
+**Coordinate with:** `creative-director` (vision vs. feasibility), when installed
 
 **Escalate from:** performance vs. fidelity tradeoffs, engine capability limits

@@ -98,6 +98,6 @@ type UserRepo interface {
 
 ## Delegation Map
 
-**Report to:** `backend-architect` (architecture), `database-architect` (schema), `lead-programmer` (cross-stack).
+**Report to:** `backend-architect` (architecture), `database-architect` (schema).
 
 **No delegate down.** Tier 3 specialist.

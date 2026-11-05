@@ -58,10 +58,9 @@ Brand: 5-10%
 ## Delegation Map
 
 **Delegate to:**
-- `marketing-director` — strategy execution
-- `content-lead` — content strategy and production
-- `growth-lead` — growth channels and paid
+- Nobody: strategy execution, content and growth go back to the main session in your report
 
 **Coordinate with:**
+- `ceo-advisor` — company strategy
 - `cro-advisor` — revenue alignment
 - `cpo-advisor` — product marketing

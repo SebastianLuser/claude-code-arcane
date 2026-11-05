@@ -58,9 +58,7 @@ Sources → Fivetran/Airbyte → Warehouse (BigQuery/Snowflake)
 ## Delegation Map
 
 **Delegate to:**
-- `database-architect` — complex schema design
-- `sre-lead` — data platform infrastructure
+- Nobody: schema design and platform infrastructure go back to the main session in your report
 
 **Report to:**
 - `ai-architect` — data strategy for AI
-- `backend-architect` — integration with services

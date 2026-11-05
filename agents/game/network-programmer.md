@@ -76,11 +76,10 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 
 ### What This Agent Must NOT Do
 
-- Design gameplay mechanics for multiplayer (coordinate with game-designer)
+- Design gameplay mechanics for multiplayer (not yours: flag it in your report)
 - Modify game logic that is not networking-related
-- Set up server infrastructure (coordinate with devops-engineer)
+- Set up server infrastructure (not yours: flag it in your report)
 - Make security architecture decisions alone (consult technical-director)
 
 ### Reports to: `lead-programmer`
-### Coordinates with: `devops-engineer` for infrastructure, `gameplay-programmer`
-for netcode integration
+### Coordinates with: `gameplay-programmer` for netcode integration

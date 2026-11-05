@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseProfile } from "../profiles.js";
+import { mergeProfiles, parseProfile } from "../profiles.js";
 
 /**
  * Agents and skills point at each other by name, and until this test existed
@@ -485,6 +485,69 @@ describe("profiles", () => {
       }
     }
     expect(ghosts).toEqual([]);
+  });
+});
+
+describe("agent relations inside each profile", () => {
+  // 3.3.0 shipped 155 references to agents the same profile never installs:
+  // go-engineer reported to the game division's lead-programmer, and 24 agents
+  // had no installed agent to report to at all. A subagent cannot spawn another,
+  // so the name only misleads it and the main session, which falls back to a
+  // general-purpose agent. Each profile is checked as installed: core plus its
+  // workflows, the same merge the installer runs.
+  const installs = profiles
+    .filter((p) => p.name !== "core")
+    .map((p) => {
+      const merged = mergeProfiles(path.join(repoRoot, "profiles"), [p.name]);
+      const shipped = { name: p.name, agents: merged.agents, skills: [] };
+      return { name: p.name, agents: new Set(agents.filter((a) => profileProvides(shipped, a.slug)).map((a) => a.slug)) };
+    })
+    .filter((i) => i.agents.size > 0);
+
+  const word = /(?<![\w-])([a-z]+(?:-[a-z]+)*)(?![\w-])/g;
+  /** Agents a line names: hyphenated slugs anywhere, one-word slugs (`writer`) only in backticks. */
+  function named(line: string, self: string): string[] {
+    return [...line.matchAll(word)]
+      .map((m) => m[1])
+      .filter((n) => n !== self && agentNames.has(n) && (n.includes("-") || line.includes(`\`${n}\``)));
+  }
+  // An agent shipped by several profiles may list per-stack alternatives
+  // ("`ios-engineer` or `android-engineer`, whichever is installed"). The guard
+  // only covers a name that some profile shipping the agent does install.
+  const guard = /whichever is installed|when installed/i;
+
+  it("an agent only names agents its profile installs", () => {
+    const foreign = new Set<string>();
+    for (const a of agents) {
+      const homes = installs.filter((i) => i.agents.has(a.slug));
+      for (const line of a.body.split("\n")) {
+        for (const ref of named(line, a.slug)) {
+          const missing = homes.filter((i) => !i.agents.has(ref));
+          if (!missing.length) continue;
+          if (guard.test(line) && homes.some((i) => i.agents.has(ref))) continue;
+          foreign.add(`${a.file}: ${ref} (not installed by ${missing.map((i) => i.name).join(", ")})`);
+        }
+      }
+    }
+    expect([...foreign].sort()).toEqual([]);
+  });
+
+  it("every agent keeps a relation in every profile that installs it", () => {
+    // Removing a cross-profile name must not leave an agent with nobody to hand
+    // work to. A relation is an installed agent it names, or a report line to
+    // the main session, a human or the founder, which a subagent always has.
+    // The header line plus the bullets under it: "**Report to:**\n- the main session".
+    const block = /\b(?:Reports? to|Escalate to)\b[^\n]*(?:\n[ \t]*-[^\n]*)*/gi;
+    const upward = (body: string) =>
+      [...body.matchAll(block)].some((m) => /\b(?:the main session|a human|user|the founder)\b/i.test(m[0]));
+    const isolated: string[] = [];
+    for (const i of installs) {
+      for (const a of agents.filter((x) => i.agents.has(x.slug))) {
+        const peers = a.body.split("\n").flatMap((line) => named(line, a.slug)).filter((n) => i.agents.has(n));
+        if (!peers.length && !upward(a.body)) isolated.push(`${i.name}: ${a.slug}`);
+      }
+    }
+    expect(isolated).toEqual([]);
   });
 });
 

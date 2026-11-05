@@ -61,5 +61,5 @@ You are the game's **QA Lead**. You own quality assurance from playtesting to ce
 
 ## Delegation
 
-**Delegate to:** `accessibility-specialist`
+**Delegate to:** `qa-tester-gamedev` (test execution)
 **Report to:** `producer` (schedule) or `technical-director` (tech issues)

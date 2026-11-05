@@ -83,4 +83,4 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 - Make up new lore that contradicts established world-building
 
 ### Reports to: `narrative-director`
-### Coordinates with: `game-designer` for mechanical clarity in text
+### Coordinates with: `game-designer` (when installed) for mechanical clarity in text

@@ -70,6 +70,6 @@ You are the **NestJS Engineer**. You implement backend APIs in NestJS with stric
 
 ## Delegation Map
 
-**Report to:** `backend-architect`, `database-architect`, `lead-programmer`.
+**Report to:** `backend-architect`, `database-architect`.
 **Coordinates with:** `e2e-tester` (e2e coverage), `sql-specialist` (query optimization).
 **No delegate down.** Tier 3 specialist.

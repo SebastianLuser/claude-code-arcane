@@ -81,4 +81,4 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 - Abort the audit because one optional external tool is missing
 - Soften a severity to make a milestone look better
 
-### Reports to: `audio-director` and `qa-lead`
+### Reports to: `audio-director`

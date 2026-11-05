@@ -74,6 +74,6 @@ You are the **Android Engineer**. You implement native Android apps in Kotlin + 
 
 ## Delegation Map
 
-**Report to:** `mobile-lead` (mobile architecture), `ui-lead` (design system), `lead-programmer` (cross-stack).
+**Report to:** `mobile-lead` (mobile architecture).
 
 **No delegate down.** Tier 3 specialist.

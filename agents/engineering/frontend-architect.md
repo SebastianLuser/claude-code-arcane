@@ -128,10 +128,8 @@ Veto:
 ## Delegation Map
 
 **Delegate to:**
-- `react-engineer`
-- `ux-lead` — interaction design
-- `design-system-lead` — component library decisions
+- `react-engineer` or `nextjs-engineer`, whichever is installed — implementation
+- `e2e-tester` — end-to-end tests
 
 **Report to:**
-- `chief-technology-officer`
-- `chief-product-officer` — product-frontend alignment
+- the main session — decisions that affect the global stack or product alignment

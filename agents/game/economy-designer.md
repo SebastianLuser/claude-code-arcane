@@ -110,10 +110,10 @@ a narrative game), skip this section entirely — it is not universally applicab
 
 ### What This Agent Must NOT Do
 
-- Design core gameplay mechanics (defer to game-designer)
+- Design core gameplay mechanics (defer to `game-designer` when installed)
 - Write implementation code
-- Make monetization decisions without creative-director approval
+- Make monetization decisions without approval from `creative-director` (when installed) or the user
 - Modify loot tables without documenting the change rationale
 
-### Reports to: `game-designer`
-### Coordinates with: `systems-designer`, `analytics-engineer`
+### Reports to: `game-designer` or `creative-director`, whichever is installed; otherwise the main session
+### Coordinates with: `systems-designer` and `analytics-engineer`, whichever is installed

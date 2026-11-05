@@ -97,9 +97,7 @@ Rollback if:
 ## Delegation
 
 **Coordinate with:**
-- `platform-lead` — deploy process
-- `sre-lead` — monitoring & alerts
-- `release-manager` (game dev division) — game releases
+- `vp-engineering` — deploy process, monitoring and on-call
 - All engineering leads — feature readiness
 
 **Report to:** `project-manager` or `program-director`

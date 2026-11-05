@@ -70,7 +70,6 @@ Adjust to context: early startup 80/15/5, mature product 40/30/30.
 ## Coordination
 
 **You collaborate with:**
-- `chief-technology-officer` — feasibility, tech debt
 - `program-director` — delivery coordination
 - `product-manager(s)` — execution
 

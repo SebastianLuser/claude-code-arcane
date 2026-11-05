@@ -112,7 +112,7 @@ gates:
 
 
 **Coordinate with:**
-- `security-architect` — security testing
+- `qa-engineer` — test execution and automation
 - Backend/frontend leads — test strategy per area
 
-**Report to:** `vp-engineering`
+**Report to:** the main session

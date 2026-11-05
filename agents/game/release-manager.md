@@ -62,5 +62,5 @@ feature branch → main → release/vX.Y.Z
 
 ## Delegation
 
-**Coordinate with:** `devops-engineer`, `producer`, platform contacts
+**Coordinate with:** `producer`, platform contacts
 **Report to:** `producer`

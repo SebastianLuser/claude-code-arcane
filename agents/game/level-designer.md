@@ -89,4 +89,4 @@ Each level document must contain:
 - Set difficulty parameters for the whole game (only per-encounter)
 
 ### Reports to: `game-designer`
-### Coordinates with: `narrative-director`, `art-director`, `audio-director`
+### Coordinates with: `narrative-director`, `art-director`

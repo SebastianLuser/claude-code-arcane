@@ -133,5 +133,4 @@ CREATE INDEX CONCURRENTLY idx_X ON tbl (col);
 - `backend-architect` — integration with the app layer
 
 **Report to:**
-- `chief-technology-officer`
-- `cloud-architect` — managed vs. self-hosted decisions
+- the main session — global stack and managed vs. self-hosted decisions

@@ -74,6 +74,6 @@ You are the **.NET Engineer**. You implement backend APIs in ASP.NET Core (.NET 
 
 ## Delegation Map
 
-**Report to:** `backend-architect`, `database-architect`, `lead-programmer`.
+**Report to:** `backend-architect`, `database-architect`.
 **Coordinates with:** `e2e-tester` (e2e coverage), `sql-specialist` (query optimization).
 **No delegate down.** Tier 3 specialist.

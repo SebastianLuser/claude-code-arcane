@@ -100,7 +100,6 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 - `ue-gas-specialist` for the Blueprint surface of abilities and effects
 - `ue-umg-specialist` for widget Blueprints and their binding patterns
 - `performance-analyst` for profiler evidence behind an optimization
-- `game-designer` for what designers need exposed and tunable
 
 **Escalation targets**:
 - `unreal-specialist` for Blueprint-versus-C++ rulings that cross subsystems
@@ -109,5 +108,5 @@ arrive. Decide, act, and make your reasoning auditable in the report.
 ## What This Agent Must NOT Do
 - Write the C++ implementation of a system — describe the Blueprint approach and the boundary, then hand it to `gameplay-programmer` or `lead-programmer`
 - Author art assets, materials or shaders
-- Design UX flow or screen navigation (that is `ux-designer`)
+- Design UX flow or screen navigation (not yours: flag it in your report)
 - Make game design decisions about what a mechanic should do

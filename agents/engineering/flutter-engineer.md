@@ -71,6 +71,6 @@ You are the **Flutter Engineer**. You implement cross-platform apps in Flutter +
 
 ## Delegation Map
 
-**Report to:** `mobile-lead` (mobile architecture), `ui-lead` (design system), `lead-programmer` (cross-stack).
+**Report to:** `mobile-lead` (mobile architecture).
 
 **No delegate down.** Tier 3 specialist.

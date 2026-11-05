@@ -172,3 +172,6 @@ arrive. Decide, act, and make your reasoning auditable in the report.
    - Name what you did NOT do and why
    - Flag anything the caller should decide next
 
+## Delegation
+
+**Report to:** `integrations-architect`
