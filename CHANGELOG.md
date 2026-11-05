@@ -1,3 +1,10 @@
+# [3.5.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.4.0...v3.5.0) (2026-11-05)
+
+
+### Features
+
+* **guard:** ask before a session against a production environment ([0d09db0](https://github.com/SebastianLuser/claude-code-arcane/commit/0d09db07142e7145c4bd08019237a2b2b17cf078))
+
 # [3.4.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.3.0...v3.4.0) (2026-11-05)
 
 
