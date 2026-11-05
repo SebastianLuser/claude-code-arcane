@@ -1,3 +1,10 @@
+## [3.5.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.5.0...v3.5.1) (2026-11-05)
+
+
+### Bug Fixes
+
+* **agents:** name only agents the same profile installs ([e3a41ce](https://github.com/SebastianLuser/claude-code-arcane/commit/e3a41ced2f65422cd3c879cd41b2732bc99b4c58))
+
 # [3.5.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.4.0...v3.5.0) (2026-11-05)
 
 
