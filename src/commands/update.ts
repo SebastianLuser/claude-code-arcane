@@ -13,7 +13,7 @@ import {
 import { mergeProfiles, resolveProfile } from "../profiles.js";
 import { looksLikeCode } from "../detect.js";
 import { parseAgentEntry } from "../agent-entries.js";
-import { healHooks, type HookMap } from "../hook-commands.js";
+import { HOOK_LIST_FILE, healHooks, hookList, writeHookList, type HookMap } from "../hook-commands.js";
 import { SETTINGS_ENV } from "../installer.js";
 import type { ArcaneManifest } from "../types.js";
 import {
@@ -922,6 +922,18 @@ function syncUnhashedFiles(
           changed.push(`settings.json (${healed.join(", ")})`);
           dirty = true;
         }
+      }
+
+      // The hooks read this list to know what this install's profiles want them to do.
+      let listed = "";
+      try {
+        listed = fs.readFileSync(path.join(claudeDir, HOOK_LIST_FILE), "utf-8");
+      } catch {
+        // Written for the first time below.
+      }
+      if (listed !== hookList(merged.hooks)) {
+        changed.push(HOOK_LIST_FILE);
+        if (!dryRun) writeHookList(claudeDir, merged.hooks);
       }
 
       // Core allowed `Bash(gh *)` before 2.13, which also lets Claude delete repos,

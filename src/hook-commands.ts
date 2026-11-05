@@ -1,10 +1,14 @@
-import os from "node:os";
+import fs from "node:fs";
 import path from "node:path";
 
 export interface HookEntry {
   type: string;
   command: string;
   timeout?: number;
+  /** Runs in the background; the turn does not wait for it. */
+  async?: boolean;
+  /** Runs in the background and wakes Claude when it exits with code 2. */
+  asyncRewake?: boolean;
 }
 
 export interface HookGroup {
@@ -20,162 +24,204 @@ export const SHELL_TOOLS_MATCHER = "Bash|PowerShell";
 /** Matcher for the tools that write files; the guard reviews their target path. */
 export const FILE_TOOLS_MATCHER = "Write|Edit|MultiEdit|NotebookEdit";
 
-/** What an install written before $CLAUDE_PROJECT_DIR wired into settings.json. */
-const LEGACY_COMMAND = /^bash \.claude\/hooks\/([\w.-]+\.sh)$/;
-
-/** Any command Arcane wrote for one of its hook scripts, in any of its forms. */
-const ARCANE_COMMAND = /^bash "?(?:\$CLAUDE_PROJECT_DIR\/|[^"]*\/)?\.claude\/hooks\/([\w.-]+\.sh)"?$/;
-
-/** The same, with the argument a script that serves two events takes. */
-const ARCANE_ENTRY = /^bash "?(?:\$CLAUDE_PROJECT_DIR\/|[^"]*\/)?\.claude\/hooks\/([\w.-]+\.sh)"?(?: ([\w-]+))?$/;
+/** Every tool the guard reviews, in the one PreToolUse handler. */
+export const GUARDED_TOOLS_MATCHER = `${SHELL_TOOLS_MATCHER}|${FILE_TOOLS_MATCHER}`;
 
 /**
- * Scripts no longer shipped. The guard replaced validate-push and validate-secrets,
- * whose substring checks fired on text inside arguments (a prompt or a commit
- * message that mentions `git push --force ... main`); validate-assets was a
- * placeholder that never checked anything. detect-division, notify and the two
- * log-agent scripts only appended to files under session-state/ that nothing read.
- * The update removes the files, so their settings.json entries must go with them.
+ * The file beside settings.json listing the hook ids the install's profiles want.
+ * The settings.json command is the same in every install, so the hooks read this
+ * file to know what to run: the project's when it has one, else their own install's.
  */
-const RETIRED_SCRIPTS = new Set([
-  "validate-push.sh",
-  "validate-secrets.sh",
-  "validate-assets.sh",
-  "detect-division.sh",
-  "notify.sh",
-  "log-agent.sh",
-  "log-agent-stop.sh",
-]);
+export const HOOK_LIST_FILE = "arcane-hooks.json";
 
 /**
- * The command settings.json runs for an installed hook script.
- *
- * Claude Code runs project hooks from the session's working directory, which is the
- * worktree once a session enters one with EnterWorktree. A worktree whose
- * `.claude/hooks/` is not committed has no scripts, so a relative path failed there
- * and the hook was skipped without a word. `$CLAUDE_PROJECT_DIR` always names the
- * directory the session started in, so the script is found from any worktree; on
- * Windows hooks run under Git Bash, which expands it, spaces in the path included.
- *
- * The global install at `~/.claude` is the exception: there the variable names
- * whichever project is open, so it gets the absolute path of the file it owns.
+ * One handler per event. Claude Code starts a process for every hook it runs, and on
+ * Windows each start costs 0.2-1.5 s at rest and several seconds on a loaded machine;
+ * a Bash command used to start seven. `ids` are the profile hook ids a handler
+ * serves: it is wired when the install wants any of them, and arcane-hook.mjs or
+ * session-start.sh runs only the parts the install wants.
  */
-export function hookCommand(target: string, script: string, args = ""): string {
-  const suffix = args ? ` ${args}` : "";
-  if (path.resolve(target) === path.resolve(os.homedir())) {
-    const absolute = path.join(target, ".claude", "hooks", script).replace(/\\/g, "/");
-    return `bash "${absolute}"${suffix}`;
-  }
-  return `bash "$CLAUDE_PROJECT_DIR/.claude/hooks/${script}"${suffix}`;
-}
-
-function hook(target: string, script: string, timeout: number, args = ""): HookEntry {
-  return { type: "command", command: hookCommand(target, script, args), timeout };
-}
-
-/**
- * How installs before the Node hooks ran the session watch: Python, through run-py.sh, which
- * did nothing on a machine without a working Python. Rewritten in place.
- */
-const PYTHON_WATCH = /run-py\.sh"?\s+session_watch\.py\s+(post-tool|stop)\s*$/;
-
-interface Wiring {
+interface Handler {
   event: string;
   matcher: string;
+  file: string;
+  args?: string;
   timeout: number;
-  /** What healHooks() reports when it adds this hook to an existing install. */
-  label?: string;
+  async?: true;
+  asyncRewake?: true;
+  ids: readonly string[];
+  /** Wired whatever the profiles say. */
+  always?: true;
 }
 
-const SESSION_START: Wiring = { event: "SessionStart", matcher: "", timeout: 10 };
-const STOP: Wiring = { event: "Stop", matcher: "", timeout: 10 };
-
-/**
- * Every hook Arcane can wire, by the id profiles list under `hooks:`: the script,
- * plus its argument when one script serves two events. The order here is the order
- * in settings.json, so the guard runs before the other shell hooks.
- */
-const WIRING: ReadonlyArray<[string, Wiring[]]> = [
-  ["session-start.sh", [SESSION_START]],
-  ["detect-unreal.sh", [SESSION_START]],
-  ["detect-gaps.sh", [SESSION_START]],
-  ["check-update.sh", [SESSION_START]],
-  ["guard.sh", [
-    { event: "PreToolUse", matcher: SHELL_TOOLS_MATCHER, timeout: 10 },
-    { event: "PreToolUse", matcher: FILE_TOOLS_MATCHER, timeout: 10 },
-  ]],
-  ["validate-commit.sh", [{ event: "PreToolUse", matcher: SHELL_TOOLS_MATCHER, timeout: 15 }]],
-  ["validate-skill-change.sh", [{ event: "PostToolUse", matcher: "Write|Edit", timeout: 5 }]],
-  ["session-watch.sh post-tool", [{ event: "PostToolUse", matcher: "", timeout: 10, label: "session watch" }]],
-  ["pre-compact.sh", [{ event: "PreCompact", matcher: "", timeout: 10 }]],
-  ["post-compact.sh", [{ event: "PostCompact", matcher: "", timeout: 10 }]],
-  ["session-stop.sh", [STOP]],
-  ["worktree-stop.sh", [{ ...STOP, label: "worktree exit on stop" }]],
-  ["session-watch.sh stop", [{ ...STOP, timeout: 120, label: "format and type check on stop" }]],
+const HANDLERS: readonly Handler[] = [
+  {
+    event: "SessionStart", matcher: "", file: "session-start.sh", timeout: 30,
+    ids: ["session-start.sh", "detect-unreal.sh", "detect-gaps.sh", "check-update.sh"],
+  },
+  // The guard is the one hook that protects, so it is wired whatever the profiles say.
+  {
+    event: "PreToolUse", matcher: GUARDED_TOOLS_MATCHER, file: "arcane-hook.mjs", args: "pre-tool", timeout: 15,
+    ids: ["guard.sh", "validate-commit.sh"], always: true,
+  },
+  // Warnings only: the tool already ran, so nothing here is worth waiting for.
+  {
+    event: "PostToolUse", matcher: "", file: "arcane-hook.mjs", args: "post-tool", timeout: 30, async: true,
+    ids: ["session-watch.sh post-tool", "validate-skill-change.sh"],
+  },
+  { event: "PreCompact", matcher: "", file: "pre-compact.sh", timeout: 10, async: true, ids: ["pre-compact.sh"] },
+  { event: "PostCompact", matcher: "", file: "post-compact.sh", timeout: 10, async: true, ids: ["post-compact.sh"] },
+  // Formatting stays in the foreground: in the background it could rewrite a file
+  // Claude edits in the next turn. The type check does not write, so it waits for
+  // nobody and wakes Claude only when the files it edited have errors.
+  {
+    event: "Stop", matcher: "", file: "arcane-hook.mjs", args: "stop", timeout: 120,
+    ids: ["session-stop.sh", "worktree-stop.sh", "session-watch.sh stop"],
+  },
+  {
+    event: "Stop", matcher: "", file: "arcane-hook.mjs", args: "stop-check", timeout: 300, asyncRewake: true,
+    ids: ["session-watch.sh stop"],
+  },
 ];
 
 /** Every hook id a profile may list. */
-export const HOOK_IDS: readonly string[] = WIRING.map(([id]) => id);
+export const HOOK_IDS: readonly string[] = [...new Set(HANDLERS.flatMap((h) => h.ids))];
 
 /** The ids a profile list asks for; a bare `session-watch.sh`, as content before 3.1 lists it, means both. */
 function wantedIds(ids: readonly string[]): Set<string> {
   return new Set(ids.flatMap((id) => (id === "session-watch.sh" ? ["session-watch.sh post-tool", "session-watch.sh stop"] : [id])));
 }
 
-function entryFor(target: string, id: string, wiring: Wiring): HookEntry {
-  const [script, args = ""] = id.split(" ");
-  return hook(target, script, wiring.timeout, args);
+/**
+ * The command settings.json runs for one of Arcane's hook files.
+ *
+ * The same text in the global install and in every project: Claude Code runs a
+ * handler once when several settings files define it, so a project with its own
+ * install no longer runs each hook twice. It runs the global copy whenever there is
+ * one, and the project's only on a machine without a global install: the global
+ * settings must never run code a cloned repository ships, which would also let the
+ * repository replace the guard. What runs still follows the project, through its
+ * arcane-hooks.json, read as data. `$CLAUDE_PROJECT_DIR` names the directory the
+ * session started in, so a worktree finds the scripts too. Hooks run under Git Bash
+ * on Windows and sh elsewhere; `[` is a builtin there, so choosing starts no process.
+ */
+export function hookCommand(file: string, args = ""): string {
+  const run = file.endsWith(".mjs") ? "node" : "bash";
+  const suffix = args ? ` ${args}` : "";
+  return `h=.claude/hooks/${file}; [ -f "$HOME/$h" ] && h="$HOME/$h" || h="$CLAUDE_PROJECT_DIR/$h"; ${run} "$h"${suffix}`;
 }
 
-/** The id of an entry Arcane wired, or null for a hook the user wrote. */
-function hookId(command: unknown): string | null {
-  const m = typeof command === "string" && command.match(ARCANE_ENTRY);
-  if (!m) return null;
-  const id = m[2] ? `${m[1]} ${m[2]}` : m[1];
-  return HOOK_IDS.includes(id) ? id : null;
+function entryFor(handler: Handler): HookEntry {
+  return {
+    type: "command",
+    command: hookCommand(handler.file, handler.args),
+    timeout: handler.timeout,
+    ...(handler.async ? { async: true } : {}),
+    ...(handler.asyncRewake ? { asyncRewake: true } : {}),
+  };
 }
 
-/** The hooks a fresh install wires into settings.json: those its profiles list. */
-export function defaultHooks(target: string, ids: readonly string[] = HOOK_IDS): HookMap {
+function handlersFor(ids: readonly string[]): Handler[] {
   const wanted = wantedIds(ids);
+  return HANDLERS.filter((h) => h.always || h.ids.some((id) => wanted.has(id)));
+}
+
+const label = (h: Handler) => (h.args ? `${h.file} ${h.args}` : h.file);
+
+/**
+ * The hooks a fresh install wires into settings.json: a handler for each event its
+ * profiles need. `target` no longer changes the command, which is the same everywhere.
+ */
+export function defaultHooks(_target: string, ids: readonly string[] = HOOK_IDS): HookMap {
   const hooks: HookMap = {};
-  for (const [id, wirings] of WIRING) {
-    if (!wanted.has(id)) continue;
-    for (const wiring of wirings) {
-      const groups = (hooks[wiring.event] ??= []);
-      let group = groups.find((g) => g.matcher === wiring.matcher);
-      if (!group) groups.push((group = { matcher: wiring.matcher, hooks: [] }));
-      group.hooks.push(entryFor(target, id, wiring));
-    }
+  for (const handler of handlersFor(ids)) {
+    const groups = (hooks[handler.event] ??= []);
+    let group = groups.find((g) => g.matcher === handler.matcher);
+    if (!group) groups.push((group = { matcher: handler.matcher, hooks: [] }));
+    group.hooks.push(entryFor(handler));
   }
   return hooks;
+}
+
+/** The content of arcane-hooks.json for `ids`. */
+export function hookList(ids: readonly string[] = HOOK_IDS): string {
+  const known = [...wantedIds(ids)].filter((id) => HOOK_IDS.includes(id)).sort();
+  return `${JSON.stringify({ hooks: known }, null, 2)}\n`;
+}
+
+/** Writes arcane-hooks.json into `claudeDir`; true when its content changed. */
+export function writeHookList(claudeDir: string, ids: readonly string[] = HOOK_IDS): boolean {
+  const file = path.join(claudeDir, HOOK_LIST_FILE);
+  const content = hookList(ids);
+  try {
+    if (fs.readFileSync(file, "utf-8") === content) return false;
+  } catch {
+    // Not written yet.
+  }
+  fs.writeFileSync(file, content, "utf-8");
+  return true;
+}
+
+// --- what earlier versions wrote -------------------------------------------------
+
+/** What an install written before $CLAUDE_PROJECT_DIR wired into settings.json. */
+const LEGACY_COMMAND = /^bash \.claude\/hooks\/([\w.-]+\.sh)$/;
+
+/** One script per hook, before 3.4: `bash "<dir>/.claude/hooks/<script>" [argument]`. */
+const SCRIPT_COMMAND = /^bash "?(?:\$CLAUDE_PROJECT_DIR\/|[^"]*\/)?\.claude\/hooks\/([\w.-]+\.sh)"?(?: [\w-]+)?$/;
+
+/** How installs before the Node hooks ran the session watch: Python, through run-py.sh. */
+const PYTHON_WATCH = /run-py\.sh"?\s+session_watch\.py\s+(?:post-tool|stop)\s*$/;
+
+/** A command hookCommand() writes: the file and the argument. */
+const CURRENT_COMMAND =
+  /^h=\.claude\/hooks\/([\w.-]+); \[ -f "\$HOME\/\$h" \] && h="\$HOME\/\$h" \|\| h="\$CLAUDE_PROJECT_DIR\/\$h"; (?:node|bash) "\$h"(?: ([\w-]+))?$/;
+
+/**
+ * Scripts no longer shipped. The guard replaced validate-push and validate-secrets;
+ * validate-assets never checked anything; detect-division, notify and the two
+ * log-agent scripts only appended to files nothing read.
+ */
+const RETIRED_SCRIPTS = ["validate-push.sh", "validate-secrets.sh", "validate-assets.sh", "detect-division.sh", "notify.sh", "log-agent.sh", "log-agent-stop.sh"];
+
+/** Every script an earlier version wired one by one; a user's own .claude/hooks script is none of these. */
+const ARCANE_SCRIPTS = new Set([...HOOK_IDS.map((id) => id.split(" ")[0]), ...RETIRED_SCRIPTS]);
+
+/** What an entry is: a handler of this version, one an earlier version wrote, or the user's own (null). */
+function arcaneEntry(command: unknown): { current: true; file: string; args: string } | { current: false; script: string } | null {
+  if (typeof command !== "string") return null;
+  const current = command.match(CURRENT_COMMAND);
+  if (current) return { current: true, file: current[1], args: current[2] ?? "" };
+  const script = command.match(SCRIPT_COMMAND) ?? command.match(LEGACY_COMMAND);
+  if (script && ARCANE_SCRIPTS.has(script[1])) return { current: false, script: script[1] };
+  if (PYTHON_WATCH.test(command)) return { current: false, script: "run-py.sh session_watch.py" };
+  return null;
 }
 
 /**
  * Brings the hooks of an existing install up to date without regenerating them, so
  * hooks the user added or edited survive:
- *   - a command still in the exact legacy relative form moves to `hookCommand()`;
- *   - entries for retired scripts are dropped, and groups left empty with them;
- *   - the Python session watch moves to the Node one;
- *   - the guard is added where it is missing, ahead of the other Bash hooks, and the
- *     group that runs it also matches PowerShell, which skipped every check before;
- *   - the hooks the installed profiles list are added where missing, and those no
- *     profile lists any more (a workflow removed, a hook moved out of core) go.
+ *   - every entry an earlier version wired, one script per hook in any of its path
+ *     forms, goes, and the handler that took its place comes in;
+ *   - a handler the profiles no longer need goes, and one they need is added;
+ *   - a handler's timeout and background flags follow this version.
  * Returns a description of each change; empty when nothing changed.
  */
-export function healHooks(hooks: HookMap, target: string, ids: readonly string[] = HOOK_IDS): string[] {
+export function healHooks(hooks: HookMap, _target: string, ids: readonly string[] = HOOK_IDS): string[] {
   const changes: string[] = [];
+  const handlers = handlersFor(ids);
+  const isWanted = (event: string, matcher: string, file: string, args: string) =>
+    handlers.some((h) => h.event === event && h.matcher === matcher && h.file === file && (h.args ?? "") === args);
 
   for (const [event, groups] of Object.entries(hooks)) {
     if (!Array.isArray(groups)) continue;
     for (const group of groups) {
       const kept = (group.hooks ?? []).filter((entry) => {
-        const script = typeof entry.command === "string" && entry.command.match(ARCANE_COMMAND);
-        if (script && RETIRED_SCRIPTS.has(script[1])) {
-          changes.push(`retired hook: ${script[1]}`);
-          return false;
-        }
-        return true;
+        const found = arcaneEntry(entry.command);
+        if (!found) return true;
+        if (found.current && isWanted(event, group.matcher ?? "", found.file, found.args)) return true;
+        changes.push(found.current ? `unwired hook: ${found.file}${found.args ? ` ${found.args}` : ""}` : `replaced hook: ${found.script}`);
+        return false;
       });
       if (kept.length !== (group.hooks ?? []).length) group.hooks = kept;
     }
@@ -183,93 +229,27 @@ export function healHooks(hooks: HookMap, target: string, ids: readonly string[]
     if (hooks[event].length === 0) delete hooks[event];
   }
 
-  for (const groups of Object.values(hooks)) {
-    for (const group of groups ?? []) {
-      for (const entry of group.hooks ?? []) {
-        const legacy = typeof entry.command === "string" && entry.command.match(LEGACY_COMMAND);
-        if (legacy) {
-          entry.command = hookCommand(target, legacy[1]);
-          changes.push(`hook path: ${legacy[1]}`);
+  for (const handler of handlers) {
+    const wanted = entryFor(handler);
+    const groups = (hooks[handler.event] ??= []);
+    let group = groups.find((g) => (g.matcher ?? "") === handler.matcher && g.hooks?.some((e) => e.command === wanted.command));
+    const present = group?.hooks.find((e) => e.command === wanted.command);
+    if (present) {
+      if (present.timeout !== wanted.timeout || !!present.async !== !!wanted.async || !!present.asyncRewake !== !!wanted.asyncRewake) {
+        Object.assign(present, { timeout: wanted.timeout });
+        for (const flag of ["async", "asyncRewake"] as const) {
+          if (wanted[flag]) present[flag] = true;
+          else delete present[flag];
         }
+        changes.push(`hook settings: ${label(handler)}`);
       }
+      continue;
     }
-  }
-
-  for (const groups of Object.values(hooks)) {
-    for (const group of groups ?? []) {
-      for (const entry of group.hooks ?? []) {
-        const watch = typeof entry.command === "string" && entry.command.match(PYTHON_WATCH);
-        if (watch) {
-          entry.command = hookCommand(target, "session-watch.sh", watch[1]);
-          changes.push(`session watch on Node: ${watch[1]}`);
-        }
-      }
-    }
-  }
-
-  const pre = (hooks.PreToolUse ??= []);
-  const hasGuard = (group: HookGroup) => group.hooks?.some((h) => h.command?.includes("guard.sh"));
-
-  const shell =
-    pre.find((g) => g.matcher === SHELL_TOOLS_MATCHER) ??
-    pre.find((g) => g.matcher === "Bash" && hasGuard(g)) ??
-    pre.find((g) => g.matcher === "Bash");
-  if (!shell) {
-    pre.unshift({ matcher: SHELL_TOOLS_MATCHER, hooks: [hook(target, "guard.sh", 10)] });
-    changes.push("guard for Bash and PowerShell");
-  } else {
-    if (!hasGuard(shell)) {
-      shell.hooks = [hook(target, "guard.sh", 10), ...(shell.hooks ?? [])];
-      changes.push("guard for Bash");
-    }
-    if (shell.matcher === "Bash") {
-      shell.matcher = SHELL_TOOLS_MATCHER;
-      changes.push("guard for PowerShell");
-    }
-  }
-
-  if (!pre.some((g) => g.matcher === FILE_TOOLS_MATCHER && hasGuard(g))) {
-    pre.push({ matcher: FILE_TOOLS_MATCHER, hooks: [hook(target, "guard.sh", 10)] });
-    changes.push("guard for file edits");
-  }
-
-  // The guard stays whatever the profiles say: it is the one hook that protects.
-  const wanted = wantedIds(ids);
-  for (const [event, groups] of Object.entries(hooks)) {
-    for (const group of groups ?? []) {
-      const kept = (group.hooks ?? []).filter((entry) => {
-        const id = hookId(entry.command);
-        if (!id || id === "guard.sh" || wanted.has(id)) return true;
-        changes.push(`unwired hook: ${id}`);
-        return false;
-      });
-      if (kept.length !== (group.hooks ?? []).length) group.hooks = kept;
-    }
-    hooks[event] = (groups ?? []).filter((group) => (group.hooks ?? []).length > 0);
-    if (hooks[event].length === 0) delete hooks[event];
-  }
-
-  for (const [id, wirings] of WIRING) {
-    if (id === "guard.sh" || !wanted.has(id)) continue;
-    for (const wiring of wirings) {
-      ensureHook(hooks, wiring, entryFor(target, id, wiring), wiring.label ?? `hook: ${id}`, changes);
-    }
+    group = groups.find((g) => (g.matcher ?? "") === handler.matcher);
+    if (group) group.hooks = [...(group.hooks ?? []), wanted];
+    else groups.push({ matcher: handler.matcher, hooks: [wanted] });
+    changes.push(`hook: ${label(handler)}`);
   }
 
   return changes;
-}
-
-/**
- * Adds `entry` to the group of its event and matcher unless a hook with the same
- * script and arguments is already wired for that event.
- */
-function ensureHook(hooks: HookMap, wiring: Wiring, entry: HookEntry, label: string, changes: string[]): void {
-  const signature = entry.command.replace(/^bash "[^"]*\/hooks\//, "");
-  const groups = (hooks[wiring.event] ??= []);
-  const present = groups.some((g) => g.hooks?.some((h) => h.command?.endsWith(signature)));
-  if (present) return;
-  const group = groups.find((g) => (g.matcher ?? "") === wiring.matcher);
-  if (group) group.hooks = [...(group.hooks ?? []), entry];
-  else groups.push({ matcher: wiring.matcher, hooks: [entry] });
-  changes.push(label);
 }

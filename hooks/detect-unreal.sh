@@ -79,6 +79,13 @@ main() {
     context="$context No \`.mcp.json\` is present yet. Run \`ModelContextProtocol.GenerateClientConfig ClaudeCode\` in the editor console to generate one."
   fi
 
+  # Sourced by session-start.sh, the output joins its plain text: a JSON line there
+  # would reach Claude as text, not as a field.
+  if [[ -n "$ARCANE_SOURCED" ]]; then
+    printf '%s\n' "$context"
+    return 0
+  fi
+
   # JSON-escape the dynamic content: backslash first, then double quote.
   local escaped="${context//\\/\\\\}"
   escaped="${escaped//\"/\\\"}"
@@ -87,4 +94,5 @@ main() {
 }
 
 main 2>/dev/null
-exit 0
+# session-start.sh sources this file to save a process; `exit` would end it there.
+return 0 2>/dev/null || exit 0

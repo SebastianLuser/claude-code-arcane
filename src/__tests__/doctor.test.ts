@@ -63,14 +63,20 @@ describe("diagnose", () => {
     expect(byName(diagnose(target, healthy), "settings.json").verdict).toBe("fail");
   });
 
-  it("names a hook script that is missing, including the Node script behind a wrapper", () => {
+  it("names a hook file that is missing, including the modules the dispatcher imports", () => {
     const target = install();
-    fs.rmSync(path.join(target, ".claude", "hooks", "guard.sh"));
+    fs.rmSync(path.join(target, ".claude", "hooks", "guard.mjs"));
     fs.rmSync(path.join(target, ".claude", "hooks", "session-watch.mjs"));
     const check = byName(diagnose(target, healthy), "hook scripts");
     expect(check.verdict).toBe("fail");
-    expect(check.detail).toContain("hooks/guard.sh");
+    expect(check.detail).toContain("hooks/guard.mjs");
     expect(check.detail).toContain("hooks/session-watch.mjs");
+  });
+
+  it("warns when the hook list is missing, since then only the guard runs", () => {
+    const target = install();
+    fs.rmSync(path.join(target, ".claude", "arcane-hooks.json"));
+    expect(byName(diagnose(target, healthy), "hook list").verdict).toBe("warn");
   });
 
   it("fails when bash rejects a script", () => {

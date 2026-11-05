@@ -64,7 +64,7 @@ These are the ones that are hard to find by hand — all live in `src/__tests__/
 | Skill | `skills/<name>/SKILL.md` | list it in the profile YAML(s), in `docs/SKILLS-CATALOG.md` and in `skills-selftest/catalog.yaml` |
 | Agent | `agents/<division>/<name>.md` | `docs/agent-hierarchy.md` + `docs/directory-structure.md` |
 | Rule | `rules/<name>.md` or `rules/gamedev/<name>.md` | the profile's `rules.universal` / `rules.gamedev` |
-| Hook | `hooks/<name>.sh` | the profile's `hooks:` (usually `core.yaml`) |
+| Hook | a part of `hooks/arcane-hook.mjs` (or `hooks/<name>.sh` for SessionStart, sourced by `session-start.sh`) | the profile's `hooks:` (usually `core.yaml`) and the handler's `ids` in `HANDLERS` (`src/hook-commands.ts`): one handler per event, never one process per hook |
 
 ## Stack
 
