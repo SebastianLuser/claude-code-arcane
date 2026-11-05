@@ -13,7 +13,7 @@ Test → fix → retest → keep or revert loop on a single skill.
 
 ## Phase 1: Parse Argument
 
-Read skill name from first arg. Verify `skills/[name]/SKILL.md` exists. If missing → stop.
+Read skill name from first arg. Verify `skills/[name]/SKILL.md` exists, or in this repo `maintainers/skills/[name]/SKILL.md` for a contributor-only skill. If neither → stop.
 
 ## Phase 2: Baseline Test
 

@@ -59,9 +59,12 @@ These are the ones that are hard to find by hand — all live in `src/__tests__/
 
 ## Adding content
 
+`/arcane-author skill <name>` or `/arcane-author profile <name>` does a skill or a profile with all of the below, from this repo.
+
 | What | Where | Also |
 |---|---|---|
 | Skill | `skills/<name>/SKILL.md` | list it in the profile YAML(s), in `docs/SKILLS-CATALOG.md` and in `skills-selftest/catalog.yaml` |
+| Contributor-only skill | `maintainers/skills/<name>/SKILL.md` (npm never ships it) | an identical copy in `.claude/skills/<name>/` and an entry in `skills-selftest/catalog.yaml`; no profile, no `docs/SKILLS-CATALOG.md` row, no doc counts |
 | Agent | `agents/<division>/<name>.md` | `docs/agent-hierarchy.md` + `docs/directory-structure.md` |
 | Rule | `rules/<name>.md` or `rules/gamedev/<name>.md` | the profile's `rules.universal` / `rules.gamedev` |
 | Hook | a part of `hooks/arcane-hook.mjs` (or `hooks/<name>.sh` for SessionStart, sourced by `session-start.sh`) | the profile's `hooks:` (usually `core.yaml`) and the handler's `ids` in `HANDLERS` (`src/hook-commands.ts`): one handler per event, never one process per hook |

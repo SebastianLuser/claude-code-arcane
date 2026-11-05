@@ -1,4 +1,4 @@
-# Skill Spec: /[skill-name]
+# Skill Test Spec: /[skill-name]
 
 > **Category**: [gate | review | authoring | readiness | pipeline | analysis | team | sprint | utility]
 > **Priority**: [critical | high | medium | low]

@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import yaml from "js-yaml";
+import { SKILL_ROOTS, findSkill, skillDirs } from "./skill-roots.js";
 
 /**
  * The structural half of `/skill-test static`, run on every skill in CI.
@@ -20,7 +21,6 @@ import yaml from "js-yaml";
  */
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const SKILLS_DIR = path.join(repoRoot, "skills");
 
 /** Every skill has to declare these, even as an empty string. */
 const REQUIRED_FIELDS = ["name", "description", "argument-hint", "user-invocable", "allowed-tools"];
@@ -38,24 +38,23 @@ const catalog = yaml.load(
   fs.readFileSync(path.join(repoRoot, "skills-selftest", "catalog.yaml"), "utf-8"),
 ) as { skills: CatalogSkill[] };
 
-const skills = fs
-  .readdirSync(SKILLS_DIR, { withFileTypes: true })
-  .filter((e) => e.isDirectory() && fs.existsSync(path.join(SKILLS_DIR, e.name, "SKILL.md")))
-  .map((e) => {
-    const raw = fs.readFileSync(path.join(SKILLS_DIR, e.name, "SKILL.md"), "utf-8").replace(/\r\n/g, "\n");
-    const fm = /^---\n([\s\S]*?)\n---\n/.exec(raw);
-    return {
-      dir: e.name,
-      frontmatter: fm ? ((yaml.load(fm[1]) as Record<string, unknown>) ?? {}) : null,
-      body: fm ? raw.slice(fm[0].length) : raw,
-      lines: raw.split("\n").length,
-    };
-  });
+// The shipped skills and the contributor-only ones in maintainers/skills/: same rules.
+const skills = skillDirs().map((s) => {
+  const raw = fs.readFileSync(path.join(s.dir, "SKILL.md"), "utf-8").replace(/\r\n/g, "\n");
+  const fm = /^---\n([\s\S]*?)\n---\n/.exec(raw);
+  return {
+    dir: s.name,
+    frontmatter: fm ? ((yaml.load(fm[1]) as Record<string, unknown>) ?? {}) : null,
+    body: fm ? raw.slice(fm[0].length) : raw,
+    lines: raw.split("\n").length,
+  };
+});
 
 /** SKILL.md plus everything under references/, where several skills keep their report template. */
-function skillText(dir: string): string {
-  const parts = [fs.readFileSync(path.join(SKILLS_DIR, dir, "SKILL.md"), "utf-8")];
-  const refs = path.join(SKILLS_DIR, dir, "references");
+function skillText(name: string): string {
+  const dir = findSkill(name)!;
+  const parts = [fs.readFileSync(path.join(dir, "SKILL.md"), "utf-8")];
+  const refs = path.join(dir, "references");
   if (fs.existsSync(refs)) {
     for (const f of fs.readdirSync(refs, { recursive: true }) as string[]) {
       if (String(f).endsWith(".md")) parts.push(fs.readFileSync(path.join(refs, f), "utf-8"));
@@ -71,6 +70,12 @@ function escapeRegExp(s: string): string {
 describe("skill structure (static checks 1-3)", () => {
   it("finds skills to check", () => {
     expect(skills.length).toBeGreaterThan(0);
+  });
+
+  it("no skill name lives in both skills/ and maintainers/skills/", () => {
+    // The repo's .claude/skills/ mirrors both by name: one name, one source.
+    const [shipped, maintained] = SKILL_ROOTS.map((root) => new Set(skillDirs([root]).map((s) => s.name)));
+    expect([...maintained].filter((n) => shipped.has(n))).toEqual([]);
   });
 
   it("every skill has frontmatter with the required fields", () => {

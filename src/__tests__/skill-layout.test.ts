@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { REPO_ROOT, findSkill, skillDirs } from "./skill-roots.js";
 
 /**
  * Skills imported from plugin repos kept their plugin wiring: `.mcp.json`, a
@@ -11,7 +11,6 @@ import { fileURLToPath } from "node:url";
  * never existed and self-improving-agent spawned an agent that was never installed.
  */
 
-const skillsDir = path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", ".."), "skills");
 const PLUGIN_ONLY = [".mcp.json", ".claude-plugin", "settings.json", "CLAUDE.md", "agents"];
 
 function walk(dir: string): string[] {
@@ -22,21 +21,22 @@ function walk(dir: string): string[] {
 }
 
 describe("skill folders", () => {
-  const skills = fs.readdirSync(skillsDir).filter((d) => fs.existsSync(path.join(skillsDir, d, "SKILL.md")));
+  // The shipped skills and the contributor-only ones in maintainers/skills/.
+  const skills = skillDirs();
 
   it("hold nothing that only a plugin loads", () => {
     const found = skills.flatMap((s) =>
-      PLUGIN_ONLY.filter((name) => fs.existsSync(path.join(skillsDir, s, name))).map((name) => `${s}/${name}`),
+      PLUGIN_ONLY.filter((name) => fs.existsSync(path.join(s.dir, name))).map((name) => `${s.name}/${name}`),
     );
     expect(found).toEqual([]);
   });
 
   it("never rely on ${CLAUDE_PLUGIN_ROOT}", () => {
     const found = skills.flatMap((s) =>
-      walk(path.join(skillsDir, s))
+      walk(s.dir)
         .filter((f) => /\.(md|json|sh|py|ya?ml)$/.test(f))
         .filter((f) => fs.readFileSync(f, "utf-8").includes("CLAUDE_PLUGIN_ROOT"))
-        .map((f) => path.relative(skillsDir, f).replace(/\\/g, "/")),
+        .map((f) => path.relative(s.root, f).replace(/\\/g, "/")),
     );
     expect(found).toEqual([]);
   });
@@ -47,7 +47,7 @@ describe("skill folders", () => {
     // A script has to be named or imported; anything else may also be reached
     // through its folder ("see references/"). Licenses stay whether named or not.
     const orphans = skills.flatMap((s) => {
-      const root = path.join(skillsDir, s);
+      const root = s.dir;
       const files = walk(root).filter((f) => fs.statSync(f).isFile() && !f.includes("__pycache__"));
       const texts = files
         .filter((f) => /\.(md|py|sh|json|ya?ml|txt|js|cjs|mjs|ts|html|cs|csproj|slnx)$/.test(f))
@@ -71,7 +71,7 @@ describe("skill folders", () => {
                 (!script && dir !== "." && folder.test(text))),
           );
         })
-        .map((f) => path.relative(skillsDir, f).replace(/\\/g, "/"));
+        .map((f) => path.relative(s.root, f).replace(/\\/g, "/"));
     });
     expect(orphans).toEqual([]);
   });
@@ -81,7 +81,7 @@ describe("skill folders", () => {
     // `python scripts/x.py --flag` for eleven modules with no __main__: the command
     // printed nothing and exited 0.
     const missing = skills.flatMap((s) => {
-      const root = path.join(skillsDir, s);
+      const root = s.dir;
       const docs = walk(root)
         .filter((f) => f.endsWith(".md"))
         .map((f) => fs.readFileSync(f, "utf-8"))
@@ -90,7 +90,7 @@ describe("skill folders", () => {
       return walk(root)
         .filter((f) => invoked.has(path.basename(f)) && !f.includes("__pycache__"))
         .filter((f) => !fs.readFileSync(f, "utf-8").includes("__main__"))
-        .map((f) => path.relative(skillsDir, f).replace(/\\/g, "/"));
+        .map((f) => path.relative(s.root, f).replace(/\\/g, "/"));
     });
     expect(missing).toEqual([]);
   });
@@ -99,21 +99,31 @@ describe("skill folders", () => {
 describe("this repo's own .claude/skills", () => {
   // A hand-kept copy that drifted: 11 of its 19 skills were older than skills/,
   // self-improving-agent still with the plugin parts removed from the real one.
-  it("mirrors skills/ exactly", () => {
-    const own = path.join(skillsDir, "..", ".claude", "skills");
+  const own = path.join(REPO_ROOT, ".claude", "skills");
+
+  it("mirrors skills/ or maintainers/skills/ exactly", () => {
     const files = (dir: string) =>
       walk(dir)
         .filter((f) => fs.statSync(f).isFile())
         .map((f) => path.relative(dir, f))
         .sort();
     const drifted = fs.readdirSync(own).filter((s) => {
-      if (!fs.existsSync(path.join(skillsDir, s))) return true;
+      const source = findSkill(s);
+      if (!source) return true;
       const mine = files(path.join(own, s));
       return (
-        mine.join() !== files(path.join(skillsDir, s)).join() ||
-        mine.some((f) => !fs.readFileSync(path.join(own, s, f)).equals(fs.readFileSync(path.join(skillsDir, s, f))))
+        mine.join() !== files(source).join() ||
+        mine.some((f) => !fs.readFileSync(path.join(own, s, f)).equals(fs.readFileSync(path.join(source, f))))
       );
     });
     expect(drifted).toEqual([]);
+  });
+
+  it("carries every contributor-only skill", () => {
+    // maintainers/skills/ reaches contributors only through this mirror: npm never ships it.
+    const missing = skillDirs([path.join(REPO_ROOT, "maintainers", "skills")])
+      .map((s) => s.name)
+      .filter((name) => !fs.existsSync(path.join(own, name, "SKILL.md")));
+    expect(missing).toEqual([]);
   });
 });

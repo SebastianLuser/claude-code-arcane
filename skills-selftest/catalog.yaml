@@ -26,6 +26,19 @@ skills:
     priority: critical
     category: arcane
 
+  # Contributor-only: lives in maintainers/skills/, which npm never ships.
+  - name: arcane-author
+    spec: skills-selftest/skills/arcane/arcane-author.md
+    stack: general
+    last_static: "2026-11-05"
+    last_static_result: "COMPLIANT"
+    last_spec: "2026-11-05"
+    last_spec_result: "PASS"
+    last_category: ""
+    last_category_result: ""
+    priority: medium
+    category: arcane
+
   - name: arcane-clean
     spec: null
     stack: general
