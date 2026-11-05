@@ -1,3 +1,10 @@
+# [3.6.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.5.2...v3.6.0) (2026-11-05)
+
+
+### Features
+
+* **maintainers:** add arcane-author to create skills and profiles ([7b0f8f5](https://github.com/SebastianLuser/claude-code-arcane/commit/7b0f8f564546d2b026e1c9295779e1bc13a17a97))
+
 ## [3.5.2](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.5.1...v3.5.2) (2026-11-05)
 
 
