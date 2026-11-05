@@ -1,3 +1,10 @@
+## [3.5.2](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.5.1...v3.5.2) (2026-11-05)
+
+
+### Performance Improvements
+
+* **hooks:** run one process per hook event ([f536a21](https://github.com/SebastianLuser/claude-code-arcane/commit/f536a210b6b46ca6b3b0eaf9dacc21fb9fdead9d))
+
 ## [3.5.1](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.5.0...v3.5.1) (2026-11-05)
 
 
