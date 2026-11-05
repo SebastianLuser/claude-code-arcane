@@ -26,7 +26,7 @@ Each profile lists the hooks it brings under `hooks:` (core the session and guar
 | `SessionStart` (startup, resume, clear, compact) | `session-start.sh` | Shows branch, recent commits and the first lines of `.arcane/session-state/active.md`; moves a legacy progress file |
 | | `detect-unreal.sh`, `detect-gaps.sh` | Flag an Unreal project, point out missing docs |
 | | `check-update.sh` | Says when a newer Arcane exists (cached for 4 hours) |
-| `PreToolUse` (`Bash\|PowerShell`, file tools) | `guard.sh` → `guard.mjs` | **deny** what the user should run by hand (force push, `--no-verify`, `sudo`, writing `.env`); **ask** before destructive or supply-chain actions (`rm -rf`, `rd /s`, `find -delete` or `xargs rm` outside build output, dropping data, a new dependency, editing CI or lint configs) |
+| `PreToolUse` (`Bash\|PowerShell`, file tools) | `guard.sh` → `guard.mjs` | **deny** what the user should run by hand (force push, `--no-verify`, `sudo`, writing `.env`); **ask** before destructive or supply-chain actions (`rm -rf`, `rd /s`, `find -delete` or `xargs rm` outside build output, dropping data, a new dependency, a session against production such as `railway ssh -e production` or `ssh`/`psql` to a `prod` host, editing CI or lint configs) |
 | | `validate-commit.sh` | Blocks `--no-verify` and empty commit messages |
 | `PostToolUse` | `session-watch.sh post-tool` | Records edited files; warns on a tool loop (same call 5 times), on scope drift (15 files) and at 70% / 85% of the context window |
 | | `validate-skill-change.sh` | Warns when an edited `SKILL.md` looks like it lost its frontmatter |
