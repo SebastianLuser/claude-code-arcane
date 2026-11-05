@@ -1,3 +1,10 @@
+# [3.4.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.3.0...v3.4.0) (2026-11-05)
+
+
+### Features
+
+* **rules:** add shell-commands core rule for long-running commands ([1e1f6af](https://github.com/SebastianLuser/claude-code-arcane/commit/1e1f6af845ad2d0fd2e4036c64240bccf4a46614))
+
 # [3.3.0](https://github.com/SebastianLuser/claude-code-arcane/compare/v3.2.0...v3.3.0) (2026-10-31)
 
 
