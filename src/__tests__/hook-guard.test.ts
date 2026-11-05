@@ -122,6 +122,25 @@ describe("asked commands", () => {
       'gh pr create --body "kubectl delete is dangerous"', "npm run build"], bash, null);
   });
 
+  it("sessions against production", () => {
+    // 2026-11-03: an agent piped this into grep and it hung for 2 days.
+    expectAll(['railway ssh -e production -s app-db "psql -c \'select 1\'" | grep x',
+      "railway run --environment=production npm start", "railway connect -e prod-eu",
+      "railway shell --environment production", "railway ssh -eproduction",
+      "ssh deploy@api.prod.example.com uptime", "ssh -i ~/.ssh/key -p 2222 prod-db",
+      "ssh ssh://root@prod-db:22", "psql -h prod-db.internal -U app", "psql --host=db-production.example.com",
+      'psql "postgresql://app:pw@prod-db:5432/app"', "psql --dbname=postgres://prod-db/app",
+      'bash -c "railway ssh -e production"'], bash, "ask");
+    expect(powershell("railway ssh -e production -s db")).toBe("ask");
+  });
+
+  it("other environments and mentions of production pass", () => {
+    expectAll(["railway ssh -e staging", "railway run npm start", "railway ssh -e preprod",
+      "ssh dev.example.com", "ssh -l produser dev.example.com", "psql -h localhost -U prod_user",
+      "psql postgresql://prod_user@localhost/app", 'git commit -m "fix ssh prod docs"',
+      'echo "railway ssh -e production"', "echo railway ssh -e production"], bash, null);
+  });
+
   it("a heredoc commit message is data", () => {
     expect(bash("git commit -m \"$(cat <<'EOF'\nfeat: rm -rf the old cache\n\nsudo is not needed\nEOF\n)\"")).toBeNull();
   });

@@ -6,7 +6,8 @@
  *   deny - actions the user runs by hand if they really want them (force push,
  *          bypassing git hooks, sudo, writing .env files ...)
  *   ask  - destructive or supply-chain-sensitive actions (rm -rf outside build
- *          output, dropping data, a new dependency, editing CI or lint configs ...)
+ *          output, dropping data, a new dependency, a session against production,
+ *          editing CI or lint configs ...)
  *   none - everything else; the normal permission rules decide.
  *
  * The command is parsed quote-aware and split on && || ; | so a chained or quoted
@@ -467,6 +468,51 @@ function isEnvFile(p) {
   return ENV_FILE.test(base) && !ENV_SAFE_SUFFIXES.some((s) => base.endsWith(s) || base.includes(`${s}.`));
 }
 
+// railway subcommands that open a session or run a command inside the environment.
+const RAILWAY_SESSIONS = new Set(["ssh", "connect", "run", "shell"]);
+const SSH_TAKES_VALUE = new Set(["-B", "-b", "-c", "-D", "-E", "-e", "-F", "-I", "-i", "-J", "-L", "-l", "-m",
+  "-O", "-o", "-P", "-p", "-Q", "-R", "-S", "-W", "-w"]);
+const PROD_REASON = "opens a session or runs commands against a production environment";
+
+/** Values given to an option: `-e x`, `-ex`, `-e=x`, `--env x`, `--env=x`. */
+function optionValues(args, short, long) {
+  const values = [];
+  args.forEach((arg, i) => {
+    if (arg === short || arg === long) values.push(args[i + 1] ?? "");
+    else if (arg.startsWith(`${long}=`)) values.push(arg.slice(long.length + 1));
+    else if (arg.startsWith(short) && !arg.startsWith("--")) values.push(arg.slice(short.length).replace(/^=/, ""));
+  });
+  return values;
+}
+
+/** The host of `user@host`, `ssh://user@host:22` or the authority of a postgres URI. */
+function hostOf(target) {
+  return target.replace(/^[a-z]+:\/\//i, "").split("/")[0].split("@").pop() ?? "";
+}
+
+/**
+ * railway, ssh and psql against production. Asks rather than denies: reaching production
+ * can be the task, but a session there can hang for days or change live data.
+ * shortcut: an environment linked with `railway environment` or a host from PGHOST or a
+ * `host=` conninfo string is not seen; parse those if they show up in practice.
+ */
+function checkProduction(name, args) {
+  if (name === "railway" && RAILWAY_SESSIONS.has(args[0])
+    && optionValues(args, "-e", "--environment").some((v) => /^prod/i.test(v))) {
+    return [ASK, `railway ${args[0]} ${PROD_REASON}`];
+  }
+  if (name === "ssh") {
+    const host = hostOf(positional(args, SSH_TAKES_VALUE)[0] ?? "");
+    if (/prod/i.test(host)) return [ASK, `ssh to ${host} ${PROD_REASON}`];
+  }
+  if (name === "psql") {
+    const uris = args.flatMap((a) => a.match(/(?:^|=)(postgres(?:ql)?:\/\/\S*)/i)?.[1] ?? []);
+    const host = [...optionValues(args, "-h", "--host"), ...uris.map(hostOf)].find((h) => /prod/i.test(h));
+    if (host) return [ASK, `psql to ${host} ${PROD_REASON}`];
+  }
+  return [NONE, ""];
+}
+
 function checkSegment(tokens, depth = 0, shell = "bash") {
   const [name, args] = program(tokens);
   const text = tokens.join(" ");
@@ -500,6 +546,7 @@ function checkSegment(tokens, depth = 0, shell = "bash") {
     if (args[0] === "api" && /(-X|--method)[ =]?\s*DELETE\b/i.test(text)) decisions.push([ASK, "gh api DELETE request"]);
   }
   decisions.push(checkNewDependency(name, args));
+  decisions.push(checkProduction(name, args));
   if (tokens.some((t) => DB_CLIENTS.has(basename(t).toLowerCase()))) {
     for (const [pattern, reason] of DATA_LOSS_SQL) if (pattern.test(text)) decisions.push([ASK, reason]);
     if (/\bDELETE\s+FROM\b/i.test(text) && !/\bWHERE\b/i.test(text)) {
